@@ -7,6 +7,7 @@ Reproducible pipeline for two experiments in a master's thesis on
 |---|---|---|
 | §3 Serialization damage diagnosis | 5 serializers × 4 structural metrics on HiTab | `experiments/exp01_serialization_audit.py` |
 | §4 Embedder layer-wise probing | Linear/MLP probes across 12 transformer layers | `experiments/exp02_layer_probing.py` |
+| §5 HART Table Retrieval | Table retrieval indexing, dense/sparse retrieval, and end-to-end evaluation | `hart-table-retrieval/` |
 
 ## Requirements
 
@@ -55,7 +56,8 @@ table-rag-structural-audit/
 ├── experiments/          # Experiment entry points + Hydra configs
 ├── tests/                # Unit tests
 ├── notebooks/            # Exploratory notebooks
-└── results/              # Output tables & figures (git-ignored)
+├── results/              # Output tables & figures (git-ignored)
+└── hart-table-retrieval/ # End-to-end retrieval and evaluation pipeline
 ```
 
 ## Key datasets

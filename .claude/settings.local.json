@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install *)",
+      "Bash(unzip -q -o tables.zip -d ./tables)",
+      "Bash(python3 -c \"import json, sys; d=json.loads\\(sys.stdin.read\\(\\)\\); print\\('Keys:', list\\(d.keys\\(\\)\\)\\); print\\(json.dumps\\(d, indent=2\\)[:1500]\\)\")"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+embedding_models:
+  - name: "text-embedding-3-small"
+    type: "openai"
+    dim: 1536
+  - name: "dunzhang/stella_en_400M_v5"
+    type: "sentence-transformer"
+    dim: 1024
+  - name: "intfloat/multilingual-e5-large-instruct"
+    type: "sentence-transformer"
+    dim: 1024
+
+serializers:
+  - "plain_markdown"
+  - "json_kv"
+  - "header_path"
+
+hart:
+  alpha_values: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+  aggregation: "sum"  # sum | max | mean
+
+retrieval:
+  top_k: [1, 5, 10]
+
+evaluation:
+  metrics: ["recall", "ndcg", "hit", "mrr"]
+
+paths:
+  data_dir: "/mnt/d/hart_data/hitab"
+  chroma_dir: "/mnt/d/hart_data/chroma_db"
+  hf_cache: "/mnt/d/hart_data/hf_cache"
