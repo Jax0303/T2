@@ -25,7 +25,7 @@ def _find_data_root(data_dir: str) -> Path:
 
 def load_samples(
     data_dir: str = DEFAULT_DATA_DIR,
-    split: str = "train",
+    split: str = "dev",
     max_samples: Optional[int] = None,
 ) -> List[dict]:
     """Load HiTab QA samples for the given split."""
@@ -68,7 +68,7 @@ def load_table(table_id: str, data_dir: str = DEFAULT_DATA_DIR) -> Optional[dict
 
 def load_hitab(
     data_dir: str = DEFAULT_DATA_DIR,
-    split: str = "train",
+    split: str = "dev",
     max_samples: Optional[int] = None,
 ) -> List[dict]:
     """

@@ -88,10 +88,17 @@ def main():
             logger.info("Indexing %s + %s...", ser_name, model_config["name"])
             t0 = time.time()
 
-            indexer = TableIndexer(
-                chroma_client, embedder, ser_name, model_config["name"]
-            )
-            n_indexed = indexer.index_documents(all_docs)
+            try:
+                indexer = TableIndexer(
+                    chroma_client, embedder, ser_name, model_config["name"]
+                )
+                n_indexed = indexer.index_documents(all_docs)
+            except Exception as e:
+                logger.error(
+                    "Indexing failed for %s + %s (%s: %s) — skipping",
+                    ser_name, model_config["name"], type(e).__name__, str(e)[:200],
+                )
+                continue
             idx_time = time.time() - t0
 
             stat = indexer.get_stats()

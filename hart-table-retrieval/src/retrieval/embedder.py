@@ -108,12 +108,18 @@ class EmbedderFactory:
         elif config["type"] == "sentence-transformer":
             try:
                 return SentenceTransformerEmbedder(config["name"])
-            except (ImportError, OSError, RuntimeError) as e:
+            except ImportError as e:
                 logger.warning(
-                    "sentence-transformers unavailable (%s), falling back to onnx default",
-                    type(e).__name__,
+                    "sentence-transformers package missing (%s), falling back to onnx default",
+                    e,
                 )
                 return OnnxDefaultEmbedder()
+            except Exception as e:
+                logger.warning(
+                    "sentence-transformer model '%s' failed to load (%s: %s), skipping",
+                    config["name"], type(e).__name__, str(e)[:200],
+                )
+                return None
         elif config["type"] == "onnx-default":
             return OnnxDefaultEmbedder()
         else:
