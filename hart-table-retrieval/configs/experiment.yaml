@@ -1,10 +1,12 @@
 embedding_models:
-  - name: "text-embedding-3-small"
-    type: "openai"
-    dim: 1536
-  - name: "intfloat/multilingual-e5-large-instruct"
-    type: "sentence-transformer"
-    dim: 1024
+  # Comment out / re-enable as needed. On CPU-only or low-VRAM setups,
+  # keep only bge-large for speed.
+  # - name: "text-embedding-3-small"
+  #   type: "openai"
+  #   dim: 1536
+  # - name: "intfloat/multilingual-e5-large-instruct"
+  #   type: "sentence-transformer"
+  #   dim: 1024
   - name: "BAAI/bge-large-en-v1.5"
     type: "sentence-transformer"
     dim: 1024
@@ -25,6 +27,9 @@ evaluation:
   metrics: ["recall", "ndcg", "hit", "mrr"]
 
 paths:
-  data_dir: "/mnt/d/hart_data/hitab"
-  chroma_dir: "/mnt/d/hart_data/chroma_db"
-  hf_cache: "/mnt/d/hart_data/hf_cache"
+  # Override per machine. Relative to project root, OR absolute, OR override via CLI --data-dir.
+  # Lab PC example: /mnt/d/hart_data/hitab
+  # Home PC example: /home/user/T2/hart-table-retrieval/data/hitab
+  data_dir: "data/hitab"
+  chroma_dir: "data/chroma_db"
+  hf_cache: "data/hf_cache"

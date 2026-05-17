@@ -6,7 +6,7 @@ from typing import List, Optional, Dict
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_DATA_DIR = "/mnt/d/hart_data/hitab/HiTab"
+DEFAULT_DATA_DIR = "data/hitab"
 
 
 def _find_data_root(data_dir: str) -> Path:
@@ -51,7 +51,7 @@ def load_samples(
 def load_table(table_id: str, data_dir: str = DEFAULT_DATA_DIR) -> Optional[dict]:
     """Load a single table by table_id."""
     root = _find_data_root(data_dir)
-    tables_dir = root / "data" / "tables" / "tables"
+    tables_dir = root / "data" / "tables"
 
     # Try hmt first, then raw
     for subdir in ["hmt", "raw"]:
