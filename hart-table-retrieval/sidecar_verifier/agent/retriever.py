@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import chromadb
 
@@ -16,9 +16,10 @@ class VectorRetriever:
         chroma_dir: str,
         model_name: str = "BAAI/bge-large-en-v1.5",
         serializer: str = "plain_markdown",
+        device: Optional[str] = None,
     ) -> None:
         self.client = chromadb.PersistentClient(path=chroma_dir)
-        model_config = {"name": model_name, "type": "sentence-transformer"}
+        model_config = {"name": model_name, "type": "sentence-transformer", "device": device}
         self.embedder = EmbedderFactory.create(model_config)
         col_name = _sanitize_collection_name(
             f"{serializer}_{_model_short_name(model_name)}"

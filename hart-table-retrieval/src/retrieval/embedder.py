@@ -50,16 +50,26 @@ class OpenAIEmbedder(BaseEmbedder):
 
 
 class SentenceTransformerEmbedder(BaseEmbedder):
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, device: str = None):
         from sentence_transformers import SentenceTransformer
+        import torch
 
+        if device is None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        self._device = device
         self._model_name = model_name
-        self._model = SentenceTransformer(model_name, trust_remote_code=True)
+        self._model = SentenceTransformer(model_name, device=device, trust_remote_code=True)
         self._dim = self._model.get_sentence_embedding_dimension()
+        self._batch_size = 128 if device == "cuda" else 32
+        logger.info("Loaded %s on %s (batch_size=%d)", model_name, device, self._batch_size)
 
     def embed(self, texts: List[str]) -> np.ndarray:
         embeddings = self._model.encode(
-            texts, batch_size=64, show_progress_bar=True, convert_to_numpy=True
+            texts,
+            batch_size=self._batch_size,
+            show_progress_bar=True,
+            convert_to_numpy=True,
+            device=self._device,
         )
         return embeddings.astype(np.float32)
 
@@ -107,7 +117,7 @@ class EmbedderFactory:
             return OpenAIEmbedder(config["name"])
         elif config["type"] == "sentence-transformer":
             try:
-                return SentenceTransformerEmbedder(config["name"])
+                return SentenceTransformerEmbedder(config["name"], device=config.get("device"))
             except ImportError as e:
                 logger.warning(
                     "sentence-transformers package missing (%s), falling back to onnx default",

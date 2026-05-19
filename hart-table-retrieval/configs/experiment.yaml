@@ -1,13 +1,13 @@
 embedding_models:
-  # Comment out / re-enable as needed. On CPU-only or low-VRAM setups,
-  # keep only bge-large for speed.
+  # GPU re-enabled on home PC (RTX 3060 Ti, 8GB). multilingual-e5 added back.
+  # text-embedding-3-small still gated on OPENAI_API_KEY at runtime.
   # - name: "text-embedding-3-small"
   #   type: "openai"
   #   dim: 1536
-  # - name: "intfloat/multilingual-e5-large-instruct"
-  #   type: "sentence-transformer"
-  #   dim: 1024
   - name: "BAAI/bge-large-en-v1.5"
+    type: "sentence-transformer"
+    dim: 1024
+  - name: "intfloat/multilingual-e5-large-instruct"
     type: "sentence-transformer"
     dim: 1024
 
