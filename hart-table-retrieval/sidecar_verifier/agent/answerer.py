@@ -14,20 +14,58 @@ import torch
 from ..store.table_store import TableRecord
 
 
-def _format_table_for_llm(rec: TableRecord, max_rows: int = 30) -> str:
-    """Render the table as a compact markdown block plus header context."""
-    df = rec.df
+def _clean_path(p):
+    """Drop synthetic root tags like <TOP>/<LEFT>; keep meaningful segments."""
+    return [s for s in p if s and s not in ("<TOP>", "<LEFT>")]
+
+
+def _format_table_for_llm(rec: TableRecord, max_rows: int = 40) -> str:
+    """Render the table so an LLM can locate rows by left-header and cols by full top-header path.
+
+    Fixes two failure modes seen on HiTab:
+      - top_header_paths have multiple levels (e.g. 'black male workers' > 'immigrant'),
+        but the original render only used the leaf -> 8 duplicate 'immigrant' columns.
+      - left_header_paths were not surfaced into the markdown -> rows were just 0..N.
+    """
+    import pandas as pd
+
+    df = rec.df.copy()
     n_rows = min(df.shape[0], max_rows)
-    truncated = df.iloc[:n_rows]
-    md = truncated.to_markdown(index=True) if hasattr(truncated, "to_markdown") else truncated.to_string()
-    note = "" if n_rows == df.shape[0] else f"\n(...{df.shape[0] - n_rows} more rows truncated)"
-    headers = "\n".join(
-        f"  col[{i}]: " + " > ".join(p) for i, p in enumerate(rec.top_header_paths[:30])
-    )
+    df = df.iloc[:n_rows].reset_index(drop=True)
+
+    # 1) Build column headers from full top_header_paths.
+    top_paths = [_clean_path(p) for p in rec.top_header_paths]
+    if len(top_paths) == df.shape[1]:
+        df.columns = [
+            " :: ".join(p) if len(p) > 1 else (p[0] if p else f"col_{i}")
+            for i, p in enumerate(top_paths)
+        ]
+
+    # 2) Prepend left-header leaf (or full path if helpful) as a real column.
+    left_paths = [_clean_path(p) for p in rec.left_header_paths]
+    if left_paths:
+        row_labels = []
+        for i in range(n_rows):
+            if i < len(left_paths) and left_paths[i]:
+                p = left_paths[i]
+                row_labels.append(p[-1] if len(p) == 1 else " :: ".join(p))
+            else:
+                row_labels.append(f"row_{i}")
+        df.insert(0, "row_header", row_labels)
+
+    md = df.to_markdown(index=False) if hasattr(df, "to_markdown") else df.to_string(index=False)
+    note = "" if n_rows == rec.df.shape[0] else f"\n(...{rec.df.shape[0] - n_rows} more rows truncated)"
+
+    # Compact header summary for the model to scan first.
+    header_block_lines = []
+    for i, p in enumerate(top_paths[:30]):
+        header_block_lines.append(f"  col[{i}]: " + " > ".join(p) if p else f"  col[{i}]: (empty)")
+    headers = "\n".join(header_block_lines)
+
     return (
         f"Title: {rec.title}\n"
-        f"Header paths (top):\n{headers}\n\n"
-        f"Data:\n{md}{note}"
+        f"Top header paths:\n{headers}\n\n"
+        f"Data (row_header column is the left-side row label, then numeric cells):\n{md}{note}"
     )
 
 
@@ -45,7 +83,7 @@ class LocalLLMAnswerer:
         dtype: str = "bfloat16",
         device: Optional[str] = None,
         max_new_tokens: int = 96,
-        quantization: Optional[str] = "4bit",  # None | "4bit" | "8bit"
+        quantization: Optional[str] = "4bit",  # None | "4bit" :: "8bit"
     ) -> None:
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -75,11 +113,16 @@ class LocalLLMAnswerer:
         table_block = _format_table_for_llm(rec)
         system = (
             "You are a precise table QA assistant. Answer ONLY from the table below. "
-            "If the answer is a number, output just the number (no units, no commas). "
+            "Many questions require selecting a subset of rows or columns and computing a "
+            "value (sum, difference, ratio, max/min, argmax, sign change). "
+            "Think step by step using `Reasoning:` then give the final answer after "
+            "`Final answer:` on its own line. "
+            "If the final answer is a number, output just the number (no units, no commas, "
+            "no '%'); for fractions/percentages match the form used in the question's data. "
             "If multiple numbers, separate with ', '. "
-            "If not answerable from the table, output 'N/A'."
+            "If not answerable, write `Final answer: N/A`."
         )
-        user = f"Table:\n{table_block}\n\nQuestion: {query}\n\nAnswer:"
+        user = f"Table:\n{table_block}\n\nQuestion: {query}"
         messages = [
             {"role": "system", "content": system},
             {"role": "user", "content": user},
@@ -98,7 +141,12 @@ class LocalLLMAnswerer:
         generated = out[0, inputs["input_ids"].shape[1]:]
         text = self.tokenizer.decode(generated, skip_special_tokens=True).strip()
 
-        # Clean common LLM filler: take first non-empty line, strip leading "Answer:" etc.
-        first_line = next((ln.strip() for ln in text.splitlines() if ln.strip()), text)
-        first_line = re.sub(r"^(answer|the answer is|=|:)\s*", "", first_line, flags=re.IGNORECASE)
-        return AnswerResult(answer=first_line, raw_output=text, table_id=rec.table_id)
+        # Extract content after "Final answer:" if the CoT format is followed; else fall back.
+        m = re.search(r"final\s*answer\s*[:\-]\s*(.+?)(?:\n|$)", text, flags=re.IGNORECASE | re.DOTALL)
+        if m:
+            cleaned = m.group(1).strip()
+        else:
+            cleaned = next((ln.strip() for ln in text.splitlines() if ln.strip()), text)
+        cleaned = re.sub(r"^(answer|the answer is|=|:)\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = cleaned.rstrip(".").strip()
+        return AnswerResult(answer=cleaned, raw_output=text, table_id=rec.table_id)
