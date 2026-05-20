@@ -84,6 +84,113 @@ The LLM is used in **two narrowly scoped roles**: cell-extractor (JSON
 emitter for arithmetic) and reader (natural-language answer for lookup /
 arg / comparison classes). It never does the arithmetic itself.
 
+### Detailed data flow (what runs and what is produced)
+
+Same pipeline as above, but annotated with the function call that runs
+each step, the data structure it produces, and what file holds it.
+
+```
+ query : str
+   │
+   ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ (1) classify_query(q)                          router/query_classifier│
+│      regex over 6 patterns (math syms ≥2, arith triggers, entity-cue, │
+│      arg/pair, comparison, total-as-aggregation)                      │
+│      → QueryIntent(qtype, needs_table, needs_symbolic, signals)       │
+└────────────────────────────┬─────────────────────────────────────────┘
+                             ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ (2) plan_stages(intent)                                    router/policy│
+│      → Plan(stages=[RETRIEVE,VERIFY,(SYMBOLIC,)LLM_ANSWER], reason)    │
+└────────────────────────────┬─────────────────────────────────────────┘
+                             ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ (3) VectorStore.search(q, top_k_vectors=20, top_k_tables=5)           │
+│        stores/vector_store.py                                         │
+│    a) embed q  : bge-large-en-v1.5 → 1024-d vector                    │
+│    b) chroma   : collection.query(emb, n_results=20) → 20 chunk hits  │
+│    c) per table: dedup by table_id, keep best score per table         │
+│    → List[VectorHit(table_id, score, vector_id, chunk_text)]          │
+└────────────────────────────┬─────────────────────────────────────────┘
+                             ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ (4) rerank(q, hits, original_store, 0.7, 0.3)         retrieve/verifier│
+│    for each of the 5 candidate hits:                                  │
+│      table = original_store.get(hit.table_id)   ← FIRST use of orig.  │
+│      kw_overlap  = |query_kw ∩ table_header_kw| / |query_kw|          │
+│      num_overlap = |query_nums ∩ table_cell_nums| / |query_nums|      │
+│      verify_conf = 0.6·kw + 0.4·num   (or kw alone if no nums)        │
+│      final_score = 0.7·hit.score + 0.3·verify_conf                    │
+│    sort by final_score → top-1 = top_table                            │
+└────────────────────────────┬─────────────────────────────────────────┘
+                             ▼
+       ┌────── arithmetic intent (SYMBOLIC in plan) ──────┐
+       │                                                   │
+       ▼                                                   ▼
+┌────────────────────────────────────────┐    (skip 5a, go to 5b)
+│ (5a-i)  extract_plan(llm, q, top_table)│
+│          extract/cell_extractor.py     │
+│    render table → text                 │
+│    system prompt: emit JSON only       │
+│    user: table + question              │
+│    parse JSON {cells, expression}      │
+│    → ExtractedPlan(cells, expression)  │
+└──────────────────┬─────────────────────┘
+                   ▼
+┌────────────────────────────────────────┐
+│ (5a-ii) evaluate_plan(plan, top_table) │
+│          extract/symbolic_eval.py      │
+│    for each cell:                      │
+│      OriginalTable.resolve(rh, ch)     │
+│        → word-bounded token match      │
+│           on joined " :: " path        │
+│        → (row, col, value)             │
+│      env[var] = float(value)           │
+│    ast.parse(expression, "eval")       │
+│    walk tree with whitelist:           │
+│      Constant, Name, BinOp(+-*/),      │
+│      UnaryOp(+,-) only                 │
+│    → SymbolicResult(ok, value, ...)    │
+└──────────────────┬─────────────────────┘
+                   ▼
+┌────────────────────────────────────────┐
+│ (5a-iii) adoption gate    agent.py     │
+│   op_count = count "+-*/" in expr      │
+│   adopt = sym.ok AND (                 │
+│     op_count >= 2                      │
+│     OR (intent==arith AND ops>=1       │
+│         AND cells>=2))                 │
+│   if adopt: answer = sym.value         │
+└──────────────────┬─────────────────────┘
+                   │ (not adopted → fall through to 5b)
+                   ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ (5b) LLM reader                                            agent.py   │
+│    render top_table as text (title + header paths + data rows)        │
+│    system: "Reasoning: ... Final answer: ..."                         │
+│    LLM.complete(system, user)                                         │
+│    regex extract "Final answer: (.+)"                                 │
+│    → answer string                                                    │
+└────────────────────────────┬─────────────────────────────────────────┘
+                             ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ (6) AgentResult                                            agent.py   │
+│    query, intent, plan,                                               │
+│    vector_ranked[5], final_ranked[5], top_table_id,                   │
+│    symbolic (plan + resolved_cells + AST value + adopted flag),       │
+│    reader (raw output + parsed answer),                               │
+│    answer, source ("symbolic"|"reader"), elapsed_s                    │
+│    → JSON-serialised for offline metric re-derivation                 │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+The flow guarantees that **`Python's eval() is never called**. The cell
+extractor's JSON output is parsed as data, the expression is walked as an
+AST with a whitelist of node types, and any `Call` / `Attribute` /
+`Import` node aborts with `ValueError`. Tested with
+`__import__("os").system("…")` payloads.
+
 ---
 
 ## Hypotheses and results
