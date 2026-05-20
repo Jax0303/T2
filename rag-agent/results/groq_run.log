@@ -1,0 +1,74 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1/5] Loading HiTab dev samples ...
+  loaded 1671 samples
+[2/5] Stratifying hard subset (per_class=8) ...
+  picked 48 queries
+    multi_op_formula      : pool=  37
+    arithmetic_agg        : pool= 139
+    pair_or_topk_arg      : pool= 153
+    single_arg            : pool=  93
+    comparison_or_count   : pool=  54
+    single_op_formula     : pool=   0
+    simple_lookup         : pool=1195
+[3/5] Building OriginalStore over unique tables in dev split ...
+  OriginalStore size = 540
+[4/5] Loading VectorStore (BAAI/bge-large-en-v1.5, serializer=plain_markdown) ...
+Groq rate-limited, retrying in 1s (attempt 1)
+Groq rate-limited, retrying in 2s (attempt 2)
+Groq rate-limited, retrying in 4s (attempt 3)
+Groq rate-limited, retrying in 8s (attempt 4)
+  VectorStore size = 540
+[5/5] Loading LLM (groq:llama-3.3-70b-versatile) ...
+  Reader loaded in 0.0s
+[  1/48] multi_op_formula       src=reader     R1f=0 NM=0 sym=0 (3.0s) pred='Reasoning: To find the percentage points of total R&D that large companies accounted for, we need to calculate the total R&D intensity for large companies and compare it to the total R&D intensity'
+[  2/48] multi_op_formula       src=reader     R1f=1 NM=0 sym=0 (2.0s) pred='23.5%'
+[  3/48] multi_op_formula       src=reader     R1f=0 NM=0 sym=0 (25.0s) pred='16.8'
+[  4/48] multi_op_formula       src=symbolic   R1f=1 NM=0 sym=0 (-20.9s) pred='1'
+[  5/48] multi_op_formula       src=reader     R1f=1 NM=0 sym=0 (15.8s) pred='25.5, 14.2, 11.8'
+[  6/48] multi_op_formula       src=reader     R1f=1 NM=0 sym=0 (18.9s) pred='5.3, 6.4'
+[  7/48] multi_op_formula       src=reader     R1f=0 NM=0 sym=0 (9.8s) pred='Reasoning: To find the percentage of R&D expenditures accounted for by the 10 states with the highest levels of R&D expenditures, we first need to calculate the total R&D expenditures for these 10 states. Then, we compare this total to the overall total of $233 billion to find the percentage'
+[  8/48] multi_op_formula       src=reader     R1f=0 NM=0 sym=0 (22.4s) pred='31.29%'
+[  9/48] arithmetic_agg         src=symbolic   R1f=1 NM=0 sym=0 (4.7s) pred='26'
+[ 10/48] arithmetic_agg         src=reader     R1f=1 NM=0 sym=0 (4.0s) pred='2.27'
+[ 11/48] arithmetic_agg         src=reader     R1f=0 NM=0 sym=0 (22.5s) pred='47'
+[ 12/48] arithmetic_agg         src=reader     R1f=0 NM=0 sym=0 (47.7s) pred='N/A'
+[ 13/48] arithmetic_agg         src=reader     R1f=0 NM=1 sym=0 (0.1s) pred='1018/3182*100 = 32%'
+[ 14/48] arithmetic_agg         src=reader     R1f=0 NM=0 sym=0 (22.1s) pred='N/A'
+[ 15/48] arithmetic_agg         src=symbolic   R1f=1 NM=1 sym=1 (8.9s) pred='0.658'
+[ 16/48] arithmetic_agg         src=reader     R1f=0 NM=0 sym=0 (1.9s) pred='3.143'
+[ 17/48] pair_or_topk_arg       src=reader     R1f=1 NM=0 sym=0 (4.9s) pred='senior men living in couples'
+[ 18/48] pair_or_topk_arg       src=reader     R1f=1 NM=1 sym=0 (11.3s) pred='women'
+[ 19/48] pair_or_topk_arg       src=reader     R1f=1 NM=1 sym=0 (11.6s) pred='men'
+[ 20/48] pair_or_topk_arg       src=reader     R1f=1 NM=0 sym=0 (9.1s) pred='59.0'
+[ 21/48] pair_or_topk_arg       src=reader     R1f=1 NM=0 sym=0 (9.3s) pred='0.28'
+[ 22/48] pair_or_topk_arg       src=reader     R1f=1 NM=1 sym=0 (2.2s) pred='always uses helmet'
+[ 23/48] pair_or_topk_arg       src=reader     R1f=0 NM=0 sym=0 (16.3s) pred='N/A'
+[ 24/48] pair_or_topk_arg       src=reader     R1f=1 NM=1 sym=0 (11.8s) pred='asia or oceania'
+[ 25/48] single_arg             src=reader     R1f=1 NM=1 sym=0 (9.2s) pred='Quebec'
+[ 26/48] single_arg             src=reader     R1f=1 NM=0 sym=0 (4.8s) pred='137.0'
+[ 27/48] single_arg             src=reader     R1f=1 NM=0 sym=0 (4.6s) pred='0.7'
+[ 28/48] single_arg             src=reader     R1f=1 NM=1 sym=0 (8.1s) pred='in a restaurant or bar'
+[ 29/48] single_arg             src=reader     R1f=1 NM=0 sym=0 (8.4s) pred='23'
+[ 30/48] single_arg             src=reader     R1f=0 NM=0 sym=0 (8.7s) pred='N/A'
+[ 31/48] single_arg             src=reader     R1f=1 NM=0 sym=0 (32.0s) pred='Reasoning: To find the CMA with the greatest number of firearm-related homicides, we need to look at the values in column col[2] (firearm-related > number) for each CMA. The CMA with the highest value in this column will be the one with the greatest number of firearm-related homicides'
+[ 32/48] single_arg             src=reader     R1f=0 NM=0 sym=0 (-10.4s) pred='N/A'
+[ 33/48] comparison_or_count    src=reader     R1f=1 NM=1 sym=0 (5.8s) pred='46.1'
+[ 34/48] comparison_or_count    src=reader     R1f=1 NM=1 sym=0 (23.8s) pred='-19.0%'
+[ 35/48] comparison_or_count    src=reader     R1f=1 NM=1 sym=0 (4.9s) pred='0.9%'
+[ 36/48] comparison_or_count    src=reader     R1f=1 NM=1 sym=0 (23.9s) pred='-30.0'
+[ 37/48] comparison_or_count    src=symbolic   R1f=1 NM=1 sym=1 (7.9s) pred='-59'
+[ 38/48] comparison_or_count    src=symbolic   R1f=1 NM=1 sym=1 (8.7s) pred='-73'
+[ 39/48] comparison_or_count    src=reader     R1f=1 NM=1 sym=0 (3.7s) pred='women'
+[ 40/48] comparison_or_count    src=reader     R1f=0 NM=0 sym=0 (13.5s) pred='0'
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/run_eval.py", line 245, in <module>
+    main()
+  File "/home/user/T2-1/rag-agent/scripts/run_eval.py", line 156, in main
+    res = agent.run(q)
+          ^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/agent.py", line 186, in run
+    raw = self.llm.complete(_READER_SYSTEM, user, max_tokens=384)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/groq_llm.py", line 66, in complete
+    raise RuntimeError(f"Groq retries exhausted: {last_err}")
+RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97861, Requested 3162. Please try again in 14m43.872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}

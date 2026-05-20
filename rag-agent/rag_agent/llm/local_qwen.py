@@ -1,0 +1,67 @@
+"""Local HF model backend (default: Qwen2.5-7B-Instruct, 4-bit on CUDA).
+
+Reuses the loading/quantisation logic already validated in
+``hart-table-retrieval/sidecar_verifier/agent/answerer.py``. We keep it
+self-contained here so the new package does NOT depend on importing
+``sidecar_verifier``.
+"""
+from __future__ import annotations
+
+import logging
+from typing import Optional
+
+from .base import BaseLLM
+
+logger = logging.getLogger(__name__)
+
+
+class LocalQwenLLM(BaseLLM):
+    def __init__(
+        self,
+        model_name: str = "Qwen/Qwen2.5-7B-Instruct",
+        dtype: str = "bfloat16",
+        device: Optional[str] = None,
+        quantization: Optional[str] = "4bit",   # None | "4bit" | "8bit"
+        default_max_tokens: int = 256,
+    ) -> None:
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
+        self.name = f"local:{model_name}"
+        self.model_name = model_name
+        self.default_max_tokens = default_max_tokens
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        torch_dtype = getattr(torch, dtype) if isinstance(dtype, str) else dtype
+
+        load_kwargs = {"torch_dtype": torch_dtype, "device_map": "auto", "low_cpu_mem_usage": True}
+        if quantization in {"4bit", "8bit"} and self.device == "cuda":
+            from transformers import BitsAndBytesConfig
+            if quantization == "4bit":
+                load_kwargs["quantization_config"] = BitsAndBytesConfig(
+                    load_in_4bit=True, bnb_4bit_compute_dtype=torch_dtype,
+                    bnb_4bit_use_double_quant=True, bnb_4bit_quant_type="nf4",
+                )
+            else:
+                load_kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
+        self.model.eval()
+        self._torch = torch
+        logger.info("LocalQwenLLM loaded %s on %s (quant=%s)", model_name, self.device, quantization)
+
+    def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
+        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        prompt = self.tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
+        )
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        with self._torch.inference_mode():
+            out = self.model.generate(
+                **inputs,
+                max_new_tokens=max_tokens or self.default_max_tokens,
+                do_sample=False,
+                pad_token_id=self.tokenizer.eos_token_id,
+            )
+        gen = out[0, inputs["input_ids"].shape[1]:]
+        return self.tokenizer.decode(gen, skip_special_tokens=True).strip()
