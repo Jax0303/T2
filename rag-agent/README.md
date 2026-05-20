@@ -4,6 +4,21 @@ Adaptive table-RAG agent for hard HiTab queries (formulas / functions from
 the paper appendix). Original parsed-2D store and Chroma vector store are
 kept **separate** — the agent compares the two at verify time.
 
+📊 **Detailed experiment report**: [`EXPERIMENTS.md`](EXPERIMENTS.md) — full
+methodology, every bug found in audit, and v1→v2→v3 result progression.
+
+Final headline (HiTab dev, 40 hard queries, Qwen-2.5-7B-Instruct 4-bit reader):
+
+| Metric | Vector only | **After verifier** |
+|---|---:|---:|
+| R@1 | 0.575 | **0.675** (+10 pp) |
+| R@5 | — | **0.875** |
+| MRR | — | 0.759 |
+| nDCG@10 | — | 0.789 |
+| Answer NM | — | **0.450** (existing bench: 0.250) |
+| Symbolic exec acc (comparison class) | — | **0.375** |
+
+
 ## Stage flow
 
 ```

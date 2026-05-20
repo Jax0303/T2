@@ -41,9 +41,15 @@ class QueryIntent:
 
 _ARG_PAT = re.compile(
     r"\b(highest|lowest|largest|smallest|maximum|minimum|most|least|biggest|"
-    r"top|bottom|best|worst|peak)\b", re.IGNORECASE
+    r"top|bottom|best|worst|peak|higher|lower|more|fewer|greater)\b", re.IGNORECASE
 )
 _PAIR_PAT = re.compile(r"\b(which|who|or)\b.*\b(or)\b", re.IGNORECASE)
+# Entity-answer cue: questions starting with "who/which X" usually want a name,
+# not a number — even when an arithmetic noun appears later. Catches the
+# "who had a higher proportion of ..." class that was being misrouted.
+_ENTITY_QUESTION_PAT = re.compile(
+    r"^\s*(?:who|which|what|where|in what|in which)\b", re.IGNORECASE
+)
 _CMP_PAT = re.compile(
     r"\b(greater|less|more|fewer|higher|lower|exceed|exceeds|exceeded|"
     r"bigger|smaller|above|below|than|compared|opposite|sign)\b", re.IGNORECASE
@@ -97,6 +103,12 @@ def classify_query(q: str) -> QueryIntent:
     if len(set(s.lower() for s in arith_hits)) >= 2 or _MULTI_PAT.search(q):
         sig.append("multi-op")
         return QueryIntent(QueryType.MULTI_OP_FORMULA, True, True, sig)
+
+    # Entity-cue questions ("who/which had higher proportion") want a name back,
+    # not a computed value — route to single_arg even if an arithmetic noun appears.
+    if _ENTITY_QUESTION_PAT.match(q) and (_ARG_PAT.search(q) or _PAIR_PAT.search(q)):
+        sig.append("entity-question")
+        return QueryIntent(QueryType.SINGLE_ARG, True, False, sig)
 
     if _ARITH_PAT.search(q) or _TOTAL_AGG_PAT.search(q):
         sig.append("arith")

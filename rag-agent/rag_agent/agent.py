@@ -161,14 +161,23 @@ class RAGAgent:
         if Stage.SYMBOLIC in plan.stages and top_table is not None:
             plan_obj = extract_plan(self.symbolic_llm, query, top_table)
             sym = evaluate_plan(plan_obj, top_table)
+            # Gate: only adopt symbolic answer when (a) eval succeeded AND
+            # (b) the expression is non-trivial (≥2 operators OR multi-cell).
+            # Otherwise let the reader speak — this avoids the case where a
+            # spurious x1-x2 displaces a correct name-answer from the reader.
+            op_count = sum(ch in "+-*/" for ch in plan_obj.expression)
+            non_trivial = op_count >= 1 and len(plan_obj.cells) >= 2
+            multi_op = op_count >= 2
+            adopt = sym.ok and (multi_op or (intent.qtype == QueryType.ARITHMETIC_AGG and non_trivial))
             out.symbolic = {
                 "extracted_cells": [c.__dict__ for c in plan_obj.cells],
                 "extracted_expression": plan_obj.expression,
                 "raw_llm_output": plan_obj.raw_llm_output[:800],
                 "parse_ok": plan_obj.parse_ok,
+                "op_count": op_count, "adopted": adopt,
                 **sym.to_dict(),
             }
-            if sym.ok:
+            if adopt:
                 out.answer = _format_symbolic_answer(sym.value)
                 out.source = "symbolic"
 

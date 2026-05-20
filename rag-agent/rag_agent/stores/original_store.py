@@ -123,22 +123,35 @@ class OriginalTable:
 
     # ---- header-path lookup (the inference-time symbolic path uses this) ----
 
+    def _match_path(self, query: str, path: list) -> bool:
+        """Robust path match.
+
+        ``query`` can be a full path with any separator (' > ', ' :: ', '/'),
+        a single leaf, or a substring. Match if EVERY token in the query
+        (after splitting on common separators) appears as a substring of
+        the joined actual path.
+        """
+        if not path:
+            return False
+        actual = " :: ".join(str(s) for s in path).lower()
+        q = query.lower().strip()
+        # split on common header separators
+        tokens = [t.strip() for t in re.split(r"\s*(?:::|>|/|\|)\s*", q) if t.strip()]
+        if not tokens:
+            return False
+        return all(t in actual for t in tokens)
+
     def find_cols_by_header(self, token: str) -> List[int]:
-        """Return col indices whose top path contains ``token`` (case-insensitive substring)."""
-        token_l = token.lower().strip()
         hits = []
         for c in range(self.n_cols):
-            path = " :: ".join(self.col_path(c)).lower()
-            if token_l in path:
+            if self._match_path(token, self.col_path(c)):
                 hits.append(c)
         return hits
 
     def find_rows_by_header(self, token: str) -> List[int]:
-        token_l = token.lower().strip()
         hits = []
         for r in range(self.n_rows):
-            path = " :: ".join(self.row_path(r)).lower()
-            if token_l in path:
+            if self._match_path(token, self.row_path(r)):
                 hits.append(r)
         return hits
 
