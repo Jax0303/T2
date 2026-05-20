@@ -429,14 +429,54 @@ This is the lab-meeting takeaway:
 
 ---
 
-## Repository layout (thesis sections)
+## Repository layout
 
-| Thesis § | Module | What it does |
-|---|---|---|
-| §3 Serialization audit | `experiments/exp01_serialization_audit.py` | 5 serializers × 4 structural metrics on HiTab |
-| §4 Layer-wise probing | `experiments/exp02_layer_probing.py` | Linear/MLP probes across 12 transformer layers |
-| §5 HART table retrieval | `hart-table-retrieval/` | Serializer × embedder × header-alignment ablation. Negative result (HART scorer ≤ plain markdown). |
-| **§6 Adaptive Table-RAG agent (this work)** | **`rag-agent/`** | **Routing policy + verifier + symbolic compute. NM 0.250 → 0.450.** |
+The repo is now a single package — earlier exploratory thesis modules
+(§3 serialization audit, §4 layer probing, §5 HART retrieval) have been
+removed; only the negative-result motivation for §5 is preserved here in
+the README and the Sidecar+CoT baseline JSON (`rag-agent/results/
+baselines/sidecar_cot_baseline.json`) is kept for the head-to-head
+comparison.
+
+```
+.
+├── README.md                                      this file
+├── rag-agent/
+│   ├── README.md                                  package overview
+│   ├── EXPERIMENTS.md                             full experiment report
+│   ├── 발표스크립트.md                              Korean lab-meeting talk script
+│   ├── pyproject.toml
+│   ├── rag_agent/
+│   │   ├── agent.py                               5-stage orchestrator
+│   │   ├── data/loader.py                         HiTab JSON loader
+│   │   ├── stores/                                OriginalStore + VectorStore
+│   │   ├── router/                                query classifier + stage policy
+│   │   ├── retrieve/verifier.py                   keyword + numeric overlap rerank
+│   │   ├── extract/                               JSON cell extractor + safe AST eval
+│   │   ├── llm/                                   Groq + local Qwen backends
+│   │   └── eval/metrics.py                        R@k, MRR, nDCG, EM, NM
+│   ├── scripts/
+│   │   ├── run_eval.py                            benchmark entry point
+│   │   ├── smoke_test.py                          offline pipeline smoke
+│   │   ├── bootstrap_ci.py                        95 % CI on the headline metrics
+│   │   └── aggregate_runs.py                      compare runs side-by-side
+│   └── results/
+│       ├── baselines/sidecar_cot_baseline.json    prior bench (NM = 0.250)
+│       ├── local_qwen7b{,_v2,_v3}.json            run-by-run progression
+│       ├── qwen7b_v3.1_resolverfix.json           final (NM 0.475)
+│       ├── qwen7b_ablation_noverify.json          verifier OFF
+│       ├── qwen7b_seed{1,2}.json                  multi-seed stability
+│       ├── qwen7b_groq70b_extractor.json          stronger extractor
+│       └── groq_llama3.1_8b.json                  Groq free-tier baseline
+└── .gitignore
+```
+
+**Earlier negative result (still relevant context):**
+The previous HART pipeline tried to *blend* the vector cosine score and a
+header-alignment score with a single α weight. On HiTab dev it never beat
+plain markdown serialization on R@1 / nDCG / MRR — that negative finding
+motivated this work, which keeps the two stores fully separate and routes
+queries through different stages instead of blending.
 
 ---
 
@@ -444,29 +484,40 @@ This is the lab-meeting takeaway:
 
 Hardware tested on: RTX 3060 Ti (8 GB VRAM), WSL2 Ubuntu, Python 3.12.
 
-```bash
-# 1. Data: HiTab dev + an existing Chroma index built by the HART pipeline.
-#    Expected layout (re-used by rag-agent):
-#      /home/user/T2/hart-table-retrieval/data/hitab/
-#      /home/user/T2/hart-table-retrieval/data/chroma_db/
+Data is not vendored. You need:
 
-# 2. Run the local Qwen-7B benchmark (no API key needed)
+- HiTab dev split (`microsoft/HiTab`) extracted somewhere on disk.
+- A Chroma collection containing one vector per table (the package will
+  re-use an existing collection named `plain_markdown_bge_large_en_v1_5`;
+  build your own with any `sentence-transformers` model and serializer).
+
+```bash
+# install
+pip install -e rag-agent/
+
+# local Qwen-7B (no API key needed; needs ~5 GB VRAM)
 python rag-agent/scripts/run_eval.py \
     --llm local:Qwen/Qwen2.5-7B-Instruct \
+    --data-dir   /path/to/HiTab/data/hitab \
+    --chroma-dir /path/to/chroma_db \
     --per-class 8 --limit 40 \
     --retriever-device cpu \
     --out rag-agent/results/local_qwen7b_v3.json
 
-# 3. Or run the Groq free-tier comparison
+# Groq free-tier
 GROQ_API_KEY=...  python rag-agent/scripts/run_eval.py \
     --llm groq:llama-3.1-8b-instant \
+    --data-dir   /path/to/HiTab/data/hitab \
+    --chroma-dir /path/to/chroma_db \
     --per-class 8 --limit 40 \
     --out rag-agent/results/groq_llama3.1_8b.json
 
-# 4. Strongest config (Qwen reads, Groq-70B extracts) — recommended if TPD allows:
+# strongest config — Qwen reads, Groq-70B extracts cells
 GROQ_API_KEY=...  python rag-agent/scripts/run_eval.py \
     --llm local:Qwen/Qwen2.5-7B-Instruct \
     --symbolic-llm groq:llama-3.3-70b-versatile \
+    --data-dir   /path/to/HiTab/data/hitab \
+    --chroma-dir /path/to/chroma_db \
     --per-class 8 --limit 40 --retriever-device cpu \
     --out rag-agent/results/mixed.json
 ```
@@ -483,9 +534,8 @@ numbers above can be re-derived from those traces.
 - [`rag-agent/README.md`](rag-agent/README.md) — package overview
 - [`rag-agent/EXPERIMENTS.md`](rag-agent/EXPERIMENTS.md) — full experiment
   report: hardware, software, every metric with paper citation,
-  v1 → v2 → v3 run-by-run progression, limitations.
-- [`hart-table-retrieval/README.md`](hart-table-retrieval/README.md) —
-  the §5 HART pipeline whose negative result motivated this work.
+  v1 → v3.1 run-by-run progression, the four audit-bug fixes, and the
+  multi-seed / ablation / 70B-extractor / CI tables.
 
 ---
 

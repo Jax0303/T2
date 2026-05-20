@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: MIT
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rag-agent"
+version = "0.3.1"
+description = "Adaptive table-RAG agent over HiTab — routing between a vector index and the original 2-D structure."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Jax0303" }]
+dependencies = [
+    "pandas>=2.2,<3",
+    "numpy>=1.26,<3",
+    "torch>=2.3",
+    "transformers>=4.40",
+    "bitsandbytes>=0.43",
+    "sentence-transformers>=3.0",
+    "chromadb>=0.5",
+    "groq>=0.9",
+    "tabulate>=0.9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["rag_agent"]

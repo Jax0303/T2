@@ -63,24 +63,30 @@ We use the per-question supervision (`aggregation`, `answer_formulas`)
 only for difficulty stratification and gold-answer scoring — the agent
 itself never sees these fields.
 
-Data layout (re-using the existing HART data dir):
+Data layout expected (pass via `--data-dir` and `--chroma-dir`):
 
 ```
-/home/user/T2/hart-table-retrieval/
-├── data/hitab/data/
+<data-dir>/
+├── data/
 │   ├── dev_samples.jsonl
 │   └── tables/{hmt,raw}/*.json
-└── data/chroma_db/                    bge-large + multilingual-e5 indexes
+
+<chroma-dir>/                            persistent Chroma directory with
+                                         one collection named e.g.
+                                         plain_markdown_bge_large_en_v1_5
+                                         (540 docs, one vector per table)
 ```
 
-The Chroma collection used here is `plain_markdown_bge_large_en_v1_5`
-(540 docs, one per table). It was built by the HART indexing script
-and is reused as-is — no re-embedding for this experiment.
+The Chroma collection used in this report is
+`plain_markdown_bge_large_en_v1_5` (540 docs, one per table); it can be
+built with any `sentence-transformers` model and serializer.
 
 ### Query stratification
 
-We use the same difficulty taxonomy as `hart-table-retrieval/scripts/
-run_hard_query_eval.py`, derived directly from HiTab's gold supervision:
+We use the difficulty taxonomy derived from HiTab's gold supervision
+(`aggregation` array + `answer_formulas` operator count). The same
+taxonomy was used by the prior Sidecar+CoT baseline kept at
+`rag-agent/results/baselines/sidecar_cot_baseline.json`:
 
 | Class | Population in dev | What it tests |
 |---|---:|---|
@@ -569,24 +575,22 @@ two-sided. With n=40 this is the most we can claim.
 ## 9. Reproducing
 
 ```bash
-# 0. expects /home/user/T2/hart-table-retrieval/{data/hitab, data/chroma_db} present
+# 0. expects HiTab dev + a Chroma table-level index built ahead of time
 # 1. local Qwen-7B run (no API key needed):
-/home/user/T2/hart-table-retrieval/.venv/bin/python rag-agent/scripts/run_eval.py \
+python rag-agent/scripts/run_eval.py \
     --llm local:Qwen/Qwen2.5-7B-Instruct \
     --per-class 8 --limit 40 \
     --retriever-device cpu \
     --out rag-agent/results/local_qwen7b_v3.json
 
 # 2. Groq Llama-3.1-8B run (free tier):
-GROQ_API_KEY=... /home/user/T2/hart-table-retrieval/.venv/bin/python \
-    rag-agent/scripts/run_eval.py \
+GROQ_API_KEY=... python rag-agent/scripts/run_eval.py \
     --llm groq:llama-3.1-8b-instant \
     --per-class 8 --limit 40 \
     --out rag-agent/results/groq_llama3.1_8b.json
 
 # 3. mixed: Qwen as reader, 70B Groq as cell-extractor (recommended if TPD allows):
-GROQ_API_KEY=... /home/user/T2/hart-table-retrieval/.venv/bin/python \
-    rag-agent/scripts/run_eval.py \
+GROQ_API_KEY=... python rag-agent/scripts/run_eval.py \
     --llm local:Qwen/Qwen2.5-7B-Instruct \
     --symbolic-llm groq:llama-3.3-70b-versatile \
     --per-class 8 --limit 40 \

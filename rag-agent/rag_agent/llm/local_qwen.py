@@ -1,9 +1,6 @@
 """Local HF model backend (default: Qwen2.5-7B-Instruct, 4-bit on CUDA).
 
-Reuses the loading/quantisation logic already validated in
-``hart-table-retrieval/sidecar_verifier/agent/answerer.py``. We keep it
-self-contained here so the new package does NOT depend on importing
-``sidecar_verifier``.
+Self-contained loader (no external package imports).
 """
 from __future__ import annotations
 

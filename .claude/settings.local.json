@@ -3,7 +3,20 @@
     "allow": [
       "Bash(pip install *)",
       "Bash(unzip -q -o tables.zip -d ./tables)",
-      "Bash(python3 -c \"import json, sys; d=json.loads\\(sys.stdin.read\\(\\)\\); print\\('Keys:', list\\(d.keys\\(\\)\\)\\); print\\(json.dumps\\(d, indent=2\\)[:1500]\\)\")"
+      "Bash(python3 -c \"import json, sys; d=json.loads\\(sys.stdin.read\\(\\)\\); print\\('Keys:', list\\(d.keys\\(\\)\\)\\); print\\(json.dumps\\(d, indent=2\\)[:1500]\\)\")",
+      "Bash(/home/user/T2/hart-table-retrieval/.venv/bin/python -c ' *)",
+      "Bash(/home/user/T2/hart-table-retrieval/.venv/bin/python rag-agent/scripts/run_eval.py --llm local:Qwen/Qwen2.5-7B-Instruct --per-class 8 --limit 40 --retriever-device cpu --out rag-agent/results/local_qwen7b_v2.json)",
+      "Bash(tee rag-agent/results/qwen_v2_run.log)",
+      "Bash(/home/user/T2/hart-table-retrieval/.venv/bin/python *)",
+      "Bash(tee rag-agent/results/qwen_v3_run.log)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(mkdir -p rag-agent/rag_agent/data rag-agent/results/baselines)",
+      "Bash(cp hart-table-retrieval/src/data/loader.py rag-agent/rag_agent/data/loader.py)",
+      "Bash(touch rag-agent/rag_agent/data/__init__.py)",
+      "Bash(cp hart-table-retrieval/results/hard_query_eval_cot.json rag-agent/results/baselines/sidecar_cot_baseline.json)",
+      "Bash(git rm *)"
     ]
   }
 }

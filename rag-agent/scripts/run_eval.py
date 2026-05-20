@@ -7,15 +7,13 @@ Reports paper-aligned metrics:
   - Symbolic execution accuracy (arithmetic classes only)
   - Per-difficulty-class breakdown matching HiTab paper's appendix.
 
-Reuses the existing HiTab loader from ``hart-table-retrieval/src/data/loader.py``.
-
 Usage examples:
-  python scripts/run_eval.py --llm groq:llama-3.3-70b-versatile --per-class 8
-  python scripts/run_eval.py --llm local:Qwen/Qwen2.5-7B-Instruct --per-class 8
-  python scripts/run_eval.py --llm groq:llama-3.3-70b-versatile \\
-      --symbolic-llm local:Qwen/Qwen2.5-7B-Instruct --per-class 8
+  python scripts/run_eval.py --llm groq:llama-3.3-70b-versatile --per-class 8 \\
+      --data-dir /path/to/HiTab --chroma-dir /path/to/chroma_db
+  python scripts/run_eval.py --llm local:Qwen/Qwen2.5-7B-Instruct --per-class 8 \\
+      --data-dir /path/to/HiTab --chroma-dir /path/to/chroma_db
 
-By default points at /home/user/T2/hart-table-retrieval/{data/hitab, data/chroma_db}.
+You must supply --data-dir and --chroma-dir (no defaults).
 """
 from __future__ import annotations
 
@@ -28,14 +26,11 @@ import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
-# Make the hart-table-retrieval loader importable (used for parsing HiTab JSON).
 THIS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = THIS_DIR.parent.parent
-HART_DIR = REPO_ROOT / "hart-table-retrieval"
 sys.path.insert(0, str(REPO_ROOT / "rag-agent"))
-sys.path.insert(0, str(HART_DIR))
 
-from src.data.loader import (  # noqa: E402 (relies on sys.path mutation above)
+from rag_agent.data.loader import (  # noqa: E402
     get_answer, get_query_from_sample, get_table_from_sample, get_table_id, load_hitab,
 )
 from rag_agent.agent import RAGAgent  # noqa: E402
@@ -65,8 +60,10 @@ def stratified_hard_subset(samples, per_class: int, seed: int = 0):
 
 def build_arg_parser():
     p = argparse.ArgumentParser()
-    p.add_argument("--data-dir", default="/home/user/T2/hart-table-retrieval/data/hitab")
-    p.add_argument("--chroma-dir", default="/home/user/T2/hart-table-retrieval/data/chroma_db")
+    p.add_argument("--data-dir", required=True,
+                   help="HiTab data root (contains data/{dev_samples.jsonl,tables/}).")
+    p.add_argument("--chroma-dir", required=True,
+                   help="Chroma persistent dir with the table-level embeddings.")
     p.add_argument("--embedder", default="BAAI/bge-large-en-v1.5")
     p.add_argument("--serializer", default="plain_markdown")
     p.add_argument("--retriever-device", default=None,

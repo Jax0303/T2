@@ -29,7 +29,7 @@ Difficulty stratification
 -------------------------
   ``difficulty_class(sample)`` mirrors the HiTab paper's appendix tags
   (aggregation array + Excel formula op count). Kept here so the eval
-  harness does not need to import from hart-table-retrieval/.
+  harness is self-contained.
 """
 from __future__ import annotations
 

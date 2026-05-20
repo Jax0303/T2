@@ -90,18 +90,18 @@ Per-difficulty-class breakdown matches the existing `run_hard_query_eval.py`:
 
 ## Quickstart
 
-Assumes the data and Chroma index already exist (re-using
-`hart-table-retrieval/data/{hitab,chroma_db}`).
+Assumes the HiTab data and a Chroma index exist somewhere on disk —
+paths are passed in via `--data-dir` / `--chroma-dir` (no defaults).
 
 ```bash
 # from /home/user/T2-1 with the existing T2 venv:
-GROQ_API_KEY=... /home/user/T2/hart-table-retrieval/.venv/bin/python \
+GROQ_API_KEY=... python \
   rag-agent/scripts/run_eval.py \
   --llm groq:llama-3.3-70b-versatile \
   --per-class 8 --out rag-agent/results/groq_70b.json
 
 # Local-only (no API):
-/home/user/T2/hart-table-retrieval/.venv/bin/python \
+python \
   rag-agent/scripts/run_eval.py \
   --llm local:Qwen/Qwen2.5-7B-Instruct \
   --retriever-device cpu \

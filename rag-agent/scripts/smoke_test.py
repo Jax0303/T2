@@ -16,9 +16,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "rag-agent"))
-sys.path.insert(0, str(ROOT / "hart-table-retrieval"))
 
-from src.data.loader import (  # noqa: E402
+from rag_agent.data.loader import (  # noqa: E402
     get_answer, get_query_from_sample, get_table_from_sample, get_table_id, load_hitab,
 )
 from rag_agent.agent import RAGAgent  # noqa: E402
@@ -37,8 +36,8 @@ class StubLLM(BaseLLM):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--data-dir", default="/home/user/T2/hart-table-retrieval/data/hitab")
-    p.add_argument("--chroma-dir", default="/home/user/T2/hart-table-retrieval/data/chroma_db")
+    p.add_argument("--data-dir", required=True)
+    p.add_argument("--chroma-dir", required=True)
     p.add_argument("--device", default="cpu")
     p.add_argument("--n-per-class", type=int, default=2)
     args = p.parse_args()
