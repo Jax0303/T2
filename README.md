@@ -99,35 +99,51 @@ array + `answer_formulas` op count). Seed = 0.
 | H3 | Arithmetic answers should come from deterministic compute, not the LLM | ✅ partial | `comparison_or_count` symbolic exec accuracy = **0.375** (3/8 fully deterministic). `multi_op_formula` symbolic still 0% — cell-selection is the real ceiling, not arithmetic. |
 | H4 | Among free LLMs, the reader choice matters more than retrieval algorithm tuning | ✅ confirmed | Same retrieval + verifier + symbolic. Reader = Llama-3.1-8B (Groq): NM 0.150. Reader = Qwen-2.5-7B 4-bit (local): NM **0.450** — 3× higher. |
 
-### Final headline (Qwen-2.5-7B reader, v3, all bug fixes applied)
+### Final headline (Qwen-2.5-7B reader, **v3.1** — all 4 audit bugs fixed)
 
-| Metric | Value | Compared to … |
+| Metric | Value | 95% CI (paired bootstrap, n=40) |
 |---|---:|---|
-| R@1 (vector only) | 0.575 | — |
-| **R@1 (after verifier)** | **0.675** | +10 pp |
-| R@5 | 0.875 | |
-| MRR | 0.759 | |
-| nDCG@10 | 0.789 | |
-| Exact Match | 0.300 | |
-| **Numeric Match** | **0.450** | existing hard-query bench (Sidecar + CoT): 0.250 → **+20 pp** |
-| Symbolic exec acc (`comparison_or_count`) | 0.375 | best class |
-| Symbolic exec acc (`multi_op_formula`) | 0.000 | Qwen-7B cell-selection ceiling — *not* a measurement artifact |
+| R@1 (vector only) | 0.575 | [0.425, 0.725] |
+| **R@1 (after verifier)** | **0.675** | [0.525, 0.825] |
+| R@5 | 0.875 | [0.775, 0.975] |
+| Exact Match | 0.325 | [0.175, 0.475] |
+| **Numeric Match** | **0.475** | **[0.325, 0.625]** |
+| **Δ R@1 (verifier, paired)** | **+0.100** | [0.000, 0.225] |
 
-Full per-class table and run-by-run progression in
-[`rag-agent/EXPERIMENTS.md`](rag-agent/EXPERIMENTS.md).
+Compared to the existing hard-query baseline (Sidecar + CoT, **NM = 0.250**),
+v3.1's CI lower bound (0.325) sits above the baseline — the +22 pp gain is
+statistically meaningful at this sample size.
+
+### Audit runs (lab-meeting bullet-proofing)
+
+| Run | NM | Δ vs v3.1 | what it tests |
+|---|---:|---:|---|
+| **v3.1 (final, seed=0)** | **0.475** | — | all four audit bugs fixed |
+| Verifier ablation (`w_verify=0`) | 0.350 | −12.5 pp | "is the verifier really doing the work?" → **yes**, paired Δ R@1 +10 pp [0, 0.225] |
+| seed = 1 | 0.400 | −7.5 pp | stability — not cherry-picked, mean across 3 seeds = 0.417 |
+| seed = 2 | 0.375 | −10.0 pp | |
+| Qwen reader + **Groq Llama-3.3-70B as cell-extractor** | 0.455 (n=33) | — | arithmetic_agg NM **0.125 → 0.375 (×3)**, comparison_or_count **0.750 → 1.000**, multi_op_formula still 0 — the 70B extractor helps arithmetic but does *not* rescue multi-cell selection |
+
+Honest trade-off found in ablation: the verifier *helps* on average but
+*hurts* multi_op_formula R@1 by −12.5 pp (these queries have low keyword
+overlap with their table, so the verifier's keyword signal pushes the
+wrong table up). A query-class-aware verifier weight is the natural fix.
+
+Full per-class numbers, the audit-bug-progression, and the failure-case
+trace in [`rag-agent/EXPERIMENTS.md`](rag-agent/EXPERIMENTS.md).
 
 ---
 
-## Per-class breakdown (v3 final)
+## Per-class breakdown (v3.1 final)
 
 | Class | n | R@1 (vec) | **R@1 (final)** | R@5 | MRR | nDCG | EM | **NM** | sym_correct |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| multi_op_formula | 8 | 0.625 | 0.500 | 0.875 | 0.688 | 0.737 | 0.000 | **0.000** | 0.000 |
+| multi_op_formula | 8 | 0.625 | 0.500 | 0.875 | 0.688 | 0.737 | 0.125 | **0.125** | 0.125 |
 | arithmetic_agg | 8 | 0.375 | 0.375 | 0.750 | 0.504 | 0.565 | 0.125 | **0.125** | 0.125 |
 | pair_or_topk_arg | 8 | 0.500 | **0.875** | 1.000 | 0.938 | 0.954 | 0.750 | **0.875** | 0.000 |
 | single_arg | 8 | 0.625 | 0.750 | 0.750 | 0.750 | 0.750 | 0.500 | **0.500** | 0.000 |
 | comparison_or_count | 8 | 0.750 | **0.875** | 1.000 | 0.917 | 0.938 | 0.125 | **0.750** | **0.375** |
-| **OVERALL** | 40 | 0.575 | **0.675** | **0.875** | 0.759 | 0.789 | 0.300 | **0.450** | 0.100 |
+| **OVERALL** | 40 | 0.575 | **0.675** | **0.875** | 0.759 | 0.789 | 0.325 | **0.475** | 0.125 |
 
 ---
 

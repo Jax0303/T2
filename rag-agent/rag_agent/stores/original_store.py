@@ -128,18 +128,24 @@ class OriginalTable:
 
         ``query`` can be a full path with any separator (' > ', ' :: ', '/'),
         a single leaf, or a substring. Match if EVERY token in the query
-        (after splitting on common separators) appears as a substring of
-        the joined actual path.
+        (after splitting on common separators) appears as a **word-bounded**
+        substring of the joined actual path. Word boundaries prevent
+        "east asia" from matching the row "southeast asia".
         """
         if not path:
             return False
         actual = " :: ".join(str(s) for s in path).lower()
         q = query.lower().strip()
-        # split on common header separators
         tokens = [t.strip() for t in re.split(r"\s*(?:::|>|/|\|)\s*", q) if t.strip()]
         if not tokens:
             return False
-        return all(t in actual for t in tokens)
+        for t in tokens:
+            # Word-boundary search; falls back to plain substring if the token
+            # contains regex-unfriendly characters that re.escape doesn't help.
+            pat = r"(?<![A-Za-z0-9])" + re.escape(t) + r"(?![A-Za-z0-9])"
+            if not re.search(pat, actual):
+                return False
+        return True
 
     def find_cols_by_header(self, token: str) -> List[int]:
         hits = []

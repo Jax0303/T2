@@ -1,0 +1,2516 @@
+{
+  "config": {
+    "data_dir": "/home/user/T2/hart-table-retrieval/data/hitab",
+    "chroma_dir": "/home/user/T2/hart-table-retrieval/data/chroma_db",
+    "embedder": "BAAI/bge-large-en-v1.5",
+    "serializer": "plain_markdown",
+    "retriever_device": "cpu",
+    "llm": "local:Qwen/Qwen2.5-7B-Instruct",
+    "symbolic_llm": null,
+    "per_class": 8,
+    "top_k_vectors": 20,
+    "top_k_tables": 5,
+    "w_vector": 0.7,
+    "w_verify": 0.3,
+    "seed": 2,
+    "out": "rag-agent/results/qwen7b_seed2.json",
+    "limit": 40
+  },
+  "class_populations": {
+    "multi_op_formula": 37,
+    "arithmetic_agg": 139,
+    "pair_or_topk_arg": 153,
+    "single_arg": 93,
+    "comparison_or_count": 54,
+    "single_op_formula": 0,
+    "simple_lookup": 1195
+  },
+  "per_class": {
+    "multi_op_formula": {
+      "n": 8,
+      "R@1_vec": 4,
+      "R@1_final": 4,
+      "R@5_final": 7,
+      "MRR_final": 5.166666666666667,
+      "nDCG@10": 5.630929753571458,
+      "EM": 0,
+      "NM": 0,
+      "symbolic_attempted": 4,
+      "symbolic_correct": 0,
+      "from_symbolic": 4,
+      "elapsed": 67.90547370910645
+    },
+    "arithmetic_agg": {
+      "n": 8,
+      "R@1_vec": 4,
+      "R@1_final": 5,
+      "R@5_final": 8,
+      "MRR_final": 6.5,
+      "nDCG@10": 6.892789260714373,
+      "EM": 1,
+      "NM": 1,
+      "symbolic_attempted": 4,
+      "symbolic_correct": 1,
+      "from_symbolic": 3,
+      "elapsed": 72.19225406646729
+    },
+    "pair_or_topk_arg": {
+      "n": 8,
+      "R@1_vec": 8,
+      "R@1_final": 8,
+      "R@5_final": 8,
+      "MRR_final": 8.0,
+      "nDCG@10": 8.0,
+      "EM": 3,
+      "NM": 6,
+      "symbolic_attempted": 0,
+      "symbolic_correct": 0,
+      "from_symbolic": 0,
+      "elapsed": 55.93692994117737
+    },
+    "single_arg": {
+      "n": 8,
+      "R@1_vec": 5,
+      "R@1_final": 7,
+      "R@5_final": 7,
+      "MRR_final": 7.0,
+      "nDCG@10": 7.0,
+      "EM": 5,
+      "NM": 5,
+      "symbolic_attempted": 0,
+      "symbolic_correct": 0,
+      "from_symbolic": 0,
+      "elapsed": 48.851903676986694
+    },
+    "comparison_or_count": {
+      "n": 8,
+      "R@1_vec": 3,
+      "R@1_final": 6,
+      "R@5_final": 7,
+      "MRR_final": 6.333333333333334,
+      "nDCG@10": 6.5,
+      "EM": 1,
+      "NM": 3,
+      "symbolic_attempted": 6,
+      "symbolic_correct": 3,
+      "from_symbolic": 1,
+      "elapsed": 66.32334518432617
+    }
+  },
+  "overall": {
+    "n": 40,
+    "R@1_vec": 24,
+    "R@1_final": 30,
+    "R@5_final": 37,
+    "MRR_final": 33.0,
+    "nDCG@10": 34.02371901428583,
+    "EM": 10,
+    "NM": 15,
+    "symbolic_attempted": 14,
+    "symbolic_correct": 4,
+    "from_symbolic": 8,
+    "elapsed": 311.20990657806396
+  },
+  "rows": [
+    {
+      "class": "multi_op_formula",
+      "query": "according to the proposed 2018-base mbm, how many percent of the poverty rate has declined from 2015 to 2018?",
+      "gold_table": "675",
+      "gold_answer": [
+        3.5
+      ],
+      "gold_formula": "=-(I7-F7)",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "675",
+        "1520",
+        "954",
+        "2358",
+        "2354"
+      ],
+      "final_top": [
+        "675",
+        "954",
+        "1520",
+        "2358",
+        "2354"
+      ],
+      "answer": "0",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 0.0,
+      "symbolic_expr": "(x1 - x2) / x2 * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "percent > geography > manitoba",
+          "col_header": "2018-base > 2018",
+          "row": 8,
+          "col": 4,
+          "value": 14.0,
+          "raw": 14.0
+        },
+        {
+          "var": "x2",
+          "row_header": "percent > geography > manitoba",
+          "col_header": "2018-base > 2015",
+          "row": 8,
+          "col": 4,
+          "value": 14.0,
+          "raw": 14.0
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 7.6
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "how many percentage points did medium-sized companies (50-249 employees) account for?",
+      "gold_table": "103_54_nsf19316-tab001",
+      "gold_answer": [
+        0.070572
+      ],
+      "gold_formula": "=(I12+I13)/I5",
+      "intent": {
+        "qtype": "multi_op_formula",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "math-symbols"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "multi_op_formula: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "495",
+        "2320",
+        "103_54_nsf19316-tab001",
+        "36_155_tab3",
+        "1725"
+      ],
+      "final_top": [
+        "2320",
+        "103_54_nsf19316-tab001",
+        "1725",
+        "495",
+        "36_155_tab3"
+      ],
+      "answer": "N/A",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "",
+      "symbolic_resolved_cells": [],
+      "symbolic_error": "empty_or_unparsed_plan",
+      "reader_raw": "Final answer: N/A",
+      "elapsed_s": 26.19
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "according to the 2014/2015 integrated criminal court survey, what was the percentage of females in the completed court cases?",
+      "gold_table": "345",
+      "gold_answer": [
+        0.185533
+      ],
+      "gold_formula": "=(B6+G6)/L6",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2540",
+        "1916",
+        "2586",
+        "2591",
+        "990"
+      ],
+      "final_top": [
+        "1916",
+        "2591",
+        "2540",
+        "2586",
+        "990"
+      ],
+      "answer": "41",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "x1",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "female > total females > number",
+          "col_header": "female > total females > percent",
+          "row": null,
+          "col": null,
+          "value": null
+        }
+      ],
+      "symbolic_error": "unresolved_cell:x1",
+      "reader_raw": "Reasoning: The table shows data for both males and females in completed court cases. To find the percentage of females, I need to look at the \"female > total females > percent\" column.\nFinal answer: 41",
+      "elapsed_s": -16.32
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "35 states reported expenditures for healthrelated r&d in fy 2016, how many percent of all state government agency expenditures on health-related r&d was reported by agencies in five states: new york, texas , california, florida, and pennsylvania?",
+      "gold_table": "164_81_tab3",
+      "gold_answer": [
+        0.834291
+      ],
+      "gold_formula": "=(F5+F6+F7+F8+F10)/F4",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "164_81_tab3",
+        "163_81_tab2",
+        "156_77_tab2",
+        "40_159_tab1",
+        "129_62_np16-ib-19308-tab003"
+      ],
+      "final_top": [
+        "164_81_tab3",
+        "163_81_tab2",
+        "40_159_tab1",
+        "156_77_tab2",
+        "129_62_np16-ib-19308-tab003"
+      ],
+      "answer": "73.62",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "(x1 + x2 + x3 + x4 + x5) / x11 * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "new york",
+          "col_header": "health",
+          "row": 2,
+          "col": 4,
+          "value": 269493.0,
+          "raw": 269493
+        },
+        {
+          "var": "x2",
+          "row_header": "texas",
+          "col_header": "health",
+          "row": 3,
+          "col": 4,
+          "value": 212223.0,
+          "raw": 212223
+        },
+        {
+          "var": "x3",
+          "row_header": "california",
+          "col_header": "health",
+          "row": 1,
+          "col": 4,
+          "value": 199523.0,
+          "raw": 199523
+        },
+        {
+          "var": "x4",
+          "row_header": "florida",
+          "col_header": "health",
+          "row": 4,
+          "col": 4,
+          "value": 72374.0,
+          "raw": 72374
+        },
+        {
+          "var": "x5",
+          "row_header": "pennsylvania",
+          "col_header": "health",
+          "row": 6,
+          "col": 4,
+          "value": 51365.0,
+          "raw": 51365
+        }
+      ],
+      "symbolic_error": "eval_error:\"undefined variable 'x11'\"",
+      "reader_raw": "Reasoning: First, we need to find the total health expenditure for each of the five states mentioned. Then, sum these up to get the total for these five states. Next, we need to find the total health expenditure for all 35 states. Finally, we calculate the percentage of the total health expenditure for these five states out of the total for all 35 states.\n\nFor New York: 21339\nFor Texas: 13099\nFor California: 57770\nFor Florida: 72374\nFor Pennsylvania: 51365\n\nSum of these five states' health expenditures: 21339 + 13099 + 57770 + 72374 + 51365 = 215247\n\nFor all 35 states, we need to sum the health expenditures from the table. The \"all others\" category includes the rest of the states, so we add the health expenditure from this row to the sum of the five states.\n\nTotal health expenditure for all 35 states: 26313 (Connecticut) + 5490 (North Carolina) + 11992 (Washington) + 7583 (Virginia) + 202855 (All others) = 292433\n\nNow, calculate the percentage: (215247 / 292433) * 100 = 73.62%\n\nFinal answer: 73.62",
+      "elapsed_s": 28.07
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "what was the percentage of canadian adults having either hearing loss or tinnitus,or both from 2012 to 2015?",
+      "gold_table": "355",
+      "gold_answer": [
+        59.9
+      ],
+      "gold_formula": "=C7+C8+C9",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "355",
+        "504",
+        "615",
+        "366",
+        "614"
+      ],
+      "final_top": [
+        "355",
+        "504",
+        "614",
+        "615",
+        "366"
+      ],
+      "answer": "14.5",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The question asks for the percentage of Canadian adults with either hearing loss or tinnitus, or both. This corresponds to the \"total > hearing loss and tinnitus\" row in the table.\n\nFinal answer: 14.5",
+      "elapsed_s": 3.01
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of theft, what was the percentage of females accused in 2015?",
+      "gold_table": "345",
+      "gold_answer": [
+        0.344691
+      ],
+      "gold_formula": "=(B18+G18)/L18",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "1916",
+        "2540",
+        "345",
+        "2671",
+        "2003"
+      ],
+      "final_top": [
+        "1916",
+        "2540",
+        "345",
+        "2671",
+        "2003"
+      ],
+      "answer": "50",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 50.0,
+      "symbolic_expr": "(x1 + x2) / 2",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "property offences > theft",
+          "col_header": "female > 12 to 15 years of age > percent",
+          "row": 12,
+          "col": 6,
+          "value": 45.0,
+          "raw": 45
+        },
+        {
+          "var": "x2",
+          "row_header": "property offences > theft",
+          "col_header": "female > 16 to 17 years of age > percent",
+          "row": 12,
+          "col": 8,
+          "value": 55.0,
+          "raw": 55
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 6.13
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, how many percent did federal s&e obligations to academic institutions decline from fy 2012 to fy 2013?",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        -0.072612
+      ],
+      "gold_formula": "=(B10-B9)/B9",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "10_112_tab1",
+        "109_55_fs17-ib-19314-tab004",
+        "110_55_fs17-ib-19314-tab005",
+        "18_127_tab2",
+        "161_80_tab2"
+      ],
+      "final_top": [
+        "10_112_tab1",
+        "109_55_fs17-ib-19314-tab004",
+        "110_55_fs17-ib-19314-tab005",
+        "18_127_tab2",
+        "161_80_tab2"
+      ],
+      "answer": "0",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 0.0,
+      "symbolic_expr": "(x1 - x2) / x1 * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "current $millions > constant fy 2009 $millions > 2012",
+          "col_header": "",
+          "row": 4,
+          "col": 3,
+          "value": 4.0,
+          "raw": 4.0
+        },
+        {
+          "var": "x2",
+          "row_header": "current $millions > constant fy 2009 $millions > 2013",
+          "col_header": "",
+          "row": 5,
+          "col": 3,
+          "value": 4.0,
+          "raw": 4.0
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 5.77
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "how many percentage points did women live in families either as part of a couple, as a lone parent or as a child?",
+      "gold_table": "2092",
+      "gold_answer": [
+        79
+      ],
+      "gold_formula": "=C7+C10+C11",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "623",
+        "2092",
+        "2301",
+        "334",
+        "366"
+      ],
+      "final_top": [
+        "623",
+        "366",
+        "2092",
+        "334",
+        "2301"
+      ],
+      "answer": "3930",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 3929.9999999999995,
+      "symbolic_expr": "(x1 + x2 + x3) * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "percent > part of couple",
+          "col_header": "persons without disabilities",
+          "row": 1,
+          "col": 0,
+          "value": 7.0,
+          "raw": 7.0
+        },
+        {
+          "var": "x2",
+          "row_header": "percent > lone parent with children",
+          "col_header": "persons without disabilities",
+          "row": 3,
+          "col": 0,
+          "value": 24.2,
+          "raw": 24.2
+        },
+        {
+          "var": "x3",
+          "row_header": "percent > living with parent(s)/guardian(s)",
+          "col_header": "persons without disabilities",
+          "row": 2,
+          "col": 0,
+          "value": 8.1,
+          "raw": 8.1
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 7.47
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what was the rate of handguns used in firearm-related homicides in 2014?",
+      "gold_table": "1800",
+      "gold_answer": [
+        0.659091
+      ],
+      "gold_formula": "=C24/K24",
+      "intent": {
+        "qtype": "simple_lookup",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": []
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "simple_lookup: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "1800",
+        "1956",
+        "1944",
+        "1660",
+        "345"
+      ],
+      "final_top": [
+        "1800",
+        "1956",
+        "1944",
+        "1660",
+        "345"
+      ],
+      "answer": "0.29",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The question asks for the rate of handguns used in firearm-related homicides in 2014. From the table, we can see that the second column represents the rate of handgun usage, and the ninth column shows the total rate for firearm-related homicides. We need to look at the 2014 row for the handgun rate.\nFinal answer: 0.29",
+      "elapsed_s": 5.39
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "in fy 2015, how many percent did research account of all federal obligations for r&d and r&d plant?",
+      "gold_table": "192_90_tab1",
+      "gold_answer": [
+        0.484368
+      ],
+      "gold_formula": "=D7/D5",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "14_117_tab1",
+        "192_90_tab1",
+        "10_112_tab1",
+        "78_31_nsf20309-tab004",
+        "163_81_tab2"
+      ],
+      "final_top": [
+        "192_90_tab1",
+        "10_112_tab1",
+        "78_31_nsf20309-tab004",
+        "14_117_tab1",
+        "163_81_tab2"
+      ],
+      "answer": "100",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 100.0,
+      "symbolic_expr": "(x1 / x2) * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "all r&d and r&d plant > r&d",
+          "col_header": "current $millions > 2015",
+          "row": 6,
+          "col": 2,
+          "value": 15279.0,
+          "raw": 15279
+        },
+        {
+          "var": "x2",
+          "row_header": "all r&d and r&d plant > r&d",
+          "col_header": "current $millions > 2015",
+          "row": 6,
+          "col": 2,
+          "value": 15279.0,
+          "raw": 15279
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 7.18
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "how many percent of the travelling distance of shipments of to other dangerous goods is equal to that of crude petroleum products?",
+      "gold_table": "651",
+      "gold_answer": [
+        0.351438
+      ],
+      "gold_formula": "=B5/B6",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "651",
+        "1980",
+        "547",
+        "1487",
+        "1539"
+      ],
+      "final_top": [
+        "651",
+        "1980",
+        "547",
+        "1487",
+        "1539"
+      ],
+      "answer": "284.5455",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 284.5454545454545,
+      "symbolic_expr": "(x1 / x2) * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "dangerous goods > other dangerous goods",
+          "col_header": "kilometres",
+          "row": 2,
+          "col": 0,
+          "value": 313.0,
+          "raw": 313.0
+        },
+        {
+          "var": "x2",
+          "row_header": "dangerous goods > crude petroleum products",
+          "col_header": "kilometres",
+          "row": 1,
+          "col": 0,
+          "value": 110.0,
+          "raw": 110.0
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 28.49
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "in 2018, how many percentage points did applied research activities account for of total u.s. r&d expenditures?",
+      "gold_table": "64_2_nsf21324-tab002",
+      "gold_answer": [
+        0.191919
+      ],
+      "gold_formula": "=B23/B5",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "78_31_nsf20309-tab004",
+        "64_2_nsf21324-tab002",
+        "161_80_tab2",
+        "18_127_tab2",
+        "129_62_np16-ib-19308-tab003"
+      ],
+      "final_top": [
+        "78_31_nsf20309-tab004",
+        "64_2_nsf21324-tab002",
+        "129_62_np16-ib-19308-tab003",
+        "161_80_tab2",
+        "18_127_tab2"
+      ],
+      "answer": "115.0",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "(x1 / x2) * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "percent distribution > all r&d > applied research",
+          "col_header": "2018b",
+          "row": 10,
+          "col": 8,
+          "value": 19.8,
+          "raw": 19.8
+        },
+        {
+          "var": "x2",
+          "row_header": "row_0",
+          "col_header": "2018b",
+          "row": null,
+          "col": null,
+          "value": null
+        }
+      ],
+      "symbolic_error": "unresolved_cell:x2",
+      "reader_raw": "Reasoning: To find out how many percentage points applied research activities accounted for in 2018, I need to look at the \"all r&d > applied research\" row and find the value for 2018.\nFrom the table, the value for applied research in 2018 is 115.0.\n\nFinal answer: 115.0",
+      "elapsed_s": -13.25
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what is the range of the largest difference outside quebec related to the perception of the rcmp as a very important national symbol?",
+      "gold_table": "2612",
+      "gold_answer": [
+        78,
+        54
+      ],
+      "gold_formula": "=MAX(E11:E15,E5:E9)",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2612",
+        "2111",
+        "1017",
+        "1849",
+        "1966"
+      ],
+      "final_top": [
+        "2612",
+        "2111",
+        "1017",
+        "1849",
+        "1966"
+      ],
+      "answer": "24",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: First, we need to identify the provinces outside Quebec. Then, for each of these provinces, we find the value in the \"rcmp\" column. The largest difference will be between the highest and lowest of these values.\n\nProvinces outside Quebec: Newfoundland and Labrador, Prince Edward Island, Nova Scotia, New Brunswick, Ontario, Manitoba, Saskatchewan, Alberta, British Columbia.\nValues in the \"rcmp\" column for these provinces:\n- Newfoundland and Labrador: 78\n- Prince Edward Island: 68\n- Nova Scotia: 69\n- New Brunswick: 64\n- Ontario: 59\n- Manitoba: 68\n- Saskatchewan: 73\n- Alberta: 67\n- British Columbia: 54\n\nThe highest value is 78 (Newfoundland and Labrador) and the lowest value is 54 (British Columbia).\n\nRange = Highest value - Lowest value = 78 - 54 = 24\n\nFinal answer: 24",
+      "elapsed_s": 12.24
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what is the percentage of men drivers who reported having driven an on-road vehicle after consuming two drinks in the hour before driving?",
+      "gold_table": "2395",
+      "gold_answer": [
+        0.911559
+      ],
+      "gold_formula": "=B6/B38",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2396",
+        "2395",
+        "1062",
+        "1725",
+        "225"
+      ],
+      "final_top": [
+        "2396",
+        "2395",
+        "225",
+        "1062",
+        "1725"
+      ],
+      "answer": "N/A",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 2.9,
+      "symbolic_expr": "x1",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "compared with other drivers, would you say that you normally drive: > slower",
+          "col_header": "on-road vehicle > percent",
+          "row": 1,
+          "col": 1,
+          "value": 2.9,
+          "raw": 2.9
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The question asks for the percentage of men drivers who reported driving an on-road vehicle after consuming two drinks in an hour. Looking at the table, we need to find the \"on-road vehicle\" column and the relevant row. The row \"compared with other drivers, would you say that you normally drive: > slower\" shows the data for those who drive slower than others. However, this is not the exact phrasing for the question. There is no direct row for \"driving after consuming two drinks\". We can infer that the closest related data is in the \"frequency of alcohol consumption\" section, but it does not directly match the question's wording.\n\nFinal answer: N/A",
+      "elapsed_s": 13.62
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "in cases of prostitution, what was the percentage of females accused among youth in 2015?",
+      "gold_table": "345",
+      "gold_answer": [
+        0.4375
+      ],
+      "gold_formula": "=B32/F32",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "1916",
+        "345",
+        "2540",
+        "1497",
+        "917"
+      ],
+      "final_top": [
+        "1916",
+        "345",
+        "2540",
+        "1497",
+        "917"
+      ],
+      "answer": "0",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "(x1 + x2) / 2",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "female > 12 to 15 years of age > number",
+          "col_header": "female > 12 to 15 years of age > percent",
+          "row": null,
+          "col": null,
+          "value": null
+        }
+      ],
+      "symbolic_error": "unresolved_cell:x1",
+      "reader_raw": "Reasoning: The table shows data for different types of offences and the gender breakdown for youth cases. Prostitution is listed as one of the offences, and we need to find the percentage of females among those accused.\n\nLooking at the row for \"prostitution\":\n- The number of male cases is 0.\n- The number of female cases is 0.\n\nThe percentage column for females among prostitution cases is 0.\n\nFinal answer: 0",
+      "elapsed_s": 13.43
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "in 2013, what was the percentage point of canadians used only one of the five types of media to follow news and current affairs?",
+      "gold_table": "1556",
+      "gold_answer": [
+        24
+      ],
+      "gold_formula": "=SUM(B7:B8)/2",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "1556",
+        "126",
+        "124",
+        "2332",
+        "2581"
+      ],
+      "final_top": [
+        "1556",
+        "124",
+        "126",
+        "2581",
+        "2332"
+      ],
+      "answer": "24",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": true,
+      "symbolic_correct": true,
+      "symbolic_value": 24.0,
+      "symbolic_expr": "(x1 + x2) / 2",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "percentage > total > men",
+          "col_header": "number of types of media used > one",
+          "row": 1,
+          "col": 0,
+          "value": 24.0,
+          "raw": 24.0
+        },
+        {
+          "var": "x2",
+          "row_header": "percentage > total > women",
+          "col_header": "number of types of media used > one",
+          "row": 2,
+          "col": 0,
+          "value": 24.0,
+          "raw": 24.0
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 5.1
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which type of young female immigrants that were more likely to be overqualified for their occupation?",
+      "gold_table": "2306",
+      "gold_answer": [
+        "visible minority population"
+      ],
+      "gold_formula": "=A6",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2306",
+        "2412",
+        "763",
+        "1045",
+        "765"
+      ],
+      "final_top": [
+        "2306",
+        "2412",
+        "1045",
+        "763",
+        "765"
+      ],
+      "answer": "visible minority",
+      "answer_em": false,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the overqualification rates for young female immigrants in the table. The table shows two rows for women: one for visible minorities and one for non-visible minorities. We need to look at the \"immigrants\" column for both.\n\nFor visible minority women immigrants, the rate is 31%.\nFor non-visible minority women immigrants, the rate is 21%.\n\nSince 31% is greater than 21%, visible minority women immigrants are more likely to be overqualified.\n\nFinal answer: visible minority",
+      "elapsed_s": 6.34
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "who were more likely to always use a seatbelt when driving or as a passenger, people \"always\" wore a helmet or people does not always use helmet?",
+      "gold_table": "1550",
+      "gold_answer": [
+        "always uses helmet"
+      ],
+      "gold_formula": "=A6",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "1550",
+        "2396",
+        "1792",
+        "2395",
+        "1403"
+      ],
+      "final_top": [
+        "1550",
+        "2396",
+        "1792",
+        "1403",
+        "2395"
+      ],
+      "answer": "always uses helmet",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The question asks about the likelihood of always using a seatbelt based on helmet usage. We need to compare the adjusted odds ratios for \"always uses helmet\" and \"does not always use helmet\".\n- For \"always uses helmet\", the adjusted odds ratio is 2.6.\n- For \"does not always use helmet\", the adjusted odds ratio is 1.0.\n\nSince 2.6 is greater than 1.0, people who always use a helmet have a higher adjusted odds ratio, indicating they are more likely to always use a seatbelt compared to those who do not always use a helmet.\n\nFinal answer: always uses helmet",
+      "elapsed_s": 7.49
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "higher proportions of impaired drivers were observed among whom, drivers who reported drinking daily or drivers who reported drinking once or less per month?",
+      "gold_table": "2396",
+      "gold_answer": [
+        "daily"
+      ],
+      "gold_formula": "=A23",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "arg"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2396",
+        "2395",
+        "1504",
+        "1062",
+        "1487"
+      ],
+      "final_top": [
+        "2396",
+        "2395",
+        "1504",
+        "1062",
+        "1487"
+      ],
+      "answer": "daily drinkers",
+      "answer_em": false,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The question asks to compare two groups - those who drink daily and those who drink once or less per month. From the data provided, we can see the percentages for both groups.\n\nFor \"frequency of alcohol consumption > once a month or less\":\n- Ontario: 0.4%\n- Manitoba: 1.1%\n- Alberta: 0.6%\n\nFor \"frequency of alcohol consumption > more than once a week\" (which includes daily drinkers):\n- Ontario: 10.5%\n- Manitoba: 9.8%\n- Alberta: 12.6%\n\nComparing these, the daily drinkers have significantly higher percentages across all three regions.\n\nFinal answer: daily drinkers",
+      "elapsed_s": 8.91
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which gourp has the higher employment rates, chinese women higher or third-plus generation white women by observed?",
+      "gold_table": "2658",
+      "gold_answer": [
+        "chinese"
+      ],
+      "gold_formula": "=A9",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2658",
+        "763",
+        "765",
+        "755",
+        "758"
+      ],
+      "final_top": [
+        "2658",
+        "763",
+        "765",
+        "755",
+        "758"
+      ],
+      "answer": "chinese women",
+      "answer_em": false,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the observed employment rates for Chinese women and third-plus generation white women.\n- Chinese women's observed employment rate: 85.2%\n- Third-plus generation white women's observed employment rate: 81.7%\n\n85.2% > 81.7%\n\nFinal answer: chinese women",
+      "elapsed_s": 4.43
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which country's canadian-born women were less likely than canadian-born women who were not a visible minority to be unemployed?",
+      "gold_table": "765",
+      "gold_answer": [
+        "japanese"
+      ],
+      "gold_formula": "=A15",
+      "intent": {
+        "qtype": "multi_op_formula",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "math-symbols"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "multi_op_formula: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "765",
+        "763",
+        "2306",
+        "2123",
+        "2581"
+      ],
+      "final_top": [
+        "765",
+        "763",
+        "2306",
+        "2123",
+        "2581"
+      ],
+      "answer": "N/A",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "(x1 - x2) / x2",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "percentage > not a visible minority",
+          "col_header": "canadian-born",
+          "row": 13,
+          "col": 1,
+          "value": 5.2,
+          "raw": 5.2
+        },
+        {
+          "var": "x2",
+          "row_header": "total",
+          "col_header": "canadian-born",
+          "row": null,
+          "col": null,
+          "value": null
+        }
+      ],
+      "symbolic_error": "unresolved_cell:x2",
+      "reader_raw": "Reasoning: We need to compare the Canadian-born unemployment rates for visible minorities with those who are not visible minorities. The \"total\" row represents those who are not visible minorities. Their Canadian-born unemployment rate is 5.2%. Looking at the \"canadian-born\" column for each visible minority group, we can see that South Asian (6.3%), Filipino (5.0%), Latin American (9.0%), Arab (7.2%), Southeast Asian (6.2%), West Asian (10.8%), Korean (5.6%), Japanese (3.2%), Other Visible Minority (7.5%), and Multiple Visible Minorities (9.0%) all have higher or equal rates compared to 5.2%.\n\nFinal answer: N/A",
+      "elapsed_s": 14.2
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which kind of males were more likely to live in households with higher education, immigrants or canadian-born?",
+      "gold_table": "330",
+      "gold_answer": [
+        "imdb immigrant"
+      ],
+      "gold_formula": "=C4",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "330",
+        "2306",
+        "1045",
+        "2581",
+        "670"
+      ],
+      "final_top": [
+        "330",
+        "2306",
+        "1045",
+        "2581",
+        "670"
+      ],
+      "answer": "immigrants",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the percentage of males with a household level education of \"university degree and above\" between immigrants and Canadian-born.\nFor male immigrants, the percentage is 54.0%.\nFor male Canadian-born, the percentage is 32.0%.\n\nFinal answer: immigrants",
+      "elapsed_s": 4.61
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "within lone-parent households, who were less likely to be food secure, employed first nations women or men?",
+      "gold_table": "334",
+      "gold_answer": [
+        "women"
+      ],
+      "gold_formula": "=C3",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "arg"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "334",
+        "108",
+        "2727",
+        "1940",
+        "1904"
+      ],
+      "final_top": [
+        "334",
+        "108",
+        "2727",
+        "1940",
+        "1904"
+      ],
+      "answer": "women",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The table shows the percentage of food secure households for different household types and gender. For lone-parent households, we can see that the percentage of food secure households is lower for both men and women compared to each other. Specifically, it is 63.0% for men and 45.6% for women.\nFinal answer: women",
+      "elapsed_s": 4.62
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which is more likely to report having a large number (5 or more) of close family members ,senior women living in couples or senior women living alone.",
+      "gold_table": "1623",
+      "gold_answer": [
+        "living in a couple"
+      ],
+      "gold_formula": "=C4",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "1623",
+        "623",
+        "487",
+        "292",
+        "366"
+      ],
+      "final_top": [
+        "1623",
+        "366",
+        "487",
+        "623",
+        "292"
+      ],
+      "answer": "living in a couple",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the percentage of senior women living in couples who feel close to 5 or more family members versus those living alone.\n- Women living in a couple: 58.0%\n- Women living alone: 46.0%\n\n58.0 > 46.0, so senior women living in a couple are more likely.\n\nFinal answer: living in a couple",
+      "elapsed_s": 5.33
+    },
+    {
+      "class": "single_arg",
+      "query": "canadian households in which place of residence was significantly less likely to have received formal home care in 2015/2016?",
+      "gold_table": "366",
+      "gold_answer": [
+        "large urban population centre"
+      ],
+      "gold_formula": "=A17",
+      "intent": {
+        "qtype": "comparison_or_count",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "cmp"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "comparison_or_count: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "366",
+        "2104",
+        "1611",
+        "2728",
+        "1284"
+      ],
+      "final_top": [
+        "366",
+        "2104",
+        "2728",
+        "1611",
+        "1284"
+      ],
+      "answer": "large urban population centre",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the percentages for \"place of residence\" across different categories. The total percentage is 6.4%. We look for categories where the percentage is notably lower than this average.\n\n- Rural area: 6.9%\n- Small population centre: 7.8%\n- Medium population centre: 7.4%\n- Large urban population centre: 5.9%\n\nThe large urban population centre has the lowest percentage at 5.9%, which is notably lower than the overall average of 6.4%.\n\nFinal answer: large urban population centre",
+      "elapsed_s": 7.33
+    },
+    {
+      "class": "single_arg",
+      "query": "how much perenctage point has toronto fell when it comes to immigrants intended landing destination?",
+      "gold_table": "1236",
+      "gold_answer": [
+        15.6
+      ],
+      "gold_formula": "=MIN(B13-C13)",
+      "intent": {
+        "qtype": "simple_lookup",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": []
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "simple_lookup: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "1236",
+        "432",
+        "2793",
+        "2581",
+        "2409"
+      ],
+      "final_top": [
+        "1236",
+        "2793",
+        "432",
+        "2409",
+        "2581"
+      ],
+      "answer": "18.4",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The percentage points that Toronto's share of immigrants fell by can be calculated by subtracting the largest value from the smallest value among the given years. The largest value is 48.4% in 2000 and the smallest value is 30.0% in 2012.\nFinal answer: 18.4",
+      "elapsed_s": 4.53
+    },
+    {
+      "class": "single_arg",
+      "query": "among the closest accused-victim relationship, which relationship were males accused of homicide most likely to kill from 2001 to 2015 in canada?",
+      "gold_table": "344",
+      "gold_answer": [
+        "acquaintances"
+      ],
+      "gold_formula": "=A13",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "arg"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "344",
+        "2073",
+        "1800",
+        "1916",
+        "1660"
+      ],
+      "final_top": [
+        "344",
+        "2073",
+        "1916",
+        "1800",
+        "1660"
+      ],
+      "answer": "casual acquaintance",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the percentages of male accused for each relationship to find the highest percentage.\n- Spouse: 10.3%\n- Ex-spouse: 3.7%\n- Other intimate relationship: 4.2%\n- Parent: 4.5%\n- Child: 5.2%\n- Other family: 7.1%\n- Criminal acquaintance: 11.2%\n- Casual acquaintance: 23.0%\n- Other acquaintance: 12.7%\nThe highest percentage is 23.0% for \"casual acquaintance\".\n\nFinal answer: casual acquaintance",
+      "elapsed_s": 31.2
+    },
+    {
+      "class": "single_arg",
+      "query": "of refugees from the three areas highlighted in this analysis,which had the lowest all-cause ashr?",
+      "gold_table": "2410",
+      "gold_answer": [
+        "vietnam"
+      ],
+      "gold_formula": "=A14",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "arg"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2410",
+        "2793",
+        "245",
+        "2409",
+        "742"
+      ],
+      "final_top": [
+        "2410",
+        "2793",
+        "245",
+        "2409",
+        "742"
+      ],
+      "answer": "Vietnam",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the all-cause ASHR for refugees from Poland, Vietnam, and the Middle East.\n- Poland: 488.1\n- Vietnam: 385.8\n- Middle East: 510.3\n\nThe lowest value among these is 385.8.\n\nFinal answer: Vietnam",
+      "elapsed_s": -19.12
+    },
+    {
+      "class": "single_arg",
+      "query": "all the cmas reported have a ratio of 2 or more, which metropolitan area has the highest 95th to 5th percentile?",
+      "gold_table": "873",
+      "gold_answer": [
+        "toronto"
+      ],
+      "gold_formula": "=A9",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "875",
+        "873",
+        "874",
+        "432",
+        "1956"
+      ],
+      "final_top": [
+        "873",
+        "875",
+        "1956",
+        "874",
+        "432"
+      ],
+      "answer": "Toronto",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "",
+      "symbolic_resolved_cells": [],
+      "symbolic_error": "empty_or_unparsed_plan",
+      "reader_raw": "Reasoning: We need to compare the \"95th to 5th percentile > ratio\" column for each city to find the highest value.\nLooking at the data:\n- Halifax: 2.0\n- Quebec: 2.0\n- Montreal: 2.4\n- Ottawa-Gatineau: 2.5\n- Toronto: 2.9\n- Winnipeg: 2.7\n- Calgary: 2.5\n- Edmonton: 2.2\n- Vancouver: 2.2\n\nThe highest ratio is 2.9 for Toronto.\n\nFinal answer: Toronto",
+      "elapsed_s": 8.25
+    },
+    {
+      "class": "single_arg",
+      "query": "of any group examined, which group of people had the highest rate of poverty.",
+      "gold_table": "623",
+      "gold_answer": [
+        "more severe",
+        "living alone"
+      ],
+      "gold_formula": "=D4",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "arg"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2358",
+        "675",
+        "2354",
+        "765",
+        "2337"
+      ],
+      "final_top": [
+        "2358",
+        "675",
+        "2354",
+        "765",
+        "2337"
+      ],
+      "answer": "13.7",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare all the rates given for different groups. The highest rate appears in the \"rate > family type > unattached\" row, with values of 13.7%, 11.4%, and 9.0% for the respective years.\n\nFinal answer: 13.7",
+      "elapsed_s": 4.04
+    },
+    {
+      "class": "single_arg",
+      "query": "by place of residence,who were most likely to gather for cultural reasons?",
+      "gold_table": "2688",
+      "gold_answer": [
+        "inuit nunangat"
+      ],
+      "gold_formula": "=A20",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "arg"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2793",
+        "436",
+        "2688",
+        "742",
+        "1236"
+      ],
+      "final_top": [
+        "2688",
+        "2793",
+        "436",
+        "742",
+        "1236"
+      ],
+      "answer": "Inuit Nunangat",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the percentages for \"to share with others in the community\" across different places of residence. The highest percentage is found in Inuit Nunangat at 57%.\nFinal answer: Inuit Nunangat",
+      "elapsed_s": 3.49
+    },
+    {
+      "class": "single_arg",
+      "query": "which metropolitan area has the highest average census tract incomes?",
+      "gold_table": "873",
+      "gold_answer": [
+        "calgary"
+      ],
+      "gold_formula": "=A11",
+      "intent": {
+        "qtype": "single_arg",
+        "needs_table": true,
+        "needs_symbolic": false,
+        "signals": [
+          "entity-question"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "llm_answer"
+        ],
+        "reason": "single_arg: retrieve+verify+LLM (no symbolic)"
+      },
+      "source": "reader",
+      "vector_top": [
+        "873",
+        "874",
+        "875",
+        "40_159_tab1",
+        "432"
+      ],
+      "final_top": [
+        "873",
+        "874",
+        "875",
+        "432",
+        "40_159_tab1"
+      ],
+      "answer": "calgary",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": null,
+      "symbolic_resolved_cells": null,
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: To find the highest average census tract income, I'll compare the values in the first column of each row.\nThe values are:\nHalifax: 43900.0\nQuebec: 42400.0\nMontreal: 41400.0\nOttawa-Gatineau: 50000.0\nToronto: 47900.0\nWinnipeg: 42700.0\nCalgary: 56900.0\nEdmonton: 52000.0\nVancouver: 46200.0\nThe highest value is 56900.0.\n\nFinal answer: calgary",
+      "elapsed_s": 9.15
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "how many percentage points of increase does an increase to mfn tariffs plus associated non-tariff barriers reduce u.s. exports to canada?",
+      "gold_table": "2558",
+      "gold_answer": [
+        18.1
+      ],
+      "gold_formula": "=-C7",
+      "intent": {
+        "qtype": "multi_op_formula",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "multi-op"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "multi_op_formula: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2607",
+        "2558",
+        "146",
+        "370",
+        "123"
+      ],
+      "final_top": [
+        "2558",
+        "2607",
+        "123",
+        "146",
+        "370"
+      ],
+      "answer": "-18.1",
+      "answer_em": false,
+      "answer_numeric_match": true,
+      "symbolic_attempted": true,
+      "symbolic_correct": true,
+      "symbolic_value": -18.1,
+      "symbolic_expr": "x1",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "percent change > increase in border costs",
+          "col_header": "cross-border exports > united states to canada",
+          "row": 1,
+          "col": 1,
+          "value": -18.1,
+          "raw": -18.1
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The question asks about the impact on U.S. exports to Canada. From the table, we need to look at the \"increase in border costs\" row for the \"cross-border exports > United States to Canada\" column.\nThe value in this cell is -18.1.\n\nFinal answer: -18.1",
+      "elapsed_s": 7.02
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the rate of adults in remand decreased in 6 of the 13 reporting provinces and territories, what is the decrease in manitoba in 2018/2019?",
+      "gold_table": "954",
+      "gold_answer": [
+        14
+      ],
+      "gold_formula": "=-D11",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "symbolic",
+      "vector_top": [
+        "954",
+        "989",
+        "1341",
+        "1029",
+        "2540"
+      ],
+      "final_top": [
+        "954",
+        "1029",
+        "1341",
+        "2540",
+        "989"
+      ],
+      "answer": "-12.7029",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": -12.702926829268293,
+      "symbolic_expr": "(x1 - x2/2050)",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "manitoba",
+          "col_header": "rate",
+          "row": 6,
+          "col": 5,
+          "value": -12.0,
+          "raw": -12
+        },
+        {
+          "var": "x2",
+          "row_header": "manitoba",
+          "col_header": "remand > number",
+          "row": 6,
+          "col": 0,
+          "value": 1441.0,
+          "raw": 1441.0
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": null,
+      "elapsed_s": 4.47
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "how many percent of northwest territories which had the largest decrease among the territories?",
+      "gold_table": "2211",
+      "gold_answer": [
+        47
+      ],
+      "gold_formula": "=-J15",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2111",
+        "1017",
+        "1335",
+        "1643",
+        "1849"
+      ],
+      "final_top": [
+        "1335",
+        "2111",
+        "1017",
+        "1643",
+        "1849"
+      ],
+      "answer": "27",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "",
+      "symbolic_resolved_cells": [],
+      "symbolic_error": "empty_or_unparsed_plan",
+      "reader_raw": "Reasoning: The question asks for the largest decrease among territories. We need to compare the percentages of Aboriginal children in total children versus those in foster care for Northwest Territories.\nFor Northwest Territories:\nTotal children: 66.8% Aboriginal\nFoster care: 93.8% Aboriginal\n\nThe decrease is 93.8 - 66.8 = 27%\n\nWe need to check if this is the largest decrease among territories. Checking other territories:\nYukon: 33.0 - 100.0 = -67.0 (increase)\nNunavut: 95.5 - 100.0 = -4.5 (increase)\n\nNorthwest Territories has the largest decrease at 27%.\n\nFinal answer: 27",
+      "elapsed_s": 10.51
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "how many percentage points did gdp of sport industries in canada decrease in 2014?",
+      "gold_table": "124",
+      "gold_answer": [
+        0.4
+      ],
+      "gold_formula": "=-J5",
+      "intent": {
+        "qtype": "multi_op_formula",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "multi-op"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "multi_op_formula: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "123",
+        "126",
+        "124",
+        "1719",
+        "2722"
+      ],
+      "final_top": [
+        "123",
+        "126",
+        "124",
+        "1719",
+        "2722"
+      ],
+      "answer": "2.6",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": 2.6,
+      "symbolic_expr": "x1",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "canada",
+          "col_header": "2014 > percentage change",
+          "row": 0,
+          "col": 8,
+          "value": 2.6,
+          "raw": 2.6
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The question asks for the decrease in GDP of sports industries in Canada in 2014. From the table, we can see that the percentage change for Canada in 2014 is 2.6.\n\nFinal answer: 2.6",
+      "elapsed_s": 6.87
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "much of the increase in the rate of breaking and entering at the national level between 2014 and 2015 can be accounted for somewhat mitigated by a drop in the rate of break-ins in vancouver, what is the percentage of this drop?",
+      "gold_table": "2003",
+      "gold_answer": [
+        6
+      ],
+      "gold_formula": "=-I36",
+      "intent": {
+        "qtype": "multi_op_formula",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "multi-op"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "multi_op_formula: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "1966",
+        "2003",
+        "1927",
+        "2671",
+        "1660"
+      ],
+      "final_top": [
+        "2003",
+        "1966",
+        "1660",
+        "1927",
+        "2671"
+      ],
+      "answer": "3",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": false,
+      "symbolic_correct": false,
+      "symbolic_value": null,
+      "symbolic_expr": "(x1 / x2) * 100",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "breaking and entering > percent change in rate 2014 to 2015",
+          "col_header": "vancouver",
+          "row": null,
+          "col": null,
+          "value": null
+        }
+      ],
+      "symbolic_error": "unresolved_cell:x1",
+      "reader_raw": "Reasoning: First, I need to find the national rate for breaking and entering in 2015, which is given as 444. Next, I need to find Vancouver's rate for breaking and entering in 2015, which is 683. The question asks how much of the national increase is mitigated by Vancouver's drop. To find this, I need to calculate the difference between Vancouver's rate and the national rate, then divide by the national rate and convert to a percentage.\n\nFinal answer: 3",
+      "elapsed_s": 13.87
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "which group of inuit adults 25 and older were less likely to live in a food insecure household, those who were employed or those who were unemployed?",
+      "gold_table": "108",
+      "gold_answer": [
+        "employed"
+      ],
+      "gold_formula": "=A24",
+      "intent": {
+        "qtype": "multi_op_formula",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "multi-op"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "multi_op_formula: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "108",
+        "334",
+        "999",
+        "2688",
+        "1097"
+      ],
+      "final_top": [
+        "108",
+        "999",
+        "334",
+        "2688",
+        "1097"
+      ],
+      "answer": "employed",
+      "answer_em": true,
+      "answer_numeric_match": true,
+      "symbolic_attempted": true,
+      "symbolic_correct": false,
+      "symbolic_value": -0.34500000000000003,
+      "symbolic_expr": "(x1) - (x2)",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "labour force status > employed",
+          "col_header": "",
+          "row": 20,
+          "col": 0,
+          "value": 0.425,
+          "raw": 0.425
+        },
+        {
+          "var": "x2",
+          "row_header": "labour force status > unemployed",
+          "col_header": "",
+          "row": 21,
+          "col": 0,
+          "value": 0.77,
+          "raw": 0.77
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: We need to compare the predicted probabilities for employment status given in the table.\n- Employed: 0.425\n- Unemployed: 0.77\n\nFinal answer: employed",
+      "elapsed_s": 6.26
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "what is the percentage of large decline in rate of breaking and entering at the national level was also reported in gatineau in 2015?",
+      "gold_table": "2003",
+      "gold_answer": [
+        21
+      ],
+      "gold_formula": "=-I14",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "1966",
+        "2003",
+        "1927",
+        "1956",
+        "1965"
+      ],
+      "final_top": [
+        "2003",
+        "1966",
+        "1956",
+        "1927",
+        "1965"
+      ],
+      "answer": "6",
+      "answer_em": false,
+      "answer_numeric_match": false,
+      "symbolic_attempted": true,
+      "symbolic_correct": true,
+      "symbolic_value": -21.0,
+      "symbolic_expr": "x1",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "gatineau",
+          "col_header": "breaking and entering > percent change in rate 2014 to 2015",
+          "row": 9,
+          "col": 7,
+          "value": -21.0,
+          "raw": -21.0
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The table shows the percentage change in rate for \"breaking and entering\" for each city and Canada as a whole. Gatineau had a -21% change in the rate of breaking and entering. The question asks for the comparison between Gatineau's local change and the national change. The national change is shown in the last column for Canada, which is 6%.\n\nFinal answer: 6",
+      "elapsed_s": 10.3
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "by what percentage did the number of data entry clerks decline between 1996 and 2016?",
+      "gold_table": "2320",
+      "gold_answer": [
+        59
+      ],
+      "gold_formula": "=-D9",
+      "intent": {
+        "qtype": "arithmetic_agg",
+        "needs_table": true,
+        "needs_symbolic": true,
+        "signals": [
+          "arith"
+        ]
+      },
+      "plan": {
+        "stages": [
+          "retrieve",
+          "verify",
+          "symbolic",
+          "llm_answer"
+        ],
+        "reason": "arithmetic_agg: symbolic compute primary, LLM fallback"
+      },
+      "source": "reader",
+      "vector_top": [
+        "2320",
+        "1725",
+        "1724",
+        "1719",
+        "1326"
+      ],
+      "final_top": [
+        "2320",
+        "1725",
+        "1724",
+        "1719",
+        "1326"
+      ],
+      "answer": "-59",
+      "answer_em": false,
+      "answer_numeric_match": true,
+      "symbolic_attempted": true,
+      "symbolic_correct": true,
+      "symbolic_value": -59.0,
+      "symbolic_expr": "x1",
+      "symbolic_resolved_cells": [
+        {
+          "var": "x1",
+          "row_header": "data entry clerks",
+          "col_header": "percent change in number of workers > 1996 to 2016 > percent",
+          "row": 3,
+          "col": 2,
+          "value": -59.0,
+          "raw": -59.0
+        }
+      ],
+      "symbolic_error": null,
+      "reader_raw": "Reasoning: The table provides the percent change in the number of workers for each occupation. Data entry clerks had a percent change of -59.0%.\nFinal answer: -59",
+      "elapsed_s": 7.02
+    }
+  ]
+}

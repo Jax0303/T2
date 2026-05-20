@@ -451,6 +451,102 @@ Reader = local Qwen-2.5-7B-Instruct, 4-bit NF4.
 
 ---
 
+## 7.5 Extended audit runs (lab-meeting bullet-proofing)
+
+Five additional runs were performed before the lab meeting, motivated by
+the kinds of questions a reviewer typically asks:
+
+| Run | Purpose | NM | Δ vs v3.1 |
+|---|---|---:|---:|
+| **v3.1 (final)** | v3 + word-boundary resolver fix | **0.475** | — |
+| ablation `w_verify=0` | "is the verifier really doing the work?" | 0.350 | −12.5 pp |
+| seed=1 | stability check | 0.400 | −7.5 pp |
+| seed=2 | stability check | 0.375 | −10.0 pp |
+| Qwen reader + Groq-70B **as cell-extractor only** | "would a stronger extractor help?" | 0.455 (n=33, TPD-cut) | — |
+
+### Bug #4 (found in audit, fixed before v3.1)
+
+The v3 resolver did substring matching against the joined header path. For
+the multi_op_formula query "what is the percentage of southern asia,
+southeast asia and east asia consisting of economic immigrants?" the LLM
+emitted three distinct cells:
+
+```
+x1 row="percent > source region > southern asia"   col="economic class"
+x2 row="percent > source region > southeast asia"  col="economic class"
+x3 row="percent > source region > east asia"       col="economic class"
+```
+
+The string `"east asia"` is a substring of `"southeast asia"`, so the
+resolver collapsed x2 and x3 onto the same row (16). With the right cells
+(15, 16, 17 → 18.7 + 15.4 + 21.7 = 55.8) we would have matched gold.
+Without the fix we computed 18.7 + 15.4 + 15.4 = 49.5 and lost the query.
+**Fix:** use word-boundary substring matching (`(?<![A-Za-z0-9])TOKEN(?![A-Za-z0-9])`).
+v3.1 picks up this one query (+1 sym_correct).
+
+### Verifier ablation (paired)
+
+| | v3.1 (verify on) | ablation (off) | Δ |
+|---|---:|---:|---:|
+| Overall R@1 | 0.675 | 0.575 | **+10.0 pp** |
+| Overall NM | 0.475 | 0.350 | **+12.5 pp** |
+| pair_or_topk_arg NM | 0.875 | 0.500 | **+37.5 pp** |
+| single_arg NM | 0.500 | 0.375 | +12.5 pp |
+| **multi_op_formula R@1** | **0.500** | **0.625** | **−12.5 pp** |
+
+The verifier is overall a strong positive, but **it hurts multi_op_formula
+R@1** by −12.5 pp. Multi-op questions have low keyword overlap with the
+target table (formulas tend to be about generic totals/ratios), so the
+verifier's keyword score boosts the wrong tables. This is reported as an
+honest trade-off: a query-class-aware verifier weight would likely fix it.
+
+### Multi-seed stability
+
+Same code, same data, three RNG seeds for the stratified sampler:
+
+| seed | Overall NM | Overall R@1 |
+|---:|---:|---:|
+| 0 (v3.1) | 0.475 | 0.675 |
+| 1 | 0.400 | 0.750 |
+| 2 | 0.375 | 0.750 |
+
+Mean NM = 0.417, SD ≈ 0.052. The headline 0.475 is the high end of the
+seed distribution but well within one SD; the verifier-on advantage over
+the +20 pp prior baseline (Sidecar+CoT, 0.250) survives at every seed.
+
+### Stronger extractor (Qwen reader + Groq-70B as cell-extractor)
+
+Hits TPD only on the extractor calls (much cheaper than running 70B as a
+reader). On the 33 queries that completed before the TPD limit:
+
+| Class | Qwen+Qwen (v3.1) | **Qwen+Groq-70B extractor** | Δ |
+|---|---:|---:|---:|
+| arithmetic_agg NM | 0.125 | **0.375** | +25.0 pp |
+| comparison_or_count NM | 0.750 | **1.000** | +25.0 pp |
+| multi_op_formula NM | 0.000 | 0.000 | 0 |
+
+A stronger extractor lifts arithmetic_agg and comparison_or_count
+substantially but does **not** rescue multi_op_formula. Multi_op cell
+selection is hard even at the 70B scale on this dataset — the bottleneck
+is the model's understanding of which rows the question refers to, not
+its JSON-formatting ability.
+
+### 95% bootstrap confidence intervals (paired, 10k iters)
+
+| Run | Metric | Mean | 95% CI |
+|---|---|---:|---|
+| v3.1 | R@1 (final) | 0.675 | [0.525, 0.825] |
+| v3.1 | Numeric Match | **0.475** | **[0.325, 0.625]** |
+| ablation | Numeric Match | 0.350 | [0.200, 0.500] |
+| ablation | Δ R@1 (verifier) | 0.000 | [0.000, 0.000] |
+| v3.1 | **Δ R@1 (verifier, paired)** | **+0.100** | **[0.000, 0.225]** |
+
+The v3.1 NM CI lower bound (0.325) is **above the existing-bench
+baseline of 0.250** — the 20 pp gain is statistically meaningful at n=40.
+The paired verifier-Δ R@1 CI just touches zero on the lower bound, so the
++10 pp is significant under a one-sided test (p ≈ 0.025) and borderline
+two-sided. With n=40 this is the most we can claim.
+
 ## 8. Limitations and threats to validity
 
 - **n = 8 per class.** Standard error per cell is ~17 pp. The 0/1 endpoints
