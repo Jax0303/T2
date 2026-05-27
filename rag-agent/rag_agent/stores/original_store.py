@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from difflib import SequenceMatcher
 from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
@@ -161,24 +162,80 @@ class OriginalTable:
                 hits.append(r)
         return hits
 
+    # ---- fuzzy fallbacks (used only when exact word-boundary match fails) ----
+
+    @staticmethod
+    def _norm_tokens(s: str) -> List[str]:
+        return [t for t in re.split(r"[^A-Za-z0-9]+", str(s).lower()) if t]
+
+    def _fuzzy_score(self, query: str, path: List[str]) -> float:
+        """Score how well ``query`` matches ``path``.
+
+        Combines (a) token overlap and (b) string similarity of the joined
+        path. Returns 0.0 when there is no shared content token, which keeps
+        unrelated headers from accidentally winning.
+        """
+        if not path:
+            return 0.0
+        q_toks = set(self._norm_tokens(query))
+        if not q_toks:
+            return 0.0
+        joined = " ".join(self._norm_tokens(" ".join(path)))
+        p_toks = set(joined.split())
+        if not p_toks:
+            return 0.0
+        overlap = q_toks & p_toks
+        if not overlap:
+            return 0.0
+        # Token-overlap component: recall of query tokens that show up in path.
+        recall = len(overlap) / len(q_toks)
+        # Similarity component: catches close-but-not-exact spellings.
+        ratio = SequenceMatcher(None, " ".join(sorted(q_toks)), joined).ratio()
+        return 0.7 * recall + 0.3 * ratio
+
+    def _fuzzy_find_rows(self, query: str, threshold: float = 0.4) -> List[int]:
+        scored = [(self._fuzzy_score(query, self.row_path(r)), r) for r in range(self.n_rows)]
+        scored = [(s, r) for s, r in scored if s >= threshold]
+        scored.sort(key=lambda sr: -sr[0])
+        return [r for _, r in scored]
+
+    def _fuzzy_find_cols(self, query: str, threshold: float = 0.4) -> List[int]:
+        scored = [(self._fuzzy_score(query, self.col_path(c)), c) for c in range(self.n_cols)]
+        scored = [(s, c) for s, c in scored if s >= threshold]
+        scored.sort(key=lambda sc: -sc[0])
+        return [c for _, c in scored]
+
     def resolve(self, row_header: str, col_header: str) -> Optional[Tuple[int, int, object]]:
         """Resolve a (row_header, col_header) pair to a single cell.
 
-        Both args are matched as case-insensitive substrings against the FULL
-        header paths. The most specific match (longest path) wins when ties exist;
-        ties broken by appearance order.
+        Exact (word-bounded) match is tried first; if either axis returns no
+        candidates, a token/similarity-based fuzzy fallback is attempted.
+        For exact matches we tie-break by path specificity (longest wins);
+        for fuzzy results we preserve fuzzy-score order so that the
+        best-scoring header is not overridden by an unrelated longer one.
         """
         col_cands = self.find_cols_by_header(col_header) if col_header else list(range(self.n_cols))
         row_cands = self.find_rows_by_header(row_header) if row_header else list(range(self.n_rows))
+        col_fuzzy = False
+        row_fuzzy = False
+
+        if col_header and not col_cands:
+            col_cands = self._fuzzy_find_cols(col_header)
+            col_fuzzy = True
+        if row_header and not row_cands:
+            row_cands = self._fuzzy_find_rows(row_header)
+            row_fuzzy = True
+
         if not col_cands or not row_cands:
             return None
 
-        # Prefer the most-specific match: longest path string that still contains the token.
         def specificity(p: List[str]) -> int:
             return sum(len(s) for s in p)
 
-        col_cands.sort(key=lambda c: -specificity(self.col_path(c)))
-        row_cands.sort(key=lambda r: -specificity(self.row_path(r)))
+        if not col_fuzzy:
+            col_cands.sort(key=lambda c: -specificity(self.col_path(c)))
+        if not row_fuzzy:
+            row_cands.sort(key=lambda r: -specificity(self.row_path(r)))
         r, c = row_cands[0], col_cands[0]
         return (r, c, self.cell(r, c))
 

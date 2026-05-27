@@ -145,8 +145,16 @@ class RAGAgent:
             hits = []
 
         if Stage.VERIFY in plan.stages and hits:
+            # For multi-cell arithmetic queries, generic header keywords like
+            # "total" / "percentage" match too many tables, so the verifier
+            # hurts more than it helps. Down-weight verify confidence and
+            # lean on the vector score in those cases.
+            if intent.qtype in (QueryType.MULTI_OP_FORMULA, QueryType.ARITHMETIC_AGG):
+                w_vec, w_ver = 0.9, 0.1
+            else:
+                w_vec, w_ver = self.w_vector, self.w_verify
             ranked = rerank(query, hits, self.original,
-                            w_vector=self.w_vector, w_verify=self.w_verify)
+                            w_vector=w_vec, w_verify=w_ver)
             out.final_ranked = ranked
             out.top_table_id = ranked[0]["table_id"] if ranked else None
         elif hits:

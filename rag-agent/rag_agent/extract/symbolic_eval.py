@@ -24,6 +24,17 @@ _BINOPS = {
 }
 _UNARYOPS = {ast.UAdd: operator.pos, ast.USub: operator.neg}
 
+# Safe built-in functions allowed in expressions.
+# Each maps a function-name string to a Python callable.
+_SAFE_FUNCS = {
+    "max": max,
+    "min": min,
+    "abs": abs,
+    "int": lambda x: float(int(x)),
+    "round": lambda x, n=0: float(round(x, int(n))),
+    "sum": lambda *args: float(sum(args)),
+}
+
 
 def _safe_eval(expr: str, env: Dict[str, float]) -> float:
     """AST-based eval — no builtins, no calls, no attribute access."""
@@ -50,6 +61,14 @@ def _safe_eval(expr: str, env: Dict[str, float]) -> float:
             if op_cls not in _UNARYOPS:
                 raise ValueError(f"unaryop {op_cls.__name__} not allowed")
             return _UNARYOPS[op_cls](walk(node.operand))
+        if isinstance(node, ast.Call):
+            if not isinstance(node.func, ast.Name):
+                raise ValueError(f"call target {type(node.func).__name__} not allowed")
+            fname = node.func.id
+            if fname not in _SAFE_FUNCS:
+                raise ValueError(f"function {fname!r} not allowed")
+            args = [walk(a) for a in node.args]
+            return float(_SAFE_FUNCS[fname](*args))
         raise ValueError(f"node {type(node).__name__} not allowed")
 
     return walk(tree)

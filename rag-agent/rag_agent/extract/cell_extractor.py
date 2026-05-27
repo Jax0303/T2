@@ -80,16 +80,43 @@ Excel-style cell IDs). Output VALID JSON with this exact schema:
 
 Rules:
 - Use only operators + - * / ( ) and the variable names you declared.
-- For ratios/percentages, output the raw ratio (e.g. x1/x2), not x1/x2*100,
-  UNLESS the question explicitly asks for a percentage.
+- You may also use these functions: max(), min(), abs(), int().
+  Example: "max(x1, x2, x3)" or "int(x1 / x2)".
+- For ratios/percentages ("what percentage of X is Y?"), you MUST have
+  SEPARATE cells for the numerator(s) AND the denominator. Output x1/x2,
+  NOT (x1+x2)/len.  The denominator is typically a "total" row.
 - For "difference" output x1 - x2 (do NOT take the absolute value here).
 - For "average" of k cells, output (x1+x2+...+xk)/k.
 - For "sum" or "total" output x1+x2+...+xk.
 - For argmax/argmin style questions (which is highest?), DO NOT use this tool;
   return {"cells": [], "expression": ""} so the caller falls back to the LLM reader.
-- Pick header strings that uniquely identify the cell. Use the LEAF segment of
-  the row/col path you observed in the table above (case-insensitive).
+- Pick header strings that uniquely identify the cell. COPY the EXACT path
+  text from the row/col headers shown above (case-insensitive). Do NOT
+  paraphrase or abbreviate header text.
 - No commentary. JSON only.
+
+--- FEW-SHOT EXAMPLES ---
+
+Example 1 — Ratio/percentage ("what was the percentage of X among Y?"):
+Suppose the table has row "theft" at row[5] and "total" at row[20],
+column "female accused" at col[1].
+Q: "What was the percentage of theft among female accused?"
+Correct output:
+{"cells":[{"var":"x1","row_header":"theft","col_header":"female accused"},{"var":"x2","row_header":"total","col_header":"female accused"}],"expression":"x1 / x2"}
+WRONG: {"cells":[{"var":"x1","row_header":"theft","col_header":"female accused"}],"expression":"x1"}  (missing denominator)
+WRONG: {"cells":[...], "expression":"(x1 + x2) / 2"}  (averaging instead of dividing)
+
+Example 2 — Multi-row sum ("percentage of A, B and C consisting of Z"):
+Suppose rows are "southern asia" at row[15], "southeast asia" at row[16],
+"east asia" at row[17], column "economic class" at col[0].
+Q: "What is the percentage of southern asia, southeast asia and east asia consisting of economic immigrants?"
+Correct output:
+{"cells":[{"var":"x1","row_header":"southern asia","col_header":"economic class"},{"var":"x2","row_header":"southeast asia","col_header":"economic class"},{"var":"x3","row_header":"east asia","col_header":"economic class"}],"expression":"(x1 + x2 + x3)"}
+
+Example 3 — Division with named denominator:
+Q: "How many times more X than Y?"
+Correct output:
+{"cells":[{"var":"x1","row_header":"X","col_header":"value"},{"var":"x2","row_header":"Y","col_header":"value"}],"expression":"x1 / x2"}
 """
 
 

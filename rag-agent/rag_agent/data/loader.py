@@ -53,14 +53,21 @@ def load_table(table_id: str, data_dir: str = DEFAULT_DATA_DIR) -> Optional[dict
     root = _find_data_root(data_dir)
     tables_dir = root / "data" / "tables"
 
-    # Try hmt first, then raw
-    for subdir in ["hmt", "raw"]:
-        p = tables_dir / subdir / f"{table_id}.json"
-        if p.exists():
-            with open(p, "r", encoding="utf-8") as f:
-                table = json.load(f)
-            table["table_id"] = table_id
-            return table
+    # Try multiple directory layouts: some HiTab downloads nest tables
+    # under data/tables/{hmt,raw}/, others under data/tables/tables/{hmt,raw}/.
+    search_roots = [tables_dir]
+    nested = tables_dir / "tables"
+    if nested.is_dir():
+        search_roots.insert(0, nested)  # prefer nested if it exists
+
+    for tdir in search_roots:
+        for subdir in ["hmt", "raw"]:
+            p = tdir / subdir / f"{table_id}.json"
+            if p.exists():
+                with open(p, "r", encoding="utf-8") as f:
+                    table = json.load(f)
+                table["table_id"] = table_id
+                return table
 
     logger.warning("Table %s not found", table_id)
     return None
