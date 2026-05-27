@@ -143,6 +143,77 @@ workers") fall through to the reader where the LLM does what it is good
 at — reading. The split is enforced by construction, not by hoping the
 LLM behaves.
 
+### Why this split — prior-work grounding
+
+The "LLM picks cells, code computes" split is not invented here. Three
+layers of prior work motivate it; the third is the one that makes it
+specifically a *good fit for HiTab* (rather than just a generally
+reasonable idea for table QA).
+
+**Layer 1 — General numerical reasoning: PoT / PAL.**
+*Program-of-Thoughts* (Chen et al., 2022) and *PAL: Program-Aided
+Language Models* (Gao et al., ICML 2023) both show that on GSM8K / SVAMP
+/ AQuA, replacing free-form Chain-of-Thought with *"LLM emits a program,
+deterministic interpreter executes"* gives +8 – 15 pp accuracy. The
+failure mode they target — LLMs hallucinate digits during multi-step
+arithmetic even when the reasoning is right — is the same failure mode
+this pipeline targets. Restricting the expression vocabulary to declared
+variables + `+ - * / ( )` is PAL's "constrained code emission" applied
+to our task (full Python would re-introduce hallucination surface).
+
+Empirical backing for *why* arithmetic is the dangerous step:
+Patel et al. (NAACL 2021, SVAMP) show LLMs solve 1-op problems but
+collapse on multi-op; Frieder et al. (NeurIPS 2023) show GPT-4 still
+makes consistent multi-digit arithmetic errors. Our H3 result reproduces
+the same pattern on HiTab's hard subset (reader-only arithmetic = 0.125,
+symbolic = 0.375 on `comparison_or_count`).
+
+**Layer 2 — Table QA specifically: Binder / Dater / Chain-of-Table.**
+- *Binder* (Cheng et al., ICLR 2023) — LLM emits SQL/Python with
+  language-extensions, deterministic execution on the table. SOTA on
+  WikiTQ at the time.
+- *Dater* (Ye et al., SIGIR 2023) — table QA decomposed into
+  *(a) sub-table extraction, (b) sub-question decomposition,
+  (c) SQL execution*. The skeleton "LLM decides what to look at, code
+  computes" is identical to ours.
+- *Chain-of-Table* (Wang et al., ICLR 2024) — sequential table
+  operations; same separation principle.
+
+We use a tiny `header_path + expression` DSL rather than SQL because
+HiTab's headers are **hierarchical** and don't fit SQL's flat-column
+model cleanly. Functionally it is Binder's sub-table extraction
+specialised to hierarchical tables.
+
+**Layer 3 — HiTab's own supervision structure (the closest fit).**
+This is the layer that makes the split *task-appropriate*, not just
+*generally defensible*. Each HiTab sample's gold annotation is:
+
+- `aggregation: ["sum" | "diff" | "div" | ...]`
+- `answer_formulas: ["=B20+B21+B22"]`  (Excel-style)
+- a numeric answer that is the *result* of evaluating that formula
+
+i.e. the gold itself is structured as *(cell references, arithmetic
+expression)*. Our intermediate representation `{cells, expression}` is
+structurally homomorphic to HiTab's gold. The symbolic stage is, in
+effect, reconstructing the gold's shape at inference time and then
+executing it. No other table-QA benchmark we are aware of ships gold in
+this form — so this is the strongest argument that the PoT/PAL pattern
+fits *this* task in particular, not just table QA in general.
+
+Why this matters for the design choices:
+
+| Factor | Generic RAG | HiTab hard subset |
+|---|---|---|
+| Gold supplied as formulas | No | **Yes** (`answer_formulas`) — our IR matches it 1:1 |
+| Hierarchical headers | Usually flat | **Yes** — header-path abstraction needed, SQL unsuitable |
+| Multi-op arithmetic share | Mixed | **16 / 40** (`multi_op_formula` + `arithmetic_agg`) — ROI of the split is high |
+| Free 8B-class LLM constraint | Optional | Required by setup — arithmetic hallucination far worse than at 70B+, deterministic exec is *necessary*, not just nice |
+
+So the design is best read as: PoT/PAL's "program emission + deterministic
+execution" pattern, narrowed by Binder/Dater's table-QA experience to a
+header-path DSL instead of SQL, chosen because HiTab's gold *is itself*
+shaped like `{cells, formula}`.
+
 ### Detailed data flow (what runs and what is produced)
 
 Same pipeline as above, but annotated with the function call that runs
