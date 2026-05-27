@@ -84,6 +84,65 @@ The LLM is used in **two narrowly scoped roles**: cell-extractor (JSON
 emitter for arithmetic) and reader (natural-language answer for lookup /
 arg / comparison classes). It never does the arithmetic itself.
 
+### Design idea: why arithmetic is split from reading
+
+Consider a query like *"sum of Apple's monthly revenue"*. The naive
+approach — hand the table to an LLM and ask it to compute — produces
+*arithmetic hallucinations* (the model confidently outputs
+5371 + 4892 = 10363). This pipeline rests on a single assumption:
+
+> **The LLM is good at picking *which* cells to read (semantic header
+> matching). It is not good at computing on them. Arithmetic belongs in
+> deterministic code.**
+
+So the SYMBOLIC stage splits the task in two roles, each given to the
+component that is actually good at it.
+
+**1. Cell selection (LLM's job).** The extractor prompt asks for a tiny
+JSON only — no calculation, no natural-language math:
+
+```json
+{
+  "cells": [
+    {"var": "x1", "row_header": "apple", "col_header": "jan revenue"},
+    {"var": "x2", "row_header": "apple", "col_header": "feb revenue"},
+    {"var": "x3", "row_header": "apple", "col_header": "mar revenue"}
+  ],
+  "expression": "x1 + x2 + x3"
+}
+```
+
+- Cells are addressed by **header path**, not Excel coords — works on
+  HiTab's hierarchical headers where one logical column may span several
+  physical columns.
+- The expression vocabulary is restricted to *declared variables* and
+  `+ - * / ( )`. The LLM cannot smuggle a number into the expression.
+
+**2. Header → value resolution (deterministic).**
+`OriginalTable.resolve(row_header, col_header)` walks the parsed 2-D
+structure and returns the actual numeric cell. No LLM in the loop, so
+hallucinated numbers cannot enter. If a header doesn't match any cell,
+the stage fails fast (`unresolved_cell`) rather than guessing.
+
+**3. Safe AST evaluation (deterministic).** Python's `eval()` is never
+called. The expression is parsed with `ast.parse(..., mode="eval")` and
+walked with a node whitelist (`BinOp`, `UnaryOp`, `Constant`, `Name`
+only). Anything else — `Call`, `Attribute`, `Import` — aborts with
+`ValueError`. Tested with `__import__("os").system(...)` payloads.
+
+**4. Adoption gate.** Even on success, the symbolic answer is adopted
+only when the expression is non-trivial (≥ 2 operators, or arithmetic
+intent with ≥ 2 cells). Otherwise control falls through to the reader.
+This prevents a spurious single-variable extraction `x1` from displacing
+a correct name-answer the reader would have produced.
+
+Net effect: queries that are genuinely arithmetic ("sum of Apple's
+monthly revenue") flow through this path and return a number computed
+from real cell values; queries that aren't ("which area had the least
+workers") fall through to the reader where the LLM does what it is good
+at — reading. The split is enforced by construction, not by hoping the
+LLM behaves.
+
 ### Detailed data flow (what runs and what is produced)
 
 Same pipeline as above, but annotated with the function call that runs
