@@ -183,8 +183,11 @@ def main():
         final_ids = [h["table_id"] for h in res.final_ranked]
 
         r1_vec = recall_at_k(vec_ids, gold_tid, 1)
+        r5_vec = recall_at_k(vec_ids, gold_tid, 5)
+        r10_vec = recall_at_k(vec_ids, gold_tid, 10)
         r1_fin = recall_at_k(final_ids, gold_tid, 1)
         r5_fin = recall_at_k(final_ids, gold_tid, 5)
+        r10_fin = recall_at_k(final_ids, gold_tid, 10)
         mrr_fin = mrr(final_ids, gold_tid)
         ndcg_fin = ndcg_at_k(final_ids, gold_tid, 10)
 
@@ -197,8 +200,11 @@ def main():
         st = per_class[cls]
         st["n"] += 1
         st["R@1_vec"] += r1_vec
+        st["R@5_vec"] += r5_vec
+        st["R@10_vec"] += r10_vec
         st["R@1_final"] += r1_fin
         st["R@5_final"] += r5_fin
+        st["R@10_final"] += r10_fin
         st["MRR_final"] += mrr_fin
         st["nDCG@10"] += ndcg_fin
         st["EM"] += int(ans_em)
@@ -231,7 +237,7 @@ def main():
         raise
 
     print("\n=== Per-class summary ===")
-    hdr = f"{'class':24s} {'n':>3s}  {'R@1_v':>6s} {'R@1':>6s} {'R@5':>6s} {'MRR':>6s} {'nDCG':>6s}  {'EM':>5s} {'NM':>5s}  {'sym_atm':>8s} {'sym_corr':>9s}"
+    hdr = f"{'class':24s} {'n':>3s}  {'R@1_v':>6s} {'R@1':>6s} {'R@5':>6s} {'R@10':>6s} {'MRR':>6s} {'nDCG':>6s}  {'EM':>5s} {'NM':>5s}  {'sym_atm':>8s} {'sym_corr':>9s}"
     print(hdr)
     overall = Counter()
     for cls in HARD_CLASSES:
@@ -240,7 +246,7 @@ def main():
         if n == 0:
             continue
         print(f"{cls:24s} {n:3d}  "
-              f"{st['R@1_vec']/n:6.3f} {st['R@1_final']/n:6.3f} {st['R@5_final']/n:6.3f} "
+              f"{st['R@1_vec']/n:6.3f} {st['R@1_final']/n:6.3f} {st['R@5_final']/n:6.3f} {st['R@10_final']/n:6.3f} "
               f"{st['MRR_final']/n:6.3f} {st['nDCG@10']/n:6.3f}  "
               f"{st['EM']/n:5.3f} {st['NM']/n:5.3f}  "
               f"{st['symbolic_attempted']/n:8.3f} {st['symbolic_correct']/n:9.3f}")
@@ -250,7 +256,7 @@ def main():
     n = overall["n"]
     if n:
         print(f"{'OVERALL':24s} {n:3d}  "
-              f"{overall['R@1_vec']/n:6.3f} {overall['R@1_final']/n:6.3f} {overall['R@5_final']/n:6.3f} "
+              f"{overall['R@1_vec']/n:6.3f} {overall['R@1_final']/n:6.3f} {overall['R@5_final']/n:6.3f} {overall['R@10_final']/n:6.3f} "
               f"{overall['MRR_final']/n:6.3f} {overall['nDCG@10']/n:6.3f}  "
               f"{overall['EM']/n:5.3f} {overall['NM']/n:5.3f}  "
               f"{overall['symbolic_attempted']/n:8.3f} {overall['symbolic_correct']/n:9.3f}")

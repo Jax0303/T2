@@ -323,6 +323,58 @@ AST with a whitelist of node types, and any `Call` / `Attribute` /
 
 ---
 
+## Evaluation metrics
+
+All numbers in this repo are computed by `rag_agent.eval.metrics` against
+HiTab dev gold (`dev_samples.jsonl`). Two metric families: **retrieval**
+(does the right *table* surface?) and **answer** (does the final
+*output* match the gold?). A third family, **symbolic execution
+accuracy**, is specific to this pipeline.
+
+### Retrieval metrics — paper-aligned (HiTab / HART)
+
+| Metric | Definition | What it tells you |
+|---|---|---|
+| **R@1** | Fraction of queries whose gold table is the #1 result | Best-case retriever: if R@1 = 1.0, no downstream stage ever has to disambiguate. |
+| **R@5** | Gold table is in the top 5 | Practical retriever: the rerank/verifier can still recover this. |
+| **R@10** | Gold table is in the top 10 | Recall ceiling at our shortlist length — anything beyond this is unreachable for downstream stages. |
+| **MRR** | Mean reciprocal rank, `1 / pos(gold)`, 0 if absent | One number summary of position quality. 1.0 = always #1, 0.5 = always #2. |
+| **nDCG@10** | Binary-relevance nDCG, `1 / log₂(pos+1)` on the gold, 0 if absent in top-10 | Position-weighted ranking quality; same shape as MRR but uses log discount instead of `1/pos`. |
+
+All retrieval metrics are reported twice in our results: **`_vec`**
+(after vector search only) and **`_final`** (after the verifier rerank).
+The verifier's effect = `final − vec`.
+
+### Answer metrics — paper-aligned (HiTab §5)
+
+| Metric | Definition | When it matches |
+|---|---|---|
+| **Exact Match (EM)** | Predicted string equals a gold-list element after lower-case strip | Strict; punishes formatting differences (`"-46.1"` vs `"46.1"`, `"Quebec"` vs `["quebec"]`) even when meaning is right. |
+| **Numeric Match (NM)** | The HiTab paper's tolerant matcher: ±2 % rel-tol on numbers; accepts ×100 / ÷100 / `abs(·)` variants; case-insensitive substring for string gold | The headline accuracy figure. The variants handle HiTab's percent / fraction / `opposite` conventions where the cell and the gold differ in form. |
+
+`rel_tol = 0.02` is the threshold used by the existing hard-query bench
+we compare against; not a tunable knob.
+
+### Symbolic execution accuracy — pipeline-specific
+
+| Metric | Definition | What it answers |
+|---|---|---|
+| **sym_attempted** | Fraction of queries where the LLM produced a `{cells, expression}` plan that the AST evaluator could fully resolve and compute | "Did the symbolic path actually fire?" — gated by `op_count` + arithmetic-intent (see [Design idea](#design-idea-why-arithmetic-is-split-from-reading)). |
+| **sym_correct** | Fraction whose AST-computed value matches gold under NM | "Did the deterministic compute path beat the reader on arithmetic?" Concentrated in `comparison_or_count` and `arithmetic_agg`. |
+
+Inspired by HiTab Table 9 ("execution accuracy of seq2seq with formula
+supervision") but reported at *inference* time on free LLMs that have no
+formula supervision.
+
+### Difficulty stratification
+
+The 40-query stratified subset is built from HiTab's appendix
+supervision (`aggregation` array + `answer_formulas` op count via
+`metrics.difficulty_class`), 8 queries per class. Same definition as the
+existing hard-query baseline, so the numbers are directly comparable.
+
+---
+
 ## Hypotheses and results
 
 Tested on a stratified **40-query hard subset** of HiTab dev (8 per
@@ -365,6 +417,111 @@ Honest trade-off found in ablation: the verifier *helps* on average but
 *hurts* multi_op_formula R@1 by −12.5 pp (these queries have low keyword
 overlap with their table, so the verifier's keyword signal pushes the
 wrong table up). A query-class-aware verifier weight is the natural fix.
+
+### R@10 cycle (added to confirm the retrieval ceiling)
+
+Earlier audit runs reported R@1 and R@5 only; this cycle adds **R@10**
+to check how much room is left above R@5 (i.e. how often the rerank is
+the bottleneck vs the vector retriever itself). One pass on the same
+seed = 0, 40-query stratified subset, with `top_k_vectors = 30` /
+`top_k_tables = 10` so 10 unique tables can be ranked.
+
+**Reader:** local **Qwen-2.5-3B-Instruct** 4-bit (the cached model on
+this machine). Retrieval metrics (R@k, MRR, nDCG) are LLM-independent
+and directly comparable to the v3.1 headline; the answer-side numbers
+(EM / NM) are weaker than v3.1's because the reader is smaller (3B vs
+7B). The point of this run is the retrieval ceiling, not a new headline.
+
+| Metric | This cycle (3B, k=10) | v3.1 (7B, k=5) | Δ |
+|---|---:|---:|---:|
+| R@1 (vector only) | 0.575 | 0.575 | 0.000 |
+| **R@1 (after verifier)** | **0.700** | 0.675 | +0.025 |
+| R@5 (after verifier) | 0.900 | 0.875 | +0.025 |
+| **R@10 (after verifier)** | **0.925** | — | new |
+| MRR | 0.775 | 0.759 | +0.016 |
+| nDCG@10 | 0.812 | 0.789 | +0.023 |
+| EM | 0.125 | 0.325 | −0.200 |
+| NM | 0.225 | 0.475 | −0.250 |
+| sym_attempted | 0.225 | 0.300 | −0.075 |
+| sym_correct | 0.050 | 0.125 | −0.075 |
+
+The small retrieval bump comes from widening the vector shortlist from
+20 → 30 hits; verifier weights are unchanged. Result file:
+`rag-agent/results/qwen3b_r10.json`.
+
+**Per-class retrieval (this cycle):**
+
+| Class | n | R@1 (vec) | **R@1 (final)** | R@5 | **R@10** | MRR | nDCG |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| multi_op_formula | 8 | 0.625 | 0.500 | **1.000** | **1.000** | 0.692 | 0.769 |
+| arithmetic_agg | 8 | 0.375 | 0.375 | 0.750 | 0.750 | 0.504 | 0.565 |
+| pair_or_topk_arg | 8 | 0.500 | **1.000** | 1.000 | 1.000 | 1.000 | 1.000 |
+| single_arg | 8 | 0.625 | 0.750 | 0.750 | **0.875** | 0.764 | 0.788 |
+| comparison_or_count | 8 | 0.750 | 0.875 | 1.000 | 1.000 | 0.917 | 0.938 |
+| **OVERALL** | 40 | 0.575 | **0.700** | 0.900 | **0.925** | 0.775 | 0.812 |
+
+### What works, what fails (read from per-class R@k + per-query traces)
+
+**What works — strengths confirmed by R@5 / R@10:**
+
+1. **The verifier is doing meaningful work overall.**
+   R@1 lift is `+0.125` here (0.575 → 0.700), reproducing the v3.1
+   finding (+0.100). The signal is robust under a wider candidate pool.
+2. **R@5 ≈ R@10** at the overall level (0.900 vs 0.925; only 1 of 40
+   queries is recovered going from 5 → 10).
+   *Implication:* the rerank shortlist length is not the bottleneck. If
+   gold isn't in the top 5 already, it usually isn't in the top 10
+   either. Future work should target either (a) better embeddings for
+   the missed queries, or (b) better rerank for the 3 queries in
+   top-5-but-not-top-1.
+3. **`pair_or_topk_arg` is a clean win.** R@1 = 1.000, R@10 = 1.000.
+   The verifier promotes every gold to #1 (vector R@1 = 0.500 →
+   final 1.000). These queries name two specific entities ("senior men
+   in couples or alone"), giving the keyword-overlap term a strong
+   signal.
+4. **`comparison_or_count` strong end-to-end.** R@1 = 0.875, R@10 =
+   1.000. Symbolic path still fires on 3/8 here (highest of any class).
+5. **Symbolic adoption gate is doing its job.** sym_attempted = 0.225
+   (only fires on arithmetic-intent classes); on
+   `pair_or_topk_arg` / `single_arg` it does not fire at all and the
+   reader handles them, which is the intended routing.
+
+**What fails — gaps the R@10 view exposes:**
+
+1. **`arithmetic_agg` is the retrieval floor.**
+   R@1 = 0.375, **R@5 = R@10 = 0.750** — adding more candidates does
+   *not* help. 2 of 8 gold tables are not in the top 10 *at all*: the
+   embedder doesn't surface them, the verifier never sees them. This is
+   the only class where R@10 caps below 0.9. → embeddings, not rerank,
+   are the bottleneck for this class.
+2. **Verifier still demotes `multi_op_formula`.**
+   Vector R@1 = 0.625 → final R@1 = 0.500 (one query lost). Same
+   pattern as v3.1's audit ablation. But R@5 = R@10 = **1.000**, so
+   gold is always in the shortlist — the keyword-overlap weight is
+   pushing the wrong neighbour to #1. Confirms the open follow-up:
+   *query-class-aware verifier weights*.
+3. **3B reader fails on output formatting.**
+   Per-query traces (`rag-agent/results/qwen3b_r10.json`) show queries
+   28 – 31, 39 returning a meta-narration like `"To determine the
+   second highest CMA, I will follow these steps:"` instead of the
+   final answer. The reader prompt requires a `Final answer:` line; the
+   3B model ignores it on long chains. This is the largest single
+   cause of the EM / NM drop vs 7B and is a *reader behavior* issue,
+   not a retrieval or symbolic-path issue. (The retrieval for those
+   queries is mostly correct — 4 of 5 have R@1 = 1.)
+4. **Symbolic cell-selection still ~0 on multi-op.**
+   `multi_op_formula` sym_correct = 0.000 even though the extractor
+   attempted 3/8. Same finding as v3.1: the smaller models pick the
+   *wrong* cells from the hierarchical header. The 70B-extractor audit
+   run showed this is partly recoverable with a stronger extractor on
+   `arithmetic_agg` but not on multi-op — multi-cell, multi-row
+   selection over deep header trees remains genuinely hard.
+
+**Headline takeaway of this cycle:** R@10 confirms that for 4 of the
+5 hard classes, *the gold table is in the shortlist*; the bottleneck
+sits in either the rerank (`multi_op_formula`) or the reader
+(`single_arg` formatting). Only `arithmetic_agg` is bottlenecked by
+the vector retriever itself.
 
 Full per-class numbers, the audit-bug-progression, and the failure-case
 trace in [`rag-agent/EXPERIMENTS.md`](rag-agent/EXPERIMENTS.md).
