@@ -1,0 +1,20 @@
+# Ablation: oracle retrieval — gold table given directly (reader upper bound)
+llm: "local:Qwen/Qwen2.5-7B-Instruct"
+symbolic_llm: null
+embedder: "BAAI/bge-large-en-v1.5"
+serializer: "plain_markdown"
+retriever_device: "cpu"
+
+per_class: 8
+top_k_vectors: 20
+top_k_tables: 5
+w_vector: 0.7
+w_verify: 0.3
+seed: 0
+
+extractor: "original"
+no_verify: false
+no_symbolic: false
+oracle_retrieval: true
+
+out: "results/ablation_oracle_retrieval.json"

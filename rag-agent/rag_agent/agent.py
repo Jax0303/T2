@@ -20,6 +20,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from .extract.cell_extractor import extract_plan
+from .extract.decomposition_extractor import extract_plan_decomposed
 from .extract.symbolic_eval import evaluate_plan
 from .llm.base import BaseLLM
 from .retrieve.verifier import rerank, verify_against_original
@@ -116,6 +117,10 @@ class RAGAgent:
         top_k_tables: int = 5,
         w_vector: float = 0.7,
         w_verify: float = 0.3,
+        extractor: str = "original",
+        use_verify: bool = True,
+        use_symbolic: bool = True,
+        oracle_retrieval: bool = False,
     ) -> None:
         self.original = original_store
         self.vector = vector_store
@@ -125,11 +130,23 @@ class RAGAgent:
         self.top_k_tables = top_k_tables
         self.w_vector = w_vector
         self.w_verify = w_verify
+        self.extractor = extractor
+        self.use_verify = use_verify
+        self.use_symbolic = use_symbolic
+        self.oracle_retrieval = oracle_retrieval
 
-    def run(self, query: str) -> AgentResult:
+    def run(self, query: str, gold_table_id: Optional[str] = None) -> AgentResult:
         t0 = time.time()
         intent = classify_query(query)
         plan = plan_stages(intent)
+
+        # Override plan stages based on agent-level ablation flags
+        if not self.use_verify:
+            plan.stages = [s for s in plan.stages if s != Stage.VERIFY]
+            plan.reason += " [verify OFF]"
+        if not self.use_symbolic:
+            plan.stages = [s for s in plan.stages if s != Stage.SYMBOLIC]
+            plan.reason += " [symbolic OFF]"
 
         out = AgentResult(
             query=query,
@@ -138,36 +155,46 @@ class RAGAgent:
             plan={"stages": [s.value for s in plan.stages], "reason": plan.reason},
         )
 
-        if Stage.RETRIEVE in plan.stages:
+        # --- oracle retrieval: skip vector search, use gold table directly ---
+        if self.oracle_retrieval and gold_table_id:
+            out.top_table_id = gold_table_id
+            out.final_ranked = [{"table_id": gold_table_id, "vector_score": 1.0,
+                                 "verify_confidence": 1.0, "final_score": 1.0}]
+            hits = []
+        elif Stage.RETRIEVE in plan.stages:
             hits = self.vector.search(query, self.top_k_vectors, self.top_k_tables)
             out.vector_ranked = [h.to_dict() for h in hits]
         else:
             hits = []
 
-        if Stage.VERIFY in plan.stages and hits:
-            # For multi-cell arithmetic queries, generic header keywords like
-            # "total" / "percentage" match too many tables, so the verifier
-            # hurts more than it helps. Down-weight verify confidence and
-            # lean on the vector score in those cases.
-            if intent.qtype in (QueryType.MULTI_OP_FORMULA, QueryType.ARITHMETIC_AGG):
-                w_vec, w_ver = 0.9, 0.1
-            else:
-                w_vec, w_ver = self.w_vector, self.w_verify
-            ranked = rerank(query, hits, self.original,
-                            w_vector=w_vec, w_verify=w_ver)
-            out.final_ranked = ranked
-            out.top_table_id = ranked[0]["table_id"] if ranked else None
-        elif hits:
-            out.final_ranked = [{"table_id": h.table_id, "vector_score": h.score,
-                                 "verify_confidence": None,
-                                 "final_score": h.score} for h in hits]
-            out.top_table_id = hits[0].table_id
+        if not self.oracle_retrieval:
+            if Stage.VERIFY in plan.stages and hits:
+                # For multi-cell arithmetic queries, generic header keywords like
+                # "total" / "percentage" match too many tables, so the verifier
+                # hurts more than it helps. Down-weight verify confidence and
+                # lean on the vector score in those cases.
+                if intent.qtype in (QueryType.MULTI_OP_FORMULA, QueryType.ARITHMETIC_AGG):
+                    w_vec, w_ver = 0.9, 0.1
+                else:
+                    w_vec, w_ver = self.w_vector, self.w_verify
+                ranked = rerank(query, hits, self.original,
+                                w_vector=w_vec, w_verify=w_ver)
+                out.final_ranked = ranked
+                out.top_table_id = ranked[0]["table_id"] if ranked else None
+            elif hits:
+                out.final_ranked = [{"table_id": h.table_id, "vector_score": h.score,
+                                     "verify_confidence": None,
+                                     "final_score": h.score} for h in hits]
+                out.top_table_id = hits[0].table_id
 
         top_table = self.original.get(out.top_table_id) if out.top_table_id else None
 
         # --- symbolic path ---
         if Stage.SYMBOLIC in plan.stages and top_table is not None:
-            plan_obj = extract_plan(self.symbolic_llm, query, top_table)
+            if self.extractor == "decomposition":
+                plan_obj = extract_plan_decomposed(self.symbolic_llm, query, top_table)
+            else:
+                plan_obj = extract_plan(self.symbolic_llm, query, top_table)
             sym = evaluate_plan(plan_obj, top_table)
             # Gate: only adopt symbolic answer when (a) eval succeeded AND
             # (b) the expression is non-trivial (≥2 operators OR multi-cell).

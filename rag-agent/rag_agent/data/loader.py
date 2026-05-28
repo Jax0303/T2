@@ -51,18 +51,12 @@ def load_samples(
 def load_table(table_id: str, data_dir: str = DEFAULT_DATA_DIR) -> Optional[dict]:
     """Load a single table by table_id."""
     root = _find_data_root(data_dir)
-    tables_dir = root / "data" / "tables"
+    # Some unzips end up with data/tables/tables/{hmt,raw}/ — try both depths.
+    base_candidates = [root / "data" / "tables", root / "data" / "tables" / "tables"]
 
-    # Try multiple directory layouts: some HiTab downloads nest tables
-    # under data/tables/{hmt,raw}/, others under data/tables/tables/{hmt,raw}/.
-    search_roots = [tables_dir]
-    nested = tables_dir / "tables"
-    if nested.is_dir():
-        search_roots.insert(0, nested)  # prefer nested if it exists
-
-    for tdir in search_roots:
+    for base in base_candidates:
         for subdir in ["hmt", "raw"]:
-            p = tdir / subdir / f"{table_id}.json"
+            p = base / subdir / f"{table_id}.json"
             if p.exists():
                 with open(p, "r", encoding="utf-8") as f:
                     table = json.load(f)
