@@ -51,16 +51,17 @@ def load_samples(
 def load_table(table_id: str, data_dir: str = DEFAULT_DATA_DIR) -> Optional[dict]:
     """Load a single table by table_id."""
     root = _find_data_root(data_dir)
-    tables_dir = root / "data" / "tables"
+    # Some unzips end up with data/tables/tables/{hmt,raw}/ — try both depths.
+    base_candidates = [root / "data" / "tables", root / "data" / "tables" / "tables"]
 
-    # Try hmt first, then raw
-    for subdir in ["hmt", "raw"]:
-        p = tables_dir / subdir / f"{table_id}.json"
-        if p.exists():
-            with open(p, "r", encoding="utf-8") as f:
-                table = json.load(f)
-            table["table_id"] = table_id
-            return table
+    for base in base_candidates:
+        for subdir in ["hmt", "raw"]:
+            p = base / subdir / f"{table_id}.json"
+            if p.exists():
+                with open(p, "r", encoding="utf-8") as f:
+                    table = json.load(f)
+                table["table_id"] = table_id
+                return table
 
     logger.warning("Table %s not found", table_id)
     return None

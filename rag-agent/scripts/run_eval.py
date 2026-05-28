@@ -26,6 +26,8 @@ import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
+import yaml
+
 THIS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = THIS_DIR.parent.parent
 sys.path.insert(0, str(REPO_ROOT / "rag-agent"))
@@ -60,6 +62,8 @@ def stratified_hard_subset(samples, per_class: int, seed: int = 0):
 
 def build_arg_parser():
     p = argparse.ArgumentParser()
+    p.add_argument("--config", default=None,
+                   help="YAML config file. CLI args override config values.")
     p.add_argument("--data-dir", required=True,
                    help="HiTab data root (contains data/{dev_samples.jsonl,tables/}).")
     p.add_argument("--chroma-dir", required=True,
@@ -81,11 +85,35 @@ def build_arg_parser():
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--out", default="results/rag_agent_eval.json")
     p.add_argument("--limit", type=int, default=0, help="Cap total queries (0 = all chosen).")
+    p.add_argument("--extractor", choices=["original", "decomposition"], default="original",
+                   help="Cell extraction strategy: original (single-shot) or decomposition (two-phase).")
+    p.add_argument("--no-verify", action="store_true", help="Ablation: disable verifier reranking.")
+    p.add_argument("--no-symbolic", action="store_true", help="Ablation: disable symbolic path entirely.")
+    p.add_argument("--oracle-retrieval", action="store_true",
+                   help="Ablation: use gold table directly (skip vector search). Upper bound for reader.")
     return p
+
+
+def _merge_config(args):
+    """Load YAML config and let CLI args override."""
+    if not args.config:
+        return args
+    with open(args.config, "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f) or {}
+    parser = build_arg_parser()
+    defaults = vars(parser.parse_args([]))
+    # Only override with config values when CLI was not explicitly set
+    cli_dict = vars(args)
+    for k, v in cfg.items():
+        k_norm = k.replace("-", "_")
+        if k_norm in cli_dict and cli_dict[k_norm] == defaults.get(k_norm):
+            cli_dict[k_norm] = v
+    return args
 
 
 def main():
     args = build_arg_parser().parse_args()
+    args = _merge_config(args)
 
     print("[1/5] Loading HiTab dev samples ...")
     samples = load_hitab(data_dir=args.data_dir, split="dev")
@@ -139,6 +167,10 @@ def main():
         top_k_tables=args.top_k_tables,
         w_vector=args.w_vector,
         w_verify=args.w_verify,
+        extractor=args.extractor,
+        use_verify=not args.no_verify,
+        use_symbolic=not args.no_symbolic,
+        oracle_retrieval=args.oracle_retrieval,
     )
 
     per_class = {cls: Counter() for cls in HARD_CLASSES}
@@ -171,7 +203,7 @@ def main():
             continue
         t0 = time.time()
         try:
-            res = agent.run(q)
+            res = agent.run(q, gold_table_id=gold_tid)
         except Exception as e:
             print(f"  ✗ run failed on query {i} ({cls}): {type(e).__name__}: {e}")
             _save_partial(args.out, populations, per_class, rows, args,
