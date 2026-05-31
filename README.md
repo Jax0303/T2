@@ -823,6 +823,9 @@ numbers above can be re-derived from those traces.
   report: hardware, software, every metric with paper citation,
   v1 → v3.1 run-by-run progression, the four audit-bug fixes, and the
   multi-seed / ablation / 70B-extractor / CI tables.
+- [`rag-agent/DEMO_QUERIES.md`](rag-agent/DEMO_QUERIES.md) — 21 curated
+  queries (18 robust HiTab dev cases + 3 authored softballs) verified to
+  produce the gold answer. Use this set when showing the system live.
 
 ---
 
