@@ -826,6 +826,309 @@ numbers above can be re-derived from those traces.
 
 ---
 
+## 쿼리 처리 흐름 — 코드 관점에서 (한국어)
+
+`rag-agent/scripts/codegen_eval.py` 한 파일에 전체 파이프라인이 구현돼있다.
+*한 줄의 쿼리가 어떤 함수들을 거치는지* 순서대로 설명한다.
+
+### 0. 시작점 — 함수 진입
+
+```bash
+# CLI 진입
+./codegen_eval.py --query "52% of family class immigrants came from south asia..."
+```
+
+내부적으로 `ask_one(query)` 가 호출된다 (codegen_eval.py:911).
+`ask_one()` 은 평가용 `run_pipeline()` 의 단일쿼리 버전 — 본질은 같다.
+
+### 1. 자원 로드 (한 번만, 캐시됨)
+
+```python
+# ask_one._cache 에 저장 — 두 번째 호출부터는 재사용
+samples = load_samples("dev")                  # HiTab 1671 샘플
+orig_db = OriginalDB()                          # 빈 키워드 스토어
+for s in samples:
+    raw = load_table(s["table_id"])             # 테이블 JSON 파싱
+    orig_db.add(raw)                            # 토큰 인덱스에 추가
+vdb     = VectorDB(CHROMA_DIR)                  # Chroma + bge-large
+llm     = LocalQwen()                           # Qwen-7B-4bit on GPU
+```
+
+이 시점에:
+- `orig_db`: 540개 ParsedTable + 토큰 set 인덱스
+- `vdb`: 540개 임베딩 (테이블 직렬화 텍스트 한 줄당 1 벡터)
+- `llm`: GPU에 떠있는 모델
+
+### 2. 라우팅 — `classify_query(query)`
+
+```python
+def classify_query(q):
+    if len(_MATH_SYM.findall(q)) >= 2:           # +, -, *, / 두 개 이상
+        return QueryRoute("codegen", needs_code=True, ...)
+    if _ARITH_PAT.search(q):                     # "sum of", "increased", "by N%" 등
+        return QueryRoute("vdb_codegen", needs_code=True, ...)
+    if _CMP_PAT.search(q):                       # "greater", "twice", "compared" 등
+        return QueryRoute("vdb_codegen", needs_code=True, ...)
+    if _ARG_PAT.search(q):                       # "highest", "largest" 등
+        return QueryRoute("vdb_codegen", needs_code=True, ...)
+    if _RANGE_NUM_PAT.search(q):                 # "from X to Y"
+        return QueryRoute("vdb_codegen", needs_code=True, ...)
+    if _PCT_NUM_PAT.search(q) and ...:           # "by 4%" 같은 형식
+        return QueryRoute("vdb_codegen", needs_code=True, ...)
+    if _ENTITY_PAT.match(q):                     # "who/which/what" 으로 시작
+        return QueryRoute("vdb_codegen", needs_code=True, ...)
+    return QueryRoute("direct_lookup", needs_code=False, ...)
+```
+
+`QueryRoute` 는 단순 dataclass: `(route_name, needs_code, reason)`.
+
+### 3. 검색 — 라우트에 따라 다른 인덱스
+
+```python
+if route.route == "direct_lookup":
+    hits = orig_db.keyword_search(query, top_k=5)
+    # → Jaccard-like 토큰 overlap. 상위 5개 (table_id, score)
+else:
+    hits = vdb.search(query, top_k=5)
+    # → 쿼리 임베딩 vs 540개 벡터의 cosine. 상위 5개
+
+found_table = orig_db.get(hits[0][0])             # ParsedTable 객체
+```
+
+`ParsedTable` 의 핵심 메서드:
+
+```python
+table.to_text()         # LLM에 보여줄 텍스트
+table.to_csv_string()   # 코드 실행용 평탄화 CSV
+table.col_headers       # [[hdr1, hdr2, ...], ...] 컬럼 path 리스트
+table.row_headers       # [[hdr1, hdr2, ...], ...] 행 path 리스트
+table.data              # 2D 값 리스트
+```
+
+### 4-A. 코드 생성 — `generate_code(llm, query, table)`
+
+```python
+def generate_code(llm, query, table):
+    table_text = table.to_text()                  # 컬럼 명 + 처음 30행 미리보기
+    rh_block   = "Row labels:\n" + "\n".join(...) # row_header 첫 20개 나열
+    user_prompt = (
+        f"Table:\n{table_text}\n\n{rh_block}\n\n"
+        f"Question: {query}\n\n"
+        "Reminder: pass distinguishing SUBSTRINGS to find_col/find_rows/cell. ..."
+    )
+    raw = llm.complete(CODEGEN_SYSTEM, user_prompt, max_tokens=600)
+    #          ^ system prompt에 헬퍼 사용법 + 6개 예제
+
+    # 마크다운 블록만 추출
+    m = re.search(r"```python\s*\n(.*?)\n```", raw, re.DOTALL)
+    return m.group(1).strip()
+```
+
+`CODEGEN_SYSTEM` (시스템 프롬프트) 의 핵심:
+
+```
+You are a Python code generator for table question answering.
+You are given a pandas DataFrame `df` and a question about the table.
+
+Safe helpers (already defined — USE THESE):
+- find_col(*substrs)         → first column whose lowercase contains EVERY substr
+- find_rows(*substrs)        → DataFrame of rows where row_header contains EVERY substr
+- cell(row_substrs, col_substrs) → float at intersection
+- colnum(col)                → pd.to_numeric(df[col], errors='coerce')
+
+Rules:
+- ALWAYS use find_col to locate a column
+- ALWAYS check len before .iloc[0], or use cell(...)
+- Store final answer in `result`. print(result) at end.
+
+[6개 예제: sum, argmax, difference, ratio, row-label answer, comparison]
+```
+
+LLM이 답하는 형식 예시:
+
+````
+```python
+c17 = find_col("revenue", "2017")
+c18 = find_col("revenue", "2018")
+result = float(colnum(c17).sum() + colnum(c18).sum())
+print(result)
+```
+````
+
+### 4-B. 코드 실행 — `execute_code(code, table)`
+
+```python
+def execute_code(code, table):
+    csv_data = table.to_csv_string()              # 첫 컬럼 row_header, 나머지 path-style
+
+    # LLM 코드 위에 wrapper 자동 prepend
+    wrapper = f"""
+import pandas as pd, math, re, io
+df = pd.read_csv(io.StringIO({csv_data!r}))
+
+def find_col(*substrs):
+    subs = [s.lower() for s in substrs]
+    cands = [c for c in df.columns if c != 'row_header'
+             and all(s in c.lower() for s in subs)]
+    if not cands: raise ValueError(...)
+    return min(cands, key=len)
+
+def find_rows(*substrs):
+    mask = df['row_header'].apply(
+        lambda v: all(s in str(v).lower() for s in substrs))
+    return df.loc[mask]
+
+def cell(row_subs, col_subs):
+    rows = find_rows(*as_list(row_subs))
+    if len(rows) == 0: raise ValueError(...)
+    col = find_col(*as_list(col_subs))
+    return float(pd.to_numeric(rows[col], errors='coerce').dropna().iloc[0])
+
+def colnum(col):
+    return pd.to_numeric(df[col], errors='coerce')
+
+# --- LLM이 생성한 코드 ---
+{code}
+"""
+
+    # /tmp 에 파일 쓰고 subprocess 실행
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', dir='/tmp') as f:
+        f.write(wrapper)
+        proc = subprocess.run(
+            [python_bin, f.name],
+            capture_output=True, text=True,
+            timeout=10,
+        )
+    return (proc.returncode == 0, proc.stdout.strip(), proc.stderr.strip())
+```
+
+stdout 의 마지막 줄이 답.
+
+### 4-C. (코드 안 짤 때) 직접 답변 — `direct_answer(llm, query, table)`
+
+```python
+def direct_answer(llm, query, table):
+    table_text = table.to_text()
+    user_prompt = f"Table:\n{table_text}\n\nQuestion: {query}"
+    return llm.complete(DIRECT_ANSWER_SYSTEM, user_prompt, max_tokens=200)
+```
+
+`DIRECT_ANSWER_SYSTEM`:
+
+```
+You are a precise table QA assistant.
+Output ONLY the final answer value (number or name). No explanation.
+```
+
+코드 실행 실패 시에도 fallback 으로 호출된다.
+
+### 5. 채점 — `numeric_match(pred, gold)`
+
+```python
+def numeric_match(pred, gold, rel_tol=0.02):
+    g_nums = _to_nums(gold)
+    p_nums = _to_nums(pred)
+    if g_nums:
+        # 4가지 스케일 변형 시도
+        p_variants = [
+            {round(x, 2) for x in p_nums},        # raw
+            {round(x*100, 2) for x in p_nums},    # 0.17 → 17
+            {round(x/100, 4) for x in p_nums},    # 17 → 0.17
+            {round(abs(x), 2) for x in p_nums},   # -41 → 41
+        ]
+        for g in g_nums:
+            for gc in [g, g*100, g/100, abs(g)]:
+                for pv in p_variants:
+                    if gc in pv: return True
+                    if any(abs(pn-gc)/max(abs(gc),1e-9) < rel_tol for pn in pv):
+                        return True
+    # 문자열은 양방향 substring 매칭
+    ...
+```
+
+---
+
+### 실제 한 쿼리가 어떻게 처리됐는지 (구체 trace)
+
+쿼리:
+> `"52% of family class immigrants came from south asia, east asia and western developed countries."`
+
+```
+[1] classify_query(query)
+    → "by N%" 패턴 안 잡힘, "from X" 단발 매칭 안 됨
+    → "_PCT_NUM_PAT + relator" 가 잡힘 ("52% ... of ...")
+    → QueryRoute(route="vdb_codegen", needs_code=True,
+                 reason="percent number with relator")
+
+[2] vdb.search(query, top_k=5)
+    → 임베딩 → 540 vectors와 cosine
+    → top1: ("2793", score=0.638)
+    → found_table = orig_db.get("2793")   # 이민자 테이블
+
+[3] table.to_text()
+    """Title: family class immigrants by region of origin
+       Columns:
+         col[0]: family class > total
+         col[1]: family class > percent
+         col[2]: economic class > total
+         ...
+       Data:
+         row[0]  (total): 78380 | 100 | 117390 | ...
+         row[14] (percent > source region > southern asia): - | 19.4 | - | ...
+         row[20] (percent > source region > east asia): - | 18.6 | - | ...
+         row[22] (percent > source region > western developed): - | 13.5 | - | ...
+         ..."""
+
+[4] generate_code(llm, query, table)
+    LLM 응답 추출:
+    """
+    family_class_col = "family class"
+    south_asia = pd.to_numeric(df.loc[
+        df['row_header'].str.contains('percent > source region > southern asia'),
+        family_class_col], errors='coerce').iloc[0]
+    east_asia = pd.to_numeric(df.loc[
+        df['row_header'].str.contains('percent > source region > east asia'),
+        family_class_col], errors='coerce').iloc[0]
+    western_developed = pd.to_numeric(df.loc[
+        df['row_header'].str.contains('percent > source region > western developed'),
+        family_class_col], errors='coerce').iloc[0]
+    result = south_asia + east_asia + western_developed
+    print(result)
+    """
+
+[5] execute_code(code, table)
+    → /tmp 에 wrapper 포함된 .py 파일 작성
+    → subprocess 실행, stdout = "51.5"
+
+[6] numeric_match(pred="51.5", gold=[51.5])
+    → g_nums = [51.5], p_nums = [51.5]
+    → 51.5 ∈ {51.5}  → True
+
+[7] 정답 ✓
+```
+
+이게 *코드를 어떻게 짰는가* 의 풀 사이클이다. LLM은 단계 [4]에서만 호출된다 — 한 번.
+나머지는 전부 deterministic 코드 (regex, set 연산, pandas, subprocess).
+
+---
+
+### 핵심 디자인 선택 3가지
+
+1. **LLM이 자유롭게 pandas 쓰지 못하게 헬퍼로 wrap.**
+   `find_col("revenue", "2017")` 같이 substring 기반으로 column 을 찾게 강제.
+   실제로는 LLM 이 헬퍼를 무시하고 원시 pandas 를 쓰는 경우도 많다 (위 trace 도 그렇다).
+
+2. **테이블 인덱스 두 개 분리.**
+   키워드(빠르고 정확) vs 벡터(의미). 라우터가 어떤 걸 쓸지 결정.
+   둘 다 같은 테이블 540개를 인덱싱한다 — 차이는 *내용* 이 아니라 *인덱스 타입* 이다.
+
+3. **샌드박스를 subprocess 로.**
+   Docker 안 띄움. 어차피 LLM 생성 코드라 무한루프 정도가 위험인데,
+   `subprocess.run(..., timeout=10)` 으로 막는다.
+   환경변수 격리는 안 되어 있다 (TODO).
+
+---
+
 ## License
 
 [MIT](https://spdx.org/licenses/MIT.html)
