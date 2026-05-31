@@ -1,0 +1,956 @@
+{
+  "config": {
+    "model": "llama-3.3-70b-versatile",
+    "seed": 42,
+    "per_class": 10,
+    "ablation": "gold-table-codegen"
+  },
+  "class_stats": {
+    "multi_op_formula": {
+      "n": 10,
+      "correct": 3,
+      "code_gen": 10,
+      "code_exec_ok": 8
+    },
+    "arithmetic_agg": {
+      "n": 10,
+      "correct": 1,
+      "code_gen": 10,
+      "code_exec_ok": 7
+    },
+    "pair_or_topk_arg": {
+      "n": 10,
+      "correct": 2,
+      "code_gen": 10,
+      "code_exec_ok": 6
+    },
+    "single_arg": {
+      "n": 10,
+      "correct": 3,
+      "code_gen": 10,
+      "code_exec_ok": 5
+    },
+    "comparison_or_count": {
+      "n": 10,
+      "correct": 5,
+      "code_gen": 10,
+      "code_exec_ok": 5
+    }
+  },
+  "overall": {
+    "n": 50,
+    "correct": 14,
+    "nm_rate": 0.28,
+    "ci95": [
+      0.16,
+      0.4
+    ]
+  },
+  "rows": [
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, federal s&e obligations to academic institutions increased by 4% between fy 2013 and fy 2014.",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        0.042528
+      ],
+      "gold_formula": "=(B11-B10)/B10",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "10_112_tab1",
+      "table_correct": true,
+      "code": "col = \"all federal obligations\"\na_val = pd.to_numeric(df.loc[df['row_header'].str.contains('constant fy 2009 $millions > 2013'), col], errors='coerce').iloc[0]\nb_val = pd.to_numeric(df.loc[df['row_header'].str.contains('constant fy 2009 $millions > 2014'), col], errors='coerce').iloc[0]\nresult = ((b_val - a_val) / a_val) * 100\nprint(result)",
+      "answer": "1.05",
+      "correct": false,
+      "elapsed_s": 10.66
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "approximately three-quarters of total completed cases involving with multiple charges resulted in a guilty outcome.",
+      "gold_table": "2586",
+      "gold_answer": [
+        0.745352
+      ],
+      "gold_formula": "=(D6+D12)/D17",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2586",
+      "table_correct": true,
+      "code": "col = \"multiple-charge cases > percent\"\nvals = pd.to_numeric(df[col], errors='coerce')\nresult = vals.iloc[0]\nprint(result)",
+      "answer": "nan",
+      "correct": false,
+      "elapsed_s": 3.45
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "r&d plant funding increased substantially by 27%.",
+      "gold_table": "192_90_tab1",
+      "gold_answer": [
+        0.27367
+      ],
+      "gold_formula": "=(D13-C13)/C13",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "192_90_tab1",
+      "table_correct": true,
+      "code": "col = \"current $millions > 2017 projected\"\nproj_2017 = pd.to_numeric(df.loc[df['row_header'].str.contains('r&d plant'), col], errors='coerce').sum()\ncol = \"current $millions > 2016 preliminary\"\nprelim_2016 = pd.to_numeric(df.loc[df['row_header'].str.contains('r&d plant'), col], errors='coerce').sum()\nincrease = (proj_2017 - prelim_2016) / prelim_2016 * 100\nresult = increase\nprint(result)",
+      "answer": "1.9076514816452899",
+      "correct": false,
+      "elapsed_s": 8.06
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "35 states reported expenditures for healthrelated r&d in fy 2016, yet 83% of all state government agency expenditures on health-related r&d was reported by agencies in five states: new york , texas , california , florida , and pennsylvania.",
+      "gold_table": "164_81_tab3",
+      "gold_answer": [
+        0.834291
+      ],
+      "gold_formula": "=(F5+F6+F7+F8+F10)/F4",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "164_81_tab3",
+      "table_correct": true,
+      "code": "col = \"health\"\ncali = pd.to_numeric(df.loc[df['row_header'].str.contains('california', case=False, na=False), col], errors='coerce').iloc[0]\ntx = pd.to_numeric(df.loc[df['row_header'].str.contains('texas', case=False, na=False), col], errors='coerce').iloc[0]\nny = pd.to_numeric(df.loc[df['row_header'].str.contains('new york', case=False, na=False), col], errors='coerce').iloc[0]\nfl = pd.to_numeric(df.loc[df['row_header'].str.contains('florida', case=False, na=False), col], errors='coerce').iloc[0]\npa = pd.to_numeric(df.loc[df['row_header'].str.contains('pennsylvania', case=False, na=False), col], errors='coerce').iloc[0]\ntotal = df[col].sum()\nresult = cali + tx + ny + fl + pa\nprint(result / total * 100)",
+      "answer": "81.37507248419598",
+      "correct": true,
+      "elapsed_s": 15.48
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "52% of family class immigrants came from south asia, east asia and western developed countries.",
+      "gold_table": "2793",
+      "gold_answer": [
+        51.5
+      ],
+      "gold_formula": "=C14+C20+C22",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2793",
+      "table_correct": true,
+      "code": "family_class_col = \"family class\"\nsouth_asia = pd.to_numeric(df.loc[df['row_header'].str.contains('percent > source region > southern asia'), family_class_col], errors='coerce').iloc[0]\neast_asia = pd.to_numeric(df.loc[df['row_header'].str.contains('percent > source region > east asia'), family_class_col], errors='coerce').iloc[0]\nwestern_developed = pd.to_numeric(df.loc[df['row_header'].str.contains('percent > source region > western developed countries'), family_class_col], errors='coerce').iloc[0]\nresult = south_asia + east_asia + western_developed\nprint(result)",
+      "answer": "51.5",
+      "correct": true,
+      "elapsed_s": 12.56
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of theft, females accused accounted for 35% in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.344691
+      ],
+      "gold_formula": "=(B18+G18)/L18",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "345",
+      "table_correct": true,
+      "code": "result = 35 / 100 * pd.to_numeric(df.loc[df['col[12]'] == 'theft', 'col[12] > adult court > females > number'], errors='coerce').iloc[0]\nprint(result)",
+      "answer": "34.7",
+      "correct": true,
+      "elapsed_s": 9.03
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of fraud, females accused accounted for 33% in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.331364
+      ],
+      "gold_formula": "=(B20+G20)/L20",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "345",
+      "table_correct": true,
+      "code": "result = 106 / 31 * 100\nprint(result)",
+      "answer": "341.93548387096774",
+      "correct": false,
+      "elapsed_s": 4.48
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, federal s&e obligations to academic institutions declined by 7% from fy 2012 to fy 2013.",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        -0.072612
+      ],
+      "gold_formula": "=(B10-B9)/B9",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "10_112_tab1",
+      "table_correct": true,
+      "code": "col = \"all federal obligations\"\nfy_2012 = pd.to_numeric(df.loc[df['row_header'].str.contains('current \\$millions > 2012'), col], errors='coerce').iloc[0]\nfy_2013 = pd.to_numeric(df.loc[df['row_header'].str.contains('current \\$millions > 2013'), col], errors='coerce').iloc[0]\ndecline = ((fy_2012 - fy_2013) / fy_2012) * 100\nresult = abs(decline - 7)\nprint(result)",
+      "answer": "1.1389806359691734",
+      "correct": false,
+      "elapsed_s": 11.95
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "according to the 2014/2015 integrated criminal court survey, one in five completed court cases involved a female accused.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.185533
+      ],
+      "gold_formula": "=(B6+G6)/L6",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "345",
+      "table_correct": true,
+      "code": "total = pd.to_numeric(df['total > number'], errors='coerce').sum()\nfemales = pd.to_numeric(df['youth court > females > number'], errors='coerce').sum() + pd.to_numeric(df['adult court > females > number'], errors='coerce').sum()\nresult = females / total * 5\nprint(result)",
+      "answer": "1.0199568874689646",
+      "correct": false,
+      "elapsed_s": 9.16
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of failure to appear in court, females accused accounted for 24% in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.246448
+      ],
+      "gold_formula": "=(B25+G25)/L25",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "345",
+      "table_correct": true,
+      "code": "result = 881 / 100 * 37.4\nprint(result)",
+      "answer": "329.494",
+      "correct": false,
+      "elapsed_s": 5.5
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "those with lifetime suicidal thoughts had more than three times the odds, compared with those who never had suicidal thoughts.",
+      "gold_table": "1450",
+      "gold_answer": [
+        3.85
+      ],
+      "gold_formula": "=E32/E31",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1450",
+      "table_correct": true,
+      "code": "result = 3.85 / 1.0\nprint(result)",
+      "answer": "3.85",
+      "correct": true,
+      "elapsed_s": 3.13
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the unemployment rate of arab women was 10.7 percentage points higher than that of women who did not belong to a visible minority group.",
+      "gold_table": "765",
+      "gold_answer": [
+        10.7
+      ],
+      "gold_formula": "=B11-B18",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "765",
+      "table_correct": true,
+      "code": "arab_unemployment = pd.to_numeric(df.loc[df['visible minority'].str.contains('arab', case=False, na=False), 'total'], errors='coerce').iloc[0]\nnon_visible_unemployment = pd.to_numeric(df.loc[df['visible minority'].str.contains('not a visible minority', case=False, na=False), 'total'], errors='coerce').iloc[0]\nresult = arab_unemployment - non_visible_unemployment\nprint(result)",
+      "answer": "8.5",
+      "correct": false,
+      "elapsed_s": 9.27
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "among cases completed in youth criminal court, theft accounted for 16% of offences involving a female accused.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.161149
+      ],
+      "gold_formula": "=B18/B45",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "345",
+      "table_correct": true,
+      "code": "youth_theft = pd.to_numeric(df.loc[df['row_header'].str.contains('theft'), 'youth court > females > percent'], errors='coerce').iloc[0]\nresult = youth_theft\nprint(result)",
+      "answer": "31.9",
+      "correct": false,
+      "elapsed_s": 5.97
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "30% of homicides perpetrated by a female accused involved a victim who was either her spouse or dating partner.",
+      "gold_table": "2073",
+      "gold_answer": [
+        30
+      ],
+      "gold_formula": "=C5+C6",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2073",
+      "table_correct": true,
+      "code": "female_spouse = pd.to_numeric(df.loc[df['row_header'] == 'spouse', 'female accused > number'], errors='coerce').iloc[0]\nfemale_dating = pd.to_numeric(df.loc[df['row_header'] == 'dating or other intimate partner', 'female accused > number'], errors='coerce').iloc[0]\nresult = (female_spouse + female_dating) * 0.3\nprint(result)",
+      "answer": "48.0",
+      "correct": false,
+      "elapsed_s": 7.75
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "out-of-the-labour-force inuit were more than twice as likely as employed inuit to gather for monetary reasons.",
+      "gold_table": "2688",
+      "gold_answer": [
+        2.333333
+      ],
+      "gold_formula": "=L16/L14",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2688",
+      "table_correct": true,
+      "code": "out_of_labour_force = pd.to_numeric(df.loc[df['row_header'].str.contains('out of the labour force'), 'col[10]'], errors='coerce').iloc[0]\nemployed = pd.to_numeric(df.loc[df['row_header'].str.contains('employed'), 'col[10]'], errors='coerce').iloc[0]\nresult = out_of_labour_force / employed > 2\nprint(result)",
+      "answer": "1.3",
+      "correct": false,
+      "elapsed_s": 9.34
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the number of postdocs doing research in science fields in 2019 is similar to that in 2012, although the percentage has declined about 12 points.",
+      "gold_table": "9_11_nsf21304-tab002",
+      "gold_answer": [
+        11.6
+      ],
+      "gold_formula": "=C6-E6",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "9_11_nsf21304-tab002",
+      "table_correct": true,
+      "code": "total_2012 = pd.to_numeric(df.loc[df['2012 > total'].notna(), '2012 > total'], errors='coerce').sum()\ntotal_2019 = pd.to_numeric(df.loc[df['2019 > total'].notna(), '2019 > total'], errors='coerce').sum()\npercentage_change = (total_2019 - total_2012) / total_2012 * 100\nresult = abs(percentage_change).round()\nprint(result)",
+      "answer": "18.0",
+      "correct": false,
+      "elapsed_s": 7.99
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "approximately 71% on average of cases in each year show earnings in both the t1ff and t4.",
+      "gold_table": "1103",
+      "gold_answer": [
+        71.05
+      ],
+      "gold_formula": "=AVERAGE(B5:M5)",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1103",
+      "table_correct": true,
+      "code": "both_earnings = pd.to_numeric(df['% > both sources - earnings'], errors='coerce')\naverage_both_earnings = both_earnings.mean()\nresult = round(average_both_earnings, 1)\nprint(result)",
+      "answer": "7",
+      "correct": false,
+      "elapsed_s": 6.01
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the proportion of enterprises that stay in their 2008 size class is in the range of 38.0% to 66.0%.",
+      "gold_table": "1079",
+      "gold_answer": [
+        65.9,
+        38.9
+      ],
+      "gold_formula": "=MAX(B6,C7,D8,E9,F10,G11,H12,I13,J14)",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1079",
+      "table_correct": true,
+      "code": "result = 14.4 + 6.3 + 3.2 + 0.8 + 0.3 + 0.1\nprint(result)",
+      "answer": "25.1",
+      "correct": false,
+      "elapsed_s": 5.52
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "immigrants were more likely to be overqualified than non-immigrants.",
+      "gold_table": "2412",
+      "gold_answer": [
+        "immigrants"
+      ],
+      "gold_formula": "=D3",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2412",
+      "table_correct": true,
+      "code": "immigrants_overqualification = pd.to_numeric(df.loc[df['row_header'].str.contains('immigrants', case=False, na=False), 'total'], errors='coerce').max()\nnon_immigrants_overqualification = pd.to_numeric(df.loc[df['row_header'].str.contains('non-immigrants', case=False, na=False), 'total'], errors='coerce').max()\nresult = immigrants_overqualification - non_immigrants_overqualification\nprint(result)",
+      "answer": "nan",
+      "correct": false,
+      "elapsed_s": 7.09
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the bulk of the spending on these awards occurred in fys 2010 and 2011.",
+      "gold_table": "15_117_tab2",
+      "gold_answer": [
+        0.730469
+      ],
+      "gold_formula": "=C5/C4",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "15_117_tab2",
+      "table_correct": true,
+      "code": "row_2010 = pd.to_numeric(df.loc[0, 'all federal r&d expenditures'], errors='coerce')\nrow_2011 = pd.to_numeric(df.loc[1, 'all federal r&d expenditures'], errors='coerce')\nresult = row_2010 + row_2011 > max(row_2010, row_2011) * 2\nprint(result)",
+      "answer": "False",
+      "correct": false,
+      "elapsed_s": 7.87
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "miami gardens in florida is one of the largest u.s. cities with an african american population.",
+      "gold_table": "502_totto57437-2",
+      "gold_answer": [
+        "miami gardens, florida"
+      ],
+      "gold_formula": "=A7",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "502_totto57437-2",
+      "table_correct": true,
+      "code": "result = \"Miami Gardens, Florida\"\nprint(result)",
+      "answer": "Miami Gardens, Florida",
+      "correct": true,
+      "elapsed_s": 2.55
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "the largest increases in csi were recorded in the cmas of greater sudbury , moncton , guelph , and kitchener-cambridge-waterloo.",
+      "gold_table": "1966",
+      "gold_answer": [
+        "greater sudbury",
+        "moncton",
+        "guelph",
+        "kitchener-cambridge-waterloo"
+      ],
+      "gold_formula": "=A27",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1966",
+      "table_correct": true,
+      "code": "result = \"greater sudbury, moncton, guelph, kitchener-cambridge-waterloo\"\nprint(result)",
+      "answer": "greater sudbury, moncton, guelph, kitchener-cambridge-waterloo",
+      "correct": true,
+      "elapsed_s": 4.13
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "chinese women had higher employment rates than third-plus generation white women by observed.",
+      "gold_table": "2658",
+      "gold_answer": [
+        "chinese"
+      ],
+      "gold_formula": "=A9",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2658",
+      "table_correct": true,
+      "code": "chinese_women = pd.to_numeric(df.loc[df['row_header'].str.contains('chinese', case=False, na=False), 'observed employment rate > women'], errors='coerce').iloc[0]\nwhite_women = pd.to_numeric(df.loc[df['row_header'].str.contains('third-plus generation whites', case=False, na=False), 'observed employment rate > women'], errors='coerce').iloc[0]\nresult = chinese_women - white_women\nprint(result)",
+      "answer": "3.5",
+      "correct": false,
+      "elapsed_s": 9.73
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "people in the second-ring peripheral municipalities remain less likely than residents of central municipalities to have more larger personal networks.",
+      "gold_table": "436",
+      "gold_answer": [
+        "peripheral 2nd ring"
+      ],
+      "gold_formula": "=A14",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "436",
+      "table_correct": true,
+      "code": "central = pd.to_numeric(df.loc['odds ratios > type of municipality > central', :], errors='coerce').iloc[1]\nperipheral = pd.to_numeric(df.loc['odds ratios > type of municipality > peripheral 1st ring', :], errors='coerce').iloc[1]\nresult = central > peripheral\nprint(result)",
+      "answer": "0.74",
+      "correct": false,
+      "elapsed_s": 5.19
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "women with a degree in education who worked full time and full year had higher employment income than the median for all female degree holders who worked full time and full year.",
+      "gold_table": "2311",
+      "gold_answer": [
+        "education"
+      ],
+      "gold_formula": "=A8",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2311",
+      "table_correct": true,
+      "code": "total_female_income = pd.to_numeric(df.loc[df['row_header'].str.contains('total university degree holders'), 'women'], errors='coerce').sum()\neducation_female_income = pd.to_numeric(df.loc[df['row_header'].str.contains('education'), 'women'], errors='coerce').iloc[0]\n\nresult = education_female_income > total_female_income\nprint(result)",
+      "answer": "False",
+      "correct": false,
+      "elapsed_s": 6.31
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "women were significantly more likely than men to agree or strongly agree with the statement that people who report sexual assault are almost always telling the truth.",
+      "gold_table": "1486",
+      "gold_answer": [
+        "women"
+      ],
+      "gold_formula": "=B3",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1486",
+      "table_correct": true,
+      "code": "women_agree = pd.to_numeric(df.loc[df['row_header'] == 'people who report sexual assault are almost always telling the truth > agree or strongly agree', 'women'], errors='coerce').iloc[0]\nmen_agree = pd.to_numeric(df.loc[df['row_header'] == 'people who report sexual assault are almost always telling the truth > agree or strongly agree', 'men'], errors='coerce').iloc[0]\nresult = women_agree - men_agree\nprint(result)",
+      "answer": "64",
+      "correct": false,
+      "elapsed_s": 10.61
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "seniors aged 75 and over were significantly less likely to use technology than those aged 65 to 74.",
+      "gold_table": "1818",
+      "gold_answer": [
+        "75 and over"
+      ],
+      "gold_formula": "=D4",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1818",
+      "table_correct": true,
+      "code": "seniors_technology = pd.to_numeric(df.loc[df['row_header'].str.contains('75 and over'), 'using technology spent > 65 to 74 > hours'], errors='coerce').iloc[0]\nmiddle_age_technology = pd.to_numeric(df.loc[df['row_header'].str.contains('75 and over'), 'using technology spent > 75 and over > hours'], errors='coerce').iloc[0]\nresult = middle_age_technology - seniors_technology\nprint(result)",
+      "answer": "21",
+      "correct": false,
+      "elapsed_s": 6.7
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "the earning ratio between women and men's median income in education was 0.90 while the ratio was 0.91 in health and related fields.",
+      "gold_table": "2311",
+      "gold_answer": [
+        "health and related fields"
+      ],
+      "gold_formula": "=A6",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2311",
+      "table_correct": true,
+      "code": "result = 0.90 / 0.91\nprint(result)",
+      "answer": "0.989010989010989",
+      "correct": false,
+      "elapsed_s": 3.13
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "within lone-parent households, employed first nations women were less likely to be food secure than men.",
+      "gold_table": "334",
+      "gold_answer": [
+        "women"
+      ],
+      "gold_formula": "=C3",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "334",
+      "table_correct": true,
+      "code": "male_food_secure = pd.to_numeric(df.loc[df['row_header'].str.contains('lone-parent household', case=False, na=False) & df['col_header'].str.contains('men', case=False, na=False), 'percent > food secure household'], errors='coerce').iloc[0]\nfemale_food_secure = pd.to_numeric(df.loc[df['row_header'].str.contains('lone-parent household', case=False, na=False) & df['col_header'].str.contains('women', case=False, na=False), 'percent > food secure household'], errors='coerce').iloc[0]\nresult = male_food_secure - female_food_secure\nprint(result)",
+      "answer": "45.6",
+      "correct": false,
+      "elapsed_s": 11.83
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "older women experienced lower earnings growth than their younger counterparts.",
+      "gold_table": "2377",
+      "gold_answer": [
+        "45 to 54"
+      ],
+      "gold_formula": "=A7",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2377",
+      "table_correct": true,
+      "code": "men_se = pd.to_numeric(df['men > standard error'], errors='coerce')\nwomen_se = pd.to_numeric(df['women > standard error'], errors='coerce')\nmen_coef = pd.to_numeric(df['men > coefficient'], errors='coerce')\nwomen_coef = pd.to_numeric(df['women > coefficient'], errors='coerce')\nolder_women = women_coef[df.index >= 1].max()\nyounger_women = women_coef[df.index < 1].max()\nolder_men = men_coef[df.index >= 1].max()\nyounger_men = men_coef[df.index < 1].max()\nresult = (older_women - younger_women) - (older_men - younger_men)\nprint(result)",
+      "answer": "nan",
+      "correct": false,
+      "elapsed_s": 8.94
+    },
+    {
+      "class": "single_arg",
+      "query": "for females found guilty in ipv cases, probation was more often considered.",
+      "gold_table": "2591",
+      "gold_answer": [
+        "probation"
+      ],
+      "gold_formula": "=A8",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2591",
+      "table_correct": true,
+      "code": "result = \"probation\"\nprint(result)",
+      "answer": "probation",
+      "correct": true,
+      "elapsed_s": 2.36
+    },
+    {
+      "class": "single_arg",
+      "query": "between 2000 and 2010,the percentage of immigrants intending to settle in saskatchewan rose from less than 0.8% to 2.7%.",
+      "gold_table": "1236",
+      "gold_answer": [
+        1.9
+      ],
+      "gold_formula": "=MIN(C18-B18)",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1236",
+      "table_correct": true,
+      "code": "result = \"Saskatchewan\"\nprint(result)",
+      "answer": "Saskatchewan",
+      "correct": false,
+      "elapsed_s": 2.45
+    },
+    {
+      "class": "single_arg",
+      "query": "a higher level of education was associated with a lower probability of payday loan use. those with a university degree had the lowest probability of payday loan use.",
+      "gold_table": "1306",
+      "gold_answer": [
+        "university diploma or degree"
+      ],
+      "gold_formula": "=A25",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1306",
+      "table_correct": true,
+      "code": "edu_col = \"predicted probability > education of main income earner\"\nuniversity = pd.to_numeric(df.loc[df['row_header'].str.contains('university', case=False, na=False), edu_col], errors='coerce').iloc[0]\nlowest_university = pd.to_numeric(df.loc[df['row_header'].str.contains('university', case=False, na=False), 'payday loan used in past three years'], errors='coerce').iloc[0]\nresult = lowest_university\nprint(result)",
+      "answer": "0.016",
+      "correct": false,
+      "elapsed_s": 11.08
+    },
+    {
+      "class": "single_arg",
+      "query": "inuit in inuit nunangat were more likely than those outside, for example, those in rural areas , to gather for cultural reasons.",
+      "gold_table": "2688",
+      "gold_answer": [
+        "inuit nunangat"
+      ],
+      "gold_formula": "=A20",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2688",
+      "table_correct": true,
+      "code": "inuit_nunangat = pd.to_numeric(df.loc['row_14', 'reasons for gathering wild plants or berries in the previous 12 months > for cultural reasons'], errors='coerce')\nrural = pd.to_numeric(df.loc['row_13', 'reasons for gathering wild plants or berries in the previous 12 months > for cultural reasons'], errors='coerce')\nresult = inuit_nunangat - rural\nprint(result)",
+      "answer": "67",
+      "correct": false,
+      "elapsed_s": 7.48
+    },
+    {
+      "class": "single_arg",
+      "query": "residents of the territories who had completed a university degree were more likely than those who had completed high school or less to believe that police were doing a good job enforcing the laws.",
+      "gold_table": "692",
+      "gold_answer": [
+        "university degree"
+      ],
+      "gold_formula": "=A25",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "692",
+      "table_correct": true,
+      "code": "uni_degree = pd.to_numeric(df.loc[df['col[0]'].str.contains('university degree'), 'enforcing the laws'], errors='coerce').mean()\nhs_or_less = pd.to_numeric(df.loc[df['col[0]'].str.contains('less than high school|high school diploma'), 'enforcing the laws'], errors='coerce').mean()\nresult = uni_degree - hs_or_less\nprint(result)",
+      "answer": "25",
+      "correct": false,
+      "elapsed_s": 9.46
+    },
+    {
+      "class": "single_arg",
+      "query": "throughout the country's provinces, the rate of police strength in prince edward island was the lowest.",
+      "gold_table": "1849",
+      "gold_answer": [
+        "prince edward island"
+      ],
+      "gold_formula": "=A7",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1849",
+      "table_correct": true,
+      "code": "result = \"prince edward island\"\nprint(result)",
+      "answer": "prince edward island",
+      "correct": true,
+      "elapsed_s": 2.49
+    },
+    {
+      "class": "single_arg",
+      "query": "decedents who died in hospital were more likely to have died from terminal illness.",
+      "gold_table": "1256",
+      "gold_answer": [
+        "hospital"
+      ],
+      "gold_formula": "=B3",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1256",
+      "table_correct": true,
+      "code": "result = \"hospital\"\nprint(result)",
+      "answer": "hospital",
+      "correct": true,
+      "elapsed_s": 3.02
+    },
+    {
+      "class": "single_arg",
+      "query": "yukon had a lower percentage of households that received formal home care compared to the rest of canada.",
+      "gold_table": "366",
+      "gold_answer": [
+        "yukon"
+      ],
+      "gold_formula": "=A45",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "366",
+      "table_correct": true,
+      "code": "yukon = pd.to_numeric(df.loc[df['row_header'].str.contains('northwest territories', case=False, na=False), 'formal home care services > %'], errors='coerce').iloc[0]\ncanada = pd.to_numeric(df.loc[df['row_header'].str.contains('total', case=False, na=False), 'formal home care services > %'], errors='coerce').iloc[0]\nresult = canada - yukon\nprint(result)",
+      "answer": "-0.7999999999999998",
+      "correct": false,
+      "elapsed_s": 5.81
+    },
+    {
+      "class": "single_arg",
+      "query": "the highest representation of females accused was observed in cases of theft in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        "theft"
+      ],
+      "gold_formula": "=A18",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "345",
+      "table_correct": true,
+      "code": "col = \"property offences > theft\"\nfemales = pd.to_numeric(df.loc[:, col + \" > females > percent\"], errors='coerce').max()\nresult = df.loc[females.idxmax(), \"row_header\"]\nprint(result)",
+      "answer": "34.7",
+      "correct": false,
+      "elapsed_s": 8.11
+    },
+    {
+      "class": "single_arg",
+      "query": "during the 2000s the chronic low-income rate among all immigrants peaked at 16.3% in 2004 and declined to 12.3% by 2012.",
+      "gold_table": "2354",
+      "gold_answer": [
+        16.3,
+        12.3
+      ],
+      "gold_formula": "=E11",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2354",
+      "table_correct": true,
+      "code": "col = \"rate > overall > 2000\"\nvals = pd.to_numeric(df[col], errors='coerce')\npeak_year_2000s = vals[[2, 3, 4, 5, 6, 7]]..idxmax()\nresult = vals[peak_year_2000s]\nprint(result)",
+      "answer": "16.3",
+      "correct": false,
+      "elapsed_s": 8.67
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, sherbrooke reported relatively large declines of motor vehicle theft in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        41
+      ],
+      "gold_formula": "=-K11",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "sherbrooke_mvt = pd.to_numeric(df.loc[df['col_8'] == 'sherbrooke', 'motor vehicle theft > rate'], errors='coerce').iloc[0]\nresult = sherbrooke_mvt\nprint(result)",
+      "answer": "-41",
+      "correct": true,
+      "elapsed_s": 8.26
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, saguenay, having reported the largest decreases in robbery in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        30
+      ],
+      "gold_formula": "=-G9",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "result = \"Saguenay\"\nprint(result)",
+      "answer": "Saguenay",
+      "correct": false,
+      "elapsed_s": 0.75
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "24% among men admitted between the ages of 15 and 24.",
+      "gold_table": "2487",
+      "gold_answer": [
+        24.2
+      ],
+      "gold_formula": "=-B28",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2487",
+      "table_correct": true,
+      "code": "result = -24.2\nprint(result)",
+      "answer": "-24.2",
+      "correct": true,
+      "elapsed_s": 2.74
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "an increase to mfn tariffs plus associated non-tariff barriers reduces canadian exports to the united states by 23%.",
+      "gold_table": "2558",
+      "gold_answer": [
+        23.4
+      ],
+      "gold_formula": "=-B7",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2558",
+      "table_correct": true,
+      "code": "result = -23.4\nprint(result)",
+      "answer": "-23.4",
+      "correct": true,
+      "elapsed_s": 2.28
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "by combining information regarding the jobs and characteristics of the same workers in 2006 and 2016, there are four possible trajectories.",
+      "gold_table": "2412",
+      "gold_answer": [
+        4
+      ],
+      "gold_formula": "=COUNTA(A6:A9)",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2412",
+      "table_correct": true,
+      "code": "result = \"total\"\nprint(result)",
+      "answer": "total",
+      "correct": false,
+      "elapsed_s": 2.09
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the three largest cmas, toronto which accounted for 48% of all robberies reported by police in 2015, had smaller changes.",
+      "gold_table": "2003",
+      "gold_answer": [
+        6
+      ],
+      "gold_formula": "=-G18",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "toronto_robbery_rate = pd.to_numeric(df.loc[df['col'].str.contains('toronto'), 'robbery > rate'], errors='coerce').iloc[0]\nother_cmas_robbery_rate = pd.to_numeric(df.loc[df['col'].str.contains('homicide|sexual assault|breaking and entering|motor vehicle theft'), 'robbery > rate']).sum()\ntotal_robbery_rate = toronto_robbery_rate + other_cmas_robbery_rate\npercent_toronto = (toronto_robbery_rate / total_robbery_rate) * 100\nresult = percent_toronto >= 48\nprint(result)",
+      "answer": "76",
+      "correct": false,
+      "elapsed_s": 14.07
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2016/2017, there were 5,937 youth that began a period of supervision in correctional services in the eight reporting jurisdictions, a 44% decrease from 2012/2013.",
+      "gold_table": "2212",
+      "gold_answer": [
+        44
+      ],
+      "gold_formula": "=-E15",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2212",
+      "table_correct": true,
+      "code": "total_2016_2017 = pd.to_numeric(df.loc[df['row_header'] == '(total correctional services)', 'total-all jurisdictions > number'], errors='coerce').iloc[0]\npercent_change_2012_2013 = pd.to_numeric(df.loc[df['row_header'] == '(total correctional services)', 'total-all jurisdictions > percent change in the number from 2012/2013'], errors='coerce').iloc[0]\nresult = total_2016_2017 / (1 + percent_change_2012_2013 / 100)\nprint(result)",
+      "answer": "5937",
+      "correct": false,
+      "elapsed_s": 8.61
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2016/2017, there were 5,937 youth that began a period of supervision in correctional services in the eight reporting jurisdictions, an 8% decrease from the previous year.",
+      "gold_table": "2212",
+      "gold_answer": [
+        8
+      ],
+      "gold_formula": "=-D15",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2212",
+      "table_correct": true,
+      "code": "total_2016_2017 = pd.to_numeric(df.loc[df['row_header'] == '(total correctional services)', 'total-all jurisdictions > number'], errors='coerce').iloc[0]\nresult = total_2016_2017\nprint(result)",
+      "answer": "5937",
+      "correct": false,
+      "elapsed_s": 5.92
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2018/2019, the rate of adults on probation decreased by 6% compared to 2017/2018.",
+      "gold_table": "954",
+      "gold_answer": [
+        6
+      ],
+      "gold_formula": "=-J18",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "954",
+      "table_correct": true,
+      "code": "probation_rate_2018 = pd.to_numeric(df.loc[df['row_header'].str.contains('probation', case=False, na=False), 'probate > rate'], errors='coerce').iloc[0]\nprobation_rate_2017 = pd.to_numeric(df.loc[df['row_header'].str.contains('probation', case=False, na=False), 'probate > rate'].shift(1), errors='coerce').iloc[1]\npercent_change = (probation_rate_2018 - probation_rate_2017) / probation_rate_2017 * 100\nresult = percent_change.round().iloc[0]\nprint(result)",
+      "answer": "-6",
+      "correct": true,
+      "elapsed_s": 11.01
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the employment rate for aboriginal people living on reserve was 47.3% in 2011, compared to 71.1% for their counterparts living off-reserve-a difference of 23.8 percentage points.",
+      "gold_table": "1604",
+      "gold_answer": [
+        23.8
+      ],
+      "gold_formula": "=-D7",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1604",
+      "table_correct": true,
+      "code": "result = 47.3 - 71.1\nprint(result)",
+      "answer": "-23.799999999999997",
+      "correct": true,
+      "elapsed_s": -0.16
+    }
+  ]
+}
