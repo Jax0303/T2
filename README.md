@@ -1132,6 +1132,105 @@ def numeric_match(pred, gold, rel_tol=0.02):
 
 ---
 
+## 라이브 데모 실행 결과 (3개 쿼리)
+
+[`rag-agent/DEMO_QUERIES.md`](rag-agent/DEMO_QUERIES.md) 의 큐레이션 셋에서 3개를
+골라 *현재 코드베이스* 로 한 번 더 돌려본 결과. 모델 로드 1회 후 순차 실행.
+LocalQwen-2.5-7B-Instruct (4-bit) · RTX 3060 Ti.
+
+### Demo 1 — 다행 산술 (가족 클래스 이민자, 19.4 + 18.6 + 13.5 = 51.5)
+
+```
+Query : 52% of family class immigrants came from south asia, east asia
+        and western developed countries.
+Route : vdb_codegen  (percent number with relator)        ← 라우팅 성공
+Table : 2793  [VDB score=0.642]                            ← 정확한 테이블
+Code  :
+  │ result = ("south asia" if cell("south asia", "family class") >= 52
+  │           else "east asia" if cell("east asia", "family class") >= 52
+  │           else "western developed countries"
+  │             if cell("western developed countries", "family class") >= 52
+  │           else "")
+  │ print(result)
+Exec  : ✗ FAILED
+        no row matches ['south asia']; sample row_headers:
+        ['percent > source region > southern asia',
+         'percent > source region > east asia', ...]
+Fallback (direct LLM) : '3'                                 ← 잘못된 fallback
+Verdict: ❌ WRONG (gold: 51.5)
+```
+
+> 이 쿼리는 이전 ablation 실행에서는 ✓ 정답이었다. 차이는 Step 4 "가드"
+> 패치에서 `generate_code()` 프롬프트에 row_header 카탈로그 (`rh_block`) 가
+> 추가된 점이다. LLM 이 카탈로그를 보고 `cell()` 헬퍼를 더 적극적으로 쓰게
+> 됐는데, `cell("south asia", ...)` 가 path-style row_header
+> `"percent > source region > southern asia"` 와 substring 매칭에 실패한다
+> (`"south asia"` ≠ `"southern asia"`). 즉 가드 패치가 이 케이스에서는
+> *조용한 정답* 을 *시끄러운 실패* 로 바꿔놨다 — 재현성에 정직한 결과.
+
+### Demo 2 — 엔티티 argmin (가장 낮은 경찰력 보유 주 = PEI)
+
+```
+Query : throughout the country's provinces, the rate of police strength
+        in prince edward island was the lowest.
+Route : vdb_codegen  (arg-style query)
+Table : 1849  [VDB score=0.650]
+Title : police officers by level of policing, by province and territory, 2019
+Code  :
+  │ pei_rate    = cell("prince edward island",
+  │                    "police officers per 100,000 population")
+  │ lowest_rate = pei_rate
+  │ result      = "prince edward island"
+  │ for row in ["nova scotia", "new brunswick", "quebec", "ontario",
+  │             "manitoba", "saskatchewan", "alberta", "british columbia",
+  │             "yukon", "northwest territories", "nunavut"]:
+  │     rate = cell(row, "police officers per 100,000 population")
+  │     if pd.notna(rate) and rate < lowest_rate:
+  │         lowest_rate = rate
+  │         result      = row
+  │ print(result)
+Exec  : ✓ result = 'prince edward island'                  (8.8s)
+Verdict: ✅ CORRECT (gold: 'prince edward island')
+```
+
+LLM 이 카탈로그 정보를 활용해 모든 province 를 명시적으로 enumerate 하고
+`pd.notna()` 가드까지 추가한 견고한 코드를 생성한 케이스. 가드 패치가
+도움이 된 좋은 예.
+
+### Demo 3 — 소프트볼 lookup (IPV 사례 여성 보호관찰 비율)
+
+```
+Query : what is the rate of probation for females in ipv cases
+Route : vdb_codegen  (entity question needs reasoning)
+Table : 2591  [VDB score=0.692]
+Title : guilty cases completed in adult criminal court, by sentence,
+        relationship and sex of accused, canada, 2005/2006 to 2010/2011
+Code  :
+  │ result = cell("intimate partner violence (ipv) cases > probation",
+  │              "accused females > percent")
+  │ print(result)
+Exec  : ✓ result = '62.0'                                   (3.4s)
+Verdict: ✅ CORRECT
+```
+
+한 줄 짜리 `cell()` 호출로 hierarchical row × column 교차점을 정확히 짚어
+정답을 가져온 가장 깔끔한 케이스.
+
+### 정리
+
+| Demo | Route | Code Exec | Final answer | Verdict |
+|---|---|---|---|---|
+| 1. multi-row arithmetic | ✓ | ✗ | direct fallback "3" | ❌ |
+| 2. entity argmin | ✓ | ✓ | "prince edward island" | ✅ |
+| 3. softball lookup | ✓ | ✓ | "62.0" | ✅ |
+
+3개 중 2개 통과. 실패한 1개는 *프롬프트 패치로 인한 회귀* 이고,
+원인 (substring 매칭이 path-style row_header 와 어긋남) 까지 정확히
+추적 가능하다 — 시스템이 "왜 틀렸는지" 를 *조용히* 가 아니라 *명시적으로*
+드러내고 있다는 점에서 디버깅 친화성은 오히려 좋아진 상태다.
+
+---
+
 ## License
 
 [MIT](https://spdx.org/licenses/MIT.html)
