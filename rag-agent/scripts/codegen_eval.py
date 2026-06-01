@@ -198,12 +198,58 @@ def parse_table(raw: dict) -> ParsedTable:
     return ParsedTable(table_id, title, rows, col_headers, row_headers)
 
 
+_NUM_RE = re.compile(r"-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|-?\d+\.?\d*")
+
+
+def _cell_to_float(v) -> Optional[float]:
+    if v is None:
+        return None
+    if isinstance(v, (int, float)):
+        return float(v)
+    s = str(v).strip().replace(",", "")
+    if not s:
+        return None
+    m = _NUM_RE.fullmatch(s) or _NUM_RE.match(s)
+    if m:
+        try:
+            return float(m.group(0))
+        except ValueError:
+            return None
+    return None
+
+
+def _query_numbers(text: str) -> List[float]:
+    out = []
+    for m in _NUM_RE.findall(text or ""):
+        try:
+            out.append(float(m.replace(",", "")))
+        except ValueError:
+            pass
+    return out
+
+
+def _num_signal_match(n: float, cells: set, rel_tol: float = 0.02) -> bool:
+    """쿼리 숫자 n이 실제 셀 집합과 매칭되는지 (검색 신호용).
+
+    퍼센트 표기 불일치(쿼리 "27%"→27 vs 셀 0.27367)와 반올림을 흡수하려고
+    {n, n/100, n*100} 변형을 codegen NM과 동일한 ±2% 상대오차로 비교한다.
+    """
+    for cand in (n, n / 100.0, n * 100.0):
+        for c in cells:
+            if abs(cand - c) <= max(1e-6, rel_tol * abs(cand)):
+                return True
+    return False
+
+
 class OriginalDB:
     """원본 DB — 키워드 검색으로 테이블 찾기."""
 
     def __init__(self):
         self._tables: Dict[str, ParsedTable] = {}
         self._keywords: Dict[str, set] = {}  # table_id → keyword set
+        # 구조 인식 검색용 인덱스: 헤더 토큰(셀 문자열 제외) + 숫자 셀
+        self._header_kws: Dict[str, set] = {}   # table_id → header/title token set
+        self._num_cells: Dict[str, set] = {}    # table_id → {float}
 
     def add(self, raw: dict):
         t = parse_table(raw)
@@ -211,14 +257,23 @@ class OriginalDB:
         # 키워드 인덱스 구축
         kws = set()
         kws.update(self._tokenize(t.title))
+        header_kws = set(kws)
         for hdr in t.col_headers + t.row_headers:
             for seg in hdr:
-                kws.update(self._tokenize(seg))
+                toks = self._tokenize(seg)
+                kws.update(toks)
+                header_kws.update(toks)
+        num_cells = set()
         for row in t.data:
             for v in row:
                 if isinstance(v, str):
                     kws.update(self._tokenize(v))
+                f = _cell_to_float(v)
+                if f is not None:
+                    num_cells.add(f)
         self._keywords[t.table_id] = kws
+        self._header_kws[t.table_id] = header_kws
+        self._num_cells[t.table_id] = num_cells
 
     def get(self, table_id: str) -> Optional[ParsedTable]:
         return self._tables.get(table_id)
@@ -244,9 +299,44 @@ class OriginalDB:
             overlap = q_tokens & kws
             if overlap:
                 score = len(overlap) / len(q_tokens)
-                scored.append((tid, score))
-        scored.sort(key=lambda x: -x[1])
-        return scored[:top_k]
+                prec = len(overlap) / len(kws) if kws else 0.0
+                scored.append((tid, score, prec))
+        scored.sort(key=lambda x: (-x[1], -x[2], str(x[0])))
+        return [(tid, score) for tid, score, _ in scored][:top_k]
+
+    def structural_search(self, query: str, top_k: int = 5,
+                          w_kw: float = 0.6, w_num: float = 0.4) -> List[Tuple[str, float]]:
+        """구조 인식 원본 검색 — verifier 신호를 1차 검색기로 사용.
+
+        VDB 직렬화가 버리는 신호 두 개로만 랭킹:
+          (1) 헤더 트리 토큰 겹침 (셀 문자열 제외)
+          (2) 쿼리 숫자 ↔ 실제 숫자 셀 겹침
+        score = w_kw * header_token_overlap + w_num * numeric_cell_overlap
+        (쿼리에 숫자가 없으면 키워드 겹침만으로 랭킹.)
+        """
+        q_tokens = self._tokenize(query) - self._STOPWORDS
+        q_nums = _query_numbers(query)
+        if not q_tokens and not q_nums:
+            return []
+        scored = []
+        for tid in self._tables:
+            hk = self._header_kws.get(tid, set())
+            inter = q_tokens & hk
+            kw_ov = (len(inter) / len(q_tokens)) if q_tokens else 0.0
+            if q_nums:
+                cells = self._num_cells.get(tid, set())
+                matched = sum(1 for n in q_nums if _num_signal_match(n, cells))
+                num_ov = matched / len(q_nums)
+                score = w_kw * kw_ov + w_num * num_ov
+            else:
+                score = kw_ov
+            if score > 0:
+                # tie-break: 같은 점수면 헤더 정밀도(matched/헤더크기) 높은(=더 집중된)
+                # 테이블 우선, 그다음 table_id로 결정적 정렬.
+                prec = (len(inter) / len(hk)) if hk else 0.0
+                scored.append((tid, score, prec))
+        scored.sort(key=lambda x: (-x[1], -x[2], str(x[0])))
+        return [(tid, score) for tid, score, _ in scored][:top_k]
 
     def __len__(self):
         return len(self._tables)
@@ -273,17 +363,33 @@ class VectorDB:
             print(f"  VectorDB unavailable: {e}")
             self._available = False
 
-    def search(self, query: str, top_k: int = 5) -> List[Tuple[str, float]]:
+    def search(self, query: str, top_k: int = 5,
+               allowed_ids: Optional[set] = None) -> List[Tuple[str, float]]:
+        """의미 검색. allowed_ids가 주어지면 그 후보군 안에서만 랭킹한다
+        (원본 검색기와 동일한 후보 집합 위에서 공정 비교하기 위함)."""
         if not self._available:
             return []
         emb = self.model.encode([query], convert_to_numpy=True, show_progress_bar=False)[0].tolist()
+        # 후보군 제한 시: pool 멤버가 전체 코퍼스에서 깊이 묻혀 있어도 누락되지 않도록
+        # 충분히 깊게(코퍼스 크기 한도 내) 뽑아 클라이언트에서 필터한다.
+        # → 코퍼스가 pool보다 커도 VDB의 pool-내 랭킹이 정확해 baseline이 불리해지지 않음.
+        if allowed_ids is None:
+            n_results = top_k * 4
+        else:
+            try:
+                corpus_n = self.collection.count()
+            except Exception:
+                corpus_n = 20000
+            n_results = min(corpus_n, max(len(allowed_ids) * 4, 2000))
         res = self.collection.query(
-            query_embeddings=[emb], n_results=top_k * 4,
+            query_embeddings=[emb], n_results=n_results,
             include=["metadatas", "distances"],
         )
         per_table = OrderedDict()
         for vec_id, meta, dist in zip(res["ids"][0], res["metadatas"][0], res["distances"][0]):
             tid = meta.get("table_id") or meta.get("uid") or vec_id.split("__")[0]
+            if allowed_ids is not None and tid not in allowed_ids:
+                continue
             score = 1.0 - float(dist)
             if tid not in per_table or score > per_table[tid]:
                 per_table[tid] = score
@@ -732,7 +838,8 @@ def difficulty_class(sample: dict) -> str:
 # ══════════════════════════════════════════════════════════════════
 
 def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
-                 out_name: Optional[str] = None, verbose: bool = True):
+                 out_name: Optional[str] = None, verbose: bool = True,
+                 w_num: float = 0.4):
     """전체 평가 파이프라인.
 
     ablation:
@@ -740,6 +847,8 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
       - "always-codegen"      : 라우터 무시, 항상 VDB → codegen
       - "gold-table-codegen"  : retrieval 스킵, gold table 강제 + 항상 codegen (천장)
       - "always-direct"       : 라우터 무시, 항상 VDB → LLM 직접 답변
+      - "always-original"     : VDB 안 씀, 항상 원본 구조검색(헤더+숫자) → codegen (원본-only 주장)
+      - "always-keyword"      : VDB 안 씀, 항상 순수 어휘검색 → codegen (구조/숫자 신호 없는 baseline)
     """
     import random
     rng = random.Random(SEED)
@@ -766,9 +875,13 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
                 orig_db.add(raw)
     print(f"  → {len(orig_db)} tables in OriginalDB")
 
-    # 3. Try VDB
-    print("\n[3/4] Loading VectorDB...")
-    vdb = VectorDB(CHROMA_DIR, device="cpu")
+    # 3. Try VDB (원본-only ablation에서는 불필요 → 스킵)
+    if ablation in ("always-original", "always-keyword"):
+        print(f"\n[3/4] Skipping VectorDB (ablation={ablation}, 원본만 검색)")
+        vdb = None
+    else:
+        print("\n[3/4] Loading VectorDB...")
+        vdb = VectorDB(CHROMA_DIR, device="cpu")
 
     # 4. LLM
     print(f"\n[4/4] Loading LLM (backend={LLM_BACKEND})...")
@@ -799,6 +912,8 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
 
     results = []
     class_stats = defaultdict(lambda: {"n": 0, "correct": 0, "code_gen": 0, "code_exec_ok": 0})
+    # 공정 비교용 후보군: 모든 검색기(VDB/structural/keyword)가 이 동일 집합 위에서 랭킹.
+    pool = set(orig_db._tables)
 
     for i, (cls, sample) in enumerate(chosen, 1):
         query = get_query(sample)
@@ -819,6 +934,10 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
             route = QueryRoute("vdb_codegen", False, f"ablation={ablation}")
         elif ablation == "gold-table-codegen":
             route = QueryRoute("codegen", True, f"ablation={ablation}")
+        elif ablation == "always-original":
+            route = QueryRoute("original_codegen", True, f"ablation={ablation}")
+        elif ablation == "always-keyword":
+            route = QueryRoute("keyword_codegen", True, f"ablation={ablation}")
         else:  # adaptive
             route = classify_query(query)
         if verbose: print(f"  Route:  {route.route} ({route.reason})")
@@ -826,48 +945,52 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
         # ── Step B: Find table ──
         found_table = None
         search_method = ""
+        gold_rank = None              # gold 테이블의 1-indexed 랭크 (top-K 밖이면 None)
+        retrieval_attempted = True    # oracle ablation에서만 False
+        TOPK = 10                     # nDCG@10 까지 보려고 10개 랭킹
 
         if ablation == "gold-table-codegen":
-            # retrieval 스킵, gold table 직접 사용
+            # retrieval 스킵, gold table 직접 사용 → 검색 지표 집계에서 제외
+            retrieval_attempted = False
             found_table = orig_db.get(gold_tid)
             search_method = "gold_table (oracle)"
             if found_table is None and verbose:
                 print(f"  ⚠ Gold table {gold_tid} not in OriginalDB")
-        elif route.route == "direct_lookup":
-            # 단순 검색 → 원본 DB에서 키워드 검색
-            kw_hits = orig_db.keyword_search(query, top_k=5)
-            if kw_hits:
-                found_table = orig_db.get(kw_hits[0][0])
-                search_method = f"OriginalDB keyword (score={kw_hits[0][1]:.2f})"
-                hit_tids = [h[0] for h in kw_hits]
-                if verbose:
-                    if gold_tid in hit_tids:
-                        print(f"  Search: ✓ Gold table in top-{hit_tids.index(gold_tid)+1} (keyword)")
-                    else:
-                        print(f"  Search: ✗ Gold table NOT found (keyword)")
         else:
-            # VDB 사용해서 의미 검색
-            vdb_hits = vdb.search(query, top_k=5)
-            if vdb_hits:
-                found_table = orig_db.get(vdb_hits[0][0])
-                search_method = f"VDB semantic (score={vdb_hits[0][1]:.3f})"
-                hit_tids = [h[0] for h in vdb_hits]
-                if verbose:
-                    if gold_tid in hit_tids:
-                        print(f"  Search: ✓ Gold table in top-{hit_tids.index(gold_tid)+1} (VDB)")
-                    else:
-                        print(f"  Search: ✗ Gold table NOT found (VDB top-5)")
+            # 공정 비교: 모든 검색기가 동일한 후보군(dev 테이블 전체) 위에서 랭킹.
+            if route.route == "original_codegen":
+                hits = orig_db.structural_search(query, top_k=TOPK, w_num=w_num)
+                retriever = "structural"
+            elif route.route == "keyword_codegen":
+                hits = orig_db.keyword_search(query, top_k=TOPK)
+                retriever = "keyword"
+            elif route.route == "direct_lookup":
+                hits = orig_db.keyword_search(query, top_k=TOPK)
+                retriever = "keyword"
+            else:
+                hits = vdb.search(query, top_k=TOPK, allowed_ids=pool) if vdb else []
+                retriever = "VDB"
+                if not hits:  # VDB 실패 → 원본 키워드 폴백
+                    hits = orig_db.keyword_search(query, top_k=TOPK)
+                    retriever = "keyword-fallback"
 
-            # VDB 실패시 → 원본 DB 키워드 fallback
-            if found_table is None:
-                kw_hits = orig_db.keyword_search(query, top_k=5)
-                if kw_hits:
-                    found_table = orig_db.get(kw_hits[0][0])
-                    search_method = f"OriginalDB keyword fallback (score={kw_hits[0][1]:.2f})"
+            if hits:
+                found_table = orig_db.get(hits[0][0])
+                search_method = f"{retriever} (score={hits[0][1]:.3f})"
+                hit_tids = [h[0] for h in hits]
+                if gold_tid in hit_tids:
+                    gold_rank = hit_tids.index(gold_tid) + 1
+                if verbose:
+                    if gold_rank:
+                        print(f"  Search: ✓ Gold table at rank {gold_rank} ({retriever})")
+                    else:
+                        print(f"  Search: ✗ Gold table NOT in top-{TOPK} ({retriever})")
 
         if found_table is None:
             if verbose: print(f"  ⚠ No table found, skipping")
-            results.append({"class": cls, "query": query, "answer": None, "correct": False, "error": "no_table"})
+            results.append({"class": cls, "query": query, "answer": None,
+                            "correct": False, "error": "no_table",
+                            "gold_rank": None, "retrieval_attempted": retrieval_attempted})
             class_stats[cls]["n"] += 1
             continue
 
@@ -928,6 +1051,7 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
             "search_method": search_method,
             "found_table": found_table.table_id,
             "table_correct": found_table.table_id == gold_tid,
+            "gold_rank": gold_rank, "retrieval_attempted": retrieval_attempted,
             "code": code, "answer": pred,
             "correct": nm, "elapsed_s": round(elapsed, 2),
         })
@@ -961,6 +1085,24 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
         print(f"{'─'*26} {'─'*3}  {'─'*5}")
         print(f"{'OVERALL':26s} {total_n:3d}  {nm_rate:5.3f}   95% CI [{ci_lo:.3f}, {ci_hi:.3f}]")
 
+    # ── 검색 지표 (retrieval) — NM보다 검정력이 높고 '검색이 더 정확한가'를 직접 측정 ──
+    retr_rows = [r for r in results if r.get("retrieval_attempted")]
+    retrieval_overall = _retrieval_metrics([r.get("gold_rank") for r in retr_rows])
+    retrieval_by_class = {}
+    if retr_rows:
+        print(f"\n{'Retrieval':26s} {'n':>3s}  {'R@1':>5s}  {'R@5':>5s}  {'MRR':>5s}  {'nDCG10':>6s}")
+        print(f"{'─'*26} {'─'*3}  {'─'*5}  {'─'*5}  {'─'*5}  {'─'*6}")
+        for cls in HARD_CLASSES:
+            cls_ranks = [r.get("gold_rank") for r in retr_rows if r.get("class") == cls]
+            if not cls_ranks:
+                continue
+            m = _retrieval_metrics(cls_ranks)
+            retrieval_by_class[cls] = m
+            print(f"{cls:26s} {m['n']:3d}  {m['R@1']:5.3f}  {m['R@5']:5.3f}  {m['MRR']:5.3f}  {m['nDCG@10']:6.3f}")
+        mo = retrieval_overall
+        print(f"{'─'*26} {'─'*3}  {'─'*5}  {'─'*5}  {'─'*5}  {'─'*6}")
+        print(f"{'OVERALL':26s} {mo['n']:3d}  {mo['R@1']:5.3f}  {mo['R@5']:5.3f}  {mo['MRR']:5.3f}  {mo['nDCG@10']:6.3f}")
+
     # Save results
     fname = out_name or f"codegen_eval_{ablation}_n{total_n}.json"
     out_path = Path(__file__).parent.parent / "results" / fname
@@ -968,10 +1110,11 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
     with open(out_path, "w") as f:
         json.dump({
             "config": {"model": GROQ_MODEL, "seed": SEED, "per_class": per_class,
-                       "ablation": ablation},
+                       "ablation": ablation, "w_num": w_num},
             "class_stats": {k: dict(v) for k, v in class_stats.items()},
             "overall": {"n": total_n, "correct": total_correct,
                        "nm_rate": nm_rate, "ci95": [ci_lo, ci_hi]},
+            "retrieval": {"overall": retrieval_overall, "by_class": retrieval_by_class},
             "rows": results,
         }, f, indent=2, default=str, ensure_ascii=False)
     print(f"\nResults saved to {out_path}")
@@ -999,6 +1142,28 @@ def _bootstrap_ci(correct_flags: list, B: int = 2000, alpha: float = 0.05) -> Tu
     lo = means[int(B * alpha / 2)]
     hi = means[int(B * (1 - alpha / 2))]
     return (lo, hi)
+
+
+def _retrieval_metrics(ranks: list) -> dict:
+    """검색 지표 (단일 gold 테이블, binary relevance).
+
+    ranks: gold 테이블의 1-indexed 랭크 리스트. top-K 밖이거나 미검색이면 None.
+      R@1   = gold가 1위인 비율
+      R@5   = gold가 top-5 안에 든 비율
+      MRR   = mean(1/rank)
+      nDCG@10 = mean(1/log2(rank+1)) for rank<=10  (gold 1개이므로 IDCG=1)
+    """
+    import math
+    n = len(ranks)
+    if n == 0:
+        return {"n": 0, "R@1": 0.0, "R@5": 0.0, "MRR": 0.0, "nDCG@10": 0.0}
+    return {
+        "n": n,
+        "R@1": sum(1 for r in ranks if r == 1) / n,
+        "R@5": sum(1 for r in ranks if r and r <= 5) / n,
+        "MRR": sum((1.0 / r) for r in ranks if r) / n,
+        "nDCG@10": sum((1.0 / math.log2(r + 1)) for r in ranks if r and r <= 10) / n,
+    }
 
 
 def ask_one(query: str, *, table_id: Optional[str] = None, verbose: bool = True) -> dict:
@@ -1112,10 +1277,15 @@ if __name__ == "__main__":
     parser.add_argument("--per-class", type=int, default=QUERIES_PER_CLASS,
                         help="클래스별 샘플 수 (기본 3)")
     parser.add_argument("--ablation", type=str, default="adaptive",
-                        choices=["adaptive", "always-codegen", "gold-table-codegen", "always-direct"],
+                        choices=["adaptive", "always-codegen", "gold-table-codegen", "always-direct", "always-original", "always-keyword"],
                         help="평가 모드")
     parser.add_argument("--quiet", action="store_true",
                         help="per-query 출력 줄이기 (긴 실행시 사용)")
+    parser.add_argument("--w-num", type=float, default=0.4,
+                        help="structural_search 숫자-셀 가중치 (always-original 전용). "
+                             "0으로 주면 헤더 토큰만 사용 → 숫자 누수 분해용.")
+    parser.add_argument("--out", type=str, default=None,
+                        help="결과 JSON 파일명 (results/ 하위)")
     args = parser.parse_args()
 
     if args.repl:
@@ -1135,4 +1305,4 @@ if __name__ == "__main__":
         ask_one(args.query, table_id=args.table)
     else:
         run_pipeline(per_class=args.per_class, ablation=args.ablation,
-                     verbose=not args.quiet)
+                     verbose=not args.quiet, w_num=args.w_num, out_name=args.out)
