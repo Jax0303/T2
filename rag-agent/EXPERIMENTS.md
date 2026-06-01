@@ -12,7 +12,7 @@ findings. It is meant to be self-contained for a thesis appendix.
 
 ## 1. Goal
 
-Build a non-HART RAG agent for HiTab where:
+Build a RAG agent for HiTab where:
 
 - **Original 2-D table data** and the **vector-DB store** are kept
   *separate*. The agent compares the two at verification time rather
@@ -26,7 +26,8 @@ Build a non-HART RAG agent for HiTab where:
   header-path lookup in the original store and evaluate the expression
   with an AST-whitelist sandbox. The LLM never executes the arithmetic.
 - Use **only free LLM APIs / local models** (no OpenAI, no paid keys).
-- Report metrics that come **verbatim from the HiTab and HART papers**
+- Report metrics that come **verbatim from the HiTab paper and the
+  dense-table-retrieval literature** (DTR, Herzig et al. NAACL 2021)
   (Recall@k / MRR / nDCG / Exact-Match / Numeric-Match), plus one
   custom metric (symbolic-exec accuracy) explicitly inspired by HiTab
   Table 9's formula-supervised execution-accuracy.
@@ -53,7 +54,7 @@ share CUDA — pass `--retriever-device cuda`.
 - PyTorch 2.12.0 + CUDA 12.6
 - transformers 5.8.1, bitsandbytes 0.49.2 (NF4 4-bit)
 - sentence-transformers 5.5.0 (`BAAI/bge-large-en-v1.5`, 1024-dim)
-- chromadb 1.5.9 (persistent dir reused from the HART pipeline)
+- chromadb 1.5.9 (persistent dir reused from a prior indexing pipeline)
 - groq 1.2.0 (free-tier API; key required via `GROQ_API_KEY`)
 
 ### Dataset
@@ -183,8 +184,21 @@ Wraps HiTab's parsed JSON. Exposes:
 
 Thin wrapper around the existing Chroma collection. The embedder is
 `BAAI/bge-large-en-v1.5` (1024-dim, GPU when available). One vector
-per table (after the HART indexing pipeline), so `top_k_tables = 5`
+per table (after the indexing pipeline), so `top_k_tables = 5`
 returns 5 distinct candidates after dedup-by-table.
+
+**Retrieval baseline & task setup.** This dense vector store *is* the
+published baseline: plain serialized-table embedding + nearest-neighbour
+search, i.e. DPR/DTR-style dense table retrieval (Karpukhin et al. 2020;
+Herzig et al. NAACL 2021). The retrieval task follows DTR's R@k protocol —
+given a query, rank the gold table within a fixed **candidate pool** (all
+unique tables referenced by the HiTab dev split; constructed explicitly in
+`run_pipeline`, with `gold-in-pool` coverage logged and saved). Every
+retriever (dense VDB, structural, keyword) ranks over this same pool via
+`allowed_ids`, so the comparison is fair in distractor count. The proposed
+**structural** retriever (header-path + numeric-cell signal) and the
+**keyword** ablation are non-parametric and evaluated against this dense
+baseline with paired tests (`scripts/compare_runs.py`).
 
 ### 3.4 Verifier (`retrieve/verifier.py`)
 
@@ -262,9 +276,9 @@ the gate selected.
 
 | Metric | Definition | Source |
 |---|---|---|
-| Recall@1, Recall@5 | gold table in top-k after rerank | HiTab, HART |
-| MRR | mean reciprocal rank of gold table | HiTab, HART |
-| nDCG@10 | binary single-gold relevance, log2 discount | HART |
+| Recall@1, Recall@5 | gold table in top-k after rerank | HiTab; DTR (Herzig et al. 2021) |
+| MRR | mean reciprocal rank of gold table | DTR; standard IR |
+| nDCG@10 | binary single-gold relevance, log2 discount | Järvelin & Kekäläinen 2002 (standard IR) |
 | Exact Match (EM) | lowercase-stripped string equality, any element of gold list | HiTab §5 |
 | Numeric Match (NM) | rel-tol ±2% with HiTab variants: ×100 (%), ÷100 (fraction), abs() (opposite/sign). Falls back to case-insensitive substring for string gold | HiTab §5 + matches the existing hard-query bench |
 | Symbolic exec accuracy | for `arithmetic_agg`/`multi_op_formula`: did the AST eval over extracted cells produce a number that matches gold under NM? | Custom, inspired by HiTab Table 9 formula-supervised exec-acc |

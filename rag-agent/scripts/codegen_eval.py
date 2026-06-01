@@ -912,8 +912,18 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
 
     results = []
     class_stats = defaultdict(lambda: {"n": 0, "correct": 0, "code_gen": 0, "code_exec_ok": 0})
-    # 공정 비교용 후보군: 모든 검색기(VDB/structural/keyword)가 이 동일 집합 위에서 랭킹.
+
+    # ── 검색 풀(retrieval candidate pool) 명시적 구성 ──
+    # 과제 정의(DTR, Herzig et al. NAACL 2021 의 R@k 프로토콜): 쿼리가 주어지면
+    # 후보 테이블 집합에서 gold 테이블을 랭킹한다. 여기서 풀 = HiTab dev split이
+    # 참조하는 모든 고유 테이블. VDB/structural/keyword 검색기 전부 이 동일 풀
+    # 위에서만 랭킹하므로(allowed_ids) 비교가 distractor-수 측면에서 공정하다.
     pool = set(orig_db._tables)
+    gold_in_pool = sum(1 for _, s in chosen if get_table_id(s) in pool)
+    pool_coverage = gold_in_pool / len(chosen) if chosen else 0.0
+    print(f"\n검색 풀: {len(pool)} 테이블 (HiTab dev 참조 고유 테이블)")
+    print(f"  gold-in-pool 커버리지: {gold_in_pool}/{len(chosen)} ({pool_coverage:.1%})"
+          f"  — 풀에 없는 gold는 모든 검색기가 동일하게 miss(R@k 상한 제약)")
 
     for i, (cls, sample) in enumerate(chosen, 1):
         query = get_query(sample)
@@ -1110,7 +1120,10 @@ def run_pipeline(per_class: int = QUERIES_PER_CLASS, ablation: str = "adaptive",
     with open(out_path, "w") as f:
         json.dump({
             "config": {"model": GROQ_MODEL, "seed": SEED, "per_class": per_class,
-                       "ablation": ablation, "w_num": w_num},
+                       "ablation": ablation, "w_num": w_num,
+                       "retrieval_pool": {"size": len(pool), "gold_in_pool": gold_in_pool,
+                                          "coverage": round(pool_coverage, 4),
+                                          "protocol": "DTR R@k (Herzig et al. NAACL 2021); pool = HiTab dev referenced tables"}},
             "class_stats": {k: dict(v) for k, v in class_stats.items()},
             "overall": {"n": total_n, "correct": total_correct,
                        "nm_rate": nm_rate, "ci95": [ci_lo, ci_hi]},

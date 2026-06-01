@@ -1,7 +1,7 @@
 """Paper-aligned evaluation metrics for HiTab table QA.
 
-Retrieval (HART / HiTab paper)
-------------------------------
+Retrieval (HiTab paper / DTR, Herzig et al. NAACL 2021)
+-------------------------------------------------------
   Recall@k     fraction of queries whose gold table is in the top-k.
   MRR          mean reciprocal rank of the gold table.
   nDCG@k       binary relevance (gold=1) on log2(i+1) discount.

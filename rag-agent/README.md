@@ -71,7 +71,7 @@ different models (`--llm` and `--symbolic-llm`).
 
 ## Evaluation metrics (paper-aligned)
 
-Retrieval — same as HART/HiTab paper:
+Retrieval — same as the HiTab paper and DTR (dense table retrieval, Herzig et al. NAACL 2021):
 - Recall@1, Recall@5
 - MRR
 - nDCG@10 (binary relevance)
@@ -128,16 +128,15 @@ rag-agent/
 └── results/           # output JSONs (gitignored)
 ```
 
-## Why "not HART"
+## Approach
 
-HART's α-blend (cosine on serialized text + header-alignment) did not beat
-`plain_markdown` on HiTab dev. This package replaces that scorer with:
+The retrieval design uses:
 
-1. plain vector retrieval as the first stage (no header alignment),
+1. plain vector retrieval as the first stage,
 2. cross-verification against the **original 2D structure** rather than
    the serialized text the retriever already saw,
 3. symbolic compute for arithmetic — bypassing the reader entirely on the
-   class HART can't fix.
+   class plain dense retrieval can't fix.
 
 ---
 

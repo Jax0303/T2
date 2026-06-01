@@ -1,6 +1,6 @@
 """Vector store: thin wrapper around ChromaDB + a SentenceTransformer embedder.
 
-Reuses the existing HART chroma index if present so we don't re-embed.
+Reuses the existing prebuilt chroma index if present so we don't re-embed.
 The serializer the chroma collection was built with is inferred from
 ``collection_name`` and is independent of the OriginalStore.
 """
