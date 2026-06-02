@@ -18,6 +18,55 @@ Final headline (HiTab dev, 40 hard queries, Qwen-2.5-7B-Instruct 4-bit reader):
 | Answer NM | — | **0.450** (existing bench: 0.250) |
 | Symbolic exec acc (comparison class) | — | **0.375** |
 
+> The table above is the **earlier verify-time setup** (VDB-first retrieval +
+> original-store cross-verification). The project has since pivoted to the
+> retrieval-thesis below.
+
+## Current direction — retrieval thesis (original store as the *primary* retriever)
+
+**Claim under test:** searching the structured original table store directly
+beats serialized dense VDB RAG (DPR/DTR lineage) on HiTab. The retrieval claim
+is measured *without any generative LLM* — R@1/R@5/MRR/nDCG@10 over a fixed
+candidate pool (HiTab dev unique tables, DTR R@k protocol).
+
+### Retrieval-only result (HiTab dev, 1,671 queries, 540-table pool)
+
+`scripts/retrieval_eval.py` → `results/retrieval_eval_full.json`
+
+| retriever | R@1 | R@5 | MRR | nDCG@10 |
+|---|---:|---:|---:|---:|
+| structural_full (header 0.6 + **numeric 0.4**) | 0.503 | 0.704 | 0.594 | 0.627 |
+| structural_h0 (header only, `--w-num 0`) | 0.641 | 0.861 | 0.737 | 0.778 |
+| **keyword** (all tokens) | **0.646** | **0.868** | **0.745** | **0.784** |
+| vdb (BGE-large dense, baseline) | 0.618 | 0.837 | 0.715 | 0.755 |
+
+Two findings (both paired-bootstrap significant, McNemar p ≪ 1e-10):
+
+1. **The numeric-cell signal *hurts*.** Adding `w_num=0.4` drops R@1 from 0.641
+   → 0.503. The signal is "does the table contain any number near a number in
+   the query" — position/structure is discarded (a flat set of floats), so
+   common values (years, small ints, percents) match many tables and dilute the
+   discriminative header signal. **Numeric matching is dropped.**
+2. **The thesis survives in *lexical/structural* form.** Header/keyword
+   retrieval over the original store beats dense VDB on every metric
+   (R@1 0.646 vs 0.618), but the margin is small and dense wins the harder
+   reasoning classes — motivating a structure-aware upgrade.
+
+### Where this is going (literature-grounded)
+
+Numeric matching was a shallow, low-novelty signal. The research-valuable axis
+is **hierarchy preservation** — HiTab is ~98% hierarchical-header tables, and
+flattening for dense retrieval destroys exactly the ancestral header-path
+relationships that disambiguate cells. Planned direction: index each
+cell/column by its **root→leaf header path** and retrieve against that
+(optionally hierarchy-aligned multi-vector / late-interaction), framed by the
+theoretical limit of single-vector embeddings on structured data.
+
+Grounding (real papers): On the Theoretical Limitations of Embedding-Based
+Retrieval (arXiv 2508.21038); TableRAG (arXiv 2506.10380, EMNLP 2025); RAG over
+Tables / Hierarchical Memory Index (arXiv 2504.01346); Syntax- & Structure-aware
+Dense Retrieval (arXiv 2309.10506); DTR (Herzig et al., NAACL 2021); HiTab
+(Cheng et al., ACL 2022).
 
 ## Stage flow
 
