@@ -93,6 +93,8 @@ def numeric_match(pred, gold, rel_tol: float = 0.02) -> bool:
     if pred is None:
         return False
     pred_s = str(pred).strip().lower()
+    if not pred_s:                 # 빈 예측은 정답일 수 없음 ('' 가 모든 문자열 gold의 부분문자열이 되던 버그 수정)
+        return False
     g_nums = _to_nums(gold)
     p_nums = _to_nums(pred)
     if g_nums:
@@ -122,7 +124,7 @@ def numeric_match(pred, gold, rel_tol: float = 0.02) -> bool:
                 return False
         return True
     for gs in (s.strip().lower() for s in _flatten_strs(gold) if s.strip()):
-        if gs in pred_s or pred_s in gs:
+        if gs in pred_s or pred_s == gs:   # gold가 예측에 등장(또는 정확일치). 역방향 pred⊂gold 제거(짧은 오답 오인 방지)
             return True
     return False
 

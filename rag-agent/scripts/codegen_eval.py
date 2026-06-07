@@ -33,7 +33,7 @@ from typing import Dict, List, Optional, Tuple
 # ─── Configuration ───────────────────────────────────────────────
 HITAB_DIR = "/home/user/T2/hart-table-retrieval/data/hitab"
 CHROMA_DIR = "/home/user/T2/hart-table-retrieval/data/chroma_db"
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 LLM_BACKEND = os.environ.get("LLM_BACKEND", "local")  # "local" | "groq"
 QUERIES_PER_CLASS = 3  # 클래스별 테스트할 쿼리 수
 SEED = 42

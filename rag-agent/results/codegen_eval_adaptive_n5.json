@@ -1,0 +1,141 @@
+{
+  "config": {
+    "model": "llama-3.3-70b-versatile",
+    "seed": 42,
+    "per_class": 1,
+    "ablation": "adaptive"
+  },
+  "class_stats": {
+    "multi_op_formula": {
+      "n": 1,
+      "correct": 0,
+      "code_gen": 1,
+      "code_exec_ok": 0
+    },
+    "arithmetic_agg": {
+      "n": 1,
+      "correct": 0,
+      "code_gen": 1,
+      "code_exec_ok": 0
+    },
+    "pair_or_topk_arg": {
+      "n": 1,
+      "correct": 1,
+      "code_gen": 1,
+      "code_exec_ok": 1
+    },
+    "single_arg": {
+      "n": 1,
+      "correct": 0,
+      "code_gen": 1,
+      "code_exec_ok": 0
+    },
+    "comparison_or_count": {
+      "n": 1,
+      "correct": 1,
+      "code_gen": 1,
+      "code_exec_ok": 0
+    }
+  },
+  "overall": {
+    "n": 5,
+    "correct": 2,
+    "nm_rate": 0.4,
+    "ci95": [
+      0.0,
+      0.8
+    ]
+  },
+  "rows": [
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, federal s&e obligations to academic institutions increased by 4% between fy 2013 and fy 2014.",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        0.042528
+      ],
+      "gold_formula": "=(B11-B10)/B10",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: increased",
+      "search_method": "VDB semantic (score=0.623)",
+      "found_table": "109_55_fs17-ib-19314-tab004",
+      "table_correct": false,
+      "code": "```python\ndf = pd.DataFrame({\n    'row_header': [\n        'all institutions > top 20 institutions > johns hopkins u.b', \n        'all institutions > top 20 institutions > u. michigan', \n        'all institutions > top 20 institutions > johns hopkins u.b', \n        'all institutions > top 20 institutions > u. michigan', \n        'all institutions > top 20 institutions > u. washington', \n        'all institutions > top 20 institutions > u. california, san diego', \n        'all institutions > top 20 institutions > u. california, san francisco', \n        'all institutions > top 20 institutions > stanford u', \n        'all institutions > top 20 institutions > columbia u. in the city of new york', \n        'all institutions > top 20 institutions > u. pennsylvania', \n        'all institutions > top 20 institutions > u. pittsburgh', \n        'all institutions > top 20 institutions > duke u', \n        'all institutions > top 20 institutions > u. california, los angeles', \n        'all institutions > top 20 institutions > harvard u', \n        'all institutions > top 20 institutions > u. wisconsin-madison', \n        'all institutions > top 20 institutions > u. colorado boulder', \n        'all institutions > top 20 institutions > washington u., saint louis', \n        'all institutions > top 20 institutions > georgia institute of technology', \n        'all institutions > top 20 institutions > u. north carolina, chapel hill', \n        'all institutions > top 20 institutions > yale u', \n        'all institutions > top 20 institutions > pennsylvania state u', \n        'all institutions > top 20 institutions > u. southern california', \n        'all institutions > all other academic institutions'\n    ],\n    'all federal obligations': [\n        32430792, 11840626, 1708000, 700050, 667400, 639089, 628270, 581148, 574306, 552306, 544466, 523037, 522729, 490075, 485333, 481184, 476403, 473320, 460652, 460097, 4",
+      "answer": "20590166",
+      "correct": false,
+      "elapsed_s": 43.41
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "those with lifetime suicidal thoughts had more than three times the odds, compared with those who never had suicidal thoughts.",
+      "gold_table": "1450",
+      "gold_answer": [
+        3.85
+      ],
+      "gold_formula": "=E32/E31",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.663)",
+      "found_table": "2727",
+      "table_correct": false,
+      "code": "rows = find_rows(\"self-reported-physician-diagnosed mood and/or anxiety disorder(s) > yes\", \"drug use > yes\")\nresult = cell(rows.iloc[0], \"fold-change\")\nprint(result)",
+      "answer": "3.1",
+      "correct": false,
+      "elapsed_s": 6.79
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "miami gardens in florida is one of the largest u.s. cities with an african american population.",
+      "gold_table": "502_totto57437-2",
+      "gold_answer": [
+        "miami gardens, florida"
+      ],
+      "gold_formula": "=A7",
+      "route": "vdb_codegen",
+      "route_reason": "arg-style query",
+      "search_method": "VDB semantic (score=0.604)",
+      "found_table": "502_totto57437-2",
+      "table_correct": true,
+      "code": "result = \"miami gardens, florida\"\nprint(result)",
+      "answer": "miami gardens, florida",
+      "correct": true,
+      "elapsed_s": 2.56
+    },
+    {
+      "class": "single_arg",
+      "query": "for females found guilty in ipv cases, probation was more often considered.",
+      "gold_table": "2591",
+      "gold_answer": [
+        "probation"
+      ],
+      "gold_formula": "=A8",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.613)",
+      "found_table": "2591",
+      "table_correct": true,
+      "code": "ipv_probation = cell(\"intimate partner violence (ipv) cases\", \"probation\")\nipv_custody = cell(\"intimate partner violence (ipv) cases\", \"custody\")\n\nif ipv_probation > ipv_custody:\n    result = \"True\"\nelse:\n    result = \"False\"\n    \nprint(result)",
+      "answer": "62",
+      "correct": false,
+      "elapsed_s": 7.34
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, sherbrooke reported relatively large declines of motor vehicle theft in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        41
+      ],
+      "gold_formula": "=-K11",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: declines of",
+      "search_method": "VDB semantic (score=0.605)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "result = cell((\"sherbrooke\", \"montreal\"), \"motor vehicle theft > percent change in rate 2014 to 2015\")\nprint(result)",
+      "answer": "-41",
+      "correct": true,
+      "elapsed_s": 6.4
+    }
+  ]
+}

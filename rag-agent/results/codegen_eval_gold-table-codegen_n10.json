@@ -1,0 +1,234 @@
+{
+  "config": {
+    "model": "llama-3.3-70b-versatile",
+    "seed": 42,
+    "per_class": 2,
+    "ablation": "gold-table-codegen"
+  },
+  "class_stats": {
+    "multi_op_formula": {
+      "n": 2,
+      "correct": 0,
+      "code_gen": 2,
+      "code_exec_ok": 1
+    },
+    "arithmetic_agg": {
+      "n": 2,
+      "correct": 1,
+      "code_gen": 2,
+      "code_exec_ok": 1
+    },
+    "pair_or_topk_arg": {
+      "n": 2,
+      "correct": 2,
+      "code_gen": 2,
+      "code_exec_ok": 2
+    },
+    "single_arg": {
+      "n": 2,
+      "correct": 1,
+      "code_gen": 2,
+      "code_exec_ok": 2
+    },
+    "comparison_or_count": {
+      "n": 2,
+      "correct": 1,
+      "code_gen": 2,
+      "code_exec_ok": 1
+    }
+  },
+  "overall": {
+    "n": 10,
+    "correct": 5,
+    "nm_rate": 0.5,
+    "ci95": [
+      0.2,
+      0.8
+    ]
+  },
+  "rows": [
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, federal s&e obligations to academic institutions increased by 4% between fy 2013 and fy 2014.",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        0.042528
+      ],
+      "gold_formula": "=(B11-B10)/B10",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "10_112_tab1",
+      "table_correct": true,
+      "code": "col = \"all federal obligations\"\na_val = pd.to_numeric(df.loc[df['row_header'].str.contains('constant fy 2009 $millions > 2013'), col], errors='coerce').iloc[0]\nb_val = pd.to_numeric(df.loc[df['row_header'].str.contains('constant fy 2009 $millions > 2014'), col], errors='coerce').iloc[0]\nresult = ((b_val - a_val) / a_val) * 100\nprint(result)",
+      "answer": "1.05",
+      "correct": false,
+      "elapsed_s": 15.48
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "approximately three-quarters of total completed cases involving with multiple charges resulted in a guilty outcome.",
+      "gold_table": "2586",
+      "gold_answer": [
+        0.745352
+      ],
+      "gold_formula": "=(D6+D12)/D17",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2586",
+      "table_correct": true,
+      "code": "col = \"multiple-charge cases > percent\"\nvals = pd.to_numeric(df[col], errors='coerce')\nresult = vals.iloc[0]\nprint(result)",
+      "answer": "nan",
+      "correct": false,
+      "elapsed_s": 1.65
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "those with lifetime suicidal thoughts had more than three times the odds, compared with those who never had suicidal thoughts.",
+      "gold_table": "1450",
+      "gold_answer": [
+        3.85
+      ],
+      "gold_formula": "=E32/E31",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1450",
+      "table_correct": true,
+      "code": "result = 3.85 / 1.0\nprint(result)",
+      "answer": "3.85",
+      "correct": true,
+      "elapsed_s": 3.14
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the unemployment rate of arab women was 10.7 percentage points higher than that of women who did not belong to a visible minority group.",
+      "gold_table": "765",
+      "gold_answer": [
+        10.7
+      ],
+      "gold_formula": "=B11-B18",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "765",
+      "table_correct": true,
+      "code": "arab_unemployment = pd.to_numeric(df.loc[df['visible minority'].str.contains('arab', case=False, na=False), 'total'], errors='coerce').iloc[0]\nnon_visible_unemployment = pd.to_numeric(df.loc[df['visible minority'].str.contains('not a visible minority', case=False, na=False), 'total'], errors='coerce').iloc[0]\nresult = arab_unemployment - non_visible_unemployment\nprint(result)",
+      "answer": "8.5",
+      "correct": false,
+      "elapsed_s": 8.69
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "miami gardens in florida is one of the largest u.s. cities with an african american population.",
+      "gold_table": "502_totto57437-2",
+      "gold_answer": [
+        "miami gardens, florida"
+      ],
+      "gold_formula": "=A7",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "502_totto57437-2",
+      "table_correct": true,
+      "code": "result = \"Miami Gardens, Florida\"\nprint(result)",
+      "answer": "Miami Gardens, Florida",
+      "correct": true,
+      "elapsed_s": 3.06
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "the largest increases in csi were recorded in the cmas of greater sudbury , moncton , guelph , and kitchener-cambridge-waterloo.",
+      "gold_table": "1966",
+      "gold_answer": [
+        "greater sudbury",
+        "moncton",
+        "guelph",
+        "kitchener-cambridge-waterloo"
+      ],
+      "gold_formula": "=A27",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1966",
+      "table_correct": true,
+      "code": "result = \"greater sudbury, moncton, guelph, kitchener-cambridge-waterloo\"\nprint(result)",
+      "answer": "greater sudbury, moncton, guelph, kitchener-cambridge-waterloo",
+      "correct": true,
+      "elapsed_s": 4.72
+    },
+    {
+      "class": "single_arg",
+      "query": "for females found guilty in ipv cases, probation was more often considered.",
+      "gold_table": "2591",
+      "gold_answer": [
+        "probation"
+      ],
+      "gold_formula": "=A8",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2591",
+      "table_correct": true,
+      "code": "result = \"probation\"\nprint(result)",
+      "answer": "probation",
+      "correct": true,
+      "elapsed_s": 0.25
+    },
+    {
+      "class": "single_arg",
+      "query": "between 2000 and 2010,the percentage of immigrants intending to settle in saskatchewan rose from less than 0.8% to 2.7%.",
+      "gold_table": "1236",
+      "gold_answer": [
+        1.9
+      ],
+      "gold_formula": "=MIN(C18-B18)",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "1236",
+      "table_correct": true,
+      "code": "result = \"Saskatchewan\"\nprint(result)",
+      "answer": "Saskatchewan",
+      "correct": false,
+      "elapsed_s": 2.63
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, sherbrooke reported relatively large declines of motor vehicle theft in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        41
+      ],
+      "gold_formula": "=-K11",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "sherbrooke_mvt = pd.to_numeric(df.loc[df['col_8'] == 'sherbrooke', 'motor vehicle theft > rate'], errors='coerce').iloc[0]\nresult = sherbrooke_mvt\nprint(result)",
+      "answer": "-41",
+      "correct": true,
+      "elapsed_s": 8.62
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, saguenay, having reported the largest decreases in robbery in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        30
+      ],
+      "gold_formula": "=-G9",
+      "route": "codegen",
+      "route_reason": "ablation=gold-table-codegen",
+      "search_method": "gold_table (oracle)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "result = \"Saguenay\"\nprint(result)",
+      "answer": "Saguenay",
+      "correct": false,
+      "elapsed_s": 3.29
+    }
+  ]
+}

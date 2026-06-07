@@ -1,0 +1,956 @@
+{
+  "config": {
+    "model": "llama-3.3-70b-versatile",
+    "seed": 42,
+    "per_class": 10,
+    "ablation": "adaptive"
+  },
+  "class_stats": {
+    "multi_op_formula": {
+      "n": 10,
+      "correct": 1,
+      "code_gen": 8,
+      "code_exec_ok": 2
+    },
+    "arithmetic_agg": {
+      "n": 10,
+      "correct": 0,
+      "code_gen": 9,
+      "code_exec_ok": 1
+    },
+    "pair_or_topk_arg": {
+      "n": 10,
+      "correct": 3,
+      "code_gen": 10,
+      "code_exec_ok": 5
+    },
+    "single_arg": {
+      "n": 10,
+      "correct": 1,
+      "code_gen": 10,
+      "code_exec_ok": 5
+    },
+    "comparison_or_count": {
+      "n": 10,
+      "correct": 4,
+      "code_gen": 9,
+      "code_exec_ok": 4
+    }
+  },
+  "overall": {
+    "n": 50,
+    "correct": 9,
+    "nm_rate": 0.18,
+    "ci95": [
+      0.08,
+      0.3
+    ]
+  },
+  "rows": [
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, federal s&e obligations to academic institutions increased by 4% between fy 2013 and fy 2014.",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        0.042528
+      ],
+      "gold_formula": "=(B11-B10)/B10",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: increased",
+      "search_method": "VDB semantic (score=0.623)",
+      "found_table": "109_55_fs17-ib-19314-tab004",
+      "table_correct": false,
+      "code": "result = (colnum(find_col('all federal obligations')) / colnum(find_col('all federal obligations', 'fy 2013'))) * 0.04\nprint(result)",
+      "answer": "20590166",
+      "correct": false,
+      "elapsed_s": 10.12
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "approximately three-quarters of total completed cases involving with multiple charges resulted in a guilty outcome.",
+      "gold_table": "2586",
+      "gold_answer": [
+        0.745352
+      ],
+      "gold_formula": "=(D6+D12)/D17",
+      "route": "direct_lookup",
+      "route_reason": "simple lookup",
+      "search_method": "OriginalDB keyword (score=0.55)",
+      "found_table": "2586",
+      "table_correct": true,
+      "code": null,
+      "answer": "141986",
+      "correct": false,
+      "elapsed_s": 0.95
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "r&d plant funding increased substantially by 27%.",
+      "gold_table": "192_90_tab1",
+      "gold_answer": [
+        0.27367
+      ],
+      "gold_formula": "=(D13-C13)/C13",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: increased",
+      "search_method": "VDB semantic (score=0.569)",
+      "found_table": "18_127_tab2",
+      "table_correct": false,
+      "code": "result = cell(\"current $\", \"business\") - cell(\"constant 2009 $\", \"business\")\nprint(result)",
+      "answer": "27",
+      "correct": true,
+      "elapsed_s": 2.34
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "35 states reported expenditures for healthrelated r&d in fy 2016, yet 83% of all state government agency expenditures on health-related r&d was reported by agencies in five states: new york , texas , california , florida , and pennsylvania.",
+      "gold_table": "164_81_tab3",
+      "gold_answer": [
+        0.834291
+      ],
+      "gold_formula": "=(F5+F6+F7+F8+F10)/F4",
+      "route": "vdb_codegen",
+      "route_reason": "percent number with relator",
+      "search_method": "VDB semantic (score=0.794)",
+      "found_table": "164_81_tab3",
+      "table_correct": true,
+      "code": "health = find_col(\"health\")\nny = cell(\"new york\", \"health\")\ntx = cell(\"texas\", \"health\")\nca = cell(\"california\", \"health\")\nfl = cell(\"florida\", \"health\")\npa = cell(\"pennsylvania\", \"health\")\ntotal = colnum(health).sum()\nresult = (ny + tx + ca + fl + pa) / total\nprint(result)",
+      "answer": "0.8137507248419599",
+      "correct": false,
+      "elapsed_s": 6.88
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "52% of family class immigrants came from south asia, east asia and western developed countries.",
+      "gold_table": "2793",
+      "gold_answer": [
+        51.5
+      ],
+      "gold_formula": "=C14+C20+C22",
+      "route": "vdb_codegen",
+      "route_reason": "percent number with relator",
+      "search_method": "VDB semantic (score=0.642)",
+      "found_table": "2793",
+      "table_correct": true,
+      "code": "result = \"south asia\" if cell(\"south asia\", \"family class\") >= 52 else \"east asia\" if cell(\"east asia\", \"family class\") >= 52 else \"western developed countries\" if cell(\"western developed countries\", \"family class\") >= 52 else \"\"\nprint(result)",
+      "answer": "3",
+      "correct": false,
+      "elapsed_s": 7.12
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of theft, females accused accounted for 35% in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.344691
+      ],
+      "gold_formula": "=(B18+G18)/L18",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: accounted for",
+      "search_method": "VDB semantic (score=0.586)",
+      "found_table": "1916",
+      "table_correct": false,
+      "code": "Theft = find_col(\"theft\", \"female\")\n Total = find_col(\"theft\", \"total females\")\n result = Theft / Total",
+      "answer": "458",
+      "correct": false,
+      "elapsed_s": 8.89
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of fraud, females accused accounted for 33% in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.331364
+      ],
+      "gold_formula": "=(B20+G20)/L20",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: accounted for",
+      "search_method": "VDB semantic (score=0.564)",
+      "found_table": "1916",
+      "table_correct": false,
+      "code": "fraud = find_col(\"fraud\")\nfemale_fraud = cell(\"female\", fraud)\nresult = female_fraud\nprint(result)",
+      "answer": "17",
+      "correct": false,
+      "elapsed_s": 9.34
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, federal s&e obligations to academic institutions declined by 7% from fy 2012 to fy 2013.",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        -0.072612
+      ],
+      "gold_formula": "=(B10-B9)/B9",
+      "route": "vdb_codegen",
+      "route_reason": "percent number with relator",
+      "search_method": "VDB semantic (score=0.524)",
+      "found_table": "10_112_tab1",
+      "table_correct": true,
+      "code": "row_2012 = find_col(\"current $millions\", \"2012\")\nrow_2013 = find_col(\"current $millions\", \"2013\")\nrow_2012_val = colnum(row_2012).iloc[0]\nrow_2013_val = colnum(row_2013).iloc[0]\ndecline = (row_2012_val - row_2013_val) / row_2012_val * 100\nresult = round(decline, 1)\nprint(result)",
+      "answer": "1059",
+      "correct": false,
+      "elapsed_s": 10.42
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "according to the 2014/2015 integrated criminal court survey, one in five completed court cases involved a female accused.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.185533
+      ],
+      "gold_formula": "=(B6+G6)/L6",
+      "route": "direct_lookup",
+      "route_reason": "simple lookup",
+      "search_method": "OriginalDB keyword (score=0.50)",
+      "found_table": "1916",
+      "table_correct": false,
+      "code": null,
+      "answer": "20",
+      "correct": false,
+      "elapsed_s": 1.45
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of failure to appear in court, females accused accounted for 24% in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.246448
+      ],
+      "gold_formula": "=(B25+G25)/L25",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: accounted for",
+      "search_method": "VDB semantic (score=0.584)",
+      "found_table": "1916",
+      "table_correct": false,
+      "code": "result = cell(\"fail to appear\", \"female\")\nprint(result)",
+      "answer": "69.0",
+      "correct": false,
+      "elapsed_s": 4.24
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "those with lifetime suicidal thoughts had more than three times the odds, compared with those who never had suicidal thoughts.",
+      "gold_table": "1450",
+      "gold_answer": [
+        3.85
+      ],
+      "gold_formula": "=E32/E31",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.663)",
+      "found_table": "2727",
+      "table_correct": false,
+      "code": "rows = find_rows(\"self-reported-physician-diagnosed mood and/or anxiety disorder(s) > yes\", \"fold-change\")\nif len(rows) == 0:\n    raise ValueError(\"No rows found matching criteria\")\n\nrow_yes = rows.iloc[0]\nrow_no = find_rows(\"self-reported-physician-diagnosed mood and/or anxiety disorder(s) > no\", \"fold-change\").iloc[0]\n\nresult = cell(row_yes, \"first nations > men > fold-change\") / cell(row_no, \"first nations > men > fold-change\")\nprint(result)",
+      "answer": "3.1",
+      "correct": false,
+      "elapsed_s": 11.45
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the unemployment rate of arab women was 10.7 percentage points higher than that of women who did not belong to a visible minority group.",
+      "gold_table": "765",
+      "gold_answer": [
+        10.7
+      ],
+      "gold_formula": "=B11-B18",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: percentage",
+      "search_method": "VDB semantic (score=0.647)",
+      "found_table": "765",
+      "table_correct": true,
+      "code": "arab = find_col(\"arab\")\nnon_visible = find_col(\"not a visible minority\")\nresult = cell(\"arab\", \"total\") - cell(\"not a visible minority\", \"total\")\nprint(result)",
+      "answer": "8.5",
+      "correct": false,
+      "elapsed_s": 5.1
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "among cases completed in youth criminal court, theft accounted for 16% of offences involving a female accused.",
+      "gold_table": "345",
+      "gold_answer": [
+        0.161149
+      ],
+      "gold_formula": "=B18/B45",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: accounted for",
+      "search_method": "VDB semantic (score=0.605)",
+      "found_table": "1916",
+      "table_correct": false,
+      "code": "female_theft = cell(\"female\", \"theft\")\nfemale_total = cell(\"female\", \"total females\")\nresult = female_theft / female_total\nprint(result)",
+      "answer": "1018",
+      "correct": false,
+      "elapsed_s": 9.7
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "30% of homicides perpetrated by a female accused involved a victim who was either her spouse or dating partner.",
+      "gold_table": "2073",
+      "gold_answer": [
+        30
+      ],
+      "gold_formula": "=C5+C6",
+      "route": "vdb_codegen",
+      "route_reason": "percent number with relator",
+      "search_method": "VDB semantic (score=0.654)",
+      "found_table": "2073",
+      "table_correct": true,
+      "code": "spouse_or_intimate = find_col(\"female accused\", \"spouse\", \"dating\")\ntotal_female = cell(\"female accused\", \"total\")\nresult = (spouse_or_intimate / total_female) * 100\nprint(result)",
+      "answer": "23",
+      "correct": false,
+      "elapsed_s": 5.11
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "out-of-the-labour-force inuit were more than twice as likely as employed inuit to gather for monetary reasons.",
+      "gold_table": "2688",
+      "gold_answer": [
+        2.333333
+      ],
+      "gold_formula": "=L16/L14",
+      "route": "codegen",
+      "route_reason": "math symbols detected",
+      "search_method": "VDB semantic (score=0.611)",
+      "found_table": "2688",
+      "table_correct": true,
+      "code": "out_of_labour = find_col(\"labour force\", \"out of the labour force\")\nemployed = find_col(\"labour force\", \"employed\")\ngather_monetary_out_of_labour = cell(\"out-of-the-labour-force\", \"for money or to supplement income\")\ngather_monetary_employed = cell(\"employed\", \"for money or to supplement income\")\n\nresult = \"yes\" if gather_monetary_out_of_labour * 2 > gather_monetary_employed else \"no\"\nprint(result)",
+      "answer": "1.3",
+      "correct": false,
+      "elapsed_s": 9.69
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the number of postdocs doing research in science fields in 2019 is similar to that in 2012, although the percentage has declined about 12 points.",
+      "gold_table": "9_11_nsf21304-tab002",
+      "gold_answer": [
+        11.6
+      ],
+      "gold_formula": "=C6-E6",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: percentage",
+      "search_method": "VDB semantic (score=0.714)",
+      "found_table": "9_11_nsf21304-tab002",
+      "table_correct": true,
+      "code": "science_2012 = colnum(find_col('2012', 'total')).sum()\nscience_2019 = colnum(find_col('2019', 'total')).sum()\npercentage_change = (science_2019 - science_2012) / science_2012 * 100\nresult = abs(100 - percentage_change)\nprint(result)",
+      "answer": "81.65181796291837",
+      "correct": false,
+      "elapsed_s": 7.5
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "approximately 71% on average of cases in each year show earnings in both the t1ff and t4.",
+      "gold_table": "1103",
+      "gold_answer": [
+        71.05
+      ],
+      "gold_formula": "=AVERAGE(B5:M5)",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: average",
+      "search_method": "VDB semantic (score=0.653)",
+      "found_table": "1103",
+      "table_correct": true,
+      "code": "both_sources = find_col(\"both sources\", \"earnings\")\nyears = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]\navg = colnum(both_sources)[years].mean()\nresult = round(avg, 1)\nprint(result)",
+      "answer": "7",
+      "correct": false,
+      "elapsed_s": 6.48
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the proportion of enterprises that stay in their 2008 size class is in the range of 38.0% to 66.0%.",
+      "gold_table": "1079",
+      "gold_answer": [
+        65.9,
+        38.9
+      ],
+      "gold_formula": "=MAX(B6,C7,D8,E9,F10,G11,H12,I13,J14)",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: proportion",
+      "search_method": "VDB semantic (score=0.596)",
+      "found_table": "1079",
+      "table_correct": true,
+      "code": "result = cell(\"between 1 and 4\", \"2008\") + cell(\"between 5 and 9\", \"2008\") + cell(\"between 10 and 19\", \"2008\") + cell(\"between 20 and 49\", \"2008\") + cell(\"between 50 and 99\", \"2008\") + cell(\"between 100 and 249\", \"2008\") + cell(\"between 250 and 499\", \"2008\") + cell(\"between 500 and 999\", \"2008\") + cell(\"1,000 and above\", \"2008\")\nprint(result)",
+      "answer": "58.9",
+      "correct": false,
+      "elapsed_s": 13.18
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "immigrants were more likely to be overqualified than non-immigrants.",
+      "gold_table": "2412",
+      "gold_answer": [
+        "immigrants"
+      ],
+      "gold_formula": "=D3",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.658)",
+      "found_table": "2306",
+      "table_correct": false,
+      "code": "immigrants = find_col(\"immigrants\")\nnon_immigrants = find_col(\"not a visible minority\")\nresult = \"immigrants\" if colnum(immigrants).mean() > colnum(non_immigrants).mean() else \"non-immigrants\"\nprint(result)",
+      "answer": "1",
+      "correct": false,
+      "elapsed_s": 4.92
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the bulk of the spending on these awards occurred in fys 2010 and 2011.",
+      "gold_table": "15_117_tab2",
+      "gold_answer": [
+        0.730469
+      ],
+      "gold_formula": "=C5/C4",
+      "route": "direct_lookup",
+      "route_reason": "simple lookup",
+      "search_method": "OriginalDB keyword (score=0.33)",
+      "found_table": "0_1_nsf21326-tab001",
+      "table_correct": false,
+      "code": null,
+      "answer": "1",
+      "correct": false,
+      "elapsed_s": 0.69
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "miami gardens in florida is one of the largest u.s. cities with an african american population.",
+      "gold_table": "502_totto57437-2",
+      "gold_answer": [
+        "miami gardens, florida"
+      ],
+      "gold_formula": "=A7",
+      "route": "vdb_codegen",
+      "route_reason": "arg-style query",
+      "search_method": "VDB semantic (score=0.604)",
+      "found_table": "502_totto57437-2",
+      "table_correct": true,
+      "code": "result = \"miami gardens, florida\"\nprint(result)",
+      "answer": "miami gardens, florida",
+      "correct": true,
+      "elapsed_s": 2.65
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "the largest increases in csi were recorded in the cmas of greater sudbury , moncton , guelph , and kitchener-cambridge-waterloo.",
+      "gold_table": "1966",
+      "gold_answer": [
+        "greater sudbury",
+        "moncton",
+        "guelph",
+        "kitchener-cambridge-waterloo"
+      ],
+      "gold_formula": "=A27",
+      "route": "codegen",
+      "route_reason": "math symbols detected",
+      "search_method": "VDB semantic (score=0.551)",
+      "found_table": "1927",
+      "table_correct": false,
+      "code": "cols = find_col(\"increase\", \"csi\")\nrows = find_rows(\"greater sudbury\", \"moncton\", \"guelph\", \"kitchener-cambridge-waterloo\")\nresult = cols[rows].max()\nprint(result)",
+      "answer": "5\n15\n6\n6",
+      "correct": false,
+      "elapsed_s": 6.57
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "chinese women had higher employment rates than third-plus generation white women by observed.",
+      "gold_table": "2658",
+      "gold_answer": [
+        "chinese"
+      ],
+      "gold_formula": "=A9",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.663)",
+      "found_table": "2658",
+      "table_correct": true,
+      "code": "obs_chinese_women = cell(\"chinese\", \"observed employment rate > women\")\nobs_white_women = cell(\"third-plus generation whites\", \"observed employment rate > women\")\nresult = \"chinese\" if obs_chinese_women > obs_white_women else \"white\"\nprint(result)",
+      "answer": "chinese",
+      "correct": true,
+      "elapsed_s": 5.63
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "people in the second-ring peripheral municipalities remain less likely than residents of central municipalities to have more larger personal networks.",
+      "gold_table": "436",
+      "gold_answer": [
+        "peripheral 2nd ring"
+      ],
+      "gold_formula": "=A14",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.639)",
+      "found_table": "436",
+      "table_correct": true,
+      "code": "peripheral_1st = find_col(\"type\", \"municipality\", \"peripheral\", \"1st\")\ncentral = find_col(\"type\", \"municipality\", \"central\")\nsecond_ring = find_col(\"type\", \"municipality\", \"peripheral\", \"2nd\")\nresult = cell(second_ring, \"persons with a personal network of more than 15 people\") < cell(central, \"persons with a personal network of more than 15 people\")\nprint(result)",
+      "answer": "0.74",
+      "correct": false,
+      "elapsed_s": 9.05
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "women with a degree in education who worked full time and full year had higher employment income than the median for all female degree holders who worked full time and full year.",
+      "gold_table": "2311",
+      "gold_answer": [
+        "education"
+      ],
+      "gold_formula": "=A8",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: median",
+      "search_method": "VDB semantic (score=0.688)",
+      "found_table": "2311",
+      "table_correct": true,
+      "code": "edu_women = cell(\"education\", \"women\")\ntotal_women = cell(\"total university degree holders\", \"women\")\nresult = \"yes\" if edu_women > total_women else \"no\"\nprint(result)",
+      "answer": "yes",
+      "correct": false,
+      "elapsed_s": 2.5
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "women were significantly more likely than men to agree or strongly agree with the statement that people who report sexual assault are almost always telling the truth.",
+      "gold_table": "1486",
+      "gold_answer": [
+        "women"
+      ],
+      "gold_formula": "=B3",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.554)",
+      "found_table": "1504",
+      "table_correct": false,
+      "code": "result = \"men\"\nprint(result)",
+      "answer": "men",
+      "correct": true,
+      "elapsed_s": 2.71
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "seniors aged 75 and over were significantly less likely to use technology than those aged 65 to 74.",
+      "gold_table": "1818",
+      "gold_answer": [
+        "75 and over"
+      ],
+      "gold_formula": "=D4",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.597)",
+      "found_table": "1818",
+      "table_correct": true,
+      "code": "tech_75 = cell(\"75 and over\", \"using technology\")\ntech_65_74 = cell(\"65 to 74\", \"using technology\")\nresult = \"seniors aged 75 and over\" if tech_75 < tech_65_74 else \"those aged 65 to 74\"\nprint(result)",
+      "answer": "21",
+      "correct": false,
+      "elapsed_s": 7.07
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "the earning ratio between women and men's median income in education was 0.90 while the ratio was 0.91 in health and related fields.",
+      "gold_table": "2311",
+      "gold_answer": [
+        "health and related fields"
+      ],
+      "gold_formula": "=A6",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: ratio",
+      "search_method": "VDB semantic (score=0.691)",
+      "found_table": "2311",
+      "table_correct": true,
+      "code": "edu_ratio = cell(\"education\", \"ratio\")\nhealth_ratio = cell(\"health and related fields\", \"ratio\")\nresult = edu_ratio / health_ratio\nprint(result)",
+      "answer": "1.0843373493975905",
+      "correct": false,
+      "elapsed_s": 4.24
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "within lone-parent households, employed first nations women were less likely to be food secure than men.",
+      "gold_table": "334",
+      "gold_answer": [
+        "women"
+      ],
+      "gold_formula": "=C3",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.718)",
+      "found_table": "334",
+      "table_correct": true,
+      "code": "result = \"women\" if cell(\"lone-parent household\", \"percent > food secure household > lone-parent household\", \"women\") < cell(\"lone-parent household\", \"percent > food secure household > lone-parent household\", \"men\") else \"men\"\nprint(result)",
+      "answer": "45.6",
+      "correct": false,
+      "elapsed_s": 6.19
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "older women experienced lower earnings growth than their younger counterparts.",
+      "gold_table": "2377",
+      "gold_answer": [
+        "45 to 54"
+      ],
+      "gold_formula": "=A7",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.597)",
+      "found_table": "1520",
+      "table_correct": false,
+      "code": "result = \"older women\" if cell(\"earnings growth\", \"younger\") < cell(\"earnings growth\", \"older\") else \"younger women\"\nprint(result)",
+      "answer": "NA",
+      "correct": false,
+      "elapsed_s": 2.67
+    },
+    {
+      "class": "single_arg",
+      "query": "for females found guilty in ipv cases, probation was more often considered.",
+      "gold_table": "2591",
+      "gold_answer": [
+        "probation"
+      ],
+      "gold_formula": "=A8",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.613)",
+      "found_table": "2591",
+      "table_correct": true,
+      "code": "ipv_female_probation = cell(\"intimate partner violence (ipv) cases > probation\", \"accused females > number\")\nipv_female_total = cell(\"intimate partner violence (ipv) cases > total guilty ipv cases\", \"accused females > number\")\nresult = \"probation\" if ipv_female_probation > ipv_female_total else \"total\"\nprint(result)",
+      "answer": "total",
+      "correct": false,
+      "elapsed_s": 7.04
+    },
+    {
+      "class": "single_arg",
+      "query": "between 2000 and 2010,the percentage of immigrants intending to settle in saskatchewan rose from less than 0.8% to 2.7%.",
+      "gold_table": "1236",
+      "gold_answer": [
+        1.9
+      ],
+      "gold_formula": "=MIN(C18-B18)",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: percentage",
+      "search_method": "VDB semantic (score=0.630)",
+      "found_table": "1236",
+      "table_correct": true,
+      "code": "result = \"saskatchewan\"\nprint(result)",
+      "answer": "saskatchewan",
+      "correct": false,
+      "elapsed_s": 2.25
+    },
+    {
+      "class": "single_arg",
+      "query": "a higher level of education was associated with a lower probability of payday loan use. those with a university degree had the lowest probability of payday loan use.",
+      "gold_table": "1306",
+      "gold_answer": [
+        "university diploma or degree"
+      ],
+      "gold_formula": "=A25",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.680)",
+      "found_table": "1306",
+      "table_correct": true,
+      "code": "edu_uni = find_col(\"education\", \"university\")\nprob_uni = cell(\"predicted probability\", edu_uni)\nedu_less_hs = find_col(\"education\", \"less than high school\")\nprob_less_hs = cell(\"predicted probability\", edu_less_hs)\nresult = \"university\" if prob_uni < prob_less_hs else \"less than high school\"\nprint(result)",
+      "answer": "0.016",
+      "correct": false,
+      "elapsed_s": 8.31
+    },
+    {
+      "class": "single_arg",
+      "query": "inuit in inuit nunangat were more likely than those outside, for example, those in rural areas , to gather for cultural reasons.",
+      "gold_table": "2688",
+      "gold_answer": [
+        "inuit nunangat"
+      ],
+      "gold_formula": "=A20",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.670)",
+      "found_table": "2688",
+      "table_correct": true,
+      "code": "inuit_nunangat = cell(\"percent > place of residence > inuit nunangat\", \"for cultural reasons\")\nrural = cell(\"percent > place of residence > rural\", \"for cultural reasons\")\nresult = inuit_nunangat > rural\nprint(result)",
+      "answer": "True",
+      "correct": false,
+      "elapsed_s": 5.53
+    },
+    {
+      "class": "single_arg",
+      "query": "residents of the territories who had completed a university degree were more likely than those who had completed high school or less to believe that police were doing a good job enforcing the laws.",
+      "gold_table": "692",
+      "gold_answer": [
+        "university degree"
+      ],
+      "gold_formula": "=A25",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.648)",
+      "found_table": "692",
+      "table_correct": true,
+      "code": "uni_degree = find_col(\"university degree\")\nhigh_school_or_less = find_col(\"less than high school\")\ndiff = colnum(uni_degree) - colnum(high_school_or_less)\nresult = \"residents of the territories who had completed a university degree were more likely than those who had completed high school or less to believe that police were doing a good job enforcing the laws.\" if diff.max() > 0 else \"residents of the territories who had completed high school or less were more likely than those who had completed a university degree to believe that police were doing a good job enforcing the laws.\"\nprint(result)",
+      "answer": "25",
+      "correct": false,
+      "elapsed_s": 11.18
+    },
+    {
+      "class": "single_arg",
+      "query": "throughout the country's provinces, the rate of police strength in prince edward island was the lowest.",
+      "gold_table": "1849",
+      "gold_answer": [
+        "prince edward island"
+      ],
+      "gold_formula": "=A7",
+      "route": "vdb_codegen",
+      "route_reason": "arg-style query",
+      "search_method": "VDB semantic (score=0.650)",
+      "found_table": "1849",
+      "table_correct": true,
+      "code": "pei_rate = cell(\"prince edward island\", \"police officers per 100,000 population\")\nlowest_rate = pei_rate\nresult = \"prince edward island\"\n\nfor row in [\"nova scotia\", \"new brunswick\", \"quebec\", \"ontario\", \"manitoba\", \"saskatchewan\", \"alberta\", \"british columbia\", \"yukon\", \"northwest territories\", \"nunavut\"]:\n    rate = cell(row, \"police officers per 100,000 population\")\n    if pd.notna(rate) and rate < lowest_rate:\n        lowest_rate = rate\n        result = row\n\nprint(result)",
+      "answer": "prince edward island",
+      "correct": true,
+      "elapsed_s": 10.93
+    },
+    {
+      "class": "single_arg",
+      "query": "decedents who died in hospital were more likely to have died from terminal illness.",
+      "gold_table": "1256",
+      "gold_answer": [
+        "hospital"
+      ],
+      "gold_formula": "=B3",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.578)",
+      "found_table": "380",
+      "table_correct": false,
+      "code": "result = \"neoplasms > lung, trachea, bronchus, larynx\"\nprint(result)",
+      "answer": "neoplasms > lung, trachea, bronchus, larynx",
+      "correct": false,
+      "elapsed_s": 3.32
+    },
+    {
+      "class": "single_arg",
+      "query": "yukon had a lower percentage of households that received formal home care compared to the rest of canada.",
+      "gold_table": "366",
+      "gold_answer": [
+        "yukon"
+      ],
+      "gold_formula": "=A45",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: percentage",
+      "search_method": "VDB semantic (score=0.689)",
+      "found_table": "366",
+      "table_correct": true,
+      "code": "yukon = find_col(\"province/territory\", \"yukon\")\ncanada = cell(\"total\", \"formal home care services > %\")\nresult = \"yes\" if yukon < canada else \"no\"\nprint(result)",
+      "answer": "6.4",
+      "correct": false,
+      "elapsed_s": 3.41
+    },
+    {
+      "class": "single_arg",
+      "query": "the highest representation of females accused was observed in cases of theft in 2015.",
+      "gold_table": "345",
+      "gold_answer": [
+        "theft"
+      ],
+      "gold_formula": "=A18",
+      "route": "vdb_codegen",
+      "route_reason": "arg-style query",
+      "search_method": "VDB semantic (score=0.537)",
+      "found_table": "2540",
+      "table_correct": false,
+      "code": "Theft = find_col(\"theft\", \"offences\")\n row = find_rows(\"theft\", \"offences\").iloc[0]\n result = df.loc[row, \"row_header\"]\n print(result)",
+      "answer": "61",
+      "correct": false,
+      "elapsed_s": 7.25
+    },
+    {
+      "class": "single_arg",
+      "query": "during the 2000s the chronic low-income rate among all immigrants peaked at 16.3% in 2004 and declined to 12.3% by 2012.",
+      "gold_table": "2354",
+      "gold_answer": [
+        16.3,
+        12.3
+      ],
+      "gold_formula": "=E11",
+      "route": "vdb_codegen",
+      "route_reason": "percent number with relator",
+      "search_method": "VDB semantic (score=0.631)",
+      "found_table": "2354",
+      "table_correct": true,
+      "code": "col = find_col(\"rate\", \"overall\", \"2000s\")\nval_2004 = cell(\"rate > overall > 2004\", col)\nval_2012 = cell(\"rate > overall > 2012\", col)\nresult = val_2004 - val_2012\nprint(result)",
+      "answer": "16.3",
+      "correct": false,
+      "elapsed_s": 8.02
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, sherbrooke reported relatively large declines of motor vehicle theft in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        41
+      ],
+      "gold_formula": "=-K11",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: declines of",
+      "search_method": "VDB semantic (score=0.605)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "result = cell(\"sherbrooke\", \"motor vehicle theft > percent change in rate 2014 to 2015\")\nprint(result)",
+      "answer": "-41.0",
+      "correct": true,
+      "elapsed_s": 5.53
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, saguenay, having reported the largest decreases in robbery in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        30
+      ],
+      "gold_formula": "=-G9",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: decreases",
+      "search_method": "VDB semantic (score=0.612)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "col = find_col(\"robbery\", \"percent change in rate 2014 to 2015\")\nrows = find_rows(\"saguenay\")\ndecrease = colnum(col).iloc[0]\nresult = cell(rows.iloc[0], \"row_header\")\nif decrease > 0:\n    result = \"saguenay\"\nprint(result)",
+      "answer": "-30",
+      "correct": true,
+      "elapsed_s": 7.27
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "24% among men admitted between the ages of 15 and 24.",
+      "gold_table": "2487",
+      "gold_answer": [
+        24.2
+      ],
+      "gold_formula": "=-B28",
+      "route": "vdb_codegen",
+      "route_reason": "percent number with relator",
+      "search_method": "VDB semantic (score=0.611)",
+      "found_table": "614",
+      "table_correct": false,
+      "code": "row_substrs = \"total - aged 15 years and over > 15 to 24 years\"\ncol_substrs = \"men\"\n\nresult = cell(row_substrs, col_substrs) * 0.25\nprint(result)",
+      "answer": "188720.0",
+      "correct": false,
+      "elapsed_s": 4.87
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "an increase to mfn tariffs plus associated non-tariff barriers reduces canadian exports to the united states by 23%.",
+      "gold_table": "2558",
+      "gold_answer": [
+        23.4
+      ],
+      "gold_formula": "=-B7",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: increase",
+      "search_method": "VDB semantic (score=0.563)",
+      "found_table": "2558",
+      "table_correct": true,
+      "code": "result = cell(\"percent change > increase in border costs\", \"cross-border exports > united states to canada\")\nprint(result)",
+      "answer": "-18.1",
+      "correct": false,
+      "elapsed_s": 3.69
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "by combining information regarding the jobs and characteristics of the same workers in 2006 and 2016, there are four possible trajectories.",
+      "gold_table": "2412",
+      "gold_answer": [
+        4
+      ],
+      "gold_formula": "=COUNTA(A6:A9)",
+      "route": "direct_lookup",
+      "route_reason": "simple lookup",
+      "search_method": "OriginalDB keyword (score=0.18)",
+      "found_table": "1008",
+      "table_correct": false,
+      "code": null,
+      "answer": "0",
+      "correct": false,
+      "elapsed_s": 1.04
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the three largest cmas, toronto which accounted for 48% of all robberies reported by police in 2015, had smaller changes.",
+      "gold_table": "2003",
+      "gold_answer": [
+        6
+      ],
+      "gold_formula": "=-G18",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: accounted for",
+      "search_method": "VDB semantic (score=0.611)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "toronto = find_col(\"robbery\", \"rate\")\nrobberies = colnum(toronto).sum()\nother_cmas = find_rows(\"st. john's\", \"halifax\", \"moncton\", \"saint john\", \"saguenay\", \"quebec\", \"sherbrooke\", \"trois-rivieres\", \"montreal\", \"gatineau\", \"ottawa\", \"kingston\", \"peterborough\", \"hamilton\", \"st. catharines-niagara\", \"kitchener-cambridge-waterloo\", \"brantford\", \"guelph\", \"london\", \"windsor\", \"barrie\", \"greater sudbury\", \"thunder bay\", \"winnipeg\", \"regina\", \"saskatoon\", \"calgary\", \"edmonton\", \"kelowna\")\nother_robberies = colnum(toronto).sum() - cell(\"toronto\", \"robbery\", \"rate\")\nchange_toronto = find_col(\"robbery\", \"percent change in rate 2014 to 2015\")\nchange_other = find_col(\"robbery\", \"percent change in rate 2014 to 2015\").iloc[1:].abs().min()\nresult = change_toronto < change_other\nprint(result)",
+      "answer": "76",
+      "correct": false,
+      "elapsed_s": 19.41
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2016/2017, there were 5,937 youth that began a period of supervision in correctional services in the eight reporting jurisdictions, a 44% decrease from 2012/2013.",
+      "gold_table": "2212",
+      "gold_answer": [
+        44
+      ],
+      "gold_formula": "=-E15",
+      "route": "codegen",
+      "route_reason": "math symbols detected",
+      "search_method": "VDB semantic (score=0.696)",
+      "found_table": "2212",
+      "table_correct": true,
+      "code": "total = find_col(\"total correctional services\", \"number\")\nresult = float(total.iloc[0])\nprint(result)",
+      "answer": "5937",
+      "correct": false,
+      "elapsed_s": 3.83
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2016/2017, there were 5,937 youth that began a period of supervision in correctional services in the eight reporting jurisdictions, an 8% decrease from the previous year.",
+      "gold_table": "2212",
+      "gold_answer": [
+        8
+      ],
+      "gold_formula": "=-D15",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: decrease",
+      "search_method": "VDB semantic (score=0.687)",
+      "found_table": "2212",
+      "table_correct": true,
+      "code": "result = 5937\nprint(result)",
+      "answer": "5937",
+      "correct": false,
+      "elapsed_s": 2.19
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2018/2019, the rate of adults on probation decreased by 6% compared to 2017/2018.",
+      "gold_table": "954",
+      "gold_answer": [
+        6
+      ],
+      "gold_formula": "=-J18",
+      "route": "codegen",
+      "route_reason": "math symbols detected",
+      "search_method": "VDB semantic (score=0.623)",
+      "found_table": "954",
+      "table_correct": true,
+      "code": "probation_rate = find_col(\"probation\", \"rate\")\ndecrease = find_col(\"probation\", \"percent change in rate from 2017/2018\")\nrow = df[(df[\"row_header\"].str.contains(\"2018/2019\")) & (colnum(decrease) == -6.0)]\nresult = row.iloc[0][\"row_header\"]\nprint(result)",
+      "answer": "-6",
+      "correct": true,
+      "elapsed_s": 5.56
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the employment rate for aboriginal people living on reserve was 47.3% in 2011, compared to 71.1% for their counterparts living off-reserve-a difference of 23.8 percentage points.",
+      "gold_table": "1604",
+      "gold_answer": [
+        23.8
+      ],
+      "gold_formula": "=-D7",
+      "route": "codegen",
+      "route_reason": "math symbols detected",
+      "search_method": "VDB semantic (score=0.726)",
+      "found_table": "1604",
+      "table_correct": true,
+      "code": "aboriginal_on_reserve = find_col(\"aboriginal\", \"on reserve\", \"employment\")\naboriginal_off_reserve = find_col(\"aboriginal\", \"off-reserve\", \"employment\")\ndifference = abs(aboriginal_on_reserve - aboriginal_off_reserve)\nresult = difference\nprint(result)",
+      "answer": "23.8",
+      "correct": true,
+      "elapsed_s": 5.5
+    }
+  ]
+}

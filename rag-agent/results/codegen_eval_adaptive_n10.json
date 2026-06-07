@@ -1,0 +1,234 @@
+{
+  "config": {
+    "model": "llama-3.3-70b-versatile",
+    "seed": 42,
+    "per_class": 2,
+    "ablation": "adaptive"
+  },
+  "class_stats": {
+    "multi_op_formula": {
+      "n": 2,
+      "correct": 0,
+      "code_gen": 1,
+      "code_exec_ok": 0
+    },
+    "arithmetic_agg": {
+      "n": 2,
+      "correct": 1,
+      "code_gen": 2,
+      "code_exec_ok": 1
+    },
+    "pair_or_topk_arg": {
+      "n": 2,
+      "correct": 2,
+      "code_gen": 2,
+      "code_exec_ok": 2
+    },
+    "single_arg": {
+      "n": 2,
+      "correct": 0,
+      "code_gen": 2,
+      "code_exec_ok": 0
+    },
+    "comparison_or_count": {
+      "n": 2,
+      "correct": 2,
+      "code_gen": 2,
+      "code_exec_ok": 0
+    }
+  },
+  "overall": {
+    "n": 10,
+    "correct": 5,
+    "nm_rate": 0.5,
+    "ci95": [
+      0.2,
+      0.8
+    ]
+  },
+  "rows": [
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, federal s&e obligations to academic institutions increased by 4% between fy 2013 and fy 2014.",
+      "gold_table": "10_112_tab1",
+      "gold_answer": [
+        0.042528
+      ],
+      "gold_formula": "=(B11-B10)/B10",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: increased",
+      "search_method": "VDB semantic (score=0.623)",
+      "found_table": "109_55_fs17-ib-19314-tab004",
+      "table_correct": false,
+      "code": "```python\ndf = pd.DataFrame({\n    'row_header': [\n        'all institutions > top 20 institutions > johns hopkins u.b', \n        'all institutions > top 20 institutions > u. michigan', \n        'all institutions > top 20 institutions > johns hopkins u.b', \n        'all institutions > top 20 institutions > u. michigan', \n        'all institutions > top 20 institutions > u. washington', \n        'all institutions > top 20 institutions > u. california, san diego', \n        'all institutions > top 20 institutions > u. california, san francisco', \n        'all institutions > top 20 institutions > stanford u', \n        'all institutions > top 20 institutions > columbia u. in the city of new york', \n        'all institutions > top 20 institutions > u. pennsylvania', \n        'all institutions > top 20 institutions > u. pittsburgh', \n        'all institutions > top 20 institutions > duke u', \n        'all institutions > top 20 institutions > u. california, los angeles', \n        'all institutions > top 20 institutions > harvard u', \n        'all institutions > top 20 institutions > u. wisconsin-madison', \n        'all institutions > top 20 institutions > u. colorado boulder', \n        'all institutions > top 20 institutions > washington u., saint louis', \n        'all institutions > top 20 institutions > georgia institute of technology', \n        'all institutions > top 20 institutions > u. north carolina, chapel hill', \n        'all institutions > top 20 institutions > yale u', \n        'all institutions > top 20 institutions > pennsylvania state u', \n        'all institutions > top 20 institutions > u. southern california', \n        'all institutions > all other academic institutions'\n    ],\n    'all federal obligations': [\n        32430792, 11840626, 1708000, 700050, 667400, 639089, 628270, 581148, 574306, 552306, 544466, 523037, 522729, 490075, 485333, 481184, 476403, 473320, 460652, 460097, 4",
+      "answer": "20590166",
+      "correct": false,
+      "elapsed_s": 97.4
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "approximately three-quarters of total completed cases involving with multiple charges resulted in a guilty outcome.",
+      "gold_table": "2586",
+      "gold_answer": [
+        0.745352
+      ],
+      "gold_formula": "=(D6+D12)/D17",
+      "route": "direct_lookup",
+      "route_reason": "simple lookup",
+      "search_method": "OriginalDB keyword (score=0.55)",
+      "found_table": "2586",
+      "table_correct": true,
+      "code": null,
+      "answer": "141986",
+      "correct": false,
+      "elapsed_s": 10.14
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "those with lifetime suicidal thoughts had more than three times the odds, compared with those who never had suicidal thoughts.",
+      "gold_table": "1450",
+      "gold_answer": [
+        3.85
+      ],
+      "gold_formula": "=E32/E31",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.663)",
+      "found_table": "2727",
+      "table_correct": false,
+      "code": "rows = find_rows(\"self-reported-physician-diagnosed mood and/or anxiety disorder(s) > yes\", \"drug use > yes\")\nresult = cell(rows.iloc[0], \"fold-change\")\nprint(result)",
+      "answer": "3.1",
+      "correct": false,
+      "elapsed_s": 24.03
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the unemployment rate of arab women was 10.7 percentage points higher than that of women who did not belong to a visible minority group.",
+      "gold_table": "765",
+      "gold_answer": [
+        10.7
+      ],
+      "gold_formula": "=B11-B18",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: percentage",
+      "search_method": "VDB semantic (score=0.647)",
+      "found_table": "765",
+      "table_correct": true,
+      "code": "arab = cell(\"arab\", \"total\")\nnot_visible = cell(\"not a visible minority\", \"total\")\nresult = arab - not_visible\nprint(result)",
+      "answer": "10.7",
+      "correct": true,
+      "elapsed_s": 3.59
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "miami gardens in florida is one of the largest u.s. cities with an african american population.",
+      "gold_table": "502_totto57437-2",
+      "gold_answer": [
+        "miami gardens, florida"
+      ],
+      "gold_formula": "=A7",
+      "route": "vdb_codegen",
+      "route_reason": "arg-style query",
+      "search_method": "VDB semantic (score=0.604)",
+      "found_table": "502_totto57437-2",
+      "table_correct": true,
+      "code": "result = \"miami gardens, florida\"\nprint(result)",
+      "answer": "miami gardens, florida",
+      "correct": true,
+      "elapsed_s": 2.45
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "the largest increases in csi were recorded in the cmas of greater sudbury , moncton , guelph , and kitchener-cambridge-waterloo.",
+      "gold_table": "1966",
+      "gold_answer": [
+        "greater sudbury",
+        "moncton",
+        "guelph",
+        "kitchener-cambridge-waterloo"
+      ],
+      "gold_formula": "=A27",
+      "route": "codegen",
+      "route_reason": "math symbols detected",
+      "search_method": "VDB semantic (score=0.551)",
+      "found_table": "1927",
+      "table_correct": false,
+      "code": "cmas = [\"greater sudbury\", \"moncton\", \"guelph\", \"kitchener-cambridge-waterloo\"]\ncols = find_col(\"percent change in crime severity index from 2017 to 2018\")\n\nvalues = colnum(cols)[df.row_header.isin(cmas)].astype(float)\n\nmax_value = values.max()\n\nresult = df.loc[values.idxmax(), \"row_header\"]\n\nprint(result)",
+      "answer": "moncton",
+      "correct": true,
+      "elapsed_s": 8.94
+    },
+    {
+      "class": "single_arg",
+      "query": "for females found guilty in ipv cases, probation was more often considered.",
+      "gold_table": "2591",
+      "gold_answer": [
+        "probation"
+      ],
+      "gold_formula": "=A8",
+      "route": "vdb_codegen",
+      "route_reason": "comparison/count",
+      "search_method": "VDB semantic (score=0.613)",
+      "found_table": "2591",
+      "table_correct": true,
+      "code": "ipv_probation = cell(\"intimate partner violence (ipv) cases\", \"probation\")\nipv_custody = cell(\"intimate partner violence (ipv) cases\", \"custody\")\n\nif ipv_probation > ipv_custody:\n    result = \"True\"\nelse:\n    result = \"False\"\n    \nprint(result)",
+      "answer": "62",
+      "correct": false,
+      "elapsed_s": 7.97
+    },
+    {
+      "class": "single_arg",
+      "query": "between 2000 and 2010,the percentage of immigrants intending to settle in saskatchewan rose from less than 0.8% to 2.7%.",
+      "gold_table": "1236",
+      "gold_answer": [
+        1.9
+      ],
+      "gold_formula": "=MIN(C18-B18)",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: percentage",
+      "search_method": "VDB semantic (score=0.630)",
+      "found_table": "1236",
+      "table_correct": true,
+      "code": "Sask = find_col(\"saskatchewan\")\n result = cell(\"percent > saskatchewan\", \"2010\") - cell(\"percent > saskatchewan\", \"2000\")\n print(result)",
+      "answer": "2.7",
+      "correct": false,
+      "elapsed_s": 5.12
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, sherbrooke reported relatively large declines of motor vehicle theft in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        41
+      ],
+      "gold_formula": "=-K11",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: declines of",
+      "search_method": "VDB semantic (score=0.605)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "result = cell((\"sherbrooke\", \"montreal\"), \"motor vehicle theft > percent change in rate 2014 to 2015\")\nprint(result)",
+      "answer": "-41",
+      "correct": true,
+      "elapsed_s": 41.5
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, saguenay, having reported the largest decreases in robbery in 2015.",
+      "gold_table": "2003",
+      "gold_answer": [
+        30
+      ],
+      "gold_formula": "=-G9",
+      "route": "vdb_codegen",
+      "route_reason": "arithmetic: decreases",
+      "search_method": "VDB semantic (score=0.612)",
+      "found_table": "2003",
+      "table_correct": true,
+      "code": "result = cell(\"saguenay\", \"robbery\") + cell(\"saguenay\", \"robbery > percent change in rate 2014 to 2015\")",
+      "answer": "-30",
+      "correct": true,
+      "elapsed_s": 45.42
+    }
+  ]
+}

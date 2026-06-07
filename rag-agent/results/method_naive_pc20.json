@@ -1,0 +1,1581 @@
+{
+  "config": {
+    "mode": "naive",
+    "per_class": 20,
+    "repairs": 2,
+    "retrieval": "gold",
+    "llm": "local:Qwen2.5-7B-4bit",
+    "seed": 42
+  },
+  "overall": {
+    "n": 100,
+    "NM": 0.41
+  },
+  "by_class": {
+    "multi_op_formula": {
+      "n": 20,
+      "NM": 0.0
+    },
+    "arithmetic_agg": {
+      "n": 20,
+      "NM": 0.1
+    },
+    "pair_or_topk_arg": {
+      "n": 20,
+      "NM": 0.75
+    },
+    "single_arg": {
+      "n": 20,
+      "NM": 0.85
+    },
+    "comparison_or_count": {
+      "n": 20,
+      "NM": 0.35
+    }
+  },
+  "rows": [
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, how many percent did federal s&e obligations to academic institutions increase between fy 2013 and fy 2014?",
+      "gold": [
+        0.042528
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Calculate the percentage increase in federal S&E obligations to academic institutions from FY 2013 to FY 2014\nfy_2013_value = cell(\"academic institutions\", \"fy 2013\")\nfy_2014_value = cell(\"academic institutions\", \"fy 2014\")\n\npercentage_increase = ((fy_2014_value - fy_2013_value) / fy_2013_value) * 100\n\nresult = percentage_increase",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "what percent of total completed cases involving with multiple charges resulted in a guilty outcome?",
+      "gold": [
+        0.745352
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ZeroDivisionError: float division by zero",
+      "n_repair": 0,
+      "code": "# Calculate the total number of completed cases involving multiple charges\ntotal_multiple_charges = sum(col_values(\"Number of Charges Laid\", \"Multiple\"))\n\n# Find the number of completed cases involving multiple charges that resulted in a guilty outcome\nguilty_outcomes_multiple_charges = cell(\"Guilty\", \"Multiple\")\n\n# Calculate the percentage\nresult = (guilty_outcomes_multiple_charges / total_multiple_charges) * 100",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "how many percent did r&d plant funding increase substantially by?",
+      "gold": [
+        0.27367
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: 'FYS 2013' is not in list",
+      "n_repair": 0,
+      "code": "# Assuming \"R&D Plant\" is the relevant column and we need to calculate percentage increase\n# over the period FYS 2013-17\n\n# Get the values for R&D Plant column for each fiscal year\nr_and_d_plant_values = col_values(col_header=\"R&D Plant\", row_filter=None)\n\n# Extract the fiscal years and corresponding values\nfiscal_years = row_values(row_header=\"FYS 2013-17\", col_filter=None)\n\n# Calculate the percentage increase\ninitial_value = r_and_d_plant_values[fiscal_years.index(\"FYS 2013\")]\nfinal_value = r_and_d_plant_values[fiscal_years.index(\"FYS 2017\")]\n\npercentage_increase = ((final_value - initial_value) / initial_value) * 100\n\nresult = percentage_increase",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "35 states reported expenditures for healthrelated r&d in fy 2016, how many percent of all state government agency expenditures on health-related r&d was reported by agencies in five states: new york, texas , california, florida, and pennsylvania?",
+      "gold": [
+        0.834291
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for +: 'int' and 'list'",
+      "n_repair": 0,
+      "code": "# Calculate the total expenditures for health-related R&D across all states\ntotal_expenditures = sum(col_values(\"Health-Related R&D\", \"Total\"))\n\n# Calculate the total expenditures for health-related R&D in the specified states\nspecified_states = [\"New York\", \"Texas\", \"California\", \"Florida\", \"Pennsylvania\"]\nspecified_total_expenditures = sum(col_values(\"Health-Related R&D\", state) for state in specified_states)\n\n# Calculate the percentage\npercentage = (specified_total_expenditures / total_expenditures) * 100\n\nresult = percentage",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "what is the percentage of family class immigrants coming from south asia, east asia and western developed countries?",
+      "gold": [
+        51.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ZeroDivisionError: division by zero",
+      "n_repair": 0,
+      "code": "# Assuming the relevant rows and columns are as follows:\n# Row headers: 'South Asia', 'East Asia', 'Western Developed Countries'\n# Column header: 'Family Class'\n\n# Calculate the total number of immigrants from the specified regions\ntotal_immigrants = sum(col_values('Family Class', ['South Asia', 'East Asia', 'Western Developed Countries']))\n\n# Sum the number of family class immigrants from the specified regions\nfamily_class_immigrants = sum(col_values('Family Class', ['South Asia', 'East Asia', 'Western Developed Countries']))\n\n# Calculate the percentage\nresult = (family_class_immigrants / total_immigrants) * 100",
+      "trace_flags": [
+        "EMPTY",
+        "EMPTY"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of theft, what was the percentage of females accused in 2015?",
+      "gold": [
+        0.344691
+      ],
+      "pred": "3.0093442113880813",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"theft\", col_header=\"females_2015\") / cell(row_header=\"theft\", col_header=\"total_2015\") * 100",
+      "trace_flags": []
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of fraud, what was the percentage of females accused in 2015?",
+      "gold": [
+        0.331364
+      ],
+      "pred": "1.0435125024611145",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell('fraud', '2015 females') / cell('fraud', '2015 total') * 100",
+      "trace_flags": []
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "after adjustment for inflation, how many percent did federal s&e obligations to academic institutions decline from fy 2012 to fy 2013?",
+      "gold": [
+        -0.072612
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Calculate the percentage decline in federal S&E obligations to academic institutions from FY 2012 to FY 2013\nfy_2012_value = cell('academic institutions', 'fy 2012')\nfy_2013_value = cell('academic institutions', 'fy 2013')\n\ndecline = (fy_2012_value - fy_2013_value) / fy_2012_value * 100\n\nresult = decline",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "according to the 2014/2015 integrated criminal court survey, what was the percentage of females in the completed court cases?",
+      "gold": [
+        0.185533
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"2014/2015\", col_header=\"Percentage of Females in Completed Cases\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of failure to appear in court, what was the percentage of females accused in 2015?",
+      "gold": [
+        0.246448
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'int'",
+      "n_repair": 0,
+      "code": "result = cell('2015', 'Females') / sum(col_values('Total', 'Failure to Appear in Court')) * 100",
+      "trace_flags": [
+        "NO_MATCH",
+        "EMPTY"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "business r&d is concentrated in a small number of states, how many million dollars are with the 10 states with the highest levels of r&d performance accounting of the $233 million total.",
+      "gold": [
+        162723
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "total_r_and_d = sum(col_values(col_header=\"Total R&D (in millions)\", row_filter=\"CA\"))\nresult = total_r_and_d",
+      "trace_flags": [
+        "EMPTY"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of physical assault, what was the percentage of females accused in 2015?",
+      "gold": [
+        0.239032
+      ],
+      "pred": "468.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"physical assault\", col_header=\"Females 2015\")",
+      "trace_flags": []
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "what was the percentage of canadian adults having either hearing loss or tinnitus,or both from 2012 to 2015?",
+      "gold": [
+        59.9
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Calculate the percentage of Canadian adults having either hearing loss or tinnitus, or both\nresult = cell(\"Either hearing loss or tinnitus\", \"Total\") / cell(\"Population\", \"Total\") * 100",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "of the $73 million in r&d u.s. companies performed outside the united states, how many million dollars could be attributed to a specific foreign location?",
+      "gold": [
+        70339
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(\"United States\", \"73\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "how many percent did current-dollar federal obligations for research and development and r&d plant decrease from fy 2014 to fy 2015?",
+      "gold": [
+        0.008287
+      ],
+      "pred": "1.309497309620123",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Calculate the percentage decrease from FY 2014 to FY 2015 for current-dollar federal obligations\nfy_2014 = cell(\"current-dollar federal obligations for R&D and R&D plant\", \"FY 2014\")\nfy_2015 = cell(\"current-dollar federal obligations for R&D and R&D plant\", \"FY 2015\")\n\ndecrease = fy_2014 - fy_2015\npercentage_decrease = (decrease / fy_2014) * 100\n\nresult = percentage_decrease",
+      "trace_flags": []
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "what percent of drivers who did drink and drive did drivers who reported excessive drinking at least once a week represent?",
+      "gold": [
+        0.32335
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming the relevant columns are 'Drink and Drive' and 'Excessive Drinking Weekly'\ndrink_and_drive = cell('Drink and Drive', 'Total')\nexcessive_drinking_weekly = cell('Excessive Drinking Weekly', 'Total')\n\n# Calculate the percentage\nresult = (excessive_drinking_weekly / drink_and_drive) * 100",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "in cases of possession of stolen property, what was the percentage of females accused in 2015?",
+      "gold": [
+        0.269587
+      ],
+      "pred": "419.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"Possession of stolen property\", col_header=\"2015 Females %\")",
+      "trace_flags": []
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "how many percentage points did men live in families either as part of a couple, as a lone parent or as a child?",
+      "gold": [
+        80.1
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"Families\", col_header=\"Distribution (%)\") - (cell(row_header=\"Couple, with children\", col_header=\"Distribution (%)\") + cell(row_header=\"Lone parent\", col_header=\"Distribution (%)\") + cell(row_header=\"Child\", col_header=\"Distribution (%)\"))",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "according to the proposed 2018-base mbm, how many percent of the poverty rate has declined from 2015 to 2018?",
+      "gold": [
+        3.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming the relevant rows and columns are \"2015\" and \"2018\" for the poverty rates\npoverty_2015 = cell(\"2015\", \"2015\")\npoverty_2018 = cell(\"2018\", \"2018\")\n\n# Calculate the decline percentage\ndecline_percentage = (poverty_2015 - poverty_2018) / poverty_2015 * 100\n\nresult = decline_percentage",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "multi_op_formula",
+      "query": "how many percent did five state governments (california, new york, texas, florida, and ohio) account for of all state government r&d in fy 2016?",
+      "gold": [
+        0.642754
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for +: 'int' and 'list'",
+      "n_repair": 0,
+      "code": "# Define the state names\nstates = [\"California\", \"New York\", \"Texas\", \"Florida\", \"Ohio\"]\n\n# Get the total R&D expenditure for all states\ntotal_rnd = sum(col_values(\"Total\", None))\n\n# Sum the R&D expenditure for the specified states\nstates_rnd = sum(col_values(\"Total\", state) for state in states)\n\n# Calculate the percentage\npercentage = (states_rnd / total_rnd) * 100\n\nresult = percentage",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what's the multiple relationship between those with lifetime suicidal thoughts and those who never had suicidal thoughts.",
+      "gold": [
+        3.85
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"lifetime suicidal thoughts: yes\", col_header=\"never had suicidal thoughts: no\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what was the unemployment rate of arab higher than that of women who did not belong to a visible minority group?",
+      "gold": [
+        10.7
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'float' and 'NoneType'",
+      "n_repair": 0,
+      "code": "arab_unemployment = cell(\"Arab\", \"Total\")\nnon_visible_unemployment = cell(\"Total\", \"Total\")\n\nresult = arab_unemployment - non_visible_unemployment",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "among cases completed in youth criminal court, what was the percentage of theft in the offences involving a female accused in 2015?",
+      "gold": [
+        0.161149
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming the relevant headers are 'Year', 'Offence', 'Gender', and 'Count'\n# We need to filter for 2015, female offenders, and theft offences\n\n# Filter for 2015\nyear_filter = '2015'\n\n# Get values for female offenders in theft offences in 2015\ntheft_female_2015 = sum(col_values('Count', f'Gender=\"Female\" and Offence=\"Theft\" and Year=\"{year_filter}\"'))\n\n# Get total values for all female offenders in 2015\ntotal_female_2015 = sum(col_values('Count', f'Gender=\"Female\" and Year=\"{year_filter}\"'))\n\n# Calculate percentage\nif total_female_2015 > 0:\n    result = (theft_female_2015 / total_female_2015) * 100\nelse:\n    result = 0",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what percent of homicides perpetrated by a female accused involved a victim who was either her spouse or dating partner?",
+      "gold": [
+        30
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ZeroDivisionError: division by zero",
+      "n_repair": 0,
+      "code": "# Filter for female accused\nfemale_accused = col_values(col_header=\"sex of closest accused\", row_filter=\"Female\")\n\n# Filter for spouse or dating partner\nspouse_or_dating_partner = col_values(col_header=\"closest accused-victim relationship\", row_filter=\"Spouse/Dating partner\")\n\n# Calculate the percentage\ntotal_female_homicides = sum(female_accused)\ntotal_spouse_or_dating_partner = sum(spouse_or_dating_partner)\n\npercentage = (total_spouse_or_dating_partner / total_female_homicides) * 100\n\nresult = percentage",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what was the multiple relationship between out-of-the-labour-force inuit and employed inuit who gather for monetary reasons?",
+      "gold": [
+        2.333333
+      ],
+      "pred": "0.9454545454545454",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming \"out-of-the-labour-force\" is a row header and \"employed\" is another row header\n# and \"gather for monetary reasons\" is a column header\n\nrow_filter = \"out-of-the-labour-force\"\ncol_header = \"gather for monetary reasons\"\n\nout_of_labour_force_value = cell(row_header=row_filter, col_header=col_header)\n\nrow_filter = \"employed\"\ncol_header = \"gather for monetary reasons\"\n\nemployed_value = cell(row_header=row_filter, col_header=col_header)\n\nresult = out_of_labour_force_value / employed_value",
+      "trace_flags": []
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "the number of postdocs doing research in science fields in 2019 is similar to that in 2012, how many percentage points has declined?",
+      "gold": [
+        11.6
+      ],
+      "pred": "8.139534883720923",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Calculate the percentage decline in the number of postdocs doing research in science fields from 2012 to 2019\nscience_2012 = cell(\"Science\", \"2012\")\nscience_2019 = cell(\"Science\", \"2019\")\n\n# Calculate the decline in percentage points\ndecline = (science_2012 - science_2019) / science_2012 * 100\n\nresult = decline",
+      "trace_flags": []
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what is the percentage on average of cases in each year show earnings in both the t1ff and t4?",
+      "gold": [
+        71.05
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Calculate the average percentage of cases showing earnings in both t1ff and t4 for each year\ndef calculate_average_percentage():\n    years = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011']\n    total_percentage = 0\n    \n    for year in years:\n        # Get the values for the year 2000 to 2011 where both t1ff and t4 have earnings\n        values = col_values('earnings in both t1ff and t4', year)\n        \n        # Sum up all the values (which are percentages)\n        total_percentage += sum(values)\n    \n    # Calculate the average percentage\n    average_percentage = total_percentage / len(years)\n    return average_percentage\n\n# Set the result variable to the calculated average percentage\nresult = calculate_average_percentage()",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what is the range of the proportion of enterprises that stay in their 2008 size class?",
+      "gold": [
+        65.9,
+        38.9
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'float'",
+      "n_repair": 0,
+      "code": "# Find the minimum and maximum values in the diagonal of the transition matrix\nmin_value = float('inf')\nmax_value = float('-inf')\n\n# Assuming the row and column headers are the same (size classes)\nrow_headers = col_headers = list(range(1, 6))  # Example: assuming 5 size classes from 1 to 5\n\nfor i in row_headers:\n    value = cell(i, i)\n    if value < min_value:\n        min_value = value\n    if value > max_value:\n        max_value = value\n\nresult = max_value - min_value",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "who were more likely to be overqualified,immigrants or non-immigrants ?",
+      "gold": [
+        "immigrants"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"Overqualified\" is the relevant column and we need to compare immigrants and non-immigrants\noverqualified_immigrants = cell(\"Immigrants\", \"Overqualified\")\noverqualified_non_immigrants = cell(\"Non-immigrants\", \"Overqualified\")\n\nif overqualified_immigrants > overqualified_non_immigrants:\n    result = \"immigrants\"\nelse:\n    result = \"non-immigrants\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "how many percent did the bulk of the spending on these awards occurred in fys 2010 and 2011?",
+      "gold": [
+        0.730469
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ZeroDivisionError: division by zero",
+      "n_repair": 0,
+      "code": "# Calculate the total spending for FY 2010 and 2011\nfy2010_spending = sum(col_values(\"FY 2010\", \"Total\")) + sum(col_values(\"FY 2010\", \"ARRA\"))\nfy2011_spending = sum(col_values(\"FY 2011\", \"Total\")) + sum(col_values(\"FY 2011\", \"ARRA\"))\n\n# Calculate the total spending over all years\ntotal_spending = sum(col_values(\"Total\", \"Total\")) + sum(col_values(\"Total\", \"ARRA\"))\n\n# Calculate the percentage of spending in FY 2010 and 2011\npercentage = (fy2010_spending + fy2011_spending) / total_spending * 100\n\nresult = percentage",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "how many percent of the average pace of u.s. gross domestic product (gdp) over the 7-year period 2008-15?",
+      "gold": [
+        1.5
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Calculate the average pace of GDP for the 2008-2015 period\naverage_gdp = sum(col_values('GDP', '2008:2015')) / 7\n\n# The average pace of GDP for the 2008-2015 period is the value itself since it's an average of annual values\nresult = average_gdp",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what was the unemployment rate among canadian-born arab women higher than the unemployment rate for canadian-born women who were not a visible minority?",
+      "gold": [
+        2
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'float'",
+      "n_repair": 0,
+      "code": "# Calculate the unemployment rate for Canadian-born Arab women\narab_born_women = cell(\"Arab\", \"Canadian-born\")\n\n# Calculate the unemployment rate for Canadian-born women who are not a visible minority\nnon_visible_born_women = cell(\"Total\", \"Canadian-born\") - (arab_born_women + cell(\"South Asian\", \"Canadian-born\") + cell(\"East Asian\", \"Canadian-born\") + cell(\"West Asian\", \"Canadian-born\") + cell(\"Other Asian\", \"Canadian-born\"))\n\n# Determine if the unemployment rate for Canadian-born Arab women is higher\nif arab_born_women > non_visible_born_women:\n    result = True\nelse:\n    result = False",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "among cases involving a female accused settled in youth courts, what was the percentage of violations of other federal statutes in 2015?",
+      "gold": [
+        0.173998
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'int' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming the relevant headers are 'Accused Gender', 'Court Type', 'Violation Type', and 'Year'\nfemale_accused = cell('Female', 'Accused Gender')\nyouth_court = cell('Youth Courts', 'Court Type')\nother_federal_statutes = cell('Violations of Other Federal Statutes', 'Violation Type')\nyear_2015 = cell('2015', 'Year')\n\n# Filter for female accused, youth court, other federal statutes violation in 2015\nfiltered_values = col_values('Violation Type', row_filter=lambda row: \n                             row['Accused Gender'] == female_accused and \n                             row['Court Type'] == youth_court and \n                             row['Violation Type'] == other_federal_statutes and \n                             row['Year'] == year_2015)\n\n# Calculate percentage\ntotal_cases = len(filtered_values)\npercentage = (total_cases / female_accused) * 100\n\nresult = percentage",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what was the percentage of impaired driving among the charges in cases involving a female accused completed in adult criminal court in 2015?",
+      "gold": [
+        0.097562
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"female_accused\", col_header=\"impaired_driving_percentage_2015\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "after adjustment for inflation, how many million dollars did federal s&e obligations to academic institutions decline from fy 2012 to fy 2013?",
+      "gold": [
+        -2143
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Define the row and column headers for the relevant data\nrow_header_2012 = \"fy 2012\"\nrow_header_2013 = \"fy 2013\"\ncol_header = \"academic institutions\"\n\n# Get the values for federal S&E obligations to academic institutions for FY 2012 and FY 2013\nvalues_2012 = cell(row_header_2012, col_header)\nvalues_2013 = cell(row_header_2013, col_header)\n\n# Calculate the decline in millions of dollars\ndecline = values_2012 - values_2013\n\n# Assign the result to the variable 'result'\nresult = decline",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what is the percentage of people with ms experienced at least some limitations in job opportunities?",
+      "gold": [
+        58.1
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"limitations in job opportunities\", col_header=\"percentage\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what was the rate of handguns used in firearm-related homicides in 2014?",
+      "gold": [
+        0.659091
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"handguns\", col_header=\"2014\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what was the times the rate of sexual assault of canadians who stated that they go out in the evenings 21 times or more per month more than those who stated that they go out 10 times or fewer?",
+      "gold": [
+        4.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "IndexError: list index out of range",
+      "n_repair": 0,
+      "code": "# Define the row and column headers for the relevant data\nrow_header = \"Sex of victim\"\ncol_header = \"Go out in the evenings (times per month)\"\n\n# Filter the rows to only include \"Male\" and \"Female\"\nmale_row = cell(\"Male\", col_header)\nfemale_row = cell(\"Female\", col_header)\n\n# Get the values for each category of going out frequency\nmale_values = col_values(male_row, \"Go out in the evenings 21+ times per month\")\nfemale_values = col_values(female_row, \"Go out in the evenings 10 or fewer times per month\")\n\n# Calculate the difference in rates\nmale_rate = male_values[1] / male_values[0]\nfemale_rate = female_values[1] / female_values[0]\n\n# Calculate how many times the rate of those who go out 21+ times per month is higher\nresult = male_rate / female_rate",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what is the total structural impact on finance, insurance and real estate sector in 2000s?",
+      "gold": [
+        0.04
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'",
+      "n_repair": 0,
+      "code": "result = sum(cell(row_header=\"finance, insurance and real estate\", col_header=str(year)) for year in range(2000, 2010))",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "arithmetic_agg",
+      "query": "what percent of the proportion of canadians who had confidence in police was higher among those who believed it was very likely a lost wallet would be returned if found by a police officer compared to those who believed it was not at all likely?",
+      "gold": [
+        61
+      ],
+      "pred": "61.0",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming \"believed it was very likely a lost wallet would be returned if found by a police officer\" corresponds to \"Yes\" and \n# \"believed it was not at all likely a lost wallet would be returned if found by a police officer\" corresponds to \"No\"\nyes_confidence_in_police = cell(\"very likely\", \"police\")\nno_confidence_in_police = cell(\"not at all likely\", \"police\")\n\n# Calculate the difference in percentage points\nresult = yes_confidence_in_police - no_confidence_in_police",
+      "trace_flags": []
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which city in florida is one of the largest u.s. cities with an african american population?",
+      "gold": [
+        "miami gardens, florida"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Filter for Florida cities\nflorida_cities = col_values(col_header=\"State\", row_filter=\"Florida\")\n\n# Find the largest city in the list\nlargest_city = max(florida_cities, key=lambda x: cell(x, \"Black or African-American\"))\n\nresult = largest_city",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "list the top4 cmas reported the largest increases in csi.",
+      "gold": [
+        "greater sudbury",
+        "moncton",
+        "guelph",
+        "kitchener-cambridge-waterloo"
+      ],
+      "pred": "[]",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = row_values(row_header='Top 4 CMAs reported the largest increases in CSI', col_filter=None)",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which gourp has the higher employment rates, chinese women higher or third-plus generation white women by observed?",
+      "gold": [
+        "chinese"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "result = cell(\"Chinese women\", \"Second generation\") > cell(\"Third-plus generation white women\", \"Second generation\")",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "in which municipalities are people less likely to have more larger personal networks, second-ring peripheral municipalities or central municipalities?",
+      "gold": [
+        "peripheral 2nd ring"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"larger personal networks\" refers to a higher number in the relevant column\n# We need to compare second-ring peripheral municipalities and central municipalities\n\n# Let's define the row headers for the municipalities\nsecond_ring_peripheral = cell(\"second-ring peripheral\", \"municipality\")\ncentral = cell(\"central\", \"municipality\")\n\n# Compare the values\nif second_ring_peripheral < central:\n    result = \"second-ring peripheral municipalities\"\nelse:\n    result = \"central municipalities\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "women with which degree were more likely to have higher employment income that worked full time and full year?",
+      "gold": [
+        "education"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming we are looking for the highest median income for women\n# We need to filter the table for female respondents and then find the maximum income\n\n# Get the list of fields for females\nfemale_fields = row_values('Sex', 'Female')\n\n# Initialize variables to keep track of the highest income and corresponding field\nmax_income = 0\nhighest_field = ''\n\nfor field in female_fields:\n    # Get the median income for each field\n    incomes = col_values(field_header=field, row_filter='Sex: Female')\n    if incomes:  # Ensure there is data\n        median_income = incomes[0]  # Assuming the first (and only) value is the median\n        if median_income > max_income:\n            max_income = median_income\n            highest_field = field\n\n# Set the result to the field with the highest income\nresult = highest_field",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "who were more likely to agree or strongly agree with the statement that people who report sexual assault are almost always telling the truth,women or men?",
+      "gold": [
+        "women"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "women_agree = cell(\"Women\", \"People who report sexual assault are almost always telling the truth\")\nmen_agree = cell(\"Men\", \"People who report sexual assault are almost always telling the truth\")\n\nif women_agree > men_agree:\n    result = \"Women\"\nelif men_agree > women_agree:\n    result = \"Men\"\nelse:\n    result = \"Equal\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "who were less likely to use technology ,seniors aged 75 and over or those aged 65 to 74 ?",
+      "gold": [
+        "75 and over"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Define the row and column headers for the relevant age groups\nsenior_over_75 = cell('75 and over', 'Age Group')\nmiddle_age_65_to_74 = cell('65 to 74', 'Age Group')\n\n# Compare the participation rates for technology use\nif senior_over_75 < middle_age_65_to_74:\n    result = 'seniors aged 75 and over'\nelse:\n    result = 'those aged 65 to 74'",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which type of degree holders had higher earning ratio in women and men's median income?",
+      "gold": [
+        "health and related fields"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming we need to compare the median incomes for men and women across different fields of study\n# We will first get the median incomes for men and women in each field of study\n\n# Get the median incomes for men\nmen_incomes = col_values(col_header=\"Median annual employment income (Dollars)\", row_filter=\"Sex; Male\")\n\n# Get the median incomes for women\nwomen_incomes = col_values(col_header=\"Median annual employment income (Dollars)\", row_filter=\"Sex; Female\")\n\n# Compare the median incomes for men and women in each field of study\nresult = None\nfor field in set(row_values(row_header=\"Field of study\")) - {\"Total\"}:  # Exclude total to focus on specific fields\n    men_income = cell(row_header=field, col_header=\"Sex; Male\")\n    women_income = cell(row_header=field, col_header=\"Sex; Female\")\n    \n    if men_income is not None and women_income is not None:\n        if men_income > women_income:\n            result = field\n            break  # Since we are looking for the first field where men earn more than women, we can stop here\n\nprint(result)",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "within lone-parent households, who were less likely to be food secure, employed first nations women or men?",
+      "gold": [
+        "women"
+      ],
+      "pred": "women",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming \"food secure\" is represented by a higher value and \"not food secure\" by a lower value\n# We need to compare the average food security levels between men and women in lone-parent households\n\n# Get the values for food security in lone-parent households for men and women\nmen_food_security = sum(col_values(\"Employed First Nations people - Men\", \"Lone-parent household\")) / 3\nwomen_food_security = sum(col_values(\"Employed First Nations people - Women\", \"Lone-parent household\")) / 3\n\n# Determine who was less likely to be food secure\nif men_food_security < women_food_security:\n    result = \"men\"\nelse:\n    result = \"women\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which age group of women experience lower earnings growth, younger women or older women?",
+      "gold": [
+        "45 to 54"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"younger women\" corresponds to the \"25-34\" age group and \"older women\" corresponds to the \"35-44\" age group\nyounger_women_growth = cell(\"25-34\", \"Difference in log wages\")\nolder_women_growth = cell(\"35-44\", \"Difference in log wages\")\n\nif younger_women_growth < older_women_growth:\n    result = \"younger women\"\nelse:\n    result = \"older women\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "for rest of the population, the younger-to-older worker ratio was lower for which sex?",
+      "gold": [
+        "men"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"rest of the population\" refers to non-South Asian, non-Chinese, and non-Black workers\n# We need to compare the ratios for male and female workers\n\n# Get the ratios for male and female workers\nmale_ratio = cell('Male', 'Ratio')\nfemale_ratio = cell('Female', 'Ratio')\n\n# Determine which sex has a lower ratio\nif male_ratio < female_ratio:\n    result = 'Male'\nelse:\n    result = 'Female'",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "people of which sex were more likely to have strong family networks at age 65 or older?",
+      "gold": [
+        "women"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: TracedTable.col_values() got multiple values for argument 'row_filter'",
+      "n_repair": 0,
+      "code": "# Assuming we are looking for the sex with higher prevalence of strong family networks at age 65 or older\n# We need to filter the table for age 65 or older and then compare the values for male and female\n\n# Filter for age 65 or older\nage_filter = \"65 or older\"\n\n# Get the values for male\nmale_values = col_values(\"sex\", \"Male\", row_filter=age_filter)\n\n# Get the values for female\nfemale_values = col_values(\"sex\", \"Female\", row_filter=age_filter)\n\n# Compare the values\nif male_values[0] > female_values[0]:\n    result = \"Male\"\nelse:\n    result = \"Female\"",
+      "trace_flags": []
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "who scored higher in reading on each of the assessment modes,girls or boys?",
+      "gold": [
+        "girls"
+      ],
+      "pred": "Scores were equal across all assessment modes",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming the table has headers 'Gender', 'Assessment Mode', and 'Score'\nassessment_modes = col_values('Assessment Mode')\n\n# Initialize variables to store the mode and score where boys outscore girls\nboys_outscore_mode = None\ngirls_outscore_mode = None\n\nfor mode in assessment_modes:\n    girls_score = cell('Girls', mode)\n    boys_score = cell('Boys', mode)\n    \n    if boys_score > girls_score:\n        boys_outscore_mode = mode\n    elif girls_score > boys_score:\n        girls_outscore_mode = mode\n\n# Determine the result based on which mode had a higher score for either group\nif boys_outscore_mode is not None:\n    result = f\"Boys scored higher in {boys_outscore_mode}\"\nelif girls_outscore_mode is not None:\n    result = f\"Girls scored higher in {girls_outscore_mode}\"\nelse:\n    result = \"Scores were equal across all assessment modes\"",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which one is more common among individuals with unperceived hearing loss, the measured loss was mild or moderate to profound?",
+      "gold": [
+        "mild"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"unperceived hearing loss\" refers to the column with note § and \"measured loss\" refers to the rows\nunperceived_loss_mild = cell('Mild', 'note §')\nunperceived_loss_mod_profound = cell('Moderate to Profound', 'note §')\n\nif unperceived_loss_mild > unperceived_loss_mod_profound:\n    result = \"mild\"\nelse:\n    result = \"moderate to profound\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which gender were more likely to engage in less than 150 minutes per week of moderate-to-vigorous physical activity, have a family history of high blood pressure or early cardiovascular disease, or have ckd, men or women?",
+      "gold": [
+        "women"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"Men\" and \"Women\" are the row headers for gender\nmen = cell(\"Men\", \"Less than 150 minutes per week of moderate-to-vigorous physical activity\")\nwomen = cell(\"Women\", \"Less than 150 minutes per week of moderate-to-vigorous physical activity\")\n\n# Repeat for other conditions\nmen_high_bp = cell(\"Men\", \"Family history of high blood pressure or early cardiovascular disease\")\nwomen_high_bp = cell(\"Women\", \"Family history of high blood pressure or early cardiovascular disease\")\n\nmen_ckd = cell(\"Men\", \"CKD\")\nwomen_ckd = cell(\"Women\", \"CKD\")\n\n# Determine which gender is more likely for each condition\nmod_vig_activity = \"Men\" if men < women else \"Women\"\nhigh_bp = \"Men\" if men_high_bp < women_high_bp else \"Women\"\nckd = \"Men\" if men_ckd < women_ckd else \"Women\"\n\n# Since the question asks for all conditions, we can use any one of them as the answer\nresult = mod_vig_activity",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "among metis employed in a permanent job,who were more likely to report that their household income did not meet their basic needs,women or men?",
+      "gold": [
+        "women"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "IndexError: list index out of range",
+      "n_repair": 0,
+      "code": "# Assuming \"employed\" is the column header for employment status and \"sex\" is the row header for gender\nemployed_col = \"employed\"\nsex_row = \"sex\"\n\n# Get the values for employed in a permanent job\npermanent_employed_values = row_values(sex_row, col_filter=employed_col + \": Permanent\")\n\n# Check which gender has a higher percentage\nif permanent_employed_values[0] > permanent_employed_values[1]:\n    result = \"men\"\nelse:\n    result = \"women\"",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "who were less likely to engage in smoking, helmet users or non helmet users?",
+      "gold": [
+        "always uses helmet"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"helmet user\" is represented as 1 and \"non-helmet user\" as 0 in the data\nhelmet_user_odds = cell(\"helmet user\", \"smoking\")\nnon_helmet_user_odds = cell(\"non-helmet user\", \"smoking\")\n\nif helmet_user_odds < non_helmet_user_odds:\n    result = \"helmet users\"\nelse:\n    result = \"non helmet users\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which source country is more likely to have privately sponsored refugees who have a university degree?",
+      "gold": [
+        "syria"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: TracedTable.cell() got an unexpected keyword argument 'row_filter'",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"Privately Sponsored\", col_header=\"University Degree\", row_filter=\"Source Country\")",
+      "trace_flags": []
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "were women with good self-perceived mental health more likely to live in a pdaf or were those with excellent self-perceived mental health?",
+      "gold": [
+        "good"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming 'pdaf' refers to 'private dwellings' and we need to compare 'good' and 'excellent' self-perceived mental health categories\n# Let's define the headers and filters based on common understanding\ngood_mh = cell('good', 'self-perceived mental health')\nexcellent_mh = cell('excellent', 'self-perceived mental health')\n\n# Calculate the difference in adjusted odds ratios\nresult = excellent_mh - good_mh",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "pair_or_topk_arg",
+      "query": "which group of people who had experienced abuse or violence in their lifetimes were much more likely to have used drugs or alcohol to cope with these experiences? transgender canadians or cisgender canadians?",
+      "gold": [
+        "transgender"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Define the headers for the columns we are interested in\nabuse_or_violence = \"experienced abuse or violence in their lifetime\"\ndrug_alcohol_coping = \"used drugs or alcohol to cope with these experiences\"\n\n# Get the values for each group\ntransgender_values = col_values(drug_alcohol_coping, abuse_or_violence)\ncisgender_values = col_values(drug_alcohol_coping, abuse_or_violence)\n\n# Compare the values\nif max(transgender_values) > max(cisgender_values):\n    result = \"transgender canadians\"\nelse:\n    result = \"cisgender canadians\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "for females found guilty in ipv cases, which type of sentence was more often considered?",
+      "gold": [
+        "probation"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: None is not in list",
+      "n_repair": 0,
+      "code": "ipv_female = cell(\"ipv\", \"female\")\nipv_female_values = col_values(\"most serious sentence\", \"ipv female\")\n\nipv_female_values.index(ipv_female)\nresult = ipv_female_values[1]",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "how much perenctage point has saskatchewan rose when it comes to immigrants intended landing destination?",
+      "gold": [
+        1.9
+      ],
+      "pred": "3.5",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell('Saskatchewan', '2012') - cell('Saskatchewan', '2000')",
+      "trace_flags": []
+    },
+    {
+      "class": "single_arg",
+      "query": "which level of education had the lowest probability of payday loan use?",
+      "gold": [
+        "university diploma or degree"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: 'float' object is not iterable",
+      "n_repair": 0,
+      "code": "# Find the row with the lowest probability of payday loan use\neducation_row = cell('Education', 'Payday Loan')\nresult = min(education_row, key=lambda x: x[1])",
+      "trace_flags": []
+    },
+    {
+      "class": "single_arg",
+      "query": "by place of residence,who were most likely to gather for cultural reasons?",
+      "gold": [
+        "inuit nunangat"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"gather for cultural reasons\", col_header=\"place of residence\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "which level of education people received was more likely to have people believing that police were doing a good job enforcing the laws?",
+      "gold": [
+        "university degree"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Filter for the relevant column and extract values\neducation_values = row_values(row_header='level of education', col_filter='belief local police are doing a good job')\n\n# Find the education level with the highest percentage\nmax_index = education_values.index(max(education_values))\neducation_level = cell(row_header='level of education', col_header='belief local police are doing a good job')\n\nresult = education_level[max_index]",
+      "trace_flags": [
+        "EMPTY"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "which province had the lowest rate of police strength?",
+      "gold": [
+        "prince edward island"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: min() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Find the province with the lowest police strength\nlowest_police_strength = min(row_values(row_header='Police strength (thousands)', col_filter='2019'))\n# Get the corresponding province\nfor province in col_values(col_header='Province/Territory', row_filter='2019'):\n    if cell(province, 'Police strength (thousands)') == lowest_police_strength:\n        result = province\n        break",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "where people with terminal illness were more likely died in?",
+      "gold": [
+        "hospital"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"terminal illness\", col_header=\"location of death\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "which place had a lower percentage of households that received formal home care services compared to the rest of canada in 2015/2016?",
+      "gold": [
+        "yukon"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'int'",
+      "n_repair": 0,
+      "code": "canada_total = cell(\"Canada\", \"Total\")\nontario_value = cell(\"Ontario\", \"Total\")\nquebec_value = cell(\"Quebec\", \"Total\")\n\ncanada_percentage = (canada_total / 10000) * 100\nontario_percentage = (ontario_value / 10000) * 100\nquebec_percentage = (quebec_value / 10000) * 100\n\nif ontario_percentage < canada_percentage and ontario_percentage < quebec_percentage:\n    result = \"Ontario\"\nelif quebec_percentage < canada_percentage and quebec_percentage < ontario_percentage:\n    result = \"Quebec\"\nelse:\n    result = \"Neither Ontario nor Quebec had a lower percentage than Canada\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "where was the highest representation of females accused in cases in 2015?",
+      "gold": [
+        "theft"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Assuming the year 2015 is represented in the table and we need to find the highest representation of females accused\nresult = cell('2015', 'Females')",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "during the 2000s the chronic low-income rate,what was the maximum in 2014 and 2012 respectively?",
+      "gold": [
+        16.3,
+        12.3
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Assuming the relevant columns are '2014' and '2012'\nmax_2014 = max(col_values('2014'))\nmax_2012 = max(col_values('2012'))\n\nif max_2014 > max_2012:\n    result = max_2014\nelse:\n    result = max_2012",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "which place had a significantly higher percentage of households that received formal home care services compared to the rest of canada in 2015/2016?",
+      "gold": [
+        "nova scotia"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"Place with highest percentage\", col_header=\"Percentage of households that received formal home care services\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "among the closest accused-victim relationship, which relationship were males accused of homicide most likely to kill from 2001 to 2015 in canada?",
+      "gold": [
+        "acquaintances"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Find the relationship where males were most likely to be the accused for homicide\nmales_homicides = col_values(col_header=\"Sex of closest accused\", row_filter=\"Male\")\nmax_homicides = max(males_homicides)\nmax_index = males_homicides.index(max_homicides)\nresult = cell(row_header=\"Male\", col_header=\"Closest accused-victim relationship\", row_filter=str(max_index+1))",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "which performing sector had the most of the total of u.s. r&d expenditures at $388.6 billion, or 64%?",
+      "gold": [
+        "experimental development"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Calculate the total R&D expenditures\ntotal_expenditures = 388.6\n\n# Find the sector with the highest expenditure\nmax_expenditure = max(col_values(\"Total\", \"U.S. government\") + col_values(\"Total\", \"Business\") + col_values(\"Total\", \"Higher education\") + col_values(\"Total\", \"Other\"))\n\n# Identify the sector with the maximum expenditure\nif max_expenditure == max(col_values(\"Total\", \"U.S. government\")):\n    result = \"U.S. government\"\nelif max_expenditure == max(col_values(\"Total\", \"Business\")):\n    result = \"Business\"\nelif max_expenditure == max(col_values(\"Total\", \"Higher education\")):\n    result = \"Higher education\"\nelse:\n    result = \"Other\"",
+      "trace_flags": [
+        "EMPTY",
+        "EMPTY",
+        "EMPTY"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "among females, people in which level of income house holds had lower prevalence of past-year use?",
+      "gold": [
+        "5"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'float'",
+      "n_repair": 0,
+      "code": "# Filter for females\nfemale_filter = \"Females\"\nfemale_values = col_values(col_header=\"Sex\", row_filter=female_filter)\n\n# Get income levels\nincome_levels = row_values(row_header=\"Household income\")\n\n# Find the income level with the lowest prevalence\nlowest_prevalence_income = None\nlowest_prevalence = float('inf')\n\nfor income in income_levels:\n    income_row = cell(income, female_filter)\n    if income_row < lowest_prevalence:\n        lowest_prevalence = income_row\n        lowest_prevalence_income = income\n\nresult = lowest_prevalence_income",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "canadian households in which place of residence was significantly less likely to have received formal home care in 2015/2016?",
+      "gold": [
+        "large urban population centre"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(\"rural\", \"percentage\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "list the top3 cmas reported large increases in vcsis.",
+      "gold": [
+        "kingston",
+        "quebec",
+        "kitchener-cambridge-waterloo"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "AttributeError: 'list' object has no attribute 'items'",
+      "n_repair": 0,
+      "code": "# Define the row and column headers for the relevant data\nrow_header = 'Census Metropolitan Area'\ncol_header = 'Large increase in VCSI'\n\n# Get the values for the column of interest\nvcsi_values = col_values(col_header, row_filter=None)\n\n# Find the top 3 CMAs with the largest VCSI values\ntop3_vcsi = sorted(vcsi_values.items(), key=lambda x: x[1], reverse=True)[:3]\n\n# Extract the row headers (CMAs) from the top 3 values\nresult = [item[0] for item in top3_vcsi]",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "which souce country had the hightest percentage of individuals aged 15 to 29 among all the souce countreis?",
+      "gold": [
+        "democratic republic of the congo"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell('Source Country', 'Percentage of individuals aged 15 to 29')",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "which cma reported the second highest number of firearm-related homicides?",
+      "gold": [
+        "edmonton"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "IndexError: list index out of range",
+      "n_repair": 0,
+      "code": "# Find the second highest number of firearm-related homicides\nfirearm_homicides = col_values(col_header=\"Firearm-related\", row_filter=\"gang-related and firearm-related status\")\n\n# Sort the values to find the second highest\nsorted_homicides = sorted(firearm_homicides, reverse=True)\n\n# Get the second highest value\nsecond_highest = sorted_homicides[1]\n\n# Find the corresponding row header\nfor row, value in enumerate(firearm_homicides):\n    if value == second_highest:\n        result = cell(row_header=row, col_header=\"Census Metropolitan Area\")\n        break",
+      "trace_flags": [
+        "EMPTY"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "what is the industry with the highest share of female gig workers among all workers?",
+      "gold": [
+        "other services"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "code": "# Find the industry with the highest share of female gig workers among all workers\nfemale_gig_workers = max(col_values(\"Female\", \"Gig workers among all workers\"))\nindustry_with_highest_female_gig_workers = cell(\"Industry with the highest female gig workers\", \"Gig workers among all workers\")\nresult = industry_with_highest_female_gig_workers",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "single_arg",
+      "query": "within the core working-age group of 25- to 54-year-olds, which country's women were most likely to be employed?",
+      "gold": [
+        "filipino"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "SyntaxError: invalid syntax (<string>, line 1)",
+      "n_repair": 0,
+      "code": "max emploi_rate = max(col_values(\"Employment Rate (%)\"))\nfor row in row_values(\"Visible Minority Group\"):\n    if col_values(\"Employment Rate (%)\").index(max emploi_rate) == row_values(\"Visible Minority Group\").index(row):\n        result = row\n        break",
+      "trace_flags": []
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, what is the percentage of sherbrooke reported relatively large declines of motor vehicle theft in 2015?",
+      "gold": [
+        41
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"Sherbrooke\", col_header=\"Motor Vehicle Theft\") - cell(row_header=\"Sherbrooke\", col_header=\"Motor Vehicle Theft (2014)\")",
+      "trace_flags": []
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in contrast, saguenay, having reported what percentage of decreases in robbery in 2015?",
+      "gold": [
+        30
+      ],
+      "pred": "-30.0",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell('Saguenay', 'Robbery')",
+      "trace_flags": []
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "how many percent among men admitted between the ages of 15 and 24?",
+      "gold": [
+        24.2
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"men\", col_header=\"15-24\")",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "how many percentage points of increase does an increase to mfn tariffs plus associated non-tariff barriers reduce canadian exports to the united states?",
+      "gold": [
+        23.4
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: 'NoneType' object is not subscriptable",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"Canada\", col_header=\"MFN tariffs + NTBs (percentage points)\")[0]",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "how many possible trajectories in 2006 and 2016 ?",
+      "gold": [
+        4
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = len(col_values('Year', '2006')) * len(col_values('Year', '2016'))",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the three largest cmas, what is the percentage of the decrease of toronto which accounted for 48% of all robberies reported by police in 2015?",
+      "gold": [
+        6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'int'",
+      "n_repair": 0,
+      "code": "# Assuming the relevant headers are 'CMA' and 'Robberies'\ntoronto_robberies = cell('Toronto', 'Robberies')\ntotal_robberies = sum(col_values('Robberies'))\n\n# Calculate the percentage decrease of Toronto's robberies out of total\npercentage_decrease = (toronto_robberies / total_robberies) * 100\n\n# Since we know this percentage is 48%, we can directly set the result\nresult = 48",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2016/2017, there were 5,937 youth that began a period of supervision in correctional services in the eight reporting jurisdictions, how many percent of decrease from 2012/2013?",
+      "gold": [
+        44
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'float' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming we have the necessary data in the table\n# Let's first get the values for 2016/2017 and 2012/2013\n\n# Number of youth in 2016/2017\nnum_2016_2017 = cell('Total', '2016/2017')\n\n# Number of youth in 2012/2013\nnum_2012_2013 = cell('Total', '2012/2013')\n\n# Calculate the percentage decrease\nif num_2012_2013 != 0:\n    percentage_decrease = ((num_2012_2013 - num_2016_2017) / num_2012_2013) * 100\nelse:\n    percentage_decrease = float('inf')  # or handle division by zero as needed\n\nresult = percentage_decrease",
+      "trace_flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2016/2017, there were 5,937 youth that began a period of supervision in correctional services in the eight reporting jurisdictions, how many percet of decrease from the previous year?",
+      "gold": [
+        8
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming the previous year's value is needed, let's calculate the percentage decrease.\n# We need the current year (2016/2017) value and the previous year's value.\n\n# Current year value (2016/2017)\ncurrent_year_value = cell(\"2016/2017\", \"Total\")\n\n# Previous year value (2015/2016), assuming it's the last year before 2016/2017\nprevious_year_value = cell(\"2015/2016\", \"Total\")\n\n# Calculate the percentage decrease\nif previous_year_value != 0:\n    percentage_decrease = ((previous_year_value - current_year_value) / previous_year_value) * 100\nelse:\n    percentage_decrease = float('inf')  # or handle division by zero as needed\n\nresult = percentage_decrease",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in 2018/2019, how much rate of adults on probation decreased compared to 2017/2018?",
+      "gold": [
+        6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming the table has headers for 'Jurisdiction', 'Type of Supervision', '2017/2018', '2018/2019'\n# We need to find the difference between 2018/2019 and 2017/2018 for adults on probation\n\n# Filter for adults on probation\nprobation_2017 = cell('Adults on Probation', '2017/2018')\nprobation_2018 = cell('Adults on Probation', '2018/2019')\n\n# Calculate the decrease rate\ndecrease_rate = (probation_2018 - probation_2017) / probation_2017\n\nresult = decrease_rate",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the employment rate for aboriginal people living on reserve was 47.3% in 2011, compared to 71.1% for their counterparts living off-reserve-a difference of 23.8 percentage points.",
+      "gold": [
+        23.8
+      ],
+      "pred": "23.799999999999997",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = 71.1 - 47.3",
+      "trace_flags": []
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "among inuit adults aged 25 and over living in inuit nunangat, which type has a significantly lower probability of living in a food insecure household, those with strong or very strong extended family ties or those with weaker family ties?",
+      "gold": [
+        "strong or very strong family ties"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"strong\" and \"very strong\" indicate stronger family ties, and \"weaker\" indicates weaker family ties\nstrong_family_ties = cell(\"strong or very strong extended family ties\", \"Strong or Very Strong\")\nweaker_family_ties = cell(\"weaker extended family ties\", \"Weaker\")\n\nif strong_family_ties < weaker_family_ties:\n    result = \"those with strong or very strong extended family ties\"\nelse:\n    result = \"those with weaker extended family ties\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "much of the increase in the rate of breaking and entering at the national level between 2014 and 2015 can be accounted for somewhat mitigated by a drop in the rate of break-ins in montreal, what is the percentage of this drop?",
+      "gold": [
+        7
+      ],
+      "pred": "-0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Calculate the percentage drop in the rate of break-ins in Montreal from 2014 to 2015\nbreak_in_2014 = cell(\"Montreal\", \"2014\")\nbreak_in_2015 = cell(\"Montreal\", \"2015\")\n\ndrop_rate = break_in_2014 - break_in_2015\npercentage_drop = (drop_rate / break_in_2014) * 100\n\nresult = percentage_drop",
+      "trace_flags": []
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "in the territories which type of people's practice was significantly more prevalent, indigenous people or non-indigenous people?",
+      "gold": [
+        "yes"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "indigenous_practice = cell(\"Territories\", \"Indigenous identity - Indigenous\") + cell(\"Territories\", \"Indigenous identity - Non-Indigenous\")\nif indigenous_practice > 0:\n    result = \"Indigenous people\"\nelse:\n    result = \"Non-Indigenous people\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "what is the percentage of large decline in rate of breaking and entering at the national level was also reported in trois-rivieres in 2015?",
+      "gold": [
+        19
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "IndexError: list index out of range",
+      "n_repair": 0,
+      "code": "# Assuming \"Breaking and Entering\" is the relevant offence and \"National\" is the relevant CMA\nnational_breaking_entering = cell(\"Breaking and Entering\", \"National\")\ntrois_rivieres_breaking_entering = cell(\"Breaking and Entering\", \"Trois-Rivieres\")\n\nnational_rate = col_values(\"Rate\", \"National\")[0]\ntrois_rivieres_rate = col_values(\"Rate\", \"Trois-Rivieres\")[0]\n\nnational_change = (trois_rivieres_rate - national_rate) / national_rate * 100\n\nresult = national_change",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "EMPTY"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "list municipalities with a population of 40000 or greater that have a percentage of population with an immigrant background lower than 30%.",
+      "gold": [
+        "georgina",
+        "halton hills"
+      ],
+      "pred": "[]",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "# Filter for rows where the column 'Percentage of population with an immigrant background' is less than 30\nmunicipalities = col_values('Percentage of population with an immigrant background', row_filter=lambda row: float(cell(row, 'Percentage of population with an immigrant background')) < 30)\n\n# Extract the row headers (municipalities) that satisfy the condition\nresult = row_values('Percentage of population with an immigrant background', col_filter=lambda col: float(cell('Percentage of population with an immigrant background', col)) < 30)",
+      "trace_flags": [
+        "EMPTY",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "the rate of adults in remand decreased in 6 of the 13 reporting provinces and territories, what is the decrease in manitoba in 2018/2019?",
+      "gold": [
+        14
+      ],
+      "pred": "-14.0",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = cell(row_header=\"Manitoba\", col_header=\"Remand\")",
+      "trace_flags": []
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "by what percentage did the number of service station attendants decline between 1996 and 2016?",
+      "gold": [
+        59
+      ],
+      "pred": "-0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "code": "result = (cell(\"Service station attendants\", 1996) - cell(\"Service station attendants\", 2016)) / cell(\"Service station attendants\", 1996)\nresult *= 100",
+      "trace_flags": []
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "which gender of inuit aged 25 and over living in inuit nunangat had a significantly higher probability of living in a food insecure household, women or men?",
+      "gold": [
+        "women"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"Women\" and \"Men\" are the row headers for the respective genders\nwomen_prob = cell(\"Women\", \"predicted probability of having experienced food insecurity\")\nmen_prob = cell(\"Men\", \"predicted probability of having experienced food insecurity\")\n\nif women_prob > men_prob:\n    result = \"Women\"\nelse:\n    result = \"Men\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "over the period 2000 to 2016, how many percentage points of capital goods exports to the united kingdom has declined?",
+      "gold": [
+        0.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: '2000' is not in list",
+      "n_repair": 0,
+      "code": "# Identify the relevant columns and rows\nuk_exports = col_values(col_header='United Kingdom', row_filter=lambda x: 'Exports' in x)\nyears = row_values(row_header='2000', col_filter=lambda x: x.isdigit())\n\n# Calculate the difference between 2000 and 2016 exports to UK\ninitial_export = uk_exports[years.index('2000')]\nfinal_export = uk_exports[years.index('2016')]\n\n# Calculate the decline in percentage points\ndecline = initial_export - final_export\nresult = decline",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    },
+    {
+      "class": "comparison_or_count",
+      "query": "which group of inuit adults 25 and older were less likely to live in a food insecure household, those who were employed or those who were unemployed?",
+      "gold": [
+        "employed"
+      ],
+      "pred": "",
+      "correct": true,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "code": "# Assuming \"employed\" and \"unemployed\" are the row headers we need to check\nemployed_prob = cell(row_header=\"employed\", col_header=\"predicted probability of having experienced food insecurity in the previous 12 months\")\nunemployed_prob = cell(row_header=\"unemployed\", col_header=\"predicted probability of having experienced food insecurity in the previous 12 months\")\n\n# The group with lower probability is less likely to live in a food insecure household\nif employed_prob < unemployed_prob:\n    result = \"employed\"\nelse:\n    result = \"unemployed\"",
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ]
+    }
+  ]
+}
