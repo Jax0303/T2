@@ -1,0 +1,35 @@
+# HPIR — Header-Path Intent Resolution (query processing) experiment config
+# 메인 주제: 분리-스토어(VDB↔원본 헤더트리)에서 쿼리를 계층 헤더경로 IR로 변환,
+# 검색·답변 양쪽을 수치로 검증.
+
+method: "hpir"
+seed: 42
+
+# ── 검색 평가 (scripts/hpir_retrieval_eval.py) ──
+retrieval:
+  embedder: "BAAI/bge-large-en-v1.5"
+  collection: "plain_markdown_bge_large_en_v1_5"
+  device: "cuda"          # cpu | cuda
+  topk: 540               # >= pool 크기여야 full ranking
+  split: "dev"
+  variants: ["dense", "dense_hpir", "keyword", "keyword_hpir"]
+  significance: ["paired_bootstrap_95ci", "mcnemar_exact_r1"]
+  out: "results/hpir_retrieval.json"
+
+# ── 답변 평가 (scripts/method_grounded.py) ──
+answer:
+  llm: "local:Qwen/Qwen2.5-7B-Instruct"   # 4-bit
+  retrieval: "gold"       # 답변 단계 격리
+  per_class: 20           # hard 5클래스 × 20 = 100
+  repairs: 2              # grounded/hpir 자가수정 최대 횟수
+  max_tokens: 320
+  modes: ["naive", "grounded", "hpir"]
+  metric: "numeric_match_2pct"
+  ci: "bootstrap_2000"
+
+# ── resolver 하이퍼파라미터 ──
+resolver:
+  top_n_cols: 3
+  top_n_rows: 4
+  fuzzy_threshold: 0.4    # OriginalTable._fuzzy_* 기본값 재사용
+  keep_year_tokens: true  # HiTab에서 연도는 열 헤더 신호

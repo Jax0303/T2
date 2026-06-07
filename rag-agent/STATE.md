@@ -115,3 +115,15 @@
 - [x] Decision Gate 2·4 판정 → docs/VERDICT.md (둘 다 미트리거; 풀확대 시 dense 우위·ρ=+1.0)
 - [ ] Phase 3 — 라우팅 A1–A4/FULL + paired bootstrap + 층화 (codegen 경로, 추가 LLM 실행 필요)
 - [ ] Gate 1·3 판정, VERDICT.md 완성
+
+## 9. 메인 기여 — HPIR (Header-Path Intent Resolution) (2026-06-07)
+주제 확정: 쿼리를 **계층 헤더경로 IR**로 변환해 분리-스토어의 검색·답변을 동시에 끌어올리는
+쿼리-이해 모듈. 두 병목(검색29%/답변71%)의 공통 원인("헤더경로 미명시")을 한 모듈로 공략.
+- [x] 코어 `rag_agent/query/header_path_resolver.py` — 결정론 + 검증형 LLM 정련(인벤토리 교집합)
+- [x] 단위테스트 `tests/test_header_path_resolver.py` (11) — 데이터 불필요, 전체 30 통과
+- [x] 검색 하니스 `scripts/hpir_retrieval_eval.py` — raw vs HPIR확장, paired bootstrap+McNemar
+- [x] 답변 하니스 `scripts/method_grounded.py --mode hpir` — naive/grounded/hpir 3-way ablation
+- [x] `docs/METHOD_HPIR.md`, `configs/hpir.yaml`
+- [x] `stores/vector_store.py` chromadb import 지연화(bare 환경 테스트 가능하게)
+- [ ] **수치 산출(로컬 RTX 3060 Ti)**: hpir_retrieval.json + method_hpir_pc20.json → METHOD_HPIR §3 표 채우기
+      (본 원격 컨테이너엔 데이터/GPU/Qwen/Chroma 부재 → 실행만 데이터 보유 머신에서)
