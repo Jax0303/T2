@@ -12,8 +12,6 @@ from collections import OrderedDict
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-import chromadb
-
 logger = logging.getLogger(__name__)
 
 
@@ -54,6 +52,7 @@ class VectorStore:
         device: Optional[str] = None,
         collection_name: Optional[str] = None,
     ) -> None:
+        import chromadb
         from sentence_transformers import SentenceTransformer
         import torch
 
