@@ -1,0 +1,31 @@
+# PREP — 검색 전 표 전처리 × 표 복잡도 실험 설정 (docs/PREP_PROTOCOL.md)
+seed: 42
+boot_iters: 10000
+ks: [1, 5, 10]
+max_rows: 20            # 모든 조건 동일 절단 — 조건 간 공정성
+top_n: 100              # 이보다 깊은 gold rank는 miss로 기록
+
+conditions: [C0, C1, C2, C3]        # hitab에서는 C2h 추가
+synth:
+  default: template                 # 결정론·LLM-free 하한선
+  llm: "llm:local:Qwen/Qwen2.5-7B-Instruct"   # QGpT식 업그레이드(로컬 GPU)
+  n_questions: 5
+
+retrievers:
+  bm25: {impl: rank_bm25.BM25Okapi}
+  dense:
+    model: BAAI/bge-small-en-v1.5
+    normalize: true                 # 내적 = cosine, FAISS IndexFlatIP 동치
+    batch_size: 64
+
+datasets:
+  owt:
+    complexity: flat
+    corpus: data/openwikitable/corpus.jsonl     # 24,680 tables
+    queries: data/openwikitable/queries_test.jsonl
+    n_queries: 1000
+  hitab:
+    complexity: hierarchical
+    data_dir: data/hitab                        # 3,597 tables
+    split: dev                                  # 1,671 queries
+    n_queries: 0                                # 전수
