@@ -142,10 +142,20 @@ def build_hier(data_dir: str, split: str, n: int):
 def build_flat(n: int):
     from datasets import load_dataset
 
+    # (repo, split): the canonical script-based dataset first (works only on
+    # datasets<4, which still ran loading scripts), then a parquet-native
+    # mirror that preserves the same nested `table` = {header, rows, name}
+    # schema. datasets>=4 dropped script support, so the canonical repo raises
+    # "Dataset scripts are no longer supported" and we fall through.
     ds = None
-    for name in ("stanfordnlp/wikitablequestions", "wikitablequestions"):
+    for name, split in (
+        ("stanfordnlp/wikitablequestions", "validation"),
+        ("wikitablequestions", "validation"),
+        ("lighteval/wikitablequestions", "test"),
+    ):
         try:
-            ds = load_dataset(name, split="validation")
+            ds = load_dataset(name, split=split)
+            print(f"  WTQ source: {name} [{split}] ({len(ds)} rows)")
             break
         except Exception as e:  # noqa: BLE001
             print(f"  load_dataset({name}) failed: {e}", file=sys.stderr)
