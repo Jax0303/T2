@@ -166,6 +166,12 @@ def main():
                    help="rows serialized per table (same across conditions)")
     p.add_argument("--n-queries", type=int, default=1000,
                    help="random query subsample (0 = all)")
+    p.add_argument("--max-corpus", type=int, default=0,
+                   help="cap corpus size to this many tables (0 = full). The "
+                        "gold tables of the sampled queries are always kept; "
+                        "the remainder is filled with seeded random distractors. "
+                        "Lets an LLM-synth (C3) ablation run on a feasible "
+                        "number of tables without changing the query set.")
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--ks", default="1,5,10")
     p.add_argument("--boot-iters", type=int, default=10000)
@@ -196,6 +202,26 @@ def main():
     if args.n_queries and len(queries) > args.n_queries:
         rng = random.Random(args.seed)
         queries = rng.sample(queries, args.n_queries)
+
+    # Optionally cap the corpus: keep every gold table the sampled queries
+    # point at, then add seeded random distractors up to --max-corpus. The
+    # query set is untouched, so a slow LLM-synth condition becomes tractable.
+    if args.max_corpus and len(tables) > args.max_corpus:
+        gold_ids = {g for _, _, g in queries}
+        keep = set(gold_ids)
+        if len(keep) > args.max_corpus:
+            raise SystemExit(
+                f"--max-corpus {args.max_corpus} < {len(keep)} gold tables; "
+                f"lower --n-queries or raise --max-corpus")
+        distractors = [t.table_id for t in tables if t.table_id not in keep]
+        random.Random(args.seed).shuffle(distractors)
+        for tid in distractors:
+            if len(keep) >= args.max_corpus:
+                break
+            keep.add(tid)
+        tables = [t for t in tables if t.table_id in keep]
+        idx_by_id = {t.table_id: i for i, t in enumerate(tables)}
+
     print(f"corpus: {len(tables)} tables | queries: {len(queries)} "
           f"| conditions: {conditions} | retriever: {args.retriever}")
 
