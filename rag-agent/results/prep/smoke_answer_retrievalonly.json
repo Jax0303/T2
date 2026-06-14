@@ -1,0 +1,360 @@
+{
+ "config": {
+  "data_dir": null,
+  "split": "test",
+  "condition": "C1",
+  "top_k": 1,
+  "max_rows": 20,
+  "n_queries": 30,
+  "seed": 42,
+  "llm": null,
+  "max_tokens": 64,
+  "out": "results/prep/smoke_answer_retrievalonly.json"
+ },
+ "summary": {
+  "n_queries": 30,
+  "R@1": 0.5,
+  "EM": null,
+  "n_scored": 0,
+  "answer_EM_given_correct_table": null
+ },
+ "rows": [
+  {
+   "question_id": "wikisql-57659",
+   "question": "What episode took place at Belfast Waterfront Hall for Michael McIntyre's Comedy Roadshow?",
+   "gold_table": "1-23122988-1",
+   "retrieved_table": "1-23122988-1",
+   "r1": 1,
+   "gold_answer": [
+    "1x05"
+   ],
+   "reader_prompt": "Table:\nTitle: Michael McIntyre's Comedy Roadshow\nSection: Series 1 (2009)\nCaption: Series 1 (2009)\n\nEpisode | Location_ | Headliner | Comedians | Airdate\n--- | --- | --- | --- | ---\n1x01 | Edinburgh Playhouse | Rhod Gilbert | Kevin Bridges Stewart Francis Mark Watson | 6 June 2009\n1x02 | Manchester Apollo | Jason Manford | John Bishop Mick Ferry Sarah Millican | 13 June 2009\n1x03 | Birmingham Hippodrome | Shappi Khorsandi | Steve Hughes Tom Stade Paul Tonkinson | 20 June 2009\n1x04 | Swansea Grand Theatre | Sean Lock | Alun Cochrane Ava Vidal Steve Williams | 27 June 2009\n1x05 | Belfast Waterfront Hall | Patrick Kielty | Neil Delamere Kerry Godliman Jeff Green | 4 July 2009\n\nQuestion: What episode took place at Belfast Waterfront Hall for Michael McIntyre's Comedy Roadshow?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-28606",
+   "question": "What is country if the player is \"Rives McBee\" from the third round of the 1966 US Open (golf)?",
+   "gold_table": "2-17277136-5",
+   "retrieved_table": "2-17277136-5",
+   "r1": 1,
+   "gold_answer": [
+    "United States"
+   ],
+   "reader_prompt": "Table:\nTitle: 1966 U.S. Open (golf)\nSection: Third round\nCaption: Third round\n\nPlace | Player | Country | Score | To_par\n--- | --- | --- | --- | ---\n1 | Arnold Palmer | United States | 71-66-70=207 | –3\n2 | Billy Casper | United States | 69-68-73=210 | E\n3 | Jack Nicklaus | United States | 71-71-69=211 | +1\nT4 | Phil Rodgers | United States | 70-70-73=213 | +3\nT4 | Dave Marr | United States | 71-74-68=213 | +3\n6 | Rives McBee | United States | 76-64-74=214 | +2\nT7 | Tony Lema | United States | 71-74-70=215 | +5\nT7 | Bob Goalby | United States | 71-73-71=215 | +5\nT7 | Al Mengert | United States | 67-77-71=215 | +5\n10 | Johnny Miller (a) | United States | 70-72-74=216 | +6\n\nQuestion: What is country if the player is \"Rives McBee\" from the third round of the 1966 US Open (golf)?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-07433",
+   "question": "How many of the culturally interested fraternities and sororities were sent to the organization with the founding date 1997-12-12 considering that it is a South Asian organization?",
+   "gold_table": "1-2538117-12",
+   "retrieved_table": "1-2538117-12",
+   "r1": 1,
+   "gold_answer": [
+    "1"
+   ],
+   "reader_prompt": "Table:\nTitle: Cultural interest fraternities and sororities\nSection: South Asian\nCaption: South Asian\n\nLetters | Organization | Nickname | Founding_Date | Founding_University | Type_\n--- | --- | --- | --- | --- | ---\nΑΙΟ | Alpha Iota Omicron | AIO | 1998-10-16 | University of Michigan | Fraternity\nΒΧΘ | Beta Chi Theta 2 | Beta Chi/BCT | 1999-06-02 | University of California, Los Angeles | Fraternity\nΒΚΓ | Beta Kappa Gamma | BKG | 1999-05-06 | University of Texas at Austin | Fraternity\nΔΣΙ | Delta Sigma Iota | DSI | 2000-08-15 | Pennsylvania State University | Fraternity\nΔΕΨ | Delta Epsilon Psi | DEPsi/D.E.Psi | 1998-10-01 | University of Texas at Austin | Fraternity\nΔΘΨ | Delta Theta Psi | DTPsi | 2002-01-14 | University of Michigan | Sorority\nΔΚΔ | Delta Kappa Delta 1 | DKD | 2000-08-15 | Texas A&M University | Sorority\nΔEΣΙ | Delta Epsilon Sigma Iota | Desi | 1997-12-12 | University at Buffalo, SUNY | Fraternity\nΔΦΩ | Delta Phi Omega | DPO | 1998-12-06 | University of Houston | Sorority\nΙΝΔ | Iota Nu Delta | IND | 1994-02-07 | Binghamton University | Fraternity\nΚΦΓ | Kappa Phi Gamma | KPhiG | 1998-11-08 | University of Texas at Austin | Sorority\n\nQuestion: How many of the culturally interested fraternities and sororities were sent to the organization with the founding date 1997-12-12 considering that it is a South Asian organization?\nFinal answer:"
+  },
+  {
+   "question_id": "wikitq-03140",
+   "question": "Which versions of Cello have the same development cycle as 0.1 in Cello (web browser)?",
+   "gold_table": "203-743",
+   "retrieved_table": "203-743",
+   "r1": 1,
+   "gold_answer": [
+    "0.2",
+    "0.3",
+    "0.4",
+    "0.5",
+    "0.6",
+    "0.8",
+    "0.9"
+   ],
+   "reader_prompt": "Table:\nTitle: Cello (web browser)\nSection: Release history\nCaption: 16-bit Cello Releases\n\nVersion | Date_ | Development_cycle | Size_in_kb | Download | Notes_\n--- | --- | --- | --- | --- | ---\n0.1 | 9 June 1993 | Beta | ? | evolt | \n0.2 | 14 June 1993 | Beta | ? | ? | Changelog\n0.3 | 16 June 1993 | Beta | ? | ? | Changelog\n0.4 | 18 June 1993 | Beta | ? | ? | Changelog\n0.5 | 24 June 1993 | Beta | ? | ? | Changelog\n0.6 | 30 June 1993 | Beta | ? | ? | changelog\n0.8 | 5 November 1993 | Beta | N/A | N/A | Changelog (Distinct version discontinued)\n0.9 | 12 November 1993 | Beta-pre | ? | [2] | \n0.9 | 16 November 1993 | Beta | ? | [3] | Changelog\n0.9 | 22 November 1993 | WINSOCK alpha r9.2 | ? | [4] | \n1.0 | 17 February 1994 | Release | ? | evolt | \n1.01 | ? | Release | ? | ? | \n1.01a | 17 March 1994 | release | 521 | [5], evolt | Changelog\n2.0 | N/A | Alpha | N/A | N/A | development ceased\n\nQuestion: Which versions of Cello have the same development cycle as 0.1 in Cello (web browser)?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-64350",
+   "question": "Which city in season 2011/12 and 2nd place in Lega Pro Seconda Divisione A under List of football clubs in Italy: Girone A?",
+   "gold_table": "2-1083851-3",
+   "retrieved_table": "2-1083851-6",
+   "r1": 0,
+   "gold_answer": [
+    "Serravalle"
+   ],
+   "reader_prompt": "Table:\nTitle: List of football clubs in Italy\nSection: Girone B\nCaption: Group B\n\nClub | City | Stadium | Capacity | _2011_12_season\n--- | --- | --- | --- | ---\nAprilia | Aprilia | Quinto Ricci | 2000 | 5th in Lega Pro Seconda Divisione B\nArzanese | Arzano (playing in Frattamaggiore ) | Pasquale Ianniello | 4000 | 9th in Lega Pro Seconda Divisione B\nAversaNormanna | Aversa | Augusto Bisceglia | 2555 | 11th in Lega Pro Seconda Divisione B\nBorgo a Buggiano | Buggiano | Alberto Benedetti | 2000 | 10th in Lega Pro Seconda Divisione A\nCampobasso | Campobasso | Romagnoli | 4000 | 13th in Lega Pro Seconda Divisione B\nChieti | Chieti | Guido Angelini | 12750 | 4th in Lega Pro Seconda Divisione B\nFoligno | Foligno | Enzo Blasone | 5650 | 18th in Lega Pro Prima Divisione A\nFondi | Fondi | Domenico Purificato | 2500 | 12th in Lega Pro Seconda Divisione B\nGavorrano | Gavorrano | Romeo Malservisi | 2000 | 7th in Lega Pro Seconda Divisione B\nHinterReggio | Reggio Calabria | Oreste Granillo | 27543 | 1st in Serie D Girone I\nL`Aquila | L`Aquila | Tommaso Fattori | 10000 | 8th in Lega Pro Seconda Divisione B\nMartina Franca | Martina Franca | Gian Domenico Tursi | 5000 | 1st in Serie D Girone H\nMelfi | Melfi | Arturo Valerio | 4100 | 16th in Lega Pro Seconda Divisione B\nPoggibonsi | Poggibonsi | Stefano Lotti | 2513 | 9th in Lega Pro Seconda Divisione A\nPontedera | Pontedera | Ettore Mannucci | 5000 | 1st in Serie D Girone E\nSalernitana | Salerno | Arechi | 37245 | 1st in Serie D Girone G (as Salerno)\nTeramo | Teramo | Comunale | 7498 | 1st in Serie D Girone F\nVigorLamezia | Lamezia Terme | Guido D`Ippolito | 4000 | 3rd in Lega Pro Seconda Divisione B\n\nQuestion: Which city in season 2011/12 and 2nd place in Lega Pro Seconda Divisione A under List of football clubs in Italy: Girone A?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-57080",
+   "question": "What is the smallest number of fastest laps listed for racing teams in Superleague Formula drivers and teams?",
+   "gold_table": "1-19312274-3",
+   "retrieved_table": "1-19312274-3",
+   "r1": 1,
+   "gold_answer": [
+    "0"
+   ],
+   "reader_prompt": "Table:\nTitle: List of Superleague Formula drivers and teams\nSection: Racing teams\nCaption: Racing teams\n\nName_ | Nation | Seasons | Championship_Titles | Race_Starts | Poles | Wins | Podiums | Fastest_Laps\n--- | --- | --- | --- | --- | --- | --- | --- | ---\nAlan Docking Racing | United Kingdom | 2008 , 2009 , 2010 , 2011 | 0 | 118 | 6 | 7 | 23 | 7\nAlpha Motorsport (with ADR ) | United Kingdom | 2010 | 0 | 20 | 0 | 0 | 3 | 1\nAlpha Team (solo) | United Kingdom | 2010 | 0 | 24 | 0 | 0 | 4 | 0\nAtech GP / Reid Motorsport | United Kingdom | 2010 , 2011 | 0 | 111 | 1 | 7 | 17 | 10\nAzerti Motorsport | Belgium | 2008 , 2009 , 2010 , 2011 | 0 | 112 | 3 | 5 | 18 | 4\nBarazi-Epsilon | France | 2009 , 2010 | 0 | 41 | 0 | 1 | 5 | 1\nDelta Motorsport (with ADR ) | United Kingdom | 2009 | 0 | 6 | 0 | 0 | 0 | 0\nDrivex | Spain | 2010 | 0 | 8 | 0 | 0 | 0 | 0\nEmiliodeVillota Motorsport | Spain | 2010 , 2011 | 0 | 54 | 2 | 2 | 5 | 1\nEuroInternational | Italy | 2008 | 0 | 21 | 0 | 0 | 1 | 4\nFMS International | Italy | 2008 | 0 | 12 | 1 | 0 | 3 | 0\nGTA Motor Competición | Spain | 2008 | 0 | 24 | 0 | 1 | 4 | 0\nGU-Racing International | Germany | 2008 , 2009 , 2010 | 1 ( 2010 ) | 98 | 4 | 7 | 19 | 10\nHitech Junior Team | United Kingdom | 2008 , 2009 | 1 ( 2009 ) | 46 | 3 | 6 | 12 | 2\nLRS Formula / Laurent Rédon Motorsport | France | 2010 | 0 | 11 | 0 | 1 | 1 | 1\nRacing for Holland | Netherlands | 2010 | 0 | 8 | 0 | 0 | 0 | 0\nReid Motorsport (solo) | United Kingdom | 2009 | 0 | 8 | 1 | 2 | 4 | 0\nScuderia Playteam | Italy | 2008 | 0 | 23 | 1 | 2 | 8 | 0\nTeam Astromega | Belgium | 2008 | 0 | 24 | 0 | 0 | 4 | 1\nUltimate Motorsport | United Kingdom | 2009 | 0 | 16 | 0 | 1 | 2 | 0\n\nQuestion: What is the smallest number of fastest laps listed for racing teams in Superleague Formula drivers and teams?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-51651",
+   "question": "What's the away with a time being 2:00 p.m. for the seventh round of the 2008 OAFL season?",
+   "gold_table": "2-15764352-7",
+   "retrieved_table": "1-11244302-1",
+   "r1": 0,
+   "gold_answer": [
+    "Guelph Gargoyles"
+   ],
+   "reader_prompt": "Table:\nTitle: Big Shots (TV series)\nSection: Weekly ratings\nCaption: Weekly ratings\n\n_ | Episode | Air_Date | Time_slot_EST | Rating | Share_ | _18_49_Rating_Share | Viewers_m | Rank_Overall\n--- | --- | --- | --- | --- | --- | --- | --- | ---\n1 | Pilot | September 27, 2007 | Thursday, 10:00 P.M | 7.8 | 13 | 4.7/13 | 11.10 | #29\n2 | Tall, Dark and Hairless | October 4, 2007 | Thursday, 10:00 P.M. | 6.1 | 10 | 3.7/10 | 10.14 | #50\n3 | The Good, the Bad and the Really Ugly | October 11, 2007 | Thursday, 10:00 P.M. | 6.3 | 11 | 3.9/11 | 9.28 | #53\n4 | Three`s a Crowd | October 18, 2007 | Thursday, 10:00 P.M. | 6.0 | 10 | 3.3/9 | 8.34 | #53\n5 | Greatest Amerimart Hero | October 25, 2007 | Thursday, 10:00 P.M. | 5.7 | 9 | 3.3/7 | 8.08 | #61\n6 | Car Trouble | November 1, 2007 | Thursday, 10:00 P.M. | 6.2 | 10 | 3.7/10 | 7.53 | #54\n7 | Who`s Your Daddy | November 8, 2007 | Thursday, 10:00 P.M. | 5.9 | 10 | 3.6/9 | 8.62 | #59\n8 | The Way We Weren`t | November 29, 2007 | Thursday, 10:00 P.M. | 4.1 | 7 | 2.4/7 | 5.98 | #79\n9 | The Better Man | January 10, 2008 | Thursday, 10:00 P.M. | 4.7 | 8 | 2.6/8 | 6.76 | #52\n10 | Sex Be Not Proud | January 17, 2008 | Thursday, 10:00 P.M. | 3.5 | 6 | 1.8/5 | 4.78 | #69\n\nQuestion: What's the away with a time being 2:00 p.m. for the seventh round of the 2008 OAFL season?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-33128",
+   "question": "Who finished third on the ATP Champions Tour if the 2006 winner was Paul Haarhuis?",
+   "gold_table": "2-11346282-8",
+   "retrieved_table": "2-11346282-8",
+   "r1": 1,
+   "gold_answer": [
+    "None"
+   ],
+   "reader_prompt": "Table:\nTitle: ATP Champions Tour\nSection: 2006\nCaption: 2006\n\nTournament | Winner | Runner_up | Score | Third_Place\n--- | --- | --- | --- | ---\nDoha | Marcelo Ríos | Cédric Pioline | 6–2, 6–2 | Richard Krajicek\nHong Kong | Marcelo Ríos | Thomas Muster | 6–3, 6–3 | Cédric Pioline\nBarcelona | Sergi Bruguera | Carlos Costa | 6–1, 6–4 | Richard Krajicek\nRome | Renzo Furlan | Sergi Bruguera | 6–4, 4–6, [13–11] | Cédric Pioline\nAlgarve | Marcelo Ríos | John McEnroe | 6–2, 6–4 | Carl-Uwe Steeb\nGraz-Seiersberg | Marcelo Ríos | Thomas Muster | 7–6(1), 7–6(5) | Goran Ivanišević\nParis | Marcelo Ríos | Goran Ivanišević | 7–5, 6–3 | Cédric Pioline\nEindhoven | Marcelo Ríos | Wayne Ferreira | 6–3,6–1 | Richard Krajicek\nFrankfurt | Goran Ivanišević | John McEnroe | 7–6(12), 7–6(1) | Paul Haarhuis\nLondon | Paul Haarhuis | Goran Ivanišević | 7–6(4), 5–7, [10–7] | None\n\nQuestion: Who finished third on the ATP Champions Tour if the 2006 winner was Paul Haarhuis?\nFinal answer:"
+  },
+  {
+   "question_id": "wikitq-02820",
+   "question": "Which team was the winner of the Walsall Senior Cup in the first final?",
+   "gold_table": "204-596",
+   "retrieved_table": "204-543",
+   "r1": 0,
+   "gold_answer": [
+    "Walsall Wood"
+   ],
+   "reader_prompt": "Table:\nTitle: Star (football badge)\nSection: List in football\nCaption: National teams Intercontinental (Men) (Football)\n\nNational_Team | Titles_represented | First_worn | Number_of_stars | Notes_\n--- | --- | --- | --- | ---\nBrazil | World Cup | 1971 | 5 | Third win was in 1970; fourth and fifth stars added after 1994 and 2002 wins. Briefly wore 2 stars on a tour of Europe in 1968.\nItaly | World Cup | 1982 | 4 | Added after third win; fourth star added after the 2006 win. Incorporated into the badge since 2006.\nGermany | World Cup | 1996 | 3 | 1954, 1974, Third win was in 1990.\nUruguay | World Cup and Olympics | 1930 | 4 | Represent 2 World Cups (1930 & 1950) and 2 Olympic football titles (1924 & 1928) recognized as FIFA World Championships.\nArgentina | World Cup | 2003 | 2 | 1978, Second win was in 1986.\nEngland | World Cup | 2003 | 1 | Title won in 1966. Star added after a campaign on Sky Sports` Soccer AM programme, first worn on the sleeve.\nFrance | World Cup | 1998 | 1 | Title won in 1998. Star added above their badge which was unveiled at their opening qualifying game for Euro 2000\nSpain | World Cup | 2010 | 1 | Title won in 2010. Spain played in their away kit for the final, but upon winning the World Cup they changed into their home kit, complete with a star above the badge, for the presentation ceremony.\n\nQuestion: Which team was the winner of the Walsall Senior Cup in the first final?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-27263",
+   "question": "Which finish at the 1990 US Open (Golf) had a To Par of +10 under Made the Cut?",
+   "gold_table": "2-17129548-1",
+   "retrieved_table": "2-17162255-2",
+   "r1": 0,
+   "gold_answer": [
+    "64"
+   ],
+   "reader_prompt": "Table:\nTitle: 1992 U.S. Open (golf)\nSection: Made the cut\nCaption: Made the cut\n\nPlayer | Country | Years_won | Total | To_par | Finish\n--- | --- | --- | --- | --- | ---\nCurtis Strange | United States | 1988 , 1989 | 295 | +7 | T23\nRaymond Floyd | United States | 1986 | 297 | +9 | T44\nHale Irwin | United States | 1974 , 1979 , 1990 | 298 | +10 | T51\nPayne Stewart | United States | 1991 | 298 | +10 | T51\nScott Simpson | United States | 1987 | 303 | +15 | T64\n\nQuestion: Which finish at the 1990 US Open (Golf) had a To Par of +10 under Made the Cut?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-64173",
+   "question": "Which venue has a date of March 1, 2006 under Daniele De Rossi?",
+   "gold_table": "2-1686203-3",
+   "retrieved_table": "2-1686203-3",
+   "r1": 1,
+   "gold_answer": [
+    "Stadio Artemio Franchi , Florence , Italy"
+   ],
+   "reader_prompt": "Table:\nTitle: Daniele De Rossi\nSection: International goals\nCaption: International goals\n\nDate_ | Venue | Score | Result_ | Competition\n--- | --- | --- | --- | ---\n4 September 2004 | Stadio Renzo Barbera , Palermo , Italy | 1 – 1 | 2 – 1 | 2006 FIFA World Cup qualification\n13 October 2004 | Stadio Ennio Tardini , Parma , Italy | 2 – 0 | 4 – 3 | 2006 FIFA World Cup qualification\n1 March 2006 | Stadio Artemio Franchi , Florence , Italy | 3 – 0 | 4 – 1 | Friendly match\n11 October 2006 | Boris Paichadze Stadium , Tbilisi , Georgia | 0 – 1 | 1 – 3 | UEFA Euro 2008 qualifying\n17 June 2008 | Letzigrund , Zürich , Switzerland | 0 – 2 | 0 – 2 | UEFA Euro 2008\n10 September 2008 | Stadio Friuli , Udine , Italy | 1 – 0 | 2 – 0 | 2010 FIFA World Cup qualification\n10 September 2008 | Stadio Friuli , Udine , Italy | 2 – 0 | 2 – 0 | 2010 FIFA World Cup qualification\n15 June 2009 | Loftus Versfeld Stadium , Pretoria , South Africa | 1 – 2 | 1 – 3 | 2009 FIFA Confederations Cup\n14 June 2010 | Cape Town Stadium , Cape Town , South Africa | 1 – 1 | 1 – 1 | 2010 FIFA World Cup\n7 September 2010 | Stadio Artemio Franchi , Florence , Italy | 2 – 0 | 5 – 0 | UEFA Euro 2012 qualifying\n15 August 2012 | Stade de Suisse Wankdorf , Bern , Switzerland | 1 – 0 | 1 – 2 | Friendly match\n12 October 2012 | Hrazdan Stadium , Yerevan , Armenia | 1 – 2 | 1 – 3 | 2014 FIFA World Cup qualification\n16 October 2012 | Stadio Giuseppe Meazza , Milan, Italy | 2 – 0 | 3 – 1 | 2014 FIFA World Cup qualification\n21 March 2013 | Stade de Genève , Genève , Switzerland | 1 – 2 | 2 – 2 | Friendly match\n19 June 2013 | Arena Pernambuco , Recife , Brazil | 1 – 2 | 4 – 3 | 2013 FIFA Confederations Cup\nAs of 19 June 2013. | As of 19 June 2013. | As of 19 June 2013. | As of 19 June 2013. | As of 19 June 2013.\n\nQuestion: Which venue has a date of March 1, 2006 under Daniele De Rossi?\nFinal answer:"
+  },
+  {
+   "question_id": "wikitq-03054",
+   "question": "What are the 1500m skaters from Italy who came from the 2012 European All-Around Speed Skating Championships?",
+   "gold_table": "204-726",
+   "retrieved_table": "2-18375403-1",
+   "r1": 0,
+   "gold_answer": [
+    "2"
+   ],
+   "reader_prompt": "Table:\nTitle: 1988 Notre Dame Fighting Irish football team\nSection: Schedule\nCaption: Schedule\n\nDate_ | Time_ | Opponent_ | Rank_ | Result_ | Attendance\n--- | --- | --- | --- | --- | ---\n09/10/1988 | 9:00pm | 9 Michigan | 13 | W19-17 | 59075\n09/17/1988 | 12:00pm | at Michigan State | 8 | W20-3 | 77472\n09/24/1988 | 12:00pm | Purdue | 8 | W52-7 | 59075\n10/01/1988 | 7:00pm | Stanford | 5 | W42-14 | 59075\n10/08/1988 | 7:00pm | at Pittsburgh | 5 | W30-20 | 56500\n10/15/1988 | 2:30pm | 1 Miami | 4 | W31-30 | 59075\n10/22/1988 | 12:00pm | Air Force | 2 | W41-13 | 59075\n10/29/1988 | 12:00pm | vs. Navy | 2 | W22-7 | 54929\n11/05/1988 | 12:00pm | Rice | 1 | W54-11 | 59075\n11/19/1988 | 12:00pm | Penn St. | 1 | W21-3 | 59075\n11/25/1988 | 3:30pm | at 2 USC | 1 | W27-10 | 93829\n01/02/1989 | 4:30pm | vs. 3 West Virginia | 1 | W34-21 | 74911\n#Rankings from AP. All times are in Eastern Time . | #Rankings from AP. All times are in Eastern Time . | #Rankings from AP. All times are in Eastern Time . | #Rankings from AP. All times are in Eastern Time . | #Rankings from AP. All times are in Eastern Time . | #Rankings from AP. All times are in Eastern Time .\n\nQuestion: What are the 1500m skaters from Italy who came from the 2012 European All-Around Speed Skating Championships?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-41194",
+   "question": "Call that Almaty, Kazakhstan when Sergey Filimonov (KAZ) weighs 210 kg in weightlifting at the 2008 Summer Olympics – men 77 kg?",
+   "gold_table": "2-18519178-2",
+   "retrieved_table": "2-18519178-2",
+   "r1": 1,
+   "gold_answer": [
+    "27 April 2001"
+   ],
+   "reader_prompt": "Table:\nTitle: Weightlifting at the 2008 Summer Olympics – Men's 77 kg\nSection: Records\nCaption: Records\n\nWorld_record | Snatch | Sergey_Filimonov_KAZ_ | _173kg | Almaty_Kazakhstan\n--- | --- | --- | --- | ---\nClean & Jerk | Oleg Perepetchenov ( RUS ) | 210kg | Trenčín , Slovakia | 27 April 2001\nTotal | Plamen Zhelyazkov ( BUL ) | 377kg | Doha , Qatar | 27 March 2002\nOlympic record | Snatch | Taner Sagir ( TUR ) | 172kg | Athens , Greece\nOlympic record | Clean & Jerk | Zhan Xugang ( CHN ) | 207kg | Sydney , Australia\nOlympic record | Total | Taner Sagir ( TUR ) | 375kg | Athens , Greece\n\nQuestion: Call that Almaty, Kazakhstan when Sergey Filimonov (KAZ) weighs 210 kg in weightlifting at the 2008 Summer Olympics – men 77 kg?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-21790",
+   "question": "What was the outcome of the game where the venue was the Cairns Convention Center in the 19th round of the 2008-09 NBL season?",
+   "gold_table": "2-16653153-26",
+   "retrieved_table": "204-831",
+   "r1": 0,
+   "gold_answer": [
+    "89-83"
+   ],
+   "reader_prompt": "Table:\nTitle: National Register of Historic Places listings in Wayne County, Michigan\nSection: Listings\nCaption: Listings\n\nblank | Name_on_the_Register | Date_listed | Location_ | City_or_town | Summary_\n--- | --- | --- | --- | --- | ---\n1 | Academy of the Sacred Heart | June 25, 1987 , (#87001061) | 171 Lake Shore Dr. , 42°23′35″N 82°53′37″W﻿ / ﻿42.393056°N 82.893611°W | Grosse Pointe Farms | This school was established in 1887 as a boarding school for young ladies by the Religious of the Sacred Heart, an order of cloistered nuns. It is now run as an independent day school, known as the Grosse Pointe Academy, by a lay Board of Trustees who continue the educational mission of the school.\n2 | Russell A. Alger, Jr. House | July 8, 1982 , (#82002917) | 32 Lake Shore Dr. , 42°23′13″N 82°53′50″W﻿ / ﻿42.386944°N 82.897222°W | Grosse Pointe Farms | The Russell A. Alger, Jr. House was built in 1910 and served as the family home of Russell A. Alger Jr. until 1949, when it was donated to the community and dedicated to the memory of veterans and soldiers of World War II. It was rechristened the Grosse Pointe War Memorial, and is also known as The Moorings.\n3 | Annapolis Park Historic District | May 18, 2006 , (#06000405) | Julius, Matthew, Hanover, Farnum, Alan, and Paul , 42°16′14″N 83°19′59″W﻿ / ﻿42.270556°N 83.333056°W | Westland | During World War II, the African-American population in Detroit ballooned to 300,000 residents, but housing covenants, overpriced rent, and other forms of discrimination restricted where they could live. Julius and William Schwartz platted the Annapolis Park suburb in Westland in 1953 specifically for African-Americans.\n4 | Henry W. Baker House | April 22, 1982 , (#82002922) | 233 S. Main St. , 42°22′19″N 83°28′03″W﻿ / ﻿42.371944°N 83.4675°W | Plymouth | This house was built for Henry W. Baker, president of the Plymouth Iron Windmill Company, which in 1888 introduced the Daisy air rifle and later changed its name to the Daisy Manufacturing Company. The house is of a fanciful Italianate design, likely based on an illustration in a pattern book. The house was a landmark in Plymouth because of the unusual tower, shaped like a pagoda, atop the mansard roof.\n5 | Tivadar and Dorothy Balogh House | September 30, 2013 , (#13000800) | 49800 Joy Road (Plymouth Township) , 42°21′02″N 83°31′52″W﻿ / ﻿42.350548°N 83.531141°W | Cherry Hill vicinity | The Tivadar and Dorothy Balogh House was constructed in 1958-59 by architect Tividar Balogh for himself, his wife, Dorothy and their family. The house is a two-story cubic structure, clad in redwood siding. The house sits on a partial basement on one side and support posts on the other side. The section beneath the house was originally open; the space beneath gives the house an impressive lightness and makes it appear to hover above the landscape.\n6 | Thomas and Maria Blackman Bartlett House | June 2, 2000 , (#00000614) | 500 N. Ridge Rd. (Canton Township) , 42°18′30″N 83°32′05″W﻿ / ﻿42.308333°N 83.534722°W | Cherry Hill | The Thomas and Maria Blackman Bartlett House (also known as the Bartlett-Travis House) was originally constructed c. 1840 in a Greek Revival style, but in subsequent years has been updated with Victorian elements. In 1989, the house was moved to its current location and placed on a new foundation. Restoration work was begun in 1994 and finished in 2002.\n7 | Beverly Road Historic District | April 7, 1995 , (#94001428) | 23-45 Beverly Rd. , 42°23′18″N 82°54′06″W﻿ / ﻿42.388333°N 82.901667°W | Grosse Pointe Farms | The Beverly Road Historic District covers the original area of the Beverly Park Subdivision, platted by Henry B. Joy in 1911. The district was one of the earliest upper-class subdivisions in the Grosse Pointes, and marked the change of the area from a farming and summer-home community into an upscale year-round community.\n8 | David and Elizabeth Bell Boldman House | June 2, 2000 , (#00000615) | 3339 S. Canton Center Rd. (Canton Township) , 42°16′54″N 83°29′09″W﻿ / ﻿42.281667°N 83.485833°W | Sheldon | The David and Elizabeth Bell Boldman House was a basilica-style Greek Revival with a two-story center section flanked by single-story wings. The former site of the house is now vacant.\n9 | Benjamin and Mary Ann Bradford House | June 9, 2000 , (#00000648) | 48145 Warren Rd. , 42°20′07″N 83°30′54″W﻿ / ﻿42.335278°N 83.515°W | Canton | In 1825, Moses Bradford moved to Canton Township, one of the first settlers to stake a claim in the area. The following year, Aruna and Mary Bradford, Moses`s parents, followed their son to Canton Township. On arrival, they bought the property this house now sits on; in 1835 they sold the parcel to their other son, Benjamin. In 1860, Benjamin built the house that now stands on the property; it remained in the Bradford family until 1911.\n10 | Jos. Campau Historic District | October 17, 2012 , (#12000870) | Bounded by Holbrook, Pulaski, Casmere, & Lehman Sts. , 42°23′55″N 83°03′32″W﻿ / ﻿42.39852°N 83.058922°W | Hamtramck | The Jos. Campau Historic District contains a unique collection of early 20th century commercial architecture, constructed as Hamtramck expanded in the wake of the 1915 opening of the nearby Dodge Main Plant.\n11 | Cherry Hill Historic District | April 2, 2003 , (#03000176) | Cherry Hill and Ridge Rds. , 42°18′17″N 83°32′20″W﻿ / ﻿42.304722°N 83.538889°W | Canton Township | The Cherry Hill Historic District contains buildings on Cherry Hill and Ridge Roads in the unincorporated crossroads community of Cherry Hill. CHerry Hill was established in 1825, and the district includes the Italianate Cherry Hill House inn, the Gothic Revival Cherry Hill United Methodist Church and associated cemetery, the Cherry Hill School, the Thomas and Maria Blackman Bartlett House, the Thomas and Isabella Moore Clyde House, and buildings used for one of Henry Ford`s Village industry projects.\n12 | Christ Church Chapel | September 10, 1993 , (#93000424) | 61 Grosse Pointe Rd. , 42°23′29″N 82°54′03″W﻿ / ﻿42.391389°N 82.900833°W | Grosse Pointe Farms | The Grosse Pointe Episcopal congregation began as a branch of Christ Church Detroit in 1923. This building, completed in 1930, was initially referred to as a chapel, because it was intended to be one element of a larger building. The Neo-Gothic chapel is built in a Latin cross configuration with a 50-foot (15 m) tower at one corner.\n13 | Thomas and Isabella Moore Clyde House | April 2, 2003 , (#03000175) | 50325 Cherry Hill Rd. , 42°18′21″N 83°32′07″W﻿ / ﻿42.305833°N 83.535278°W | Canton Township | The Thomas Clyde House is a 1 1⁄2-story clapboard upright and wing Greek Revival house with an unusual asymmetrical facade. It was built c. 1845, and moved from its original location across the street to its present location in 1924.\n14 | Commandant`s Quarters | October 15, 1970 , (#70000286) | 21950 Michigan Ave. , 42°18′23″N 83°14′38″W﻿ / ﻿42.306389°N 83.243889°W | Dearborn | The Commandant`s Quarters was built in 1833 as part of the Detroit Arsenal, which was relocated from Detroit due to fear that the stored explosives would endanger the city`s population. It is the oldest building in Dearborn still located on its original site, and is considered to be one of the seven most significant buildings in Michigan.\n15 | Charles G. Curtiss Sr. House | December 2, 1993 , (#93001350) | 168 S. Union St. , 42°22′19″N 83°27′58″W﻿ / ﻿42.371944°N 83.466111°W | Plymouth | This house is a two-story wood-framed house sitting on a fieldstone foundation. It was built in approximately 1890 by Charles G. Curtiss Sr., a builder from Plymouth. The form of the house (a gabled ell with tower) had been poplar regionally and nationally since the 1850s, but by the time this house was built was much out of fashion.\n16 | Dearborn Inn and Colonial Homes | December 10, 1982 , (#82000549) | 20301 Oakwood Blvd. , 42°17′48″N 83°13′41″W﻿ / ﻿42.296667°N 83.228056°W | Dearborn | The Dearborn Inn, was conceived by Henry Ford, who saw a need for food and accommodations for visitors flying into the nearby Ford Airport. The Inn was designed by architect Albert Kahn, and upon its opening in 1931 became the first airport hotel in the country.\n17 | Defer Elementary School | May 2, 2001 , (#01000458) | 15425 Kercheval , 42°23′00″N 82°56′07″W﻿ / ﻿42.383336°N 82.935183°W | Grosse Pointe Park | In 1921, in response to the influx of families, five school districts in what is now the Grosse Pointe area were consolidated into Rural Agricultural District No. 1 (later renamed the Grosse Pointe Public School System). The first building constructed after consolidation was Defer Elementary School, built on the site of a rhubarb patch owned by Ludwig Meininger.\n18 | Paul Harvey Deming House | July 25, 1996 , (#96000811) | 111 Lake Shore Rd. , 42°23′30″N 82°53′40″W﻿ / ﻿42.391667°N 82.894444°W | Grosse Pointe Farms | This house was a 15,000-square-foot (1,400 m2), 2 1⁄2-story Tudor Revival built in the shape of a U. It was built for Paul Harvey Deming, Chairman of the Board of the George Worthington Company. The house was demolished in 1997.\n19 | Phillip and Maria Hasselbach Dingledey House | June 2, 2000 , (#00000616) | 1638 N. Haggerty Rd. (Canton Township) , 42°19′06″N 83°26′55″W﻿ / ﻿42.318333°N 83.448611°W | Westland | The Phillip and Maria Hasselbach Dingledey House was an upright and wing style farmhouse with a relatively unusual double upright. The house is no longer at its listed location; a small commercial complex now occupies the site.\n20 | East River Road Historic District | August 13, 1974 , (#74001003) | East River Rd. near the Grosse Ile Parkway , 42°07′33″N 83°08′30″W﻿ / ﻿42.125833°N 83.141667°W | Grosse Ile | This district includes several Gothic Revival mansions built in the 1850s, St. James Episcopal Church (also on the Register) and the Michigan Central Railroad Depot.\n\nQuestion: What was the outcome of the game where the venue was the Cairns Convention Center in the 19th round of the 2008-09 NBL season?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-49336",
+   "question": "What is the pf for Rebecca Jean Macphee at the 2009 Scotties Tournament of Hearts?",
+   "gold_table": "1-21093403-1",
+   "retrieved_table": "1-21093403-1",
+   "r1": 1,
+   "gold_answer": [
+    "79"
+   ],
+   "reader_prompt": "Table:\nTitle: 2009 Scotties Tournament of Hearts\nSection: Standings\nCaption: Standings\n\nLocale | Skip | W | L | PF | PA | Ends_Won | Ends_Lost | Blank_Ends | Stolen_Ends | Shot_Pct_\n--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---\nBritish Columbia | Marla Mallett | 8 | 3 | 79 | 60 | 45 | 43 | 15 | 10 | 81\nQuebec | Marie-France Larouche | 7 | 4 | 79 | 71 | 50 | 48 | 6 | 8 | 80\nSaskatchewan | Stefanie Lawton | 7 | 4 | 87 | 75 | 53 | 47 | 6 | 16 | 83\nCanada | Jennifer Jones | 7 | 4 | 82 | 58 | 50 | 39 | 9 | 15 | 83\nPrince Edward Island | Rebecca Jean MacPhee | 7 | 4 | 79 | 72 | 49 | 46 | 7 | 14 | 77\nOntario | Krista McCarville | 6 | 5 | 81 | 76 | 50 | 52 | 9 | 6 | 79\nAlberta | Cheryl Bernard | 6 | 5 | 69 | 66 | 48 | 42 | 15 | 12 | 81\nNew Brunswick | Andrea Kelly | 5 | 6 | 60 | 77 | 41 | 46 | 13 | 8 | 78\nNewfoundland and Labrador | Heather Strong | 5 | 6 | 81 | 73 | 49 | 50 | 9 | 10 | 81\nNorthwest Territories / Yukon | Kerry Galusha | 4 | 7 | 77 | 83 | 51 | 52 | 5 | 12 | 75\nNova Scotia | Nancy McConnery | 2 | 9 | 51 | 81 | 37 | 49 | 14 | 5 | 74\n\nQuestion: What is the pf for Rebecca Jean Macphee at the 2009 Scotties Tournament of Hearts?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-19255",
+   "question": "What is the 2009-10 result that has a 2006-07 result of n/a under Jennifer Jones (curler)?",
+   "gold_table": "2-1534617-2",
+   "retrieved_table": "2-1534617-2",
+   "r1": 1,
+   "gold_answer": [
+    "N/A",
+    "N/A"
+   ],
+   "reader_prompt": "Table:\nTitle: Jennifer Jones (curler)\nSection: Grand Slam record\nCaption: Grand Slam record\n\nEvent | _2006_07 | _2007_08 | _2008_09 | _2009_10 | _2010_11 | _2011_12 | _2012_13\n--- | --- | --- | --- | --- | --- | --- | ---\nAutumn Gold | Q | C | Q | C | SF | Q | DNP\nManitoba Liquor & Lotteries | F | F | QF | F | QF | QF | DNP\nMasters | N/A | N/A | N/A | N/A | N/A | N/A | DNP\nColonial Square | N/A | N/A | N/A | N/A | N/A | N/A | DNP\nPlayers` | C | Q | C | QF | C | SF | SF\n\nQuestion: What is the 2009-10 result that has a 2006-07 result of n/a under Jennifer Jones (curler)?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-09329",
+   "question": "What is the number of the selected club that included hc dukla trenčín (Slovakia) from the third round of the 1996 NHL Entry Draft?",
+   "gold_table": "1-2840500-3",
+   "retrieved_table": "2-11803648-6",
+   "r1": 0,
+   "gold_answer": [
+    "1"
+   ],
+   "reader_prompt": "Table:\nTitle: List of Ottawa Senators draft picks\nSection: 1997 draft picks\nCaption: 1997 draft picks\n\nRound | Overall | Player | Nationality | Club_team\n--- | --- | --- | --- | ---\n1 | 12 | Marian Hossa | Slovakia | HC Dukla Trenčín (Slovakia)\n3 | 58 | Jani Hurme | Finland | TPS (Finland)\n3 | 66 | Josh Langfeld | United States | Lincoln Stars (USHL)\n5 | 119 | Magnus Arvedson | Sweden | Färjestad BK (Sweden)\n6 | 146 | Jeff Sullivan | Canada | Halifax Mooseheads (QMJHL)\n7 | 173 | Robin Bacul | Czech Republic | HC Slavia Praha (Czech.)\n8 | 203 | Nick Gillis | United States | Ashburnham Cushing Academy (US HS)\n9 | 229 | Karel Rachunek | Czech Republic | Zlín ZPS (Czech.)\n\nQuestion: What is the number of the selected club that included hc dukla trenčín (Slovakia) from the third round of the 1996 NHL Entry Draft?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-08628",
+   "question": "in the list of artists who reached number one in the french singles chart, L, how many years was the country belgium ?",
+   "gold_table": "1-27441210-13",
+   "retrieved_table": "1-27441210-20",
+   "r1": 0,
+   "gold_answer": [
+    "1"
+   ],
+   "reader_prompt": "Table:\nTitle: List of artists who reached number one on the French Singles Chart\nSection: T\nCaption: T\n\nArtist | Country | Number_one_singles | Year_ | Weeks_at_1 | Straight_to_1_\n--- | --- | --- | --- | --- | ---\nTen Sharp | Netherlands | You | 1992 | 2 | No\nTimbaland | United States | Dangerous  1 | 2008 | 1 | Yes\nTragédie | France | Hey Oh | 2003 | 9 | Yes\nTragédie | France | Sexy pour moi | 2003 | 1 | No\nTragédie | France | Gentleman | 2004 | 1 | No\nTribal King | France | Façon Sex | 2006 | 5 | No\n\nQuestion: in the list of artists who reached number one in the french singles chart, L, how many years was the country belgium ?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-24496",
+   "question": "What Round is Pick 63 in the Buffalo Bills 1985 NFL Draft Season?",
+   "gold_table": "2-17383560-1",
+   "retrieved_table": "2-17249036-15",
+   "r1": 0,
+   "gold_answer": [
+    "3"
+   ],
+   "reader_prompt": "Table:\nTitle: 2009 Iowa Hawkeyes football team\nSection: Players in the NFL\nCaption: Players in the NFL\n\nPlayer | Position_ | Round | Pick | NFL_Club\n--- | --- | --- | --- | ---\nBryan Bulaga | Tackle | 1 | 23 | Green Bay Packers\nPat Angerer | Linebacker | 2 | 63 | Indianapolis Colts\nAmari Spievey | Cornerback | 3 | 66 | Detroit Lions\nTony Moeaki | Tight End | 3 | 93 | Kansas City Chiefs\nA. J. Edds | Linebacker | 4 | 119 | Miami Dolphins\nKyle Calloway | Tackle | 7 | 216 | Buffalo Bills\n\nQuestion: What Round is Pick 63 in the Buffalo Bills 1985 NFL Draft Season?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-50357",
+   "question": "What was the venue where Fitzroy played as the home team in the 11th round of the 1927 VFL season?",
+   "gold_table": "2-10747009-11",
+   "retrieved_table": "200-34",
+   "r1": 0,
+   "gold_answer": [
+    "Brunswick Street Oval"
+   ],
+   "reader_prompt": "Table:\nTitle: Silent Witness\nSection: Characters\nCaption: Overview\n\nCharacter_ | Actor | Series | Notes_\n--- | --- | --- | ---\nProfessor Sam Ryan | Amanda Burton | Series 1-8 | Sam originally lived and worked in Cambridge, but moved to London at the end of series three after she was offered the job of professor at a university. Sam departed in the first episode of series eight, A Time To Heal. Sam returned home to Ireland after a member of her family was implicated in a murder.\nDr. Trevor Stewart | William Armstrong | Series 1-3 | As well as being a pathologist in his own right, Trevor was Sam`s business partner, owning half of the morgue and its facilities. Trevor decided to stay in Cambridge with his friends and family when Sam accepted the professorship position at a university in London and moved away at the end of series three.\nDr. Fred Dale | Sam Parks | Series 1-3 | Fred was Sam`s main assistant during post mortems and on visits to crime scenes, often identifying DNA samples at the scene of the crime, and linking them to those responsible. He was also notable for not having many speaking lines, and regularly appearing without speaking. His fate at the end of series three was not revealed.\nDr. Harry Cunningham | Tom Ward | Series 6-15 | Harry started out life as a junior doctor, who worked as an apprentice alongside Sam and Leo. However, he soon qualified as a pathologist, and has worked on equal footing with the team for a number of years. Harry was single, and lived alone, but has had several romantic relationships, including an on-off relationship with his colleague Nikki. Harry left the team to accept a professorship in New York in the episode And Then I Fell in Love at the end of series 15.\nProfessor Leo Dalton | William Gaminara | Series 6-16 | Leo first appeared in the episode The Fall Out, where he was nothing more than a simple doctor. However, he was promoted to professor after former professor Sam Ryan left. In the episode Ghosts, both his wife, Theresa, and his daughter, Cassie, are killed in a car accident. He began a relationship with fellow professor Janet Mander in Safe, but ended their relationship in the episode Domestic. Leo often took a strong opinion on cases and often became emotionally involved. He died in the series 16 finale `Greater Love`, when he sacrificed himself to save many others from a terrorist bomb explosion.\nProfessor Janet Mander | Jaye Griffiths | Series 12-15 | Janet is a psychological profiler who assists the police in cases of serial offences. She began a relationship with Leo in the episode Safe, and they lived together as partners until Leo ended the relationship in Redhill. She recurringly worked alongside the team to provide them with information in order to get an idea of the suspect they are looking for. Janet decided to move away from London after Leo ended their relationship.\nDr. Charlie Gibbs | Wunmi Mosaku | Series 13 | A junior doctor and lab technician, who was appointed to work with the team by Professor Dalton.\nDr. Zak Khan | Arsher Ali | Series 14 | A junior doctor who worked his forensic science apprenticeship with the team, to learn the ropes of the profession.\nWyn Ryan | Ruth McCabe | Series 1-3 | Professor Ryan`s sister, who after coming over to visit her from her home in Ireland, ended up living with her on a permanent basis.\nHelen Farmer | Clare Higgins | Series 1 | A superintendent, and Tom Adams` boss and mentor, who accompanied him on investigating several cases during his time in the force.\nTom Adams | John McGlynn | Series 1 | An investigator with the Cambridgeshire police force, who had an affair with Kerry Cox, before her death.\nKerry Cox | Ruth Gemmell | Series 1 | A junior trainee detective who had an affair with Tom Adams, but was later killed in a freak accident in a hospital basement.\nMarcia Evans | Janice Acquah | Series 1 | A fellow junior trainee detective for the Cambridgeshire police force, who resigned after Kerry Cox`s death.\nRicky Ryan | Matthew Steer | Series 1 | Wyn`s son, and Sam`s nephew, who regularly got into trouble and was expelled from school for very poor behaviour.\nPeter Ross | Mick Ford | Series 2 | A superintendent, and an ex-boyfriend of Sam`s, who believed in a strong relationship between the police and the pathology lab.\nRachel Selway | Nicola Redmond | Series 2 | Tom Adams` replacement, following his resignation from the force. She joined the team alongside junior sergeant Tony Speed.\nTony Speed | Richard Huw | Series 2 | A junior sergeant, who joined the team alongside his superior officer, Rachel Selway. He knew Mick Ross from a previous posting.\nMichael Connor | Nick Reding | Series 3-4 | A detective chief inspector, and old friend of Sam`s, whom she met during her junior years at university.\nRob Bradley | Mark Letheren | Series 3-4 | A detective sergeant, who as Connor`s junior officer, accompanied him in investigating in the cases which he was assigned to.\nRosemary Mason | Jane Hazlegrove | Series 6-7 | The main receptionist at the Lyell Centre, before the change in focus from university department to purely commercial pathology.\n\nQuestion: What was the venue where Fitzroy played as the home team in the 11th round of the 1927 VFL season?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-54100",
+   "question": "Which defeats have a goal difference of -16 and less than 8 wins in Group I of Segunda División 1957–58?",
+   "gold_table": "2-17693482-2",
+   "retrieved_table": "2-12109851-5",
+   "r1": 0,
+   "gold_answer": [
+    "None"
+   ],
+   "reader_prompt": "Table:\nTitle: 1986–87 Segunda División\nSection: Group A2 (Promotion)\nCaption: Group A2 (Promotion)\n\nPosition_ | Club | Played | Points | Wins | Draws | Losses | Goals_for | Goals_against | Goal_Difference\n--- | --- | --- | --- | --- | --- | --- | --- | --- | ---\n1 | Celta de Vigo 1 | 44 | 54+10 | 23 | 8 | 13 | 71 | 41 | +30\n2 | Sestao 2 | 44 | 52+8 | 19 | 14 | 11 | 47 | 27 | +20\n3 | Deportivo de La Coruña | 44 | 51+7 | 19 | 13 | 12 | 58 | 47 | +11\n4 | CD Castellón | 44 | 44 | 16 | 12 | 16 | 44 | 52 | -8\n5 | Rayo Vallecano | 44 | 41-3 | 12 | 17 | 15 | 40 | 44 | -4\n6 | CD Málaga | 44 | 40-4 | 12 | 16 | 16 | 57 | 57 | 0\n\nQuestion: Which defeats have a goal difference of -16 and less than 8 wins in Group I of Segunda División 1957–58?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-33912",
+   "question": "Which nation has 1 overall, bronze less than 1 and rank 3 at the 1937 FIBT World Championships?",
+   "gold_table": "2-11273214-3",
+   "retrieved_table": "2-11273214-3",
+   "r1": 1,
+   "gold_answer": [
+    "Germany"
+   ],
+   "reader_prompt": "Table:\nTitle: FIBT World Championships 1937\nSection: Medal table\nCaption: Medal table\n\nRank_ | Nation | Gold | Silver | Bronze | Total\n--- | --- | --- | --- | --- | ---\n1 | United Kingdom | 2 | 0 | 0 | 2\n2 | Italy | 0 | 1 | 0 | 1\n3 | Germany | 0 | 1 | 0 | 1\n4 | Switzerland | 0 | 0 | 1 | 1\n5 | United States | 0 | 0 | 1 | 1\n\nQuestion: Which nation has 1 overall, bronze less than 1 and rank 3 at the 1937 FIBT World Championships?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-51381",
+   "question": "What is the total of gold medals at the 1977 World Wrestling Championships with a total of 1, bronze medals of 0 and from West Germany?",
+   "gold_table": "2-15988551-1",
+   "retrieved_table": "2-18609568-4",
+   "r1": 0,
+   "gold_answer": [
+    "1"
+   ],
+   "reader_prompt": "Table:\nTitle: 1977 ICF Canoe Sprint World Championships\nSection: Medals table\nCaption: Medals table\n\nRank_ | Nation | Gold | Silver | Bronze | Total\n--- | --- | --- | --- | --- | ---\n1 | Soviet Union | 4 | 4 | 6 | 14\n2 | Hungary | 3 | 4 | 4 | 11\n3 | Romania | 4 | 4 | 2 | 10\n4 | East Germany | 3 | 3 | 0 | 6\n5 | Poland | 2 | 1 | 2 | 5\n6 | Bulgaria | 1 | 0 | 1 | 2\n7 | Italy | 1 | 0 | 1 | 2\n8 | Spain | 0 | 0 | 2 | 2\n9 | Canada | 0 | 1 | 0 | 1\n10 | West Germany | 0 | 1 | 0 | 1\nTotal | Total | 18 | 18 | 18 | 54\n\nQuestion: What is the total of gold medals at the 1977 World Wrestling Championships with a total of 1, bronze medals of 0 and from West Germany?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-08195",
+   "question": "What is the jewel power if the media debut for jewelpet universe is episode 17?",
+   "gold_table": "1-26615633-1",
+   "retrieved_table": "1-26615633-1",
+   "r1": 1,
+   "gold_answer": [
+    "Intellect and Vision"
+   ],
+   "reader_prompt": "Table:\nTitle: Jewelpet Universe\nSection: Jewelpets\nCaption: Jewelpets\n\nName_ | Jewel | Species | Gender | Jewel_Power | Attribute_ | Birthday | Media_Debut | Voice_actor\n--- | --- | --- | --- | --- | --- | --- | --- | ---\nRuby ( ルビー ? ) | Ruby | Japanese Hare | Female | Courage | Magical Red | July 25 | EP 1 | Ayaka Saito\nGarnet ( ガーネット ? ) | Garnet | Persian Cat | Female | Love | Magical Red | January 8 | EP 1 | Aya Hirano\nSapphie ( サフィー ? ) | Sapphire | Cavalier King Charles Spaniel | Female | Friendship | Magical Blue | September 1 | EP 1 | Nozomi Sasaki\nDiana ( ダイアナ ? ) | Diamond | Munchkin | Female | Dark Magic Charisma | Magical Black Dark Magic | April 20 | EP 4 | Rumi Shishido\nRin ( リン ? ) | Citrine | Parakeet | Female | Prosperity | Magical Red | November 23 | EP 4 | Mayu Hayakawa\nChite ( カイト ? ) | Malachite | Jack Russell Terrier | Male | Assistance | Magical Green | December 4 | EP 5 | Miyuki Sawashiro\nPrase ( プレーズ ? ) | Chrysoprase | Toy Poodle | Female | Study | Magical Green | February 14 | EP 6 | Ai Iwamura\nKing ( キング ? ) | Onyx | French Bulldog | Male | Health | Magical Black | August 10 | EP 7 | Hidenobu Kiuchi\nRald ( ラルド ? ) | Emerald | Panda | Male | Harmony | Magical Green | May 17 | EP 8 | Mayumi Tsuchiya\nRyl ( リル ? ) | Red Beryl | Miniature pig | Female | Mind and Body Purification | Magical Red | April 24 | EP 9 | Tomomi Fujita\nTour ( トール ? ) | Tourmaline | American Shorthair | Male | Adventure | Magical Green | October 13 | EP 10 | Junko Takeuchi\nFluola ( フローラ ? ) | Fluorite | Sheep | Female | Future Prediction | Magical Green | January 17 | EP 11 | Aki Kanada\nPeridot ( ペリドット ? ) | Peridot | Papillon | Female | Dream Fulfillment | Magical Green | August 3 | EP 12 | Yuki Kaida\nKohaku ( コハク ? ) | Amber | Shiba Inu | Male | Economic Fortune Improvement | Magical Red | June 5 | EP 14 | Junko Minagawa\nLuna ( ルナ ? ) | Moonstone | Netherland Dwarf | Female | Charm Improvement | Magical Blue | June 8 | EP 15 | Rumi Shishido\nNephrite ( ネフライト ? ) | Nephrite | Welsh Corgi | Male | Teamwork and Leading | Magical Green | February 1 | EP 16 | Megumi Ozaki\nYuku ( ユーク ? ) | Euclase | Beagle | Male | Intellect and Vision | Magical Blue | November 3 | EP 17 | Hitomi Yoshida\nAqua ( アクア ? ) | Aquamarine | Clownfish | Male | Calm Reliever | Magical Blue | March 26 | EP 21 | Yakkun Sakurazuka\nKaiya ( カイヤ ? ) | Kyanite | Siamese Cat | Female | Independence | Magical Blue | May 15 | EP 24 | Kanako Sakai\nOpal ( オパール ? ) | Opal | Unicorn | Female | Awakening and Miracles | Magical Blue | October 3 | EP 26 | Miyuki Sawashiro\n\nQuestion: What is the jewel power if the media debut for jewelpet universe is episode 17?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-44288",
+   "question": "What is the listing for 2009 if 1989 is less than 0 in the official world golf rankings?",
+   "gold_table": "2-1323466-5",
+   "retrieved_table": "2-1058787-1",
+   "r1": 0,
+   "gold_answer": [
+    "None"
+   ],
+   "reader_prompt": "Table:\nTitle: Erikson's stages of psychosocial development\nSection: The stages\nCaption: The stages\n\nApproximate_Age | Virtues | Psycho_Social_Crisis | Significant_Relationship | Existential_Question_not_in_citation_given_ | Examples\n--- | --- | --- | --- | --- | ---\n0–2 years | Hopes | Basic Trust vs. Mistrust | Mother | Can I Trust the World? | Feeding, Abandonment\n2–4 years | Will | Autonomy vs. Shame and Doubt | Parents | Is It Okay To Be Me? | Toilet Training, Clothing Themselves\n4–5 years | Purpose | Initiative vs. Guilt | Family | Is It Okay For Me To Do, Move and Act? | Exploring, Using Tools or Making Art\n5–12 years | Competence | Industry vs. Inferiority | Neighbors, School | Can I Make It In The World Of People And Things? | School, Sports\n13–19 years | Fidelity | Identity vs. Role Confusion | Peers, Role Model | Who Am I? What Can I Be? | Social Relationships\n20–39 years | Love | Intimacy vs. Isolation | Friends, Partners | Can I Love? | Romantic Relationships\n40–64 years | Care | Generativity vs. Stagnation | Household, Workmates | Can I Make My Life Count? | Work, Parenthood\n65-death | Wisdom | Ego Integrity vs. Despair | Mankind, My Kind | Is It Okay To Have Been Me? | Reflection on Life\n\nQuestion: What is the listing for 2009 if 1989 is less than 0 in the official world golf rankings?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-44350",
+   "question": "Swimming at the 2000 Summer Olympics - Women's 100m Backstroke Semifinal 2, Spain had what time with lanes smaller than 4?",
+   "gold_table": "2-12427181-5",
+   "retrieved_table": "2-12427276-4",
+   "r1": 0,
+   "gold_answer": [
+    "1:01.41"
+   ],
+   "reader_prompt": "Table:\nTitle: Swimming at the 2000 Summer Olympics – Women's 200 metre backstroke\nSection: Semifinal 2\nCaption: Semifinal 2\n\nRank_ | Lane | Name_ | Nationality | Time_\n--- | --- | --- | --- | ---\n1 | 4 | Diana Mocanu | Romania | 2:09.64\n2 | 3 | Tomoko Hagiwara | Japan | 2:11.02\n3 | 5 | Nina Zhivanevskaya | Spain | 2:11.93\n4 | 2 | Amanda Adkins | United States | 2:12.97\n5 | 1 | Kelly Stefanyshyn | Canada | 2:13.39\n6 | 6 | Joanna Fargus | Great Britain | 2:13.57\n7 | 7 | Cathleen Rund | Germany | 2:13.85\n8 | 8 | Ivette María | Spain | 2:15.11\n\nQuestion: Swimming at the 2000 Summer Olympics - Women's 100m Backstroke Semifinal 2, Spain had what time with lanes smaller than 4?\nFinal answer:"
+  },
+  {
+   "question_id": "wikitq-01289",
+   "question": "What town in Westmorland County, New Brunswick is in the same parish as Moncton?",
+   "gold_table": "204-158",
+   "retrieved_table": "204-158",
+   "r1": 1,
+   "gold_answer": [
+    "Dieppe"
+   ],
+   "reader_prompt": "Table:\nTitle: Westmorland County, New Brunswick\nSection: Census subdivisions\nCaption: Communities\n\nOfficial_Name | Designation | Area_km2 | Population | Parish_\n--- | --- | --- | --- | ---\nMoncton | City | 141.17 | 69074 | Moncton\nDieppe | City | 51.17 | 23310 | Moncton\nBeaubassin East | Rural community | 291.04 | 6200 | Shediac\nShediac | Town | 11.97 | 6053 | Shediac\nSackville | Town | 74.32 | 5558 | Sackville\nMemramcook | Village | 185.71 | 4831 | Dorchester\nCap-Pelé | Village | 23.78 | 2256 | Botsford\nSalisbury | Village | 13.68 | 2208 | Salisbury\nPetitcodiac | Village | 17.22 | 1429 | Salisbury\nDorchester | Village | 5.74 | 1167 | Dorchester\nPort Elgin | Village | 2.61 | 418 | Westmorland\n\nQuestion: What town in Westmorland County, New Brunswick is in the same parish as Moncton?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-59737",
+   "question": "What position does Alexander Wronsky take with the Kapfenberg bulls?",
+   "gold_table": "2-15137463-2",
+   "retrieved_table": "2-18593648-10",
+   "r1": 0,
+   "gold_answer": [
+    "F"
+   ],
+   "reader_prompt": "Table:\nTitle: Bulgaria in the Eurovision Song Contest 2009\nSection: Heat 8\nCaption: Results of Heat 8\n\nDraw | Artist | Song | Percentage | Place\n--- | --- | --- | --- | ---\n1 | Freeway | Sama | 30.71% | 2\n2 | Biby Michael`s Friend | Valshebni Noti | 7.47% | 3\n3 | Iskren Petsov | Zashto se varna | 5.81% | 4\n4 | Sunay Chalakov | Neshto ludo | 53.11% | 1\n5 | Tsetso Vlaykov | What Does It Take | 2.90% | 5\n\nQuestion: What position does Alexander Wronsky take with the Kapfenberg bulls?\nFinal answer:"
+  },
+  {
+   "question_id": "wikitq-00124",
+   "question": "How many opponents are playing at 4:00 p.m. in the 2009-10 Colgate Raiders women's hockey season?",
+   "gold_table": "204-718",
+   "retrieved_table": "204-718",
+   "r1": 1,
+   "gold_answer": [
+    "10"
+   ],
+   "reader_prompt": "Table:\nTitle: 2009–10 Colgate Raiders women's ice hockey season\nSection: Regular season\nCaption: Schedule\n\nDate_ | Opponent | Time_ | Score | Record_\n--- | --- | --- | --- | ---\n10/9/2009 | University of New Hampshire | 7 p.m. | Loss, 4-0 | 0-1-0\n10/10/2009 | Boston College | 5 p.m. |  | \n10/16/2009 | Providence College | 7 p.m. | 1-4 | \n10/17/2009 | University of Connecticut | 4 p.m. |  | \n10/23/2009 | Wayne State University | 7 p.m. |  | \n10/24/2009 | Wayne State University | 2 p.m. |  | \n10/30/2009 | Harvard University | 7 p.m. |  | \n10/31/2009 | Dartmouth College | 3:30 p.m. |  | \n11/6/2009 | Rensselaer | 2:30 p.m. |  | \n11/7/2009 | Union College | 2:30 p.m. | 4-0 | \n11/13/2009 | St. Lawrence University | 7 p.m. |  | \n11/14/2009 | Clarkson University | 4 p.m. |  | \n11/20/2009 | Quinnipiac University | 7 p.m. |  | \n11/21/2009 | Princeton University | 4 p.m. |  | \n11/24/2009 | Syracuse University | 7 p.m. |  | \n11/27/2009 | Mercyhurst College | 7 p.m. |  | \n11/28/2009 | Mercyhurst College | 2 p.m. |  | \n12/4/2009 | Brown University | 7 p.m. |  | \n12/5/2009 | Yale University | 4 p.m. |  | \n1/2/2010 | Syracuse University | 7 p.m. |  | \n\nQuestion: How many opponents are playing at 4:00 p.m. in the 2009-10 Colgate Raiders women's hockey season?\nFinal answer:"
+  },
+  {
+   "question_id": "wikisql-41191",
+   "question": "What is the snatch for the person who holds the Olympic record and 173 kg of 172 kg in weightlifting at the 2008 Summer Olympics - Men's 77 kg?",
+   "gold_table": "2-18519178-2",
+   "retrieved_table": "2-18519178-2",
+   "r1": 1,
+   "gold_answer": [
+    "Snatch"
+   ],
+   "reader_prompt": "Table:\nTitle: Weightlifting at the 2008 Summer Olympics – Men's 77 kg\nSection: Records\nCaption: Records\n\nWorld_record | Snatch | Sergey_Filimonov_KAZ_ | _173kg | Almaty_Kazakhstan\n--- | --- | --- | --- | ---\nClean & Jerk | Oleg Perepetchenov ( RUS ) | 210kg | Trenčín , Slovakia | 27 April 2001\nTotal | Plamen Zhelyazkov ( BUL ) | 377kg | Doha , Qatar | 27 March 2002\nOlympic record | Snatch | Taner Sagir ( TUR ) | 172kg | Athens , Greece\nOlympic record | Clean & Jerk | Zhan Xugang ( CHN ) | 207kg | Sydney , Australia\nOlympic record | Total | Taner Sagir ( TUR ) | 375kg | Athens , Greece\n\nQuestion: What is the snatch for the person who holds the Olympic record and 173 kg of 172 kg in weightlifting at the 2008 Summer Olympics - Men's 77 kg?\nFinal answer:"
+  }
+ ]
+}
