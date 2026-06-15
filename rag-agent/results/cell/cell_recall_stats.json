@@ -1,0 +1,118 @@
+{
+ "point_estimates": {
+  "hier-A": {
+   "R@1": 0.04,
+   "R@3": 0.07,
+   "R@5": 0.13
+  },
+  "hier-B": {
+   "R@1": 0.47,
+   "R@3": 0.68,
+   "R@5": 0.71
+  },
+  "flat-A": {
+   "R@1": 0.04,
+   "R@3": 0.12,
+   "R@5": 0.16
+  },
+  "flat-B": {
+   "R@1": 0.1,
+   "R@3": 0.17,
+   "R@5": 0.22
+  }
+ },
+ "exclusions": {
+  "hier": {
+   "no_gold": 45,
+   "multi_gold": 17
+  },
+  "flat": {
+   "no_gold": 73,
+   "multi_gold": 26
+  }
+ },
+ "n": {
+  "hier": 100,
+  "flat": 100
+ },
+ "contrasts": {
+  "hierB - hierA": {
+   "R@1": {
+    "delta": 0.43,
+    "ci95": [
+     0.33,
+     0.53
+    ],
+    "significant": true
+   },
+   "R@3": {
+    "delta": 0.61,
+    "ci95": [
+     0.51,
+     0.71
+    ],
+    "significant": true
+   },
+   "R@5": {
+    "delta": 0.58,
+    "ci95": [
+     0.47,
+     0.68
+    ],
+    "significant": true
+   }
+  },
+  "flatB - flatA": {
+   "R@1": {
+    "delta": 0.06,
+    "ci95": [
+     0.01,
+     0.12
+    ],
+    "significant": true
+   },
+   "R@3": {
+    "delta": 0.05,
+    "ci95": [
+     -0.03,
+     0.13
+    ],
+    "significant": false
+   },
+   "R@5": {
+    "delta": 0.06,
+    "ci95": [
+     -0.03,
+     0.15
+    ],
+    "significant": false
+   }
+  },
+  "DiD (hierB-hierA)-(flatB-flatA)": {
+   "R@1": {
+    "delta": 0.37,
+    "ci95": [
+     0.26,
+     0.48
+    ],
+    "significant": true
+   },
+   "R@3": {
+    "delta": 0.56,
+    "ci95": [
+     0.43,
+     0.68
+    ],
+    "significant": true
+   },
+   "R@5": {
+    "delta": 0.52,
+    "ci95": [
+     0.38,
+     0.66
+    ],
+    "significant": true
+   }
+  }
+ }
+}

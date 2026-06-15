@@ -115,6 +115,30 @@ paired bootstrap Δ (10k iters, seed=42, `*`=95% CI가 0 제외):
    질문-문서 어휘 분포를 정렬한다는 QGpT 주장의 어휘-리트리버 버전을, LLM 없이도
    재현. LLM 합성질문(C3-llm)과 dense에서의 재현 여부가 다음 셀.
 
+### 3.1.1 C3 합성질문: LLM vs template head-to-head (축소 1k 풀, 원격 실측 2026-06-14)
+
+전체 24,680표 LLM 합성질문은 Groq 무료 티어 한도로 한 세션 내 불가 → **축소 코퍼스**로
+통제 비교(`--max-corpus 1000`, 정답표 전수 보존 + 시드 distractor 충전, n_queries=500,
+synth_n=3, seed=42). 동일 코퍼스·동일 쿼리에서 C3 합성질문 소스만 바꿔 측정
+(`scripts/prep_synth_compare.py`). LLM = `groq:llama-3.1-8b-instant`.
+
+| C3 합성 소스 | R@1 | R@5 | R@10 |
+|---|---:|---:|---:|
+| template (결정론) | 0.910 | 0.986 | 0.994 |
+| **llm (llama-3.1-8b)** | 0.894 | 0.990 | 0.992 |
+
+paired bootstrap Δ = llm − template (10k iters, seed=42, 500쌍):
+
+| 대비 | ΔR@1 | ΔR@5 | ΔR@10 |
+|---|---:|---:|---:|
+| llm − template | −0.016 [−.038,+.006] | +0.004 [.000,+.010] | −0.002 [−.006,.000] |
+
+**판독.** 이 flat(OWT) × BM25 셋업에서 **LLM 합성질문은 결정론 template 대비 유의한
+이득 없음** (R@1 Δ −1.6pp, 95% CI 0 포함). QGpT의 "LLM 합성질문" 주장이 *어휘 리트리버·
+flat 표*에서는 결정론 template로 이미 포화됨을 시사. (주의: 축소 1k 풀이라 §3.1 전체
+24,680 풀보다 절대 recall이 높음 — Δ 비교는 동일 풀 내라 유효하나 절대값은 §3.1과 직접
+비교 금지. dense·hier에서의 재현은 미측정.)
+
 ### 3.2 dense BGE-small — 로컬 실행 대기
 
 (로컬 3060 Ti에서 §2-2 명령 실행 후 이 표를 채울 것. 기대: arXiv:2604.24040·QGpT에
