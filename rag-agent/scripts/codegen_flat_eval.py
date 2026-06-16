@@ -178,6 +178,15 @@ def load_wtq(n, seed):
     return out
 
 
+def _quality(result, err, trace):
+    """Higher is better: prefer no-error > non-empty > fewer grounding flags.
+    Used by the over-correction safeguard so a repair is only adopted when it
+    does not make the answer worse."""
+    flags = sum(1 for t in trace if t.get("flag"))
+    nonempty = result is not None and result != "" and result != []
+    return (not bool(err), bool(nonempty), -flags)
+
+
 def run_one(ex, mode, llm, repairs, max_tokens, idx):
     q = ex["question"]
     gold = ex["answers"]
@@ -196,17 +205,22 @@ def run_one(ex, mode, llm, repairs, max_tokens, idx):
     tt.trace = []
     result, err = mg.run_code(code, api)
     n_repair = 0
+    # over-correction safeguard: keep the best result seen across repairs
+    best = (result, err, code, _quality(result, err, tt.trace))
     if grounded:
         while n_repair < repairs and mg.needs_repair(tt.trace, result, err):
             fb = mg.trace_feedback(code, tt.trace, result, err)
             try:
                 code = mg.strip_code(complete_retry(llm, sys_p, user + "\n\n" + fb, max_tokens))
             except Exception as e:  # noqa: BLE001
-                err = f"LLM:{type(e).__name__}"
                 break
             tt.trace = []
             result, err = mg.run_code(code, api)
             n_repair += 1
+            qy = _quality(result, err, tt.trace)
+            if qy > best[3]:
+                best = (result, err, code, qy)
+        result, err, code = best[0], best[1], best[2]   # adopt repair only if better
     pred = "" if result is None else str(result)
     ok = numeric_match(pred, gold) or exact_match(pred, gold)
     return {"query": q, "gold": gold, "pred": pred, "correct": bool(ok),
