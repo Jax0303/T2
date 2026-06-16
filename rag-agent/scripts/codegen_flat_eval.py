@@ -32,6 +32,20 @@ import method_grounded as mg                                        # noqa: E402
 SEED = 42
 
 
+def complete_retry(llm, sys_p, user, max_tokens, tries=6):
+    """Groq call with exponential backoff on transient errors (rate limits)."""
+    delay = 4.0
+    last = None
+    for _ in range(tries):
+        try:
+            return llm.complete(sys_p, user, max_tokens=max_tokens)
+        except Exception as e:  # noqa: BLE001
+            last = e
+            time.sleep(delay)
+            delay = min(delay * 2, 60)
+    raise last
+
+
 def flat_table(tid, title, header, rows):
     """A flat table as a degenerate (depth-1) hierarchical OriginalTable."""
     data = [list(r) for r in rows]
@@ -73,7 +87,7 @@ def run_one(ex, mode, llm, repairs, max_tokens, idx):
     sys_p = mg.GROUNDED_SYS if grounded else mg.NAIVE_SYS
     user = mg.build_user(ot.title, q, tt, grounded=grounded)
     try:
-        code = mg.strip_code(llm.complete(sys_p, user, max_tokens=max_tokens))
+        code = mg.strip_code(complete_retry(llm, sys_p, user, max_tokens))
     except Exception as e:  # noqa: BLE001
         return {"query": q, "gold": gold, "pred": "", "correct": False,
                 "err": f"LLM:{type(e).__name__}", "n_repair": 0, "code": ""}
@@ -84,7 +98,7 @@ def run_one(ex, mode, llm, repairs, max_tokens, idx):
         while n_repair < repairs and mg.needs_repair(tt.trace, result, err):
             fb = mg.trace_feedback(code, tt.trace, result, err)
             try:
-                code = mg.strip_code(llm.complete(sys_p, user + "\n\n" + fb, max_tokens=max_tokens))
+                code = mg.strip_code(complete_retry(llm, sys_p, user + "\n\n" + fb, max_tokens))
             except Exception as e:  # noqa: BLE001
                 err = f"LLM:{type(e).__name__}"
                 break
