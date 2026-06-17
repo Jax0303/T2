@@ -83,14 +83,20 @@ def main(argv=None) -> int:
         rec = {"id": s.get("id"), "table_id": table.table_id, "gold": gold,
                "used_fallback": bundle.used_fallback, "modes": {}}
         for m in args.modes:
-            a = answerer.answer(s["question"], bundle, mode=m)
-            sc = score_answer(a.answer, gold)
+            try:
+                a = answerer.answer(s["question"], bundle, mode=m)
+                sc = score_answer(a.answer, gold)
+                rec["modes"][m] = {"answer": a.answer, **sc, "exec_ok": a.exec_ok}
+            except Exception as e:  # e.g. LLM rate limit — log and keep going
+                sc = {"em": False, "nm": False}
+                a = None
+                rec["modes"][m] = {"answer": None, **sc, "exec_ok": False,
+                                   "error": str(e)[:200]}
             acc[m]["em"] += sc["em"]
             acc[m]["nm"] += sc["nm"]
-            acc[m]["fb"] += int(a.used_fallback)
+            acc[m]["fb"] += int(bundle.used_fallback)
             if m == "codegen":
-                acc[m]["exec"] += int(a.exec_ok)
-            rec["modes"][m] = {"answer": a.answer, **sc, "exec_ok": a.exec_ok}
+                acc[m]["exec"] += int(a.exec_ok if a else False)
         per_sample.append(rec)
 
     agg = {}
