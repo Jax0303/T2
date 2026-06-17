@@ -1,0 +1,1796 @@
+{
+ "config": {
+  "n": 80,
+  "repairs": 2,
+  "llm": "groq:openai/gpt-oss-20b",
+  "max_tokens": 320,
+  "sleep": 0.3,
+  "out": "results/codegen/flat_wtq_n80.json"
+ },
+ "n": 80,
+ "modes": {
+  "naive": {
+   "acc": 0.0625,
+   "rows": [
+    {
+     "query": "what is the total number of participants between norway and france?",
+     "gold": [
+      "7"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what were the number of tracks that contained no lead vocals?",
+     "gold": [
+      "1"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many goals did earnie stewart score?",
+     "gold": [
+      "17"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "result = cell(\"Earnie Stewart\", \"Goals\")"
+    },
+    {
+     "query": "when in the 1990's did the inflation rate first become negative?",
+     "gold": [
+      "1995"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the next launch date after 04/28/91?",
+     "gold": [
+      "06/05/91"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many awards has victoria rowell won?",
+     "gold": [
+      "11"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the next film of ahsan's that will be released?",
+     "gold": [
+      "Parle Theka"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "who had a better singles record, boo-kil or seung-bok?",
+     "gold": [
+      "Boo-Kil"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what was its best starting position?",
+     "gold": [
+      "4"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many years are spanned from the earliest listing to the latest listing?",
+     "gold": [
+      "6"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "ValueError: min() arg is an empty sequence",
+     "n_repair": 0,
+     "code": "# Get all listing years from the table\nyears = col_values('Year')\n\n# Compute the earliest and latest years\nearliest = min(years)\nlatest = max(years)\n\n# Calculate the span in years\nresult = latest - earliest"
+    },
+    {
+     "query": "how many players scored at least ten goals?",
+     "gold": [
+      "9"
+     ],
+     "pred": "9",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count how many players scored at least ten goals\ngoals = col_values('Goals')\nresult = sum(1 for g in goals if g >= 10)"
+    },
+    {
+     "query": "what are the total number of competitions held in march?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the number of winning driver's that represented the u.s.?",
+     "gold": [
+      "15"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "was there more published in september 2012 or december 2012?",
+     "gold": [
+      "December 2012"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what competition had a first place result?",
+     "gold": [
+      "Asian Championships"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which was the only polling firm to show more than 50 percent in favor of same-sex marriage in 2006?",
+     "gold": [
+      "Zogby International"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many coins feature the king after 1979?",
+     "gold": [
+      "3"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "from where did 'stayin' alive' receive the most accolades?",
+     "gold": [
+      "Rolling Stone"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what was the only nation not to win a gold medal?",
+     "gold": [
+      "Guam (GUM)"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which year was he nominated for \"cheers: the motion picture.\"",
+     "gold": [
+      "1987"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "who is the top shooter listed?",
+     "gold": [
+      "Ole Lilloe-Olsen"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the total number of winners?",
+     "gold": [
+      "6"
+     ],
+     "pred": "0",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Sum all values in the \"Winners\" column to get the total number of winners\nresult = sum(col_values('Winners'))"
+    },
+    {
+     "query": "when was the first departure?",
+     "gold": [
+      "2004-02-27"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how long is the song \"i love you jesus?\"",
+     "gold": [
+      "7:25"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many points did jonas folger score?",
+     "gold": [
+      "7"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which is the only year to feature a university level challenge?",
+     "gold": [
+      "2014-2015"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "who is the first away team on the list?",
+     "gold": [
+      "Windsor & Eton"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many games went into ot or overtime?",
+     "gold": [
+      "4"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many athletes took more than 8 minutes to run complete the race?",
+     "gold": [
+      "8"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what was guillermo garcía-lópez combined win and loss record from the rome, madrid and paris masters?",
+     "gold": [
+      "9-11"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which peaks were measured by bd explorer before 2012?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "in which race did nathan brown receive his victory during 2013?",
+     "gold": [
+      "Tour de Beauce"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Find the race in 2013 where Nathan Brown was the winner\nraces = col_values(\n    \"Race\",\n    row_filter=lambda r: cell(r, \"Year\") == 2013 and cell(r, \"Winner\") == \"Nathan Brown\"\n)\n\n# Assume there"
+    },
+    {
+     "query": "what is the total number of operation?",
+     "gold": [
+      "9"
+     ],
+     "pred": "0",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Sum all values in the \"operation\" column to get the total number of operations\nresult = sum(col_values('operation'))"
+    },
+    {
+     "query": "what is the number of formula one series races that cochet has been in?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: unterminated string literal (detected at line 3) (<string>, line 3)",
+     "n_repair": 0,
+     "code": "```python\n# Retrieve the number of Formula One series races that Cochet has participated in\nresult = cell(\"cochet\", \"formula"
+    },
+    {
+     "query": "did the team place higher in the 2002-03 season or the 2003-04 season?",
+     "gold": [
+      "2003-04"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "in 2012 who was expected to light the tree?",
+     "gold": [
+      "Speaker John Boehner"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the pylon with the least height listed here?",
+     "gold": [
+      "Eibsee Aerial Tramway"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which is a higher standing hand: a straight or a flush?",
+     "gold": [
+      "Flush"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "after you complete deganya road, what portion comes next?",
+     "gold": [
+      "Beit Yitzhak"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many more times did miller score than whitehead?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many divisions had a population of at least 15,000?",
+     "gold": [
+      "4"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Count divisions with population >= 15,000\npop_values = col_values('Population')\nresult = sum(1 for p in pop_values if p >= 15000"
+    },
+    {
+     "query": "what is the number of films that ishaan dev has given music to?",
+     "gold": [
+      "14"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which schools have the largest number of shared titles?",
+     "gold": [
+      "Royal Belfast Academical Institution",
+      "Campbell College"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what year was clayton's first album?",
+     "gold": [
+      "1969"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many goals were scored at the euro 2012 qualifying competition?",
+     "gold": [
+      "12"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which three countries have at least nine metals?",
+     "gold": [
+      "Algeria",
+      "Tunisia",
+      "Egypt"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what was the canadian airdate directly after \"better man\"?",
+     "gold": [
+      "\"Dig Me Out\""
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many schools have at least 2,000 enrolled?",
+     "gold": [
+      "6"
+     ],
+     "pred": "6",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count schools with at least 2,000 enrolled\nenrollments = col_values('Enrollment')\nresult = sum(1 for e in enrollments if e >= 2000)"
+    },
+    {
+     "query": "david oliver has come in 3rd place in how many competitions?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "who was the last mayor to serve in the 1920s?",
+     "gold": [
+      "Mr K.Turner"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many games had an attendance of more than 10,000?",
+     "gold": [
+      "20"
+     ],
+     "pred": "20",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count games with attendance greater than 10,000\nattendance_values = col_values('Attendance')\nresult = sum(1 for a in attendance_values if a > 10000)"
+    },
+    {
+     "query": "how many times was the game aired on nbc?",
+     "gold": [
+      "6"
+     ],
+     "pred": "0",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count how many times the game was aired on NBC\nresult = sum(col_values('NBC'))"
+    },
+    {
+     "query": "what was the first character she played in her first movie?",
+     "gold": [
+      "Tamar"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "did position 1 have more or less than 49 points?",
+     "gold": [
+      "more"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many years has stanford been national champion?",
+     "gold": [
+      "3"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "does st. louis or rolla have the higher population served?",
+     "gold": [
+      "St. Louis"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "who was brendan jones' runner(s) up on december 2, 2007?",
+     "gold": [
+      "Toru Taniguchi"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "bernadette's \"soms\" and which other song earned the same number of points?",
+     "gold": [
+      "\"Computer Games\""
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which team was last in terms of points up until this point?",
+     "gold": [
+      "Montreal Wanderers"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many times was attendance below 50,000?",
+     "gold": [
+      "2"
+     ],
+     "pred": "2",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "values = col_values(\"Attendance\")\nresult = sum(1 for v in values if v < 50000)"
+    },
+    {
+     "query": "what is the total number of the listed nba players that went on to become a coach?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what are the total amount of points scored by all spain players?",
+     "gold": [
+      "52"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "where is the only intersecting highway over 20 km?",
+     "gold": [
+      "Rosenfeld"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "at most, how many games were played in one year?",
+     "gold": [
+      "31"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which stage had the most cyclists withdraw?",
+     "gold": [
+      "Stage 7"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many players have a height of at least 1.90?",
+     "gold": [
+      "8"
+     ],
+     "pred": "8",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count players with height at least 1.90\nheights = col_values('Height')\nresult = sum(1 for h in heights if h >= 1.90)"
+    },
+    {
+     "query": "what artist has more music appear in the show, daft punk or franz ferdinand?",
+     "gold": [
+      "Franz Ferdinand"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many countries have more than 1 athlete?",
+     "gold": [
+      "1"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many episodes are listed?",
+     "gold": [
+      "11"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "name a reservoir that has an altitude of more than 100 but less than 500.",
+     "gold": [
+      "Malampuzha"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how long has it been since japan won gold?",
+     "gold": [
+      "20 years"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the next station after woodman?",
+     "gold": [
+      "Van Nuys"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which province is the top consumer of wine?",
+     "gold": [
+      "Yukon"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "is the population of brandfort the same as the population of boipatong?",
+     "gold": [
+      "no"
+     ],
+     "pred": "False",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Compare the populations of Brandfort and Boipatong\nresult = cell('Brandfort', 'Population') == cell('Boipatong', 'Population')"
+    },
+    {
+     "query": "name a country listed in the table, other than india?",
+     "gold": [
+      "Nepal"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Get all country names from the table\ncountries = col_values('Country')\n\n# Filter out India (case-insensitive)\nother_countries = [c for c in countries if c.lower() != 'india']\n\n# Pick the first country that is not India\nresult = other_countries[0] if other_countries else None"
+    },
+    {
+     "query": "what is the larges fee listed?",
+     "gold": [
+      "£6,000,000"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "was arven released by universal or curling legs?",
+     "gold": [
+      "Universal"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "which denomination has the highest margin?",
+     "gold": [
+      "Roman Catholic"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "how many got, at most, 8.5 in the interview?",
+     "gold": [
+      "6"
+     ],
+     "pred": "4",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Get all interview scores from the table\ninterview_scores = col_values('Interview')\n\n# Count how many scores are at most 8.5\nresult = sum(1 for score in interview_scores if score <= 8.5)"
+    },
+    {
+     "query": "what is the last xbox 360 release date?",
+     "gold": [
+      "5 September 2012"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    }
+   ]
+  },
+  "grounded": {
+   "acc": 0.2125,
+   "rows": [
+    {
+     "query": "what is the total number of participants between norway and france?",
+     "gold": [
+      "7"
+     ],
+     "pred": "6",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count participants whose nationality is Norway or France\ncount = 0\nfor row in list_rows():\n    nat = cell(row, 'Nationality')\n    if nat in ('Norway', 'France'):\n        count += 1\nresult = count"
+    },
+    {
+     "query": "what were the number of tracks that contained no lead vocals?",
+     "gold": [
+      "1"
+     ],
+     "pred": "1",
+     "correct": true,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Count tracks with no lead vocals\ncount = 0\nfor r in list_rows():\n    val = cell(r, \"Lead Vocals\")\n    if val is None or val == \"\":\n        count += 1\nresult = count"
+    },
+    {
+     "query": "how many goals did earnie stewart score?",
+     "gold": [
+      "17"
+     ],
+     "pred": "17.0",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Find the row that contains the player \"Earnie Stewart\"\nresult = None\nfor r in list_rows():\n    if cell(r, \"Player\") == \"Earnie Stewart\":\n        result = cell(r, \"Goals\")\n        break"
+    },
+    {
+     "query": "when in the 1990's did the inflation rate first become negative?",
+     "gold": [
+      "1995"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 2,
+     "code": "```python\n# Find the first year in the 1990s when the inflation rate was negative\nyears = [str(y) for y in range(1990, 2000)]  # 1990‑1999\ninflation_col = \"Inflation Rate %\"          # exact header string"
+    },
+    {
+     "query": "what is the next launch date after 04/28/91?",
+     "gold": [
+      "06/05/91"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many awards has victoria rowell won?",
+     "gold": [
+      "11"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what is the next film of ahsan's that will be released?",
+     "gold": [
+      "Parle Theka"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "who had a better singles record, boo-kil or seung-bok?",
+     "gold": [
+      "Boo-Kil"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what was its best starting position?",
+     "gold": [
+      "4"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many years are spanned from the earliest listing to the latest listing?",
+     "gold": [
+      "6"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many players scored at least ten goals?",
+     "gold": [
+      "9"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what are the total number of competitions held in march?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what is the number of winning driver's that represented the u.s.?",
+     "gold": [
+      "15"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "was there more published in september 2012 or december 2012?",
+     "gold": [
+      "December 2012"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what competition had a first place result?",
+     "gold": [
+      "Asian Championships"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which was the only polling firm to show more than 50 percent in favor of same-sex marriage in 2006?",
+     "gold": [
+      "Zogby International"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many coins feature the king after 1979?",
+     "gold": [
+      "3"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "from where did 'stayin' alive' receive the most accolades?",
+     "gold": [
+      "Rolling Stone"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what was the only nation not to win a gold medal?",
+     "gold": [
+      "Guam (GUM)"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which year was he nominated for \"cheers: the motion picture.\"",
+     "gold": [
+      "1987"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Find the year in which the nominee \"cheers: the motion picture\" appears\ntarget = \"cheers: the motion picture\".lower()\nresult = None\n\nfor row in list_rows():\n    nominee = cell(row, \"Nominee(s)\")\n    if nominee and target in nominee.lower():\n        result = row\n        break"
+    },
+    {
+     "query": "who is the top shooter listed?",
+     "gold": [
+      "Ole Lilloe-Olsen"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what is the total number of winners?",
+     "gold": [
+      "6"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 2,
+     "code": "```python\n# Count how many rows are labeled as \""
+    },
+    {
+     "query": "when was the first departure?",
+     "gold": [
+      "2004-02-27"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how long is the song \"i love you jesus?\"",
+     "gold": [
+      "7:25"
+     ],
+     "pred": "7.0",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": "result = None\nfor r in list_rows():\n    title = cell(r, \"Title\")\n    if title == \"I Love You Jesus\":\n        result = cell(r, \"Time\")\n        break"
+    },
+    {
+     "query": "how many points did jonas folger score?",
+     "gold": [
+      "7"
+     ],
+     "pred": "7.0",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Find the row where Rider is \"Jonas Folger\" and retrieve the Points value\nresult = None\nfor row in list_rows():\n    rider = cell(row, \"Rider\")\n    if rider == \"Jonas Folger\":\n        result = cell(row, \"Points\")\n        break"
+    },
+    {
+     "query": "which is the only year to feature a university level challenge?",
+     "gold": [
+      "2014-2015"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "who is the first away team on the list?",
+     "gold": [
+      "Windsor & Eton"
+     ],
+     "pred": "Windsor & Eton",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Get the first away team from the table\nresult = cell('1', 'Away Team')"
+    },
+    {
+     "query": "how many games went into ot or overtime?",
+     "gold": [
+      "4"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many athletes took more than 8 minutes to run complete the race?",
+     "gold": [
+      "8"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what was guillermo garcía-lópez combined win and loss record from the rome, madrid and paris masters?",
+     "gold": [
+      "9-11"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which peaks were measured by bd explorer before 2012?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 2,
+     "code": "```python\nimport re\n\n# Get all row headers\nrows = list"
+    },
+    {
+     "query": "in which race did nathan brown receive his victory during 2013?",
+     "gold": [
+      "Tour de Beauce"
+     ],
+     "pred": "Tour de Beauce",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Find the race where Nathan Brown won in 2013\nresult = None\n\nfor row in list_rows():\n    winner = cell(row, 'Winner')\n    if winner and 'Nathan Brown' in winner:\n        result = cell(row, 'Race Name')\n        break"
+    },
+    {
+     "query": "what is the total number of operation?",
+     "gold": [
+      "9"
+     ],
+     "pred": "0",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Sum all values in the \"Operation\" column\nresult = sum(col_values(\"Operation\"))"
+    },
+    {
+     "query": "what is the number of formula one series races that cochet has been in?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "did the team place higher in the 2002-03 season or the 2003-04 season?",
+     "gold": [
+      "2003-04"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "in 2012 who was expected to light the tree?",
+     "gold": [
+      "Speaker John Boehner"
+     ],
+     "pred": "The 2012 theme 'Celebrating Our Great Outdoors' will be highlighted in the decoration of the tree. It is expected to be lit by Speaker John Boehner during a ceremony in early December.",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the note for the year 2012\nresult = cell(\"2012\", \"Notes\")"
+    },
+    {
+     "query": "what is the pylon with the least height listed here?",
+     "gold": [
+      "Eibsee Aerial Tramway"
+     ],
+     "pred": "70.7",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Find the minimum pylon height among the listed aerial tramways\n\n# Collect all row headers\nrows = list_rows()\n\n# Initialize variable to store the minimum height found\nmin_height = None\n\n# Iterate over each row and retrieve the height value\nfor r in rows:\n    h = cell(r, \"Height\")\n    if h is not None:\n        if min_height is None or h < min_height:\n            min_height = h\n\n# Assign the result\nresult = min_height"
+    },
+    {
+     "query": "which is a higher standing hand: a straight or a flush?",
+     "gold": [
+      "Flush"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "after you complete deganya road, what portion comes next?",
+     "gold": [
+      "Beit Yitzhak"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many more times did miller score than whitehead?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many divisions had a population of at least 15,000?",
+     "gold": [
+      "4"
+     ],
+     "pred": "4",
+     "correct": true,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Count how many divisions have a population of at least 15,000\nresult = sum(1 for p in col_values('Population (2005)') if p is not None and p >= 15000)"
+    },
+    {
+     "query": "what is the number of films that ishaan dev has given music to?",
+     "gold": [
+      "14"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which schools have the largest number of shared titles?",
+     "gold": [
+      "Royal Belfast Academical Institution",
+      "Campbell College"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what year was clayton's first album?",
+     "gold": [
+      "1969"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many goals were scored at the euro 2012 qualifying competition?",
+     "gold": [
+      "12"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which three countries have at least nine metals?",
+     "gold": [
+      "Algeria",
+      "Tunisia",
+      "Egypt"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what was the canadian airdate directly after \"better man\"?",
+     "gold": [
+      "\"Dig Me Out\""
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 2,
+     "code": "```python\n# Find the row header for the episode titled \"better man\"\nrows = list_rows()\ntarget_index = next(i for i,"
+    },
+    {
+     "query": "how many schools have at least 2,000 enrolled?",
+     "gold": [
+      "6"
+     ],
+     "pred": "6",
+     "correct": true,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Count how many schools have enrollment of at least 2,000\nenrollment_col = \"Enrollment\"\n\n# List of schools (row headers)\nschools = [\n    \"Augustana College (Illinois)\",\n    \"Aurora University\",\n    \"Beloit College\",\n    \"Benedictine University\",\n    \"Carthage College\",\n    \"Concordia University Wisconsin\",\n    \"University of Dubuque*\",\n    \"Elmhurst College**\",\n    \"Fontbonne University\",\n    \"College of Mount St. Joseph\",\n    \"North Central College\"\n]\n\n# Count schools with enrollment >= 2000\ncount = 0\nfor school in schools:\n    enrollment = cell(school, enrollment_col)\n    if enrollment is not None and enrollment >= 2000:\n        count += 1\n\nresult = count"
+    },
+    {
+     "query": "david oliver has come in 3rd place in how many competitions?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "who was the last mayor to serve in the 1920s?",
+     "gold": [
+      "Mr K.Turner"
+     ],
+     "pred": "Mr K.Turner",
+     "correct": true,
+     "err": "",
+     "n_repair": 2,
+     "code": "result = cell(\"1929-30\", \"Name\")"
+    },
+    {
+     "query": "how many games had an attendance of more than 10,000?",
+     "gold": [
+      "20"
+     ],
+     "pred": "20",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count games with attendance greater than 10,000\ncount = 0\nfor row in list_rows():\n    attendance = cell(row, \"Attendance\")\n    if attendance is not None and attendance > 10000:\n        count += 1\nresult = count"
+    },
+    {
+     "query": "how many times was the game aired on nbc?",
+     "gold": [
+      "6"
+     ],
+     "pred": "6",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "rows = list_rows()\ncount = 0\nfor r in rows:\n    tv = cell(r, \"TV\")\n    if tv == \"NBC\":\n        count += 1\nresult = count"
+    },
+    {
+     "query": "what was the first character she played in her first movie?",
+     "gold": [
+      "Tamar"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "did position 1 have more or less than 49 points?",
+     "gold": [
+      "more"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 2,
+     "code": "```python\n# Compute whether the driver in position 1 had more or less than 49 points\npoints = cell(\"1\", \"Points\")\n\nif points"
+    },
+    {
+     "query": "how many years has stanford been national champion?",
+     "gold": [
+      "3"
+     ],
+     "pred": "1",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Count how many years Stanford was the national champion\nrows = list_rows()\nchampion_col = \"National Champion\"\n\ncount = sum(1 for r in rows if cell(r, champion_col) == \"Stanford\")\nresult = count"
+    },
+    {
+     "query": "does st. louis or rolla have the higher population served?",
+     "gold": [
+      "St. Louis"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "who was brendan jones' runner(s) up on december 2, 2007?",
+     "gold": [
+      "Toru Taniguchi"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "bernadette's \"soms\" and which other song earned the same number of points?",
+     "gold": [
+      "\"Computer Games\""
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which team was last in terms of points up until this point?",
+     "gold": [
+      "Montreal Wanderers"
+     ],
+     "pred": "Montreal Wanderers",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Find the team with the lowest points\npoints_col = \"Points\"\n\n# Ensure the column exists\nif points_col not in list_cols():\n    result = None\nelse:\n    min_points = None\n    min_team = None\n    for team in list_rows():\n        pts = cell(team, points_col)\n        if pts is None:\n            continue\n        if min_points is None or pts < min_points:\n            min_points = pts\n            min_team = team\n    result = min_team"
+    },
+    {
+     "query": "how many times was attendance below 50,000?",
+     "gold": [
+      "2"
+     ],
+     "pred": "2",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count how many attendance values are below 50,000\nattendance_values = col_values('Attendance')\nresult = sum(1 for v in attendance_values if v is not None and v < 50000)"
+    },
+    {
+     "query": "what is the total number of the listed nba players that went on to become a coach?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what are the total amount of points scored by all spain players?",
+     "gold": [
+      "52"
+     ],
+     "pred": "50.0",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "result = 0\nfor r in list_rows():\n    if cell(r, 'Nationality') == 'Spain':\n        pts = cell(r, 'Points')\n        if pts is not None:\n            result += pts"
+    },
+    {
+     "query": "where is the only intersecting highway over 20 km?",
+     "gold": [
+      "Rosenfeld"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "at most, how many games were played in one year?",
+     "gold": [
+      "31"
+     ],
+     "pred": "31.0",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Find the maximum number of games played in any season\ngames_per_season = [\n    cell(row, \"Games\") for row in list_rows() if cell(row, \"Games\") is not None\n]\nresult = max(games_per_season) if games_per_season else None"
+    },
+    {
+     "query": "which stage had the most cyclists withdraw?",
+     "gold": [
+      "Stage 7"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many players have a height of at least 1.90?",
+     "gold": [
+      "8"
+     ],
+     "pred": "8",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count players with height at least 1.90\nheights = col_values('Height')\nresult = sum(1 for h in heights if h is not None and h >= 1.90)"
+    },
+    {
+     "query": "what artist has more music appear in the show, daft punk or franz ferdinand?",
+     "gold": [
+      "Franz Ferdinand"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many countries have more than 1 athlete?",
+     "gold": [
+      "1"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how many episodes are listed?",
+     "gold": [
+      "11"
+     ],
+     "pred": "11",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count the number of episode rows in the table\nrows = list_rows()\nresult = len(rows)"
+    },
+    {
+     "query": "name a reservoir that has an altitude of more than 100 but less than 500.",
+     "gold": [
+      "Malampuzha"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "how long has it been since japan won gold?",
+     "gold": [
+      "20 years"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "what is the next station after woodman?",
+     "gold": [
+      "Van Nuys"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which province is the top consumer of wine?",
+     "gold": [
+      "Yukon"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "is the population of brandfort the same as the population of boipatong?",
+     "gold": [
+      "no"
+     ],
+     "pred": "False",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Compare the populations of Brandfort and Boipatong\nresult = cell('Brandfort', 'Population') == cell('Boipatong', 'Population')"
+    },
+    {
+     "query": "name a country listed in the table, other than india?",
+     "gold": [
+      "Nepal"
+     ],
+     "pred": "Nepal",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "rows = list_rows()\nresult = None\nfor r in rows:\n    nation = cell(r, \"Nation\")\n    if nation and nation != \"India\":\n        result = nation\n        break"
+    },
+    {
+     "query": "what is the larges fee listed?",
+     "gold": [
+      "£6,000,000"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": "# Find the largest fee in the table\nfees = col_values('Fee')          # get all fee values\n# filter out any None entries that may be present\nvalid_fees = [f for f in fees if f is not None]\nresult = max(valid_fees) if valid_fees else None"
+    },
+    {
+     "query": "was arven released by universal or curling legs?",
+     "gold": [
+      "Universal"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 2,
+     "code": ""
+    },
+    {
+     "query": "which denomination has the highest margin?",
+     "gold": [
+      "Roman Catholic"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 2,
+     "code": "```python\n# Compute the denomination with the highest margin (2011 - 1870)\n# Bind only to header paths listed in the provided row and column headers.\n\n# Get all available row and column headers\nrows = list_rows()\ncols = list_cols()\n\n# Identify the specific headers we need\nrow_header_2011 = '2011'\nrow_header_"
+    },
+    {
+     "query": "how many got, at most, 8.5 in the interview?",
+     "gold": [
+      "6"
+     ],
+     "pred": "4",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Count how many states scored at most 8.5 in the Interview column\ncount = 0\nfor row in list_rows():\n    score = cell(row, 'Interview')\n    if score is not None and score <= 8.5:\n        count += 1\nresult = count"
+    },
+    {
+     "query": "what is the last xbox 360 release date?",
+     "gold": [
+      "5 September 2012"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 2,
+     "code": "```python\n# Retrieve all Xbox 360 release dates from the table\ndates = col_values('Xbox 360 release date')\n\n# Filter out any None values\nvalid_dates = [d for"
+    }
+   ]
+  }
+ },
+ "summary": {
+  "naive_acc": 0.0625,
+  "grounded_acc": 0.2125,
+  "delta": 0.15,
+  "rescued": 13,
+  "broke": 1
+ }
+}

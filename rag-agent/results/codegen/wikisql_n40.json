@@ -1,0 +1,913 @@
+{
+ "config": {
+  "dataset": "wikisql",
+  "n": 40,
+  "repairs": 1,
+  "llm": "groq:openai/gpt-oss-120b",
+  "max_tokens": 320,
+  "sleep": 0.3,
+  "out": "results/codegen/wikisql_n40.json"
+ },
+ "n": 40,
+ "modes": {
+  "naive": {
+   "acc": 0.2,
+   "rows": [
+    {
+     "query": "The episode with the original air date January 6, 1999, has what production code?",
+     "gold": [
+      "E0214"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: unterminated string literal (detected at line 6) (<string>, line 6)",
+     "n_repair": 0,
+     "code": "```python\n# Get the list of original air dates in order\nair_dates = col_values('Original air date')\n\n# Find the index of the target date\ntarget_date = 'January 6"
+    },
+    {
+     "query": " what's the score where record is 0–2",
+     "gold": [
+      "L 93–113"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What is the college/junior team of player tyler myers, who has a pick less than 44?",
+     "gold": [
+      "Kelowna Rockets ( WHL )"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the game when on november 27?",
+     "gold": [
+      "23.0"
+     ],
+     "pred": "23.0",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the game that occurs on November 27\nresult = cell(\"November 27\", \"Game\")"
+    },
+    {
+     "query": "What is the percentage of Tukunga when La Crescenta-Montrose is 28%?",
+     "gold": [
+      "30%"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What Position has a Time of 20.66?",
+     "gold": [
+      "4th"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What was Shaun Murphy's outcome in the Premier League Snooker championship held before 2010?",
+     "gold": [
+      "Winner"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "Which venue hosted the Gridiron Development Football League?",
+     "gold": [
+      "Snitz Snider Stadium"
+     ],
+     "pred": "Snitz Snider Stadium",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the venue for the Gridiron Development Football League\nresult = cell(\"Gridiron Development Football League\", \"Venue\")"
+    },
+    {
+     "query": "What is the average tonnage of the ship named proletarij?",
+     "gold": [
+      "1123.0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Get all"
+    },
+    {
+     "query": "What was the interview score for Hawaii?",
+     "gold": [
+      "9.40"
+     ],
+     "pred": "9.4",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the interview score for Hawaii from the table\nresult = cell(\"Hawaii\", \"Interview Score\")"
+    },
+    {
+     "query": "What is the City with an IATA of MUC?",
+     "gold": [
+      "Munich"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what's the result with district being florida 7",
+     "gold": [
+      "Re-elected"
+     ],
+     "pred": "Re-elected",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the value in the \"result\" column for the row where the district is \"florida 7\"\nresult = cell(\"florida 7\", \"result\")"
+    },
+    {
+     "query": "What was the polling firm with others of 1%?",
+     "gold": [
+      "Insomar",
+      "CSOP"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "Which tournament had a partner of Erika Sema?",
+     "gold": [
+      "Aschaffenburg"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "How many wins for average start less than 25?",
+     "gold": [
+      "0"
+     ],
+     "pred": "0",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the column values for average start and wins\naverage_starts = col_values('Average Start')\nwins = col_values('Wins')\n\n# Sum wins where the average start is less than 25\nresult = sum(win for avg, win in zip(average_starts, wins) if avg < 25)"
+    },
+    {
+     "query": "When Melbourne was the Away team, what was their score?",
+     "gold": [
+      "12.16 (88)"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Get the list of all away teams\naway_teams = col_values('Away Team')\n\n# Find the row where the away team is Melbourne\nif 'Melbourne' in away_"
+    },
+    {
+     "query": "What Venue has a Past Season of 2nd?",
+     "gold": [
+      "Foolad Shahr"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What driver had a total time of 16:58?",
+     "gold": [
+      "Poulter"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: unterminated string literal (detected at line 3) (<string>, line 3)",
+     "n_repair": 0,
+     "code": "```python\n# Retrieve the list of total times and corresponding drivers\ntotal_times = col_values(\"Total"
+    },
+    {
+     "query": "In 2011, which city is listed first along the route that had 7.6+ million passengers?",
+     "gold": [
+      "São Paulo"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "Which Record has a Home of edmonton oilers, and a Score of 3–6?",
+     "gold": [
+      "1–3–0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What is the installation date for the Delta Chapter?",
+     "gold": [
+      "Cannot handle non-empty timestamp argument! 1930"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the installation date for the Delta Chapter from the table\nresult = cell(\"Delta Chapter\", \"Installation Date\")"
+    },
+    {
+     "query": "Which Opponent has a Result of w 19–10?",
+     "gold": [
+      "at New York Jets"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Retrieve the full columns for Result and Opponent\nresults = col_values(\"Result\")\nopponents = col_values(\"Opponent\")\n\n# Find the index where the Result is exactly \"w 19–10\"\nresult = None"
+    },
+    {
+     "query": "Which Loera has a Source of surveyusa, and a Date of may 16–may 18, 2008?",
+     "gold": [
+      "2%"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What are the womens singles of naoko fukuman kurumi yonao?",
+     "gold": [
+      "Sayaka Takahashi"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Define the list of players we are interested in\nplayers = [\"Naoko Fukuman\", \"Kurumi Yonao\"]\n\n# Retrieve the women's singles value for each player\nresult ="
+    },
+    {
+     "query": "What are the cities/towns located in the municipality of Horten?",
+     "gold": [
+      "Horten"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: unterminated string literal (detected at line 3) (<string>, line 3)",
+     "n_repair": 0,
+     "code": "```python\n# Retrieve the list of cities/towns that belong to the municipality of Horten\nresult = col_values('City/Town', row_filter={'Municip"
+    },
+    {
+     "query": "What record was set by walter brennan before 1941?",
+     "gold": [
+      "3 awards"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What is the Score when the winner was suntory sungoliath, and the number attendance was n/a?",
+     "gold": [
+      "21 – 9"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Retrieve the Score for the row where Winner is \"suntory sungoliath\" and Attendance is \"n/a\"\nresult"
+    },
+    {
+     "query": "How much Time has a Reaction of 0.155, and an Athlete of kristof beyens, and a Rank smaller than 3?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "what is the club that was founded before 2007, joined prsl in 2008 and the stadium is yldefonso solá morales stadium?",
+     "gold": [
+      "Huracán FC Caguas"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 0,
+     "code": "```python\n# Find the club that satisfies the given conditions"
+    },
+    {
+     "query": "What is the train number when the time is 10:38?",
+     "gold": [
+      "16381.0"
+     ],
+     "pred": "16381.0",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the train number for the time 10:38\nresult = cell(\"10:38\", \"Train Number\")"
+    },
+    {
+     "query": "what's the w-l-d with position being 1",
+     "gold": [
+      "4-0-0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "WHich Studio host has a Year of 2003-04?",
+     "gold": [
+      "Gary Tanguay & Greg Dickerson"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Get the list of years and corresponding studio hosts\nyears = col_values('Year')\nhosts = col_values('Studio host')\n\n# Find the studio host for the year \"2003-04\"\nresult = None\nfor i, y in enumerate(years):\n    if y == '2003-04':\n        result = hosts[i]\n        break"
+    },
+    {
+     "query": "What is the allied target code of the group that targetted ghent/sint-denijs-westrem?",
+     "gold": [
+      "B-61"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "Can you tell me the highest Capacity that has the Team of torpedo?",
+     "gold": [
+      "3020.0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "What is the 2008 for the 2009 ch our charming lady?",
+     "gold": [
+      "CH Our Charming Lady"
+     ],
+     "pred": "CH Our Charming Lady",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the value in the column \"2008\" for the row \"2009 ch our charming lady\"\nresult = cell(\"2009 ch our charming lady\", \"2008\")"
+    },
+    {
+     "query": "What is the date of Game 50?",
+     "gold": [
+      "February 11"
+     ],
+     "pred": "February 11",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Retrieve the date for Game 50 from the table\nresult = cell(50, \"Date\")"
+    },
+    {
+     "query": "Who was the opponent after week 9 with an attendance of 44,020?",
+     "gold": [
+      "Oakland Raiders"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "In total, how much did the United States player George Archer earn with Wins lower than 24 and a rank that was higher than 5?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    },
+    {
+     "query": "Which player is from Ohio State College?",
+     "gold": [
+      "Jim Davidson Category:Articles with hCards"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "ValueError: 'Ohio State' is not in list",
+     "n_repair": 0,
+     "code": "# Get the list of players and their corresponding colleges\nplayers = col_values('Player')\ncolleges = col_values('College')\n\n# Find the index of the row where the college is \"Ohio State\"\nindex = colleges.index('Ohio State')\n\n# The player from Ohio State College\nresult = players[index]"
+    },
+    {
+     "query": "Which episode number saw 1.312 million U.S. Wviewers?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 0,
+     "code": ""
+    }
+   ]
+  },
+  "grounded": {
+   "acc": 0.2,
+   "rows": [
+    {
+     "query": "The episode with the original air date January 6, 1999, has what production code?",
+     "gold": [
+      "E0214"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 1,
+     "code": "```python\n# Find the row that contains the original air date \"January 6, 1999\"\ntarget_date = \"January 6, 1999\"\n\n# Get all available row header paths\nall_rows = list_rows()\n\n# Identify the specific row header that includes the target date\ntarget_row = next(row for row"
+    },
+    {
+     "query": " what's the score where record is 0–2",
+     "gold": [
+      "L 93–113"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What is the college/junior team of player tyler myers, who has a pick less than 44?",
+     "gold": [
+      "Kelowna Rockets ( WHL )"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "what is the game when on november 27?",
+     "gold": [
+      "23.0"
+     ],
+     "pred": "23.0",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Find the game that occurred on November 27\nresult = None\nfor row in list_rows():\n    nov_day = cell(row, \"November\")\n    if nov_day == 27:\n        result = cell(row, \"Game\")\n        break"
+    },
+    {
+     "query": "What is the percentage of Tukunga when La Crescenta-Montrose is 28%?",
+     "gold": [
+      "30%"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What Position has a Time of 20.66?",
+     "gold": [
+      "4th"
+     ],
+     "pred": "4.0",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Find the Position corresponding to a Time of 20.66\nresult = None\n\nfor row in list_rows():\n    time_val = cell(row, \"Time\")\n    if time_val == 20.66:\n        result = cell(row, \"Position\")\n        break"
+    },
+    {
+     "query": "What was Shaun Murphy's outcome in the Premier League Snooker championship held before 2010?",
+     "gold": [
+      "Winner"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "Which venue hosted the Gridiron Development Football League?",
+     "gold": [
+      "Snitz Snider Stadium"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: unterminated string literal (detected at line 8) (<string>, line 8)",
+     "n_repair": 1,
+     "code": "```python\n# Find the venue that hosted the Gridiron Development Football League\ntarget_league = \"Gridiron Development Football League\"\n\nresult = None\nfor row in list_rows():\n    if cell(row, \"League\") == target_league:\n        result = cell(row, \""
+    },
+    {
+     "query": "What is the average tonnage of the ship named proletarij?",
+     "gold": [
+      "1123.0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What was the interview score for Hawaii?",
+     "gold": [
+      "9.40"
+     ],
+     "pred": "9.4",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Retrieve the interview score for Hawaii\nresult = cell(\"Hawaii > 9.40 > 9.51 > 9.64 > 9.52\", \"Interview\")"
+    },
+    {
+     "query": "What is the City with an IATA of MUC?",
+     "gold": [
+      "Munich"
+     ],
+     "pred": "Munich",
+     "correct": true,
+     "err": "",
+     "n_repair": 0,
+     "code": "# Find the city whose IATA code is \"MUC\"\ntarget_iata = \"MUC\"\nresult = None\n\nfor row in list_rows():\n    iata = cell(row, \"IATA\")\n    if iata == target_iata:\n        result = cell(row, \"City\")\n        break"
+    },
+    {
+     "query": "what's the result with district being florida 7",
+     "gold": [
+      "Re-elected"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: unterminated string literal (detected at line 3) (<string>, line 3)",
+     "n_repair": 1,
+     "code": "```python\n# Identify the exact row and column headers\nrow_header = \"Florida 7 > Sam M. Gibbons > Democratic > 1962 > Re-elected > Sam M. Gibbons (D) 74.2%"
+    },
+    {
+     "query": "What was the polling firm with others of 1%?",
+     "gold": [
+      "Insomar",
+      "CSOP"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "Which tournament had a partner of Erika Sema?",
+     "gold": [
+      "Aschaffenburg"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "How many wins for average start less than 25?",
+     "gold": [
+      "0"
+     ],
+     "pred": "0",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Compute total Wins where Avg. Start is less than 25\ntotal_wins = 0\nfor row in list_rows():\n    avg_start = cell(row, \"Avg. Start\")\n    if avg_start is not None and avg_start < 25:\n        wins = cell(row, \"Wins\")\n        if wins is not None:\n            total_wins += wins\n\nresult = total_wins"
+    },
+    {
+     "query": "When Melbourne was the Away team, what was their score?",
+     "gold": [
+      "12.16 (88)"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 1,
+     "code": "```python\n# Find the row where Melbourne was the away team and get their score"
+    },
+    {
+     "query": "What Venue has a Past Season of 2nd?",
+     "gold": [
+      "Foolad Shahr"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What driver had a total time of 16:58?",
+     "gold": [
+      "Poulter"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "In 2011, which city is listed first along the route that had 7.6+ million passengers?",
+     "gold": [
+      "São Paulo"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "Which Record has a Home of edmonton oilers, and a Score of 3–6?",
+     "gold": [
+      "1–3–0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What is the installation date for the Delta Chapter?",
+     "gold": [
+      "Cannot handle non-empty timestamp argument! 1930"
+     ],
+     "pred": "Cannot handle non-empty timestamp argument! 1930",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Retrieve the installation date for the Delta Chapter\nresult = cell(\"Delta\", \"Installation Date\")"
+    },
+    {
+     "query": "Which Opponent has a Result of w 19–10?",
+     "gold": [
+      "at New York Jets"
+     ],
+     "pred": "at New York Jets",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Get all row identifiers\nrows = list_rows()\n\n# Initialize result\nresult = None\n\n# Search for the row where the Result column equals \"W 19–10\"\nfor row in rows:\n    if cell(row, \"Result\") == \"W 19–10\":\n        result = cell(row, \"Opponent\")\n        break"
+    },
+    {
+     "query": "Which Loera has a Source of surveyusa, and a Date of may 16–may 18, 2008?",
+     "gold": [
+      "2%"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What are the womens singles of naoko fukuman kurumi yonao?",
+     "gold": [
+      "Sayaka Takahashi"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What are the cities/towns located in the municipality of Horten?",
+     "gold": [
+      "Horten"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What record was set by walter brennan before 1941?",
+     "gold": [
+      "3 awards"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What is the Score when the winner was suntory sungoliath, and the number attendance was n/a?",
+     "gold": [
+      "21 – 9"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "How much Time has a Reaction of 0.155, and an Athlete of kristof beyens, and a Rank smaller than 3?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "what is the club that was founded before 2007, joined prsl in 2008 and the stadium is yldefonso solá morales stadium?",
+     "gold": [
+      "Huracán FC Caguas"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What is the train number when the time is 10:38?",
+     "gold": [
+      "16381.0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "what's the w-l-d with position being 1",
+     "gold": [
+      "4-0-0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "WHich Studio host has a Year of 2003-04?",
+     "gold": [
+      "Gary Tanguay & Greg Dickerson"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "What is the allied target code of the group that targetted ghent/sint-denijs-westrem?",
+     "gold": [
+      "B-61"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: unterminated string literal (detected at line 3) (<string>, line 3)",
+     "n_repair": 1,
+     "code": "```python\n# Identify the exact row and column headers from the provided lists\nrow_header = \"Ghent/Sint-Denijs-Westrem > B-61 > JG 1 > No. 131 Wing RAF > 16"
+    },
+    {
+     "query": "Can you tell me the highest Capacity that has the Team of torpedo?",
+     "gold": [
+      "3020.0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "NameError: name 'next' is not defined",
+     "n_repair": 1,
+     "code": "# Retrieve all available row headers\nrows = list_rows()\n\n# Identify the row that corresponds to the team \"Torpedo\"\ntorpedo_row = next((r for r in rows if r.startswith(\"Torpedo >\")), None)\n\n# Get the Capacity for that row (if found)\nresult = cell(torpedo_row, \"Capacity\") if torpedo_row else None"
+    },
+    {
+     "query": "What is the 2008 for the 2009 ch our charming lady?",
+     "gold": [
+      "CH Our Charming Lady"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 1,
+     "code": "```python\n# Retrieve the value for"
+    },
+    {
+     "query": "What is the date of Game 50?",
+     "gold": [
+      "February 11"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "Who was the opponent after week 9 with an attendance of 44,020?",
+     "gold": [
+      "Oakland Raiders"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "SyntaxError: invalid syntax (<string>, line 1)",
+     "n_repair": 1,
+     "code": "```python\n# Find the row where Attendance is 44,020 and get the Opponent for that row\ntarget_row ="
+    },
+    {
+     "query": "In total, how much did the United States player George Archer earn with Wins lower than 24 and a rank that was higher than 5?",
+     "gold": [
+      "0"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    },
+    {
+     "query": "Which player is from Ohio State College?",
+     "gold": [
+      "Jim Davidson Category:Articles with hCards"
+     ],
+     "pred": "Jim Davidson Category:Articles with hCards",
+     "correct": true,
+     "err": "",
+     "n_repair": 1,
+     "code": "# Find the player whose college is Ohio State\nresult = None\nfor row_header in list_rows():\n    if cell(row_header, \"College\") == \"Ohio State\":\n        result = cell(row_header, \"Player\")\n        break"
+    },
+    {
+     "query": "Which episode number saw 1.312 million U.S. Wviewers?",
+     "gold": [
+      "2"
+     ],
+     "pred": "",
+     "correct": false,
+     "err": "",
+     "n_repair": 1,
+     "code": ""
+    }
+   ]
+  }
+ },
+ "summary": {
+  "naive_acc": 0.2,
+  "grounded_acc": 0.2,
+  "delta": 0.0,
+  "rescued": 5,
+  "broke": 5
+ }
+}
