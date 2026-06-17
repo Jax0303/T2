@@ -22,7 +22,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence
 
-from ..query.header_path_resolver import resolve_intent
+from ..query.header_path_resolver import extract_target_terms, resolve_intent
 from ..serialization import header_path as s2
 from ..serialization.base import Chunk
 from ..stores.original_store import OriginalTable
@@ -98,6 +98,30 @@ def decompose_operands(
     return operands
 
 
+def decomposition_confidence(
+    query: str, table: OriginalTable, operands: Sequence[Operand]
+) -> float:
+    """How well the decomposed operands are grounded in the query, in [0, 1].
+
+    This is the runtime HPIR-confidence signal the fallback controller reads. It
+    measures how strongly the query's header-candidate terms match each operand's
+    header path (via the store's own fuzzy scorer), averaged over operands. Zero
+    operands means zero confidence (the query could not be decomposed at all).
+    """
+    if not operands:
+        return 0.0
+    terms = extract_target_terms(query)
+    if not terms:
+        return 0.0
+    query_str = " ".join(terms)
+    scores: List[float] = []
+    for op in operands:
+        s_col = table._fuzzy_score(query_str, op.col_path) if op.col_path else 0.0
+        s_row = table._fuzzy_score(query_str, op.row_path) if op.row_path else 0.0
+        scores.append(max(s_col, s_row))
+    return float(sum(scores) / len(scores))
+
+
 # ---------------------------------------------------------------------------
 # Retriever
 # ---------------------------------------------------------------------------
@@ -115,6 +139,7 @@ class OperandRetrievalResult:
     operands: List[Operand]
     per_operand: List[OperandHit]
     retrieved: List[RetrievedChunk]   # deduped union, best-score first
+    confidence: float = 0.0           # HPIR decomposition confidence in [0, 1]
 
     def covered_header_paths(self) -> List[List[str]]:
         paths: List[List[str]] = []
@@ -168,6 +193,7 @@ class OperandTargetedRetriever:
             operands=operands,
             per_operand=per_operand,
             retrieved=retrieved,
+            confidence=decomposition_confidence(query, table, operands),
         )
 
 

@@ -6,6 +6,7 @@ from .operand_retrieval import (
     OperandTargetedRetriever,
     OperandRetrievalResult,
     decompose_operands,
+    decomposition_confidence,
     operand_recall_at_k,
     gold_operands_from_hitab,
 )
@@ -22,6 +23,7 @@ __all__ = [
     "OperandTargetedRetriever",
     "OperandRetrievalResult",
     "decompose_operands",
+    "decomposition_confidence",
     "operand_recall_at_k",
     "gold_operands_from_hitab",
 ]
