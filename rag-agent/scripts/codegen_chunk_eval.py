@@ -65,22 +65,22 @@ def _full(path):
     return " > ".join(p for p in path if p)
 
 
-def serialize(ot, cond, max_rows=60):
+def serialize(ot, cond, max_rows=60, rows=None):
     """Render the table to text at a given structure-preservation level.
-    Rows are capped (chunk budget) deterministically from the top."""
-    n = min(ot.n_rows, max_rows)
+    `rows` = explicit row indices (a retrieved chunk); else top max_rows."""
+    row_idx = list(rows) if rows is not None else list(range(min(ot.n_rows, max_rows)))
     col_leaf = [_leaf(ot.col_path(c)) for c in range(ot.n_cols)]
     col_full = [_full(ot.col_path(c)) for c in range(ot.n_cols)]
     lines = []
     if cond == "flat_values":
         # no headers at all — a chunk that lost its header row
-        for r in range(n):
+        for r in row_idx:
             lines.append(" | ".join(str(v) for v in ot.data[r]))
         return "\n".join(lines)
     if cond == "flat_leaf":
         # leaf headers only — hierarchy parents flattened away
         lines.append("row | " + " | ".join(col_leaf))
-        for r in range(n):
+        for r in row_idx:
             lab = _leaf(ot.row_path(r))
             lines.append(f"{lab} | " + " | ".join(str(v) for v in ot.data[r]))
         return "\n".join(lines)
@@ -92,14 +92,14 @@ def serialize(ot, cond, max_rows=60):
         col_shuf = [col_full[(c + 1) % ot.n_cols] for c in range(ot.n_cols)]
         row_full = [_full(ot.row_path(r)) for r in range(ot.n_rows)]
         lines.append("columns: " + " ;; ".join(f"[{cf}]" for cf in col_shuf))
-        for r in range(n):
+        for r in row_idx:
             rp = row_full[(r + 1) % ot.n_rows] if ot.n_rows > 1 else row_full[0]
             cells = [f"{col_shuf[c]} = {ot.data[r][c]}" for c in range(ot.n_cols)]
             lines.append(f"({rp}) :: " + " ; ".join(cells))
         return "\n".join(lines)
     # header_path — full hierarchical path on every column and every row
     lines.append("columns: " + " ;; ".join(f"[{cf}]" for cf in col_full))
-    for r in range(n):
+    for r in row_idx:
         rp = _full(ot.row_path(r))
         cells = [f"{col_full[c]} = {ot.data[r][c]}" for c in range(ot.n_cols)]
         lines.append(f"({rp}) :: " + " ; ".join(cells))
