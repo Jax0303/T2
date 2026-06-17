@@ -75,6 +75,34 @@ python scripts/codegen_chunk_eval.py --n 40 --splits flat,hier \
     --llm groq:llama-3.3-70b-versatile --out results/codegen/chunk_struct.json
 ```
 
+## Pilot result (n=20/split, llama-3.1-8b-instant, seed=42)
+
+`results/codegen/chunk_pilot8b.json`. Accuracy (numeric|exact match):
+
+| condition | **flat** (WikiSQL) | **hier** (HiTab) |
+|---|---|---|
+| S0 flat_values | 0.70 | 0.10 |
+| S1 flat_leaf   | 0.85 | 0.20 |
+| S2 header_path | 0.90 | **0.50** |
+
+Paired bootstrap 95% CI on the **pure hierarchy-preservation effect** (S2−S1):
+
+| split | S2 − S1 (header_path − flat_leaf) |
+|---|---|
+| flat | **+0.05** [0.00, +0.15]  (ns — no hierarchy to preserve) |
+| hier | **+0.30** [+0.05, +0.55] *  (significant) |
+
+**The interaction is the thesis.** On flat tables, leaf headers already suffice
+(S1≈S2). On hierarchical tables, **flattening to leaf headers is barely better
+than no headers at all** (0.20 vs 0.10, ns) — only full header-path preservation
+recovers numeric accuracy (0.50). Difference-in-differences ≈ **+0.25**: the
+benefit is *caused by hierarchy preservation*, not verbosity (flat control rules
+that out). This closes the open loop — a serialization scheme measured on
+end-to-end numeric-answer accuracy over hierarchical tables.
+
+Caveats: n=20/split (CIs wide); single model; HiTab absolute ceiling is low (0.50)
+— the **delta**, not the level, is the contribution. Next steps harden all three.
+
 ## Planned ablations / next
 
 - [ ] **Chunk-budget sweep** (`--max-rows`): accuracy vs degree-of-truncation curve,
