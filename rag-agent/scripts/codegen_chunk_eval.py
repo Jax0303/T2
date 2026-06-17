@@ -162,7 +162,20 @@ def build_hier(n, data_dir="data/hitab", split="dev"):
     return out
 
 
-def run_split(name, samples, llm, max_tokens, sleep, max_rows):
+def _fast_call(llm, sys_p, user, max_tokens, tries=3):
+    """Fail-fast LLM call: short backoff, give up quickly (return '') instead of
+    the 6x60s backoff that can stall a whole run on one bad call."""
+    delay = 2.0
+    for _ in range(tries):
+        try:
+            return llm.complete(sys_p, user, max_tokens=max_tokens)
+        except Exception:  # noqa: BLE001
+            time.sleep(delay)
+            delay = min(delay * 2, 8)
+    return ""
+
+
+def run_split(name, samples, llm, max_tokens, sleep, max_rows, partial_path=None):
     print(f"\n=== {name}: n={len(samples)} ===", flush=True)
     per = {c: [] for c in CONDS}
     rows = []
@@ -172,12 +185,10 @@ def run_split(name, samples, llm, max_tokens, sleep, max_rows):
         for cond in CONDS:
             text = serialize(s["ot"], cond, max_rows=max_rows)
             prompt = build_prompt(getattr(s["ot"], "title", "") or "", s["question"], text)
-            try:
-                raw = complete_retry(llm, ANSWER_SYS, prompt, max_tokens)
-                pred = clean_pred(raw)
-            except Exception as e:  # noqa: BLE001
-                pred = ""
-                rec.setdefault("err", {})[cond] = type(e).__name__
+            raw = _fast_call(llm, ANSWER_SYS, prompt, max_tokens)
+            pred = clean_pred(raw)
+            if not raw:
+                rec.setdefault("err", {})[cond] = "empty_or_failed"
             ok = numeric_match(pred, s["answers"]) or exact_match(pred, s["answers"])
             rec["preds"][cond] = pred
             rec["ok"][cond] = bool(ok)
@@ -189,6 +200,9 @@ def run_split(name, samples, llm, max_tokens, sleep, max_rows):
             print(f"  {i}/{len(samples)} " +
                   " ".join(f"{c}={acc[c]:.2f}" for c in CONDS) +
                   f"  {time.time()-t0:.0f}s", flush=True)
+            if partial_path:                       # incremental save -> a hang/kill never loses data
+                json.dump({"split": name, "done": i, "per": per, "rows": rows},
+                          open(partial_path, "w"), ensure_ascii=False)
     return per, rows
 
 
@@ -222,7 +236,8 @@ def main():
     for name in args.splits.split(","):
         name = name.strip()
         samples = builders[name](args.n)
-        per, rows = run_split(name, samples, llm, args.max_tokens, args.sleep, args.max_rows)
+        partial = str(Path(args.out).with_suffix("")) + f".{name}.partial.json"
+        per, rows = run_split(name, samples, llm, args.max_tokens, args.sleep, args.max_rows, partial)
         acc = {c: round(float(np.mean(per[c])), 4) for c in CONDS}
         contrasts = {}
         cand = [("flat_values", "flat_leaf"), ("flat_leaf", "header_path"),
