@@ -150,10 +150,24 @@ only aggregate EM/QA. To make even that defensible we must close the valid gaps:
 
 - [x] token-matched control (above) — done
 - [x] same prompt template across conditions; headline is S1→S2 (not the S0 strawman)
-- [ ] **retrieval stage (Liner #2, most critical)**: the claim is RAG-chunking but the
-      eval had no retrieval. Add retrieve→chunk→compute so structure loss is induced by
-      chunking a too-large table, then measure numeric accuracy. (Project already has
-      BM25/dense retrieval infra: `retrieval_eval.py`, `prep/`, `cell_retrieval_eval.py`.)
+- [x] **retrieval stage (Liner #2, most critical)** — DONE. `rag_chunk_compute_eval.py`:
+      table split into row-chunks, BM25 retrieves top-k (identical across conditions),
+      retrieved chunks serialized at 3 levels, LLM computes. 8b, hier, n=25,
+      chunk_rows=4, top_k=3:
+
+      | condition | acc |
+      |---|---|
+      | flat_values | 0.08 |
+      | flat_leaf | 0.20 |
+      | header_path | **0.60** |
+      | chunk_recall (retrieval ceiling) | 0.60 |
+
+      header_path − flat_leaf = **+0.40 [+0.20, +0.60] \***. The effect holds inside a
+      real retrieve→chunk→compute pipeline. Key narrative: header_path accuracy (0.60)
+      **equals the retrieval ceiling (0.60)** — whenever the gold cell is retrieved,
+      structure-preserving serialization converts it to a correct answer ~100% of the
+      time, while flat_leaf converts only 0.20/0.60 ≈ 1/3. **The bottleneck is structure
+      loss at the chunk boundary, not retrieval recall.** (`results/codegen/rag_chunk_8b_hier.json`)
 - [ ] **synthetic hierarchy depth 1/2/3** to replace the binary flat/hier split and the
       unverified "WikiSQL = flat" assumption (#4/#6)
 - [ ] **≥4 models** (#7); llama-3.3-70b after daily-cap reset
