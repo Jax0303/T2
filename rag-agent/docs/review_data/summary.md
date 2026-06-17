@@ -20,10 +20,9 @@
 - retrieval_pipeline: 표→행청크→BM25 top-k→직렬화→LLM계산, 검색은 조건 간 동일.
 
 ## 집계 결과(CSV에서 재계산 가능)
-- interaction S2−S1: 8b flat +0.05 / hier +0.30; 120b flat +0.05 / hier +0.20 (hier만 유의).
-- token_control(8b hier): flat_leaf .15 / header_path .45 / header_shuffle .05;
-  header_path−header_shuffle +0.40.
-- retrieval_pipeline(8b hier): flat_values .08 / flat_leaf .20 / header_path .60; chunk_recall .60.
+- interaction S2−S1 (McNemar): 8b hier +0.30 (p=0.070, ns), 120b hier +0.20 (p=0.125, ns); flat은 p=1.0 (null). 교호작용은 경향이나 n=20 검정력 부족.
+- token_control(8b hier): header_path−header_shuffle +0.40, McNemar p=0.008 (확실).
+- retrieval_pipeline(8b hier): header_path−flat_leaf +0.40, McNemar p=0.002 (확실); chunk_recall .60.
 - HPIR 분해: fuzzy BOTH 0.61~0.635(예산 늘려도 천장), embedding BOTH 0.67.
 
 ## 정직한 한계(이미 인지)
