@@ -1,0 +1,390 @@
+{
+ "config": {
+  "n": 20,
+  "splits": "hier",
+  "llm": "groq:llama-3.1-8b-instant",
+  "max_tokens": 40,
+  "max_rows": 25,
+  "sleep": 0.25,
+  "conds": "flat_leaf,header_path,header_shuffle",
+  "out": "results/codegen/tokctrl_8b_hier.json"
+ },
+ "splits": {
+  "hier": {
+   "n": 20,
+   "acc": {
+    "flat_leaf": 0.15,
+    "header_path": 0.45,
+    "header_shuffle": 0.05
+   },
+   "contrasts": {
+    "header_path-flat_leaf": {
+     "delta": 0.3,
+     "ci": [
+      0.1,
+      0.5
+     ],
+     "sig": true
+    },
+    "header_path-header_shuffle": {
+     "delta": 0.4,
+     "ci": [
+      0.2,
+      0.6
+     ],
+     "sig": true
+    },
+    "header_shuffle-flat_leaf": {
+     "delta": -0.1,
+     "ci": [
+      -0.3,
+      0.1
+     ],
+     "sig": false
+    }
+   },
+   "rows": [
+    {
+     "id": "fe6407e2459997d5f135e8a88892a049",
+     "q": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+     "gold": [
+      "men"
+     ],
+     "preds": {
+      "flat_leaf": "female",
+      "header_path": "men",
+      "header_shuffle": "women"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": true,
+      "header_shuffle": true
+     }
+    },
+    {
+     "id": "03e2e33b61115022766eba43568f2a2d",
+     "q": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+     "gold": [
+      "264.0"
+     ],
+     "preds": {
+      "flat_leaf": "2",
+      "header_path": "55",
+      "header_shuffle": "0"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "76958999926314d82b80a5b39f21ed76",
+     "q": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+     "gold": [
+      "83.0"
+     ],
+     "preds": {
+      "flat_leaf": "13.5",
+      "header_path": "25.7",
+      "header_shuffle": "28.4"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "76863f9b68412109d717820bb24dc71a",
+     "q": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+     "gold": [
+      "filipino"
+     ],
+     "preds": {
+      "flat_leaf": "82.0",
+      "header_path": "81.7",
+      "header_shuffle": "86.1"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "8d3373fa0c42ed9d0fa3af23548d1e28",
+     "q": "what percent of bert gosnell's 233 games from 1921 to 1926 is winning?",
+     "gold": [
+      "25.3"
+     ],
+     "preds": {
+      "flat_leaf": "59.0",
+      "header_path": "25.3",
+      "header_shuffle": "95.0"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "7615f60fffd339c61c4b9181ccaeeadd",
+     "q": "what is the industry with the highest share of female gig workers among all workers?",
+     "gold": [
+      "other services"
+     ],
+     "preds": {
+      "flat_leaf": "health care and social assistance",
+      "header_path": "health care and social assistance",
+      "header_shuffle": "13.1"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "2b46cca80468a08a89b4679e726b92be",
+     "q": "among men who had been sexually assaulted off campus, how many percent indicated that this was the type of place where it happened?",
+     "gold": [
+      "39.6"
+     ],
+     "preds": {
+      "flat_leaf": "22.3",
+      "header_path": "22.3",
+      "header_shuffle": "80.5"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "c81134db64a98f22e28cddfb7de0a1a5",
+     "q": "what was the number of police-reported hate crimes motivated by race or ethnicity in 2015?",
+     "gold": [
+      "641.0"
+     ],
+     "preds": {
+      "flat_leaf": "611",
+      "header_path": "641 + 224 + 49 + 48 + 92 + 35 + 38 + 130 + 25 = 762",
+      "header_shuffle": "48.0 + 19.0 + 4.0 + 4.0 + 5.0 + 3.0 + 4.0 + 48.0 +"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "c486681bfdc34de8cf73363a0e33bc8a",
+     "q": "what was the number of actual combat soldiers of the male soviet force.",
+     "gold": [
+      "1426352.0"
+     ],
+     "preds": {
+      "flat_leaf": "none",
+      "header_path": "There is no information about the number of actual combat soldiers of the male soviet force in the provided table excerpt",
+      "header_shuffle": "There is no information about the number of actual combat soldiers of the male soviet force in the provided table excerpt"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "28f1b6d455a8e8b8d9d865fbc8afe22d",
+     "q": "what the time did ali bouraleh finish the heat in a time of?",
+     "gold": [
+      "14.29"
+     ],
+     "preds": {
+      "flat_leaf": "3:43.62",
+      "header_path": "14.29",
+      "header_shuffle": "3:43.62"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "47d85b7882f9f3eaa0ef0096a5468423",
+     "q": "what was the number of appearances made by ben alnwick for sunderland in the 2004-05 championship season?",
+     "gold": [
+      "3.0"
+     ],
+     "preds": {
+      "flat_leaf": "3",
+      "header_path": "3",
+      "header_shuffle": "0"
+     },
+     "ok": {
+      "flat_leaf": true,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "da4ddf61de0f34ee83b7829102ffe6d9",
+     "q": "which age group is most likely to volunteer informally?",
+     "gold": [
+      "15 to 19"
+     ],
+     "preds": {
+      "flat_leaf": "39.0",
+      "header_path": "39.0",
+      "header_shuffle": "20 to 24"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "9aacfbb741d62de704b6e88938389c40",
+     "q": "totally which people of which sex were more likely to have strong family networks?",
+     "gold": [
+      "women"
+     ],
+     "preds": {
+      "flat_leaf": "women",
+      "header_path": "women",
+      "header_shuffle": "men"
+     },
+     "ok": {
+      "flat_leaf": true,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "1972155590794ace1ebadbc045332edb",
+     "q": "which refugee category had a lower level of education in general?",
+     "gold": [
+      "government-assisted refugees"
+     ],
+     "preds": {
+      "flat_leaf": "47.0",
+      "header_path": "Government-assisted refugees",
+      "header_shuffle": "Privately sponsored refugees"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "b490e86698ea52bec432fd2c062eded2",
+     "q": "those who earned their doctorates more than 25 years ago were, as expected, how many percent was more likely to be working part time in 2010?",
+     "gold": [
+      "14.4"
+     ],
+     "preds": {
+      "flat_leaf": "14.4",
+      "header_path": "14.4",
+      "header_shuffle": "(28.5 / 54.3) * 100 = 52.4"
+     },
+     "ok": {
+      "flat_leaf": true,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "a080b456f9a596237e7683fce6d819d9",
+     "q": "business r&d is concentrated in a small number of states, how many percent are with the 10 states with the highest levels of r&d performance accounting of the $233 billion total?",
+     "gold": [
+      "0.681511"
+     ],
+     "preds": {
+      "flat_leaf": "238768",
+      "header_path": "10",
+      "header_shuffle": "65"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "550428282b3a554a8ff831f7149e00bc",
+     "q": "how many seats were reserved totally during the 2015 sudanese general election.",
+     "gold": [
+      "128.0"
+     ],
+     "preds": {
+      "flat_leaf": "0.0",
+      "header_path": "107 + 3 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1",
+      "header_shuffle": "83.37 + 4.82 + 2.65 + 2.07 + 0.71 + 1.23 + 0.87 + 2.0 +"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "ae9c91e2b72da1948845d2b9c96be1f1",
+     "q": "what percentage of the cmdb deaths were caused by external causes?",
+     "gold": [
+      "5.5"
+     ],
+     "preds": {
+      "flat_leaf": "0.0",
+      "header_path": "4.1",
+      "header_shuffle": "0.0"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "26307595388ef79a529bd08519ff0fa2",
+     "q": "were younger people whose highest level of education was a high school diploma faced a higher probability of being in low income, or those with a postsecondary credentials below a bachelor degree?",
+     "gold": [
+      "high school diploma"
+     ],
+     "preds": {
+      "flat_leaf": "0.32",
+      "header_path": "0.28",
+      "header_shuffle": "0.28"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": false,
+      "header_shuffle": false
+     }
+    },
+    {
+     "id": "2802b5a96c112c97d86cf16d30653006",
+     "q": "how many percentage points of imports in capital goods were originated from the united states in 2016?",
+     "gold": [
+      "48.2"
+     ],
+     "preds": {
+      "flat_leaf": "65.5",
+      "header_path": "48.2",
+      "header_shuffle": "100.0"
+     },
+     "ok": {
+      "flat_leaf": false,
+      "header_path": true,
+      "header_shuffle": false
+     }
+    }
+   ]
+  }
+ }
+}

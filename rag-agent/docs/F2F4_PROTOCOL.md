@@ -120,6 +120,44 @@ computation across a small and a large model — not a single-model artifact.
 unavailable — free-tier daily token cap (TPD 100k) exhausted; a clean 70b control can
 be added after reset.)
 
+### Token-matched control (defeats the token-inflation confound)
+
+Critique (Liner #3): S2 has more tokens than S1 — is the gain structure or just more
+context? Control condition `header_shuffle` = identical header-path strings & token
+count as S2, but every cell mislabelled (columns/rows rolled by 1). 8b, hier, n=20:
+
+| condition | acc |
+|---|---|
+| flat_leaf (S1) | 0.15 |
+| header_path (S2, correct structure) | 0.45 |
+| header_shuffle (S2 tokens, wrong structure) | **0.05** |
+
+- header_path − header_shuffle = **+0.40 [+0.20, +0.60] \*** (token-matched → effect holds)
+- header_shuffle − flat_leaf = −0.10 [−0.30, +0.10] (ns; wrong paths don't help despite
+  the extra tokens — if anything mildly harmful)
+
+The S2 gain is attributable to **correct structure, not token volume**.
+(`results/codegen/tokctrl_8b_hier.json`)
+
+## Status vs adversarial review (Liner + our own sweeps)
+
+S2 (header-path) serialization itself is **not novel** — OHD (arXiv:2602.01969) already
+runs a hierarchical-lineage-vs-flat control on HiTab; STR/TABGR/MixRAG/Song use per-cell
+paths. Verified: those citations are real (HD-RAG=MixRAG are v1/v2 of arXiv:2504.09554).
+What survives as open: a **systematic ablation measuring end-to-end NUMERIC-answer
+accuracy as an interaction with hierarchy (flat-vs-hier × numeric)** — prior work reports
+only aggregate EM/QA. To make even that defensible we must close the valid gaps:
+
+- [x] token-matched control (above) — done
+- [x] same prompt template across conditions; headline is S1→S2 (not the S0 strawman)
+- [ ] **retrieval stage (Liner #2, most critical)**: the claim is RAG-chunking but the
+      eval had no retrieval. Add retrieve→chunk→compute so structure loss is induced by
+      chunking a too-large table, then measure numeric accuracy. (Project already has
+      BM25/dense retrieval infra: `retrieval_eval.py`, `prep/`, `cell_retrieval_eval.py`.)
+- [ ] **synthetic hierarchy depth 1/2/3** to replace the binary flat/hier split and the
+      unverified "WikiSQL = flat" assumption (#4/#6)
+- [ ] **≥4 models** (#7); llama-3.3-70b after daily-cap reset
+
 ## Planned ablations / next
 
 - [ ] **Chunk-budget sweep** (`--max-rows`): accuracy vs degree-of-truncation curve,
