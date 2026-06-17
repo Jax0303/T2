@@ -84,6 +84,19 @@ def serialize(ot, cond, max_rows=60):
             lab = _leaf(ot.row_path(r))
             lines.append(f"{lab} | " + " | ".join(str(v) for v in ot.data[r]))
         return "\n".join(lines)
+    if cond == "header_shuffle":
+        # TOKEN-MATCHED CONTROL (Liner #3): same header-path strings & token count
+        # as header_path, but each cell is labelled with the WRONG path (columns and
+        # rows rolled by 1 -> no fixed points). If accuracy falls back to flat_leaf,
+        # the header_path gain is from correct STRUCTURE, not from extra tokens.
+        col_shuf = [col_full[(c + 1) % ot.n_cols] for c in range(ot.n_cols)]
+        row_full = [_full(ot.row_path(r)) for r in range(ot.n_rows)]
+        lines.append("columns: " + " ;; ".join(f"[{cf}]" for cf in col_shuf))
+        for r in range(n):
+            rp = row_full[(r + 1) % ot.n_rows] if ot.n_rows > 1 else row_full[0]
+            cells = [f"{col_shuf[c]} = {ot.data[r][c]}" for c in range(ot.n_cols)]
+            lines.append(f"({rp}) :: " + " ; ".join(cells))
+        return "\n".join(lines)
     # header_path — full hierarchical path on every column and every row
     lines.append("columns: " + " ;; ".join(f"[{cf}]" for cf in col_full))
     for r in range(n):
@@ -189,6 +202,7 @@ def boot_ci(diff, iters=10000, seed=SEED):
 
 
 def main():
+    global CONDS
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=40)
     ap.add_argument("--splits", default="flat,hier")
@@ -196,9 +210,12 @@ def main():
     ap.add_argument("--max-tokens", type=int, default=40)
     ap.add_argument("--max-rows", type=int, default=60, help="chunk budget (rows serialized)")
     ap.add_argument("--sleep", type=float, default=0.35)
+    ap.add_argument("--conds", default=",".join(CONDS),
+                    help="comma list from flat_values,flat_leaf,header_path,header_shuffle")
     ap.add_argument("--out", default="results/codegen/chunk_struct.json")
     args = ap.parse_args()
 
+    CONDS = [c.strip() for c in args.conds.split(",")]
     llm = build_llm(args.llm)
     builders = {"flat": build_flat, "hier": build_hier}
     out = {"config": vars(args), "splits": {}}
@@ -208,8 +225,12 @@ def main():
         per, rows = run_split(name, samples, llm, args.max_tokens, args.sleep, args.max_rows)
         acc = {c: round(float(np.mean(per[c])), 4) for c in CONDS}
         contrasts = {}
-        for a, b in [("flat_values", "flat_leaf"), ("flat_leaf", "header_path"),
-                     ("flat_values", "header_path")]:
+        cand = [("flat_values", "flat_leaf"), ("flat_leaf", "header_path"),
+                ("flat_values", "header_path"), ("header_shuffle", "header_path"),
+                ("flat_leaf", "header_shuffle")]
+        for a, b in cand:
+            if a not in CONDS or b not in CONDS:
+                continue
             d = [y - x for x, y in zip(per[a], per[b])]
             m, lo, hi = boot_ci(d)
             contrasts[f"{b}-{a}"] = {"delta": round(m, 4), "ci": [round(lo, 4), round(hi, 4)],
