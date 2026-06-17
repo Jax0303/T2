@@ -76,14 +76,24 @@ def row_has_gold(ot, r, gv):
     return False
 
 
-def retrieve(ot, question, chunk_rows, top_k):
-    """BM25 over chunk texts (flat_leaf = neutral, header-bearing). Returns the
-    union of retrieved row indices + the list of retrieved chunk indices."""
+def retrieve(ot, question, chunk_rows, top_k, mode="bm25", gv=None):
+    """Return (union of retrieved row indices, retrieved chunk indices, all chunks).
+    mode=bm25           : top-k chunks by BM25(question, chunk_text)  [baseline RAG]
+    mode=operand_oracle : the top-k chunks that actually CONTAIN a gold operand cell
+                          (upper bound on what operand-complete retrieval can reach;
+                          isolates 'is retrieval completeness the bottleneck?')."""
     chs = chunks_of(ot.n_rows, chunk_rows)
-    texts = [serialize(ot, "flat_leaf", rows=ch) for ch in chs]
-    bm = BM25Okapi([tok(t) for t in texts])
-    scores = bm.get_scores(tok(question))
-    order = list(np.argsort(-scores)[:top_k])
+    if mode == "operand_oracle" and gv:
+        scored = [(sum(1 for r in ch if row_has_gold(ot, r, gv)), -ci, ci) for ci, ch in enumerate(chs)]
+        scored.sort(reverse=True)
+        order = [ci for hits, _, ci in scored if hits > 0][:top_k]
+        if not order:                       # no gold chunk -> fall back to first k
+            order = list(range(min(top_k, len(chs))))
+    else:
+        texts = [serialize(ot, "flat_leaf", rows=ch) for ch in chs]
+        bm = BM25Okapi([tok(t) for t in texts])
+        scores = bm.get_scores(tok(question))
+        order = list(np.argsort(-scores)[:top_k])
     rows = sorted({r for ci in order for r in chs[ci]})
     return rows, order, chs
 
@@ -96,8 +106,9 @@ def run(name, samples, llm, args):
     t0 = time.time()
     for i, s in enumerate(samples, 1):
         ot = s["ot"]
-        rrows, order, chs = retrieve(ot, s["question"], args.chunk_rows, args.top_k)
         gv = gold_values(s["answers"])
+        rrows, order, chs = retrieve(ot, s["question"], args.chunk_rows, args.top_k,
+                                     mode=args.retrieval, gv=gv)
         got_gold = any(row_has_gold(ot, r, gv) for r in rrows)
         recall.append(int(got_gold))
         rec = {"id": s["id"], "q": s["question"], "gold": s["answers"],
@@ -130,6 +141,7 @@ def main():
     ap.add_argument("--splits", default="hier")
     ap.add_argument("--chunk-rows", type=int, default=4)
     ap.add_argument("--top-k", type=int, default=2)
+    ap.add_argument("--retrieval", choices=["bm25", "operand_oracle"], default="bm25")
     ap.add_argument("--llm", default="groq:llama-3.1-8b-instant")
     ap.add_argument("--max-tokens", type=int, default=40)
     ap.add_argument("--sleep", type=float, default=0.25)
