@@ -1,0 +1,770 @@
+{
+ "config": {
+  "n": 20,
+  "splits": "flat,hier",
+  "llm": "groq:openai/gpt-oss-120b",
+  "max_tokens": 256,
+  "max_rows": 25,
+  "sleep": 0.4,
+  "out": "results/codegen/chunk_120b_n20.json"
+ },
+ "splits": {
+  "flat": {
+   "n": 20,
+   "acc": {
+    "flat_values": 0.55,
+    "flat_leaf": 0.8,
+    "header_path": 0.85
+   },
+   "contrasts": {
+    "flat_leaf-flat_values": {
+     "delta": 0.25,
+     "ci": [
+      0.0,
+      0.5
+     ],
+     "sig": false
+    },
+    "header_path-flat_leaf": {
+     "delta": 0.05,
+     "ci": [
+      0.0,
+      0.15
+     ],
+     "sig": false
+    },
+    "header_path-flat_values": {
+     "delta": 0.3,
+     "ci": [
+      0.1,
+      0.5
+     ],
+     "sig": true
+    }
+   },
+   "rows": [
+    {
+     "id": "1-2618152-1",
+     "q": "The episode with the original air date January 6, 1999, has what production code?",
+     "gold": [
+      "E0214"
+     ],
+     "preds": {
+      "flat_values": "E0214",
+      "flat_leaf": "E0214",
+      "header_path": "E0214"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "1-11964047-5",
+     "q": " what's the score where record is 0–2",
+     "gold": [
+      "L 93–113"
+     ],
+     "preds": {
+      "flat_values": "93–113",
+      "flat_leaf": "L 93–113",
+      "header_path": "L 93–113"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-17371250-13",
+     "q": "What is the college/junior team of player tyler myers, who has a pick less than 44?",
+     "gold": [
+      "Kelowna Rockets ( WHL )"
+     ],
+     "preds": {
+      "flat_values": "Kelowna Rockets ( WHL )",
+      "flat_leaf": "Kelowna Rockets ( WHL )",
+      "header_path": "Kelowna Rockets ( WHL )"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-17562992-3",
+     "q": "what is the game when on november 27?",
+     "gold": [
+      "23.0"
+     ],
+     "preds": {
+      "flat_values": "@ Detroit Red Wings",
+      "flat_leaf": "23",
+      "header_path": "23"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-107642-1",
+     "q": "What is the percentage of Tukunga when La Crescenta-Montrose is 28%?",
+     "gold": [
+      "30%"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "2-18283614-1",
+     "q": "What Position has a Time of 20.66?",
+     "gold": [
+      "4th"
+     ],
+     "preds": {
+      "flat_values": "4th",
+      "flat_leaf": "4th",
+      "header_path": "4th"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-1795208-8",
+     "q": "What was Shaun Murphy's outcome in the Premier League Snooker championship held before 2010?",
+     "gold": [
+      "Winner"
+     ],
+     "preds": {
+      "flat_values": "Not listed",
+      "flat_leaf": "Winner",
+      "header_path": "Winner"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-16405998-1",
+     "q": "Which venue hosted the Gridiron Development Football League?",
+     "gold": [
+      "Snitz Snider Stadium"
+     ],
+     "preds": {
+      "flat_values": "Snitz Snider Stadium",
+      "flat_leaf": "Snitz Snider Stadium",
+      "header_path": "Snitz Snider Stadium"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-17264629-1",
+     "q": "What is the average tonnage of the ship named proletarij?",
+     "gold": [
+      "1123.0"
+     ],
+     "preds": {
+      "flat_values": "1123",
+      "flat_leaf": "1123",
+      "header_path": "1123"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "1-11884814-3",
+     "q": "What was the interview score for Hawaii?",
+     "gold": [
+      "9.40"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "9.40",
+      "header_path": "9.40"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-18624168-2",
+     "q": "What is the City with an IATA of MUC?",
+     "gold": [
+      "Munich"
+     ],
+     "preds": {
+      "flat_values": "Not found",
+      "flat_leaf": "None",
+      "header_path": "None"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "1-1341604-10",
+     "q": "what's the result with district being florida 7",
+     "gold": [
+      "Re-elected"
+     ],
+     "preds": {
+      "flat_values": "Re-elected",
+      "flat_leaf": "Re-elected",
+      "header_path": "Re-elected"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-15125204-1",
+     "q": "What was the polling firm with others of 1%?",
+     "gold": [
+      "Insomar",
+      "CSOP"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "Insomar, CSOP",
+      "header_path": "Insomar, CSOP"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-18750429-4",
+     "q": "Which tournament had a partner of Erika Sema?",
+     "gold": [
+      "Aschaffenburg"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": "None"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "2-1637041-2",
+     "q": "How many wins for average start less than 25?",
+     "gold": [
+      "0"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "0",
+      "header_path": "0"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-10790510-17",
+     "q": "When Melbourne was the Away team, what was their score?",
+     "gold": [
+      "12.16 (88)"
+     ],
+     "preds": {
+      "flat_values": "12.16 (88)",
+      "flat_leaf": "12.16 (88)",
+      "header_path": "12.16 (88)"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-17702976-1",
+     "q": "What Venue has a Past Season of 2nd?",
+     "gold": [
+      "Foolad Shahr"
+     ],
+     "preds": {
+      "flat_values": "Foolad Shahr",
+      "flat_leaf": "Foolad Shahr",
+      "header_path": "Foolad Shahr"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-18394791-5",
+     "q": "What driver had a total time of 16:58?",
+     "gold": [
+      "Poulter"
+     ],
+     "preds": {
+      "flat_values": "Poulter",
+      "flat_leaf": "Poulter",
+      "header_path": "Poulter"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "1-16066063-1",
+     "q": "In 2011, which city is listed first along the route that had 7.6+ million passengers?",
+     "gold": [
+      "São Paulo"
+     ],
+     "preds": {
+      "flat_values": "São Paulo",
+      "flat_leaf": "",
+      "header_path": "São Paulo"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": false,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2-15302438-2",
+     "q": "Which Record has a Home of edmonton oilers, and a Score of 3–6?",
+     "gold": [
+      "1–3–0"
+     ],
+     "preds": {
+      "flat_values": "None",
+      "flat_leaf": "1–3–0",
+      "header_path": "1–3–0"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    }
+   ]
+  },
+  "hier": {
+   "n": 20,
+   "acc": {
+    "flat_values": 0.1,
+    "flat_leaf": 0.25,
+    "header_path": 0.45
+   },
+   "contrasts": {
+    "flat_leaf-flat_values": {
+     "delta": 0.15,
+     "ci": [
+      -0.1,
+      0.4
+     ],
+     "sig": false
+    },
+    "header_path-flat_leaf": {
+     "delta": 0.2,
+     "ci": [
+      0.05,
+      0.4
+     ],
+     "sig": true
+    },
+    "header_path-flat_values": {
+     "delta": 0.35,
+     "ci": [
+      0.1,
+      0.6
+     ],
+     "sig": true
+    }
+   },
+   "rows": [
+    {
+     "id": "fe6407e2459997d5f135e8a88892a049",
+     "q": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+     "gold": [
+      "men"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "03e2e33b61115022766eba43568f2a2d",
+     "q": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+     "gold": [
+      "264.0"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": "264"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": true
+     }
+    },
+    {
+     "id": "76958999926314d82b80a5b39f21ed76",
+     "q": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+     "gold": [
+      "83.0"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": "N/A"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "76863f9b68412109d717820bb24dc71a",
+     "q": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+     "gold": [
+      "filipino"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "filipina women",
+      "header_path": "filipina"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "8d3373fa0c42ed9d0fa3af23548d1e28",
+     "q": "what percent of bert gosnell's 233 games from 1921 to 1926 is winning?",
+     "gold": [
+      "25.3"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "25.3%",
+      "header_path": "25.3"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "7615f60fffd339c61c4b9181ccaeeadd",
+     "q": "what is the industry with the highest share of female gig workers among all workers?",
+     "gold": [
+      "other services"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "2b46cca80468a08a89b4679e726b92be",
+     "q": "among men who had been sexually assaulted off campus, how many percent indicated that this was the type of place where it happened?",
+     "gold": [
+      "39.6"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "c81134db64a98f22e28cddfb7de0a1a5",
+     "q": "what was the number of police-reported hate crimes motivated by race or ethnicity in 2015?",
+     "gold": [
+      "641.0"
+     ],
+     "preds": {
+      "flat_values": "641",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "c486681bfdc34de8cf73363a0e33bc8a",
+     "q": "what was the number of actual combat soldiers of the male soviet force.",
+     "gold": [
+      "1426352.0"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "28f1b6d455a8e8b8d9d865fbc8afe22d",
+     "q": "what the time did ali bouraleh finish the heat in a time of?",
+     "gold": [
+      "14.29"
+     ],
+     "preds": {
+      "flat_values": "14.29",
+      "flat_leaf": "3:43.62",
+      "header_path": "14.29"
+     },
+     "ok": {
+      "flat_values": true,
+      "flat_leaf": false,
+      "header_path": true
+     }
+    },
+    {
+     "id": "47d85b7882f9f3eaa0ef0096a5468423",
+     "q": "what was the number of appearances made by ben alnwick for sunderland in the 2004-05 championship season?",
+     "gold": [
+      "3.0"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "3",
+      "header_path": "3"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "da4ddf61de0f34ee83b7829102ffe6d9",
+     "q": "which age group is most likely to volunteer informally?",
+     "gold": [
+      "15 to 19"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": "15 to 19"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": true
+     }
+    },
+    {
+     "id": "9aacfbb741d62de704b6e88938389c40",
+     "q": "totally which people of which sex were more likely to have strong family networks?",
+     "gold": [
+      "women"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "women",
+      "header_path": "women"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "1972155590794ace1ebadbc045332edb",
+     "q": "which refugee category had a lower level of education in general?",
+     "gold": [
+      "government-assisted refugees"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "government-assisted refugees",
+      "header_path": "government-assisted refugees"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "b490e86698ea52bec432fd2c062eded2",
+     "q": "those who earned their doctorates more than 25 years ago were, as expected, how many percent was more likely to be working part time in 2010?",
+     "gold": [
+      "14.4"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": "14.4"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": true
+     }
+    },
+    {
+     "id": "a080b456f9a596237e7683fce6d819d9",
+     "q": "business r&d is concentrated in a small number of states, how many percent are with the 10 states with the highest levels of r&d performance accounting of the $233 billion total?",
+     "gold": [
+      "0.681511"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "550428282b3a554a8ff831f7149e00bc",
+     "q": "how many seats were reserved totally during the 2015 sudanese general election.",
+     "gold": [
+      "128.0"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "ae9c91e2b72da1948845d2b9c96be1f1",
+     "q": "what percentage of the cmdb deaths were caused by external causes?",
+     "gold": [
+      "5.5"
+     ],
+     "preds": {
+      "flat_values": "4.1",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     }
+    },
+    {
+     "id": "26307595388ef79a529bd08519ff0fa2",
+     "q": "were younger people whose highest level of education was a high school diploma faced a higher probability of being in low income, or those with a postsecondary credentials below a bachelor degree?",
+     "gold": [
+      "high school diploma"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "high school diploma",
+      "header_path": "high school diploma"
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": true,
+      "header_path": true
+     }
+    },
+    {
+     "id": "2802b5a96c112c97d86cf16d30653006",
+     "q": "how many percentage points of imports in capital goods were originated from the united states in 2016?",
+     "gold": [
+      "48.2"
+     ],
+     "preds": {
+      "flat_values": "",
+      "flat_leaf": "",
+      "header_path": ""
+     },
+     "ok": {
+      "flat_values": false,
+      "flat_leaf": false,
+      "header_path": false
+     },
+     "err": {
+      "flat_leaf": "RuntimeError",
+      "header_path": "RuntimeError"
+     }
+    }
+   ]
+  }
+ }
+}

@@ -100,8 +100,25 @@ benefit is *caused by hierarchy preservation*, not verbosity (flat control rules
 that out). This closes the open loop — a serialization scheme measured on
 end-to-end numeric-answer accuracy over hierarchical tables.
 
-Caveats: n=20/split (CIs wide); single model; HiTab absolute ceiling is low (0.50)
-— the **delta**, not the level, is the contribution. Next steps harden all three.
+Caveats: n=20/split (CIs wide); HiTab absolute ceiling is low (0.50)
+— the **delta**, not the level, is the contribution.
+
+### Model control (the effect is not model-specific)
+
+Re-ran the full design on a **large** model (`openai/gpt-oss-120b`, n=20/split).
+The pure hierarchy-preservation effect (S2−S1) replicates; the flat control stays ~0.
+
+| model | flat S2−S1 (control) | **hier S2−S1 (effect)** |
+|---|---|---|
+| llama-3.1-8b-instant | +0.05 [0.00, +0.15] | **+0.30 [+0.05, +0.55] \*** |
+| openai/gpt-oss-120b  | +0.05 [0.00, +0.15] | **+0.20 [+0.05, +0.40] \*** |
+
+Both: flat ≈ 0, hier significantly positive. Structure preservation protects numeric
+computation across a small and a large model — not a single-model artifact.
+(`results/codegen/chunk_120b_n20.json`. Note: gpt-oss is a reasoning model and needs
+`--max-tokens 256`; at 40 it emits empty content. llama-3.3-70b-versatile was
+unavailable — free-tier daily token cap (TPD 100k) exhausted; a clean 70b control can
+be added after reset.)
 
 ## Planned ablations / next
 
