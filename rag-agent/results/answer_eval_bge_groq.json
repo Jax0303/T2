@@ -1,0 +1,600 @@
+{
+  "config": {
+    "split": "dev",
+    "n_eval": 25,
+    "k": 5,
+    "alpha": 0.5,
+    "encoder": "bge",
+    "llm": "groq:llama-3.1-8b-instant",
+    "modes": [
+      "direct",
+      "codegen"
+    ],
+    "no_fallback": false,
+    "seed": 42
+  },
+  "aggregate": {
+    "direct": {
+      "exact_match": 0.24,
+      "numeric_match": 0.28,
+      "fallback_rate": 0.48
+    },
+    "codegen": {
+      "exact_match": 0.0,
+      "numeric_match": 0.0,
+      "fallback_rate": 0.48,
+      "exec_accuracy": 0.08
+    }
+  },
+  "per_sample": [
+    {
+      "id": "e3ea71e57afb31f0b257426444523c3e",
+      "table_id": "0_1_nsf21326-tab001",
+      "gold": [
+        154983.0
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "561",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "f9e8afa4d0a843bad79aab1f92f9e7c7",
+      "table_id": "1008",
+      "gold": [
+        11.1
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "11.1",
+          "em": true,
+          "nm": true,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": "0.5634517766497462",
+          "em": false,
+          "nm": false,
+          "exec_ok": true
+        }
+      }
+    },
+    {
+      "id": "18a8f162949164f32a56a5fb9c91755d",
+      "table_id": "1008",
+      "gold": [
+        9.7
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "9.7",
+          "em": true,
+          "nm": true,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "4744c4679f1b1f70913f2761e32c96b5",
+      "table_id": "1008",
+      "gold": [
+        7.1
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "7.1",
+          "em": true,
+          "nm": true,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "5b10a8fe7c983b2f828aaf9203a06909",
+      "table_id": "1008",
+      "gold": [
+        4.5
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "4.5",
+          "em": true,
+          "nm": true,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "1505abf354f3f12a465598406e3e6d44",
+      "table_id": "1012",
+      "gold": [
+        15144253.0
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "15.144253",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "c727cafaa221db439e9c92f192b0e5db",
+      "table_id": "1012",
+      "gold": [
+        1.6
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "-0.6",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "e787c9de756ff0da1df55eba5381fa19",
+      "table_id": "1017",
+      "gold": [
+        11
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "11",
+          "em": true,
+          "nm": true,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "90a7ff05ab63889f20c3b32136e3bb05",
+      "table_id": "1026",
+      "gold": [
+        65.2
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "13.3",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "76958999926314d82b80a5b39f21ed76",
+      "table_id": "1026",
+      "gold": [
+        83.0
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "8.8",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "2646105921bf1c2515179b081481505a",
+      "table_id": "1029",
+      "gold": [
+        11493.0
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "(ontario > remand > number) + (quebec > remand > number) + (manitoba > remand > number) + (saskatchewan > remand > number) + (british columbia > remand > number) + (yukon > remand > number) + (newfoundland and labrador > remand > number) + (prince edward island > remand > number) + (nova scotia > remand > number) + (new brunswick > remand > number) + (alberta > remand > number) + (northwest territories > remand > number)",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "518d25285dcc848a543e07ae03103ab1",
+      "table_id": "1029",
+      "gold": [
+        9889.0
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "196 + 93 + 172 + 283 + 2814 + 2981 + 888 + 1062 + 1148 + 34 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 +",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "51a9278d6eeb26d8a864ad7b1e0f3df9",
+      "table_id": "1029",
+      "gold": [
+        84905.0
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "47702 + 7043 + 4089 + 10848 + 11197 + 317 = 22194",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "55bd47f572858870a4d1bd6b56ae370e",
+      "table_id": "102_totto12065-2",
+      "gold": [
+        4.0
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "4.0",
+          "em": true,
+          "nm": true,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "09c3d348ea76b11d305d71fe30e310aa",
+      "table_id": "103_54_nsf19316-tab001",
+      "gold": [
+        355821.0
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": "355821",
+          "em": false,
+          "nm": true,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "02cb638212c0f01dc6f041b0ac42009a",
+      "table_id": "103_54_nsf19316-tab001",
+      "gold": [
+        0.876264
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "(250-499) / (250-499 + 500-999) * 100",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "89b15914091a322c15dbf7e2c6a0903c",
+      "table_id": "103_54_nsf19316-tab001",
+      "gold": [
+        0.053164
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "48c1fb4af5f317f1b9efba257efd0bb6",
+      "table_id": "103_54_nsf19316-tab001",
+      "gold": [
+        0.070572
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        }
+      }
+    },
+    {
+      "id": "cc261c68c73908387afcca2fc4f53cef",
+      "table_id": "1043",
+      "gold": [
+        76.4
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        }
+      }
+    },
+    {
+      "id": "e81c102ba97fc26d9b6cd322416da048",
+      "table_id": "1043",
+      "gold": [
+        "health care and social assistance",
+        "administrative and support, waste management and remediation services",
+        "real estate and rental and leasing",
+        "professional, scientific and technical services",
+        "transportation and warehousing",
+        "construction"
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": "0.9",
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        }
+      }
+    },
+    {
+      "id": "791acdec156182205abe28f5603322eb",
+      "table_id": "1045",
+      "gold": [
+        1.8
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": "1.4",
+          "em": false,
+          "nm": false,
+          "exec_ok": true
+        }
+      }
+    },
+    {
+      "id": "fc6058d2a4743405e49c74726dd4dd92",
+      "table_id": "1045",
+      "gold": [
+        2.0
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        }
+      }
+    },
+    {
+      "id": "df4d10cd832d0640617227cfdf344d75",
+      "table_id": "104_54_nsf19316-tab002",
+      "gold": [
+        3.4
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        }
+      }
+    },
+    {
+      "id": "e7920d81cf9409d1f409578037ae33aa",
+      "table_id": "105_totto12493-3",
+      "gold": [
+        "fitzroy united alexander"
+      ],
+      "used_fallback": true,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false
+        }
+      }
+    },
+    {
+      "id": "c0845a09959fc13b05e4301489de7918",
+      "table_id": "1062",
+      "gold": [
+        "transgender"
+      ],
+      "used_fallback": false,
+      "modes": {
+        "direct": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        },
+        "codegen": {
+          "answer": null,
+          "em": false,
+          "nm": false,
+          "exec_ok": false,
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens"
+        }
+      }
+    }
+  ]
+}
