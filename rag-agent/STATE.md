@@ -107,6 +107,18 @@
 - 다음(Phase 1): 3597표 → `corpus/tables.jsonl` + 3직렬화 + `queries.jsonl`(원본 정렬 그대로) + `RECONSTRUCTION.md`,
   orphan=0 검증.
 
+## 9. 진단 트랙 — 전처리×복잡도 (2026-06-15, artifact 보고서 기반)
+새 프레임: "검색 전 표 전처리 효과 × 표 복잡도(flat↔hierarchical) 통제 비교" (연구 공백 정면).
+- [x] flat 데이터셋 OpenWikiTable 24,680표 재구성 (`scripts/diag_build_flat.py`, orphan=0)
+- [x] C0(raw)/C1(+meta)/C2(+schema·header-path) 직렬화 양 축 (`scripts/diag_serialize.py`)
+- [x] BGE-small 임베딩+검색평가+paired bootstrap (`scripts/diag_embed_eval.py`)
+- [x] 층화 분해 (`scripts/diag_stratify.py`)
+- [x] **1단계 진단 → `docs/DIAGNOSIS.md`**, **2단계 방법론 → `docs/METHOD_PROPOSAL.md`**
+- 핵심수치: 메타데이터 R@1 이득 flat **+0.599** vs hier **+0.178**(3.4×). hier 천장 0.373(<flat 0.864 절반).
+  계층 헤더경로 평탄화 C2−C1=+0.018(무력). 무너지는 지점=계층×집계질의(arithmetic_agg R@1 0.30).
+- [ ] C3(좌표정렬 합성질문) 생성·검증 H1–H3 → `diag_synthetic_q.py` (다음 단계)
+- 산출 JSON: `results/diag_flat_test.json`, `diag_hier_dev.json`, `diag_hier_stratified.json`
+
 ## 8. 진행 로그 (2026-06-07 갱신)
 - [x] Phase 0 — STATE.md, Gate 0 통과
 - [x] Phase 1 — 코퍼스 3597 + 3직렬화 + queries 10672, orphan=0, RECONSTRUCTION.md → Gate 1 통과
@@ -115,3 +127,15 @@
 - [x] Decision Gate 2·4 판정 → docs/VERDICT.md (둘 다 미트리거; 풀확대 시 dense 우위·ρ=+1.0)
 - [ ] Phase 3 — 라우팅 A1–A4/FULL + paired bootstrap + 층화 (codegen 경로, 추가 LLM 실행 필요)
 - [ ] Gate 1·3 판정, VERDICT.md 완성
+
+## 9. 메인 기여 — HPIR (Header-Path Intent Resolution) (2026-06-07)
+주제 확정: 쿼리를 **계층 헤더경로 IR**로 변환해 분리-스토어의 검색·답변을 동시에 끌어올리는
+쿼리-이해 모듈. 두 병목(검색29%/답변71%)의 공통 원인("헤더경로 미명시")을 한 모듈로 공략.
+- [x] 코어 `rag_agent/query/header_path_resolver.py` — 결정론 + 검증형 LLM 정련(인벤토리 교집합)
+- [x] 단위테스트 `tests/test_header_path_resolver.py` (11) — 데이터 불필요, 전체 30 통과
+- [x] 검색 하니스 `scripts/hpir_retrieval_eval.py` — raw vs HPIR확장, paired bootstrap+McNemar
+- [x] 답변 하니스 `scripts/method_grounded.py --mode hpir` — naive/grounded/hpir 3-way ablation
+- [x] `docs/METHOD_HPIR.md`, `configs/hpir.yaml`
+- [x] `stores/vector_store.py` chromadb import 지연화(bare 환경 테스트 가능하게)
+- [ ] **수치 산출(로컬 RTX 3060 Ti)**: hpir_retrieval.json + method_hpir_pc20.json → METHOD_HPIR §3 표 채우기
+      (본 원격 컨테이너엔 데이터/GPU/Qwen/Chroma 부재 → 실행만 데이터 보유 머신에서)

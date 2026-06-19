@@ -12,11 +12,13 @@
                        trace를 모델에 되먹여 재생성(≤k)  ← 조용한 오류를 잡는 핵심 노블티
   (4) 숫자 verifier  : 최종 result 형태 점검(정답 미사용)
 
-두 모드 비교(동일 모델·질의셋·채점, 검색=gold 고정 → 답변단계만 격리):
+세 모드 비교(동일 모델·질의셋·채점, 검색=gold 고정 → 답변단계만 격리):
   --mode naive     : 느슨한 cell(str,str) 1-shot, 스키마/트레이스/리페어 없음
-  --mode grounded  : 위 (1)-(4) 전부
+  --mode grounded  : 위 (1)-(4) 전부 (스키마+trace+repair)
+  --mode hpir      : grounded + HPIR 헤더경로 바인딩 힌트 주입
+                     (쿼리를 표의 실제 헤더경로로 사전 해소 → 제안 바인딩을 프롬프트에 주입)
 
-사용: python scripts/method_grounded.py --mode grounded --per-class 15 [--repairs 2] [--retrieval gold]
+사용: python scripts/method_grounded.py --mode hpir --per-class 15 [--repairs 2] [--retrieval gold]
 """
 from __future__ import annotations
 
@@ -34,6 +36,7 @@ sys.path.insert(0, str(ROOT))
 from rag_agent.data.loader import load_samples, load_table          # noqa: E402
 from rag_agent.stores.original_store import build_original_table, _to_float  # noqa: E402
 from rag_agent.eval.metrics import numeric_match, exact_match, difficulty_class  # noqa: E402
+from rag_agent.query import resolve_against_table                    # noqa: E402
 
 SEED = 42
 HARD = ["multi_op_formula", "arithmetic_agg", "pair_or_topk_arg", "single_arg", "comparison_or_count"]
@@ -175,12 +178,16 @@ GROUNDED_SYS = (
     "Assign the final answer to `result`. Output ONLY a python code block.")
 
 
-def build_user(title, question, tt: TracedTable, grounded: bool):
+def build_user(title, question, tt: TracedTable, grounded: bool, binding_hint: str = ""):
     s = f"Table title: {title}\nQuestion: {question}\n"
     if grounded:
         rows = tt.list_rows(); cols = tt.list_cols()
         s += "\nROW HEADERS (row_header 후보):\n- " + "\n- ".join(rows)
         s += "\n\nCOL HEADERS (col_header 후보):\n- " + "\n- ".join(cols)
+    if binding_hint:
+        # HPIR: pre-resolved header-path bindings for THIS query (a prior, not a constraint).
+        s += ("\n\nHPIR SUGGESTED BINDINGS (resolved from the question; "
+              "prefer these if correct, but verify against the lists above):\n" + binding_hint)
     s += "\n\nWrite python that sets `result` to the answer value."
     return s
 
@@ -224,7 +231,7 @@ def needs_repair(trace, result, err):
 # ───────────────────────── main ─────────────────────────
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["naive", "grounded"], required=True)
+    ap.add_argument("--mode", choices=["naive", "grounded", "hpir"], required=True)
     ap.add_argument("--per-class", type=int, default=15)
     ap.add_argument("--repairs", type=int, default=2, help="grounded 자가수정 최대 횟수")
     ap.add_argument("--retrieval", choices=["gold"], default="gold")
@@ -248,7 +255,8 @@ def main():
 
     from rag_agent.llm.local_qwen import LocalQwenLLM
     llm = LocalQwenLLM(default_max_tokens=args.max_tokens)
-    sys_p = GROUNDED_SYS if args.mode == "grounded" else NAIVE_SYS
+    grounded = args.mode in ("grounded", "hpir")
+    sys_p = GROUNDED_SYS if grounded else NAIVE_SYS
 
     rows = []
     t0 = time.time()
@@ -265,12 +273,16 @@ def main():
         api = {"cell": tt.cell, "col_values": tt.col_values, "row_values": tt.row_values,
                "list_rows": tt.list_rows, "list_cols": tt.list_cols}
 
-        user = build_user(ot.title, q, tt, grounded=(args.mode == "grounded"))
+        binding_hint = ""
+        if args.mode == "hpir":
+            intent = resolve_against_table(q, ot)
+            binding_hint = intent.binding_hint()
+        user = build_user(ot.title, q, tt, grounded=grounded, binding_hint=binding_hint)
         code = strip_code(llm.complete(sys_p, user, max_tokens=args.max_tokens))
         tt.trace = []
         result, err = run_code(code, api)
         n_repair = 0
-        if args.mode == "grounded":
+        if grounded:
             while n_repair < args.repairs and needs_repair(tt.trace, result, err):
                 fb = trace_feedback(code, tt.trace, result, err)
                 code = strip_code(llm.complete(sys_p, user + "\n\n" + fb, max_tokens=args.max_tokens))
