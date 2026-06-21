@@ -1,0 +1,760 @@
+{
+  "bench": "hitab",
+  "mode": "naive",
+  "summary": {
+    "n": 50,
+    "acc": 0.02,
+    "nm_rate": 0.74,
+    "empty_rate": 0.08,
+    "clean_bind": 0.2,
+    "acc_given_clean": 0.1
+  },
+  "rows": [
+    {
+      "query_id": "fe6407e2459997d5f135e8a88892a049",
+      "query": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+      "gold": [
+        "men"
+      ],
+      "pred": "Male",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "def compute_result():\n    # Get the column values for 'Related to alcohol or drug use of perpetrator'\n    related_to_alcohol = col_values('Related to alcohol or drug use of perpetrator')\n\n    # Get the row values for 'Female' and 'Male'\n    female_values = row_values('Female')\n    male_values = row_values('Male')\n\n    # Find the index of 'Related to alcohol or drug use of perpetrator' in the row values\n    index = female_values.index(max(female_values)) if max(female_values) > max(male_values) else male_values.index(max(male_values))\n\n    # Determine the gender with the higher percentage\n    if female_values[index] > male_values[index]:\n        result = 'Female'\n    else:\n        result = 'Male'\n\n    return result\n\nresult = compute_result()"
+    },
+    {
+      "query_id": "03e2e33b61115022766eba43568f2a2d",
+      "query": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+      "gold": [
+        264.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "IndexError: list index out of range",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "def get_clive_clarke_appearances():\n    # Get the row for Clive Clarke\n    clive_clarke_row = [row for row in row_values('Player') if 'Clive Clarke' in row][0]\n    \n    # Get the column for Stoke City appearances\n    stoke_city_col = [col for col in col_values('Club') if 'Stoke City' in col][0]\n    \n    # Get the cell value for Clive Clarke's Stoke City appearances\n    result = cell(clive_clarke_row, stoke_city_col)\n    \n    return result\n\nresult = get_clive_clarke_appearances()"
+    },
+    {
+      "query_id": "76958999926314d82b80a5b39f21ed76",
+      "query": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+      "gold": [
+        83.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('men', 'high-paying firm')"
+    },
+    {
+      "query_id": "76863f9b68412109d717820bb24dc71a",
+      "query": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+      "gold": [
+        "filipino"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'float'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "filipina_women_employment_rate = cell('Filipina women', 'Employment rate')\nthird_plus_generation_white_women_employment_rate = cell('Third-plus generation White women', 'Employment rate')\n\nif filipina_women_employment_rate > third_plus_generation_white_women_employment_rate:\n    result = 'Filipina women'\nelif filipina_women_employment_rate < third_plus_generation_white_women_employment_rate:\n    result = 'Third-plus generation White women'\nelse:\n    result = 'Equal'"
+    },
+    {
+      "query_id": "8d3373fa0c42ed9d0fa3af23548d1e28",
+      "query": "what percent of bert gosnell's 233 games from 1921 to 1926 is winning?",
+      "gold": [
+        25.3
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Define the function to calculate the percentage of wins\ndef calculate_win_percentage():\n    # Get the total number of games played by Bert Gosnell\n    total_games = cell('Bert Gosnell', 'Games')\n    \n    # Get the number of wins by Bert Gosnell\n    wins = cell('Bert Gosnell', 'Wins')\n    \n    # Calculate the win percentage\n    win_percentage = (wins / total_games) * 100\n    \n    return win_percentage\n\n# Calculate and store the result\nresult = calculate_win_percentage()"
+    },
+    {
+      "query_id": "7615f60fffd339c61c4b9181ccaeeadd",
+      "query": "what is the industry with the highest share of female gig workers among all workers?",
+      "gold": [
+        "other services"
+      ],
+      "pred": "Arts entertainment and recreation",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "def find_highest_share():\n    max_share = 0\n    result = None\n    for col_header in [\"Agriculture\", \"Mining\", \"Construction\", \"Manufacturing\", \"Transportation\", \"Wholesale trade\", \"Retail trade\", \"Information\", \"Finance and insurance\", \"Real estate and rental and leasing\", \"Professional and scientific and technical services\", \"Management of companies and enterprises\", \"Administrative and support and waste management and remediation services\", \"Educational services\", \"Health care and social assistance\", \"Arts entertainment and recreation\", \"Accommodation and food services\", \"Other services (except public administration)\"]:\n        share = cell(col_header, 'Female share of gig workers')\n        if share > max_share:\n            max_share = share\n            result = col_header\n    return result\n\nresult = find_highest_share()"
+    },
+    {
+      "query_id": "2b46cca80468a08a89b4679e726b92be",
+      "query": "among men who had been sexually assaulted off campus, how many percent indicated that this was the type of place where it happened?",
+      "gold": [
+        39.6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "def calculate_result():\n    # Get the total number of men who had been sexually assaulted off campus\n    total_men_off_campus = cell('Men', 'Off campus')\n\n    # Get the number of men who had been sexually assaulted off campus in the type of place\n    men_off_campus_type_of_place = cell('Men', 'Type of place (Off campus)')\n\n    # Calculate the percentage\n    result = (men_off_campus_type_of_place / total_men_off_campus) * 100\n\n    return result\n\nresult = calculate_result()"
+    },
+    {
+      "query_id": "c81134db64a98f22e28cddfb7de0a1a5",
+      "query": "what was the number of police-reported hate crimes motivated by race or ethnicity in 2015?",
+      "gold": [
+        641.0
+      ],
+      "pred": "7.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('Race or ethnicity', 2015)"
+    },
+    {
+      "query_id": "c486681bfdc34de8cf73363a0e33bc8a",
+      "query": "what was the number of actual combat soldiers of the male soviet force.",
+      "gold": [
+        1426352.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Male Soviet force', 'Actual combat soldiers')"
+    },
+    {
+      "query_id": "28f1b6d455a8e8b8d9d865fbc8afe22d",
+      "query": "what the time did ali bouraleh finish the heat in a time of?",
+      "gold": [
+        14.29
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "IndexError: list index out of range",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "def find_finish_time():\n    # Get all times for Ali Bouraleh\n    times = row_values('Ali Bouraleh', 'Time')\n    \n    # Since there should only be one time, return the first value\n    result = times[0]\n    return result\n\nresult = find_finish_time()"
+    },
+    {
+      "query_id": "47d85b7882f9f3eaa0ef0096a5468423",
+      "query": "what was the number of appearances made by ben alnwick for sunderland in the 2004-05 championship season?",
+      "gold": [
+        3.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"Ben Alnwick\", col_header=\"2004-05 Championship\")"
+    },
+    {
+      "query_id": "da4ddf61de0f34ee83b7829102ffe6d9",
+      "query": "which age group is most likely to volunteer informally?",
+      "gold": [
+        "15 to 19"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "SyntaxError: unterminated string literal (detected at line 20) (<string>, line 20)",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "```python\ndef cell(row_header, col_header):\n    # This function should be implemented based on the actual table data\n    # For demonstration purposes, assume we have a dictionary with table data\n    table_data = {\n        '18-24': {'Rate of helping others directly': 0.6, 'Frequency of helping others directly': 3.5},\n        '25-34': {'Rate of helping others directly': 0.7, 'Frequency of helping others directly': 4.2},\n        '35-44': {'Rate of helping others directly': 0.5, 'Frequency of helping others directly': 3.1},\n        '45-54': {'Rate of helping others directly': 0.4, 'Frequency of helping others directly': 2.8},\n        '55-64': {'Rate of helping others directly': 0.3, 'Frequency of helping others directly': 2.5},\n        '65 and over': {'Rate of helping others directly': 0.2, 'Frequency of helping others directly': 2.2}\n    }\n    return table_data[row_header][col_header]\n\ndef col_values(col_header, row_filter=None):\n    # This function should be implemented based on the actual table data\n    # For demonstration purposes, assume we have a dictionary with table data\n    table_data = {\n        '18-24': {'Rate of helping others directly': 0.6, 'Frequency of helping others directly': 3.5},\n        '25-34': {'Rate of"
+    },
+    {
+      "query_id": "9aacfbb741d62de704b6e88938389c40",
+      "query": "totally which people of which sex were more likely to have strong family networks?",
+      "gold": [
+        "women"
+      ],
+      "pred": "Both sexes are equally likely",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "def compute_result():\n    # Get the column values for 'Males' and 'Females'\n    males = col_values('Males')\n    females = col_values('Females')\n\n    # Calculate the total percentage for males and females\n    total_males = sum(males)\n    total_females = sum(females)\n\n    # Determine which sex is more likely to have strong family networks\n    if total_males > total_females:\n        result = 'Males'\n    elif total_females > total_males:\n        result = 'Females'\n    else:\n        result = 'Both sexes are equally likely'\n\n    return result\n\nresult = compute_result()"
+    },
+    {
+      "query_id": "1972155590794ace1ebadbc045332edb",
+      "query": "which refugee category had a lower level of education in general?",
+      "gold": [
+        "government-assisted refugees"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: min() iterable argument is empty",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "def get_refugee_category_with_lower_education():\n    # Get the column values for 'Refugee Category' and 'Level of Education'\n    refugee_categories = col_values('Refugee Category')\n    education_levels = col_values('Level of Education')\n\n    # Initialize a dictionary to store the average education level for each refugee category\n    education_levels_by_category = {}\n\n    # Iterate over the refugee categories\n    for category in refugee_categories:\n        # Filter the education levels for the current category\n        category_education_levels = [cell(category, 'Level of Education')]\n\n        # Calculate the average education level for the current category\n        average_education_level = sum(category_education_levels) / len(category_education_levels)\n\n        # Store the average education level in the dictionary\n        education_levels_by_category[category] = average_education_level\n\n    # Find the refugee category with the lower level of education\n    result = min(education_levels_by_category, key=education_levels_by_category.get)\n\n    return result\n\nresult = get_refugee_category_with_lower_education()"
+    },
+    {
+      "query_id": "b490e86698ea52bec432fd2c062eded2",
+      "query": "those who earned their doctorates more than 25 years ago were, as expected, how many percent was more likely to be working part time in 2010?",
+      "gold": [
+        14.4
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "SyntaxError: invalid syntax (<string>, line 1)",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "```python\n# Calculate the percentage of scientists and engineers working part-time\n# more than 25 years after earning their doctorates\n\n# Get the number of scientists and engineers working part-time\n# more than 25 years after earning their doctorates\npart_time_more_than_25_years = cell(\"More than 25 years\", \"Part-time\")\n\n# Get the total number of scientists and engineers more than 25 years after earning their doctorates\ntotal_more_than_25_years = row_values(\"More than 25 years\", \"Employed\")\n\n# Get the number of scientists and engineers working part-time\n# 0-4 years after earning their doctorates\npart_time_0_to_4_years = cell(\"0-4 years\", \"Part-time\")\n\n# Get the total number of scientists and engineers 0-4 years after earning their doctorates\ntotal_0_to_4_years = row_values(\"0-4 years\", \"Employed\")\n\n# Calculate the percentage of scientists and engineers working part-time\n# more than 25 years after earning their doctorates\npercent_part_time_more_than_25_years = (part_time_more_than_25_years / total_more_than_25_years) * 100\n\n# Calculate the percentage of scientists and engineers working part-time\n# 0-4 years after earning their doctorates\npercent_part_time_0_to_4_years = (part_time_0_to_4_years / total_0_to_4_years) * 100\n\n# Calculate the difference in percentage\nresult = percent_part_time_more_than_25"
+    },
+    {
+      "query_id": "a080b456f9a596237e7683fce6d819d9",
+      "query": "business r&d is concentrated in a small number of states, how many percent are with the 10 states with the highest levels of r&d performance accounting of the $233 billion total?",
+      "gold": [
+        0.681511
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "# Calculate total R&D performed by top 10 states\ntop_10_rnd = sum(col_values('Total R&D performance', row_filter=lambda x: x in row_values('State', col_filter='Total R&D performance')))\n\n# Calculate percentage of total R&D performed by top 10 states\nresult = (top_10_rnd / 233) * 100"
+    },
+    {
+      "query_id": "550428282b3a554a8ff831f7149e00bc",
+      "query": "how many seats were reserved totally during the 2015 sudanese general election.",
+      "gold": [
+        128.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "def calculate_reserved_seats():\n    # Get the total number of reserved seats for women\n    women_seats = cell(\"2015\", \"Reserved seats for women\")\n    \n    # Get the total number of reserved seats for youth and other categories if available\n    youth_seats = cell(\"2015\", \"Reserved seats for youth\") if cell(\"2015\", \"Reserved seats for youth\") else 0\n    other_seats = cell(\"2015\", \"Reserved seats for other categories\") if cell(\"2015\", \"Reserved seats for other categories\") else 0\n\n    # Calculate the total number of reserved seats\n    result = women_seats + youth_seats + other_seats\n    \n    return result\n\nresult = calculate_reserved_seats()"
+    },
+    {
+      "query_id": "ae9c91e2b72da1948845d2b9c96be1f1",
+      "query": "what percentage of the cmdb deaths were caused by external causes?",
+      "gold": [
+        5.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'float' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Get total deaths and deaths due to external causes\ntotal_deaths = cell('Total', 'Number of deaths')\nexternal_deaths = cell('External causes', 'Number of deaths')\n\n# Calculate percentage of deaths due to external causes\npercentage_external_deaths = (external_deaths / total_deaths) * 100\n\n# Assign result\nresult = percentage_external_deaths"
+    },
+    {
+      "query_id": "26307595388ef79a529bd08519ff0fa2",
+      "query": "were younger people whose highest level of education was a high school diploma faced a higher probability of being in low income, or those with a postsecondary credentials below a bachelor degree?",
+      "gold": [
+        "high school diploma"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Define the column headers\nage_header = '25-34'\nhigh_school_diploma_header = 'High school diploma'\npostsecondary_credentials_header = 'Postsecondary credentials below bachelor degree'\n\n# Define the row headers\nlow_income_header = 'Low income probability'\n\n# Get the values for the specified age group and education levels\nhigh_school_diploma_value = cell(age_header, high_school_diploma_header)\npostsecondary_credentials_value = cell(age_header, postsecondary_credentials_header)\n\n# Determine which group faced a higher probability of being in low income\nif high_school_diploma_value > postsecondary_credentials_value:\n    result = \"Younger people with a high school diploma\"\nelse:\n    result = \"Younger people with a postsecondary credentials below a bachelor degree\""
+    },
+    {
+      "query_id": "2802b5a96c112c97d86cf16d30653006",
+      "query": "how many percentage points of imports in capital goods were originated from the united states in 2016?",
+      "gold": [
+        48.2
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Get the total imports of capital goods in 2016\ntotal_imports = cell('2016', 'Total Imports')\n\n# Get the imports of capital goods from the United States in 2016\nus_imports = cell('2016', 'United States')\n\n# Calculate the percentage of imports from the United States\npercentage = (us_imports / total_imports) * 100\n\n# Set the result to the calculated percentage\nresult = percentage"
+    },
+    {
+      "query_id": "58ffb31b4a6c9fa7241722e671be1033",
+      "query": "what percentage of 3- to 5-year-old boys had daycare centres?",
+      "gold": [
+        40.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'int'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "def calculate_percentage():\n    # Get the total number of 3- to 5-year-old boys\n    total_boys = sum(row_values('3-5 years', col_filter='Boys'))\n    \n    # Get the number of 3- to 5-year-old boys in daycare centres\n    boys_in_daycare = cell('3-5 years', 'Daycare centres')\n    \n    # Calculate the percentage\n    percentage = (boys_in_daycare / total_boys) * 100\n    \n    return percentage\n\nresult = calculate_percentage()"
+    },
+    {
+      "query_id": "91000ced8fe043bce74aeb836fc37310",
+      "query": "in 2006-07, which league did o'neil appear for portsmouth in?",
+      "gold": [
+        "premier league"
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "def find_league():\n    row_header = \"2006-07\"\n    col_header = \"League\"\n    result = cell(row_header, col_header)\n    return result\n\nresult = find_league()"
+    },
+    {
+      "query_id": "9d173931d9d7ad242c0aa1776525e09c",
+      "query": "what was the percentage of physical assault offenders who were under the age of 35?",
+      "gold": [
+        55
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Calculate the total number of physical assault offenders\ntotal_offenders = sum(col_values('Total offenders'))\n\n# Calculate the number of physical assault offenders under the age of 35\noffenders_under_35 = sum(col_values('18 to 24 years') + col_values('25 to 34 years'))\n\n# Calculate the percentage of physical assault offenders who were under the age of 35\nresult = (offenders_under_35 / total_offenders) * 100"
+    },
+    {
+      "query_id": "73512fe9ca199714fb81c28e5e4f8d45",
+      "query": "how many league games did andrew williams (born 1962) play in his career?",
+      "gold": [
+        278.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Andrew Williams (born 1962)', 'League Games')"
+    },
+    {
+      "query_id": "367af9447305fe92eb98450df65bbb43",
+      "query": "what is the percentage of adults having unperceived hearing loss among the adults with audiometrically measured hearing loss?",
+      "gold": [
+        77.1
+      ],
+      "pred": "136.66666666666666",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Get the total number of adults with audiometrically measured hearing loss\ntotal_measured_loss = cell('Total', 'Audiometrically measured hearing loss')\n\n# Get the total number of adults with unperceived hearing loss\ntotal_unperceived_loss = cell('Total', 'Unperceived hearing loss')\n\n# Calculate the percentage of adults having unperceived hearing loss among the adults with audiometrically measured hearing loss\nresult = (total_unperceived_loss / total_measured_loss) * 100"
+    },
+    {
+      "query_id": "8d261d5f81dc9e2b8c2b837418bdb5c2",
+      "query": "how many receptions did scott chandler play for in 2013?",
+      "gold": [
+        53.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"Scott Chandler\", col_header=\"Receptions in 2013\")"
+    },
+    {
+      "query_id": "8d6d394650f79f9ef649e572b257697e",
+      "query": "how many touchdowns did the taylor martinez score in 2010?",
+      "gold": [
+        9.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"Taylor Martinez\", \"Touchdowns 2010\")"
+    },
+    {
+      "query_id": "e92bb7095157dc83d89eb92bb4e91fea",
+      "query": "how many appearances did scott score with brentford?",
+      "gold": [
+        295.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"Scott\", col_header=\"Appearances with Brentford\")"
+    },
+    {
+      "query_id": "c98c67ebe373534a366c96a294d20b11",
+      "query": "which metropolitan area has the highest average census tract incomes?",
+      "gold": [
+        "calgary"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Get the column values for 'Average census tract income'\navg_incomes = col_values('Average census tract income')\n\n# Get the corresponding metropolitan areas\nmetro_areas = row_values('Census metropolitan area')\n\n# Combine the two lists into a dictionary\nincome_dict = dict(zip(metro_areas, avg_incomes))\n\n# Find the metropolitan area with the highest average income\nresult = max(income_dict, key=income_dict.get)"
+    },
+    {
+      "query_id": "93c750ff9b37050b550d4dd8d47d3946",
+      "query": "what is the average daily minutes of physical activity reported by canadian youth from the domain of household/occupation, according to the payq?",
+      "gold": [
+        5.6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Household/occupation', 'Average daily minutes of physical activity')"
+    },
+    {
+      "query_id": "643ada2db659a2167c1d1715c566c425",
+      "query": "what is ther percentage of refugees aged under 15 from all the other countreis in 2016?",
+      "gold": [
+        31.0
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "def calculate_percentage():\n    # Get the total number of refugees from all other countries\n    total_refugees = sum(col_values('Total'))\n\n    # Get the number of refugees under 15 from all other countries\n    refugees_under_15 = sum(col_values('Under 15'))\n\n    # Calculate the percentage\n    percentage = (refugees_under_15 / total_refugees) * 100\n\n    return percentage\n\nresult = calculate_percentage()"
+    },
+    {
+      "query_id": "00825430a0f9a7e489f756b1b8927180",
+      "query": "what is the average daily minutes of physical activity reported by canadian youth from the domain of school, according to the payq?",
+      "gold": [
+        25.8
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('School', 'Average daily minutes of physical activity')"
+    },
+    {
+      "query_id": "c114398a8e91d3218e43c4a7d94eda61",
+      "query": "what is the percentage on average of cases in each year show earnings in both the t1ff and t4?",
+      "gold": [
+        71.05
+      ],
+      "pred": "100.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "def calculate_average_percentage():\n    total_years = 12  # 2000 to 2011\n    both_earnings_count = 0\n    total_count = 0\n\n    for year in range(2000, 2012):\n        t1ff_earnings = col_values(f\"T1FF {year}\")\n        t4_earnings = col_values(f\"T4 {year}\")\n        both_earnings = [value for value in t1ff_earnings if value in t4_earnings]\n        both_earnings_count += len(both_earnings)\n        total_count += len(t1ff_earnings)\n\n    average_percentage = (both_earnings_count / total_count) * 100\n    return average_percentage\n\nresult = calculate_average_percentage()"
+    },
+    {
+      "query_id": "c5e1012cc874a0ae468d65d409c007a2",
+      "query": "what was the share of men aged 55 and over in financial auditors and accountants in 2016?",
+      "gold": [
+        30.7
+      ],
+      "pred": "30.7",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('Financial auditors and accountants', '55 and over (%) - 2016')"
+    },
+    {
+      "query_id": "b54d67af14a701a13dfa08538c813dca",
+      "query": "the employment rate for aboriginal people living on reserve was 47.3% in 2011, compared to 71.1% for their counterparts living off-reserve-a difference of 23.8 percentage points.",
+      "gold": [
+        23.8
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Calculate the difference in employment rates between on-reserve and off-reserve aboriginal people\non_reserve_employment_rate = cell(\"On reserve\", \"Employment rate\")\noff_reserve_employment_rate = cell(\"Off reserve\", \"Employment rate\")\n\n# Calculate the difference in employment rates\nresult = off_reserve_employment_rate - on_reserve_employment_rate"
+    },
+    {
+      "query_id": "b160c973278a37bda23f623a9cca8f2b",
+      "query": "what was the percentage of residents of prince edward island who reported nmo cannabis use in the previous year?",
+      "gold": [
+        5.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Prince Edward Island', '% No cannabis use in the past year')"
+    },
+    {
+      "query_id": "cde23ab9e26bb0cebf68a7a7be27b975",
+      "query": "in 2017, which league did rotkovic sign with side ansan greeners?",
+      "gold": [
+        "k league 2"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "IndexError: list index out of range",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY",
+        "NO_MATCH",
+        "EMPTY"
+      ],
+      "code": "def find_league():\n    # Get the row values for the year 2017 and player Rotkovic\n    row_values_2017 = row_values(2017, 'Player') \n    row_values_rotkovic = row_values('Rotkovic', 'Year')\n\n    # Find the common row between the two\n    common_row = [value for value in row_values_2017 if value in row_values_rotkovic]\n\n    # Get the column values for the league\n    col_values_league = col_values('League')\n\n    # Find the index of the common row\n    index = col_values_league.index(common_row[0])\n\n    # Get the value at the index of Ansan Greeners\n    result = cell('Ansan Greeners', 'League')\n    return result\n\nresult = find_league()"
+    },
+    {
+      "query_id": "2145f25f4edfbfb9ba968f3a16c6d035",
+      "query": "how many goals did powell score for milton keynes dons across nine seasons?",
+      "gold": [
+        46.0
+      ],
+      "pred": "[]",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = row_values('Milton Keynes Dons', col_filter='Powell')"
+    },
+    {
+      "query_id": "29859004092bf90d1af86ccf9741809b",
+      "query": "when did the single big bro thang release?",
+      "gold": [
+        2007.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"Big Bro Thang\", \"Release Date\")"
+    },
+    {
+      "query_id": "288ff92bc7cb0f790485d8bd97979b44",
+      "query": "what was the earning ratio between women and men in physical and life sciences and technologies?",
+      "gold": [
+        0.78
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Get the median annual employment income for men and women in physical and life sciences and technologies\nmen_income = cell('Men', 'Physical and life sciences and technologies')\nwomen_income = cell('Women', 'Physical and life sciences and technologies')\n\n# Calculate the earning ratio between women and men\nresult = women_income / men_income"
+    },
+    {
+      "query_id": "1e23bfe038975bf82e4585e2124dc93f",
+      "query": "how many passing yards did kevin kolb get in 2004?",
+      "gold": [
+        2766.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"Kevin Kolb\", col_header=\"Passing Yards 2004\")"
+    },
+    {
+      "query_id": "4ea3c1908ca49ceab34fd92206ed73cb",
+      "query": "what percentage of girls have child care in their own home?",
+      "gold": [
+        11.9
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'int'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "def calculate_percentage():\n    # Get the total number of girls\n    total_girls = sum(col_values('Girls', row_filter='Total'))\n\n    # Get the number of girls with child care in their own home\n    girls_own_home = cell('Girls', 'Child care in their own home')\n\n    # Calculate the percentage\n    percentage = (girls_own_home / total_girls) * 100\n\n    return percentage\n\nresult = calculate_percentage()"
+    },
+    {
+      "query_id": "648cb2aa7a3fdfffc2d4529a601bbc0c",
+      "query": "how many postal code were missing?",
+      "gold": [
+        2431995
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Total', 'Missing')"
+    },
+    {
+      "query_id": "67e6b9e391a6d7cbc06ba0434725ec66",
+      "query": "what was the number of births on first nations reserves, excluding reserves with a shared postal code?",
+      "gold": [
+        12170
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('First Nations reserves, excluding reserves with a shared postal code', 'Number of births')"
+    },
+    {
+      "query_id": "df4d10cd832d0640617227cfdf344d75",
+      "query": "for the largest of companies (25,000 or more employees), what was the r&d intensity?",
+      "gold": [
+        3.4
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('25,000 or more employees', 'R&D intensity')"
+    },
+    {
+      "query_id": "b6e1458d7594fbdfb40463e7a3c687ca",
+      "query": "what was the percentage of workers expected to be in the worst job quality group (class 4)?",
+      "gold": [
+        0.264
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Class 4', 'Percentage of workers')"
+    },
+    {
+      "query_id": "79ed76c91f336d688d4d8331a79cde99",
+      "query": "in contrast, saguenay, having reported what percentage of decreases in robbery in 2015?",
+      "gold": [
+        30
+      ],
+      "pred": "-0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Get the 2014 and 2015 robbery values for Saguenay\nsaguenay_2014 = cell('Saguenay', '2014')\nsaguenay_2015 = cell('Saguenay', '2015')\n\n# Calculate the percentage decrease\npercentage_decrease = ((saguenay_2014 - saguenay_2015) / saguenay_2014) * 100\n\n# Assign the result\nresult = percentage_decrease"
+    },
+    {
+      "query_id": "f34633c5561aa6b1f76979598c7f238f",
+      "query": "which club did giannou play for in 2009-10?",
+      "gold": [
+        "kavala"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: 'Giannou' is not in list",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "def find_club():\n    # Get the row values for the season 2009-10\n    season_values = row_values(\"2009-10\")\n    \n    # Find the index of \"Giannou\" in the season values\n    giannou_index = season_values.index(\"Giannou\")\n    \n    # Get the column values for the club\n    club_values = col_values(\"Club\")\n    \n    # The result is the club value at the same index as Giannou\n    result = club_values[giannou_index]\n    \n    return result\n\nresult = find_club()"
+    },
+    {
+      "query_id": "f0ac3da8c6a2410800e8ca260f44d68b",
+      "query": "which club did iturbe play for in 2013-14?",
+      "gold": [
+        "verona"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: 'Club' is not in list",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "def find_club():\n    # Get the row values for the 2013-14 season\n    row_values_2013_14 = row_values(\"2013-14\")\n    \n    # Get the column index of 'Club'\n    club_index = col_values(\"Club\").index(\"Club\")\n    \n    # Find the club Iturbe played for in 2013-14\n    result = row_values_2013_14[club_index]\n\nfind_club()"
+    },
+    {
+      "query_id": "06207ac0e0eb1b0b997b894e09ea613c",
+      "query": "for individuals aged 50 to 64, how many percentage point increase in the likelihood of being satisfied with their job is associated with a high to a very high extent of control over their hours of work?",
+      "gold": [
+        0.101
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('50 to 64', 'Control over hours of work: High to Very High') - cell('50 to 64', 'Control over hours of work: High')"
+    }
+  ]
+}

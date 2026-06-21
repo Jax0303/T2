@@ -236,15 +236,12 @@ def main():
     ap.add_argument("--repairs", type=int, default=2, help="grounded 자가수정 최대 횟수")
     ap.add_argument("--retrieval", choices=["gold"], default="gold")
     ap.add_argument("--max-tokens", type=int, default=320)
-    ap.add_argument("--llm", default="local:Qwen/Qwen2.5-7B-Instruct",
-                    help="e.g. groq:openai/gpt-oss-120b (CPU env), local:Qwen/... (GPU)")
-    ap.add_argument("--hitab-dir", default="data/hitab")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
     import random
     rng = random.Random(SEED)
-    samples = load_samples(args.hitab_dir, "dev")
+    samples = load_samples("data/hitab", "dev")
     buckets = defaultdict(list)
     for s in samples:
         c = difficulty_class(s)
@@ -256,25 +253,10 @@ def main():
         chosen += [(c, s) for s in b[:args.per_class]]
     print(f"[{args.mode}] eval {len(chosen)} queries (per_class={args.per_class}, repairs={args.repairs})", flush=True)
 
-    from rag_agent.llm.factory import build_llm
-    llm = build_llm(args.llm)
+    from rag_agent.llm.local_qwen import LocalQwenLLM
+    llm = LocalQwenLLM(default_max_tokens=args.max_tokens)
     grounded = args.mode in ("grounded", "hpir")
     sys_p = GROUNDED_SYS if grounded else NAIVE_SYS
-
-    def _gen(u):
-        """LLM call with exponential backoff on transient (rate-limit) errors."""
-        delay = 4.0
-        for _ in range(6):
-            try:
-                return strip_code(llm.complete(sys_p, u, max_tokens=args.max_tokens))
-            except Exception:  # noqa: BLE001
-                time.sleep(delay); delay = min(delay * 2, 60)
-        return strip_code(llm.complete(sys_p, u, max_tokens=args.max_tokens))
-
-    def _quality(result, err, trace):
-        flags = sum(1 for t in trace if t.get("flag"))
-        nonempty = result is not None and result != "" and result != []
-        return (not bool(err), bool(nonempty), -flags)
 
     rows = []
     t0 = time.time()
@@ -282,7 +264,7 @@ def main():
         q = s.get("question") or ""
         gold = s.get("answer")
         tid = s.get("table_id")
-        raw = load_table(tid, args.hitab_dir)
+        raw = load_table(tid, "data/hitab")
         if not raw:
             rows.append({"class": cls, "query": q, "correct": False, "skip": "no_table"})
             continue
@@ -296,22 +278,17 @@ def main():
             intent = resolve_against_table(q, ot)
             binding_hint = intent.binding_hint()
         user = build_user(ot.title, q, tt, grounded=grounded, binding_hint=binding_hint)
-        code = _gen(user)
+        code = strip_code(llm.complete(sys_p, user, max_tokens=args.max_tokens))
         tt.trace = []
         result, err = run_code(code, api)
         n_repair = 0
-        best = (result, err, code, _quality(result, err, tt.trace))
         if grounded:
             while n_repair < args.repairs and needs_repair(tt.trace, result, err):
                 fb = trace_feedback(code, tt.trace, result, err)
-                code = _gen(user + "\n\n" + fb)
+                code = strip_code(llm.complete(sys_p, user + "\n\n" + fb, max_tokens=args.max_tokens))
                 tt.trace = []
                 result, err = run_code(code, api)
                 n_repair += 1
-                qy = _quality(result, err, tt.trace)
-                if qy > best[3]:
-                    best = (result, err, code, qy)
-            result, err, code = best[0], best[1], best[2]   # over-correction safeguard
 
         pred = "" if result is None else str(result)
         ok = numeric_match(pred, gold) or exact_match(pred, gold)
@@ -330,10 +307,9 @@ def main():
         if cr:
             by_class[c] = {"n": len(cr), "NM": round(sum(x["correct"] for x in cr) / len(cr), 4)}
     out = {"config": {"mode": args.mode, "per_class": args.per_class, "repairs": args.repairs,
-                      "retrieval": args.retrieval, "llm": args.llm, "seed": SEED},
+                      "retrieval": args.retrieval, "llm": "local:Qwen2.5-7B-4bit", "seed": SEED},
            "overall": {"n": n, "NM": round(nm, 4)}, "by_class": by_class, "rows": rows}
     outp = ROOT / "results" / (args.out or f"method_{args.mode}_pc{args.per_class}.json")
-    outp.parent.mkdir(parents=True, exist_ok=True)
     outp.write_text(json.dumps(out, ensure_ascii=False, indent=2))
     print(f"[{args.mode}] NM={nm:.4f} (n={n}) → {outp}", flush=True)
     print("by_class:", json.dumps(by_class, ensure_ascii=False), flush=True)

@@ -1,0 +1,64 @@
+{
+  "bench": "hitab",
+  "split": "dev",
+  "seed": 42,
+  "dense": true,
+  "n_queries": 300,
+  "n_operand_queries": 241,
+  "ceiling": {
+    "fuzzy": 0.3029,
+    "embedding": 0.4855,
+    "hybrid": 0.409
+  },
+  "operand_recall": {
+    "s1_flat|plain": {
+      "1": 0.5299,
+      "3": 0.7067,
+      "5": 0.7972,
+      "10": 0.8966
+    },
+    "s1_flat|operand": {
+      "1": 0.6159,
+      "3": 0.7067,
+      "5": 0.7903,
+      "10": 0.8854
+    },
+    "s1_flat|oracle": {
+      "1": 0.7654,
+      "3": 0.8667,
+      "5": 0.9355,
+      "10": 0.9855
+    },
+    "s2_headerpath|plain": {
+      "1": 0.6934,
+      "3": 0.8387,
+      "5": 0.9053,
+      "10": 0.952
+    },
+    "s2_headerpath|operand": {
+      "1": 0.6947,
+      "3": 0.7863,
+      "5": 0.83,
+      "10": 0.9005
+    },
+    "s2_headerpath|oracle": {
+      "1": 0.896,
+      "3": 0.9566,
+      "5": 0.9742,
+      "10": 0.9938
+    }
+  },
+  "coverage": {
+    "mean_coverage_rate": 0.8485,
+    "fallback_rate": 0.1577,
+    "histogram": {
+      "0.0": 28,
+      "0.2": 4,
+      "0.5": 6,
+      "0.8": 10,
+      "1.0": 193
+    },
+    "operand_recall@5_no_fallback": 0.8362,
+    "operand_recall@5_with_fallback": 0.8676
+  }
+}

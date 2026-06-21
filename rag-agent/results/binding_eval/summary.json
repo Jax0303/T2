@@ -1,0 +1,85 @@
+{
+  "config": {
+    "model": "groq:llama-3.3-70b-versatile",
+    "n": 50,
+    "repairs": 2,
+    "seed": 42,
+    "retrieval": "gold"
+  },
+  "results": {
+    "hitab": {
+      "naive": {
+        "n": 50,
+        "acc": 0.02,
+        "nm_rate": 0.74,
+        "empty_rate": 0.08,
+        "clean_bind": 0.2,
+        "acc_given_clean": 0.1
+      },
+      "grounded": {
+        "n": 50,
+        "acc": 0.42,
+        "nm_rate": 0.0,
+        "empty_rate": 0.02,
+        "clean_bind": 0.98,
+        "acc_given_clean": 0.4286
+      }
+    },
+    "finqa": {
+      "naive": {
+        "n": 50,
+        "acc": 0.02,
+        "nm_rate": 0.7,
+        "empty_rate": 0.0,
+        "clean_bind": 0.3,
+        "acc_given_clean": 0.0667
+      },
+      "grounded": {
+        "n": 50,
+        "acc": 0.0,
+        "nm_rate": 0.0,
+        "empty_rate": 0.0,
+        "clean_bind": 1.0,
+        "acc_given_clean": 0.0
+      }
+    },
+    "wikisql": {
+      "naive": {
+        "n": 50,
+        "acc": 0.02,
+        "nm_rate": 0.06,
+        "empty_rate": 0.0,
+        "clean_bind": 0.94,
+        "acc_given_clean": 0.0213
+      },
+      "grounded": {
+        "n": 50,
+        "acc": 0.0,
+        "nm_rate": 0.0,
+        "empty_rate": 0.0,
+        "clean_bind": 1.0,
+        "acc_given_clean": 0.0
+      }
+    }
+  },
+  "delta": {
+    "hitab": {
+      "acc": 0.4,
+      "nm_rate": -0.74,
+      "clean_bind": 0.78,
+      "acc_given_clean": 0.3286
+    },
+    "finqa": {
+      "acc": -0.02,
+      "nm_rate": -0.7,
+      "clean_bind": 0.7,
+      "acc_given_clean": -0.0667
+    },
+    "wikisql": {
+      "acc": -0.02,
+      "nm_rate": -0.06,
+      "clean_bind": 0.06,
+      "acc_given_clean": -0.0213
+    }
+  }
+}

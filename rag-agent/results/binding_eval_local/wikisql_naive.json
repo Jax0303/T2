@@ -1,0 +1,756 @@
+{
+  "bench": "wikisql",
+  "mode": "naive",
+  "summary": {
+    "n": 50,
+    "n_all": 50,
+    "n_llm_failed": 0,
+    "acc": 0.04,
+    "nm_rate": 0.86,
+    "empty_rate": 0.12,
+    "clean_bind": 0.02,
+    "acc_given_clean": 0.0
+  },
+  "rows": [
+    {
+      "query_id": "validation_1833",
+      "query": "The episode with the original air date January 6, 1999, has what production code?",
+      "gold": [
+        "E0214"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('January 6, 1999', 'Production Code')"
+    },
+    {
+      "query_id": "validation_181",
+      "query": " what's the score where record is 0–2",
+      "gold": [
+        "L 93–113"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"0–2\", col_header=\"score\")"
+    },
+    {
+      "query_id": "validation_4727",
+      "query": "What is the college/junior team of player tyler myers, who has a pick less than 44?",
+      "gold": [
+        "Kelowna Rockets ( WHL )"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '<' not supported between instances of 'NoneType' and 'int'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Tyler Myers', 'College/Junior Team') if cell('Pick', 'Tyler Myers') < 44 else None"
+    },
+    {
+      "query_id": "validation_5326",
+      "query": "what is the game when on november 27?",
+      "gold": [
+        23.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('november 27', 'game')"
+    },
+    {
+      "query_id": "validation_2637",
+      "query": "What is the percentage of Tukunga when La Crescenta-Montrose is 28%?",
+      "gold": [
+        "30%"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'float'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Calculate the percentage of Tukunga when La Crescenta-Montrose is 28%\nla_crescenta_montrose = 0.28\ntukunga = cell(\"Tukunga\", \"La Crescenta-Montrose\") / la_crescenta_montrose * 100\nresult = tukunga"
+    },
+    {
+      "query_id": "validation_6557",
+      "query": "What Position has a Time of 20.66?",
+      "gold": [
+        "4th"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: 'NoneType' object is not subscriptable",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Time', '20.66')['Position']"
+    },
+    {
+      "query_id": "validation_4585",
+      "query": "What is the lowest Long, when Name is Kass, Rob, and when Avg/g is less than -0.30000000000000004?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: min() iterable argument is empty",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = min([cell('Kass, Rob', 'Avg/g') for cell in col_values('Long', 'Name') if cell['Name'] == 'Kass, Rob' and float(cell['Avg/g']) < -0.30000000000000004])"
+    },
+    {
+      "query_id": "validation_6796",
+      "query": "What was Shaun Murphy's outcome in the Premier League Snooker championship held before 2010?",
+      "gold": [
+        "Winner"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Shaun Murphy', 'Premier League Snooker championship held before 2010')"
+    },
+    {
+      "query_id": "validation_4653",
+      "query": "Which venue hosted the Gridiron Development Football League?",
+      "gold": [
+        "Snitz Snider Stadium"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Gridiron Development Football League', 'Venue')"
+    },
+    {
+      "query_id": "validation_4310",
+      "query": "What is the average tonnage of the ship named proletarij?",
+      "gold": [
+        1123.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"proletarij\", \"Tonnage\") / cell(\"proletarij\", \"Number of Attacks\")"
+    },
+    {
+      "query_id": "validation_167",
+      "query": "What was the interview score for Hawaii?",
+      "gold": [
+        "9.40"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"Hawaii\", col_header=\"Interview\")"
+    },
+    {
+      "query_id": "validation_7501",
+      "query": "What is the City with an IATA of MUC?",
+      "gold": [
+        "Munich"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('MUC', 'City')"
+    },
+    {
+      "query_id": "validation_314",
+      "query": "what's the result with district being florida 7",
+      "gold": [
+        "Re-elected"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"Florida 7\", col_header=\"result\")"
+    },
+    {
+      "query_id": "validation_3332",
+      "query": "What was the polling firm with others of 1%?",
+      "gold": [
+        "Insomar",
+        "CSOP"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"others of 1%\", \"polling_firm\")"
+    },
+    {
+      "query_id": "validation_7530",
+      "query": "Which tournament had a partner of Erika Sema?",
+      "gold": [
+        "Aschaffenburg"
+      ],
+      "pred": "[]",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = [cell(row_header=\"Erika Sema\", col_header=\"Partner\") for row_header in row_values(\"Erika Sema\", \"Partner\") if \"Erika Sema\" in row_values(\"Erika Sema\", \"Partner\")]"
+    },
+    {
+      "query_id": "validation_4549",
+      "query": "How many wins for average start less than 25?",
+      "gold": [
+        0
+      ],
+      "pred": "0",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "# Assuming \"Average Start\" is the column header and \"Wins\" is the column header for the number of wins\naverage_start_filter = \"Average Start < 25\"\nwins_col_header = \"Wins\"\n\n# Get the list of wins where average start is less than 25\nwins_list = col_values(wins_col_header, average_start_filter)\n\n# Sum up the wins\nresult = sum(wins_list)"
+    },
+    {
+      "query_id": "validation_5580",
+      "query": "When Melbourne was the Away team, what was their score?",
+      "gold": [
+        "12.16 (88)"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Melbourne', 'Away team')"
+    },
+    {
+      "query_id": "validation_2434",
+      "query": "What is the average Regional Finals score when the record is 3-2 and there are more than 3 bids?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Filter for rows where record is 3-2\nrow_filter = \"3-2\"\n# Get the column headers\ncols = col_values(row_filter)\n# Filter columns to get only Regional Finals scores where there are more than 3 bids\nregional_finals_col = [col for col in cols if \"Regional Finals\" in col]\nbids_col = [col for col in cols if \"Bids\" in col]\n\n# Calculate the average Regional Finals score where there are more than 3 bids\nregional_finals_scores = []\nfor i in range(len(bids_col)):\n    if int(bids_col[i]) > 3:\n        regional_finals_scores.append(float(regional_finals_col[i]))\n\nif len(regional_finals_scores) > 0:\n    result = sum(regional_finals_scores) / len(regional_finals_scores)\nelse:\n    result = None"
+    },
+    {
+      "query_id": "validation_6827",
+      "query": "What Venue has a Past Season of 2nd?",
+      "gold": [
+        "Foolad Shahr"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Venue', '2nd')"
+    },
+    {
+      "query_id": "validation_7226",
+      "query": "What driver had a total time of 16:58?",
+      "gold": [
+        "Poulter"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Total Time', '16:58')"
+    },
+    {
+      "query_id": "validation_689",
+      "query": "In 2011, which city is listed first along the route that had 7.6+ million passengers?",
+      "gold": [
+        "São Paulo"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('World', 'City[2011=7.6+ million passengers]')"
+    },
+    {
+      "query_id": "validation_3229",
+      "query": "Which Record has a Home of edmonton oilers, and a Score of 3–6?",
+      "gold": [
+        "1–3–0"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('edmonton oilers', 'Home') if '3–6' in col_values('Score') else None"
+    },
+    {
+      "query_id": "validation_1279",
+      "query": "What is the installation date for the Delta Chapter?",
+      "gold": [
+        "Cannot handle non-empty timestamp argument! 1930"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Delta Chapter', 'Installation Date')"
+    },
+    {
+      "query_id": "validation_4900",
+      "query": "Which Opponent has a Result of w 19–10?",
+      "gold": [
+        "at New York Jets"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('w 19–10', 'Result')"
+    },
+    {
+      "query_id": "validation_5525",
+      "query": "What is the highest number of loss with a 7 position and more than 45 goals?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = max([cell('Loss', '7') for cell in col_values('Position', '7') if cell('Goals') > 45], default=None)"
+    },
+    {
+      "query_id": "validation_3937",
+      "query": "Which Loera has a Source of surveyusa, and a Date of may 16–may 18, 2008?",
+      "gold": [
+        "2%"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('SurveyUSA', 'May 16–May 18, 2008')"
+    },
+    {
+      "query_id": "validation_204",
+      "query": "What are the womens singles of naoko fukuman kurumi yonao?",
+      "gold": [
+        "Sayaka Takahashi"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"womens singles\", \"naoko fukuman kurumi yonao\")"
+    },
+    {
+      "query_id": "validation_654",
+      "query": "What are the cities/towns located in the municipality of Horten?",
+      "gold": [
+        "Horten"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(row_header=\"Horten\", col_header=\"cities/towns\")"
+    },
+    {
+      "query_id": "validation_5530",
+      "query": "What record was set by walter brennan before 1941?",
+      "gold": [
+        "3 awards"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Walter Brennan', 'Before 1941')"
+    },
+    {
+      "query_id": "validation_4038",
+      "query": "How many spikes have 28.09.1981 as the date of birth, with a block greater than 318?",
+      "gold": [],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = sum(1 for value in col_values('date of birth', '28.09.1981') if cell('block', col_values('date of birth', '28.09.1981').index(value)) > 318)"
+    },
+    {
+      "query_id": "validation_4089",
+      "query": "What is the Score when the winner was suntory sungoliath, and the number attendance was n/a?",
+      "gold": [
+        "21 – 9"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('suntory sungoliath', 'n/a')"
+    },
+    {
+      "query_id": "validation_7548",
+      "query": "How much Time has a Reaction of 0.155, and an Athlete of kristof beyens, and a Rank smaller than 3?",
+      "gold": [
+        0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: 'NoneType' object is not subscriptable",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('kristof beyens', '0.155')['Time'] if cell('kristof beyens', '0.155')['Rank'] < 3 else None"
+    },
+    {
+      "query_id": "validation_4132",
+      "query": "what is the club that was founded before 2007, joined prsl in 2008 and the stadium is yldefonso solá morales stadium?",
+      "gold": [
+        "Huracán FC Caguas"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Yldefonso Solá Morales Stadium', '2008')"
+    },
+    {
+      "query_id": "validation_2310",
+      "query": "What is the train number when the time is 10:38?",
+      "gold": [
+        16381.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: 'NoneType' object is not subscriptable",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('10:38', 'time')['train_number']"
+    },
+    {
+      "query_id": "validation_440",
+      "query": "what's the w-l-d with position being 1",
+      "gold": [
+        "4-0-0"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('1', 'w-l-d')"
+    },
+    {
+      "query_id": "validation_3154",
+      "query": "WHich Studio host has a Year of 2003-04?",
+      "gold": [
+        "Gary Tanguay & Greg Dickerson"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('2003-04', 'Year')"
+    },
+    {
+      "query_id": "validation_131",
+      "query": "What is the allied target code of the group that targetted ghent/sint-denijs-westrem?",
+      "gold": [
+        "B-61"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('ghent/sint-denijs-westrem', 'allied_target_code')"
+    },
+    {
+      "query_id": "validation_5015",
+      "query": "Can you tell me the highest Capacity that has the Team of torpedo?",
+      "gold": [
+        3020.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: max() iterable argument is empty",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = max([cell('Torpedo', col_header) for col_header in col_values('Team', 'Torpedo')])"
+    },
+    {
+      "query_id": "validation_4355",
+      "query": "What is the 2008 for the 2009 ch our charming lady?",
+      "gold": [
+        "CH Our Charming Lady"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"2009\", \"2008\")"
+    },
+    {
+      "query_id": "validation_168",
+      "query": "What is the date of Game 50?",
+      "gold": [
+        "February 11"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Game 50', 'Date')"
+    },
+    {
+      "query_id": "validation_8371",
+      "query": "Who was the opponent after week 9 with an attendance of 44,020?",
+      "gold": [
+        "Oakland Raiders"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: 'NoneType' object is not subscriptable",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Week 10', 'Attendance')[0]"
+    },
+    {
+      "query_id": "validation_6024",
+      "query": "In total, how much did the United States player George Archer earn with Wins lower than 24 and a rank that was higher than 5?",
+      "gold": [
+        0
+      ],
+      "pred": "0",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('George Archer', 'Wins') < 24 and cell('Rank', 'George Archer') > 5 if cell('Country', 'George Archer') == 'United States' else 0\nif result:\n    result = cell('Earnings', 'George Archer')\nelse:\n    result = 0"
+    },
+    {
+      "query_id": "validation_7537",
+      "query": "Which player is from Ohio State College?",
+      "gold": [
+        "Jim Davidson Category:Articles with hCards"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Ohio State College', 'College')"
+    },
+    {
+      "query_id": "validation_2295",
+      "query": "Which episode number saw 1.312 million U.S. Wviewers?",
+      "gold": [
+        "2"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "episode_number = None\nfor row in range(1, len(row_values('U.S. Wviewers')) + 1):\n    us_wviewers = cell(row, 'U.S. Wviewers')\n    if us_wviewers == 1.312:\n        episode_number = cell(row, 'Episode Number')\n        break\nresult = episode_number"
+    },
+    {
+      "query_id": "validation_102",
+      "query": "Where was the final game played in 2007",
+      "gold": [
+        "Snellville, GA"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('2007', 'Final Game Location')"
+    },
+    {
+      "query_id": "validation_6997",
+      "query": "What Circuit has a Date of 25 july?",
+      "gold": [
+        "Lasarte"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('25 july', 'Date')"
+    },
+    {
+      "query_id": "validation_6364",
+      "query": "What is the time/retired with 60 laps and a grid 19?",
+      "gold": [
+        "+2 Laps"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('60', 'Grid 19')"
+    },
+    {
+      "query_id": "validation_5483",
+      "query": "How many reg GP for rick vaive in round 1?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Rick Vaive', 'Round 1 Reg GP')"
+    },
+    {
+      "query_id": "validation_1966",
+      "query": "How many seasons was the rank equal to #50?",
+      "gold": [
+        1
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = len([x for x in col_values(col_header=\"rank\", row_filter=\"50\") if x == 50])"
+    },
+    {
+      "query_id": "validation_1382",
+      "query": "Which county had a 3.6% unemployment rate?",
+      "gold": [
+        "Banks"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Unemployment Rate', '3.6%')"
+    }
+  ]
+}
