@@ -9,28 +9,34 @@
   },
   "overall": {
     "n": 100,
-    "NM": 0.48
+    "NM": 0.32,
+    "EM": 0.18
   },
   "by_class": {
     "multi_op_formula": {
       "n": 20,
-      "NM": 0.2
+      "NM": 0.2,
+      "EM": 0.1
     },
     "arithmetic_agg": {
       "n": 20,
-      "NM": 0.25
+      "NM": 0.25,
+      "EM": 0.2
     },
     "pair_or_topk_arg": {
       "n": 20,
-      "NM": 0.75
+      "NM": 0.3,
+      "EM": 0.1
     },
     "single_arg": {
       "n": 20,
-      "NM": 0.7
+      "NM": 0.35,
+      "EM": 0.2
     },
     "comparison_or_count": {
       "n": 20,
-      "NM": 0.5
+      "NM": 0.5,
+      "EM": 0.3
     }
   },
   "rows": [
@@ -45,7 +51,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Extract the values for the relevant years\ncurrent_2012 = cell('current $millions > 2012', 'all federal obligations')\ncurrent_2013 = cell('current $millions > 2013', 'all federal obligations')\ncurrent_2014 = cell('current $millions > 2014', 'all federal obligations')\n\n# Calculate the percentage increase from 2013 to 2014\nif current_2013 is not None and current_2014 is not None:\n    percentage_increase = ((current_2014 - current_2013) / current_2013) * 100\nelse:\n    percentage_increase = None\n\nresult = percentage_increase",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -58,7 +65,8 @@
       "err": "",
       "n_repair": 0,
       "code": "total_multiple_charge_guilty = cell('non-intimate partner violence (non-ipv) cases > guilty', 'multiple-charge cases > number') + cell('intimate partner violence (ipv) cases > guilty', 'multiple-charge cases > number')\ntotal_multiple_charges = cell('non-intimate partner violence (non-ipv) cases > total non- ipv decisions', 'multiple-charge cases > number') + cell('intimate partner violence (ipv) cases > total ipv decisions', 'multiple-charge cases > number')\n\nif total_multiple_charges > 0:\n    result = (total_multiple_charge_guilty / total_multiple_charges) * 100\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -73,7 +81,8 @@
       "code": "# Find the row for 'all r&d and r&d plant > r&d plant'\nr_and_d_plant_row = 'all r&d and r&d plant > r&d plant'\n\n# Get the column headers for the years we are interested in\ncols = ['current $millions > 2013', 'current $millions > 2017 projected']\n\n# Get the values for R&D Plant funding in 2013 and 2017\nvalues = row_values(r_and_d_plant_row, cols)\n\n# Calculate the percentage increase\nif len(values) == 2 and all(v is not None for v in values):\n    increase = (values[1] - values[0]) / values[0] * 100\n    result = increase\nelse:\n    result = None",
       "trace_flags": [
         "EMPTY"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -86,7 +95,8 @@
       "err": "",
       "n_repair": 1,
       "code": "# Calculate the total health R&D expenditures for the top 5 states\ntop_states_health_expenditures = sum(\n    col_values(\"health\", row_header)[0]\n    for row_header in [\n        \"united statesa > california\",\n        \"united statesa > new york\",\n        \"united statesa > texas\",\n        \"united statesa > florida\",\n        \"united statesa > pennsylvania\"\n    ]\n)\n\n# Calculate the total health R&D expenditures for all 35 states\ntotal_health_expenditures = col_values(\"health\", \"united statesa > all others\")[0]\n\n# Calculate the percentage\nif total_health_expenditures:\n    result = (top_states_health_expenditures / total_health_expenditures) * 100\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -102,7 +112,8 @@
       "trace_flags": [
         "NO_MATCH",
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -115,7 +126,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"property offences > theft\", \"youth court > females > percent\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -128,7 +140,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"property offences > fraud\", \"violent offences > fraud > youth court > females > percent\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -141,7 +154,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Calculate the percentage decline from FY 2012 to FY 2013 for 'all federal obligations'\nfy2012_value = cell('current $millions > 2012', 'all federal obligations')\nfy2013_value = cell('current $millions > 2013', 'all federal obligations')\n\nif fy2012_value is not None and fy2013_value is not None:\n    decline_percentage = ((fy2012_value - fy2013_value) / fy2012_value) * 100\n    result = decline_percentage\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -154,7 +168,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"total criminal code offences\", \"adult court > females > percent\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -167,7 +182,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell('offences relating to the administration of justice > failure to appear', 'adult court > females > percent')",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -180,7 +196,8 @@
       "err": "",
       "n_repair": 0,
       "code": "total_r_and_d = 0\n\nfor state in [\n    \"u.s. totala > california\",\n    \"u.s. totala > washington\",\n    \"u.s. totala > texas\",\n    \"u.s. totala > massachusetts\",\n    \"u.s. totala > michigan\",\n    \"u.s. totala > new jersey\",\n    \"u.s. totala > illinois\",\n    \"u.s. totala > new york\",\n    \"u.s. totala > pennsylvania\",\n    \"u.s. totala > connecticut\"\n]:\n    total_r_and_d += cell(state, \"business r&d performed\")\n\nresult = total_r_and_d",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "multi_op_formula",
@@ -193,7 +210,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"violent offences > major assault\", \"youth court > females > percent\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -206,7 +224,8 @@
       "err": "",
       "n_repair": 0,
       "code": "total_with_conditions = cell('total > hearing loss and tinnitus', 'distribution of hearing loss and tinnitus > %')\nif total_with_conditions is None:\n    result = None\nelse:\n    result = total_with_conditions",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -221,7 +240,8 @@
       "code": "total_r_and_d_us_companies = cell(\"total\", \"total\")\nresult = cell(\"total\", \"united states\")\nif result is not None:\n    result = total_r_and_d_us_companies - result\nelse:\n    result = 73  # Directly using the given value if the cell is not found",
       "trace_flags": [
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -234,7 +254,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Filter rows and columns\nrow_header = \"all r&d and r&d plant > r&d\"\ncol_headers = [\"current $millions > 2014\", \"current $millions > 2015\"]\n\n# Get values for 2014 and 2015\nvalues_2014 = cell(row_header, col_headers[0])\nvalues_2015 = cell(row_header, col_headers[1])\n\n# Calculate percentage decrease\nif values_2014 is not None and values_2015 is not None:\n    decrease = (values_2014 - values_2015) / values_2014 * 100\n    result = decrease\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -247,7 +268,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Filter rows for \"excessive alcohol consumption, > at least once a week\"\nexcessive_drinkers = row_values(\"excessive alcohol consumption, > at least once a week\", col_filter=\"all types of motor vehicles\")\n\n# Filter rows for \"frequency of alcohol consumption > once a week or less\"\nonce_a_week_or_less = row_values(\"frequency of alcohol consumption > once a week or less\", col_filter=\"all types of motor vehicles\")\n\n# Calculate the percentage\nif excessive_drinkers and once_a_week_or_less:\n    result = (once_a_week_or_less[0] / excessive_drinkers[0]) * 100\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -260,7 +282,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"property offences > possess stolen property\", \"youth court > females > percent\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -273,7 +296,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = (\n    cell(\"all living arrangements > in a couple > with married spouse\", \"men > distribution > percent\") +\n    cell(\"all living arrangements > in a couple > with common-law partner\", \"men > distribution > percent\") +\n    cell(\"all living arrangements > lone parents\", \"men > distribution > percent\") +\n    cell(\"all living arrangements > as children\", \"men > distribution > percent\")\n)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "multi_op_formula",
@@ -286,7 +310,8 @@
       "err": "SyntaxError: invalid syntax (<string>, line 1)",
       "n_repair": 2,
       "code": "```python\n# Find the row for Canada\ncanada_row = next((row for row in list_rows() if row == 'percent > geography > canada'), None)\n\n# Find the column for 2015 to 2018 in 2008-base\ncol_2015_to_2018_2008_base = next((col for col in list_cols() if col.endswith('2018') and '2008-base' in col), None)\n\n# Find the column for 2015 to 2018 in 2018-base\ncol_2015_to_2018_2018_base = next((col for col in list_cols() if col.endswith('2018') and '2018-base' in col), None)\n\n# Get the values for Canada in 2008-base and 2018-base\ncanada_2008_base_value = cell(canada_row, col_2015_to_2018_2008_base)\ncanada_2018_base_value = cell(canada_row, col_2015_to_2018_2018_base)\n\n# Calculate the decline percentage\nif canada_2008_base_value is not None and canada_2018_base_value is not None:\n    decline_percentage = abs(canada_2008_base_value - canada_",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "multi_op_formula",
@@ -306,7 +331,8 @@
         "NO_MATCH",
         "NO_MATCH",
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -321,7 +347,8 @@
       "code": "result = cell('lifetime suicidal thoughts > yes', 'model 1 > adjusted odds ratio')",
       "trace_flags": [
         "EMPTY"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -334,7 +361,8 @@
       "err": "",
       "n_repair": 0,
       "code": "arab_unemployment = cell('percentage > visible minority > arab', 'total')\nnon_minority_unemployment = cell('percentage > not a visible minority', 'total')\n\nif arab_unemployment is not None and non_minority_unemployment is not None:\n    result = arab_unemployment - non_minority_unemployment\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "arithmetic_agg",
@@ -347,7 +375,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"property offences > theft\", \"youth court > females > percent\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -364,7 +393,8 @@
         "NO_MATCH",
         "NO_MATCH",
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -377,7 +407,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Define the headers for the rows and columns we are interested in\nrow_header_employed = \"percent > labour force status > employed\"\nrow_header_out_of_labour_force = \"percent > labour force status > out of the labour force\"\n\ncol_header_for_money_employment = \"reasons for hunting, fishing or trapping in the previous 12 months > for money or to supplement income\"\ncol_header_for_money_gathering = \"reasons for gathering wild plants or berries in the previous 12 months > for money or to supplement income\"\n\n# Get the values for employed and out-of-labour-force inuit who gather for monetary reasons\nemployed_value = cell(row_header_employed, col_header_for_money_employment)\nout_of_labour_force_value = cell(row_header_out_of_labour_force, col_header_for_money_gathering)\n\n# Calculate the multiple relationship\nif employed_value is not None and out_of_labour_force_value is not None:\n    result = out_of_labour_force_value / employed_value\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -397,7 +428,8 @@
         "NO_MATCH",
         "NO_MATCH",
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -410,7 +442,8 @@
       "err": "",
       "n_repair": 0,
       "code": "total_years = 12\ntotal_earnings_both_sources = 0\n\nfor year in range(2000, 2012):\n    col_header = str(year)\n    earnings_both_sources = cell(\"% > both sources - earnings\", col_header)\n    if earnings_both_sources is not None:\n        total_earnings_both_sources += earnings_both_sources\n\naverage_earnings_both_sources = total_earnings_both_sources / total_years\nresult = average_earnings_both_sources",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "arithmetic_agg",
@@ -424,7 +457,8 @@
       "err": "SyntaxError: unterminated string literal (detected at line 7) (<string>, line 7)",
       "n_repair": 2,
       "code": "```python\nmin_value = float('inf')\nmax_value = float('-inf')\n\n# Iterate over all rows and columns to find the min and max values\nfor row_header in ['% > between 1 and 4', '% > between 5 and 9', '% > between 10 and 19', '% > between 20 and 49', '% > between 50 and 99', '% > between 100 and 249', '% > between 250 and 499', '% > between 500 and 999', '% > 1,000 and above', '% > addition']:\n    for col_header in ['enterprise size class, 2014 > between 1 and 4', 'enterprise size class, 2014 > between 5 and 9', 'enterprise size class, 2014 > between 10 and 19', 'enterprise size class, 2014 > between 20 and 49', 'enterprise size class, 2014 > between 50 and 99', 'enterprise size class, 2014 > between 100 and 249', 'enterprise size class, 2014 > between 250 and 499', 'enterprise size class, 2014 > between 500 and 999', 'enterprise size class, 2014 >",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -437,7 +471,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Filter rows for non-immigrants and immigrants\nnon_immigrants_row = \"percent > start of overqualification non-immigrants\"\nimmigrants_row = \"percent > start of overqualification immigrants\"\n\n# Get the values for non-immigrants and immigrants\nnon_immigrants_value = cell(non_immigrants_row, \"total\")\nimmigrants_value = cell(immigrants_row, \"total\")\n\n# Calculate the difference\ndifference = immigrants_value - non_immigrants_value\n\n# Set the result\nif difference > 0:\n    result = \"immigrants\"\nelse:\n    result = \"non-immigrants\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -450,7 +485,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Calculate the total spending for FY 2010 and 2011\ntotal_2010 = cell('2010', 'arra-funded r&d expenditures')\ntotal_2011 = cell('2011', 'arra-funded r&d expenditures')\n\n# Calculate the total spending over all years\ntotal_spending = sum(col_values('arra-funded r&d expenditures'))\n\n# Calculate the percentage of spending in FY 2010 and 2011\nif total_spending > 0:\n    result = ((total_2010 + total_2011) / total_spending) * 100\nelse:\n    result = 0",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -463,7 +499,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Calculate the average pace of U.S. GDP over the 2008-15 period\ngdp_2008_15 = cell(\"gross domestic product\", \"longer-term trends > 2008-15\")\n\n# The result is the value directly from the cell\nresult = gdp_2008_15",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "arithmetic_agg",
@@ -476,7 +513,8 @@
       "err": "TypeError: TracedTable.cell() takes 3 positional arguments but 5 were given",
       "n_repair": 2,
       "code": "# Filter the rows for Canadian-born Arab women and Canadian-born women who are not a visible minority\narab_born_women = cell('percentage', 'visible minority', 'arab', 'canadian-born')\nnon_visible_minority_born_women = cell('percentage', 'visible minority', 'not a visible minority', 'canadian-born')\n\n# Calculate the difference in unemployment rates\nresult = arab_born_women - non_visible_minority_born_women",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -489,7 +527,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Filter rows and columns based on the question\nrow_filter = \"other federal statutes offences > drug possession\"\ncol_filter = \"youth court > females > percent\"\n\n# Get the values for the specified row and column\ndrug_possession_percent = cell(row_filter, col_filter)\n\n# Since the question asks for a percentage, we assume the value obtained is already in percentage form\n# If the value is None, it means the data is not available or there's no such entry in the table\nif drug_possession_percent is None:\n    result = None\nelse:\n    result = drug_possession_percent",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -502,7 +541,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell('criminal code traffic offences > impaired driving', 'adult court > females > percent')",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -515,7 +555,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Extract the values for 'current $millions > constant fy 2009 $millions' in 2012 and 2013\nvalue_2012 = cell('current $millions > constant fy 2009 $millions', 'all federal obligations')\nvalue_2013 = cell('current $millions > constant fy 2009 $millions', 'all federal obligations')\n\n# Calculate the decline\ndecline = value_2012 - value_2013\n\nresult = decline",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -528,7 +569,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"social impact > limited job opportunities > a little bit/moderately\", \"%\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -541,7 +583,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell('2014', 'handgun > rate')",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -554,7 +597,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Define the headers for the rows and columns\nrow_header_1 = \"rate > number of evening activities per month > 21 or more\"\nrow_header_2 = \"rate > number of evening activities per month > 0 to 10\"\n\n# Define the column header\ncol_header = \"total\"\n\n# Calculate the difference in rates\nresult = cell(row_header_1, col_header) - cell(row_header_2, col_header)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -567,7 +611,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"percentage points > industry > finance, insurance, real estate and renting and leasing\", \"own-industry > 2000s\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "arithmetic_agg",
@@ -580,7 +625,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell('percent > a lost wallet containing $200 would be returned by a police officer > very likely', 'police') - cell('percent > a lost wallet containing $200 would be returned by a police officer > not at all likely', 'police')",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "pair_or_topk_arg",
@@ -589,13 +635,14 @@
         "miami gardens, florida"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "ValueError: max() iterable argument is empty",
       "n_repair": 2,
       "code": "def find_largest_city_in_florida():\n    # Filter rows for Florida cities\n    florida_cities = ['miami gardens, florida']\n    \n    # Get column values for 'black or african american, alone or with other races > percentage of total population'\n    percentages = col_values('black or african american, alone or with other races > percentage of total population', row_filter=florida_cities)\n    \n    # Find the city with the highest percentage\n    max_percentage = max(percentages)\n    for row in list_rows():\n        if row in florida_cities and col_values('black or african american, alone or with other races > percentage of total population', [row])[0] == max_percentage:\n            result = row\n            break\n\nfind_largest_city_in_florida()",
       "trace_flags": [
         "EMPTY"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -611,7 +658,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def top4_cmas_largest_increase():\n    # Get the column for percent change in crime severity index from 2016 to 2017\n    col_header = 'percent change in crime severity index from 2016 to 2017'\n    values = col_values(col_header)\n    \n    # Find the indices of the top 4 largest increases\n    sorted_indices = sorted(range(len(values)), key=lambda k: values[k], reverse=True)[:4]\n    \n    # Extract the corresponding CMAs\n    top4_cmas = [list_rows()[i] for i in sorted_indices]\n    \n    return top4_cmas\n\nresult = top4_cmas_largest_increase()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -624,7 +672,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = None\n\n# Check Chinese women observed employment rate\nchinese_women_observed = cell(\"percent > second generation groups > chinese\", \"observed employment rate > women\")\n\n# Check Third-plus generation white women observed employment rate\nthird_plus_white_women_observed = cell(\"percent > second generation groups > third-plus generation whites\", \"observed employment rate > women\")\n\nif chinese_women_observed and third_plus_white_women_observed:\n    if chinese_women_observed > third_plus_white_women_observed:\n        result = \"Chinese women have a higher observed employment rate.\"\n    elif third_plus_white_women_observed > chinese_women_observed:\n        result = \"Third-plus generation white women have a higher observed employment rate.\"\n    else:\n        result = \"Both groups have the same observed employment rate.\"\nelse:\n    result = \"Data not available for one or both groups.\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -637,7 +686,8 @@
       "err": "SyntaxError: invalid syntax (<string>, line 1)",
       "n_repair": 2,
       "code": "```python\ndef find_municipality_with_least_likelihood():\n    # Find the odds ratio for central municipalities in Montreal\n    montreal_central = cell(\"odds ratios > census metropolitan area > montreal\", \"odds ratios > type of municipality > central\")\n    \n    # Find the odds ratio for central municipalities in Toronto\n    toronto_central = cell(\"odds ratios > census metropolitan area > toronto\", \"odds ratios > type of municipality > central\")\n    \n    # Find the odds ratio for central municipalities in Vancouver\n    vancouver_central = cell(\"odds ratios > census metropolitan area > vancouver\", \"odds ratios > type of municipality > central\")\n    \n    # Compare the odds ratios and determine the lowest one\n    if montreal_central is not None and (toronto_central is None or montreal_central < toronto_central) and (vancouver_central is None or montreal_central < vancouver_central):\n        result = \"Montreal\"\n    elif toronto_central is not None and (montreal_central is None or toronto_central < montreal_central) and (vancouver_central is None or toronto_central < vancouver_central):\n        result = \"Toronto\"\n    elif vancouver_central is not None and (montreal_central is None or vancouver_central < montreal_central) and (toronto_central is None or vancouver_central < toronto_central):\n        result = \"Vancouver\"\n    else:\n        result =",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -646,11 +696,12 @@
         "education"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "NameError: name 'ROW_HEADERS' is not defined",
       "n_repair": 2,
       "code": "result = None\n\n# Filter for female distribution\nfemale_distribution_values = col_values(\"female distribution\", row_filter=\"annual median employment income($) > total university degree holders\")\n\n# Find the highest income for women\nmax_income = max(female_distribution_values)\n\n# Identify the corresponding field of study\nfor row_header in ROW_HEADERS:\n    if \"women\" in row_header and max_income in row_values(row_header, col_filter=\"female distribution\"):\n        result = row_header.split(\" > \")[-1]\n        break\n\nprint(result)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -659,11 +710,12 @@
         "women"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "",
       "n_repair": 2,
       "code": "def get_agreement_rate(row_header, col_header):\n    women_value = cell(row_header, col_header + \" > percent\")\n    men_value = cell(row_header, col_header + \" > percent\")\n    if women_value is not None and men_value is not None:\n        if women_value > men_value:\n            return \"women\"\n        elif men_value > women_value:\n            return \"men\"\n    return None\n\nresult = get_agreement_rate(\"people who report sexual assault are almost always telling the truth > agree or strongly agree\", \"women > percent\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -676,7 +728,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = None\n\n# Check if seniors aged 75 and over are less likely to use technology than those aged 65 to 74\ntech_75_over = cell('using technology', 'participation rate > 75 and over > percent')\ntech_65_to_74 = cell('using technology', 'participation rate > 65 to 74 > percent')\n\nif tech_75_over is not None and tech_65_to_74 is not None:\n    if tech_75_over < tech_65_to_74:\n        result = \"seniors aged 75 and over\"\n    else:\n        result = \"those aged 65 to 74\"\nelse:\n    result = \"data not available\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "pair_or_topk_arg",
@@ -685,11 +738,12 @@
         "health and related fields"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "SyntaxError: unterminated string literal (detected at line 24) (<string>, line 24)",
       "n_repair": 2,
       "code": "```python\n# Extract the median income for each field of study and sex\nhealth_income_women = cell(\"annual median employment income($)\", \"health and related fields\")\nhealth_income_men = cell(\"annual median employment income($)\", \"health and related fields\")\n\nmath_income_women = cell(\"annual median employment income($)\", \"mathematics, computer and information sciences\")\nmath_income_men = cell(\"annual median employment income($)\", \"mathematics, computer and information sciences\")\n\neducation_income_women = cell(\"annual median employment income($)\", \"education\")\neducation_income_men = cell(\"annual median employment income($)\", \"education\")\n\narchitecture_income_women = cell(\"annual median employment income($)\", \"architecture, engineering, and related technologies\")\narchitecture_income_men = cell(\"annual median employment income($)\", \"architecture, engineering, and related technologies\")\n\nbusiness_income_women = cell(\"annual median employment income($)\", \"business, management and public administration\")\nbusiness_income_men = cell(\"annual median employment income($)\", \"business, management and public administration\")\n\nphysical_income_women = cell(\"annual median employment income($)\", \"physical and life sciences and technologies\")\nphysical_income_men = cell(\"annual median employment income($)\", \"physical and life sciences and technologies\")\n\nagriculture_income_women = cell(\"annual median employment income($)\", \"agriculture, natural resources and conservation\")\nagriculture_income_men = cell(\"annual median employment income($)\", \"agriculture, natural resources and conservation\")\n\nsocial_income_women = cell(\"annual median employment income($",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -698,11 +752,12 @@
         "women"
       ],
       "pred": "men",
-      "correct": true,
+      "correct": false,
       "err": "",
       "n_repair": 0,
       "code": "result = None\n\n# Filter for lone-parent households\nlone_parent_filter = \"percent > food secure household > lone-parent household\"\n\n# Get values for men and women in lone-parent households\nmen_value = cell(lone_parent_filter, \"men\")\nwomen_value = cell(lone_parent_filter, \"women\")\n\n# Compare values to determine who is less likely to be food secure\nif men_value > women_value:\n    result = \"men\"\nelse:\n    result = \"women\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -715,7 +770,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Filter rows for age groups\nage_group_35_to_44_women = row_values('age group > 35 to 44', col_filter='women > coefficient')\nage_group_45_to_54_women = row_values('age group > 45 to 54', col_filter='women > coefficient')\n\n# Extract coefficients for women in each age group\ncoeff_age_35_to_44 = age_group_35_to_44_women[0]\ncoeff_age_45_to_54 = age_group_45_to_54_women[0]\n\n# Compare coefficients to determine which age group experiences lower earnings growth\nif coeff_age_35_to_44 < coeff_age_45_to_54:\n    result = \"younger women\"\nelse:\n    result = \"older women\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -724,11 +780,12 @@
         "men"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "NameError: name 'next' is not defined",
       "n_repair": 2,
       "code": "result = None\n\n# Get the row for 'rest of the population'\nrest_of_population_row = next((row for row in list_rows() if \"total population > rest of the population\" in row), None)\n\n# Get the ratio values for women and men from the 'rest of the population' row\nwomen_ratio = cell(rest_of_population_row, \"women > ratio of younger workers to older workers > ratio\")\nmen_ratio = cell(rest_of_population_row, \"men > ratio of younger workers to older workers > ratio\")\n\n# Determine which sex has the lower ratio\nif women_ratio < men_ratio:\n    result = \"women\"\nelse:\n    result = \"men\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -737,14 +794,15 @@
         "women"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "",
       "n_repair": 2,
       "code": "def get_strong_family_network_prevalence(row_header, col_header):\n    return cell(row_header, col_header)\n\ndef find_more_likely_sex():\n    women_prevalence = get_strong_family_network_prevalence('sex > women', 'women > %')\n    men_prevalence = get_strong_family_network_prevalence('sex > men', 'men > %')\n    \n    if women_prevalence > men_prevalence:\n        return 'women'\n    elif men_prevalence > women_prevalence:\n        return 'men'\n    else:\n        return None\n\nresult = find_more_likely_sex()",
       "trace_flags": [
         "EMPTY",
         "EMPTY"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -757,7 +815,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Get the values for girls and boys in print assessment\nprint_assessment_girls = cell('average reading scores > composite reading > print assessment', 'girls')\nprint_assessment_boys = cell('average reading scores > composite reading > print assessment', 'boys')\n\n# Get the values for girls and boys in digital assessment\ndigital_assessment_girls = cell('average reading scores > composite reading > digital assessment', 'girls')\ndigital_assessment_boys = cell('average reading scores > composite reading > digital assessment', 'boys')\n\n# Compare print assessment scores\nif print_assessment_girls > print_assessment_boys:\n    print_mode = \"girls\"\nelse:\n    print_mode = \"boys\"\n\n# Compare digital assessment scores\nif digital_assessment_girls > digital_assessment_boys:\n    digital_mode = \"girls\"\nelse:\n    digital_mode = \"boys\"\n\nresult = f\"Print Assessment: {print_mode}, Digital Assessment: {digital_mode}\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -766,13 +825,14 @@
         "mild"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "IndexError: list index out of range",
       "n_repair": 2,
       "code": "# Filter for rows related to unperceived hearing loss\nunperceived_loss_row = 'unperceived hearing loss > number > \\'000\\''\n\n# Filter for columns related to severity\nseverity_cols = ['severity > mild', 'severity > moderate to profound']\n\n# Get values for unperceived hearing loss\nunperceived_loss_value = col_values(unperceived_loss_row, [unperceived_loss_row])[0]\n\n# Get values for severity\nmild_loss_value = col_values('severity > mild', severity_cols)[0]\nmoderate_to_profound_loss_value = col_values('severity > moderate to profound', severity_cols)[0]\n\n# Calculate the ratio of mild vs moderate to profound hearing loss among those with unperceived hearing loss\nif unperceived_loss_value == 0:\n    result = None\nelse:\n    ratio_mild = mild_loss_value / unperceived_loss_value\n    ratio_mod_profound = moderate_to_profound_loss_value / unperceived_loss_value\n\n    if ratio_mild > ratio_mod_profound:\n        result = \"mild\"\n    else:\n        result = \"moderate to profound\"",
       "trace_flags": [
         "EMPTY"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -785,7 +845,8 @@
       "err": "",
       "n_repair": 2,
       "code": "def get_value(row_header, col_header):\n    return cell(row_header, col_header)\n\n# Check for each condition for both genders\nconditions = [\n    (\"risk factors > less than 150 minutes/week mvpa\", \"men > %\", \"women > %\"),\n    (\"personal and family history > family history of high blood pressure\", \"men > %\", \"women > %\"),\n    (\"risk factors > chronic kidney disease\", \"men > %\", \"women > %\")\n]\n\n# Initialize result with None\nresult = None\n\nfor condition, men_col, women_col in conditions:\n    women_value = get_value(condition, women_col)\n    men_value = get_value(condition, men_col)\n    \n    if women_value is not None and men_value is not None:\n        if float(women_value) < float(men_value):\n            result = \"men\"\n            break\n        elif float(women_value) > float(men_value):\n            result = \"women\"\n            break\n\nresult",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "pair_or_topk_arg",
@@ -794,11 +855,12 @@
         "women"
       ],
       "pred": "men",
-      "correct": true,
+      "correct": false,
       "err": "",
       "n_repair": 0,
       "code": "# Filter for the relevant columns\npermanent_men = cell(\"permanent > men\", \"measure of financial well-being > household income was not enough to meet necessary expenses > percent\")\npermanent_women = cell(\"permanent > women\", \"measure of financial well-being > household income was not enough to meet necessary expenses > percent\")\n\n# Compare the percentages\nif permanent_men > permanent_women:\n    result = \"men\"\nelse:\n    result = \"women\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -811,7 +873,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = None\n\n# Find the row headers for helmet users and non-helmet users\nhelmet_users_row = \"current smoker > always uses helmet\"\nnon_helmet_users_row = \"current smoker > does not always use helmet\"\n\n# Get the column header for adjusted odds ratio\nadjusted_odds_ratio_col = \"adjusted odds ratio\"\n\n# Get the values for smoking from both rows\nsmoking_helmet_users = cell(helmet_users_row, adjusted_odds_ratio_col)\nsmoking_non_helmet_users = cell(non_helmet_users_row, adjusted_odds_ratio_col)\n\n# Compare the adjusted odds ratios\nif smoking_helmet_users < smoking_non_helmet_users:\n    result = \"helmet users\"\nelse:\n    result = \"non helmet users\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -824,7 +887,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = None\n\n# Filter for privately sponsored refugees and those with a university degree\nprivate_sponsored_university = cell(\"percent\", \"other countries > privately sponsored refugees\")\nprivate_sponsored_no_university = cell(\"percent\", \"other countries > privately sponsored refugees\")\n\nif private_sponsored_university is not None and private_sponsored_no_university is not None:\n    result = private_sponsored_university / private_sponsored_no_university\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -837,7 +901,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = None\n\n# Filter for self-perceived mental health > excellent and self-perceived mental health > very good\nexcellent_mh = cell('self-perceived mental health > excellent', 'nursing home > odds ratio')\nvery_good_mh = cell('self-perceived mental health > very good', 'nursing home > odds ratio')\n\n# Check if women with excellent self-perceived mental health are more likely to live in a nursing home\nif excellent_mh and very_good_mh:\n    if excellent_mh > 1 and very_good_mh <= 1:\n        result = \"Women with good self-perceived mental health were more likely to live in a nursing home.\"\n    elif very_good_mh > 1 and excellent_mh <= 1:\n        result = \"Women with excellent self-perceived mental health were more likely to live in a nursing home.\"\n    else:\n        result = \"There is no clear difference in likelihood based on self-perceived mental health.\"\nelse:\n    result = \"Data not available for comparison.\"\n\nprint(result)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "pair_or_topk_arg",
@@ -850,7 +915,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def get_copинг_to_abuse_percent(row_header, col_header):\n    value = cell(row_header, col_header)\n    if value is not None:\n        return value\n    return None\n\ncisgender_percent = get_copинг_to_abuse_percent('used drugs or alcohol to cope > with abuse or violence that occurred in lifetime', 'cisgender > percent')\ntransgender_percent = get_copинг_to_abuse_percent('used drugs or alcohol to cope > with abuse or violence that occurred in lifetime', 'transgender > percent')\n\nif cisgender_percent is not None and transgender_percent is not None:\n    if transgender_percent > cisgender_percent:\n        result = \"transgender canadians\"\n    else:\n        result = \"cisgender canadians\"\nelse:\n    result = \"data not available\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -863,7 +929,8 @@
       "err": "",
       "n_repair": 0,
       "code": "ipv_care = cell(\"intimate partner violence (ipv) cases > conditional sentence\", \"accused females > number\")\nipv_probation = cell(\"intimate partner violence (ipv) cases > probation\", \"accused females > number\")\nipv_total = cell(\"intimate partner violence (ipv) cases > total guilty ipv cases\", \"accused females > number\")\n\nnon_ipv_care = cell(\"non-intimate partner violence (non-ipv) cases > conditional sentence\", \"accused females > number\")\nnon_ipv_probation = cell(\"non-intimate partner violence (non-ipv) cases > probation\", \"accused females > number\")\nnon_ipv_total = cell(\"non-intimate partner violence (non-ipv) cases > total guilty non-ipv cases\", \"accused females > number\")\n\nipv_care_percent = ipv_care / ipv_total * 100 if ipv_total else 0\nipv_probation_percent = ipv_probation / ipv_total * 100 if ipv_total else 0\n\nnon_ipv_care_percent = non_ipv_care / non_ipv_total * 100 if non_ipv_total else 0\nnon_ipv_probation_percent = non_ipv_probation / non_ipv_total * 100 if non_ipv_total else 0\n\nif ipv_care_percent > ipv_probation_percent:\n    result = \"conditional sentence\"\nelif ipv_probation_percent > ipv_care_percent:\n    result = \"probation\"\nelse:\n    result = \"both equally common\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "single_arg",
@@ -876,7 +943,8 @@
       "err": "",
       "n_repair": 0,
       "code": "saskatchewan_2000 = cell(\"percent > saskatchewan\", \"2000\")\nsaskatchewan_2012 = cell(\"percent > saskatchewan\", \"2012\")\n\nresult = saskatchewan_2012 - saskatchewan_2000",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -889,7 +957,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_lowest_probability_edu():\n    # Filter for payday loan usage\n    payday_loan_col = \"payday loan used in past three years\"\n    \n    # Initialize variables to store the lowest probability and corresponding education level\n    lowest_prob = float('inf')\n    lowest_edu = \"\"\n    \n    # Iterate through all education levels\n    for edu in [\n        \"predicted probability > education of main income earner > less than high school\",\n        \"predicted probability > education of main income earner > high school\",\n        \"predicted probability > education of main income earner > some postsecondary\",\n        \"predicted probability > education of main income earner > university diploma or degree\"\n    ]:\n        # Get the probabilities for each education level\n        probabilities = col_values(payday_loan_col, row_filter=edu)\n        \n        # Check if there are any values and get the minimum probability\n        if probabilities:\n            min_prob = min(probabilities)\n            if min_prob < lowest_prob:\n                lowest_prob = min_prob\n                lowest_edu = edu\n    \n    result = lowest_edu.split(\" > \")[-1]\n    return result\n\nresult = find_lowest_probability_edu()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "single_arg",
@@ -898,11 +967,12 @@
         "inuit nunangat"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "SyntaxError: invalid syntax (<string>, line 1)",
       "n_repair": 2,
       "code": "```python\nresult = None\n\n# Find the row for 'percent > place of residence > urban'\nurban_row = next((row for row in list_rows() if row.startswith('percent > place of residence > urban')), None)\n\n# Find the row for 'percent > place of residence > rural'\nrural_row = next((row for row in list_rows() if row.startswith('percent > place of residence > rural')), None)\n\n# Find the row for 'percent > place of residence > inuit nunangat'\ninuit_nunangat_row = next((row for row in list_rows() if row.startswith('percent > place of residence > inuit nunangat')), None)\n\n# Get the values for each place of residence\nurban_values = col_values('reasons for gathering wild plants or berries in the previous 12 months > for cultural reasons', urban_row)\nrural_values = col_values('reasons for gathering wild plants or berries in the previous 12 months > for cultural reasons', rural_row)\ninuit_nunangat_values = col_values('reasons for gathering wild plants or berries in the previous 12 months > for cultural reasons', inuit_nunangat_row)\n\n# Determine which place of residence had the highest percentage\nmax_value = max(urban_values[0], rural_values[0], inuit_nunangat_values[0])\n\nif max_value == urban_values[0]:\n    result = 'urban'\nelif max_value == rural_values[0]:\n    result = 'rural'\nelse:\n    result",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -911,11 +981,12 @@
         "university degree"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "TypeError: TracedTable.cell() takes 3 positional arguments but 4 were given",
       "n_repair": 2,
       "code": "result = cell('percent', 'level of education > university degree', 'enforcing the laws')",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -928,7 +999,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_lowest_rate():\n    # Filter the rows to get only the provinces and territories\n    provinces = [\n        \"newfoundland and labrador\",\n        \"prince edward island\",\n        \"nova scotia\",\n        \"new brunswick\",\n        \"quebec\",\n        \"ontario\",\n        \"manitoba\",\n        \"saskatchewan\",\n        \"alberta\",\n        \"british columbia\",\n        \"yukon\",\n        \"northwest territories\",\n        \"nunavut\"\n    ]\n    \n    lowest_rate = float('inf')\n    lowest_province = None\n    \n    for province in provinces:\n        rate = cell(province, \"police officers per 100,000 population > rate\")\n        if rate is not None and rate < lowest_rate:\n            lowest_rate = rate\n            lowest_province = province\n            \n    return lowest_province\n\nresult = find_lowest_rate()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "single_arg",
@@ -937,13 +1009,14 @@
         "hospital"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "",
       "n_repair": 2,
       "code": "def find_terminal_illness_location():\n    # Filter for rows related to terminal illness\n    terminal_illness_row = \"cause of death > terminal illness\"\n    \n    # Filter for columns related to location of death\n    location_col = \"location of death > in hospital\"\n    \n    # Get the value at the intersection of terminal illness row and in hospital column\n    value = cell(terminal_illness_row, location_col)\n    \n    return value\n\nresult = find_terminal_illness_location()",
       "trace_flags": [
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -956,7 +1029,8 @@
       "err": "",
       "n_repair": 2,
       "code": "def find_lower_percentage():\n    # Filter for the 'formal home care services > %\" column\n    col_header = 'formal home care services > %'\n    \n    # Get all row values for the column\n    row_values_list = col_values(col_header)\n    \n    # Find the minimum value and corresponding row header\n    min_value = min(row_values_list)\n    for row_header in list_rows():\n        if row_values_list[list_rows().index(row_header)] == min_value:\n            result = cell(row_header, col_header)\n            break\n    \n    return result\n\nresult = find_lower_percentage()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -965,11 +1039,12 @@
         "theft"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "NameError: name 'result' is not defined",
       "n_repair": 2,
       "code": "def find_highest_females_accused():\n    # Filter for rows related to violent offences and property offences\n    violent_offences = [\n        \"violent offences > homicide\",\n        \"violent offences > attempted murder\",\n        \"violent offences > robbery\",\n        \"violent offences > sexual assault\",\n        \"violent offences > other sexual offences\",\n        \"violent offences > major assault\",\n        \"violent offences > common assault\",\n        \"violent offences > uttering threats\",\n        \"violent offences > criminal harassment\",\n        \"violent offences > other crimes against persons\",\n        \"property offences > theft\",\n        \"property offences > break-and-enter\",\n        \"property offences > fraud\",\n        \"property offences > mischief\",\n        \"property offences > possess stolen property\",\n        \"property offences > other property offences\"\n    ]\n    \n    max_percent = 0\n    max_offence = \"\"\n    \n    for offence in violent_offences:\n        # Get the percentage of females for each offence in 2015\n        female_percent = cell(offence, \"youth court > females > percent\")\n        if female_percent is not None and female_percent > max_percent:\n            max_percent = female_percent\n            max_offence = offence\n    \n    result = max_offence\n\nfind_highest_females_accused()\nresult",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -983,7 +1058,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Find the maximum chronic low-income rate for 2014 and 2012 respectively\nmax_2014 = max(row_values('rate > overall > 2014'), default=None)\nmax_2012 = max(row_values('rate > overall > 2012'), default=None)\n\n# Assign the result to the maximum values for 2014 and 2012\nresult = (max_2014, max_2012)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -996,7 +1072,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_higher_percentage():\n    # List all provinces and territories\n    provinces = [\n        \"province/territory > nova scotia\",\n        \"province/territory > northwest territories\",\n        \"province/territory > quebec\",\n        \"province/territory > new brunswick\",\n        \"province/territory > ontario\",\n        \"province/territory > prince edward island\",\n        \"province/territory > newfoundland and labrador\",\n        \"province/territory > alberta\",\n        \"province/territory > nunavut\",\n        \"province/territory > manitoba\",\n        \"province/territory > saskatchewan\",\n        \"province/territory > british columbia\",\n        \"province/territory > yukon\"\n    ]\n    \n    max_percentage = 0\n    result = None\n    \n    for province in provinces:\n        percentage = cell(province, \"formal home care services > %\")\n        if percentage is not None and percentage > max_percentage:\n            max_percentage = percentage\n            result = province\n            \n    return result\n\nresult = find_higher_percentage()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1009,7 +1086,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_max_percent(row_header):\n    col_header = \"male accused > percent\"\n    values = col_values(col_header, row_filter=row_header)\n    if values:\n        max_value = max(values)\n        return row_header, max_value\n    return None, None\n\nmax_relationship, max_percent = None, -1\nfor row_header in [\"intimate relationship > spouse\", \n                  \"intimate relationship > ex-spouse\", \n                  \"intimate relationship > other intimate relationship\", \n                  \"family > parent\", \n                  \"family > child\", \n                  \"family > other family\", \n                  \"acquaintances > criminal relationship\", \n                  \"acquaintances > casual acquaintance\", \n                  \"acquaintances > other acquaintance\", \n                  \"other > stranger\", \n                  \"other > unknown\"]:\n    relationship, percent = find_max_percent(row_header)\n    if percent is not None and percent > max_percent:\n        max_relationship, max_percent = relationship, percent\n\nresult = max_relationship",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1018,11 +1096,12 @@
         "experimental development"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "SyntaxError: unterminated string literal (detected at line 31) (<string>, line 31)",
       "n_repair": 2,
       "code": "```python\nresult = None\n\ntotal_expenditure = 388.6\n\n# Find the row with the highest expenditure\nmax_expenditure_row = None\nmax_expenditure = 0\n\nfor row_header in [\n    \"r&d > business\",\n    \"r&d > federal government > federal intramural\",\n    \"r&d > federal government > ffrdcs\",\n    \"r&d > nonfederal government\",\n    \"r&d > higher education\",\n    \"r&d > nonprofit organizations\",\n    \"r&d > basic research > business\",\n    \"r&d > basic research > federal government > federal intramural\",\n    \"r&d > basic research > federal government > ffrdcs\",\n    \"r&d > basic research > nonfederal government\",\n    \"r&d > basic research > higher education\",\n    \"r&d > basic research > nonprofit organizations\",\n    \"r&d > applied research > business\",\n    \"r&d > applied research > federal government > federal intramural\",\n    \"r&d > applied research > federal government > ffrdcs\",\n    \"r&d > applied research > nonfederal government\",\n    \"r&d > applied research > higher education\",\n    \"r&d > applied research > nonprofit organizations\",\n    \"r&d > experimental development > business\",\n    \"r&d > experimental development > federal government > federal intramural\",\n    \"r&d > experimental development > federal government >",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1035,7 +1114,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_lower_prevalence():\n    # Filter for female data\n    female_data = col_values('female > %', row_filter='household income quintile')\n    \n    # Find the index of the lowest prevalence\n    min_index = female_data.index(min(female_data))\n    \n    # Get the corresponding income quintile\n    income_quintile = list_rows()[min_index].split(' > ')[-1]\n    \n    return income_quintile\n\nresult = find_lower_prevalence()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1048,7 +1128,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_least_likely_place():\n    # Filter for rows related to place of residence\n    place_of_residence_rows = [\n        \"place of residence > rural area\",\n        \"place of residence > small population centre\",\n        \"place of residence > medium population centre\",\n        \"place of residence > large urban population centre\"\n    ]\n    \n    min_percentage = float('inf')\n    least_likely_place = None\n    \n    for row in place_of_residence_rows:\n        values = col_values(\"formal home care services > %\", row_filter=row)\n        if values:\n            percentage = values[0]\n            if percentage < min_percentage:\n                min_percentage = percentage\n                least_likely_place = row\n                \n    return least_likely_place\n\nresult = find_least_likely_place()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1063,7 +1144,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def top3_cmas_large_violent_increase():\n    # Filter for rows with violent crime severity index percent change 2016 to 2017\n    violent_change_col = \"total crime severity index > percent change 2016 to 2017\"\n    violent_changes = col_values(violent_change_col)\n    \n    # Get corresponding row headers\n    rows = list_rows()\n    violent_changes_dict = {rows[i]: violent_changes[i] for i in range(len(rows))}\n    \n    # Sort by the percentage change in violent crime severity index\n    sorted_cmas = sorted(violent_changes_dict.items(), key=lambda x: x[1], reverse=True)\n    \n    # Extract top 3 CMAs\n    top3_cmas = [sorted_cmas[i][0] for i in range(3)]\n    \n    return top3_cmas\n\nresult = top3_cmas_large_violent_increase()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1076,7 +1158,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_highest_percentage(row_header, col_header):\n    values = col_values(col_header, row_header)\n    max_value = max(values)\n    return col_header if max_value == values[0] else None\n\n# Find the highest percentage for the age group 15 to 29\nage_group_15_to_29_header = \"percent > distribution across age groups at the time of admission > 15 to 29\"\nsource_countries = [\"syria\", \"iraq\", \"afghanistan\", \"eritrea\", \"democratic republic of the congo\", \"other countries\"]\n\nmax_percentage = 0\nresult = None\n\nfor country in source_countries:\n    percentage = cell(age_group_15_to_29_header, country)\n    if percentage is not None and percentage > max_percentage:\n        max_percentage = percentage\n        result = country\n\nresult = result if result else \"No data available\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "single_arg",
@@ -1093,7 +1176,8 @@
         "EMPTY",
         "EMPTY",
         "EMPTY"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1102,13 +1186,14 @@
         "other services"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "",
       "n_repair": 2,
       "code": "def find_highest_female_share():\n    max_share = -1\n    industry = \"\"\n    for row_header in [\"ceedd-census (main job industry): share of all workers > women > share\"]:\n        values = col_values(row_header, \"ceedd data: percentage of gig workers > women > percent\")\n        for value in values:\n            if value is not None and value > max_share:\n                max_share = value\n                industry = row_header.split(\":\")[0].strip()\n    return industry\n\nresult = find_highest_female_share()",
       "trace_flags": [
         "EMPTY"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "single_arg",
@@ -1117,11 +1202,12 @@
         "filipino"
       ],
       "pred": "",
-      "correct": true,
+      "correct": false,
       "err": "SyntaxError: unterminated string literal (detected at line 28) (<string>, line 28)",
       "n_repair": 2,
       "code": "```python\nmax_employment = max(\n    cell(\"percentage > visible minority > south asian\", \"total\"),\n    cell(\"percentage > visible minority > chinese\", \"total\"),\n    cell(\"percentage > visible minority > black\", \"total\"),\n    cell(\"percentage > visible minority > filipino\", \"total\"),\n    cell(\"percentage > visible minority > latin american\", \"total\"),\n    cell(\"percentage > visible minority > arab\", \"total\"),\n    cell(\"percentage > visible minority > southeast asian\", \"total\"),\n    cell(\"percentage > visible minority > west asian\", \"total\"),\n    cell(\"percentage > visible minority > korean\", \"total\"),\n    cell(\"percentage > visible minority > japanese\", \"total\"),\n    cell(\"percentage > visible minority > other visible minority\", \"total\"),\n    cell(\"percentage > visible minority > multiple visible minorities\", \"total\"),\n    cell(\"percentage > not a visible minority\", \"total\")\n)\n\nif max_employment == cell(\"percentage > visible minority > south asian\", \"total\"):\n    result = \"South Asian\"\nelif max_employment == cell(\"percentage > visible minority > chinese\", \"total\"):\n    result = \"Chinese\"\nelif max_employment == cell(\"percentage > visible minority > black\", \"total\"):\n    result = \"Black\"\nelif max_employment == cell(\"percentage > visible minority > filipino\", \"total\"):\n    result = \"Filipino\"\nelif max_employment == cell(\"percentage > visible minority > latin american\", \"total\"):\n    result = \"Latin American\"\nelif max_employment == cell(\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1134,7 +1220,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Find the row and column headers for Sherbrooke and Motor Vehicle Theft\nrow_header = \"sherbrooke\"\ncol_header = \"motor vehicle theft > percent change in rate 2014 to 2015\"\n\n# Get the value from the specific cell\nvalue = cell(row_header, col_header)\n\n# Calculate the percentage of a relatively large decline (assuming a decline is negative)\nif value is not None and value < 0:\n    result = abs(value)\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "comparison_or_count",
@@ -1147,7 +1234,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell('saguenay', 'robbery > percent change in rate 2014 to 2015')",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1160,7 +1248,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell(\"percent > men whose fols is french > immigrants admitted between the ages of 15 and 24\", \"canada outside quebec\")",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1173,7 +1262,8 @@
       "err": "",
       "n_repair": 1,
       "code": "result = cell([\"percent change\", \"increase in border costs\"], [\"cross-border exports\", \"canada to the united states\"]) - cell([\"percent change\", \"reduction in border costs\"], [\"cross-border exports\", \"canada to the united states\"])",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1189,7 +1279,8 @@
       "trace_flags": [
         "NO_MATCH",
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1202,7 +1293,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def find_cma_index(header_path):\n    if header_path == \"toronto\":\n        return \"toronto\"\n    elif header_path.startswith(\"montreal\"):\n        return \"montreal\"\n    elif header_path.startswith(\"vancouver\"):\n        return \"vancouver\"\n    else:\n        return None\n\ndef find_percentage_decrease(toronto_value, total_value):\n    return (total_value - toronto_value) / total_value * 100\n\n# List of CMAs to check\ncmas_to_check = [\"toronto\", \"montreal\", \"vancouver\"]\n\n# Find the index of Toronto, Montreal, and Vancouver\nindices = [find_cma_index(cma) for cma in cmas_to_check]\n\n# Get the robbery rate for Toronto\ntoronto_robbery_rate = row_values(indices[0], \"robbery > rate\")[0]\n# Get the total number of robberies for all CMAs\ntotal_robberies = sum(row_values(idx, \"robbery > rate\")[0] for idx in indices)\n\n# Calculate the percentage decrease of Toronto\npercentage_decrease = find_percentage_decrease(toronto_robbery_rate, total_robberies)\n\nresult = percentage_decrease",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1215,7 +1307,8 @@
       "err": "TypeError: TracedTable.cell() got an unexpected keyword argument 'row_filter'",
       "n_repair": 2,
       "code": "result = None\n\n# Get the total number of youth in 2016/2017\ntotal_2016_2017 = cell(\"total correctional services\", \"total-all jurisdictions > number\")\n\n# Get the total number of youth in 2012/2013\ntotal_2012_2013 = cell(\"total correctional services\", \"total-all jurisdictions > number\", row_filter=\"2012/2013\")\n\n# Calculate the percent decrease\nif total_2016_2017 is not None and total_2012_2013 is not None:\n    percent_decrease = ((total_2012_2013 - total_2016_2017) / total_2012_2013) * 100\n    result = percent_decrease\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1228,7 +1321,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Filter the total correctional services row\ntotal_correctional_services = row_values(\"total correctional services\", col_filter=\"total-all jurisdictions > number\")\n\n# Check if the value is found\nif total_correctional_services:\n    result = total_correctional_services[0]\nelse:\n    result = None\n\n# Calculate the percent change from the previous year\npercent_change_prev_year = cell(\"total correctional services\", \"total-all jurisdictions > percent change in the number from 2015/2016\")\n\n# Convert to float if not None\nif result is not None and percent_change_prev_year is not None:\n    result = float(result)\n    percent_change_prev_year = float(percent_change_prev_year)\n    \n    # Calculate the percentage decrease\n    if percent_change_prev_year < 0:\n        percentage_decrease = abs(percent_change_prev_year)\n    else:\n        percentage_decrease = 0\n    \n    result = f\"{percentage_decrease}% decrease\"\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "comparison_or_count",
@@ -1241,7 +1335,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def get_probation_rate_change():\n    # Filter for the 'probation > percent change in rate from 2017/2018' column\n    col_header = 'probation > percent change in rate from 2017/2018'\n    row_headers = list_rows()\n    \n    # Collect all values for the 'probation > percent change in rate from 2017/2018' column\n    rates = col_values(col_header)\n    \n    # Filter out None values and convert to float\n    rates = [float(r) for r in rates if r is not None]\n    \n    # Calculate the average rate change\n    result = sum(rates) / len(rates)\n    return result\n\nresult = get_probation_rate_change()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1254,7 +1349,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = round(71.1 - 47.3, 1)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "comparison_or_count",
@@ -1270,7 +1366,8 @@
       "trace_flags": [
         "NO_MATCH",
         "NO_MATCH"
-      ]
+      ],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1283,7 +1380,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Calculate the drop in the rate of break-ins in Montreal\nmontreal_breaking_and_entering_2015 = cell(\"montreal\", \"breaking and entering > rate\")\nmontreal_breaking_and_entering_2014 = col_values(\"breaking and entering > rate\", row_filter=\"montreal\")[0]\n\n# Calculate the national percent change in rate of break-ins\nnational_breaking_and_entering_2015 = cell(\"canada\", \"breaking and entering > rate\")\nnational_breaking_and_entering_2014 = col_values(\"breaking and entering > rate\", row_filter=\"canada\")[0]\nnational_percent_change = (national_breaking_and_entering_2015 - national_breaking_and_entering_2014) / national_breaking_and_entering_2014 * 100\n\n# Calculate the drop percentage in Montreal\nmontreal_drop_percentage = (montreal_breaking_and_entering_2014 - montreal_breaking_and_entering_2015) / montreal_breaking_and_entering_2014 * 100\n\n# Calculate the mitigation percentage\nmitigation_percentage = abs(montreal_drop_percentage / national_percent_change * 100)\n\nresult = mitigation_percentage",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1296,7 +1394,8 @@
       "err": "",
       "n_repair": 1,
       "code": "def is_significantly_more_prevalent(indigenous_value, non_indigenous_value):\n    if indigenous_value > non_indigenous_value and indigenous_value > non_indigenous_value * 1.1:\n        return \"indigenous people\"\n    elif non_indigenous_value > indigenous_value and non_indigenous_value > indigenous_value * 1.1:\n        return \"non-indigenous people\"\n    else:\n        return None\n\nresult = None\n\n# Get territories data\nterritories_data = col_values(\"territories > %\", row_filter=\"indigenous identity\")\n\nif territories_data:\n    indigenous_territories = territories_data[0]  # indigenous identity > yes\n    non_indigenous_territories = territories_data[1]  # indigenous identity > no\n\n    result = is_significantly_more_prevalent(indigenous_territories, non_indigenous_territories)\n\nprint(result)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1309,7 +1408,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Find the row for Trois-Rivieres\ntrois_rivieres_row = \"trois-rivieres\"\n\n# Find the column for breaking and entering rate\nbreaking_entering_col = \"breaking and entering > rate\"\n\n# Find the column for breaking and entering percent change in rate 2014 to 2015\npercent_change_col = \"breaking and entering > percent change in rate 2014 to 2015\"\n\n# Get the breaking and entering rate for Trois-Rivieres\nbreaking_entering_rate = cell(trois_rivieres_row, breaking_entering_col)\n\n# Get the percent change in rate for Trois-Rivieres\npercent_change_rate = cell(trois_rivieres_row, percent_change_col)\n\n# Calculate the percentage of large decline\n# Assuming \"large decline\" means a significant negative change, we can check if the percent change is negative\nif percent_change_rate < 0:\n    result = abs(percent_change_rate)\nelse:\n    result = 0\n\nprint(result)",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "comparison_or_count",
@@ -1323,7 +1423,8 @@
       "err": "",
       "n_repair": 1,
       "code": "def find_municipalities_with_low_immigrant_population():\n    result = []\n    for row_header in [\n        \"census metropolitan area of toronto > pickering\",\n        \"census metropolitan area of toronto > ajax\",\n        \"census metropolitan area of toronto > vaughan\",\n        \"census metropolitan area of toronto > markham\",\n        \"census metropolitan area of toronto > richmond hill\",\n        \"census metropolitan area of toronto > aurora\",\n        \"census metropolitan area of toronto > newmarket\",\n        \"census metropolitan area of toronto > georgina\",\n        \"toronto > mississauga\",\n        \"toronto > brampton\",\n        \"toronto > caledon\",\n        \"toronto > oakville\",\n        \"toronto > milton\",\n        \"toronto > halton hills\"\n    ]:\n        col_value = cell(row_header, \"type of population > population with an immigrant background > percentage\")\n        if col_value is not None and col_value < 30:\n            result.append(row_header.split(\"> \")[-1])\n    return result\n\nresult = find_municipalities_with_low_immigrant_population()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1336,7 +1437,8 @@
       "err": "",
       "n_repair": 0,
       "code": "result = cell('manitoba', 'remand > percent change in rate from 2017/2018')",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1349,7 +1451,8 @@
       "err": "",
       "n_repair": 0,
       "code": "# Find the row and column headers for service station attendants\nservice_station_attendants_row = \"occupation > service station attendants\"\nworkers_1996_column = \"workers > 1996 > number\"\nworkers_2016_column = \"workers > 2016 > number\"\npercent_change_column = \"percent change in number of workers > 1996 to 2016 > percent\"\n\n# Get the values\nservice_station_attendants_1996 = cell(service_station_attendants_row, workers_1996_column)\nservice_station_attendants_2016 = cell(service_station_attendants_row, workers_2016_column)\npercent_change = cell(service_station_attendants_row, percent_change_column)\n\n# Calculate the percentage decline\nif service_station_attendants_1996 is not None and service_station_attendants_2016 is not None and percent_change is not None:\n    result = float(percent_change)\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1362,7 +1465,8 @@
       "err": "",
       "n_repair": 0,
       "code": "def get_probability(row_header, col_header):\n    return cell(row_header, col_header)\n\ndef find_higher_probability():\n    men_prob = get_probability('sex > men', 'predicted probabilities')\n    women_prob = get_probability('sex > women', 'predicted probabilities')\n    \n    if men_prob is None or women_prob is None:\n        return None\n    \n    if men_prob > women_prob:\n        return \"men\"\n    else:\n        return \"women\"\n\nresult = find_higher_probability()",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     },
     {
       "class": "comparison_or_count",
@@ -1375,7 +1479,8 @@
       "err": "",
       "n_repair": 0,
       "code": "uk_exports_2000 = cell('exports of capital goods > united kingdom', '2000 > billions of dollars')\nuk_exports_2016 = cell('exports of capital goods > united kingdom', '2016 > billions of dollars')\n\nuk_exports_share_2000 = cell('exports of capital goods > united kingdom', 'share in 2000 > %')\nuk_exports_share_2016 = cell('exports of capital goods > united kingdom', 'share in 2016 > %')\n\nif uk_exports_2000 is not None and uk_exports_2016 is not None and uk_exports_share_2000 is not None and uk_exports_share_2016 is not None:\n    # Calculate the decline in percentage points\n    decline = uk_exports_share_2000 - uk_exports_share_2016\n    result = decline\nelse:\n    result = None",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": false
     },
     {
       "class": "comparison_or_count",
@@ -1388,7 +1493,9 @@
       "err": "",
       "n_repair": 0,
       "code": "result = None\n\n# Check the predicted probabilities for employed and unemployed individuals\nemployed_prob = cell('labour force status > employed', 'predicted probabilities')\nunemployed_prob = cell('labour force status > unemployed', 'predicted probabilities')\n\nif employed_prob is not None and unemployed_prob is not None:\n    if employed_prob < unemployed_prob:\n        result = \"employed\"\n    elif employed_prob > unemployed_prob:\n        result = \"unemployed\"\n    else:\n        result = \"equal\"\nelse:\n    result = \"data unavailable\"",
-      "trace_flags": []
+      "trace_flags": [],
+      "em": true
     }
-  ]
+  ],
+  "scoring": "fixed (empty-pred bug corrected); NM=±2% numeric_match, EM=strict denotation"
 }

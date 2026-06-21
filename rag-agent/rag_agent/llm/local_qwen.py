@@ -47,18 +47,20 @@ class LocalQwenLLM(BaseLLM):
         self._torch = torch
         logger.info("LocalQwenLLM loaded %s on %s (quant=%s)", model_name, self.device, quantization)
 
-    def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
+    def complete(self, system: str, user: str, max_tokens: int = 256,
+                 temperature: float = 0.0, top_p: float = 0.95) -> str:
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         prompt = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        gen_kwargs = dict(max_new_tokens=max_tokens or self.default_max_tokens,
+                          pad_token_id=self.tokenizer.eos_token_id)
+        if temperature and temperature > 0:
+            gen_kwargs.update(do_sample=True, temperature=temperature, top_p=top_p)
+        else:
+            gen_kwargs.update(do_sample=False)
         with self._torch.inference_mode():
-            out = self.model.generate(
-                **inputs,
-                max_new_tokens=max_tokens or self.default_max_tokens,
-                do_sample=False,
-                pad_token_id=self.tokenizer.eos_token_id,
-            )
+            out = self.model.generate(**inputs, **gen_kwargs)
         gen = out[0, inputs["input_ids"].shape[1]:]
         return self.tokenizer.decode(gen, skip_special_tokens=True).strip()
