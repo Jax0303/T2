@@ -45,5 +45,11 @@ uv.lock
 # Env
 .env
 
-# PREP synth-question cache (transient, regenerable, reused across runs)
-rag-agent/results/prep/cache/
+# secrets
+.cerebras_key
+rag-agent/.cerebras_key
+
+# transient / local-only
+.local-backup/
+.claude/scheduled_tasks.lock
+rag-agent/results/*_run.log

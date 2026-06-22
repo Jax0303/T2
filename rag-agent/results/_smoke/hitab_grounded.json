@@ -1,0 +1,42 @@
+{
+  "bench": "hitab",
+  "mode": "grounded",
+  "summary": {
+    "n": 2,
+    "n_all": 2,
+    "n_llm_failed": 0,
+    "acc": 0.0,
+    "nm_rate": 0.0,
+    "empty_rate": 0.0,
+    "clean_bind": 1.0,
+    "acc_given_clean": 0.0
+  },
+  "rows": [
+    {
+      "query_id": "fe6407e2459997d5f135e8a88892a049",
+      "query": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+      "gold": [
+        "men"
+      ],
+      "pred": "30.2",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('incident related to perpetrator\\'s alcohol or drug use > yes', 'women > percent')"
+    },
+    {
+      "query_id": "03e2e33b61115022766eba43568f2a2d",
+      "query": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+      "gold": [
+        264.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: TracedTable.row_values() got an unexpected keyword argument 'col_header'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = row_values('stoke city > 2004-05', col_header='league > apps')"
+    }
+  ]
+}

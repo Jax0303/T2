@@ -1,0 +1,97 @@
+{
+  "config": {
+    "model": "local:Qwen/Qwen2.5-7B-Instruct",
+    "n": 50,
+    "repairs": 2,
+    "seed": 42,
+    "retrieval": "gold"
+  },
+  "results": {
+    "hitab": {
+      "naive": {
+        "n": 50,
+        "n_all": 50,
+        "n_llm_failed": 0,
+        "acc": 0.06,
+        "nm_rate": 0.8,
+        "empty_rate": 0.06,
+        "clean_bind": 0.18,
+        "acc_given_clean": 0.3333
+      },
+      "grounded": {
+        "n": 50,
+        "n_all": 50,
+        "n_llm_failed": 0,
+        "acc": 0.4,
+        "nm_rate": 0.14,
+        "empty_rate": 0.04,
+        "clean_bind": 0.82,
+        "acc_given_clean": 0.4878
+      }
+    },
+    "finqa": {
+      "naive": {
+        "n": 50,
+        "n_all": 50,
+        "n_llm_failed": 0,
+        "acc": 0.02,
+        "nm_rate": 0.84,
+        "empty_rate": 0.02,
+        "clean_bind": 0.14,
+        "acc_given_clean": 0.1429
+      },
+      "grounded": {
+        "n": 50,
+        "n_all": 50,
+        "n_llm_failed": 0,
+        "acc": 0.08,
+        "nm_rate": 0.18,
+        "empty_rate": 0.06,
+        "clean_bind": 0.76,
+        "acc_given_clean": 0.1053
+      }
+    },
+    "wikisql": {
+      "naive": {
+        "n": 50,
+        "n_all": 50,
+        "n_llm_failed": 0,
+        "acc": 0.04,
+        "nm_rate": 0.86,
+        "empty_rate": 0.12,
+        "clean_bind": 0.02,
+        "acc_given_clean": 0.0
+      },
+      "grounded": {
+        "n": 50,
+        "n_all": 50,
+        "n_llm_failed": 0,
+        "acc": 0.04,
+        "nm_rate": 0.3,
+        "empty_rate": 0.24,
+        "clean_bind": 0.46,
+        "acc_given_clean": 0.0
+      }
+    }
+  },
+  "delta": {
+    "hitab": {
+      "acc": 0.34,
+      "nm_rate": -0.66,
+      "clean_bind": 0.64,
+      "acc_given_clean": 0.1545
+    },
+    "finqa": {
+      "acc": 0.06,
+      "nm_rate": -0.66,
+      "clean_bind": 0.62,
+      "acc_given_clean": -0.0376
+    },
+    "wikisql": {
+      "acc": 0.0,
+      "nm_rate": -0.56,
+      "clean_bind": 0.44,
+      "acc_given_clean": 0.0
+    }
+  }
+}

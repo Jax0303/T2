@@ -1,0 +1,712 @@
+{
+  "bench": "wikisql",
+  "mode": "grounded",
+  "summary": {
+    "n": 50,
+    "n_all": 50,
+    "n_llm_failed": 0,
+    "acc": 0.04,
+    "nm_rate": 0.36,
+    "empty_rate": 0.18,
+    "clean_bind": 0.46,
+    "acc_given_clean": 0.0
+  },
+  "rows": [
+    {
+      "query_id": "validation_1833",
+      "query": "The episode with the original air date January 6, 1999, has what production code?",
+      "gold": [
+        "E0214"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: TracedTable.list_rows() got an unexpected keyword argument 'row_filter'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "def find_production_code(original_air_date: str) -> str:\n    # Get all columns\n    cols = list_cols()\n    \n    # Filter rows based on original air date\n    row_filter = {\"Original air date\": original_air_date}\n    rows = list_rows(row_filter=row_filter)\n    \n    if len(rows) == 0:\n        return None\n    \n    # Get production code from the filtered row\n    row_header = rows[0]\n    production_code_col = \"Production code\"\n    if production_code_col in cols:\n        production_code = cell(row_header, production_code_col)\n        result = production_code\n    else:\n        result = None\n    \n    return result\n\nresult = find_production_code(\"January 6, 1999\")"
+    },
+    {
+      "query_id": "validation_181",
+      "query": " what's the score where record is 0–2",
+      "gold": [
+        "L 93–113"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: TracedTable.cell() takes 3 positional arguments but 4 were given",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = cell('Record', '0-2', 'Score')"
+    },
+    {
+      "query_id": "validation_4727",
+      "query": "What is the college/junior team of player tyler myers, who has a pick less than 44?",
+      "gold": [
+        "Kelowna Rockets ( WHL )"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = None\nfor player in col_values(\"Player\", \"Tyler Myers\"):\n    if int(cell(\"Pick\", player)) < 44:\n        result = cell(\"College/Junior Team\", player)\n        break"
+    },
+    {
+      "query_id": "validation_5326",
+      "query": "what is the game when on november 27?",
+      "gold": [
+        23.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"Game\", \"November 27\")"
+    },
+    {
+      "query_id": "validation_2637",
+      "query": "What is the percentage of Tukunga when La Crescenta-Montrose is 28%?",
+      "gold": [
+        "30%"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "NameError: name 'next' is not defined",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Find the row and column headers for Tujunga and La Crescenta-Montrose\ntujunga_header = next((h for h in list_rows() if \"Tujunga\" in h), None)\nlc_header = next((h for h in list_cols() if \"La Crescenta-Montrose\" in h), None)\n\n# Get the value for La Crescenta-Montrose\nlc_value = cell(None, lc_header)\n\n# Check if the value is 28\nif lc_value == 28:\n    # Get the value for Tujunga\n    tujunga_value = cell(None, tujunga_header)\n    \n    # Calculate the percentage of Tujunga\n    result = tujunga_value\nelse:\n    result = None"
+    },
+    {
+      "query_id": "validation_6557",
+      "query": "What Position has a Time of 20.66?",
+      "gold": [
+        "4th"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row in list_rows():\n    time_value = cell(row, \"Time\")\n    if time_value == 20.66:\n        result = cell(row, \"Position\")\n        break"
+    },
+    {
+      "query_id": "validation_4585",
+      "query": "What is the lowest Long, when Name is Kass, Rob, and when Avg/g is less than -0.30000000000000004?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = min([cell(row, \"Long\") for row in list_rows() if cell(row, \"Name\") == \"Kass, Rob\" and cell(row, \"Avg/g\") < -0.30000000000000004], default=None)"
+    },
+    {
+      "query_id": "validation_6796",
+      "query": "What was Shaun Murphy's outcome in the Premier League Snooker championship held before 2010?",
+      "gold": [
+        "Winner"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row in list_rows():\n    if \"Shaun Murphy\" in cell(row, \"Opponent in the final\"):\n        result = cell(row, \"Outcome\")\n        break"
+    },
+    {
+      "query_id": "validation_4653",
+      "query": "Which venue hosted the Gridiron Development Football League?",
+      "gold": [
+        "Snitz Snider Stadium"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = None\nvenues = col_values(\"League\", \"Gridiron Development Football League\")\nif venues:\n    venue = venues[0]\n    result = cell(\"Venue\", venue)"
+    },
+    {
+      "query_id": "validation_4310",
+      "query": "What is the average tonnage of the ship named proletarij?",
+      "gold": [
+        1123.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "# Filter rows where the name of the ship is 'proletarij'\nship_proletarij = \"proletarij\"\nproletarij_tonnages = col_values(\"Tonnage\", row_filter=f\"Name of ship == '{ship_proletarij}'\")\n\n# Calculate the average tonnage\nif len(proletarij_tonnages) > 0:\n    result = sum(proletarij_tonnages) / len(proletarij_tonnages)\nelse:\n    result = None"
+    },
+    {
+      "query_id": "validation_167",
+      "query": "What was the interview score for Hawaii?",
+      "gold": [
+        "9.40"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"Hawaii\", \"Interview\")"
+    },
+    {
+      "query_id": "validation_7501",
+      "query": "What is the City with an IATA of MUC?",
+      "gold": [
+        "Munich"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "NameError: name 'col_header_value' is not defined",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "row_header = 'IATA'\ncol_header = 'City'\n\nresult = cell(row_header, col_header_value('MUC'))\nif result is None:\n    result = None\nelse:\n    result = result[0]"
+    },
+    {
+      "query_id": "validation_314",
+      "query": "what's the result with district being florida 7",
+      "gold": [
+        "Re-elected"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"Florida 7\", \"Result\")"
+    },
+    {
+      "query_id": "validation_3332",
+      "query": "What was the polling firm with others of 1%?",
+      "gold": [
+        "Insomar",
+        "CSOP"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "def find_others_1_percent():\n    for row in list_rows():\n        others_value = cell(row, \"Others\")\n        if others_value == 1:\n            return row\n    return None\n\nrow = find_others_1_percent()\nif row:\n    result = cell(row, \"Polling Firm\")\nelse:\n    result = None"
+    },
+    {
+      "query_id": "validation_7530",
+      "query": "Which tournament had a partner of Erika Sema?",
+      "gold": [
+        "Aschaffenburg"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = None\nfor col_header in col_values(\"Partner\", \"Erika Sema\"):\n    tournament = cell(None, col_header)\n    if tournament is not None:\n        result = tournament\n        break"
+    },
+    {
+      "query_id": "validation_4549",
+      "query": "How many wins for average start less than 25?",
+      "gold": [
+        0
+      ],
+      "pred": "0",
+      "correct": true,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Filter rows where Avg. Start is less than 25\navg_start_filter = \"NASCAR Sprint Cup Series/Avg. Start\"\nwin_filter = \"NASCAR Sprint Cup Series/Wins\"\n\n# Get all Avg. Start values\navg_start_values = col_values(avg_start_filter, row_filter=\"NASCAR Sprint Cup Series/Year\")\n\n# Check which of these rows have an Avg. Start less than 25\nvalid_rows_indices = [i for i in range(len(avg_start_values)) if avg_start_values[i] < 25]\n\n# For each valid row, get the corresponding Wins value\nwins_values = [cell(row_headers[i], win_filter) for i in valid_rows_indices]\n\n# Sum up all valid wins\nresult = sum(wins_values)"
+    },
+    {
+      "query_id": "validation_5580",
+      "query": "When Melbourne was the Away team, what was their score?",
+      "gold": [
+        "12.16 (88)"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row in list_rows():\n    away_team = cell(row, \"Away team\")\n    if away_team == \"Melbourne\":\n        result = cell(row, \"Away team score\")\n        break"
+    },
+    {
+      "query_id": "validation_2434",
+      "query": "What is the average Regional Finals score when the record is 3-2 and there are more than 3 bids?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "def average_regional_finals_score():\n    total_scores = 0\n    count = 0\n    for row in row_values(\"Record=3-2 and # of Bids>3\"):\n        if col_values(\"Regional Finals\", row) is not None:\n            total_scores += col_values(\"Regional Finals\", row)[0]\n            count += 1\n    return total_scores / count if count > 0 else None\n\nresult = average_regional_finals_score()"
+    },
+    {
+      "query_id": "validation_6827",
+      "query": "What Venue has a Past Season of 2nd?",
+      "gold": [
+        "Foolad Shahr"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = None\nfor team_row in row_values(\"Team\"):\n    past_season_col = \"Past Season\"\n    if cell(team_row, past_season_col) == \"2nd\":\n        result = cell(team_row, \"Venue\")\n        break"
+    },
+    {
+      "query_id": "validation_7226",
+      "query": "What driver had a total time of 16:58?",
+      "gold": [
+        "Poulter"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row in list_rows():\n    if cell(row, \"Total Time\") == \"16:58\":\n        result = cell(row, \"Driver\")\n        break"
+    },
+    {
+      "query_id": "validation_689",
+      "query": "In 2011, which city is listed first along the route that had 7.6+ million passengers?",
+      "gold": [
+        "São Paulo"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "# Filter rows for 2011 passengers greater than or equal to 7.6 million\nfiltered_rows_2011 = col_values(\"2011 Passengers (in millions)\", row_filter=lambda x: x >= 7.6)\n\n# Get the first city from the filtered rows\nif filtered_rows_2011:\n    first_city_2011 = filtered_rows_2011[0][\"City 1\"]\n    result = first_city_2011\nelse:\n    result = None"
+    },
+    {
+      "query_id": "validation_3229",
+      "query": "Which Record has a Home of edmonton oilers, and a Score of 3–6?",
+      "gold": [
+        "1–3–0"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row in list_rows():\n    score_value = cell(row, \"Score\")\n    home_value = cell(row, \"Home\")\n    \n    if score_value == \"3–6\" and home_value == \"edmonton oilers\":\n        result = cell(row, \"Record\")\n        break"
+    },
+    {
+      "query_id": "validation_1279",
+      "query": "What is the installation date for the Delta Chapter?",
+      "gold": [
+        "Cannot handle non-empty timestamp argument! 1930"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Delta Chapter', 'Installation Date')"
+    },
+    {
+      "query_id": "validation_4900",
+      "query": "Which Opponent has a Result of w 19–10?",
+      "gold": [
+        "at New York Jets"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = None\nfor row_header in row_values(\"Result\"):\n    if cell(row_header, \"Result\") == \"w 19–10\":\n        result = cell(row_header, \"Opponent\")\n        break"
+    },
+    {
+      "query_id": "validation_5525",
+      "query": "What is the highest number of loss with a 7 position and more than 45 goals?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "def find_highest_loss():\n    # Filter rows where Position is 7\n    position_7 = col_values(\"Position\", row_filter=\"7\")\n    \n    if not position_7:\n        return None\n    \n    # Find rows with more than 45 goals for\n    more_than_45_goals = [row for row in position_7 if cell(row, \"Goals for\") > 45]\n    \n    if not more_than_45_goals:\n        return None\n    \n    # Get the corresponding Losses for these rows\n    losses = [cell(row, \"Losses\") for row in more_than_45_goals]\n    \n    # Find the maximum loss\n    max_loss = max(losses)\n    \n    return max_loss\n\nresult = find_highest_loss()"
+    },
+    {
+      "query_id": "validation_3937",
+      "query": "Which Loera has a Source of surveyusa, and a Date of may 16–may 18, 2008?",
+      "gold": [
+        "2%"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = None\nfor loera in row_values(\"Loera\", col_filter=[\"surveyusa\"]):\n    if \"may 16–may 18, 2008\" in cell(loera, \"Date\"):\n        result = cell(loera, \"Loera\")\n        break"
+    },
+    {
+      "query_id": "validation_204",
+      "query": "What are the womens singles of naoko fukuman kurumi yonao?",
+      "gold": [
+        "Sayaka Takahashi"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell(\"Womens singles\", \"Naoko Fukuman Kurumi Yonao\")"
+    },
+    {
+      "query_id": "validation_654",
+      "query": "What are the cities/towns located in the municipality of Horten?",
+      "gold": [
+        "Horten"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: TracedTable.col_values() got multiple values for argument 'col_header'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = col_values(\"City/town\", col_header=\"Municipality\", row_filter=\"Horten\")"
+    },
+    {
+      "query_id": "validation_5530",
+      "query": "What record was set by walter brennan before 1941?",
+      "gold": [
+        "3 awards"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row in list_rows():\n    record_set_values = row_values(row_header=row, col_filter=\"Record Set\")\n    year_values = row_values(row_header=row, col_filter=\"Year\")\n    \n    for i in range(len(record_set_values)):\n        if record_set_values[i] == \"Won multiple acting awards\" and year_values[i] < 1941:\n            result = record_set_values[i]\n            break\n    if result:\n        break"
+    },
+    {
+      "query_id": "validation_4038",
+      "query": "How many spikes have 28.09.1981 as the date of birth, with a block greater than 318?",
+      "gold": [],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = sum(\n    1 for spike in row_values(\"Spike\", col_filter=\"Block > 318\")\n    if cell(\"Date of Birth\", \"28.09.1981\") is not None\n)"
+    },
+    {
+      "query_id": "validation_4089",
+      "query": "What is the Score when the winner was suntory sungoliath, and the number attendance was n/a?",
+      "gold": [
+        "21 – 9"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nwinner = \"suntory sungoliath\"\nattendance = \"n/a\"\n\n# Find the row where the winner is suntory sungoliath and attendance is n/a\nrow_headers = list_rows()\nfor row_header in row_headers:\n    if cell(row_header, \"Winner\") == winner and cell(row_header, \"Attendance\") == attendance:\n        # Get the score from this row\n        scores = row_values(row_header, \"Score\")\n        if scores:\n            result = scores[0]\n            break\n\nprint(result)"
+    },
+    {
+      "query_id": "validation_7548",
+      "query": "How much Time has a Reaction of 0.155, and an Athlete of kristof beyens, and a Rank smaller than 3?",
+      "gold": [
+        0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = None\nreact_value = cell('React', '0.155')\nif react_value is not None:\n    athlete_value = cell('Athlete', 'kristof beyens')\n    if athlete_value is not None:\n        rank_values = col_values('Rank', row_filter={'React': '0.155', 'Athlete': 'kristof beyens'})\n        for rank in rank_values:\n            if float(rank) < 3:\n                time_value = cell('Time', rank)\n                if time_value is not None:\n                    result = time_value\n                    break"
+    },
+    {
+      "query_id": "validation_4132",
+      "query": "what is the club that was founded before 2007, joined prsl in 2008 and the stadium is yldefonso solá morales stadium?",
+      "gold": [
+        "Huracán FC Caguas"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "def find_club():\n    for row in list_rows():\n        # Check if the club was founded before 2007\n        if cell(row, 'Founded') < 2007:\n            # Check if the club joined PRSL in 2008\n            if cell(row, 'Joined PRSL') == 2008:\n                # Check if the stadium is Yldefonso Solá Morales Stadium\n                if cell(row, 'Stadium') == 'Yldefonso Solá Morales Stadium':\n                    return cell(row, 'Club')\n    return None\n\nresult = find_club()"
+    },
+    {
+      "query_id": "validation_2310",
+      "query": "What is the train number when the time is 10:38?",
+      "gold": [
+        16381.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row in list_rows():\n    row_data = row_values(row_header=row)\n    for col in list_cols():\n        col_data = col_values(col_header=col, row_filter=row)\n        if col_data and col == \"Time\" and col_data[0] == 10.38:\n            result = row_data[1]\n            break\n    if result:\n        break"
+    },
+    {
+      "query_id": "validation_440",
+      "query": "what's the w-l-d with position being 1",
+      "gold": [
+        "4-0-0"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Position', 'W-L-D')[0] if cell('Position', 'Position') == 1 else None\nif result is not None:\n    result = result[0]\nelse:\n    result = None"
+    },
+    {
+      "query_id": "validation_3154",
+      "query": "WHich Studio host has a Year of 2003-04?",
+      "gold": [
+        "Gary Tanguay & Greg Dickerson"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "studio_host = None\nfor row in list_rows():\n    year_col = f\"{row}/Year\"\n    if cell(year_col, \"2003-04\") is not None:\n        studio_host_col = f\"{row}/Studio host\"\n        studio_host = cell(studio_host_col, \"2003-04\")\n        break\n\nresult = studio_host"
+    },
+    {
+      "query_id": "validation_131",
+      "query": "What is the allied target code of the group that targetted ghent/sint-denijs-westrem?",
+      "gold": [
+        "B-61"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Find the row that targets Ghent/Sint-Denijs-Westrem\ntarget_row = None\nfor row in list_rows():\n    if \"Ghent/Sint-Denijs-Westrem\" in cell(row, \"Target\"):\n        target_row = row\n        break\n\nif target_row is None:\n    result = None\nelse:\n    # Get the target code for the found row\n    target_code = cell(target_row, \"Target Code (Allied)\")\n    result = target_code"
+    },
+    {
+      "query_id": "validation_5015",
+      "query": "Can you tell me the highest Capacity that has the Team of torpedo?",
+      "gold": [
+        3020.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Find the row where the Team is 'torpedo'\ntorpedo_row = None\nfor row in list_rows():\n    if cell(row, 'Team') == 'torpedo':\n        torpedo_row = row\n        break\n\nif torpedo_row is None:\n    result = None\nelse:\n    # Get the Capacity value for the row with team 'torpedo'\n    capacity = cell(torpedo_row, 'Capacity')\n    \n    if capacity is not None:\n        result = capacity\n    else:\n        result = None"
+    },
+    {
+      "query_id": "validation_4355",
+      "query": "What is the 2008 for the 2009 ch our charming lady?",
+      "gold": [
+        "CH Our Charming Lady"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('2009', '2008')"
+    },
+    {
+      "query_id": "validation_168",
+      "query": "What is the date of Game 50?",
+      "gold": [
+        "February 11"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: 'NoneType' object is not subscriptable",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Game', 'Date')[49]"
+    },
+    {
+      "query_id": "validation_8371",
+      "query": "Who was the opponent after week 9 with an attendance of 44,020?",
+      "gold": [
+        "Oakland Raiders"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "NameError: name 'next' is not defined",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\n\n# Find the row after week 9 with attendance of 44,020\nrow_after_week_9 = next((row for row in list_rows() if \"Week\" in row and int(cell(row, \"Week\")) > 9), None)\n\n# Filter rows based on attendance\nfiltered_rows = [row for row in list_rows() if \"Attendance\" in row and cell(row, \"Attendance\") == \"44020\"]\n\n# Get the opponent from the filtered row\nfor row in filtered_rows:\n    if int(cell(row, \"Week\")) > 9:\n        result = cell(row, \"Opponent\")\n        break"
+    },
+    {
+      "query_id": "validation_6024",
+      "query": "In total, how much did the United States player George Archer earn with Wins lower than 24 and a rank that was higher than 5?",
+      "gold": [
+        0
+      ],
+      "pred": "0",
+      "correct": true,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = None\nus_players = row_values(\"Country\", \"United States\")\ngeorge_archer = row_values(\"Player\", \"George Archer\")\nvalid_rows = []\n\nfor row in us_players:\n    if row in george_archer:\n        earnings = cell(row, \"Earnings( $ )\")\n        wins = cell(row, \"Wins\")\n        rank = cell(row, \"Rank\")\n        if wins is not None and rank is not None and int(wins) < 24 and int(rank) > 5:\n            valid_rows.append(row)\n            result = earnings\n\nif result is None:\n    result = 0"
+    },
+    {
+      "query_id": "validation_7537",
+      "query": "Which player is from Ohio State College?",
+      "gold": [
+        "Jim Davidson Category:Articles with hCards"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = None\nfor college in col_values(\"College\", \"Ohio State\"):\n    players = col_values(\"Player\", college)\n    if players:\n        result = players[0]\n        break"
+    },
+    {
+      "query_id": "validation_2295",
+      "query": "Which episode number saw 1.312 million U.S. Wviewers?",
+      "gold": [
+        "2"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Find the row where U.S. viewers is 1.312 million\nus_viewers_target = 1.312\ntarget_row = None\n\n# Iterate through all rows to find the target\nfor row in list_rows():\n    us_viewers = cell(row, \"U.S. viewers (million)\")\n    if us_viewers == us_viewers_target:\n        target_row = row\n        break\n\n# If target row found, get the episode number\nif target_row:\n    result = cell(target_row, \"No.\")\nelse:\n    result = None"
+    },
+    {
+      "query_id": "validation_102",
+      "query": "Where was the final game played in 2007",
+      "gold": [
+        "Snellville, GA"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('2007', 'Location')"
+    },
+    {
+      "query_id": "validation_6997",
+      "query": "What Circuit has a Date of 25 july?",
+      "gold": [
+        "Lasarte"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = None\nfor row_header in list_rows():\n    date_value = cell(row_header, 'Date')\n    if date_value == '25 july':\n        result = cell(row_header, 'Circuit')\n        break"
+    },
+    {
+      "query_id": "validation_6364",
+      "query": "What is the time/retired with 60 laps and a grid 19?",
+      "gold": [
+        "+2 Laps"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = cell('Time/Retired', 'Grid') if col_values('Grid', row_filter='19') and col_values('Laps', row_filter='60') else None"
+    },
+    {
+      "query_id": "validation_5483",
+      "query": "How many reg GP for rick vaive in round 1?",
+      "gold": [],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = None\nfor player in row_values(\"Player\", col_filter=\"Player==Rick Vaive\"):\n    for rd in row_values(player, col_filter=\"Rd #==1\"):\n        result = cell(player, \"Reg GP\")\n        break\n    if result is not None:\n        break"
+    },
+    {
+      "query_id": "validation_1966",
+      "query": "How many seasons was the rank equal to #50?",
+      "gold": [
+        1
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "result = len([x for x in col_values('Rank', row_filter='Rank == #50') if x == 50])"
+    },
+    {
+      "query_id": "validation_1382",
+      "query": "Which county had a 3.6% unemployment rate?",
+      "gold": [
+        "Banks"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "for row_header in list_rows():\n    unemployment_rate = cell(row_header, \"Unemployment Rate\")\n    if unemployment_rate == 3.6:\n        result = cell(row_header, \"County\")\n        break"
+    }
+  ]
+}

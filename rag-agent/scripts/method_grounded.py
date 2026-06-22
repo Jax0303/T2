@@ -37,9 +37,31 @@ from rag_agent.data.loader import load_samples, load_table          # noqa: E402
 from rag_agent.stores.original_store import build_original_table, _to_float  # noqa: E402
 from rag_agent.eval.metrics import numeric_match, exact_match, difficulty_class  # noqa: E402
 from rag_agent.query import resolve_against_table                    # noqa: E402
+from rag_agent.router.query_classifier import classify_query, QueryType  # noqa: E402
 
 SEED = 42
 HARD = ["multi_op_formula", "arithmetic_agg", "pair_or_topk_arg", "single_arg", "comparison_or_count"]
+
+
+def route_strategy(query: str) -> str:
+    """Answer-strategy router (query text only — no gold labels).
+
+    Policy fitted on measured per-class NM (gold retrieval, N=100) and validated
+    out-of-sample. The project routes *retrieval* by query; this routes the
+    *answering strategy* by the query's answer-type — its natural completion.
+
+    Measured fact: the optimal answering strategy is answer-type dependent.
+      entity-answer (argmax / pick-a-name)  → light reader ('naive'): 0.75–0.85
+                                               (any cell-binding machinery hurts it)
+      numeric sum/ratio/compare             → self-consistency ('sc'): 0.40–0.55
+      hardest multi-step formula            → grounded symbolic ('grounded')
+    """
+    qt = classify_query(query).qtype
+    if qt in (QueryType.SINGLE_ARG, QueryType.SIMPLE_LOOKUP, QueryType.REASONING_ONLY):
+        return "naive"           # entity/name or single cell → light reader
+    if qt in (QueryType.ARITHMETIC_AGG, QueryType.COMPARISON_OR_COUNT):
+        return "sc"              # numeric agg/compare → self-consistency vote
+    return "grounded"            # multi_op_formula → grounded symbolic
 
 
 # ───────────────────────── traced header-path API ─────────────────────────
@@ -177,6 +199,36 @@ GROUNDED_SYS = (
     "list_rows(), list_cols() -> available header paths. "
     "Assign the final answer to `result`. Output ONLY a python code block.")
 
+# Chain-of-Thought baseline (field-standard): linearised table + step-by-step reasoning,
+# no code execution, no schema/API. Final answer parsed from an 'ANSWER:' line.
+COT_SYS = (
+    "You answer a question about a table. Read the table, reason briefly step by step, "
+    "then on the FINAL line output exactly 'ANSWER: <value>' where <value> is a single "
+    "number or a short entity name (no units, no extra words).")
+
+
+def _linearize_table(ot, max_rows: int = 40, max_cols: int = 12) -> str:
+    cols = []
+    for c in range(min(ot.n_cols, max_cols)):
+        p = ot.col_path(c)
+        cols.append(f"c{c}=" + (" > ".join(p) if p else f"col_{c}"))
+    lines = [f"Title: {ot.title}", "Columns: " + " | ".join(cols), "Rows:"]
+    for r in range(min(ot.n_rows, max_rows)):
+        rp = ot.row_path(r)
+        rh = " > ".join(rp) if rp else f"row_{r}"
+        vals = [("" if ot.cell(r, c) is None else str(ot.cell(r, c))) for c in range(min(ot.n_cols, max_cols))]
+        lines.append(f"  {rh}: " + " | ".join(vals))
+    if ot.n_rows > max_rows:
+        lines.append(f"  (... {ot.n_rows - max_rows} more rows)")
+    return "\n".join(lines)
+
+
+def _parse_cot_answer(txt: str) -> str:
+    m = list(re.finditer(r"ANSWER:\s*(.+)", txt or "", re.IGNORECASE))
+    if m:
+        return m[-1].group(1).strip().strip(".").strip()
+    return (txt or "").strip().splitlines()[-1].strip() if (txt or "").strip() else ""
+
 
 def build_user(title, question, tt: TracedTable, grounded: bool, binding_hint: str = ""):
     s = f"Table title: {title}\nQuestion: {question}\n"
@@ -228,23 +280,90 @@ def needs_repair(trace, result, err):
     return False
 
 
+# ───────────────────────── self-consistency voting ─────────────────────────
+def _nums(s):
+    return [float(x.replace(",", "")) for x in re.findall(r"-?\d[\d,]*\.?\d*", str(s))]
+
+
+def _same_answer(a, b, tol=0.02):
+    na, nb = _nums(a), _nums(b)
+    if na and nb:
+        x, y = na[0], nb[0]
+        d = tol * max(abs(y), 1e-9)
+        return abs(x - y) <= d or abs(abs(x) - abs(y)) <= d
+    return str(a).strip().lower() == str(b).strip().lower()
+
+
+def sc_vote(floor_pred, samples, floor_weight=1.6):
+    """Majority vote with a grounded-greedy floor.
+
+    ``samples`` = list of (pred, clean_trace_bool). The floor (greedy grounded
+    answer) seeds the vote with extra weight, and is only overridden if another
+    answer's weighted votes *strictly* exceed the floor group — so SC can correct
+    the greedy answer when samples agree, but rarely regresses below it.
+    """
+    groups = []  # [rep, weight]
+
+    def add(pred, w):
+        if pred in (None, "", "None"):
+            return
+        for g in groups:
+            if _same_answer(pred, g[0]):
+                g[1] += w
+                return
+        groups.append([pred, w])
+
+    add(floor_pred, floor_weight)
+    for pred, clean in samples:
+        add(pred, 1.0 if clean else 0.6)
+    if not groups:
+        return floor_pred
+    floor_g = next((g for g in groups if _same_answer(floor_pred, g[0])), None)
+    top = max(groups, key=lambda g: g[1])
+    if floor_g is not None and top[1] <= floor_g[1] + 1e-9:
+        return floor_pred
+    return top[0]
+
+
+def plain_vote(preds):
+    """Vanilla self-consistency: equal-weight majority over non-empty preds.
+
+    No trace weighting, no greedy-floor protection — the ablation baseline that
+    isolates our cross-store trace-weighted voting (``sc_vote``) as the only
+    difference. Same generations are fed in; only the aggregation changes.
+    """
+    groups = []  # [rep, count]
+    for p in preds:
+        if p in (None, "", "None"):
+            continue
+        for g in groups:
+            if _same_answer(p, g[0]):
+                g[1] += 1
+                break
+        else:
+            groups.append([p, 1])
+    if not groups:
+        return ""
+    return max(groups, key=lambda g: g[1])[0]
+
+
 # ───────────────────────── main ─────────────────────────
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["naive", "grounded", "hpir"], required=True)
+    ap.add_argument("--mode", choices=["naive", "grounded", "hpir", "routed", "sc", "sc_plain", "cot"], required=True)
+    ap.add_argument("--sc-k", type=int, default=5, help="self-consistency 샘플 수 (floor 포함)")
+    ap.add_argument("--sc-temp", type=float, default=0.7, help="self-consistency 샘플 temperature")
     ap.add_argument("--per-class", type=int, default=15)
     ap.add_argument("--repairs", type=int, default=2, help="grounded 자가수정 최대 횟수")
     ap.add_argument("--retrieval", choices=["gold"], default="gold")
     ap.add_argument("--max-tokens", type=int, default=320)
-    ap.add_argument("--llm", default="local:Qwen/Qwen2.5-7B-Instruct",
-                    help="e.g. groq:openai/gpt-oss-120b (CPU env), local:Qwen/... (GPU)")
-    ap.add_argument("--hitab-dir", default="data/hitab")
+    ap.add_argument("--seed", type=int, default=SEED, help="query-sampling seed (다른 100쿼리로 일반화 점검)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
     import random
-    rng = random.Random(SEED)
-    samples = load_samples(args.hitab_dir, "dev")
+    rng = random.Random(args.seed)
+    samples = load_samples("data/hitab", "dev")
     buckets = defaultdict(list)
     for s in samples:
         c = difficulty_class(s)
@@ -256,25 +375,8 @@ def main():
         chosen += [(c, s) for s in b[:args.per_class]]
     print(f"[{args.mode}] eval {len(chosen)} queries (per_class={args.per_class}, repairs={args.repairs})", flush=True)
 
-    from rag_agent.llm.factory import build_llm
-    llm = build_llm(args.llm)
-    grounded = args.mode in ("grounded", "hpir")
-    sys_p = GROUNDED_SYS if grounded else NAIVE_SYS
-
-    def _gen(u):
-        """LLM call with exponential backoff on transient (rate-limit) errors."""
-        delay = 4.0
-        for _ in range(6):
-            try:
-                return strip_code(llm.complete(sys_p, u, max_tokens=args.max_tokens))
-            except Exception:  # noqa: BLE001
-                time.sleep(delay); delay = min(delay * 2, 60)
-        return strip_code(llm.complete(sys_p, u, max_tokens=args.max_tokens))
-
-    def _quality(result, err, trace):
-        flags = sum(1 for t in trace if t.get("flag"))
-        nonempty = result is not None and result != "" and result != []
-        return (not bool(err), bool(nonempty), -flags)
+    from rag_agent.llm.local_qwen import LocalQwenLLM
+    llm = LocalQwenLLM(default_max_tokens=args.max_tokens)
 
     rows = []
     t0 = time.time()
@@ -282,7 +384,7 @@ def main():
         q = s.get("question") or ""
         gold = s.get("answer")
         tid = s.get("table_id")
-        raw = load_table(tid, args.hitab_dir)
+        raw = load_table(tid, "data/hitab")
         if not raw:
             rows.append({"class": cls, "query": q, "correct": False, "skip": "no_table"})
             continue
@@ -291,32 +393,83 @@ def main():
         api = {"cell": tt.cell, "col_values": tt.col_values, "row_values": tt.row_values,
                "list_rows": tt.list_rows, "list_cols": tt.list_cols}
 
+        # per-query strategy (routed picks by query text; others fixed)
+        strat = route_strategy(q) if args.mode == "routed" else args.mode
+
+        # ── Chain-of-Thought baseline: linearised table + reasoning, no code ──
+        if strat == "cot":
+            user = f"{_linearize_table(ot)}\n\nQuestion: {q}\n\nReason step by step, then 'ANSWER: <value>'."
+            out = llm.complete(COT_SYS, user, max_tokens=args.max_tokens)
+            pred = _parse_cot_answer(out)
+            ok = numeric_match(pred, gold) or exact_match(pred, gold)
+            rows.append({"class": cls, "query": q, "gold": gold, "pred": pred,
+                         "correct": bool(ok), "strategy": "cot"})
+            if i % 10 == 0 or i == len(chosen):
+                acc = sum(r["correct"] for r in rows) / len(rows)
+                print(f"  {i}/{len(chosen)} NM={acc:.3f} {time.time()-t0:.0f}s", flush=True)
+            continue
+
+        # ── self-consistency: grounded greedy floor + sampled votes ──
+        # sc       = cross-store trace-weighted voting + greedy floor (our method)
+        # sc_plain = SAME generations, vanilla equal-weight majority (ablation baseline)
+        if strat in ("sc", "sc_plain"):
+            user_g = build_user(ot.title, q, tt, grounded=True, binding_hint="")
+            code = strip_code(llm.complete(GROUNDED_SYS, user_g, max_tokens=args.max_tokens))
+            tt.trace = []
+            result, err = run_code(code, api)
+            nrep = 0
+            while nrep < args.repairs and needs_repair(tt.trace, result, err):
+                fb = trace_feedback(code, tt.trace, result, err)
+                code = strip_code(llm.complete(GROUNDED_SYS, user_g + "\n\n" + fb, max_tokens=args.max_tokens))
+                tt.trace = []
+                result, err = run_code(code, api)
+                nrep += 1
+            floor_pred = "" if result is None else str(result)
+            samples = []
+            for _ in range(max(0, args.sc_k - 1)):
+                c2 = strip_code(llm.complete(GROUNDED_SYS, user_g,
+                                             max_tokens=args.max_tokens, temperature=args.sc_temp))
+                tt.trace = []
+                r2, e2 = run_code(c2, api)
+                p2 = "" if r2 is None else str(r2)
+                clean = (e2 == "") and not any(t["flag"] for t in tt.trace)
+                samples.append((p2, clean))
+            if strat == "sc_plain":
+                pred = plain_vote([floor_pred] + [p for p, _ in samples])
+            else:
+                pred = sc_vote(floor_pred, samples)
+            ok = numeric_match(pred, gold) or exact_match(pred, gold)
+            rows.append({"class": cls, "query": q, "gold": gold, "pred": pred,
+                         "floor_pred": floor_pred, "correct": bool(ok), "strategy": strat,
+                         "n_repair": nrep, "sc_samples": [p for p, _ in samples]})
+            if i % 10 == 0 or i == len(chosen):
+                acc = sum(r["correct"] for r in rows) / len(rows)
+                print(f"  {i}/{len(chosen)} NM={acc:.3f} {time.time()-t0:.0f}s", flush=True)
+            continue
+
+        grounded = strat in ("grounded", "hpir")
+        sys_p = GROUNDED_SYS if grounded else NAIVE_SYS
         binding_hint = ""
-        if args.mode == "hpir":
+        if strat == "hpir":
             intent = resolve_against_table(q, ot)
             binding_hint = intent.binding_hint()
         user = build_user(ot.title, q, tt, grounded=grounded, binding_hint=binding_hint)
-        code = _gen(user)
+        code = strip_code(llm.complete(sys_p, user, max_tokens=args.max_tokens))
         tt.trace = []
         result, err = run_code(code, api)
         n_repair = 0
-        best = (result, err, code, _quality(result, err, tt.trace))
         if grounded:
             while n_repair < args.repairs and needs_repair(tt.trace, result, err):
                 fb = trace_feedback(code, tt.trace, result, err)
-                code = _gen(user + "\n\n" + fb)
+                code = strip_code(llm.complete(sys_p, user + "\n\n" + fb, max_tokens=args.max_tokens))
                 tt.trace = []
                 result, err = run_code(code, api)
                 n_repair += 1
-                qy = _quality(result, err, tt.trace)
-                if qy > best[3]:
-                    best = (result, err, code, qy)
-            result, err, code = best[0], best[1], best[2]   # over-correction safeguard
 
         pred = "" if result is None else str(result)
         ok = numeric_match(pred, gold) or exact_match(pred, gold)
         rows.append({"class": cls, "query": q, "gold": gold, "pred": pred,
-                     "correct": bool(ok), "err": err, "n_repair": n_repair,
+                     "correct": bool(ok), "err": err, "n_repair": n_repair, "strategy": strat,
                      "code": code, "trace_flags": [t["flag"] for t in tt.trace if t["flag"]]})
         if i % 10 == 0 or i == len(chosen):
             acc = sum(r["correct"] for r in rows) / len(rows)
@@ -330,10 +483,9 @@ def main():
         if cr:
             by_class[c] = {"n": len(cr), "NM": round(sum(x["correct"] for x in cr) / len(cr), 4)}
     out = {"config": {"mode": args.mode, "per_class": args.per_class, "repairs": args.repairs,
-                      "retrieval": args.retrieval, "llm": args.llm, "seed": SEED},
+                      "retrieval": args.retrieval, "llm": "local:Qwen2.5-7B-4bit", "seed": args.seed},
            "overall": {"n": n, "NM": round(nm, 4)}, "by_class": by_class, "rows": rows}
     outp = ROOT / "results" / (args.out or f"method_{args.mode}_pc{args.per_class}.json")
-    outp.parent.mkdir(parents=True, exist_ok=True)
     outp.write_text(json.dumps(out, ensure_ascii=False, indent=2))
     print(f"[{args.mode}] NM={nm:.4f} (n={n}) → {outp}", flush=True)
     print("by_class:", json.dumps(by_class, ensure_ascii=False), flush=True)
