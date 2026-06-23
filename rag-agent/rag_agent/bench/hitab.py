@@ -78,21 +78,79 @@ def _pick(candidates: List[tuple], ot: OriginalTable,
     return max(candidates, key=score)
 
 
+def _parse_coord(coord: str) -> Optional[tuple]:
+    """``"(17, 1)"`` -> ``(17, 1)`` (full-grid row, col)."""
+    nums = re.findall(r"\d+", str(coord))
+    return (int(nums[0]), int(nums[1])) if len(nums) >= 2 else None
+
+
+def _coord_offset(ot: OriginalTable, coords: List[tuple],
+                  max_off: int = 6) -> Optional[tuple]:
+    """Find the single (H, W) mapping every full-grid coord to a data cell whose
+    value matches. ``linked_cells`` index the *full merged grid* (header block
+    included); the data matrix drops it, so data[r][c] = full[r+H][c+W] where
+    (H, W) is the header block's (rows, cols). The joint value constraint over
+    all of a query's operands pins (H, W) down (measured: a consistent offset
+    exists for 98.9% of dev tables)."""
+    if not coords:
+        return None
+    for H in range(max_off):
+        for W in range(max_off):
+            ok = True
+            for i, j, fv in coords:
+                r, c = i - H, j - W
+                if not (0 <= r < ot.n_rows and 0 <= c < ot.n_cols
+                        and _to_float(ot.data[r][c]) == fv):
+                    ok = False
+                    break
+            if ok:
+                return H, W
+    return None
+
+
+def _operand_at(ot: OriginalTable, r: int, c: int, fv: float) -> GoldOperand:
+    return GoldOperand(
+        row=r, col=c,
+        header_path=ot.full_path(r, c) if hasattr(ot, "full_path")
+        else [p for p in ot.row_path(r) if p] + [p for p in ot.col_path(c) if p],
+        value=fv, value_type="number",
+    )
+
+
 def resolve_gold_operands(ot: OriginalTable, linked_cells: dict) -> List[GoldOperand]:
-    """Resolve ``quantity_link`` cells to data-space operands by value-matching."""
+    """Resolve ``quantity_link`` cells to data-space operands.
+
+    Primary path: map the annotation's full-grid coordinates to the data matrix
+    by the table's header-block offset (the *true* annotated cell). Fall back to
+    value-matching only when no consistent offset is found (~1% of tables)."""
     ql = (linked_cells or {}).get("quantity_link") or {}
-    row_hdrs, col_hdrs = _entity_headers((linked_cells or {}).get("entity_link") or {})
-    vidx = _value_index(ot)
+    coords: List[tuple] = []
+    for bucket in ql.values():
+        if not isinstance(bucket, dict):
+            continue
+        for coord, val in bucket.items():
+            fv = _to_float(val)
+            ij = _parse_coord(coord)
+            if fv is not None and ij is not None:
+                coords.append((ij[0], ij[1], fv))
+
+    off = _coord_offset(ot, coords)
     ops: List[GoldOperand] = []
     seen = set()
-    for _coord, val in (
-        (coord, v)
-        for bucket in ql.values() if isinstance(bucket, dict)
-        for coord, v in bucket.items()
-    ):
-        fv = _to_float(val)
-        if fv is None:
-            continue
+    if off is not None:
+        H, W = off
+        for i, j, fv in coords:
+            r, c = i - H, j - W
+            if (r, c) in seen:
+                continue
+            seen.add((r, c))
+            ops.append(_operand_at(ot, r, c, fv))
+        return ops
+
+    # Fallback: value-matching with entity_link header tie-break.
+    row_hdrs, col_hdrs = _entity_headers((linked_cells or {}).get("entity_link") or {})
+    vidx = _value_index(ot)
+    for _i, _j, fv in coords:
         cands = vidx.get(round(fv, 4))
         if not cands:
             continue
@@ -100,12 +158,7 @@ def resolve_gold_operands(ot: OriginalTable, linked_cells: dict) -> List[GoldOpe
         if (r, c) in seen:
             continue
         seen.add((r, c))
-        ops.append(GoldOperand(
-            row=r, col=c,
-            header_path=ot.full_path(r, c) if hasattr(ot, "full_path")
-            else [p for p in ot.row_path(r) if p] + [p for p in ot.col_path(c) if p],
-            value=fv, value_type="number",
-        ))
+        ops.append(_operand_at(ot, r, c, fv))
     return ops
 
 

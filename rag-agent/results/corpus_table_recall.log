@@ -1,0 +1,35 @@
+[corpus_table_recall] split=test sampled=2000 conditions=C0,C1,C2 (BM25, LLM-free)
+[C0] tables=24680 n=2000  R@1=0.18 R@5=0.3095 R@10=0.368 MRR=0.2434  (build 2.4s eval 265.1s)
+[C1] tables=24680 n=2000  R@1=0.6245 R@5=0.8125 R@10=0.8615 MRR=0.7094  (build 2.7s eval 268.2s)
+[C2] tables=24680 n=2000  R@1=0.6505 R@5=0.833 R@10=0.8845 MRR=0.7337  (build 2.5s eval 259.8s)
+
+=== corpus-level table recall (BM25, no LLM) ===
+{
+  "C0": {
+    "1": 0.18,
+    "3": 0.262,
+    "5": 0.3095,
+    "10": 0.368,
+    "20": 0.4325,
+    "50": 0.5325
+  },
+  "C1": {
+    "1": 0.6245,
+    "3": 0.765,
+    "5": 0.8125,
+    "10": 0.8615,
+    "20": 0.9115,
+    "50": 0.951
+  },
+  "C2": {
+    "1": 0.6505,
+    "3": 0.7885,
+    "5": 0.833,
+    "10": 0.8845,
+    "20": 0.9265,
+    "50": 0.9625
+  }
+}
+delta_C1_C0_R@1 = +0.4445
+delta_C2_C1_R@1 = +0.0260
+→ /mnt/c/Users/ugh/T2/rag-agent/results/corpus_table_recall.json
