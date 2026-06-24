@@ -142,7 +142,7 @@ def answer(
             val = _safe_exec(_extract_code(raw))
             if val is not None:
                 return AnswerResult(answer=val, raw=raw, mode=mode, used_codegen=True)
-        except (ValueError, SyntaxError, ZeroDivisionError, KeyError, TypeError):
+        except (ValueError, SyntaxError, ZeroDivisionError, KeyError, TypeError, NameError):
             pass
         return AnswerResult(answer=_parse_number(raw), raw=raw, mode=mode, used_codegen=False)
 

@@ -5,7 +5,7 @@ tables. All numbers measured on HiTab `dev`, seed=42, paired bootstrap 95% CI.
 Retrieval experiments (E1, E2, W4b) are LLM-free except W4b's decomposition step.
 
 > Status: E1 (H1) ✅ · E2 (H2) ✅ · W4b (LLM decomposition lever, 8b+70b) ✅ ·
-> E3 (synthetic depth) ✅ · E4 (generation format) not yet run.
+> E3 (synthetic depth) ✅ · E4 (generation format) ✅.
 
 ## Evaluation population
 
@@ -143,6 +143,22 @@ onto deep header paths. Caveat: the flattened enum scope is 2.2× larger (37.9 v
 Together with W4b, the open problem is sharpened to **depth-robust
 query→header-path resolution** — a representation problem, not model scale or budget.
 
+## E4 — structured context cuts silent grounding errors (H3)
+
+Retrieval held fixed at the oracle operand set; only the context *format* varies
+(same numbers, same header words). Codegen, Groq llama-3.1-8b, n=158, m≥2.
+
+| arm | NM accuracy | silent-wrong rate |
+|---|---|---|
+| flat dump | 0.335 | 0.665 |
+| **(header-path = value)** | **0.576** | 0.424 |
+
+ΔNM = **+0.241** CI [0.158, 0.323]; McNemar 49:11. **H3 supported** — making the
+binding explicit nearly doubles numeric-match accuracy and cuts the silent-error
+rate, even with perfect retrieval. Residual silent-wrong 0.42 is the 8b model's
+own grounding/arithmetic limit (non-number rate 0). Detail:
+`results/e4_format_summary.md`, `results/e4_format.json`.
+
 ## Differentiation gate (W0)
 
 All four nearest works verified (method sections, `docs/RELATED_DELTA.md`):
@@ -160,7 +176,7 @@ objective.** Gate passes.
 | H1 | dense single-vector OSC degrades with scope size m | **supported** (E1) |
 | H2 | header-tree enumeration improves operand-set completeness | **revised**: removes scope-size dependence (OSC\|decomp=1.0 flat) and re-localizes the bottleneck to row-axis decomposition; does **not** beat raw baseline OSC under the deterministic/8b/70b decomposer (E2, W4b) |
 | H2-causal | the enumeration effect is hierarchy-caused, not domain | **supported, with a twist** (E3): depth causally suppresses enumeration OSC (flatten→ +0.234) but the dense baseline is depth-robust (−0.070) — depth is a method-specific liability of resolve-then-enumerate, not intrinsic to completeness |
-| H3 | structured (header-path, value) context reduces silent grounding errors | **not yet run** (E4) |
+| H3 | structured (header-path, value) context reduces silent grounding errors | **supported** (E4): oracle-fixed retrieval, ΔNM +0.241 [0.158, 0.323], silent-wrong 0.66→0.42 |
 
 ## Threats / limitations
 
@@ -180,4 +196,6 @@ PYTHONPATH=. python scripts/build_operand_gold.py --split dev
 PYTHONPATH=. python scripts/e1_osc_baseline.py   --split dev
 PYTHONPATH=. python scripts/e2_osc_enum.py       --split dev
 PYTHONPATH=. python scripts/e2_osc_enum.py       --split dev --llm groq:llama-3.1-8b-instant
+PYTHONPATH=. python scripts/e3_depth.py          --split dev [--dense]
+PYTHONPATH=. python scripts/e4_format.py         --split dev --llm groq:llama-3.1-8b-instant
 ```
