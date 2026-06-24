@@ -5,7 +5,7 @@ tables. All numbers measured on HiTab `dev`, seed=42, paired bootstrap 95% CI.
 Retrieval experiments (E1, E2, W4b) are LLM-free except W4b's decomposition step.
 
 > Status: E1 (H1) ✅ · E2 (H2) ✅ · W4b (LLM decomposition lever, 8b+70b) ✅ ·
-> E3 (synthetic depth) and E4 (generation format) not yet run.
+> E3 (synthetic depth) ✅ · E4 (generation format) not yet run.
 
 ## Evaluation population
 
@@ -121,6 +121,28 @@ decomposer's representation, not a bigger model. The enumeration invariant
 
 ---
 
+## E3 — header depth is a method-specific liability (causal)
+
+Holding data, leaf vocabulary, and scope fixed, leaf-flatten every table to depth 1
+(drop ancestor header levels) and re-measure, paired (n=158, m≥2, LLM-free).
+
+| flatten (d→1) effect | OSC original → flat | Δ |
+|---|---|---|
+| enumeration | 0.335 → 0.570 | **+0.234** |
+| dense baseline | 0.772 → 0.703 | **−0.070** |
+
+Removing the header tree (same words, same data) **raises enumeration OSC by +0.23**
+(col-axis coverage 0.73→0.93) but **lowers the dense baseline by −0.07**. The two
+methods respond to depth in *opposite* directions: depth is not intrinsic to the
+completeness problem (the baseline is depth-robust) — it is a **method-specific
+liability of resolve-then-enumerate**, because the fuzzy resolver cannot map queries
+onto deep header paths. Caveat: the flattened enum scope is 2.2× larger (37.9 vs
+17.2 cells), so part of its OSC gain trades precision for completeness. Detail:
+`results/e3_depth_summary.md`, `results/e3_depth.json`, `results/e3_depth_dense.json`.
+
+Together with W4b, the open problem is sharpened to **depth-robust
+query→header-path resolution** — a representation problem, not model scale or budget.
+
 ## Differentiation gate (W0)
 
 All four nearest works verified (method sections, `docs/RELATED_DELTA.md`):
@@ -136,7 +158,8 @@ objective.** Gate passes.
 | H | claim | verdict |
 |---|---|---|
 | H1 | dense single-vector OSC degrades with scope size m | **supported** (E1) |
-| H2 | header-tree enumeration improves operand-set completeness | **revised**: removes scope-size dependence (OSC\|decomp=1.0 flat) and re-localizes the bottleneck to row-axis decomposition; does **not** beat raw baseline OSC under the deterministic/8b decomposer (E2, W4b) |
+| H2 | header-tree enumeration improves operand-set completeness | **revised**: removes scope-size dependence (OSC\|decomp=1.0 flat) and re-localizes the bottleneck to row-axis decomposition; does **not** beat raw baseline OSC under the deterministic/8b/70b decomposer (E2, W4b) |
+| H2-causal | the enumeration effect is hierarchy-caused, not domain | **supported, with a twist** (E3): depth causally suppresses enumeration OSC (flatten→ +0.234) but the dense baseline is depth-robust (−0.070) — depth is a method-specific liability of resolve-then-enumerate, not intrinsic to completeness |
 | H3 | structured (header-path, value) context reduces silent grounding errors | **not yet run** (E4) |
 
 ## Threats / limitations
