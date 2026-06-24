@@ -1,0 +1,132 @@
+{
+  "experiment": "E3_depth",
+  "hypothesis": "H2 causality: header depth d effect on enumeration, isolated from scope size",
+  "split": "dev",
+  "seed": 42,
+  "n": 158,
+  "dense": false,
+  "A_observational_enum_by_depth": {
+    "d1": {
+      "n": 1,
+      "osc": 1.0,
+      "row_cov": 1.0,
+      "col_cov": 1.0,
+      "cells": 8.0
+    },
+    "d2": {
+      "n": 46,
+      "osc": 0.2391,
+      "row_cov": 0.587,
+      "col_cov": 0.5217,
+      "cells": 13.5217
+    },
+    "d3+": {
+      "n": 111,
+      "osc": 0.4054,
+      "row_cov": 0.5766,
+      "col_cov": 0.7387,
+      "cells": 17.9189
+    }
+  },
+  "A_observational_enum_by_depth_x_scope": {
+    "d1|m2": {
+      "n": 1,
+      "osc": 1.0,
+      "row_cov": 1.0,
+      "col_cov": 1.0,
+      "cells": 8.0
+    },
+    "d2|m2": {
+      "n": 26,
+      "osc": 0.3462,
+      "row_cov": 0.6923,
+      "col_cov": 0.5385,
+      "cells": 12.8846
+    },
+    "d2|m3-4": {
+      "n": 7,
+      "osc": 0.1429,
+      "row_cov": 0.4286,
+      "col_cov": 0.5714,
+      "cells": 13.7143
+    },
+    "d2|m5-8": {
+      "n": 8,
+      "osc": 0.125,
+      "row_cov": 0.5,
+      "col_cov": 0.5,
+      "cells": 15.0
+    },
+    "d2|m9+": {
+      "n": 5,
+      "osc": 0.0,
+      "row_cov": 0.4,
+      "col_cov": 0.4,
+      "cells": 14.2
+    },
+    "d3+|m2": {
+      "n": 83,
+      "osc": 0.4578,
+      "row_cov": 0.6024,
+      "col_cov": 0.7952,
+      "cells": 17.3735
+    },
+    "d3+|m3-4": {
+      "n": 19,
+      "osc": 0.3158,
+      "row_cov": 0.6316,
+      "col_cov": 0.5263,
+      "cells": 14.0526
+    },
+    "d3+|m5-8": {
+      "n": 7,
+      "osc": 0.1429,
+      "row_cov": 0.2857,
+      "col_cov": 0.5714,
+      "cells": 32.7143
+    },
+    "d3+|m9+": {
+      "n": 2,
+      "osc": 0.0,
+      "row_cov": 0.0,
+      "col_cov": 1.0,
+      "cells": 25.5
+    }
+  },
+  "B_synthetic_leaf_flatten": {
+    "n": 158,
+    "orig": {
+      "n": 158,
+      "osc": 0.3608,
+      "row_cov": 0.5823,
+      "col_cov": 0.6772,
+      "cells": 16.5759
+    },
+    "flat_d1": {
+      "n": 158,
+      "osc": 0.4873,
+      "row_cov": 0.5506,
+      "col_cov": 0.9051,
+      "cells": 26.0316
+    },
+    "delta_row_cov": -0.0316,
+    "delta_col_cov": 0.2278,
+    "delta_osc": 0.1266
+  },
+  "B_synthetic_by_orig_depth": {
+    "d2": {
+      "n": 46,
+      "orig_row_cov": 0.587,
+      "flat_row_cov": 0.587,
+      "orig_osc": 0.2391,
+      "flat_osc": 0.413
+    },
+    "d3+": {
+      "n": 111,
+      "orig_row_cov": 0.5766,
+      "flat_row_cov": 0.5315,
+      "orig_osc": 0.4054,
+      "flat_osc": 0.5135
+    }
+  }
+}

@@ -159,6 +159,43 @@ rate, even with perfect retrieval. Residual silent-wrong 0.42 is the 8b model's
 own grounding/arithmetic limit (non-number rate 0). Detail:
 `results/e4_format_summary.md`, `results/e4_format.json`.
 
+## Idea follow-up — embedding tree-node resolver + recall-first
+
+Tests the idea "represent row headers as a tree and match query→header by semantic
+embedding" against the row-axis bottleneck. LLM-free, n=158.
+
+| resolver | row-cov | col-cov | OSC enum |
+|---|---|---|---|
+| lexical (fuzzy) | 0.544 | 0.728 | 0.335 |
+| embed (tree-node) | 0.582 | 0.677 | 0.361 |
+| **hybrid (row=embed, col=lexical)** | 0.582 | 0.728 | **0.380** |
+
+- Embedding fixes the **row axis** (vocabulary mismatch) but hurts the **column
+  axis** (years/codes match better lexically) → hybrid keeps both. The hybrid is
+  LLM-free yet **matches the 70b LLM exactly** (OSC 0.380, n_decomp 60): a targeted
+  representation fix equals a 9× larger model — nailing "representation, not scale".
+- **Depth re-test (E3 embed):** the embedding resolver halves the flatten benefit
+  (+0.234→+0.127) and on the row axis flips depth from liability to slight asset
+  (row-cov 0.582→0.551 when flattened). The idea's hypothesis holds on the
+  bottleneck axis.
+- Still below the dense baseline: the residual is **structural scope selection**
+  (which/how-many sibling rows), not vocabulary.
+
+**Recall-first (E5) — meeting a 100%-completeness requirement:**
+
+| config | OSC | mean cells (whole table ≈162) |
+|---|---|---|
+| enum precise (hybrid) | 0.380 | 19 |
+| enum axis-complete | 0.930 | 87 |
+| dense top-20 | 0.918 | 99 |
+| **union(axis-complete, dense)** | **1.000** | 123 |
+| whole table | 1.000 | 162 |
+
+100% completeness **is** achievable (union), which similarity ranking alone cannot
+guarantee — but it costs ~76% of the whole table. Completeness and precision are in
+tension; "100% within a *small* set" remains the open problem. Detail:
+`results/e2e3_embed_resolver_summary.md`.
+
 ## Differentiation gate (W0)
 
 All four nearest works verified (method sections, `docs/RELATED_DELTA.md`):

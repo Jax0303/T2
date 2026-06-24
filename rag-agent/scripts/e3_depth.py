@@ -42,6 +42,7 @@ from rag_agent.eval.operand_set import (
     bin_scope, covered_gold_cells, header_depth, operand_set_completeness,
 )
 from rag_agent.query.header_path_resolver import resolve_against_table
+from rag_agent.query.header_embed_resolver import EmbedResolver
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.retrieve.header_enum import enumerate_scope
 from rag_agent.retrieve.operand_retriever import HybridRetriever, retrieve
@@ -74,8 +75,8 @@ def _bench_from_ot(ot, source="hitab"):
         left_paths=[ot.row_path(r) for r in range(ot.n_rows)], source=source)
 
 
-def enum_record(ot, q):
-    intent = resolve_against_table(q.question, ot)
+def enum_record(ot, q, resolve_fn):
+    intent = resolve_fn(q.question, ot)
     e = enumerate_scope(ot, intent.row_paths, intent.col_paths)
     gold = q.gold_operands
     return {
@@ -102,6 +103,7 @@ def main() -> int:
     ap.add_argument("--split", default="dev")
     ap.add_argument("--max", type=int, default=None)
     ap.add_argument("--dense", action="store_true", help="also run dense baseline (orig+flat)")
+    ap.add_argument("--resolver", default="deterministic", choices=["deterministic", "embed"])
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--out", default="results/e3_depth.json")
@@ -112,7 +114,16 @@ def main() -> int:
            if (q.aggregation or "none") in ARITH and len(q.gold_operands) >= 2]
     print(f"[pop] arithmetic m>=2: {len(pop)}")
 
-    embedder = Embedder(args.embed_model, device=args.device) if args.dense else None
+    need_embedder = args.dense or args.resolver == "embed"
+    embedder = Embedder(args.embed_model, device=args.device) if need_embedder else None
+    # original and flattened tables share a table_id, so the embed resolver (which
+    # caches candidates per table_id) needs a separate instance per variant.
+    if args.resolver == "embed":
+        _er_o, _er_f = EmbedResolver(embedder), EmbedResolver(embedder)
+        resolve_o = _er_o.resolve
+        resolve_f = _er_f.resolve
+    else:
+        resolve_o = resolve_f = resolve_against_table
     ots, ots_flat, retr_o, retr_f = {}, {}, {}, {}
     for tid in {q.gold_table_id for q in pop}:
         ot = build_original_table(load_table(tid, args.data_dir))
@@ -126,8 +137,8 @@ def main() -> int:
     for i, q in enumerate(pop):
         ot = ots[q.gold_table_id]
         d = header_depth(ot.top_paths, ot.left_paths)
-        ro = enum_record(ot, q)
-        rf = enum_record(ots_flat[q.gold_table_id], q)
+        ro = enum_record(ot, q, resolve_o)
+        rf = enum_record(ots_flat[q.gold_table_id], q, resolve_f)
         rec = {"m": len({(o.row, o.col) for o in q.gold_operands}), "d": d,
                "orig": ro, "flat": rf}
         if args.dense:

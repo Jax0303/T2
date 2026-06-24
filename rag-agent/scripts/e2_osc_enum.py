@@ -32,6 +32,7 @@ from rag_agent.eval.operand_set import (
     bin_scope, covered_gold_cells, operand_set_completeness, per_cell_recall,
 )
 from rag_agent.query.header_path_resolver import resolve_against_table, resolve_intent
+from rag_agent.query.header_embed_resolver import EmbedResolver
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.retrieve.header_enum import enumerate_scope
 from rag_agent.retrieve.operand_retriever import HybridRetriever, retrieve
@@ -77,6 +78,10 @@ def main() -> int:
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--llm", default=None,
                     help="W4b: refine decomposition via LLM, e.g. groq:llama-3.1-8b-instant")
+    ap.add_argument("--resolver", default="deterministic",
+                    choices=["deterministic", "embed", "hybrid"],
+                    help="header-path resolver: lexical fuzzy (default), semantic tree-node "
+                         "embedding, or hybrid (row=embed, col=lexical)")
     ap.add_argument("--out", default="results/e2_osc_enum.json")
     args = ap.parse_args()
 
@@ -93,6 +98,16 @@ def main() -> int:
           f"(m>=2: {sum(1 for q in pop if len(q.gold_operands) >= 2)})")
 
     embedder = None if args.no_dense else Embedder(args.embed_model, device=args.device)
+    embed_resolver = None
+    if args.resolver in ("embed", "hybrid"):
+        if embedder is None:
+            ap.error(f"--resolver {args.resolver} requires an embedder (drop --no-dense)")
+        if args.resolver == "hybrid":
+            embed_resolver = EmbedResolver(embedder, row_mode="embed", col_mode="lexical")
+            print("[resolver] hybrid (row=embed, col=lexical)")
+        else:
+            embed_resolver = EmbedResolver(embedder)
+            print("[resolver] semantic tree-node embedding")
     needed = {q.gold_table_id for q in pop}
     print(f"[index] dense={embedder is not None}; building {len(needed)} retrievers + tables ...")
     retr, ots = {}, {}
@@ -110,9 +125,13 @@ def main() -> int:
         gold_rows = {o.row for o in gold}
         gold_cols = {o.col for o in gold}
 
-        # --- treatment: deterministic enumeration (optionally LLM-refined decomp) ---
-        intent = (resolve_intent(q.question, ot, llm=llm) if llm is not None
-                  else resolve_against_table(q.question, ot))
+        # --- treatment: enumeration over resolved scope ---
+        if embed_resolver is not None:
+            intent = embed_resolver.resolve(q.question, ot)        # semantic tree-node
+        elif llm is not None:
+            intent = resolve_intent(q.question, ot, llm=llm)       # W4b LLM refine
+        else:
+            intent = resolve_against_table(q.question, ot)         # lexical fuzzy
         enum = enumerate_scope(ot, intent.row_paths, intent.col_paths)
         osc_enum = operand_set_completeness(gold, enum.cells)
         pcr_enum = per_cell_recall(gold, enum.cells)
