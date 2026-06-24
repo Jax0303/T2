@@ -68,30 +68,39 @@ reproduce: `PYTHONPATH=. python scripts/e2_osc_enum.py --split dev`
 
 ---
 
-## W4b — LLM-refined decomposition (Groq llama-3.1-8b): lever FAILS
+## W4b — LLM-refined decomposition (8b vs 70b): bottleneck is model-agnostic
 
-Hypothesis: an LLM picking header paths from the real inventory lifts row-axis
-coverage, turning the negative ΔOSC positive. Result: **the opposite.**
+Lever: an LLM picks header paths from the real inventory (`resolve_intent`), meant
+to lift row-axis coverage and turn the negative ΔOSC positive.
 
-| metric | deterministic | LLM-refined (8b) |
-|---|---|---|
-| row-axis coverage | 0.544 | **0.506** |
-| col-axis coverage | 0.728 | 0.684 |
-| OSC enum | 0.335 | **0.285** |
-| n decomp correct | 53/158 | **45/158** |
-| OSC \| decomp correct | 1.000 | 1.000 |
-| ΔOSC vs k=10 | −0.437 | **−0.487** |
+| metric | deterministic | 8b | 70b |
+|---|---|---|---|
+| row-axis coverage | 0.544 | 0.506 | **0.595** |
+| col-axis coverage | 0.728 | 0.684 | 0.722 |
+| OSC enum | 0.335 | 0.285 | **0.380** |
+| n decomp correct | 53/158 | 45/158 | **60/158** |
+| mean enum cells | 17.2 | 16.0 | **8.9** |
+| OSC \| decomp correct | 1.000 | 1.000 | 1.000 |
+| ΔOSC vs k=10 | −0.437 | −0.487 | **−0.392** (CI [−0.475, −0.310]) |
 
-Decomposition source: 103/214 queries were LLM-refined, 111 kept deterministic.
-On the 103 it refined, llama-3.1-8b chose **worse** header paths than the
-deterministic fuzzy ranker, lowering coverage on both axes.
+Refinement reach: 8b refined 103/214 queries, 70b refined 212/214.
 
-**Read:** the re-localized bottleneck (row-axis header decomposition) is **not
-liftable by a weak 8b LLM — it degrades it.** The deterministic fuzzy resolver is
-a stronger header-path decomposer than llama-3.1-8b for this task. The
-enumeration invariant (OSC | decomp = 1.0) is untouched: the ceiling is purely
-decomposer quality. Open question for the next run: does a strong model
-(llama-3.3-70b) lift row-axis coverage, or is the bottleneck model-agnostic?
+**Read — the bottleneck is largely model-agnostic.**
+- A *weak* 8b LLM **degrades** decomposition below the deterministic fuzzy ranker
+  (worse header paths on the queries it touched).
+- A *strong* 70b LLM **partly lifts** it (row-axis 0.544→0.595, n-correct 53→60)
+  and is far more precise (mean 17→9 cells), but a ~9× larger model moves row-axis
+  coverage by only +0.05 and **still does not beat the dense baseline** (ΔOSC
+  significantly negative at both budgets).
+- By scope: 70b improves m=2 (0.36→0.45) and m=3–4 (0.19→0.42), but m≥5 drops to
+  0.0 — its precise predicates lose the deterministic "dump the whole axis"
+  fallback that accidentally covered whole-column sums.
+- The enumeration invariant (OSC | decomp = 1.0) holds across all three models.
 
-Artifact: `results/e2_osc_enum_llm.json` ·
-reproduce: `PYTHONPATH=. python scripts/e2_osc_enum.py --split dev --llm groq:llama-3.1-8b-instant`
+The row-axis header-decomposition ceiling is **not closed by LLM scale** within the
+available range: it is a representation/matching problem, not a model-capacity one.
+The next lever is the decomposer's *representation* (structure-aware row-path
+matching), not a bigger model.
+
+Artifacts: `results/e2_osc_enum_llm.json` (8b), `results/e2_osc_enum_llm70b.json` (70b) ·
+reproduce: `PYTHONPATH=. python scripts/e2_osc_enum.py --split dev --llm groq:llama-3.3-70b-versatile`

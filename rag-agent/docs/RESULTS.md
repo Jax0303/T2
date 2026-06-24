@@ -4,7 +4,7 @@ Consolidated results for the operand-set completeness (OSC) study on hierarchica
 tables. All numbers measured on HiTab `dev`, seed=42, paired bootstrap 95% CI.
 Retrieval experiments (E1, E2, W4b) are LLM-free except W4b's decomposition step.
 
-> Status: E1 (H1) ✅ · E2 (H2) ✅ · W4b (LLM decomposition lever) ✅ ·
+> Status: E1 (H1) ✅ · E2 (H2) ✅ · W4b (LLM decomposition lever, 8b+70b) ✅ ·
 > E3 (synthetic depth) and E4 (generation format) not yet run.
 
 ## Evaluation population
@@ -95,27 +95,29 @@ OSC win. Detail: `results/e2_osc_enum_summary.md`, `results/e2_osc_enum.json`.
 
 ---
 
-## W4b — the decomposition bottleneck is not lifted by a weak LLM
+## W4b — the decomposition bottleneck is largely model-agnostic
 
 Lever: refine decomposition with an LLM choosing header paths from the real
-inventory (`resolve_intent`, Groq llama-3.1-8b-instant). Expected to raise row-axis
-coverage. **Result: it lowers it.**
+inventory (`resolve_intent`), to raise row-axis coverage. Tested at two scales.
 
-| metric | deterministic | LLM-refined (8b) |
-|---|---|---|
-| row-axis coverage | 0.544 | **0.506** |
-| OSC enum | 0.335 | **0.285** |
-| n decomp correct | 53/158 | **45/158** |
-| OSC \| decomp correct | 1.000 | 1.000 |
-| ΔOSC vs k=10 | −0.437 | **−0.487** |
+| metric | deterministic | 8b | 70b |
+|---|---|---|---|
+| row-axis coverage | 0.544 | 0.506 | **0.595** |
+| OSC enum | 0.335 | 0.285 | **0.380** |
+| n decomp correct | 53/158 | 45/158 | **60/158** |
+| mean enum cells | 17.2 | 16.0 | **8.9** |
+| OSC \| decomp correct | 1.000 | 1.000 | 1.000 |
+| ΔOSC vs k=10 | −0.437 | −0.487 | **−0.392** |
 
-On the 103/214 queries it refined, the 8b model chose worse header paths than the
-deterministic fuzzy ranker. **The deterministic resolver is a stronger header-path
-decomposer than llama-3.1-8b for this task.** The enumeration invariant
-(OSC | decomp = 1.0) is untouched — the ceiling is purely decomposer quality.
+- A *weak* 8b model **degrades** decomposition below the deterministic fuzzy ranker.
+- A *strong* 70b model **partly lifts** it (row-axis +0.05, n-correct 53→60) and is
+  far more precise (17→9 cells), but a ~9× larger model still **does not beat the
+  dense baseline** (ΔOSC significantly negative).
 
-Open: does a strong model (llama-3.3-70b) lift row-axis coverage, or is the
-bottleneck model-agnostic? (next run.) Detail: `results/e2_osc_enum_summary.md`.
+The row-axis ceiling is **not closed by LLM scale** in the available range — it is a
+representation/matching problem, not a model-capacity one. The next lever is the
+decomposer's representation, not a bigger model. The enumeration invariant
+(OSC | decomp = 1.0) holds across all three. Detail: `results/e2_osc_enum_summary.md`.
 
 ---
 
@@ -145,7 +147,8 @@ objective.** Gate passes.
 - Selection/comparison aggregations excluded from gold (value-matching limitation).
 - Baseline k=10 uses a larger effective cell budget than enumeration's ~17 cells;
   part of the raw-OSC gap is budget, not targeting.
-- W4b used an 8b model; the strong-model question (70b) is open.
+- W4b tested 8b and 70b; LLM scale does not close the row-axis ceiling, but only
+  Groq-hosted Llama models were tried (no frontier model / no fine-tuned decomposer).
 
 ## Reproduce
 
