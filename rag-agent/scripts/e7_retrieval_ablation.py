@@ -148,6 +148,95 @@ def bucket(ans, gold):
     return "non_number"
 
 
+# buckets where the LLM actually produced an answer (vs a failed/skipped call)
+ANSWERED = {"correct", "silent_wrong", "non_number"}
+
+
+def _aggregate(recs, arms, args) -> int:
+    """Summarize per-query records → results JSON + console table.
+
+    Reports accuracy two ways:
+      * `accuracy_nm/em`          — over ALL queries (oversize/error count as wrong;
+                                     the operational view).
+      * `accuracy_nm_answered`    — over only queries the LLM actually answered
+                                     (excludes oversize/error); removes the unfair
+                                     penalty on large-context arms whose calls failed.
+    Paired stats vs `--baseline` are given both raw and on the both-answered subset.
+    """
+    n = len(recs)
+    rng = random.Random(SEED)
+    base = args.baseline
+
+    def rate(arm, field):
+        return sum(r.get(f"{arm}_{field}", 0) for r in recs) / n if n else 0.0
+
+    def answered(arm):
+        return [r for r in recs if r.get(f"{arm}_bucket") in ANSWERED]
+
+    def acc_answered(arm):
+        a = answered(arm)
+        return sum(r.get(f"{arm}_correct", 0) for r in a) / len(a) if a else 0.0
+
+    def boot_ci(arm, field):
+        diffs = []
+        for _ in range(2000):
+            s = sum(recs[rng.randrange(n)].get(f"{arm}_{field}", 0)
+                    - recs[rng.randrange(n)].get(f"{base}_{field}", 0) for _ in range(n))
+            diffs.append(s / n)
+        diffs.sort()
+        return [round(diffs[50], 4), round(diffs[1949], 4)]
+
+    def paired_answered(arm):
+        sub = [r for r in recs if r.get(f"{arm}_bucket") in ANSWERED
+               and r.get(f"{base}_bucket") in ANSWERED]
+        if not sub:
+            return None
+        da = sum(r.get(f"{arm}_correct", 0) - r.get(f"{base}_correct", 0) for r in sub) / len(sub)
+        b = sum(1 for r in sub if r.get(f"{arm}_correct") and not r.get(f"{base}_correct"))
+        c = sum(1 for r in sub if r.get(f"{base}_correct") and not r.get(f"{arm}_correct"))
+        return {"n_both_answered": len(sub), "delta_nm": round(da, 4),
+                "mcnemar": {"arm_only": b, "base_only": c}}
+
+    out = {"experiment": "E7_retrieval_ablation",
+           "hypothesis": "H5/H6: at a fixed solver, retrieval (small+complete) vs whole-table/dense; gain tracks precision",
+           "split": args.split, "seed": SEED, "llm": args.llm, "mode": args.mode,
+           "baseline_arm": base,
+           "dry_run": args.dry_run, "population": {"name": "arithmetic_m>=2", "n": n},
+           "arms": {}}
+    for arm in arms:
+        a = {"osc": round(sum(r.get(f"{arm}_osc", 0) for r in recs) / n, 4) if n else 0,
+             "mean_cells": round(sum(r.get(f"{arm}_cells", 0) for r in recs) / n, 1) if n else 0}
+        if not args.dry_run:
+            a["accuracy_nm"] = round(rate(arm, "correct"), 4)   # all queries
+            a["accuracy_em"] = round(rate(arm, "em"), 4)
+            a["n_oversize"] = sum(1 for r in recs if r.get(f"{arm}_bucket") == "oversize")
+            a["n_error"] = sum(1 for r in recs if r.get(f"{arm}_bucket") == "error")
+            a["n_answered"] = len(answered(arm))
+            a["accuracy_nm_answered"] = round(acc_answered(arm), 4)  # successful calls only
+            if arm != base:
+                a[f"delta_nm_vs_{base}"] = round(rate(arm, "correct") - rate(base, "correct"), 4)
+                a[f"delta_nm_ci95_vs_{base}"] = boot_ci(arm, "correct")
+                a[f"delta_em_vs_{base}"] = round(rate(arm, "em") - rate(base, "em"), 4)
+                a[f"paired_answered_vs_{base}"] = paired_answered(arm)
+        out["arms"][arm] = a
+
+    os.makedirs(os.path.dirname(args.out), exist_ok=True)
+    with open(args.out, "w") as fh:
+        json.dump(out, fh, indent=2)
+    hdr = f"{'arm':<14}{'OSC':>7}{'cells':>7}" + (
+        "" if args.dry_run else f"{'NM':>7}{'NM_ans':>8}{'EM':>7}{'ovsz':>6}{'err':>5}")
+    print("\n" + hdr + (f"   (baseline={base})" if not args.dry_run else ""))
+    for arm in arms:
+        a = out["arms"][arm]
+        row = f"{arm:<14}{a['osc']:>7.3f}{a['mean_cells']:>7.1f}"
+        if not args.dry_run:
+            row += (f"{a['accuracy_nm']:>7.3f}{a['accuracy_nm_answered']:>8.3f}"
+                    f"{a['accuracy_em']:>7.3f}{a['n_oversize']:>6}{a['n_error']:>5}")
+        print(row)
+    print(f"\nwrote -> {args.out}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-dir", default="data/hitab")
@@ -168,8 +257,21 @@ def main() -> int:
     ap.add_argument("--checkpoint", default="results/e7_records.jsonl")
     ap.add_argument("--baseline", default="dense_k10",
                     help="arm to pair against for ΔAcc / CI / McNemar (E8: ohd_lite)")
+    ap.add_argument("--aggregate-only", action="store_true",
+                    help="re-summarize an existing --checkpoint (no LLM/embedder); "
+                         "use to apply new metrics to a finished run")
     args = ap.parse_args()
     arms = [a.strip() for a in args.arms.split(",") if a.strip()]
+
+    if args.aggregate_only:  # re-summarize a finished checkpoint, no models built
+        recs = []
+        for line in Path(args.checkpoint).read_text().splitlines():
+            try:
+                recs.append(json.loads(line))
+            except Exception:
+                pass
+        print(f"[aggregate-only] {len(recs)} records from {args.checkpoint}")
+        return _aggregate(recs, arms, args)
 
     queries, tables = load_queries(args.data_dir, args.split, args.max)
     pop = [q for q in queries
@@ -280,64 +382,7 @@ def main() -> int:
         if cp_fh:
             cp_fh.close()
 
-    # ---------- aggregate ----------
-    n = len(recs)
-    rng = random.Random(SEED)
-    base = args.baseline
-
-    def rate(arm, field):
-        return sum(r.get(f"{arm}_{field}", 0) for r in recs) / n if n else 0.0
-
-    def boot_ci(arm, field):
-        diffs = []
-        for _ in range(2000):
-            s = 0
-            for _ in range(n):
-                r = recs[rng.randrange(n)]
-                s += r.get(f"{arm}_{field}", 0) - r.get(f"{base}_{field}", 0)
-            diffs.append(s / n)
-        diffs.sort()
-        return [round(diffs[50], 4), round(diffs[1949], 4)]
-
-    out = {"experiment": "E7_retrieval_ablation",
-           "hypothesis": "H5/H6: at a fixed solver, retrieval (small+complete) vs whole-table/dense; gain tracks precision",
-           "split": args.split, "seed": SEED, "llm": args.llm, "mode": args.mode,
-           "baseline_arm": base,
-           "dry_run": args.dry_run, "population": {"name": "arithmetic_m>=2", "n": n},
-           "arms": {}}
-    for arm in arms:
-        a = {"osc": round(sum(r.get(f"{arm}_osc", 0) for r in recs) / n, 4) if n else 0,
-             "mean_cells": round(sum(r.get(f"{arm}_cells", 0) for r in recs) / n, 1) if n else 0}
-        if not args.dry_run:
-            a["accuracy_nm"] = round(rate(arm, "correct"), 4)   # numeric-match
-            a["accuracy_em"] = round(rate(arm, "em"), 4)        # exact-match
-            a["n_oversize"] = sum(1 for r in recs if r.get(f"{arm}_bucket") == "oversize")
-            a["n_error"] = sum(1 for r in recs if r.get(f"{arm}_bucket") == "error")
-            if arm != base:
-                a[f"delta_nm_vs_{base}"] = round(rate(arm, "correct") - rate(base, "correct"), 4)
-                a[f"delta_nm_ci95_vs_{base}"] = boot_ci(arm, "correct")
-                a[f"delta_em_vs_{base}"] = round(rate(arm, "em") - rate(base, "em"), 4)
-                a[f"mcnemar_nm_vs_{base}"] = {
-                    "arm_only": sum(1 for r in recs if r.get(f"{arm}_correct") and not r.get(f"{base}_correct")),
-                    "base_only": sum(1 for r in recs if r.get(f"{base}_correct") and not r.get(f"{arm}_correct"))}
-        out["arms"][arm] = a
-
-    os.makedirs(os.path.dirname(args.out), exist_ok=True)
-    with open(args.out, "w") as fh:
-        json.dump(out, fh, indent=2)
-    hdr = f"{'arm':<14}{'OSC':>7}{'cells':>7}" + (
-        "" if args.dry_run else f"{'NM':>7}{'EM':>7}{'ΔNM':>9}{'ovsz':>6}")
-    print("\n" + hdr + f"   (baseline={base})")
-    for arm in arms:
-        a = out["arms"][arm]
-        row = f"{arm:<14}{a['osc']:>7.3f}{a['mean_cells']:>7.1f}"
-        if not args.dry_run:
-            dv = a.get(f"delta_nm_vs_{base}")
-            row += f"{a['accuracy_nm']:>7.3f}{a['accuracy_em']:>7.3f}"
-            row += (f"{dv:>+9.3f}" if dv is not None else f"{'--':>9}") + f"{a['n_oversize']:>6}"
-        print(row)
-    print(f"\nwrote -> {args.out}")
-    return 0
+    return _aggregate(recs, arms, args)
 
 
 if __name__ == "__main__":
