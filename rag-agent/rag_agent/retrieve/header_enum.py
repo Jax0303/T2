@@ -98,12 +98,30 @@ def _match_axis(table, paths: Sequence[Sequence[str]], axis: str) -> Set[int]:
     return out
 
 
+def last_numeric_col(table, rows) -> Set[int]:
+    """The rightmost column carrying numeric data for ``rows`` (else any).
+
+    Statistical tables read left→right oldest→newest, so when a query does not
+    name a column (a year-ambiguous question), the rightmost data column is the
+    most-recent / primary figure the gold conventionally uses. Returning just this
+    column — instead of the whole temporal axis — stops the fallback explosion
+    (e.g. 8 year-columns → 1) that buries the operands at the answer stage.
+    """
+    rset = set(rows) or set(range(table.n_rows))
+    best = None
+    for c in range(table.n_cols):
+        if any(table.cell_num(r, c) is not None for r in rset):
+            best = c
+    return {best} if best is not None else set()
+
+
 def enumerate_scope(table, row_paths: Sequence[Sequence[str]],
                     col_paths: Sequence[Sequence[str]],
                     row_fallback_all: bool = True,
                     col_fallback_all: bool = True,
                     add_total_rows: bool = False,
-                    expand_siblings: bool = False) -> ScopeEnumeration:
+                    expand_siblings: bool = False,
+                    col_fallback_mode: str = "all") -> ScopeEnumeration:
     """Enumerate the numeric operand cells under the resolved header scope.
 
     An unmatched axis is treated as *the whole axis is the scope* (fallback),
@@ -117,6 +135,11 @@ def enumerate_scope(table, row_paths: Sequence[Sequence[str]],
         denominator the resolver can't name); see :func:`total_like_rows`.
       * ``expand_siblings`` — expand each matched row to its full sibling group;
         see :func:`expand_sibling_groups`.
+
+    ``col_fallback_mode`` controls an *unpinned* column axis: ``"all"`` keeps every
+    column (can explode on wide temporal tables); ``"last"`` keeps only the
+    rightmost data column (:func:`last_numeric_col`) — a precision fix for
+    year-ambiguous queries that bury the operands.
     """
     rows = _match_axis(table, row_paths, "row")
     cols = _match_axis(table, col_paths, "col")
@@ -124,7 +147,9 @@ def enumerate_scope(table, row_paths: Sequence[Sequence[str]],
     if not rows and row_fallback_all:
         rows = set(range(table.n_rows)); row_fb = True
     if not cols and col_fallback_all:
-        cols = set(range(table.n_cols)); col_fb = True
+        col_fb = True
+        cols = last_numeric_col(table, rows) if col_fallback_mode == "last" \
+            else set(range(table.n_cols))
     if not row_fb:  # augment only a genuinely-matched (sub-axis) scope
         if expand_siblings:
             rows = expand_sibling_groups(table, rows)

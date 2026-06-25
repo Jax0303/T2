@@ -115,6 +115,18 @@ def test_expand_siblings_via_enumerate():
     assert e.cells == {(0, 0), (1, 0)}
 
 
+def test_last_numeric_col_fallback():
+    from rag_agent.retrieve.header_enum import last_numeric_col
+    t = FakeTable()
+    # col 1 has numeric in rows 0 and 2 -> rightmost data col is 1
+    assert last_numeric_col(t, {0, 1, 2}) == {1}
+    # unpinned column with mode="last" keeps only that column (not the whole axis)
+    e = enumerate_scope(t, row_paths=[["construction"]], col_paths=[],
+                        col_fallback_mode="last")
+    assert e.col_fallback is True and e.cols == {1}
+    assert e.cells == {(0, 1)}              # vs {(0,0),(0,1)} under mode "all"
+
+
 def test_is_ratio_query():
     assert is_ratio_query("what percentage of total r&d ...")
     assert is_ratio_query("how many times more likely ...")

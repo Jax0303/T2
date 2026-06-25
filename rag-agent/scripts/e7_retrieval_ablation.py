@@ -349,6 +349,10 @@ def main() -> int:
                 if arm == "enum_treated":
                     return enumerate_scope(ot, intent.row_paths, intent.col_paths,
                                            add_total_rows=ratio, expand_siblings=True).cells
+                if arm == "enum_tight":  # + collapse an unpinned column axis to the last data col
+                    return enumerate_scope(ot, intent.row_paths, intent.col_paths,
+                                           add_total_rows=ratio, expand_siblings=True,
+                                           col_fallback_mode="last").cells
                 if arm in ("whole_table", "ohd_lite"):  # both = the entire table
                     return set(all_cells)
                 if arm == "oracle":
