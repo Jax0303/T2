@@ -1,0 +1,42 @@
+{
+  "split": "dev",
+  "n_queries_loaded": 1671,
+  "n_written": 1671,
+  "n_gold_table_missing": 0,
+  "n_empty_operand_set": 370,
+  "empty_operand_rate": 0.2214,
+  "by_depth": {
+    "d2": 661,
+    "d3+": 986,
+    "flat(d<=1)": 24
+  },
+  "by_scope": {
+    "1": 1398,
+    "2": 189,
+    "3-4": 57,
+    "5-8": 19,
+    "9+": 8
+  },
+  "by_aggregation": {
+    "none": 1195,
+    "pair-argmax": 107,
+    "div": 91,
+    "argmax": 64,
+    "sum": 48,
+    "opposite": 44,
+    "pair-argmin": 36,
+    "diff": 23,
+    "argmin": 15,
+    "average": 8,
+    "topk-argmax": 7,
+    "min": 7,
+    "max": 7,
+    "range": 6,
+    "greater_than": 6,
+    "less_than": 3,
+    "kth-argmax": 2,
+    "topk-argmin": 1,
+    "counta": 1
+  },
+  "out": "results/operand_gold.jsonl"
+}

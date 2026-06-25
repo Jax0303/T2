@@ -1,0 +1,286 @@
+{
+  "experiment": "E2_osc_enum",
+  "hypothesis": "H2: header-tree enumeration raises OSC vs similarity baseline",
+  "split": "dev",
+  "seed": 42,
+  "dense_baseline": true,
+  "population": {
+    "name": "arithmetic_aggregations",
+    "n_total": 214,
+    "n_m_ge_2": 158
+  },
+  "primary_m_ge_2": {
+    "n": 158,
+    "osc_enum": 0.3354,
+    "pcr_enum": 0.5417,
+    "mean_enum_cells": 17.2,
+    "row_axis_coverage": 0.5443,
+    "col_axis_coverage": 0.7278,
+    "row_fallback_rate": 0.1139,
+    "col_fallback_rate": 0.2595,
+    "n_decomp_correct": 53,
+    "osc_given_decomp_correct": 1.0,
+    "osc_base_k5": 0.5823,
+    "delta_osc_vs_k5": -0.2468,
+    "delta_ci95_vs_k5": [
+      -0.3354,
+      -0.1582
+    ],
+    "mcnemar_vs_k5": {
+      "enum_only": 11,
+      "base_only": 50,
+      "n_discordant": 61
+    },
+    "osc_base_k10": 0.7722,
+    "delta_osc_vs_k10": -0.4367,
+    "delta_ci95_vs_k10": [
+      -0.519,
+      -0.3481
+    ],
+    "mcnemar_vs_k10": {
+      "enum_only": 5,
+      "base_only": 74,
+      "n_discordant": 79
+    }
+  },
+  "anchor_m_eq_1": {
+    "n": 56,
+    "osc_enum": 0.9107,
+    "pcr_enum": 0.9107,
+    "mean_enum_cells": 10.4,
+    "row_axis_coverage": 0.9643,
+    "col_axis_coverage": 0.9464,
+    "row_fallback_rate": 0.1607,
+    "col_fallback_rate": 0.125,
+    "n_decomp_correct": 51,
+    "osc_given_decomp_correct": 1.0,
+    "osc_base_k5": 0.8929,
+    "delta_osc_vs_k5": 0.0179,
+    "delta_ci95_vs_k5": [
+      -0.0893,
+      0.125
+    ],
+    "mcnemar_vs_k5": {
+      "enum_only": 5,
+      "base_only": 4,
+      "n_discordant": 9
+    },
+    "osc_base_k10": 0.9643,
+    "delta_osc_vs_k10": -0.0536,
+    "delta_ci95_vs_k10": [
+      -0.1429,
+      0.0179
+    ],
+    "mcnemar_vs_k10": {
+      "enum_only": 1,
+      "base_only": 4,
+      "n_discordant": 5
+    }
+  },
+  "all": {
+    "n": 214,
+    "osc_enum": 0.486,
+    "pcr_enum": 0.6382,
+    "mean_enum_cells": 15.4,
+    "row_axis_coverage": 0.6542,
+    "col_axis_coverage": 0.785,
+    "row_fallback_rate": 0.1262,
+    "col_fallback_rate": 0.2243,
+    "n_decomp_correct": 104,
+    "osc_given_decomp_correct": 1.0,
+    "osc_base_k5": 0.6636,
+    "delta_osc_vs_k5": -0.1776,
+    "delta_ci95_vs_k5": [
+      -0.2477,
+      -0.1075
+    ],
+    "mcnemar_vs_k5": {
+      "enum_only": 16,
+      "base_only": 54,
+      "n_discordant": 70
+    },
+    "osc_base_k10": 0.8224,
+    "delta_osc_vs_k10": -0.3364,
+    "delta_ci95_vs_k10": [
+      -0.4065,
+      -0.2617
+    ],
+    "mcnemar_vs_k10": {
+      "enum_only": 6,
+      "base_only": 78,
+      "n_discordant": 84
+    }
+  },
+  "by_scope_bin": {
+    "1": {
+      "n": 56,
+      "osc_enum": 0.9107,
+      "pcr_enum": 0.9107,
+      "mean_enum_cells": 10.4,
+      "row_axis_coverage": 0.9643,
+      "col_axis_coverage": 0.9464,
+      "row_fallback_rate": 0.1607,
+      "col_fallback_rate": 0.125,
+      "n_decomp_correct": 51,
+      "osc_given_decomp_correct": 1.0,
+      "osc_base_k5": 0.8929,
+      "delta_osc_vs_k5": 0.0179,
+      "delta_ci95_vs_k5": [
+        -0.0893,
+        0.125
+      ],
+      "mcnemar_vs_k5": {
+        "enum_only": 5,
+        "base_only": 4,
+        "n_discordant": 9
+      },
+      "osc_base_k10": 0.9643,
+      "delta_osc_vs_k10": -0.0536,
+      "delta_ci95_vs_k10": [
+        -0.1429,
+        0.0179
+      ],
+      "mcnemar_vs_k10": {
+        "enum_only": 1,
+        "base_only": 4,
+        "n_discordant": 5
+      }
+    },
+    "2": {
+      "n": 110,
+      "osc_enum": 0.3636,
+      "pcr_enum": 0.5364,
+      "mean_enum_cells": 15.6,
+      "row_axis_coverage": 0.5636,
+      "col_axis_coverage": 0.7455,
+      "row_fallback_rate": 0.1,
+      "col_fallback_rate": 0.2636,
+      "n_decomp_correct": 40,
+      "osc_given_decomp_correct": 1.0,
+      "osc_base_k5": 0.6,
+      "delta_osc_vs_k5": -0.2364,
+      "delta_ci95_vs_k5": [
+        -0.3455,
+        -0.1273
+      ],
+      "mcnemar_vs_k5": {
+        "enum_only": 8,
+        "base_only": 34,
+        "n_discordant": 42
+      },
+      "osc_base_k10": 0.7909,
+      "delta_osc_vs_k10": -0.4273,
+      "delta_ci95_vs_k10": [
+        -0.5273,
+        -0.3273
+      ],
+      "mcnemar_vs_k10": {
+        "enum_only": 2,
+        "base_only": 49,
+        "n_discordant": 51
+      }
+    },
+    "3-4": {
+      "n": 26,
+      "osc_enum": 0.1923,
+      "pcr_enum": 0.5417,
+      "mean_enum_cells": 14.7,
+      "row_axis_coverage": 0.4615,
+      "col_axis_coverage": 0.6538,
+      "row_fallback_rate": 0.0385,
+      "col_fallback_rate": 0.1923,
+      "n_decomp_correct": 5,
+      "osc_given_decomp_correct": 1.0,
+      "osc_base_k5": 0.6154,
+      "delta_osc_vs_k5": -0.4231,
+      "delta_ci95_vs_k5": [
+        -0.6154,
+        -0.2308
+      ],
+      "mcnemar_vs_k5": {
+        "enum_only": 0,
+        "base_only": 11,
+        "n_discordant": 11
+      },
+      "osc_base_k10": 0.8462,
+      "delta_osc_vs_k10": -0.6538,
+      "delta_ci95_vs_k10": [
+        -0.8077,
+        -0.4615
+      ],
+      "mcnemar_vs_k10": {
+        "enum_only": 0,
+        "base_only": 17,
+        "n_discordant": 17
+      }
+    },
+    "5-8": {
+      "n": 15,
+      "osc_enum": 0.2,
+      "pcr_enum": 0.4853,
+      "mean_enum_cells": 27.8,
+      "row_axis_coverage": 0.4,
+      "col_axis_coverage": 0.6667,
+      "row_fallback_rate": 0.1333,
+      "col_fallback_rate": 0.2667,
+      "n_decomp_correct": 3,
+      "osc_given_decomp_correct": 1.0,
+      "osc_base_k5": 0.5333,
+      "delta_osc_vs_k5": -0.3333,
+      "delta_ci95_vs_k5": [
+        -0.6,
+        -0.1333
+      ],
+      "mcnemar_vs_k5": {
+        "enum_only": 0,
+        "base_only": 5,
+        "n_discordant": 5
+      },
+      "osc_base_k10": 0.6667,
+      "delta_osc_vs_k10": -0.4667,
+      "delta_ci95_vs_k10": [
+        -0.7333,
+        -0.2
+      ],
+      "mcnemar_vs_k10": {
+        "enum_only": 0,
+        "base_only": 7,
+        "n_discordant": 7
+      }
+    },
+    "9+": {
+      "n": 7,
+      "osc_enum": 0.7143,
+      "pcr_enum": 0.746,
+      "mean_enum_cells": 29.7,
+      "row_axis_coverage": 0.8571,
+      "col_axis_coverage": 0.8571,
+      "row_fallback_rate": 0.5714,
+      "col_fallback_rate": 0.4286,
+      "n_decomp_correct": 5,
+      "osc_given_decomp_correct": 1.0,
+      "osc_base_k5": 0.2857,
+      "delta_osc_vs_k5": 0.4286,
+      "delta_ci95_vs_k5": [
+        0.1429,
+        0.8571
+      ],
+      "mcnemar_vs_k5": {
+        "enum_only": 3,
+        "base_only": 0,
+        "n_discordant": 3
+      },
+      "osc_base_k10": 0.4286,
+      "delta_osc_vs_k10": 0.2857,
+      "delta_ci95_vs_k10": [
+        -0.2857,
+        0.7143
+      ],
+      "mcnemar_vs_k10": {
+        "enum_only": 3,
+        "base_only": 1,
+        "n_discordant": 4
+      }
+    }
+  }
+}
