@@ -62,7 +62,7 @@ from rag_agent.bench.schema import Chunk
 from rag_agent.data.loader import load_table
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate import answer as gen_answer, evaluate_answer
-from rag_agent.eval.metrics import numeric_match
+from rag_agent.eval.metrics import numeric_match, exact_match
 from rag_agent.query.header_embed_resolver import EmbedResolver
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.retrieve.header_enum import enumerate_scope, is_ratio_query
@@ -101,6 +101,37 @@ def numeric_cells(ot, rows, cols):
     return {(r, c) for r in rows for c in cols if ot.cell_num(r, c) is not None}
 
 
+def ohd_serialize(ot, cells) -> str:
+    """OHD-style whole-table serialization (the 2602.01969 baseline, approximated).
+
+    Each cell rendered as `Context → Key → Value` lineage, presented in BOTH
+    row-major and column-major orderings (OHD feeds both to its LLM arbitrator).
+    We omit OHD's learned tree induction + the arbitrator selection — those affect
+    representation *quality*, not the whole-table-vs-retrieval axis we test.
+    """
+    cells = sorted(cells)
+    by_row, by_col = {}, {}
+    for (r, c) in cells:
+        by_row.setdefault(r, []).append(c)
+        by_col.setdefault(c, []).append(r)
+
+    def lineage_row(r):
+        return " > ".join(s for s in ot.row_path(r) if s) or f"row{r}"
+
+    def lineage_col(c):
+        return " > ".join(s for s in ot.col_path(c) if s) or f"col{c}"
+
+    lines = ["[row-major]"]
+    for r in sorted(by_row):
+        for c in sorted(by_row[r]):
+            lines.append(f"{lineage_row(r)} | {lineage_col(c)} = {ot.cell(r, c)}")
+    lines.append("[column-major]")
+    for c in sorted(by_col):
+        for r in sorted(by_col[c]):
+            lines.append(f"{lineage_col(c)} | {lineage_row(r)} = {ot.cell(r, c)}")
+    return "\n".join(lines)
+
+
 def dense_cells(res, ot, k):
     """Numeric cells covered by the top-k dense chunks (the budget the LLM sees)."""
     out = set()
@@ -135,6 +166,8 @@ def main() -> int:
                          "estimate exceeds this; free-tier TPM is 6000")
     ap.add_argument("--out", default="results/e7_retrieval_ablation.json")
     ap.add_argument("--checkpoint", default="results/e7_records.jsonl")
+    ap.add_argument("--baseline", default="dense_k10",
+                    help="arm to pair against for ΔAcc / CI / McNemar (E8: ohd_lite)")
     args = ap.parse_args()
     arms = [a.strip() for a in args.arms.split(",") if a.strip()]
 
@@ -214,7 +247,7 @@ def main() -> int:
                 if arm == "enum_treated":
                     return enumerate_scope(ot, intent.row_paths, intent.col_paths,
                                            add_total_rows=ratio, expand_siblings=True).cells
-                if arm == "whole_table":
+                if arm in ("whole_table", "ohd_lite"):  # both = the entire table
                     return set(all_cells)
                 if arm == "oracle":
                     return set(gold_cells)
@@ -226,12 +259,17 @@ def main() -> int:
                    "aggregation": q.aggregation, "ratio": int(ratio)}
             for arm in arms:
                 cset = cells_for(arm)
-                ctx = struct_chunk_from_cells(ot, cset, q.gold_table_id).text
+                # ohd_lite uses OHD's whole-table dual serialization; all other
+                # arms use the identical (header-path = value) format so only the
+                # *cell content* differs.
+                ctx = (ohd_serialize(ot, cset) if arm == "ohd_lite"
+                       else struct_chunk_from_cells(ot, cset, q.gold_table_id).text)
                 ans, bk = solve(q.question, ctx, q.answer)
                 rec[f"{arm}_osc"] = operand_set_completeness(gold, cset)
                 rec[f"{arm}_cells"] = len(cset)
                 if not args.dry_run:
-                    rec[f"{arm}_correct"] = int(bk == "correct")
+                    rec[f"{arm}_correct"] = int(bk == "correct")          # numeric-match
+                    rec[f"{arm}_em"] = int(exact_match(ans, q.answer))    # exact-match
                     rec[f"{arm}_bucket"] = bk
             recs.append(rec)
             if cp_fh:
@@ -245,52 +283,58 @@ def main() -> int:
     # ---------- aggregate ----------
     n = len(recs)
     rng = random.Random(SEED)
+    base = args.baseline
 
-    def acc(arm):
-        return sum(r.get(f"{arm}_correct", 0) for r in recs) / n if n else 0.0
+    def rate(arm, field):
+        return sum(r.get(f"{arm}_{field}", 0) for r in recs) / n if n else 0.0
 
-    def boot_ci(arm, base="dense_k10"):
+    def boot_ci(arm, field):
         diffs = []
         for _ in range(2000):
             s = 0
             for _ in range(n):
                 r = recs[rng.randrange(n)]
-                s += r.get(f"{arm}_correct", 0) - r.get(f"{base}_correct", 0)
+                s += r.get(f"{arm}_{field}", 0) - r.get(f"{base}_{field}", 0)
             diffs.append(s / n)
         diffs.sort()
         return [round(diffs[50], 4), round(diffs[1949], 4)]
 
     out = {"experiment": "E7_retrieval_ablation",
-           "hypothesis": "H5: at fixed solver+budget, header-tree enumeration beats dense retrieval; gain tracks OSC",
+           "hypothesis": "H5/H6: at a fixed solver, retrieval (small+complete) vs whole-table/dense; gain tracks precision",
            "split": args.split, "seed": SEED, "llm": args.llm, "mode": args.mode,
+           "baseline_arm": base,
            "dry_run": args.dry_run, "population": {"name": "arithmetic_m>=2", "n": n},
            "arms": {}}
     for arm in arms:
         a = {"osc": round(sum(r.get(f"{arm}_osc", 0) for r in recs) / n, 4) if n else 0,
              "mean_cells": round(sum(r.get(f"{arm}_cells", 0) for r in recs) / n, 1) if n else 0}
         if not args.dry_run:
-            a["accuracy"] = round(acc(arm), 4)
+            a["accuracy_nm"] = round(rate(arm, "correct"), 4)   # numeric-match
+            a["accuracy_em"] = round(rate(arm, "em"), 4)        # exact-match
             a["n_oversize"] = sum(1 for r in recs if r.get(f"{arm}_bucket") == "oversize")
             a["n_error"] = sum(1 for r in recs if r.get(f"{arm}_bucket") == "error")
-            if arm != "dense_k10":
-                a["delta_acc_vs_dense_k10"] = round(acc(arm) - acc("dense_k10"), 4)
-                a["delta_ci95_vs_dense_k10"] = boot_ci(arm)
-                a["mcnemar_vs_dense_k10"] = {
-                    "arm_only": sum(1 for r in recs if r.get(f"{arm}_correct") and not r.get("dense_k10_correct")),
-                    "base_only": sum(1 for r in recs if r.get("dense_k10_correct") and not r.get(f"{arm}_correct"))}
+            if arm != base:
+                a[f"delta_nm_vs_{base}"] = round(rate(arm, "correct") - rate(base, "correct"), 4)
+                a[f"delta_nm_ci95_vs_{base}"] = boot_ci(arm, "correct")
+                a[f"delta_em_vs_{base}"] = round(rate(arm, "em") - rate(base, "em"), 4)
+                a[f"mcnemar_nm_vs_{base}"] = {
+                    "arm_only": sum(1 for r in recs if r.get(f"{arm}_correct") and not r.get(f"{base}_correct")),
+                    "base_only": sum(1 for r in recs if r.get(f"{base}_correct") and not r.get(f"{arm}_correct"))}
         out["arms"][arm] = a
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2)
-    hdr = f"{'arm':<14}{'OSC':>7}{'cells':>7}" + ("" if args.dry_run else f"{'acc':>7}{'Δvs_k10':>9}")
-    print("\n" + hdr)
+    hdr = f"{'arm':<14}{'OSC':>7}{'cells':>7}" + (
+        "" if args.dry_run else f"{'NM':>7}{'EM':>7}{'ΔNM':>9}{'ovsz':>6}")
+    print("\n" + hdr + f"   (baseline={base})")
     for arm in arms:
         a = out["arms"][arm]
         row = f"{arm:<14}{a['osc']:>7.3f}{a['mean_cells']:>7.1f}"
         if not args.dry_run:
-            dv = a.get("delta_acc_vs_dense_k10")
-            row += f"{a['accuracy']:>7.3f}" + (f"{dv:>+9.3f}" if dv is not None else f"{'--':>9}")
+            dv = a.get(f"delta_nm_vs_{base}")
+            row += f"{a['accuracy_nm']:>7.3f}{a['accuracy_em']:>7.3f}"
+            row += (f"{dv:>+9.3f}" if dv is not None else f"{'--':>9}") + f"{a['n_oversize']:>6}"
         print(row)
     print(f"\nwrote -> {args.out}")
     return 0

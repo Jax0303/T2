@@ -72,11 +72,31 @@ Add an `ohd_lite` arm to `scripts/e7_retrieval_ablation.py`:
    oversize rate explicitly for this arm (it *is* the scalability finding).
 4. record accuracy + cells + token estimate; pair vs `enum_treated` (McNemar + CI).
 
-Run (needs a higher-TPM key for the big contexts, or accept high oversize on free
-tier as the scalability result):
-`PYTHONPATH=. python scripts/e7_retrieval_ablation.py --split dev \
-  --arms enum_treated,ohd_lite,oracle --max-ctx-tokens 8000`
+### Status: implemented in `scripts/e7_retrieval_ablation.py`
 
-Caveat: on the free 6000-TPM tier most `ohd_lite` contexts are oversize — which is
-itself H6a evidence, but to measure *accuracy* parity (H6) we need a tier/budget that
-fits whole tables, or restrict H6 to the subset of small tables where both arms fit.
+- `ohd_lite` arm = `ohd_serialize()` (whole table, per-cell `lineage | lineage =
+  value`, **row-major + column-major**; omits OHD's learned induction + arbitrator).
+- **Dual metrics** recorded for every arm: `accuracy_nm` (numeric-match) **and**
+  `accuracy_em` (exact-match, `rag_agent/eval/metrics.exact_match`) — so we line up
+  with OHD/HiTab's EM *and* keep the format-robust NM.
+- `--baseline` selects the paired arm (E8: `ohd_lite`); ΔNM + bootstrap CI + McNemar
+  + ΔEM reported vs it.
+- `--max-ctx-tokens` (default 4500) marks too-large contexts `oversize` (skipped, not
+  crashed) → the per-arm `n_oversize` **is** the scalability result.
+
+Run (70b solver, fair = same model/metric/population for every arm; separate output
+so it doesn't touch the 8b E7 run):
+```
+PYTHONPATH=. python scripts/e7_retrieval_ablation.py --split dev \
+  --llm groq:llama-3.3-70b-versatile \
+  --arms enum_treated,ohd_lite,oracle,dense_k10 --baseline ohd_lite \
+  --max-ctx-tokens 8000 \
+  --out results/e8_ohd_baseline.json --checkpoint results/e8_records.jsonl
+```
+
+Caveat (honest): on the free ~6000-TPM tier most `ohd_lite` contexts (~8–9k tokens,
+the dual serialization roughly doubles them) are **oversize** → that is the H6a
+scalability evidence, but H6 *accuracy* parity can only be read on the subset of
+small tables where `ohd_lite` fits. A higher-TPM key removes the restriction. We do
+**not** compare to OHD's published 60.07 EM (different model/metric/population) — only
+to `ohd_lite` run inside our harness with the identical solver/metric/population.
