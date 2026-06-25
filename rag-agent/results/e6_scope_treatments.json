@@ -1,0 +1,145 @@
+{
+  "experiment": "E6_scope_treatments",
+  "split": "dev",
+  "seed": 42,
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161
+  },
+  "ratio_query_rate": 0.8261,
+  "arms": {
+    "base": {
+      "osc": 0.4161,
+      "pcr": 0.6163,
+      "mean_cells": 19.2,
+      "row_cov": 0.6149,
+      "col_cov": 0.7329,
+      "n_decomp_correct": 67,
+      "osc_given_decomp": 1.0,
+      "delta_osc_vs_base": 0.0,
+      "delta_ci95_vs_base": null,
+      "mcnemar_vs_base": null,
+      "delta_osc_vs_dense_k10": -0.3727,
+      "delta_ci95_vs_dense_k10": [
+        -0.4534,
+        -0.2857
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 5,
+        "base_only": 65
+      }
+    },
+    "T_total_all": {
+      "osc": 0.5963,
+      "pcr": 0.7564,
+      "mean_cells": 30.3,
+      "row_cov": 0.8447,
+      "col_cov": 0.7329,
+      "n_decomp_correct": 96,
+      "osc_given_decomp": 1.0,
+      "delta_osc_vs_base": 0.1801,
+      "delta_ci95_vs_base": [
+        0.1242,
+        0.2422
+      ],
+      "mcnemar_vs_base": {
+        "arm_only": 29,
+        "base_only": 0
+      },
+      "delta_osc_vs_dense_k10": -0.1925,
+      "delta_ci95_vs_dense_k10": [
+        -0.2919,
+        -0.087
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 23,
+        "base_only": 54
+      }
+    },
+    "T_total_ratio": {
+      "osc": 0.5839,
+      "pcr": 0.7433,
+      "mean_cells": 29.0,
+      "row_cov": 0.8137,
+      "col_cov": 0.7329,
+      "n_decomp_correct": 94,
+      "osc_given_decomp": 1.0,
+      "delta_osc_vs_base": 0.1677,
+      "delta_ci95_vs_base": [
+        0.118,
+        0.2298
+      ],
+      "mcnemar_vs_base": {
+        "arm_only": 27,
+        "base_only": 0
+      },
+      "delta_osc_vs_dense_k10": -0.205,
+      "delta_ci95_vs_dense_k10": [
+        -0.3043,
+        -0.1056
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 23,
+        "base_only": 56
+      }
+    },
+    "T_subtree": {
+      "osc": 0.4596,
+      "pcr": 0.6508,
+      "mean_cells": 30.9,
+      "row_cov": 0.6646,
+      "col_cov": 0.7329,
+      "n_decomp_correct": 74,
+      "osc_given_decomp": 1.0,
+      "delta_osc_vs_base": 0.0435,
+      "delta_ci95_vs_base": [
+        0.0124,
+        0.0745
+      ],
+      "mcnemar_vs_base": {
+        "arm_only": 7,
+        "base_only": 0
+      },
+      "delta_osc_vs_dense_k10": -0.3292,
+      "delta_ci95_vs_dense_k10": [
+        -0.4099,
+        -0.2484
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 6,
+        "base_only": 59
+      }
+    },
+    "T_both": {
+      "osc": 0.6522,
+      "pcr": 0.7758,
+      "mean_cells": 39.5,
+      "row_cov": 0.8882,
+      "col_cov": 0.7329,
+      "n_decomp_correct": 105,
+      "osc_given_decomp": 1.0,
+      "delta_osc_vs_base": 0.236,
+      "delta_ci95_vs_base": [
+        0.1739,
+        0.3043
+      ],
+      "mcnemar_vs_base": {
+        "arm_only": 38,
+        "base_only": 0
+      },
+      "delta_osc_vs_dense_k10": -0.1366,
+      "delta_ci95_vs_dense_k10": [
+        -0.236,
+        -0.0373
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 24,
+        "base_only": 46
+      }
+    }
+  },
+  "dense_baseline": {
+    "osc_k5": 0.5963,
+    "osc_k10": 0.7888
+  }
+}

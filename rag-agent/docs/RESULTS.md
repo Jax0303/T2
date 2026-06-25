@@ -5,7 +5,8 @@ tables. All numbers measured on HiTab `dev`, seed=42, paired bootstrap 95% CI.
 Retrieval experiments (E1, E2, W4b) are LLM-free except W4b's decomposition step.
 
 > Status: E1 (H1) ✅ · E2 (H2) ✅ · W4b (LLM decomposition lever, 8b+70b) ✅ ·
-> E3 (synthetic depth) ✅ · E4 (generation format) ✅.
+> E3 (synthetic depth) ✅ · E4 (generation format) ✅ · E6 (structural scope
+> selection: row-failure diagnosis + total/sibling treatments) ✅.
 
 ## Evaluation population
 
@@ -196,6 +197,40 @@ guarantee — but it costs ~76% of the whole table. Completeness and precision a
 tension; "100% within a *small* set" remains the open problem. Detail:
 `results/e2e3_embed_resolver_summary.md`.
 
+## E6 — structural scope selection: what's left after lexical/depth is fixed
+
+The residual row-axis gap (after the embedding idea closed lexical/depth) was
+attributed to "structural scope selection". We **diagnosed it before treating it**
+(`scripts/diag_row_failures.py`, current rebuilt gold n=161, hybrid row-cov 0.615):
+
+| row-axis failure structure | share of 62 failures |
+|---|---|
+| **total_pairing** (share/ratio query needs a table-level total it can't name; 68% are `div`) | **68%** |
+| sibling_subset (gold ⊂ children of one parent) | 15% |
+| cross_parent (genuine multi-entity cross-cut) | 11% |
+| parent_expandable (gold = all children of one parent) | 6% |
+
+The dominant cause is **not** sibling selection (the pre-registered hypothesis) but a
+**missing total/denominator row** with an empty/top-level header path. Diagnosis-
+driven treatments (row augmentations over the same hybrid scope), paired:
+
+| arm | OSC | ΔOSC vs hybrid base | ΔOSC vs dense k10 | mean cells | row-cov |
+|---|---|---|---|---|---|
+| base (hybrid enum) | 0.416 | — | −0.373 [−0.453, −0.286] | 19 | 0.615 |
+| **T_total** (+total rows) | 0.596 | **+0.180** [0.124, 0.242] | −0.193 | 30 | 0.845 |
+| T_subtree (+sibling group) | 0.460 | +0.043 [0.012, 0.075] | −0.329 | 31 | 0.665 |
+| **T_both** | **0.652** | **+0.236** [0.174, 0.304] | **−0.137** [−0.236, −0.037] | 40 | 0.888 |
+
+**Verdict.** Total-row augmentation is the single highest-value lever (the diagnosis
+was right); sibling expansion is significant but minor (the pre-registered guess
+targeted the 6–15% minority). Both are **pure-superset** gains (McNemar b:0; OSC
+monotone), so the cost is precision: cells 19→40 (~2×). The levers **close ~63% of
+the gap to the dense baseline** (−0.373→−0.137) and **T_total ties dense k=5 exactly**
+(0.596), but **still do not beat dense k=10 on raw OSC** — H2's "no raw win" stance
+holds. The binding constraint is now the **untouched column axis** (col-cov 0.733
+across all arms), not row scope. Detail: `results/e6_scope_treatments_summary.md`,
+`results/diag_row_failures_summary.md`.
+
 ## Differentiation gate (W0)
 
 All four nearest works verified (method sections, `docs/RELATED_DELTA.md`):
@@ -214,6 +249,7 @@ objective.** Gate passes.
 | H2 | header-tree enumeration improves operand-set completeness | **revised**: removes scope-size dependence (OSC\|decomp=1.0 flat) and re-localizes the bottleneck to row-axis decomposition; does **not** beat raw baseline OSC under the deterministic/8b/70b decomposer (E2, W4b) |
 | H2-causal | the enumeration effect is hierarchy-caused, not domain | **supported, with a twist** (E3): depth causally suppresses enumeration OSC (flatten→ +0.234) but the dense baseline is depth-robust (−0.070) — depth is a method-specific liability of resolve-then-enumerate, not intrinsic to completeness |
 | H3 | structured (header-path, value) context reduces silent grounding errors | **supported** (E4): oracle-fixed retrieval, ΔNM +0.241 [0.158, 0.323], silent-wrong 0.66→0.42 |
+| H4 | the residual row-axis gap is structural scope selection, fixable by targeted enumeration | **partly supported** (E6): diagnosis shows it is dominated by *total-row pairing* (68%), not sibling selection; total-row augmentation +0.180 OSC [0.124, 0.242] paired vs hybrid, T_both +0.236 — closes ~63% of the dense gap and ties dense k=5, but still does **not** beat dense k=10 (Δ −0.137); residual cap moves to the column axis |
 
 ## Threats / limitations
 
@@ -235,4 +271,12 @@ PYTHONPATH=. python scripts/e2_osc_enum.py       --split dev
 PYTHONPATH=. python scripts/e2_osc_enum.py       --split dev --llm groq:llama-3.1-8b-instant
 PYTHONPATH=. python scripts/e3_depth.py          --split dev [--dense]
 PYTHONPATH=. python scripts/e4_format.py         --split dev --llm groq:llama-3.1-8b-instant
+PYTHONPATH=. python scripts/diag_row_failures.py --split dev          # E6 diagnosis
+PYTHONPATH=. python scripts/e6_scope_treatments.py --split dev --dense  # E6 treatments
 ```
+
+Note: this repo's working Python is the system interpreter (`/usr/bin/python3`,
+pandas + sentence-transformers); run from `rag-agent/` with `PYTHONPATH=.`. There is
+no `pytest` — run the unit tests by importing each `tests/test_*.py` and calling its
+`test_*` functions (the row-failure diagnosis / E6 add 7 tests in
+`tests/test_header_enum.py`).

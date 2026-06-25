@@ -39,3 +39,58 @@ guarantees operand-set completeness**? Verified against the method sections
   diagnosis remains distinct.
 
 **Gate verdict: proceed.** No re-design needed; §3 hypotheses stand.
+
+---
+
+## OHD — Orthogonal Hierarchical Decomposition (2602.01969) — closest *representation* work
+
+Verified against the full method + experiments (arXiv HTML, 2026; marked "work in
+process"). This is the **nearest work on the representation side** and the most
+important to differentiate: it decomposes a hierarchical table into **orthogonal
+row-tree + column-tree** on **HiTab** — the same structural primitive we use.
+
+**What OHD does (method):** Orthogonal Tree Induction (build column tree 𝒯_col and
+row tree 𝒯_row from geometry + LLM semantic predicates) → Dual-Pathway Association
+(linearize each tree, cross-tree-supplement each cell) → an **LLM "semantic
+arbitrator"** picks the best of the column-major / row-major **serializations of the
+ENTIRE table**. Each cell is rendered `prelineage ⊕ (orthogonal-header ⇒ value)`
+("Context → Key → Value"). Metric: **end-to-end answer accuracy only** (EM + LLM-eval;
+HiTab 60.07 EM full / 64.74 EM on a 50×50 subset, Qwen2-72b). **No** cell selection,
+**no** recall/precision, **no** operand-set completeness, **no** aggregation/total
+handling.
+
+### Differentiation table (OHD vs ours)
+
+| axis | OHD (2602.01969) | ours |
+|---|---|---|
+| **primary goal** | structure-aware **representation** → end-to-end accuracy | **retrieval**: minimal **complete** operand set |
+| **what the orthogonal trees are used for** | **serialize the *whole* table** for the LLM to read | **enumerate the aggregation scope** to *select* cells |
+| **cell selection / retrieval** | **none** — feeds the entire table | **yes** — retrieves the operand subset |
+| **objective metric** | EM / LLM-eval accuracy | **OSC** (all-or-nothing completeness) + cells + answer acc |
+| **aggregation operand set** | not distinguished from lookup | central; **total/denominator-row failure diagnosed (68%)** |
+| **large-table scalability** | limited (whole-table serialization → context blows up) | retrieval keeps the context minimal |
+| **per-cell lineage repr.** | yes, over the whole table (its core) | yes, but only as the E4 *generation format* on already-retrieved cells |
+| **dataset** | HiTab, AITQA | HiTab |
+
+### Precise deltas / residual honesty
+1. **Shared primitive, opposite use.** Both build orthogonal row/column header trees.
+   OHD uses them to *represent the whole table*; we use them to *enumerate a scope and
+   retrieve the minimal complete cell set*. Literally orthogonal contributions
+   (representation vs retrieval) — they are **complementary, not competing** (OHD's
+   serialization could be our context formatter; our retrieval could shrink OHD's
+   whole-table input).
+2. **Do NOT claim the orthogonal-tree representation as our novelty** — OHD has it.
+   Our novelty is the **retrieval objective**: OSC formalization, completeness-by-
+   enumeration, the total-row diagnosis + treatment, and minimal-set-under-100%.
+3. **E4 caveat:** OHD's `Context→Key→Value` per-cell representation overlaps our E4
+   structured `(header-path = value)` format — so **do not claim E4's format as novel
+   either**; cite OHD and frame E4 only as a controlled *format-effect* measurement on
+   fixed retrieval.
+4. OHD is the natural **"whole table, well-represented" baseline** our argument targets:
+   it never selects, so it inherits the context-length / scalability cost we avoid by
+   retrieval. A fair head-to-head = OHD-serialization-of-whole-table vs ours at matched
+   accuracy, reporting context size.
+
+**Gate still passes** on the *retrieval-completeness* axis, but OHD tightens the
+representation axis: the paper must be cited, the tree representation must **not** be
+claimed as novel, and the delta stated at the objective level (retrieval/OSC).

@@ -1,0 +1,96 @@
+{
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161
+  },
+  "row_axis_failures": 62,
+  "row_axis_coverage": 0.6149,
+  "col_only_failures": 32,
+  "refined_taxonomy": {
+    "total_pairing": {
+      "n": 42,
+      "frac_of_row_fail": 0.6774
+    },
+    "sibling_subset": {
+      "n": 9,
+      "frac_of_row_fail": 0.1452
+    },
+    "cross_parent": {
+      "n": 7,
+      "frac_of_row_fail": 0.1129
+    },
+    "parent_expandable": {
+      "n": 4,
+      "frac_of_row_fail": 0.0645
+    }
+  },
+  "structural_taxonomy": {
+    "cross_parent": {
+      "n": 42,
+      "frac_of_row_fail": 0.6774
+    },
+    "sibling_subset": {
+      "n": 16,
+      "frac_of_row_fail": 0.2581
+    },
+    "parent_expandable": {
+      "n": 4,
+      "frac_of_row_fail": 0.0645
+    }
+  },
+  "total_miss_rate": 0.371,
+  "partial_rate": 0.629,
+  "row_fallback_rate": 0.0,
+  "oracle_recovery_upper_bound": {
+    "total_aug_only": 37,
+    "parent_expand_only": 19,
+    "either": 54,
+    "neither": 8,
+    "note": "row-axis recovery only; OSC also needs col_cov. Upper bound, not measured OSC."
+  },
+  "parent_recoverable_rate": 0.3065,
+  "mean_parent_extra_rows_when_recoverable": 8.79,
+  "by_aggregation": {
+    "div": 39,
+    "sum": 14,
+    "diff": 6,
+    "range": 3
+  },
+  "refined_bucket_by_aggregation": {
+    "total_pairing": {
+      "div": 32,
+      "sum": 6,
+      "diff": 3,
+      "range": 1
+    },
+    "sibling_subset": {
+      "sum": 4,
+      "range": 2,
+      "div": 2,
+      "diff": 1
+    },
+    "parent_expandable": {
+      "div": 3,
+      "sum": 1
+    },
+    "cross_parent": {
+      "sum": 3,
+      "div": 2,
+      "diff": 2
+    }
+  },
+  "bucket_x_totalmiss": {
+    "cross_parent": {
+      "total_miss": 11,
+      "partial": 31
+    },
+    "sibling_subset": {
+      "total_miss": 12,
+      "partial": 4
+    },
+    "parent_expandable": {
+      "total_miss": 0,
+      "partial": 4
+    }
+  }
+}
