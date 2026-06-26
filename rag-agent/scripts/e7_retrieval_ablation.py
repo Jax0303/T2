@@ -257,6 +257,10 @@ def main() -> int:
     ap.add_argument("--checkpoint", default="results/e7_records.jsonl")
     ap.add_argument("--baseline", default="dense_k10",
                     help="arm to pair against for ΔAcc / CI / McNemar (E8: ohd_lite)")
+    ap.add_argument("--cross-encoder", default="cross-encoder/ms-marco-MiniLM-L-6-v2",
+                    help="cross-encoder model for the enum_cross column resolver")
+    ap.add_argument("--top-n-cross", type=int, default=2,
+                    help="columns the cross-encoder keeps on an unpinned axis")
     ap.add_argument("--aggregate-only", action="store_true",
                     help="re-summarize an existing --checkpoint (no LLM/embedder); "
                          "use to apply new metrics to a finished run")
@@ -281,6 +285,14 @@ def main() -> int:
 
     embedder = Embedder(args.embed_model, device=args.device)
     resolver = EmbedResolver(embedder, row_mode="embed", col_mode="lexical")
+    cross_resolver = None
+    if "enum_cross" in arms:  # cross-encoder column resolver (schema-linking)
+        from sentence_transformers import CrossEncoder
+        ce = CrossEncoder(args.cross_encoder)
+        cross_resolver = EmbedResolver(embedder, row_mode="embed",
+                                       col_mode="cross_cascade", cross_encoder=ce,
+                                       top_n_cross=args.top_n_cross)
+        print(f"[cross] column resolver = cross_cascade ({args.cross_encoder}, top{args.top_n_cross})")
     needed = {q.gold_table_id for q in pop}
     ots, retr = {}, {}
     for tid in needed:
@@ -337,6 +349,7 @@ def main() -> int:
             gold = q.gold_operands
             gold_cells = {(o.row, o.col) for o in gold}
             intent = resolver.resolve(q.question, ot)
+            intent_cross = cross_resolver.resolve(q.question, ot) if cross_resolver else None
             ratio = is_ratio_query(q.question)
             res_dense = retrieve(q.question, tables[q.gold_table_id], gold, mode="plain",
                                  k=max(DENSE_KS), scheme=S2, embedder=embedder,
@@ -353,6 +366,9 @@ def main() -> int:
                     return enumerate_scope(ot, intent.row_paths, intent.col_paths,
                                            add_total_rows=ratio, expand_siblings=True,
                                            col_fallback_mode="last").cells
+                if arm == "enum_cross":  # cross-encoder picks the column on an unpinned axis
+                    return enumerate_scope(ot, intent_cross.row_paths, intent_cross.col_paths,
+                                           add_total_rows=ratio, expand_siblings=True).cells
                 if arm in ("whole_table", "ohd_lite"):  # both = the entire table
                     return set(all_cells)
                 if arm == "oracle":
