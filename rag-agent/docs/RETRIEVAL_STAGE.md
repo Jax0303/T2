@@ -48,15 +48,20 @@ All numbers LLM-free, paired on the same queries. Reproduce: `scripts/e2_osc_enu
    |---|---|---|---|
    | lexical (was our default) | 0.267 | 0.398 | 0.472 |
    | bi-encoder embed | 0.267 | 0.565 | 0.677 |
-   | **cross-encoder** | **0.398** | **0.609** | **0.727** |
+   | cross-encoder (MiniLM) | **0.398** | 0.609 | 0.727 |
+   | **cross-encoder (bge-reranker)** | 0.373 | **0.702** | **0.795** |
 
-   Diagnosis: when a query names no column, 74% still need exactly **one** column —
-   usually a *metric* column ("%", "prevalence per 100,000", "odds ratio") the query
-   describes in words; the cross-encoder reads (query, header) jointly and ranks them
-   right ("percentage"→"%"). At top-2 it lifts column recall **+0.21 over lexical**.
-   It is *not* solved (≈0.73@3; year-ambiguous + multi-column cases remain), but the
-   cross-encoder is clearly the right column matcher, and "few columns" is exactly
-   what the answer stage needs (so the at-budget metric, not OSC, is the right one).
+   A cross-encoder reads (query, header) jointly and ranks the right column
+   ("percentage"→"%"); a **stronger** reranker (bge-reranker-base) lifts col-recall@2
+   to **0.702 (+0.30 over lexical, +0.09 over MiniLM)** and @3 to 0.795 — the budgets
+   that matter, since the dominant remaining failures need 2 columns.
+
+   **Remaining hard cases (cross top-3 fails, n=44), diagnosed:** 77% are *two-column
+   comparisons / ratios* (e.g. "aboriginal **vs** non-aboriginal percent", "handgun
+   **rate** vs total rate") — the column analog of the row "named-pair" structure,
+   where both specific columns must be found; 18% genuine multi-column (>3) aggregates;
+   **year-ambiguity is negligible (~2)** — correcting the earlier guess. Column
+   completeness is improved and well-characterised but not closed (≈0.80@3).
 
 4. **Completeness vs precision is a frontier, not a point.** Precise (enum, 19 cells)
    → OSC 0.42; complete (whole table, 160 cells) → 1.00; our treated enum sits at
