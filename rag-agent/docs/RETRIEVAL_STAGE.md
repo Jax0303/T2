@@ -38,14 +38,25 @@ All numbers LLM-free, paired on the same queries. Reproduce: `scripts/e2_osc_enu
    sibling expansion) lifts **row-cov 0.615 → 0.888** and OSC 0.416 → 0.652 (paired
    ΔOSC +0.236 vs the untreated enumeration, CI [0.174, 0.304]). Clear win.
 
-3. **Column axis — the current open bottleneck.** col-cov is stuck at **0.733**.
+3. **Column axis — cross-encoder is the best selector *at a budget*.** OSC rewards the
+   trivial whole-axis dump (col-complete but exploded), so it hides selection quality.
+   Measured directly as **col-recall@k** (gold column(s) within the top-k selected),
+   the column axis IS a schema-linking problem and a cross-encoder wins at every
+   budget (`scripts/col_select_bench.py`, n=161):
+
+   | column selector | col-recall@1 | @2 | @3 |
+   |---|---|---|---|
+   | lexical (was our default) | 0.267 | 0.398 | 0.472 |
+   | bi-encoder embed | 0.267 | 0.565 | 0.677 |
+   | **cross-encoder** | **0.398** | **0.609** | **0.727** |
+
    Diagnosis: when a query names no column, 74% still need exactly **one** column —
    usually a *metric* column ("%", "prevalence per 100,000", "odds ratio") the query
-   describes in words. A **cross-encoder** (schema-linking SOTA) ranks these correctly
-   ("percentage"→"%") and removes every whole-axis dump (42→0), cutting cells 40→31 —
-   but **col-cov does not rise** (0.733→0.677). Reason: the whole-axis fallback is
-   *trivially* column-complete (it includes everything), so any narrowing trades
-   coverage for size. Picking the *exact* column on every query is unsolved.
+   describes in words; the cross-encoder reads (query, header) jointly and ranks them
+   right ("percentage"→"%"). At top-2 it lifts column recall **+0.21 over lexical**.
+   It is *not* solved (≈0.73@3; year-ambiguous + multi-column cases remain), but the
+   cross-encoder is clearly the right column matcher, and "few columns" is exactly
+   what the answer stage needs (so the at-budget metric, not OSC, is the right one).
 
 4. **Completeness vs precision is a frontier, not a point.** Precise (enum, 19 cells)
    → OSC 0.42; complete (whole table, 160 cells) → 1.00; our treated enum sits at

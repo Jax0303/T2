@@ -93,6 +93,6 @@ decomposition, which we then diagnose and treat axis-by-axis.
 | Enumeration is scope-robust (OSC\|decomp=1.0) | **solid** (E2) |
 | Embedding resolver closes row vocab/depth (=70b, LLM-free) | **solid** |
 | Total-row augmentation fixes the row axis (+0.27 row-cov) | **solid** (E6) |
-| Column axis = metric-column bottleneck; cross-encoder helps precision | **partial** (precision yes, completeness open) |
+| Column axis is schema-linking; cross-encoder best column selector at budget (col-recall@2 0.40→0.61) | **solid at-budget** (full completeness still open) |
 | Beats dense on raw OSC | **no** (honest) |
 | End-to-end answer gain from better retrieval | **unproven** (solver-limited) |
