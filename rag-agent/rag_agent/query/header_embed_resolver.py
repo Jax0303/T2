@@ -42,16 +42,24 @@ class EmbedResolver:
 
     def __init__(self, embedder, top_n_cols: int = 3, top_n_rows: int = 4,
                  include_parents: bool = True,
-                 row_mode: str = "embed", col_mode: str = "embed"):
-        """``row_mode``/``col_mode`` in {"embed","lexical"}. E3 showed row entities
-        benefit from semantic (embed) matching while column codes/years match
-        better lexically; the hybrid is row_mode="embed", col_mode="lexical"."""
+                 row_mode: str = "embed", col_mode: str = "embed",
+                 cross_encoder=None, top_n_cross: int = 2):
+        """``row_mode``/``col_mode`` in {"embed","lexical","cascade","cross"}.
+
+        E3 showed row entities benefit from semantic (embed) matching while column
+        codes/years match better lexically; the hybrid is row_mode="embed",
+        col_mode="lexical". ``"cross"`` ranks candidates with a **cross-encoder**
+        (query×header joint attention) — the schema-linking SOTA for picking the
+        right column ("percentage"→"%"); requires ``cross_encoder``. ``"cascade"``
+        is lexical-then-embed."""
         self.embedder = embedder
         self.top_n_cols = top_n_cols
         self.top_n_rows = top_n_rows
         self.include_parents = include_parents
         self.row_mode = row_mode
         self.col_mode = col_mode
+        self.cross_encoder = cross_encoder
+        self.top_n_cross = top_n_cross
         # table_id -> (col_cands, col_mat, row_cands, row_mat)
         self._cache: Dict[str, Tuple] = {}
 
@@ -90,6 +98,30 @@ class EmbedResolver:
         def axis(mode, cands, mat, top_n, axis_name):
             if mode == "lexical":
                 return _rank_paths(table, terms, axis_name, top_n)
+            def _cross(top):
+                if not cands or self.cross_encoder is None:
+                    return []
+                scores = self.cross_encoder.predict([(query, " > ".join(c)) for c in cands])
+                order = sorted(range(len(cands)), key=lambda i: -float(scores[i]))
+                return [cands[i] for i in order[:top]]
+
+            if mode == "cross":  # cross-encoder for every query (replaces lexical)
+                return _cross(self.top_n_cross) or _rank_paths(table, terms, axis_name, top_n)
+            if mode == "cross_cascade":
+                # keep lexical where it fires (named years/codes, multi-col aggregates);
+                # use the cross-encoder ONLY when lexical finds nothing — replaces the
+                # whole-axis dump with the few columns the query actually describes
+                # ("percentage"->"%"). Production "shortlist then rerank" pattern.
+                lex = _rank_paths(table, terms, axis_name, top_n)
+                return lex if lex else _cross(self.top_n_cross)
+            if mode == "cascade":
+                # lexical first (catches named years/codes); fall back to semantic
+                # embedding ONLY when lexical finds nothing — this rescues metric/unit
+                # columns the query describes in words ("percentage"->"%",
+                # "per man"->"prevalence per 100,000") that lexical overlap misses,
+                # without the whole-axis dump. Kept tight (top 2) for precision.
+                lex = _rank_paths(table, terms, axis_name, top_n)
+                return lex if lex else self._topn(cands, mat, qv, min(2, top_n))
             return self._topn(cands, mat, qv, top_n)
 
         row_paths = axis(self.row_mode, row_c, row_m, self.top_n_rows, "row")
