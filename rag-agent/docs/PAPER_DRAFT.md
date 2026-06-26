@@ -130,9 +130,27 @@ strong-cross-encoder top-2 (e.g. col-recall on comparison queries: blind top-2 0
 named-pair 0.53 vs total-col 0.48). The strong cross-encoder at a small budget is the
 right column method; clever decomposition does not help.
 
+**5.8 External validity — column selection on AITQA (2nd dataset).** AITQA (airline
+SEC filings, hierarchical headers) gives no operand labels, so OSC is not computable;
+but answer-value matching recovers a unique gold **column** for 439 questions, letting
+us re-run the column-selection benchmark on a new domain:
+
+| selector | col-recall@1 | @2 | @3 |
+|---|---|---|---|
+| lexical | 0.795 | 0.913 | 0.973 |
+| bi-encoder | 0.754 | 0.886 | 0.968 |
+| **cross-encoder** | **0.820** | **0.923** | **0.979** |
+
+The ordering **generalizes** — cross-encoder best, bi-encoder worst, at every k — so
+"use a cross-encoder for the column axis" holds across domains. The *margin* is small
+here because AITQA columns are clean metric names (small vocabulary gap); the large
+cross-encoder gain on HiTab is specific to harder gaps ("%"↔"percentage"). OSC
+external validity remains a limitation (no operand labels outside HiTab).
+
 **Honest position.** Enumeration does **not** beat dense top-k on *raw* OSC (0.65 <
 0.79); the contribution is **scope-robustness + a completeness guarantee + diagnosis-
-driven axis fixes + the schema-linking column result**, not a higher OSC number.
+driven axis fixes + the schema-linking column result (generalizing to AITQA)**, not a
+higher OSC number.
 
 ### Open / limitations
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
