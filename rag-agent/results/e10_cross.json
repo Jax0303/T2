@@ -1,0 +1,74 @@
+{
+  "experiment": "E7_retrieval_ablation",
+  "hypothesis": "H5/H6: at a fixed solver, retrieval (small+complete) vs whole-table/dense; gain tracks precision",
+  "split": "dev",
+  "seed": 42,
+  "llm": "groq:llama-3.1-8b-instant",
+  "mode": "codegen",
+  "baseline_arm": "enum_treated",
+  "dry_run": false,
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161
+  },
+  "arms": {
+    "enum_treated": {
+      "osc": 0.6522,
+      "mean_cells": 39.5,
+      "accuracy_nm": 0.118,
+      "accuracy_em": 0.0186,
+      "n_oversize": 16,
+      "n_error": 0,
+      "n_answered": 145,
+      "accuracy_nm_answered": 0.131
+    },
+    "enum_cross": {
+      "osc": 0.5963,
+      "mean_cells": 30.8,
+      "accuracy_nm": 0.1242,
+      "accuracy_em": 0.0311,
+      "n_oversize": 8,
+      "n_error": 0,
+      "n_answered": 153,
+      "accuracy_nm_answered": 0.1307,
+      "delta_nm_vs_enum_treated": 0.0062,
+      "delta_nm_ci95_vs_enum_treated": [
+        -0.0621,
+        0.0807
+      ],
+      "delta_em_vs_enum_treated": 0.0124,
+      "paired_answered_vs_enum_treated": {
+        "n_both_answered": 145,
+        "delta_nm": -0.0138,
+        "mcnemar": {
+          "arm_only": 1,
+          "base_only": 3
+        }
+      }
+    },
+    "oracle": {
+      "osc": 1.0,
+      "mean_cells": 3.0,
+      "accuracy_nm": 0.6087,
+      "accuracy_em": 0.0373,
+      "n_oversize": 0,
+      "n_error": 0,
+      "n_answered": 161,
+      "accuracy_nm_answered": 0.6087,
+      "delta_nm_vs_enum_treated": 0.4907,
+      "delta_nm_ci95_vs_enum_treated": [
+        0.4037,
+        0.5776
+      ],
+      "delta_em_vs_enum_treated": 0.0186,
+      "paired_answered_vs_enum_treated": {
+        "n_both_answered": 145,
+        "delta_nm": 0.4621,
+        "mcnemar": {
+          "arm_only": 71,
+          "base_only": 4
+        }
+      }
+    }
+  }
+}
