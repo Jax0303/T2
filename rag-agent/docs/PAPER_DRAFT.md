@@ -175,6 +175,26 @@ here because AITQA columns are clean metric names (small vocabulary gap); the la
 cross-encoder gain on HiTab is specific to harder gaps ("%"↔"percentage"). OSC
 external validity remains a limitation (no operand labels outside HiTab).
 
+**5.9 vs OHD-style whole-table serialization — retrieval is feasible at a fraction of
+the context.** OHD (2602.01969) builds the *same* orthogonal header trees but
+serializes the **whole** table for the LLM (no selection). `ohd_lite` reproduces its
+dual (row- + column-major) `Context→Key→Value` rendering inside our harness
+(`e7_retrieval_ablation.py::ohd_serialize`; omits OHD's learned tree induction +
+semantic arbitrator). LLM-free context cost (HiTab dev arith m≥2, n=161):
+
+| arm | mean tokens | oversize @8k ctx | tokens vs ohd_lite |
+|---|---|---|---|
+| ohd_lite (whole table) | 8,518 | 56/161 (**35%**) | 1× |
+| dense top-10 | 1,502 | 0 | 5.7× fewer |
+| **enum_treated (ours)** | **953** | **0** | **8.9× fewer** |
+| **enum_cross (ours)** | **753** | **0** | **11.3× fewer** |
+
+Whole-table serialization **exceeds an 8k context on 35%** of tables (and uses ~9× the
+tokens where it fits); every retrieval arm runs on **100%** — feasibility, not just
+thrift. *(H6 accuracy-parity at a fixed 70b solver — that the token saving is free, not
+paid in accuracy — pending; reads on the small-table subset where ohd_lite fits.)*
+(E8, `e8_scalability_dryrun` / `e8_ohd_baseline`)
+
 **Honest position.** Enumeration does **not** beat dense top-k on *raw* OSC (0.65 <
 0.79); the contribution is **scope-robustness + a completeness guarantee + diagnosis-
 driven axis fixes + the cross-encoder node-resolution result on *both* axes (column
