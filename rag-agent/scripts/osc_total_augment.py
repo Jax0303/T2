@@ -63,7 +63,11 @@ def main() -> int:
     ap.add_argument("--plain-k", type=int, default=20)
     ap.add_argument("--col-targeted", action="store_true",
                     help="inject total rows only in columns the retrieved rows already touch "
-                         "(cheap: the denominator lives in the same column as its operands)")
+                         "(no-op for S2 row chunks: they span all columns)")
+    ap.add_argument("--resolver-cols", action="store_true",
+                    help="inject total rows only in the 1-2 columns the cross-encoder column "
+                         "resolver picks (cheap, query-targeted denominator)")
+    ap.add_argument("--cross-encoder", default="cross-encoder/ms-marco-MiniLM-L-6-v2")
     ap.add_argument("--out", default="results/osc_total_augment.json")
     args = ap.parse_args()
 
@@ -75,6 +79,12 @@ def main() -> int:
     print(f"[pop] arithmetic m>=2: {n}  ratio_only_aug={args.ratio_only_aug}")
 
     emb = Embedder(args.embed_model, device="cpu")
+    col_resolver = None
+    if args.resolver_cols:
+        from sentence_transformers import CrossEncoder
+        from rag_agent.query.header_embed_resolver import EmbedResolver
+        col_resolver = EmbedResolver(emb, col_mode="cross",
+                                     cross_encoder=CrossEncoder(args.cross_encoder), top_n_cross=2)
     need = {q.gold_table_id for q in pop}
     retr, ots, totals, total_rows = {}, {}, {}, {}
     for tid in need:
@@ -100,10 +110,22 @@ def main() -> int:
         all_tcells = totals[q.gold_table_id]
         trows = total_rows[q.gold_table_id]
         inject_on = not (args.ratio_only_aug and not is_ratio_query(q.question))
+        # query-targeted columns from the cross-encoder column resolver (computed once)
+        resolver_cols = None
+        if args.resolver_cols:
+            intent = col_resolver.resolve(q.question, ot)
+            cidx = set()
+            for p in intent.col_paths:
+                cidx.update(ot.find_cols_by_header(" > ".join(p)))
+            resolver_cols = cidx
+            resolver_tcells = {(r, c) for r in trows for c in cidx
+                               if ot.cell_num(r, c) is not None}
 
         def tcells_for(base):
             if not inject_on:
                 return set()
+            if args.resolver_cols:
+                return resolver_tcells
             if args.col_targeted:
                 cols = {c for (_, c) in base}
                 return {(r, c) for r in trows for c in cols if ot.cell_num(r, c) is not None}
