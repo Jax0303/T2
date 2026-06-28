@@ -21,9 +21,11 @@ as few cells as possible. Contributions:
    operand set is **complete-by-construction**; this is **scope-size robust** where
    similarity retrieval collapses, and re-localizes the problem to header-path
    decomposition.
-3. **Axis-wise diagnosis + treatments** — row axis: unnamed *total* rows (68% of
-   failures) fixed by total-row augmentation (row-cov 0.62→0.89); column axis cast as
-   **schema linking**, solved best by a **cross-encoder** (col-recall@2 0.40→0.70).
+3. **Both axes are node resolution, and a cross-encoder wins both** — picking the
+   right scope node (query × header joint attention) beats lexical and bi-encoder
+   matchers on **col-recall@2 0.40→0.70** and **row-recall@2 0.44→0.52 (p<0.01)**.
+   Plus axis-specific diagnosis: unnamed *total* rows (68% of row failures) fixed by
+   total-row augmentation (row-cov 0.62→0.89).
 4. **Honest frontier + negative results** — completeness vs precision is a frontier
    ("100% in a small set" open); several intuitive heuristics are shown *not* to help.
 
@@ -57,9 +59,11 @@ as few cells as possible. Contributions:
   (`retrieve/header_enum.py`). Complete-by-construction: if the scope node is correct,
   OSC=1 regardless of scope size.
 - **3.3 Query→node decomposition.**
-  - *Row axis* — **embedding tree-node resolver** (`query/header_embed_resolver.py`):
-    match the query to header nodes by semantic embedding (closes vocabulary/depth
-    gaps; matches a 70b LLM, LLM-free).
+  - *Row axis* — **cross-encoder** reranking of (query, row-header node)
+    (`query/header_embed_resolver.py`, `row_mode="cross"`): beats the prior embedding
+    tree-node default on row-recall at every budget (§5.3), symmetric with the column
+    axis. The embedding matcher (semantic node match — closes vocabulary/depth gaps,
+    matches a 70b LLM, LLM-free) remains the fallback.
   - *Column axis* — **cross-encoder** reranking of (query, column-header) — schema-
     linking SOTA; cascade = lexical first, cross-encoder when lexical finds nothing.
 - **3.4 Diagnosis-driven augmentation.** Ratio/share queries need an *unnamed* total
@@ -75,8 +79,9 @@ as few cells as possible. Contributions:
 - **Data.** HiTab dev; gold operands resolved from `linked_cells.quantity_link` by
   value-matching (`bench/hitab.py`). Population: arithmetic aggregations with scope
   **m≥2, n=161**; selection/comparison excluded (value-matching cannot build gold).
-- **Metrics.** OSC (primary); **col-recall@k** (gold columns within top-k — the
-  schema-linking metric for the column axis); row-/col-axis coverage; mean cells
+- **Metrics.** OSC (primary); **col-recall@k** / **row-recall@k** (gold columns/rows
+  within the top-k scope-nodes — the node-resolution metric per axis); row-/col-axis
+  coverage; mean cells
   (precision); answer accuracy (numeric-match + exact-match) for the generation stage.
 - **Models.** Embedder `BAAI/bge-small-en-v1.5`; cross-encoders
   `ms-marco-MiniLM-L-6-v2` and `BAAI/bge-reranker-base`; solver Groq
@@ -84,7 +89,8 @@ as few cells as possible. Contributions:
   uses an LLM.
 - **Protocol.** Paired comparisons; bootstrap 95% CI + McNemar; "accuracy over
   answered" excludes failed/oversize LLM calls. Reproduce: `scripts/e1..e7`,
-  `diag_row_failures.py`, `col_select_bench.py`, `retrieval_stage_eval.py`.
+  `diag_row_failures.py`, `col_select_bench.py`, `row_select_bench.py`,
+  `row_select_stats.py`, `row_osc_endtoend.py`, `retrieval_stage_eval.py`.
 
 ## 5. 결과 (Results)
 
@@ -97,9 +103,31 @@ decomposition-correct = **1.000, flat across m**; the H1 collapse is eliminated.
 OSC equals the decomposition success rate, so the bottleneck is **header-path
 decomposition**, localized to the row axis. (E2)
 
-**5.3 Row axis — total-row augmentation.** Diagnosis: **68%** of row-axis misses are
-share/ratio queries needing an unnamed total row. Treatment lifts **row-cov 0.615 →
-0.888** and OSC 0.416 → 0.652 (paired ΔOSC **+0.236**, CI [0.174, 0.304]). (diag, E6)
+**5.3 Row axis — node resolution + total-row augmentation.** Like the column axis,
+picking the right row scope-node is a node-resolution problem; **row-recall@k** (gold
+rows within the rows covered by the top-k row scope-nodes) compares matchers fairly:
+
+| row selector | @1 | @2 | @3 | @4 |
+|---|---|---|---|---|
+| lexical | 0.193 | 0.335 | 0.398 | 0.441 |
+| bi-encoder (prior default) | 0.267 | 0.435 | 0.578 | 0.615 |
+| cross-encoder (MiniLM) | **0.311** | **0.522** | 0.602 | 0.665 |
+| cross-encoder (bge-reranker) | 0.298 | 0.503 | **0.609** | **0.671** |
+
+A cross-encoder beats the embedding default at **every** k (paired McNemar @2: 19
+cross-only vs 5 embed-only, **p=0.007**) — the same ordering the column axis gives.
+End-to-end (`row_mode` embed→cross, column axis held fixed at lexical) this converts
+to row-cov 0.615→0.665 and **ΔOSC +0.050** (paired CI [0.00, 0.099]; full-OSC McNemar
+12 cross-only vs 4 embed-only, p=0.08) — a real-direction but **borderline** lift,
+capped by the column-axis ceiling (OSC requires *both* axes correct). The row-recall
+gain transfers 1:1 to row coverage; its OSC payoff is bounded, not free.
+(row_select_bench, row_select_stats, row_osc_endtoend)
+
+Orthogonally, **68%** of the residual row-axis misses are share/ratio queries needing
+an *unnamed* total row; total-row augmentation lifts **row-cov 0.615 → 0.888** and OSC
+0.416 → 0.652 (paired ΔOSC **+0.236**, CI [0.174, 0.304]) — the larger row lever, and
+complementary (it fixes missing *totals*, the cross-encoder fixes *named-row* matching).
+(diag, E6)
 
 **5.4 Column axis as schema linking.** OSC rewards the trivial whole-axis dump, so we
 measure **col-recall@k**. A cross-encoder is the best selector at every budget:
@@ -149,8 +177,13 @@ external validity remains a limitation (no operand labels outside HiTab).
 
 **Honest position.** Enumeration does **not** beat dense top-k on *raw* OSC (0.65 <
 0.79); the contribution is **scope-robustness + a completeness guarantee + diagnosis-
-driven axis fixes + the schema-linking column result (generalizing to AITQA)**, not a
-higher OSC number.
+driven axis fixes + the cross-encoder node-resolution result on *both* axes (column
+generalizing to AITQA)**, not a higher OSC number. The cross-encoder is a genuine
+retriever improvement — significant on **row-recall** (p=0.007) and col-recall — so we
+*have* partially improved the retriever itself, not only the framing. But on the row
+axis that retrieval gain converts only to a **directional, non-significant** OSC lift
+(+0.05, p=0.08), bounded by the column-axis ceiling; we do not claim it closes the
+raw-OSC gap.
 
 ### Open / limitations
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
