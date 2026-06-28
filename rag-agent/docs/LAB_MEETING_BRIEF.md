@@ -1,5 +1,57 @@
 # 랩미팅 브리핑 — 표 RAG의 병목과 내 방법의 개선
 
+> **최신(2026-06-29) 발표는 바로 아래 "★UPDATE" 섹션을 쓰세요. 그 아래는 배경(2026-06-18 병목 분석).**
+
+---
+
+## ★UPDATE 2026-06-29 — 유사도 검색의 완전성 천장을 진단하고 ~6셀로 BM25/dense/hybrid를 이김
+
+데이터: HiTab dev, arithmetic m≥2 (n=161), seed 42, LLM-free.
+재현: `scripts/dense_ceiling_diag.py`, `scripts/osc_total_augment.py`, `scripts/plot_osc_frontier.py`.
+그림: `docs/fig_osc_frontier.png`.
+
+### 한 줄 결론
+**집계는 operand를 *전부* 회수해야 하고(OSC=all-or-nothing), 유사도 검색(BM25·dense·hybrid)은
+"이름 없는 합계행"을 구조적으로 못 닿아 0.86에서 천장을 친다. 그 합계행만 cross-encoder 열
+resolver로 ~6셀 주입하면 세 검색기 모두 OSC가 유의하게 오르고(손해 쿼리 0개), 평균 OSC에서 이긴다.**
+
+### ① 진단 — 왜 유사도가 천장을 못 넘나 (`dense_ceiling_diag`)
+- gold operand의 **28.5%**가 이름 없는 **합계행**(비율의 분모). 질문엔 "합계"가 안 나옴.
+- 유사도 중앙 랭킹: 합계행 operand **39.5위** vs 일반 operand **8위** (≈5배 밑).
+- top-50 도달률: 합계행 **0.59** vs 일반 **0.91** → k 키워도 40% 못 잡음.
+- dense full-set 완전성 천장: @50 = **0.714**; **천장 실패의 76%(35/46)가 합계행 때문.**
+- → 합계행은 의미·단어 둘 다 안 닮아 **dense·BM25·hybrid 전부 원리상 못 닿음**(검색량 무관).
+
+### ② 승리 — 대체 아니라 증강 (`osc_total_augment`, same-depth k=10, 주입 ~6셀)
+| baseline | plain | **+합계행 주입** | Δ | 손해 쿼리 | p |
+|---|---|---|---|---|---|
+| BM25 | 0.689 | **0.814** | +0.124 | **0** | <0.0001 |
+| dense | 0.789 | **0.863** | +0.074 | **0** | 0.0005 |
+| hybrid | 0.789 | **0.882** | +0.093 | **0** | 0.0001 |
+
+주입은 셀을 더하기만 함 → **strict superset → 어떤 쿼리도 나빠지지 않음.** `fig_osc_frontier.png`에서
+실선(+주입)이 점선(plain)을 전 예산 구간 위로 지배.
+
+### ③ 정직한 단서
+- 위는 "같은 깊이 + ~6셀 오버헤드" 기준. **엄격 동일-셀 예산**에선 BM25만 깨끗이 유의(p=0.014),
+  dense/hybrid는 더 적은 셀로 비김(p≈0.65, borderline).
+- **header-tree 열거 *단독*은 여전히 dense보다 낮음(0.65<0.77).** 승리는 **증강**에서 옴.
+- 2026 최신(FT-RAG·Topo-RAG)도 부분 recall·nDCG·단일셀 lookup이지 all-or-nothing 완전성 아님 → 게이트 통과.
+
+### ④ 의의 + 다음
+- 세 조각(OSC 지표 + 천장 진단 + cross-encoder 열 resolver)이 **retriever-agnostic 완전성 패치**로 합쳐짐.
+- 다음: 열 resolver 정밀도↑로 **엄격 동일-셀 예산에서도 dense/hybrid를 유의하게** 넘기기.
+
+### 예상 질문
+- *"평균 OSC가 dense보다 낮았는데?"* → 열거 단독은 낮음. 이긴 건 dense를 **증강**했을 때(합계행만 보탬).
+- *"합계행 주입 = cheating?"* → gold 안 봄. 질문에서 열 resolver로 추론한 열의 합계행만, 셀 수도 함께 보고(~6).
+- *"FT-RAG/Topo-RAG가 이미?"* → 부분 recall/nDCG/단일셀이고 HiTab 집계 완전성 아님.
+- *"end-to-end 정확도?"* → 솔버 한계(8b 바닥/70b rate-limit)라 검색 단계로 스코프. 완전성=정답의 필요조건.
+
+---
+
+## (배경) 2026-06-18 병목 분석
+
 날짜: 2026-06-18 · 데이터: HiTab(계층) dev, WikiSQL(평면) val · 검색 BM25, k=5 ·
 재현: `scripts/operand_bottleneck_analysis.py --bench {hitab,wikisql}` · seed=42
 
