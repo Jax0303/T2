@@ -26,8 +26,15 @@ as few cells as possible. Contributions:
    matchers on **col-recall@2 0.40→0.70** and **row-recall@2 0.44→0.52 (p<0.01)**.
    Plus axis-specific diagnosis: unnamed *total* rows (68% of row failures) fixed by
    total-row augmentation (row-cov 0.62→0.89).
-4. **Honest frontier + negative results** — completeness vs precision is a frontier
-   ("100% in a small set" open); several intuitive heuristics are shown *not* to help.
+4. **A retriever-agnostic completeness patch that beats BM25/dense/hybrid on OSC** —
+   similarity retrieval structurally misses unnamed total rows (28.5% of operands,
+   ranked ~5× worse, 76% of its completeness ceiling); injecting them via the
+   cross-encoder column resolver (~6 cells) **significantly raises OSC for all three
+   retrievers at the same depth** (BM25 0.69→0.81, dense 0.79→0.86, hybrid 0.79→0.88,
+   p≤0.0005) and **never hurts a query**.
+5. **Honest frontier + negative results** — enumeration *alone* does not beat dense on
+   raw OSC (the win is by augmentation, not replacement); completeness vs precision is a
+   frontier ("100% in a small set" open); several intuitive heuristics *do not* help.
 
 ## 2. 관련 연구 (Related Work)
 
@@ -91,7 +98,7 @@ as few cells as possible. Contributions:
   answered" excludes failed/oversize LLM calls. Reproduce: `scripts/e1..e7`,
   `diag_row_failures.py`, `col_select_bench.py`, `row_select_bench.py`,
   `row_select_stats.py`, `row_osc_endtoend.py`, `dense_ceiling_diag.py`,
-  `retrieval_stage_eval.py`.
+  `osc_total_augment.py`, `retrieval_stage_eval.py`.
 
 ## 5. 결과 (Results)
 
@@ -219,9 +226,33 @@ thrift. *(H6 accuracy-parity at a fixed 70b solver — that the token saving is 
 paid in accuracy — pending; reads on the small-table subset where ohd_lite fits.)*
 (E8, `e8_scalability_dryrun` / `e8_ohd_baseline`)
 
-**Honest position.** We do **not** claim to retrieve operand cells *more often* than
-similarity retrieval — on raw average OSC, dense top-k beats enumeration (0.79 > 0.65).
-That is not the contribution and we do not hide it. The contribution is about a
+**5.10 Structural total-row injection beats BM25/dense/hybrid on OSC (retriever-
+agnostic).** §5.1b says similarity retrieval structurally misses total rows; the fix is
+not to replace it but to **inject** them. Using the cross-encoder column resolver (§5.4)
+to pick 1–2 columns, we union *only those columns'* total-like rows (~6 cells) into any
+retriever's top-k. At the **same retrieval depth** (k=10; HiTab dev arith m≥2, n=161):
+
+| baseline | plain OSC | +injection | Δ | queries flipped | queries hurt | McNemar p |
+|---|---|---|---|---|---|---|
+| BM25 | 0.689 | **0.814** | +0.124 | 20 | **0** | **<0.0001** |
+| dense | 0.789 | **0.863** | +0.074 | 12 | **0** | **0.0005** |
+| hybrid | 0.789 | **0.882** | +0.093 | 15 | **0** | **0.0001** |
+
+Injection only *adds* cells, so it is a strict superset — **zero queries are hurt** and
+every retriever's average OSC rises significantly for ~6 extra cells. This unifies the
+contribution: the **OSC objective** + the **ceiling diagnosis** (total rows = 76% of
+similarity failures) + the **cross-encoder column resolver** compose into a
+**retriever-agnostic completeness patch**, not an enumeration-vs-dense replacement.
+*Honest budget caveat:* under a strict **equal-cell** budget the clean significant win
+is over **BM25** (aug@10 0.925 vs plain@20 0.832 at fewer cells, p=0.014); dense/hybrid
+are matched-or-edged at fewer cells (blind all-column injection lifts OSC more, +0.27 at
+k=5, but costs ~35 cells). (`osc_total_augment`)
+
+**Honest position.** *Enumeration alone* does **not** retrieve operand cells more often
+than similarity retrieval — on raw average OSC, dense beats our header-tree enumeration
+(0.79 > 0.65). Our win on OSC comes by **augmentation, not replacement** (§5.10): adding
+the structurally-required total rows that similarity provably cannot reach significantly
+improves BM25/dense/hybrid and never hurts a query. The contribution is about a
 *different objective*: aggregation needs the **complete** operand set, and we show
 (§5.1b) that **similarity retrieval cannot satisfy that objective by construction** —
 28.5% of operands are structurally-required total rows it ranks ~5× worse and misses
@@ -233,7 +264,9 @@ scope-robust, that reaches the cells similarity cannot; (iii) a **cross-encoder
 node-resolution** result on *both* axes (significant on row-recall p=0.007 and
 col-recall; column generalizing to AITQA) — a real retriever improvement, though on the
 row axis its end-to-end OSC lift is only directional (+0.05, p=0.08), bounded by the
-column-axis ceiling; (iv) **scalability** — 9× fewer tokens, feasible where whole-table
+column-axis ceiling; (iv) a **retriever-agnostic total-row injection** that
+**significantly raises OSC for BM25/dense/hybrid** (p≤0.0005, never hurting a query;
+§5.10); (v) **scalability** — 9× fewer tokens, feasible where whole-table
 serialization is not (§5.9). We are explicit that the proposed method trades
 average-recall for a completeness *guarantee* + efficiency, and that closing the raw-OSC
 gap (the query→node decomposition bottleneck) remains open.
