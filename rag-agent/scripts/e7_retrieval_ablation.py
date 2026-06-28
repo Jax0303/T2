@@ -205,7 +205,12 @@ def _aggregate(recs, arms, args) -> int:
            "arms": {}}
     for arm in arms:
         a = {"osc": round(sum(r.get(f"{arm}_osc", 0) for r in recs) / n, 4) if n else 0,
-             "mean_cells": round(sum(r.get(f"{arm}_cells", 0) for r in recs) / n, 1) if n else 0}
+             "mean_cells": round(sum(r.get(f"{arm}_cells", 0) for r in recs) / n, 1) if n else 0,
+             "mean_tokens": round(sum(r.get(f"{arm}_tokens", 0) for r in recs) / n, 0) if n else 0,
+             "n_oversize_est": sum(r.get(f"{arm}_oversize_est", 0) for r in recs)}
+        if arm != base and n:  # LLM-free token ratio (scalability headline)
+            bt = sum(r.get(f"{base}_tokens", 0) for r in recs) / n
+            a[f"token_ratio_vs_{base}"] = round((bt / a["mean_tokens"]), 2) if a["mean_tokens"] else None
         if not args.dry_run:
             a["accuracy_nm"] = round(rate(arm, "correct"), 4)   # all queries
             a["accuracy_em"] = round(rate(arm, "em"), 4)
@@ -223,12 +228,13 @@ def _aggregate(recs, arms, args) -> int:
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2)
-    hdr = f"{'arm':<14}{'OSC':>7}{'cells':>7}" + (
+    hdr = f"{'arm':<14}{'OSC':>7}{'cells':>7}{'tokens':>8}{'ovsz*':>6}" + (
         "" if args.dry_run else f"{'NM':>7}{'NM_ans':>8}{'EM':>7}{'ovsz':>6}{'err':>5}")
-    print("\n" + hdr + (f"   (baseline={base})" if not args.dry_run else ""))
+    print("\n" + hdr + f"   (baseline={base}; ovsz*=est @ {args.max_ctx_tokens}tok)")
     for arm in arms:
         a = out["arms"][arm]
-        row = f"{arm:<14}{a['osc']:>7.3f}{a['mean_cells']:>7.1f}"
+        row = (f"{arm:<14}{a['osc']:>7.3f}{a['mean_cells']:>7.1f}"
+               f"{a['mean_tokens']:>8.0f}{a['n_oversize_est']:>6}")
         if not args.dry_run:
             row += (f"{a['accuracy_nm']:>7.3f}{a['accuracy_nm_answered']:>8.3f}"
                     f"{a['accuracy_em']:>7.3f}{a['n_oversize']:>6}{a['n_error']:>5}")
@@ -386,9 +392,12 @@ def main() -> int:
                 # *cell content* differs.
                 ctx = (ohd_serialize(ot, cset) if arm == "ohd_lite"
                        else struct_chunk_from_cells(ot, cset, q.gold_table_id).text)
+                tok = len(ctx) // 3  # same rough estimate the oversize guard uses
                 ans, bk = solve(q.question, ctx, q.answer)
                 rec[f"{arm}_osc"] = operand_set_completeness(gold, cset)
                 rec[f"{arm}_cells"] = len(cset)
+                rec[f"{arm}_tokens"] = tok                       # LLM-free scalability
+                rec[f"{arm}_oversize_est"] = int(tok > max_ctx_tokens)
                 if not args.dry_run:
                     rec[f"{arm}_correct"] = int(bk == "correct")          # numeric-match
                     rec[f"{arm}_em"] = int(exact_match(ans, q.answer))    # exact-match
