@@ -90,13 +90,37 @@ as few cells as possible. Contributions:
 - **Protocol.** Paired comparisons; bootstrap 95% CI + McNemar; "accuracy over
   answered" excludes failed/oversize LLM calls. Reproduce: `scripts/e1..e7`,
   `diag_row_failures.py`, `col_select_bench.py`, `row_select_bench.py`,
-  `row_select_stats.py`, `row_osc_endtoend.py`, `retrieval_stage_eval.py`.
+  `row_select_stats.py`, `row_osc_endtoend.py`, `dense_ceiling_diag.py`,
+  `retrieval_stage_eval.py`.
 
 ## 5. 결과 (Results)
 
 **5.1 Similarity retrieval's OSC collapses with scope (H1).** Dense single-vector OSC
 falls as the aggregation scope m grows (m=2→0.60 … m=9+→0.29); completeness is bought
 with budget, not targeting. (E1)
+
+**5.1b Why similarity retrieval has a completeness ceiling it cannot pass (the
+mechanism).** Aggregation operands include cells the query does *not* resemble — chiefly
+the **unnamed total row** (the share/ratio denominator), whose header is empty or just
+"total". Ranking every numeric cell by query↔header-lineage cosine (HiTab dev arith
+m≥2, n=161, LLM-free):
+
+| | total-row operand | ordinary operand |
+|---|---|---|
+| share of gold operands | **28.5%** (140/491) | 71.5% |
+| median similarity rank | **39.5** | 8 |
+| reached within top-50 | **0.593** | 0.906 |
+
+44.7% of queries need ≥1 total-row operand; similarity ranks those cells ~5× worse, so
+**40% are still unreached at k=50**. Dense full-set completeness plateaus accordingly
+(@10 0.366 → @50 0.714), and **76% (35/46) of the @50 incompletes are explained by an
+unreached total-row operand**. The miss is *structural, not a budget problem*: these
+cells resemble the query neither semantically (dense) nor lexically (BM25), so **no
+similarity/hybrid retriever reaches them by construction** — header-tree enumeration
+does, because a total row falls under the scope node regardless of resemblance. (This is
+the mechanism behind the completeness guarantee; `dense_ceiling_diag`.) *Caveat:
+ordinary operands also plateau below 1.0 (0.906), so total rows are the largest but not
+the only cause; `is_total_row` is a heuristic (empty/"total"/"overall" paths).*
 
 **5.2 Enumeration is scope-robust and re-localizes the bottleneck (H2).** OSC |
 decomposition-correct = **1.000, flat across m**; the H1 collapse is eliminated. Raw
@@ -195,15 +219,24 @@ thrift. *(H6 accuracy-parity at a fixed 70b solver — that the token saving is 
 paid in accuracy — pending; reads on the small-table subset where ohd_lite fits.)*
 (E8, `e8_scalability_dryrun` / `e8_ohd_baseline`)
 
-**Honest position.** Enumeration does **not** beat dense top-k on *raw* OSC (0.65 <
-0.79); the contribution is **scope-robustness + a completeness guarantee + diagnosis-
-driven axis fixes + the cross-encoder node-resolution result on *both* axes (column
-generalizing to AITQA)**, not a higher OSC number. The cross-encoder is a genuine
-retriever improvement — significant on **row-recall** (p=0.007) and col-recall — so we
-*have* partially improved the retriever itself, not only the framing. But on the row
-axis that retrieval gain converts only to a **directional, non-significant** OSC lift
-(+0.05, p=0.08), bounded by the column-axis ceiling; we do not claim it closes the
-raw-OSC gap.
+**Honest position.** We do **not** claim to retrieve operand cells *more often* than
+similarity retrieval — on raw average OSC, dense top-k beats enumeration (0.79 > 0.65).
+That is not the contribution and we do not hide it. The contribution is about a
+*different objective*: aggregation needs the **complete** operand set, and we show
+(§5.1b) that **similarity retrieval cannot satisfy that objective by construction** —
+28.5% of operands are structurally-required total rows it ranks ~5× worse and misses
+even at k=50, explaining 76% of its completeness ceiling. Against that, our contribution
+is: (i) **OSC** as the all-or-nothing completeness objective existing relevance/ranking
+retrievers (incl. 2026 cell-level table RAG: FT-RAG, Topo-RAG — partial recall / nDCG)
+do not target; (ii) **header-tree enumeration**, complete-by-construction and
+scope-robust, that reaches the cells similarity cannot; (iii) a **cross-encoder
+node-resolution** result on *both* axes (significant on row-recall p=0.007 and
+col-recall; column generalizing to AITQA) — a real retriever improvement, though on the
+row axis its end-to-end OSC lift is only directional (+0.05, p=0.08), bounded by the
+column-axis ceiling; (iv) **scalability** — 9× fewer tokens, feasible where whole-table
+serialization is not (§5.9). We are explicit that the proposed method trades
+average-recall for a completeness *guarantee* + efficiency, and that closing the raw-OSC
+gap (the query→node decomposition bottleneck) remains open.
 
 ### Open / limitations
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
