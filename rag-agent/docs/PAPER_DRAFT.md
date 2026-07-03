@@ -87,6 +87,16 @@ as few cells as possible. Contributions:
 - **Data.** HiTab dev; gold operands resolved from `linked_cells.quantity_link` by
   value-matching (`bench/hitab.py`). Population: arithmetic aggregations with scope
   **m≥2, n=161**; selection/comparison excluded (value-matching cannot build gold).
+- **The population is the measured failure region, not an assumption.** Measuring
+  plain-retrieval OSC@10 over *every* dev question with buildable gold (1,301/1,671;
+  90% of lookups, 97% of arithmetic): lookups m=1 (n=970) score **0.943** (0.994@20),
+  multi-cell lookups 0.940, arith m=1 0.962, annotated selection 1.000 — all
+  near-solved by similarity — while **arith m≥2 scores 0.789**, the only collapsing
+  bucket; OSC decays monotonically with m (m=1 0.944 → m=2 0.859 → m=5–8 0.706 →
+  m=9+ 0.600, dense@10). The paper's scope is where the problem lives. Selection/
+  comparison exclusion is an **annotation limitation, not a choice**: 93% (238/255)
+  of selection questions have an empty `quantity_link` (the compared cells are not
+  annotated), so their gold evidence set is unbuildable. (`osc_population_expansion`)
 - **Metrics.** OSC (primary); **col-recall@k** / **row-recall@k** (gold columns/rows
   within the top-k scope-nodes — the node-resolution metric per axis); row-/col-axis
   coverage; mean cells
@@ -347,5 +357,6 @@ gap (the query→node decomposition bottleneck) remains open.
 - HiTab is the only dataset where the injection *wins* (dev-tuned, **test-split
   confirmed frozen**, §5.10); on MultiHiertt OSC is now measured and the frozen patch
   is a predicted, harmless no-op (§5.8) — the pathology is corpus-dependent.
-  Selection/comparison aggregations excluded; MultiHiertt multi-table questions
-  out of scope.
+  Selection/comparison aggregations: 93% lack `quantity_link` annotation (gold
+  unbuildable — a dataset limitation, §4); the annotated 7% are already solved by
+  similarity (OSC@10 1.0). MultiHiertt multi-table questions out of scope.

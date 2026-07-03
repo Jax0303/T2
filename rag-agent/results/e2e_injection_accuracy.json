@@ -1,0 +1,51 @@
+{
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161,
+    "split": "dev"
+  },
+  "config": {
+    "llm": "groq:llama-3.3-70b-versatile",
+    "mode": "codegen",
+    "k": 10,
+    "cross_encoder": "BAAI/bge-reranker-base",
+    "top_n_cross": 2
+  },
+  "overall": {
+    "n": 161,
+    "n_both_answered": 26,
+    "acc_plain": 0.0186,
+    "acc_inject": 0.0311,
+    "osc_plain": 0.7888,
+    "osc_inject": 0.9006,
+    "inject_only_correct": 3,
+    "plain_only_correct": 1,
+    "mcnemar_p": 0.625
+  },
+  "osc_flipped_subgroup": {
+    "n": 18,
+    "n_both_answered": 18,
+    "acc_plain": 0.0556,
+    "acc_inject": 0.1667,
+    "osc_plain": 0.0,
+    "osc_inject": 1.0,
+    "inject_only_correct": 3,
+    "plain_only_correct": 1,
+    "mcnemar_p": 0.625
+  },
+  "osc_unchanged_subgroup": {
+    "n": 143,
+    "n_both_answered": 8,
+    "acc_plain": 0.014,
+    "acc_inject": 0.014,
+    "osc_plain": 0.8881,
+    "osc_inject": 0.8881,
+    "inject_only_correct": 0,
+    "plain_only_correct": 0,
+    "mcnemar_p": 1.0
+  },
+  "failures": {
+    "error": 135,
+    "oversize": 0
+  }
+}
