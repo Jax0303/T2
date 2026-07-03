@@ -88,9 +88,18 @@ class EmbedResolver:
         order = np.argsort(-scores)[:n]
         return [cands[i] for i in order]
 
-    def resolve(self, query: str, table) -> HeaderPathIntent:
+    def resolve(self, query: str, table, col_allowed=None) -> HeaderPathIntent:
+        """``col_allowed``: optional set of column indices to restrict the column
+        candidate set to (e.g. only columns that carry a total row). Pruning the
+        candidates the column resolver ranks over removes distractor columns and
+        raises column precision — the strict-budget bottleneck (col-recall@2)."""
         import numpy as np
         col_c, col_m, row_c, row_m = self._prep(table)
+        if col_allowed is not None:
+            keep = [i for i, p in enumerate(col_c)
+                    if set(table.find_cols_by_header(" > ".join(p))) & col_allowed]
+            col_c = [col_c[i] for i in keep]
+            col_m = col_m[keep] if keep else col_m[:0]
         qv = np.asarray(self.embedder.encode([query])[0])
         terms = extract_target_terms(query)
         qintent = classify_query(query)

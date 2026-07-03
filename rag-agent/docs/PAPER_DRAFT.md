@@ -29,9 +29,10 @@ as few cells as possible. Contributions:
 4. **A retriever-agnostic completeness patch that beats BM25/dense/hybrid on OSC** —
    similarity retrieval structurally misses unnamed total rows (28.5% of operands,
    ranked ~5× worse, 76% of its completeness ceiling); injecting them via the
-   cross-encoder column resolver (~6 cells) **significantly raises OSC for all three
-   retrievers at the same depth** (BM25 0.69→0.81, dense 0.79→0.86, hybrid 0.79→0.88,
-   p≤0.0005) and **never hurts a query**.
+   cross-encoder column resolver (~7 cells) **significantly raises OSC for all three
+   retrievers at the same depth** (BM25 0.69→0.88, dense 0.79→0.88, hybrid 0.79→0.90,
+   p<0.001) and **never hurts a query** — and still wins under a strict equal-cell
+   budget (cell-matched: all three significant, p<0.01).
 5. **Honest frontier + negative results** — enumeration *alone* does not beat dense on
    raw OSC (the win is by augmentation, not replacement); completeness vs precision is a
    frontier ("100% in a small set" open); several intuitive heuristics *do not* help.
@@ -228,25 +229,54 @@ paid in accuracy — pending; reads on the small-table subset where ohd_lite fit
 
 **5.10 Structural total-row injection beats BM25/dense/hybrid on OSC (retriever-
 agnostic).** §5.1b says similarity retrieval structurally misses total rows; the fix is
-not to replace it but to **inject** them. Using the cross-encoder column resolver (§5.4)
-to pick 1–2 columns, we union *only those columns'* total-like rows (~6 cells) into any
-retriever's top-k. At the **same retrieval depth** (k=10; HiTab dev arith m≥2, n=161):
+not to replace it but to **inject** them. Using the cross-encoder column resolver (§5.4,
+`bge-reranker-base`) to pick the 2 columns the query describes, we union *only those
+columns'* total-like rows (~7 cells) into any retriever's top-k. At the **same retrieval
+depth** (k=10; HiTab dev arith m≥2, n=161):
 
 | baseline | plain OSC | +injection | Δ | queries flipped | queries hurt | McNemar p |
 |---|---|---|---|---|---|---|
-| BM25 | 0.689 | **0.814** | +0.124 | 20 | **0** | **<0.0001** |
-| dense | 0.789 | **0.863** | +0.074 | 12 | **0** | **0.0005** |
-| hybrid | 0.789 | **0.882** | +0.093 | 15 | **0** | **0.0001** |
+| BM25 | 0.689 | **0.876** | +0.186 | 30 | **0** | **<0.0001** |
+| dense | 0.789 | **0.876** | +0.087 | 14 | **0** | **0.0001** |
+| hybrid | 0.789 | **0.901** | +0.112 | 18 | **0** | **<0.0001** |
 
 Injection only *adds* cells, so it is a strict superset — **zero queries are hurt** and
-every retriever's average OSC rises significantly for ~6 extra cells. This unifies the
+every retriever's average OSC rises significantly for ~7 extra cells. This unifies the
 contribution: the **OSC objective** + the **ceiling diagnosis** (total rows = 76% of
 similarity failures) + the **cross-encoder column resolver** compose into a
 **retriever-agnostic completeness patch**, not an enumeration-vs-dense replacement.
-*Honest budget caveat:* under a strict **equal-cell** budget the clean significant win
-is over **BM25** (aug@10 0.925 vs plain@20 0.832 at fewer cells, p=0.014); dense/hybrid
-are matched-or-edged at fewer cells (blind all-column injection lifts OSC more, +0.27 at
-k=5, but costs ~35 cells). (`osc_total_augment`)
+
+*Strict equal-cell budget.* The same-depth win adds ~7 cells, so we also run the strict
+test: per query, compare injection at k=10 against plain retrieval at the smallest depth
+k′ whose cell count **≥** the injected set's (the retriever is *given the same cell
+budget* to find operands by similarity alone). Injection still wins on **all three**
+retrievers — the structural cells are unreachable by spending the budget on more
+top-k rows:
+
+| baseline | +injection (k=10) | plain @cell-matched | Δ | aug-wins / plain-wins | McNemar p |
+|---|---|---|---|---|---|
+| BM25 | **0.876** | 0.745 | +0.130 | 23 / 2 | **<0.0001** |
+| dense | **0.876** | 0.814 | +0.062 | 10 / 0 | **0.0019** |
+| hybrid | **0.901** | 0.839 | +0.062 | 11 / 1 | **0.0063** |
+
+(~65 cells matched, plain k′≈10.) Resolver choice matters: with `ms-marco-MiniLM` the
+strict win held for BM25/dense but hybrid was borderline (p≈0.10); swapping in
+`bge-reranker-base` — which picks the total-bearing column more precisely — makes all
+three significant. (`osc_total_augment --cross-encoder BAAI/bge-reranker-base`)
+
+*Held-out confirmation (HiTab test split, frozen).* Because every choice above
+(resolver, top-2, k=10, total-row heuristic) was made on dev, we froze the full
+configuration and ran **once** on the test split (arith m≥2, **n=151**). The mechanism
+replicates: total-row operands are 23.8% of gold, ranked ~5.5× worse (median 16.5 vs 3),
+and explain **65%** (17/26) of dense's @50 completeness failures. Injection (4.8
+cells/query) raises OSC for all three retrievers at the same depth — BM25 0.828→**0.920**
+(p=0.0001), dense 0.834→**0.914** (p=0.0005), hybrid 0.854→**0.927** (p=0.001), zero
+queries hurt — and stays significant under the strict equal-cell budget: BM25 +0.066
+(p=0.002), dense +0.060 (p=0.022), hybrid +0.060 (p=0.012). Deltas are smaller than dev
+because test has fewer total-dependent queries (29.1% vs 44.7%); direction and
+significance are unchanged everywhere. Same-depth results survive Bonferroni ×3;
+strict-budget dense is marginal after correction (0.067). (`osc_total_augment_TESTSPLIT`,
+`dense_ceiling_diag_TESTSPLIT`)
 
 **Honest position.** *Enumeration alone* does **not** retrieve operand cells more often
 than similarity retrieval — on raw average OSC, dense beats our header-tree enumeration
@@ -265,8 +295,8 @@ node-resolution** result on *both* axes (significant on row-recall p=0.007 and
 col-recall; column generalizing to AITQA) — a real retriever improvement, though on the
 row axis its end-to-end OSC lift is only directional (+0.05, p=0.08), bounded by the
 column-axis ceiling; (iv) a **retriever-agnostic total-row injection** that
-**significantly raises OSC for BM25/dense/hybrid** (p≤0.0005, never hurting a query;
-§5.10); (v) **scalability** — 9× fewer tokens, feasible where whole-table
+**significantly raises OSC for BM25/dense/hybrid** (p<0.001, and still wins under a
+strict equal-cell budget, p<0.01; never hurting a query; §5.10); (v) **scalability** — 9× fewer tokens, feasible where whole-table
 serialization is not (§5.9). We are explicit that the proposed method trades
 average-recall for a completeness *guarantee* + efficiency, and that closing the raw-OSC
 gap (the query→node decomposition bottleneck) remains open.
@@ -275,4 +305,5 @@ gap (the query→node decomposition bottleneck) remains open.
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
   methods (LLM/fine-tuned schema linker); future work.
 - End-to-end answer accuracy is solver-limited (8b); a stronger solver is needed.
-- Single dataset (HiTab); selection/comparison aggregations excluded.
+- Single dataset (HiTab; dev-tuned but **test-split confirmed with frozen config**,
+  §5.10); selection/comparison aggregations excluded.

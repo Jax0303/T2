@@ -4,34 +4,42 @@
 
 ---
 
-OSC 완전성 연구 이어서 한다. 목표: **엄격한 동일-셀(equal-cell) 예산에서도 dense/hybrid를
-유의하게 이기기.** (현재: same-depth+~6셀 주입으로 BM25/dense/hybrid 다 유의하게 이김. 단
-엄격 동일-셀에선 BM25만 깨끗이 유의(p=0.014), dense/hybrid는 더 적은 셀로 비김 p≈0.65 borderline.)
+OSC 완전성 연구 이어서 한다.
 
-## 환경 (중요 — 매 세션 확인)
-- 이 환경의 `/usr/bin/python3`엔 numpy 없음. **작동 인터프리터 = `/home/user/T2/hart-table-retrieval/.venv/bin/python`** (numpy/torch/sentence_transformers/scipy 보유).
-- 실행: `PYTHONPATH=. /home/user/T2/hart-table-retrieval/.venv/bin/python scripts/...`
-- 작업 디렉토리: `/home/user/T2-1/rag-agent`. 모델은 ~/.cache/huggingface 캐시. GROQ_API_KEY는 env에 있음(70b는 rate-limit 심함).
+## ✅ 직전 세션(2026-06-29 밤) 달성 — 엄격 동일-셀 예산 목표 클리어
+- **셀-매칭 paired 검정** 추가(`osc_total_augment.py`의 `cell_matched_test`): 쿼리별로 plain에게
+  aug와 같은 셀 예산(cells(plain@k')≥cells(aug@10))을 주고 비교. 기존 matched_budget_test는
+  plain@20에 셀을 과하게 줘서(98셀 vs 65셀) aug가 진 것처럼 보였던 **오설계**였음.
+- **열 resolver를 bge-reranker-base로 교체**(기본값 변경). 셀-매칭에서 **세 검색기 다 유의**:
+  BM25 0.876 vs 0.745 (p<1e-4), dense 0.876 vs 0.814 (p=0.002), hybrid 0.901 vs 0.839 (p=0.006).
+- top-n-cross 스윕: **top-2가 sweet spot**(top-1은 분자/분모 열 못 덮어 붕괴). `--total-cols-only`는
+  top-2에서 no-op(bge가 이미 합계행 보유 열을 집음). 증거 파일: `results/osc_aug_baseline_minilm.json`
+  (MiniLM이면 hybrid borderline), `results/osc_aug_bge_t1_tco.json`(top-1 붕괴).
+- 갱신됨: `results/osc_total_augment.json`(=bge top2), PAPER §5.10, LAB_MEETING_BRIEF ②③④.
+
+## 다음 목표 (택1)
+1. **end-to-end 정확도**: 검색 완전성 win이 실제 답 정확도로 이어지는지(솔버 rate-limit 우회 — 8b 로컬/배치).
+2. **figure 갱신**: `plot_osc_frontier.py`에 strict cell-matched 패널 추가(aug@10 vs plain@cell-matched).
+3. 다른 벤치(추가 HiTab split / 다른 계층표)로 일반화 확인.
+
+## 환경 (중요 — 매 세션 *직접* 확인할 것)
+- **작동 인터프리터 = `/usr/bin/python3`** (검증됨 2026-06-29: numpy 2.4.3 / scipy 1.17.1 / torch 2.10.0 / sentence_transformers / rank_bm25 전부 보유).
+- ⚠️ `.venv/bin/python`(`hart-table-retrieval/.venv`)는 deps 없음(`No module named 'sentence_transformers'`) → **쓰지 말 것.** `/home/user/...` 경로는 이 머신에 아예 없음.
+- 실행: `PYTHONPATH=. /usr/bin/python3 scripts/...`
+- 작업 디렉토리: `/mnt/c/Users/ugh/T2/rag-agent`. 모델은 ~/.cache/huggingface 캐시. GROQ_API_KEY는 env에 있음(70b는 rate-limit 심함).
+- 세션 시작 시 확인: `/usr/bin/python3 -c "import numpy,scipy,sentence_transformers,rank_bm25;print('OK')"`
 - 모집단 기준: HiTab dev, arithmetic m≥2, n=161, seed 42, LLM-free.
 
-## 지금까지 결과 (커밋됨, ~59ffd99까지)
+## 결과·스크립트 요약
 - `scripts/dense_ceiling_diag.py` → 천장 진단: gold operand 28.5%가 합계행, 유사도 랭킹 39.5위 vs 8위, 천장 실패 76%가 합계행.
-- `scripts/osc_total_augment.py` → 합계행 주입. same-depth k=10: BM25 .689→.814, dense .789→.863, hybrid .789→.882 (p≤.0005, 손해 0). 플래그: `--resolver-cols`(cross-encoder 열resolver로 1~2열만, ~6셀 — 권장), 기본값=blind(전 열, ~35셀), `--aug-k/--plain-k`(matched 비교), `--col-targeted`(no-op, 행청크가 전 열 덮음), `--cross-encoder`(기본 MiniLM).
-- `scripts/plot_osc_frontier.py` → `docs/fig_osc_frontier.png`.
-- 논문: `docs/PAPER_DRAFT.md` §5.1b(천장), §5.10(승리), contribution #4.
-
-## 왜 엄격 예산서 dense/hybrid를 아직 못 이기나 (가설)
-resolver-targeted 주입은 셀은 싸지만(~6) 열 resolver가 ~30% 틀려서(col-recall@2≈0.70) 그 열의
-합계행을 못 넣어 완전성 일부 손실. 즉 **열 정밀도가 병목.**
-
-## 이번에 시도할 것 (우선순위)
-1. **열 resolver 정밀도 ↑** → 엄격 동일-셀서 dense/hybrid 유의 달성이 목표.
-   - bge-reranker로 열 resolver 교체 비교(현재 MiniLM). col_select_bench에선 bge가 @2 더 좋았음.
-   - top_n_cross=1 vs 2 vs 3 스윕(주입 셀 수 ↔ 완전성 트레이드오프).
-   - 후보: 합계행이 있는 열만 후보로 제한(합계행 없는 열은 주입 의미 없음) → 정밀도↑.
-2. **엄격 matched-cell paired McNemar 재측정**: aug@k vs plain@k' where cells(aug@k) ≤ cells(plain@k').
-   osc_total_augment의 matched_budget_test를 셀 수 맞춰 비교하도록(현재는 k 기준). 셀-매칭 로직 추가.
-3. 되면 PAPER §5.10 "엄격 예산서도 dense/hybrid 유의" 로 업그레이드 + figure 갱신.
+- `scripts/osc_total_augment.py` → 합계행 주입. same-depth k=10(bge-reranker resolver): BM25 .689→.876, dense .789→.876, hybrid .789→.901 (p<1e-3, 손해 0, 주입 ~7셀).
+  - 플래그: `--resolver-cols`(cross-encoder 열resolver로 2열만 — 권장), 기본값=blind(전 열, ~35셀),
+    `--cross-encoder`(**기본 BAAI/bge-reranker-base**, 검증된 최적), `--top-n-cross`(기본 2; 1은 붕괴),
+    `--total-cols-only`(합계행 보유 열로 후보 제한 — top-2에선 no-op), `--aug-k/--plain-k`(k-기준 matched, 레거시).
+  - 검정 3종이 json에 다 들어감: `same_depth_test`(k=10), `cell_matched_test`(**엄격, 셀-매칭 — 헤드라인**),
+    `matched_budget_test`(k-기준, 레거시·오설계였음).
+- `scripts/plot_osc_frontier.py` → `docs/fig_osc_frontier.png` (아직 strict 패널 없음 — 추가 TODO).
+- 논문: `docs/PAPER_DRAFT.md` §5.1b(천장), §5.10(승리 + 엄격 셀-매칭 표), contribution #4.
 
 ## 정직성 가드 (잊지 말 것)
 - WebFetch 자동요약은 환각함 → 논문 인용 전 원문 확인.

@@ -1,0 +1,201 @@
+{
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 151
+  },
+  "ratio_only_aug": false,
+  "config": {
+    "resolver_cols": true,
+    "cross_encoder": "BAAI/bge-reranker-base",
+    "top_n_cross": 2,
+    "total_cols_only": false
+  },
+  "mean_total_cells_injected": 4.8,
+  "methods": {
+    "bm25": {
+      "@5": {
+        "osc_plain": 0.7086,
+        "osc_aug": 0.8411,
+        "delta": 0.1325,
+        "cells_plain": 28.4,
+        "cells_aug": 35.7
+      },
+      "@10": {
+        "osc_plain": 0.8278,
+        "osc_aug": 0.9205,
+        "delta": 0.0927,
+        "cells_plain": 50.2,
+        "cells_aug": 55.5
+      },
+      "@20": {
+        "osc_plain": 0.9603,
+        "osc_aug": 0.9669,
+        "delta": 0.0066,
+        "cells_plain": 80.2,
+        "cells_aug": 82.7
+      },
+      "@40": {
+        "osc_plain": 1.0,
+        "osc_aug": 1.0,
+        "delta": 0.0,
+        "cells_plain": 114.6,
+        "cells_aug": 115.8
+      }
+    },
+    "dense": {
+      "@5": {
+        "osc_plain": 0.7086,
+        "osc_aug": 0.8013,
+        "delta": 0.0927,
+        "cells_plain": 29.9,
+        "cells_aug": 36.7
+      },
+      "@10": {
+        "osc_plain": 0.8344,
+        "osc_aug": 0.9139,
+        "delta": 0.0795,
+        "cells_plain": 52.6,
+        "cells_aug": 57.5
+      },
+      "@20": {
+        "osc_plain": 0.9536,
+        "osc_aug": 0.9603,
+        "delta": 0.0066,
+        "cells_plain": 82.4,
+        "cells_aug": 84.9
+      },
+      "@40": {
+        "osc_plain": 1.0,
+        "osc_aug": 1.0,
+        "delta": 0.0,
+        "cells_plain": 115.3,
+        "cells_aug": 116.4
+      }
+    },
+    "hybrid": {
+      "@5": {
+        "osc_plain": 0.7219,
+        "osc_aug": 0.8278,
+        "delta": 0.106,
+        "cells_plain": 28.6,
+        "cells_aug": 35.7
+      },
+      "@10": {
+        "osc_plain": 0.8543,
+        "osc_aug": 0.9272,
+        "delta": 0.0728,
+        "cells_plain": 51.4,
+        "cells_aug": 56.2
+      },
+      "@20": {
+        "osc_plain": 0.9735,
+        "osc_aug": 0.9735,
+        "delta": 0.0,
+        "cells_plain": 81.3,
+        "cells_aug": 83.7
+      },
+      "@40": {
+        "osc_plain": 1.0,
+        "osc_aug": 1.0,
+        "delta": 0.0,
+        "cells_plain": 114.9,
+        "cells_aug": 116.1
+      }
+    }
+  },
+  "matched_budget_test": {
+    "aug_k": 10,
+    "plain_k": 20,
+    "methods": {
+      "bm25": {
+        "osc_aug": 0.9205,
+        "osc_plain": 0.9603,
+        "delta": -0.0397,
+        "aug_only": 1,
+        "plain_only": 7,
+        "mcnemar_p": 0.07031
+      },
+      "dense": {
+        "osc_aug": 0.9139,
+        "osc_plain": 0.9536,
+        "delta": -0.0397,
+        "aug_only": 1,
+        "plain_only": 7,
+        "mcnemar_p": 0.07031
+      },
+      "hybrid": {
+        "osc_aug": 0.9272,
+        "osc_plain": 0.9735,
+        "delta": -0.0464,
+        "aug_only": 0,
+        "plain_only": 7,
+        "mcnemar_p": 0.01562
+      }
+    }
+  },
+  "same_depth_test": {
+    "k": 10,
+    "methods": {
+      "bm25": {
+        "osc_plain": 0.8278,
+        "osc_aug": 0.9205,
+        "delta": 0.0927,
+        "flipped": 14,
+        "hurt": 0,
+        "mcnemar_p": 0.000122
+      },
+      "dense": {
+        "osc_plain": 0.8344,
+        "osc_aug": 0.9139,
+        "delta": 0.0795,
+        "flipped": 12,
+        "hurt": 0,
+        "mcnemar_p": 0.000488
+      },
+      "hybrid": {
+        "osc_plain": 0.8543,
+        "osc_aug": 0.9272,
+        "delta": 0.0728,
+        "flipped": 11,
+        "hurt": 0,
+        "mcnemar_p": 0.000977
+      }
+    }
+  },
+  "cell_matched_test": {
+    "aug_k": 10,
+    "note": "plain@k' with cells>=aug cells",
+    "methods": {
+      "bm25": {
+        "osc_aug": 0.9205,
+        "osc_plain_matched": 0.8543,
+        "delta": 0.0662,
+        "aug_only": 10,
+        "plain_only": 0,
+        "cells_aug": 55.5,
+        "plain_k_used": 10.2,
+        "mcnemar_p": 0.00195
+      },
+      "dense": {
+        "osc_aug": 0.9139,
+        "osc_plain_matched": 0.8543,
+        "delta": 0.0596,
+        "aug_only": 11,
+        "plain_only": 2,
+        "cells_aug": 57.5,
+        "plain_k_used": 9.8,
+        "mcnemar_p": 0.02246
+      },
+      "hybrid": {
+        "osc_aug": 0.9272,
+        "osc_plain_matched": 0.8675,
+        "delta": 0.0596,
+        "aug_only": 10,
+        "plain_only": 1,
+        "cells_aug": 56.2,
+        "plain_k_used": 9.9,
+        "mcnemar_p": 0.01172
+      }
+    }
+  }
+}

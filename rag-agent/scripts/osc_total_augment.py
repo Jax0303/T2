@@ -38,6 +38,8 @@ from rag_agent.stores.original_store import build_original_table
 
 ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"}
 KS = (5, 10, 20, 40)
+# fine plain grid for the per-query cell-matched strict-budget test
+PLAIN_GRID = tuple(range(1, 61))
 
 
 def numeric_cells(ot, rows, cols):
@@ -67,7 +69,14 @@ def main() -> int:
     ap.add_argument("--resolver-cols", action="store_true",
                     help="inject total rows only in the 1-2 columns the cross-encoder column "
                          "resolver picks (cheap, query-targeted denominator)")
-    ap.add_argument("--cross-encoder", default="cross-encoder/ms-marco-MiniLM-L-6-v2")
+    ap.add_argument("--cross-encoder", default="BAAI/bge-reranker-base",
+                    help="bge-reranker-base validated best (2026-06-29): all 3 retrievers "
+                         "significant on the strict cell-matched test; MiniLM left dense/hybrid n.s.")
+    ap.add_argument("--top-n-cross", type=int, default=2,
+                    help="columns the cross-encoder column resolver keeps (precision<->recall)")
+    ap.add_argument("--total-cols-only", action="store_true",
+                    help="restrict the column resolver's candidates to columns that carry a "
+                         "total row (removes distractor columns -> higher column precision)")
     ap.add_argument("--out", default="results/osc_total_augment.json")
     args = ap.parse_args()
 
@@ -84,7 +93,8 @@ def main() -> int:
         from sentence_transformers import CrossEncoder
         from rag_agent.query.header_embed_resolver import EmbedResolver
         col_resolver = EmbedResolver(emb, col_mode="cross",
-                                     cross_encoder=CrossEncoder(args.cross_encoder), top_n_cross=2)
+                                     cross_encoder=CrossEncoder(args.cross_encoder),
+                                     top_n_cross=args.top_n_cross)
     need = {q.gold_table_id for q in pop}
     retr, ots, totals, total_rows = {}, {}, {}, {}
     for tid in need:
@@ -102,6 +112,9 @@ def main() -> int:
     # matched-budget paired test: aug@AUG_K (fewer cells) vs plain@PLAIN_K (more cells)
     AUG_K, PLAIN_K = args.aug_k, args.plain_k
     paired = {m: [] for m in methods}   # (osc_aug@AUG_K, osc_plain@PLAIN_K) per query
+    # strict per-query cell-matched test: aug@AUG_K vs plain@k' where cells(plain@k')>=cells(aug)
+    cellmatch = {m: [] for m in methods}   # (osc_aug, osc_plain_matched, cells_aug, kp) per query
+    samedepth = {m: [] for m in methods}   # (osc_aug@AUG_K, osc_plain@AUG_K) per query
 
     for q in pop:
         ot = ots[q.gold_table_id]
@@ -113,7 +126,8 @@ def main() -> int:
         # query-targeted columns from the cross-encoder column resolver (computed once)
         resolver_cols = None
         if args.resolver_cols:
-            intent = col_resolver.resolve(q.question, ot)
+            col_allowed = {c for (_, c) in all_tcells} if args.total_cols_only else None
+            intent = col_resolver.resolve(q.question, ot, col_allowed=col_allowed)
             cidx = set()
             for p in intent.col_paths:
                 cidx.update(ot.find_cols_by_header(" > ".join(p)))
@@ -160,9 +174,27 @@ def main() -> int:
                 acc[m][k]["c_p"] += len(base)
                 acc[m][k]["c_a"] += len(aug)
             paired[m].append((osc_by_k[("a", AUG_K)], osc_by_k[("p", PLAIN_K)]))
+            # strict cell-matched plain: smallest plain k' giving >= aug@AUG_K cells
+            base_aug = cells_of_chunks(ot, R, ranks[m][:AUG_K])
+            cells_aug_q = len(base_aug | tcells_for(base_aug))
+            osc_p_matched, kp_used = None, PLAIN_GRID[-1]
+            for kp in PLAIN_GRID:
+                cp = cells_of_chunks(ot, R, ranks[m][:kp])
+                if len(cp) >= cells_aug_q:
+                    osc_p_matched, kp_used = operand_set_completeness(gold, cp), kp
+                    break
+            if osc_p_matched is None:  # plain maxes out below aug's budget -> give plain top of grid
+                cp = cells_of_chunks(ot, R, ranks[m][:PLAIN_GRID[-1]])
+                osc_p_matched = operand_set_completeness(gold, cp)
+            cellmatch[m].append((osc_by_k[("a", AUG_K)], osc_p_matched, cells_aug_q, kp_used))
+            samedepth[m].append((osc_by_k[("a", AUG_K)], osc_by_k[("p", AUG_K)]))
 
     out = {"population": {"name": "arithmetic_m>=2", "n": n},
            "ratio_only_aug": args.ratio_only_aug,
+           "config": {"resolver_cols": args.resolver_cols,
+                      "cross_encoder": args.cross_encoder if args.resolver_cols else None,
+                      "top_n_cross": args.top_n_cross if args.resolver_cols else None,
+                      "total_cols_only": args.total_cols_only},
            "mean_total_cells_injected": round(aug_cells_added / n, 1),
            "methods": {}}
     for m in methods:
@@ -191,6 +223,36 @@ def main() -> int:
             "delta": round(d, 4), "aug_only": aug_win, "plain_only": plain_win,
             "mcnemar_p": round(float(pv), 5)}
 
+    # same-depth paired test at AUG_K (injection is a strict superset -> hurt is 0 by construction)
+    out["same_depth_test"] = {"k": AUG_K, "methods": {}}
+    for m in methods:
+        sd = samedepth[m]
+        flip = sum(1 for a, p in sd if a > p)
+        hurt = sum(1 for a, p in sd if p > a)
+        pv = binomtest(flip, flip + hurt, 0.5).pvalue if (flip + hurt) else 1.0
+        out["same_depth_test"]["methods"][m] = {
+            "osc_plain": round(sum(p for _, p in sd) / n, 4),
+            "osc_aug": round(sum(a for a, _ in sd) / n, 4),
+            "delta": round((sum(a for a, _ in sd) - sum(p for _, p in sd)) / n, 4),
+            "flipped": flip, "hurt": hurt, "mcnemar_p": round(float(pv), 6)}
+
+    # strict per-query cell-matched paired test (plain gets >= aug's cell budget)
+    out["cell_matched_test"] = {"aug_k": AUG_K, "note": "plain@k' with cells>=aug cells",
+                                "methods": {}}
+    for m in methods:
+        cm = cellmatch[m]
+        aug_win = sum(1 for a, p, _, _ in cm if a > p)
+        plain_win = sum(1 for a, p, _, _ in cm if p > a)
+        d = (sum(a for a, _, _, _ in cm) - sum(p for _, p, _, _ in cm)) / n
+        pv = binomtest(aug_win, aug_win + plain_win, 0.5).pvalue if (aug_win + plain_win) else 1.0
+        out["cell_matched_test"]["methods"][m] = {
+            "osc_aug": round(sum(a for a, _, _, _ in cm) / n, 4),
+            "osc_plain_matched": round(sum(p for _, p, _, _ in cm) / n, 4),
+            "delta": round(d, 4), "aug_only": aug_win, "plain_only": plain_win,
+            "cells_aug": round(sum(c for _, _, c, _ in cm) / n, 1),
+            "plain_k_used": round(sum(k for _, _, _, k in cm) / n, 1),
+            "mcnemar_p": round(float(pv), 5)}
+
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2)
@@ -210,6 +272,15 @@ def main() -> int:
         t = mb["methods"][m]
         print(f"{m:<8}{t['osc_aug']:>9.3f}{t['osc_plain']:>11.3f}{t['delta']:>+8.3f}"
               f"{t['aug_only']:>6}{t['plain_only']:>5}{t['mcnemar_p']:>9.4f}")
+    cm = out["cell_matched_test"]
+    print(f"\n== STRICT cell-matched paired: aug@{cm['aug_k']} vs plain@k'(cells>=aug) ==")
+    print(f"{'method':<8}{'OSC aug':>9}{'OSC pl':>9}{'Δ':>8}{'aug>':>6}{'pl>':>5}"
+          f"{'c_aug':>7}{'pl_k':>6}{'p':>9}")
+    for m in methods:
+        t = cm["methods"][m]
+        print(f"{m:<8}{t['osc_aug']:>9.3f}{t['osc_plain_matched']:>9.3f}{t['delta']:>+8.3f}"
+              f"{t['aug_only']:>6}{t['plain_only']:>5}{t['cells_aug']:>7.1f}"
+              f"{t['plain_k_used']:>6.1f}{t['mcnemar_p']:>9.4f}")
     print(f"\nwrote -> {args.out}")
     return 0
 
