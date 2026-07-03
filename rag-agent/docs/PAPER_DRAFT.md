@@ -219,8 +219,27 @@ us re-run the column-selection benchmark on a new domain:
 The ordering **generalizes** — cross-encoder best, bi-encoder worst, at every k — so
 "use a cross-encoder for the column axis" holds across domains. The *margin* is small
 here because AITQA columns are clean metric names (small vocabulary gap); the large
-cross-encoder gain on HiTab is specific to harder gaps ("%"↔"percentage"). OSC
-external validity remains a limitation (no operand labels outside HiTab).
+cross-encoder gain on HiTab is specific to harder gaps ("%"↔"percentage").
+
+**OSC on a second dataset — MultiHiertt, and the boundary condition of the injection.**
+MultiHiertt (finance filings, hierarchical row/column headers) annotates
+`table_evidence` cells per question — a real gold **operand set**, making OSC computable
+outside HiTab for the first time. Our adapter (`bench/multihiertt.py`) parses the HTML
+header trees and **value-validates every evidence cell** against the dataset's own cell
+descriptions (99.1%, 636/642; mismatching queries dropped). Population: arithmetic,
+table-only evidence, single-table, m≥2 → **n=226**. Running the *frozen* HiTab
+configuration (§5.10) unchanged: the diagnostic comes back **negative and predictive** —
+total-like rows hold only 14.3% of gold operands (HiTab 23.8–28.5%), and, decisively,
+plain similarity retrieval **already reaches** the required total-row operands at
+**0.94–1.00 @10** (HiTab: 0.44–0.71), because finance tables *name* their totals
+("Total", "Total revenues") — there is no *unnamed*-aggregate pathology to patch. The
+theory then predicts a null, and gets one: injection adds ~1 cell and changes nothing
+(Δ0.000 at k=10, **zero queries hurt**; cell-matched −0.009 n.s.). This bounds the
+contribution honestly: the completeness pathology is a **corpus property** (statistical
+reports with unnamed aggregate rows — HiTab/StatCan — not SEC-style tables that label
+totals), and the §5.1b diagnostic (total-row share × reach) is exactly the cheap test
+that tells you *whether* a corpus needs the patch before deploying it. The patch is
+safe where unneeded (strict-superset, zero hurt). (`osc_total_augment_multihiertt`)
 
 **5.9 vs OHD-style whole-table serialization — retrieval is feasible at a fraction of
 the context.** OHD (2602.01969) builds the *same* orthogonal header trees but
@@ -311,7 +330,10 @@ col-recall; column generalizing to AITQA) — a real retriever improvement, thou
 row axis its end-to-end OSC lift is only directional (+0.05, p=0.08), bounded by the
 column-axis ceiling; (iv) a **retriever-agnostic total-row injection** that
 **significantly raises OSC for BM25/dense/hybrid** (p<0.001, and still wins under a
-strict equal-cell budget, p<0.01; never hurting a query; §5.10); (v) **scalability** — 9× fewer tokens, feasible where whole-table
+strict equal-cell budget, p<0.01; never hurting a query; §5.10) — with its **scope
+measured, not assumed**: on MultiHiertt, where totals are *named* and similarity already
+reaches them, the same frozen patch is a predicted no-op that hurts nothing (§5.8), so
+the §5.1b diagnostic doubles as the deployment test; (v) **scalability** — 9× fewer tokens, feasible where whole-table
 serialization is not (§5.9). We are explicit that the proposed method trades
 average-recall for a completeness *guarantee* + efficiency, and that closing the raw-OSC
 gap (the query→node decomposition bottleneck) remains open.
@@ -320,5 +342,8 @@ gap (the query→node decomposition bottleneck) remains open.
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
   methods (LLM/fine-tuned schema linker); future work.
 - End-to-end answer accuracy is solver-limited (8b); a stronger solver is needed.
-- Single dataset (HiTab; dev-tuned but **test-split confirmed with frozen config**,
-  §5.10); selection/comparison aggregations excluded.
+- HiTab is the only dataset where the injection *wins* (dev-tuned, **test-split
+  confirmed frozen**, §5.10); on MultiHiertt OSC is now measured and the frozen patch
+  is a predicted, harmless no-op (§5.8) — the pathology is corpus-dependent.
+  Selection/comparison aggregations excluded; MultiHiertt multi-table questions
+  out of scope.
