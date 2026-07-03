@@ -1,0 +1,101 @@
+{
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161,
+    "split": "dev"
+  },
+  "config": {
+    "k": 10,
+    "rewrite_variant": "always",
+    "rewrite_suffix": " total overall",
+    "n_rewritten": 161,
+    "cross_encoder": "BAAI/bge-reranker-base",
+    "top_n_cross": 2
+  },
+  "n_queries_needing_total": 72,
+  "rewrite_vs_plain_same_depth": {
+    "k": 10,
+    "methods": {
+      "bm25": {
+        "osc_plain": 0.6894,
+        "osc_rewrite": 0.7143,
+        "delta": 0.0248,
+        "rw_only": 5,
+        "plain_only": 1,
+        "mcnemar_p": 0.21875
+      },
+      "dense": {
+        "osc_plain": 0.7888,
+        "osc_rewrite": 0.7453,
+        "delta": -0.0435,
+        "rw_only": 1,
+        "plain_only": 8,
+        "mcnemar_p": 0.03906
+      },
+      "hybrid": {
+        "osc_plain": 0.7888,
+        "osc_rewrite": 0.8199,
+        "delta": 0.0311,
+        "rw_only": 6,
+        "plain_only": 1,
+        "mcnemar_p": 0.125
+      }
+    }
+  },
+  "injection_vs_rewrite_cell_matched": {
+    "k": 10,
+    "methods": {
+      "bm25": {
+        "osc_injection": 0.8758,
+        "osc_rewrite_matched": 0.7453,
+        "delta": 0.1304,
+        "inj_only": 21,
+        "rw_only": 0,
+        "cells_injection": 65.1,
+        "rewrite_k_used": 10.0,
+        "mcnemar_p": 0.0
+      },
+      "dense": {
+        "osc_injection": 0.8758,
+        "osc_rewrite_matched": 0.795,
+        "delta": 0.0807,
+        "inj_only": 14,
+        "rw_only": 1,
+        "cells_injection": 65.0,
+        "rewrite_k_used": 10.1,
+        "mcnemar_p": 0.00098
+      },
+      "hybrid": {
+        "osc_injection": 0.9006,
+        "osc_rewrite_matched": 0.8323,
+        "delta": 0.0683,
+        "inj_only": 12,
+        "rw_only": 1,
+        "cells_injection": 64.6,
+        "rewrite_k_used": 10.0,
+        "mcnemar_p": 0.00342
+      }
+    }
+  },
+  "total_operand_reach_at_k": {
+    "k": 10,
+    "n_queries_needing_total": 72,
+    "methods": {
+      "bm25": {
+        "plain": 0.4444,
+        "rw": 0.5139,
+        "inj": 0.875
+      },
+      "dense": {
+        "plain": 0.7083,
+        "rw": 0.6389,
+        "inj": 0.9167
+      },
+      "hybrid": {
+        "plain": 0.6389,
+        "rw": 0.7083,
+        "inj": 0.9028
+      }
+    }
+  }
+}

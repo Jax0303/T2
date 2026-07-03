@@ -124,8 +124,10 @@ m≥2, n=161, LLM-free):
 (@10 0.366 → @50 0.714), and **76% (35/46) of the @50 incompletes are explained by an
 unreached total-row operand**. The miss is *structural, not a budget problem*: these
 cells resemble the query neither semantically (dense) nor lexically (BM25), so **no
-similarity/hybrid retriever reaches them by construction** — header-tree enumeration
-does, because a total row falls under the scope node regardless of resemblance. (This is
+similarity/hybrid retriever reaches them by construction** — nor does *query rewriting*
+(appending "total overall"): the total row's header is empty, so there is nothing for
+the added term to match (direct test in §5.7). Header-tree enumeration does reach them,
+because a total row falls under the scope node regardless of resemblance. (This is
 the mechanism behind the completeness guarantee; `dense_ceiling_diag`.) *Caveat:
 ordinary operands also plateau below 1.0 (0.906), so total rows are the largest but not
 the only cause; `is_total_row` is a heuristic (empty/"total"/"overall" paths).*
@@ -189,6 +191,19 @@ decomposition, and total-**column** augmentation each **fail to beat** the simpl
 strong-cross-encoder top-2 (e.g. col-recall on comparison queries: blind top-2 0.75 vs
 named-pair 0.53 vs total-col 0.48). The strong cross-encoder at a small budget is the
 right column method; clever decomposition does not help.
+
+**Query rewriting cannot substitute for structural injection.** The cheapest objection
+to §5.1b — just append "total overall" to the query so similarity retrieval reaches the
+total row — fails on direct test (k=10, both an always-rewrite and a ratio-only-rewrite
+variant): OSC moves by at most **+0.037** (hybrid, ratio-only, p=0.03) and rewriting
+significantly *hurts* dense in the always variant (−0.043, p=0.04) — the suffix drags
+the query embedding away from the named entities. Mechanistically, reach of required
+total-row operands improves only 0.44→0.51 (BM25) and even drops for dense
+(0.71→0.64), vs **0.88–0.92 with injection**: an *unnamed* total row's header contains
+nothing for "total" to match. Under the strict cell-matched budget, injection beats the
+*rewritten* retriever on all three (BM25 +0.130 p<0.0001, dense +0.081 p=0.001, hybrid
++0.068 p=0.003) — the miss is structural, not a query-phrasing artifact.
+(`osc_query_rewrite_baseline`)
 
 **5.8 External validity — column selection on AITQA (2nd dataset).** AITQA (airline
 SEC filings, hierarchical headers) gives no operand labels, so OSC is not computable;
