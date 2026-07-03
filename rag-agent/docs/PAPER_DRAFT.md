@@ -232,7 +232,9 @@ configuration (§5.10) unchanged: the diagnostic comes back **negative and predi
 total-like rows hold only 14.3% of gold operands (HiTab 23.8–28.5%), and, decisively,
 plain similarity retrieval **already reaches** the required total-row operands at
 **0.94–1.00 @10** (HiTab: 0.44–0.71), because finance tables *name* their totals
-("Total", "Total revenues") — there is no *unnamed*-aggregate pathology to patch. The
+("Total", "Total revenues"): **97%** (87/90) of MultiHiertt's total-row operands sit in
+*named* total rows vs 59% on HiTab (41% of HiTab's sit in rows with an **empty** header
+path) — there is no *unnamed*-aggregate pathology to patch. The
 theory then predicts a null, and gets one: injection adds ~1 cell and changes nothing
 (Δ0.000 at k=10, **zero queries hurt**; cell-matched −0.009 n.s.). This bounds the
 contribution honestly: the completeness pathology is a **corpus property** (statistical
