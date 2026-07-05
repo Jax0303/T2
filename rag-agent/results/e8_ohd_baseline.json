@@ -1,0 +1,82 @@
+{
+  "experiment": "E7_retrieval_ablation",
+  "hypothesis": "H5/H6: at a fixed solver, retrieval (small+complete) vs whole-table/dense; gain tracks precision",
+  "split": "dev",
+  "seed": 42,
+  "llm": "groq:llama-3.3-70b-versatile",
+  "mode": "codegen",
+  "baseline_arm": "ohd_lite",
+  "dry_run": false,
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161
+  },
+  "arms": {
+    "enum_treated": {
+      "osc": 0.6522,
+      "mean_cells": 39.5,
+      "mean_tokens": 953.0,
+      "n_oversize_est": 0,
+      "token_ratio_vs_ohd_lite": 8.94,
+      "accuracy_nm": 0.0745,
+      "accuracy_em": 0.0248,
+      "n_oversize": 0,
+      "n_error": 132,
+      "n_answered": 29,
+      "accuracy_nm_answered": 0.4138,
+      "delta_nm_vs_ohd_lite": 0.0062,
+      "delta_nm_ci95_vs_ohd_lite": [
+        -0.0497,
+        0.0621
+      ],
+      "delta_em_vs_ohd_lite": 0.0,
+      "paired_answered_vs_ohd_lite": {
+        "n_both_answered": 18,
+        "delta_nm": -0.0556,
+        "mcnemar": {
+          "arm_only": 2,
+          "base_only": 3
+        }
+      }
+    },
+    "ohd_lite": {
+      "osc": 1.0,
+      "mean_cells": 160.0,
+      "mean_tokens": 8518.0,
+      "n_oversize_est": 56,
+      "accuracy_nm": 0.0683,
+      "accuracy_em": 0.0248,
+      "n_oversize": 56,
+      "n_error": 87,
+      "n_answered": 18,
+      "accuracy_nm_answered": 0.6111
+    },
+    "oracle": {
+      "osc": 1.0,
+      "mean_cells": 3.0,
+      "mean_tokens": 65.0,
+      "n_oversize_est": 0,
+      "token_ratio_vs_ohd_lite": 131.04,
+      "accuracy_nm": 0.2298,
+      "accuracy_em": 0.0745,
+      "n_oversize": 0,
+      "n_error": 110,
+      "n_answered": 51,
+      "accuracy_nm_answered": 0.7255,
+      "delta_nm_vs_ohd_lite": 0.1615,
+      "delta_nm_ci95_vs_ohd_lite": [
+        0.087,
+        0.236
+      ],
+      "delta_em_vs_ohd_lite": 0.0497,
+      "paired_answered_vs_ohd_lite": {
+        "n_both_answered": 18,
+        "delta_nm": 0.2222,
+        "mcnemar": {
+          "arm_only": 4,
+          "base_only": 0
+        }
+      }
+    }
+  }
+}

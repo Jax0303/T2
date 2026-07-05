@@ -226,6 +226,30 @@ thrift. *(H6 accuracy-parity at a fixed 70b solver — that the token saving is 
 paid in accuracy — pending; reads on the small-table subset where ohd_lite fits.)*
 (E8, `e8_scalability_dryrun` / `e8_ohd_baseline`)
 
+**5.9b Same-metric head-to-head: OSC at a fixed token budget.** E8 shows whole-table
+serialization is *expensive*; E9 shows it is also **less complete at every budget that
+matters**. LLM-free, identical per-cell rendering and population for all arms;
+retrieval arms take the largest k that fits B (no gold peeking); OHD arms get both a
+*strict* variant (whole table or nothing — OHD has no selection mechanism) and a
+*generous* row-major-prefix truncation it does not actually have. Whole-table cost:
+mean 4,254 tokens (p90 11,807; OHD's faithful dual serialization doubles it). OSC@B:
+
+| B (tokens) | 1000 | 2000 | 4000 | 8000 | 16000 |
+|---|---|---|---|---|---|
+| **hybrid+inject (ours)** | **0.752** | **0.888** | **0.957** | **1.000** | 1.000 |
+| dense plain | 0.689 | 0.845 | 0.932 | 0.957 | 1.000 |
+| ohd_trunc (generous) | 0.553 | 0.671 | 0.820 | 0.876 | 1.000 |
+| ohd_dual_strict (faithful) | 0.050 | 0.273 | 0.416 | 0.658 | 0.795 |
+
+Paired vs the *generous* OHD arm, injection wins at **every** B in 500–8k (Δ +0.12 to
++0.22, McNemar p≤0.013, at B≥2k flips ≥20 vs ≤3); vs faithful OHD the gap is ~0.5 OSC.
+Whole-table only reaches parity at **B≥16k** — precisely the regime where selection is
+unnecessary, matching the generalization study's scope claim (§5.11 / FinQA). At 8k
+tokens ours delivers **OSC=1.000** while whole-table still fails 12% of queries.
+*Honest caveat:* at starvation budgets (≤500 tokens) injected total cells crowd out
+ranked chunks and plain dense is best; the patch needs ~1k tokens of headroom
+(crossover ≈1k). (E9, `e9_osc_token_budget`)
+
 **5.10 Structural total-row injection beats BM25/dense/hybrid on OSC (retriever-
 agnostic).** §5.1b says similarity retrieval structurally misses total rows; the fix is
 not to replace it but to **inject** them. Using the cross-encoder column resolver (§5.4)
@@ -247,6 +271,22 @@ similarity failures) + the **cross-encoder column resolver** compose into a
 is over **BM25** (aug@10 0.925 vs plain@20 0.832 at fewer cells, p=0.014); dense/hybrid
 are matched-or-edged at fewer cells (blind all-column injection lifts OSC more, +0.27 at
 k=5, but costs ~35 cells). (`osc_total_augment`)
+
+**5.11 Generalization scope: where the injection win does — and cannot — transfer.**
+Applying the same pipeline to FinQA and WikiSQL (gold-operand m≥2 populations) shows
+the win is **regime-specific for two distinct structural reasons**, which sharpens
+rather than weakens the claim. *WikiSQL (flat relational): mechanism inapplicable* —
+**0%** of gold tables contain a named total row (aggregates are computed on the fly,
+never stored), so there is nothing to inject. *FinQA (small financial tables, median
+5 rows): mechanism unnecessary* — total rows exist (39%) but any budget k≥10 already
+retrieves the whole table (mean 0.1 cells injected, ΔOSC=0); its ceiling (OSC 0.315
+*with the full table in context*) is operand decomposition, not reachability. HiTab is
+the regime with *both* preconditions: tables too large for a realistic budget **and**
+stored, structurally-dissimilar total rows. The contribution is therefore precisely
+scoped: *retriever-agnostic completeness patching for large hierarchical tables with
+stored aggregates* — consistent with §5.9b, where whole-table serialization reaches
+parity exactly when tables fit the budget. (`finqa_total_inject`,
+`total_inject_generalization_summary`)
 
 **Honest position.** *Enumeration alone* does **not** retrieve operand cells more often
 than similarity retrieval — on raw average OSC, dense beats our header-tree enumeration
