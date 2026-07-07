@@ -24,9 +24,7 @@ import numpy as np
 
 from rag_agent.bench.hitab import load_queries
 from rag_agent.data.loader import load_table
-from rag_agent.query.header_path_resolver import (
-    _distinct_paths, _rank_paths, extract_target_terms,
-)
+from rag_agent.query.header_path_resolver import _distinct_paths, extract_target_terms
 from rag_agent.query.header_embed_resolver import _node_candidates
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.stores.original_store import build_original_table
@@ -64,9 +62,24 @@ def main() -> int:
     ots = {t: build_original_table(load_table(t, args.data_dir))
            for t in {q.gold_table_id for q in pop}}
 
-    # per-selector ranked column-node lists
+    # per-selector ranked column-node lists.
+    # NOTE: rank_lexical must score the same `cands` (ancestor-node candidates)
+    # that embed/cross rank over — not re-derive a leaf-only candidate set via
+    # _rank_paths — or the comparison is biased: a selector that can name a short
+    # ancestor node covers many gold columns in one top-k slot, while a
+    # leaf-restricted lexical selector needs one slot per gold column regardless
+    # of match quality.
     def rank_lexical(q, ot, cands, mat):
-        return _rank_paths(ot, extract_target_terms(q.question), "col", max(KS))
+        if not cands:
+            return []
+        query_str = " ".join(extract_target_terms(q.question))
+        scored = []
+        for c in cands:
+            s = ot._fuzzy_score(query_str, c)
+            if s > 0:
+                scored.append((s, " > ".join(c), c))
+        scored.sort(key=lambda t: (-t[0], t[1]))
+        return [c for _, _, c in scored[:max(KS)]]
 
     def rank_embed(q, ot, cands, mat):
         if not cands:

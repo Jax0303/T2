@@ -62,7 +62,7 @@ from rag_agent.bench.schema import Chunk
 from rag_agent.data.loader import load_table
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate import answer as gen_answer, evaluate_answer
-from rag_agent.eval.metrics import numeric_match, exact_match
+from rag_agent.eval.metrics import exact_match, _to_nums
 from rag_agent.query.header_embed_resolver import EmbedResolver
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.retrieve.header_enum import enumerate_scope, is_ratio_query
@@ -143,7 +143,10 @@ def dense_cells(res, ot, k):
 def bucket(ans, gold):
     if evaluate_answer(ans, gold):
         return "correct"
-    if _is_number(ans) or numeric_match(ans, ans):
+    # numeric_match(x, x) was a self-comparison tautology (true for ANY non-empty
+    # answer, text included, via its string-substring branch) — check directly
+    # whether the raw answer parses to a number instead.
+    if _is_number(ans) or bool(_to_nums(ans)):
         return "silent_wrong"
     return "non_number"
 

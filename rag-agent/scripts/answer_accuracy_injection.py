@@ -71,7 +71,15 @@ def main() -> int:
     ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--solver-model", default="llama-3.1-8b-instant")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
+    ap.add_argument("--codegen-max-tokens", type=int, default=160,
+                    help="completion cap for codegen; reasoning models (gpt-oss, "
+                         "qwen3) burn tokens on hidden reasoning first -> use ~1024")
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--flips-first", action="store_true",
+                    help="run OSC-flip queries (base incomplete -> treat complete) first, "
+                         "so a daily-token cutoff still yields the informative subset")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip qids already present in --records (append mode)")
     ap.add_argument("--out", default="results/answer_accuracy_injection.json")
     ap.add_argument("--records", default="results/answer_accuracy_injection_records.jsonl")
     args = ap.parse_args()
@@ -88,7 +96,9 @@ def main() -> int:
           f"solver={args.solver_model}", flush=True)
 
     emb = Embedder(args.embed_model, device="cpu")
-    llm = GroqLLM(model_name=args.solver_model)
+    # long 429 backoff: 70b TPM is 12k and codegen calls are ~2k tokens, so
+    # per-minute throttling is expected; only a *daily* quota should abort the run
+    llm = GroqLLM(model_name=args.solver_model, retry_on_429=8)
 
     need = {q.gold_table_id for q in pop}
     retr, total_chunk_idx = {}, {}
@@ -101,13 +111,9 @@ def main() -> int:
         total_chunk_idx[tid] = [i for i, ch in enumerate(R.chunks)
                                 if set(ch.rows) & trows]
 
-    osc_b = osc_t = acc_b = acc_t = 0.0
-    both_right = base_only = treat_only = both_wrong = 0
-    inj_added_cells = 0
-    recs = []
-    t0 = time.time()
-
-    for qi, q in enumerate(pop):
+    # ---- LLM-free pass: retrieval contexts + OSC for every query ---------
+    prep = []
+    for q in pop:
         t = tables[q.gold_table_id]
         R = retr[q.gold_table_id]
         gold = q.gold_operands
@@ -136,60 +142,131 @@ def main() -> int:
         treat_cells = cells_of_chunks(t, treat_chunks)
         ob = operand_set_completeness(gold, base_cells)
         ot = operand_set_completeness(gold, treat_cells)
-        osc_b += ob
-        osc_t += ot
-        inj_added_cells += len(treat_cells - base_cells)
+        prep.append({"q": q, "base_chunks": base_chunks, "treat_chunks": treat_chunks,
+                     "ob": ob, "ot": ot, "inj": len(treat_cells - base_cells)})
 
-        rb = answer(q.question, base_chunks, llm, mode=args.mode)
-        rt = answer(q.question, treat_chunks, llm, mode=args.mode)
+    n_flip = sum(1 for p in prep if p["ot"] > p["ob"])
+    if args.flips_first:  # informative queries first, stable order within groups
+        prep.sort(key=lambda p: -(p["ot"] - p["ob"]))
+        print(f"[order] flips-first: {n_flip} OSC-flip queries run before the rest",
+              flush=True)
+
+    done = {}
+    if args.resume and Path(args.records).exists():
+        with open(args.records) as fh:
+            for line in fh:
+                r = json.loads(line)
+                done[r["qid"]] = r
+        print(f"[resume] {len(done)} qids already recorded -> skipped", flush=True)
+
+    # ---- solver pass: incremental append; a daily-quota cutoff keeps progress ----
+    Path(args.records).parent.mkdir(parents=True, exist_ok=True)
+    rec_fh = open(args.records, "a" if args.resume else "w")
+    t0, n_run, cutoff = time.time(), 0, None
+    for qi, p in enumerate(prep):
+        q = p["q"]
+        if q.query_id in done:
+            continue
+        try:
+            rb = answer(q.question, p["base_chunks"], llm, mode=args.mode,
+                        codegen_max_tokens=args.codegen_max_tokens)
+            rt = answer(q.question, p["treat_chunks"], llm, mode=args.mode,
+                        codegen_max_tokens=args.codegen_max_tokens)
+        except Exception as e:  # e.g. Groq daily-token quota -> keep what we have
+            cutoff = f"{type(e).__name__}: {e}"
+            print(f"\n[cutoff] solver failed at {qi+1}/{n}: {cutoff}", flush=True)
+            break
         cb = evaluate_answer(rb.answer, q.answer)
         ct = evaluate_answer(rt.answer, q.answer)
-        acc_b += int(cb)
-        acc_t += int(ct)
-        if cb and ct:
-            both_right += 1
-        elif cb and not ct:
-            base_only += 1
-        elif ct and not cb:
-            treat_only += 1
-        else:
-            both_wrong += 1
-
-        recs.append({"qid": q.query_id, "osc_base": ob, "osc_treat": ot,
-                     "correct_base": cb, "correct_treat": ct,
-                     "pred_base": rb.answer, "pred_treat": rt.answer, "gold": q.answer})
-        if (qi + 1) % 4 == 0:
-            print(f"  {qi+1}/{n}  acc_b={acc_b/(qi+1):.3f} acc_t={acc_t/(qi+1):.3f} "
+        rec = {"qid": q.query_id, "osc_base": p["ob"], "osc_treat": p["ot"],
+               "correct_base": cb, "correct_treat": ct,
+               "pred_base": rb.answer, "pred_treat": rt.answer, "gold": q.answer}
+        done[q.query_id] = rec
+        rec_fh.write(json.dumps(rec) + "\n")
+        rec_fh.flush()
+        n_run += 1
+        if n_run % 4 == 0:
+            d = [r for r in done.values()]
+            print(f"  {len(done)}/{n}  acc_b={sum(r['correct_base'] for r in d)/len(d):.3f} "
+                  f"acc_t={sum(r['correct_treat'] for r in d)/len(d):.3f} "
                   f"({time.time()-t0:.0f}s)", flush=True)
+    rec_fh.close()
+
+    # ---- aggregate over every recorded query (this run + resumed) ---------
+    recs = [done[p["q"].query_id] for p in prep if p["q"].query_id in done]
+    ne = len(recs)
+    if not ne:
+        print("no evaluations recorded (quota exhausted immediately?)")
+        return 1
+    acc_b = sum(r["correct_base"] for r in recs)
+    acc_t = sum(r["correct_treat"] for r in recs)
+    both_right = sum(1 for r in recs if r["correct_base"] and r["correct_treat"])
+    base_only = sum(1 for r in recs if r["correct_base"] and not r["correct_treat"])
+    treat_only = sum(1 for r in recs if r["correct_treat"] and not r["correct_base"])
+    both_wrong = ne - both_right - base_only - treat_only
+    flips = [r for r in recs if r["osc_treat"] > r["osc_base"]]
 
     p_acc = mcnemar_p(treat_only, base_only)
+    n_nonflip_evaluated = ne - len(flips)
+    # With --flips-first, a quota cutoff can leave the evaluated set entirely
+    # (or mostly) drawn from the OSC-flip subset — queries pre-selected because
+    # treatment can only help there. Flag this so the top-level answer_accuracy
+    # block is never quoted as a random-population estimate when it is really
+    # conditioned on the flip criterion (see osc_flip_subset for that number).
+    flip_only_caveat = (
+        f"evaluated set is {len(flips)}/{ne} OSC-flip queries (non-flip evaluated="
+        f"{n_nonflip_evaluated}) — NOT a representative sample of the population; "
+        "answer_accuracy here is conditioned on OSC having flipped, which can only "
+        "help treatment. Do not report it as a population-level accuracy lift."
+        if n_nonflip_evaluated == 0 and flips else None
+    )
     out = {
-        "population": {"name": "hitab_dev_arith_m>=2", "n": n},
+        "population": {"name": "hitab_dev_arith_m>=2", "n": n,
+                       "n_evaluated": ne, "n_osc_flips_total": n_flip,
+                       "n_osc_flips_evaluated": len(flips),
+                       "n_nonflip_evaluated": n_nonflip_evaluated,
+                       "flips_first": args.flips_first, "cutoff": cutoff},
         "retriever": args.retriever, "k": args.k, "solver": f"groq:{args.solver_model}",
         "mode": args.mode,
-        "osc": {"base": round(osc_b / n, 4), "treat": round(osc_t / n, 4),
-                "delta": round((osc_t - osc_b) / n, 4)},
-        "answer_accuracy": {"base": round(acc_b / n, 4), "treat": round(acc_t / n, 4),
-                            "delta": round((acc_t - acc_b) / n, 4)},
+        "osc": {"base": round(sum(p["ob"] for p in prep) / n, 4),
+                "treat": round(sum(p["ot"] for p in prep) / n, 4),
+                "delta": round(sum(p["ot"] - p["ob"] for p in prep) / n, 4),
+                "note": "OSC over full population (LLM-free)"},
+        "answer_accuracy": {"base": round(acc_b / ne, 4), "treat": round(acc_t / ne, 4),
+                            "delta": round((acc_t - acc_b) / ne, 4),
+                            "caveat": flip_only_caveat},
         "correctness_crosstab": {"both_right": both_right, "treat_only": treat_only,
                                  "base_only": base_only, "both_wrong": both_wrong},
         "mcnemar_p_accuracy": round(float(p_acc), 5),
-        "mean_injected_cells": round(inj_added_cells / n, 1),
+        "osc_flip_subset": {
+            "n": len(flips),
+            "acc_base": round(sum(r["correct_base"] for r in flips) / len(flips), 4)
+            if flips else None,
+            "acc_treat": round(sum(r["correct_treat"] for r in flips) / len(flips), 4)
+            if flips else None,
+            "treat_only": sum(1 for r in flips
+                              if r["correct_treat"] and not r["correct_base"]),
+            "base_only": sum(1 for r in flips
+                             if r["correct_base"] and not r["correct_treat"])},
+        "mean_injected_cells": round(sum(p["inj"] for p in prep) / n, 1),
     }
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2)
-    with open(args.records, "w") as fh:
-        for r in recs:
-            fh.write(json.dumps(r) + "\n")
 
     print("\n=== RESULT ===")
+    print(f"evaluated {ne}/{n} (cutoff={cutoff})")
     print(f"OSC      base {out['osc']['base']}  ->  treat {out['osc']['treat']}  "
-          f"(Δ {out['osc']['delta']:+.4f})")
+          f"(Δ {out['osc']['delta']:+.4f})  [full pop, LLM-free]")
+    if flip_only_caveat:
+        print(f"** WARNING: {flip_only_caveat} **")
     print(f"Accuracy base {out['answer_accuracy']['base']}  ->  treat "
           f"{out['answer_accuracy']['treat']}  (Δ {out['answer_accuracy']['delta']:+.4f})")
     print(f"flipped wrong->right: {treat_only}   right->wrong: {base_only}   "
           f"McNemar p={out['mcnemar_p_accuracy']}")
+    fs = out["osc_flip_subset"]
+    print(f"OSC-flip subset ({fs['n']} evaluated): acc {fs['acc_base']} -> {fs['acc_treat']}"
+          f"   treat_only={fs['treat_only']} base_only={fs['base_only']}")
     print(f"mean injected cells/query: {out['mean_injected_cells']}")
     return 0
 
