@@ -6,14 +6,31 @@ Retrieval (HiTab paper / DTR, Herzig et al. NAACL 2021)
   MRR          mean reciprocal rank of the gold table.
   nDCG@k       binary relevance (gold=1) on log2(i+1) discount.
 
-Answer accuracy (HiTab paper, §5)
----------------------------------
-  Exact Match (EM)        string equality after light normalisation.
-  Numeric Match (NM)      relative-tolerance numeric equality with the
-                           paper-customary variants (×100 percent form,
-                           ÷100 fraction form, abs() for opposite/sign).
-                           We default to ±2% rel-tol — the same threshold
-                           used in the existing hard-query bench.
+Answer accuracy
+---------------
+  hitab_exact_match       HiTab's OWN official scorer, ported verbatim from
+                           the dataset's evaluation harness
+                           (qa/table/utils.py: hmt_score/hmt_equal/
+                           hmt_process_answer in the HiTab repo). Numbers are
+                           compared with a 1e-5 float tolerance (i.e. exact,
+                           no % conversion, no abs()); strings are compared
+                           after WikiTableQuestions-style normalisation. This
+                           is the number that is directly comparable to any
+                           other paper's reported HiTab accuracy/EM (e.g.
+                           OHD 2602.01969's "60.07 EM") — use this, not
+                           numeric_match, whenever a number will be quoted
+                           against another paper.
+  Numeric Match (NM)      OUR OWN more forgiving diagnostic metric — relative-
+                           tolerance numeric equality (default ±2%) plus
+                           ×100/÷100/abs() variants, meant to separate
+                           "silently wrong" from "right value, sign/percent-
+                           form mismatch" for internal error analysis. This is
+                           NOT the dataset's official metric and is not
+                           comparable to other papers' reported numbers —
+                           report hitab_exact_match for that.
+  Exact Match (EM)        plain case-insensitive string equality (no HiTab-
+                           specific normalisation) — a cheap sanity check,
+                           not a substitute for hitab_exact_match.
 
 Formula execution accuracy (added by us)
 ----------------------------------------
@@ -35,6 +52,7 @@ from __future__ import annotations
 
 import math
 import re
+import unicodedata
 from typing import Iterable, List
 
 
@@ -135,6 +153,82 @@ def exact_match(pred, gold) -> bool:
         if pred_s == gs.strip().lower():
             return True
     return False
+
+
+# --- HiTab's own official scorer (ported verbatim, for cross-paper comparison) ---
+# Source: HiTab repo qa/table/utils.py (hmt_score / hmt_equal / hmt_process_answer)
+# and qa/datadump/utils.py (naive_str_to_float / normalize, itself copied from the
+# WikiTableQuestions official evaluator). Kept dependency-free here rather than
+# importing the dataset repo's package.
+
+_HMT_TOL = 1e-5
+
+
+def _wtq_normalize(x: str) -> str:
+    """WikiTableQuestions-style string normalisation (used by HiTab's own evaluator)."""
+    if x is None:
+        return None
+    x = "".join(c for c in unicodedata.normalize("NFKD", x) if unicodedata.category(c) != "Mn")
+    x = re.sub("[‘’´`]", "'", x)
+    x = re.sub("[“”]", '"', x)
+    x = re.sub("[‐‑‒–—−]", "-", x)
+    while True:
+        old_x = x
+        x = re.sub(r"((?<!^)\[[^\]]*\]|\[\d+\]|[•♦†‡*#+])*$", "", x.strip())
+        x = re.sub(r"(?<!^)( \([^)]*\))*$", "", x.strip())
+        x = re.sub(r'^"([^"]*)"$', r"\1", x.strip())
+        if x == old_x:
+            break
+    if x and x[-1] == ".":
+        x = x[:-1]
+    return re.sub(r"\s+", " ", x, flags=re.U).lower().strip()
+
+
+def _hmt_str_to_float(s: str):
+    sanitized = s
+    try:
+        if sanitized and sanitized[0] == "(":
+            sanitized = sanitized[1:]
+        if sanitized and (sanitized[-1] == "%" or sanitized[-1] == ")"):
+            sanitized = sanitized[:-1]
+        return float(sanitized.replace(",", ""))
+    except (ValueError, IndexError):
+        return _wtq_normalize(s)
+
+
+def _hmt_process(v):
+    if isinstance(v, bool):
+        return float(v)
+    if isinstance(v, (int, float)):
+        return float(v)
+    if isinstance(v, str):
+        return _hmt_str_to_float(v.strip().lower())
+    if isinstance(v, list):
+        if len(v) == 1:
+            return _hmt_process(v[0])
+        return [_hmt_process(a) for a in v]
+    return v
+
+
+def _hmt_equal(p, g) -> bool:
+    if type(p) is not type(g):
+        return False
+    if isinstance(p, str):
+        return p == g
+    if isinstance(p, float):
+        return math.fabs(p - g) < _HMT_TOL
+    if isinstance(p, list):
+        return len(p) == len(g) and all(_hmt_equal(a, b) for a, b in zip(p, g))
+    return p == g
+
+
+def hitab_exact_match(pred, gold) -> bool:
+    """HiTab's own official scorer: exact after minimal normalisation, no tolerance
+    beyond floating-point noise. Use this (not ``numeric_match``) for any number
+    that will be quoted alongside another paper's reported HiTab accuracy."""
+    if pred is None:
+        return False
+    return _hmt_equal(_hmt_process(pred), _hmt_process(gold))
 
 
 # --- retrieval-side metrics ------------------------------------------------

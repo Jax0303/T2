@@ -31,6 +31,7 @@ import numpy as np
 
 from rag_agent.bench.hitab import load_queries
 from rag_agent.bench.schema import BenchTable
+from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate.answerer import answer, evaluate_answer
 from rag_agent.llm.groq_llm import GroqLLM
@@ -178,6 +179,12 @@ def main() -> int:
             break
         cb = evaluate_answer(rb.answer, q.answer)
         ct = evaluate_answer(rt.answer, q.answer)
+        # evaluate_answer (numeric_match) is OUR lenient diagnostic metric (±2%,
+        # %/fraction-scale, sign). hitab_exact_match is the dataset's own official
+        # scorer, with no scale leniency — the number to quote against other
+        # papers' reported HiTab accuracy (see rag_agent/eval/metrics.py docstring).
+        cb_strict = hitab_exact_match(rb.answer, q.answer)
+        ct_strict = hitab_exact_match(rt.answer, q.answer)
         if rt.context_truncated:
             # The injected total-row chunks are appended at the END of
             # treat_chunks — if the context budget truncated them away, the
@@ -187,6 +194,7 @@ def main() -> int:
                   "injected cells may have been dropped", flush=True)
         rec = {"qid": q.query_id, "osc_base": p["ob"], "osc_treat": p["ot"],
                "correct_base": cb, "correct_treat": ct,
+               "correct_base_strict": cb_strict, "correct_treat_strict": ct_strict,
                "pred_base": rb.answer, "pred_treat": rt.answer, "gold": q.answer,
                "treat_context_truncated": rt.context_truncated}
         done[q.query_id] = rec
@@ -214,6 +222,19 @@ def main() -> int:
     both_wrong = ne - both_right - base_only - treat_only
     flips = [r for r in recs if r["osc_treat"] > r["osc_base"]]
     n_treat_truncated = sum(1 for r in recs if r.get("treat_context_truncated"))
+
+    # Recomputed from pred_base/pred_treat/gold (not the stored *_strict field)
+    # so this works uniformly on --resume'd records written before this metric
+    # existed. hitab_exact_match is the dataset's official scorer — no %/scale
+    # leniency — so this number, unlike answer_accuracy above, is directly
+    # comparable to other papers' reported HiTab accuracy.
+    strict_b = [hitab_exact_match(r["pred_base"], r["gold"]) for r in recs]
+    strict_t = [hitab_exact_match(r["pred_treat"], r["gold"]) for r in recs]
+    acc_b_strict = sum(strict_b)
+    acc_t_strict = sum(strict_t)
+    treat_only_strict = sum(1 for b, t in zip(strict_b, strict_t) if t and not b)
+    base_only_strict = sum(1 for b, t in zip(strict_b, strict_t) if b and not t)
+    p_acc_strict = mcnemar_p(treat_only_strict, base_only_strict)
 
     p_acc = mcnemar_p(treat_only, base_only)
     n_nonflip_evaluated = ne - len(flips)
@@ -244,7 +265,20 @@ def main() -> int:
                 "note": "OSC over full population (LLM-free)"},
         "answer_accuracy": {"base": round(acc_b / ne, 4), "treat": round(acc_t / ne, 4),
                             "delta": round((acc_t - acc_b) / ne, 4),
-                            "caveat": flip_only_caveat},
+                            "caveat": (flip_only_caveat or "") +
+                            " Uses our lenient numeric_match (±2%, %/fraction-scale, "
+                            "sign) — NOT comparable to other papers' HiTab numbers; "
+                            "see answer_accuracy_official for that.",
+                            "metric": "numeric_match (lenient, ours)"},
+        "answer_accuracy_official": {
+            "base": round(acc_b_strict / ne, 4), "treat": round(acc_t_strict / ne, 4),
+            "delta": round((acc_t_strict - acc_b_strict) / ne, 4),
+            "metric": "hitab_exact_match (HiTab's own scorer, no scale leniency — "
+                      "the number to quote against other papers, e.g. OHD's 60.07 EM)",
+            "correctness_crosstab": {"treat_only": treat_only_strict,
+                                     "base_only": base_only_strict},
+            "mcnemar_p": round(float(p_acc_strict), 5),
+        },
         "correctness_crosstab": {"both_right": both_right, "treat_only": treat_only,
                                  "base_only": base_only, "both_wrong": both_wrong},
         "mcnemar_p_accuracy": round(float(p_acc), 5),
@@ -270,10 +304,16 @@ def main() -> int:
           f"(Δ {out['osc']['delta']:+.4f})  [full pop, LLM-free]")
     if flip_only_caveat:
         print(f"** WARNING: {flip_only_caveat} **")
-    print(f"Accuracy base {out['answer_accuracy']['base']}  ->  treat "
+    print(f"Accuracy (ours, lenient)   base {out['answer_accuracy']['base']}  ->  treat "
           f"{out['answer_accuracy']['treat']}  (Δ {out['answer_accuracy']['delta']:+.4f})")
     print(f"flipped wrong->right: {treat_only}   right->wrong: {base_only}   "
           f"McNemar p={out['mcnemar_p_accuracy']}")
+    ao = out["answer_accuracy_official"]
+    print(f"Accuracy (HiTab official)  base {ao['base']}  ->  treat {ao['treat']}  "
+          f"(Δ {ao['delta']:+.4f})  <- quote THIS one against other papers")
+    print(f"  flipped wrong->right: {ao['correctness_crosstab']['treat_only']}   "
+          f"right->wrong: {ao['correctness_crosstab']['base_only']}   "
+          f"McNemar p={ao['mcnemar_p']}")
     fs = out["osc_flip_subset"]
     print(f"OSC-flip subset ({fs['n']} evaluated): acc {fs['acc_base']} -> {fs['acc_treat']}"
           f"   treat_only={fs['treat_only']} base_only={fs['base_only']}")
