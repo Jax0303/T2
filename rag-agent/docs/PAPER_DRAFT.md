@@ -264,38 +264,45 @@ significant fix — for the queries it applies to.** This section is **not** pro
 general retriever improvement (see the scoping in Contribution 5): it is a worked
 demonstration that the ceiling diagnosis is actionable. Using the cross-encoder column
 resolver (§5.4) to pick 1–2 columns, we union *only those columns'* total-like rows
-(mean 3.3 cells/query) into any retriever's top-k. At the **same retrieval depth**
-(k=10; HiTab dev arith m≥2, n=161):
+(mean 3.0 cells/query) into any retriever's top-k. **Total-row detection is now a hybrid
+of the keyword heuristic and a language-independent structural check** — a row is also
+flagged if it arithmetically sums its tree children or row-level siblings, regardless of
+its text label (`is_total_row_structural`; catches e.g. an unlabeled "federal government"
+subtotal the keyword regex misses). Structural detection *alone* under-performs keyword
+alone (it tends to (re)find totals similarity retrieval could already reach); the union
+is never worse than keyword alone and widens applicability. At the **same retrieval
+depth** (k=10; HiTab dev arith m≥2, n=161):
 
 | baseline | plain OSC | +injection | Δ | queries flipped | queries hurt | McNemar p |
 |---|---|---|---|---|---|---|
-| BM25 | 0.770 | **0.820** | +0.050 | 8 | **0** | **0.0078** |
-| dense | 0.832 | **0.870** | +0.037 | 6 | **0** | **0.0313** |
-| hybrid | 0.839 | **0.894** | +0.056 | 9 | **0** | **0.0039** |
+| BM25 | 0.770 | **0.814** | +0.043 | 7 | **0** | **0.0156** |
+| dense | 0.832 | **0.863** | +0.031 | 5 | **0** | 0.0625 (n.s.) |
+| hybrid | 0.839 | **0.888** | +0.050 | 8 | **0** | **0.0078** |
 
-Injection only *adds* cells, so it is a strict superset — **zero queries are hurt**. The
-population-average Δ (0.037–0.056) looks modest, but it is diluted by construction: only
-**37% of queries (59/161) have a gold operand that is a total-like row** — for the other
-63%, injection is a structural no-op (Δ=0.000, p=1.0 for all three, exactly as it should
-be for a targeted patch that changes nothing it isn't meant to touch). Splitting by
-whether the query actually needs a total row:
+Injection only *adds* cells, so it is a strict superset — **zero queries are hurt** — but
+dense's same-depth win is no longer clean (p=0.0625) at this population size; BM25 and
+RRF-hybrid remain significant. As before, the population-average Δ is diluted by
+construction: only **35% of queries (56/161) have a gold operand that is a total-like
+row** — for the other 65%, injection is a structural no-op (Δ=0.000, p=1.0 for all
+three). Splitting by whether the query actually needs a total row:
 
 | baseline | subset | plain OSC | +injection | Δ | gap closed | McNemar p |
 |---|---|---|---|---|---|---|
-| BM25 | needs total (n=59) | 0.559 | **0.695** | +0.136 | 31% | 0.0078 |
-| dense | needs total (n=59) | 0.763 | **0.864** | +0.102 | 43% | 0.0313 |
-| hybrid | needs total (n=59) | 0.712 | **0.864** | +0.153 | 53% | 0.0039 |
-| any | doesn't need total (n=102) | — | — | 0.000 | — | 1.0 |
+| BM25 | needs total (n=56) | 0.536 | **0.661** | +0.125 | 27% | 0.0156 |
+| dense | needs total (n=56) | 0.714 | **0.804** | +0.089 | 31% | 0.0625 (n.s.) |
+| hybrid | needs total (n=56) | 0.661 | **0.804** | +0.143 | 42% | 0.0078 |
+| any | doesn't need total (n=105) | — | — | 0.000 | — | 1.0 |
 
-Read correctly, the result is: *for the diagnosed failure mode, the patch closes 31–53%
-of the remaining completeness gap with zero collateral damage elsewhere* — not "a
-general +4pp retrieval improvement." *Honest budget caveat:* under a deeper-budget
-comparison (aug@10, ~60 cells, vs plain@20, ~99 cells) plain@20 now **significantly
-beats** aug@10 for all three retrievers (BM25 0.820 vs 0.882 p=0.031; dense 0.870 vs
-0.950 p=0.004; hybrid 0.894 vs 0.975 p=0.004) — simply fetching more rows is a real
-competitor once the baseline itself is strong, and this comparison does not use equal
-cell counts either way (aug@10 is cheaper). The clean win is at *matched depth*, not
-matched or reduced budget. (`osc_total_augment`)
+Read correctly, the result is: *for the diagnosed failure mode, the patch closes 27–42%
+of the remaining completeness gap with zero collateral damage elsewhere, for BM25 and
+RRF-hybrid at conventional significance* — not "a general +3-5pp retrieval improvement,"
+and dense specifically is a directional-but-not-significant win at this sample size.
+*Honest budget caveat:* under a deeper-budget comparison (aug@10, ~60 cells, vs plain@20,
+~99 cells) plain@20 **significantly beats** aug@10 for all three retrievers (BM25 0.814
+vs 0.882 p=0.027; dense 0.863 vs 0.950 p=0.001; hybrid 0.888 vs 0.975 p=0.003) — simply
+fetching more rows is a real competitor once the baseline itself is strong, and this
+comparison does not use equal cell counts either way (aug@10 is cheaper). The clean win
+is at *matched depth*, not matched or reduced budget. (`osc_total_augment`)
 
 **5.11 Generalization scope: where the injection win does — and cannot — transfer.**
 Applying the same pipeline to FinQA and WikiSQL (gold-operand m≥2 populations) shows
@@ -335,19 +342,26 @@ though on the row axis its end-to-end OSC lift is only directional (+0.05, p=0.0
 bounded by the column-axis ceiling; (v) **scalability** — 9× fewer tokens, feasible
 where whole-table serialization is not (§5.9). The **total-row injection case study**
 (§5.10) is deliberately *not* listed here as a general contribution — it demonstrates
-(ii) is actionable within a narrow, explicitly-scoped slice (37% of queries, HiTab-only,
-keyword-heuristic detection; see limitations), and should be read as a worked example,
-not as evidence of a general retrieval improvement.
+(ii) is actionable within a narrow, explicitly-scoped slice (35% of queries, HiTab-only;
+see limitations), and should be read as a worked example, not as evidence of a general
+retrieval improvement.
 
 ### Open / limitations
-- **The total-row injection case study (§5.10) is narrow on three independent axes**:
-  query type (only the 37% of queries whose gold needs a total/ratio row — no effect,
-  positive or negative, on the rest), detection mechanism (an English regex keyword
-  heuristic for "total"/"overall"/"all", not a learned classifier — unlikely to
-  transfer to other total-row phrasings or languages without rework), and dataset
-  (HiTab-specific — §5.11 shows it is inapplicable to WikiSQL and unnecessary for
-  FinQA). A learned total-row classifier replacing the keyword heuristic is the natural
-  next step if this is to be generalized rather than reported as a case study.
+- **The total-row injection case study (§5.10) is narrow on two remaining axes** (a
+  third — detection mechanism — is now partially addressed, see below): query type
+  (only the 35% of queries whose gold needs a total/ratio row — no effect, positive or
+  negative, on the rest) and dataset (HiTab-specific — §5.11 shows it is inapplicable to
+  WikiSQL and unnecessary for FinQA).
+- **Detection mechanism, partially fixed.** Total-row detection was a pure English
+  keyword regex ("total"/"overall"/"all"); it is now a hybrid of that regex and a
+  language-independent structural check (row value arithmetically sums its tree children
+  or row-level siblings — `is_total_row_structural`). This is a genuine generality gain
+  (works without any English cue) but structural detection *alone* under-performs the
+  keyword heuristic on this dataset (§5.10) — it tends to rediscover totals similarity
+  retrieval could already reach rather than the vocabulary-dissimilar ones that are
+  actually hard — so the current hybrid still leans on the keyword signal for its
+  effect size. Testing the structural-only detector on a non-English hierarchical-table
+  benchmark (none identified yet) would be the real test of the generality claim.
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
   methods (LLM/fine-tuned schema linker); future work.
 - End-to-end answer accuracy is solver-limited (8b); a stronger solver is needed.

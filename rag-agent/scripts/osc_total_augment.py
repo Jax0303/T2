@@ -30,7 +30,7 @@ import numpy as np
 from rag_agent.bench.hitab import load_queries
 from rag_agent.data.loader import load_table
 from rag_agent.eval.operand_set import operand_set_completeness
-from rag_agent.retrieve.header_enum import total_like_rows, is_ratio_query
+from rag_agent.retrieve.header_enum import total_like_rows_hybrid, is_ratio_query
 from rag_agent.retrieve.operand_retriever import HybridRetriever, _tok
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.serialize import S2, serialize_table
@@ -91,7 +91,7 @@ def main() -> int:
         retr[tid] = HybridRetriever(serialize_table(tables[tid], S2), emb)
         ot = build_original_table(load_table(tid, args.data_dir))
         ots[tid] = ot
-        tr = total_like_rows(ot)
+        tr = total_like_rows_hybrid(ot)
         total_rows[tid] = tr
         totals[tid] = numeric_cells(ot, tr, range(ot.n_cols))
 

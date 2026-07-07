@@ -35,7 +35,7 @@ from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate.answerer import answer, evaluate_answer
 from rag_agent.llm.groq_llm import GroqLLM
-from rag_agent.retrieve.header_enum import total_like_rows
+from rag_agent.retrieve.header_enum import total_like_rows_hybrid
 from rag_agent.retrieve.operand_retriever import HybridRetriever, _tok
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.serialize import S2, serialize_table
@@ -107,7 +107,7 @@ def main() -> int:
         t = tables[tid]
         R = HybridRetriever(serialize_table(t, S2), emb)
         retr[tid] = R
-        trows = total_like_rows(t)
+        trows = total_like_rows_hybrid(t)
         # S2 chunks are per-row; a chunk covering any total-like row is a "total chunk"
         total_chunk_idx[tid] = [i for i, ch in enumerate(R.chunks)
                                 if set(ch.rows) & trows]
