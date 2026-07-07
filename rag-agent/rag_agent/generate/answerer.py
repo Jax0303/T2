@@ -30,17 +30,28 @@ _NUM_RE = re.compile(r"-?\d[\d,]*\.?\d*")
 _CHARS_PER_TOKEN = 4
 
 
-def format_context(chunks: Sequence[Chunk], max_context_tokens: int = 4096) -> str:
-    """Join chunk texts under a token budget (truncating low-priority tail)."""
+def format_context(
+    chunks: Sequence[Chunk], max_context_tokens: int = 4096, return_meta: bool = False
+):
+    """Join chunk texts under a token budget (truncating low-priority tail).
+
+    ``return_meta=True`` also returns whether any chunk was dropped — a caller
+    appending high-value content at the *end* of ``chunks`` (e.g. injected
+    total rows) needs to know when that content silently missed the budget
+    instead of assuming every chunk it built made it into the prompt.
+    """
     budget = max_context_tokens * _CHARS_PER_TOKEN
     out, used = [], 0
+    truncated = False
     for ch in chunks:
         line = ch.text
         if used + len(line) > budget and out:
+            truncated = True
             break
         out.append(line)
         used += len(line) + 1
-    return "\n".join(out)
+    text = "\n".join(out)
+    return (text, truncated) if return_meta else text
 
 
 # ---------------------------------------------------------------------------
@@ -123,6 +134,7 @@ class AnswerResult:
     raw: str
     mode: str
     used_codegen: bool = False
+    context_truncated: bool = False
 
 
 _DIRECT_SYS = (
@@ -153,7 +165,7 @@ def answer(
     (gpt-oss, qwen3) spend completion tokens on hidden reasoning before the
     code block, so they need a much higher cap than the 160 default.
     """
-    ctx = format_context(chunks, max_context_tokens)
+    ctx, truncated = format_context(chunks, max_context_tokens, return_meta=True)
     if mode == "codegen":
         user = f"ROWS:\n{ctx}\n\nQUESTION: {question}\n\nOne line: answer = ..."
         raw = llm.complete(system=_CODEGEN_SYS, user=user,
@@ -161,7 +173,8 @@ def answer(
         try:
             val = _safe_exec(_extract_code(raw))
             if val is not None:
-                return AnswerResult(answer=val, raw=raw, mode=mode, used_codegen=True)
+                return AnswerResult(answer=val, raw=raw, mode=mode, used_codegen=True,
+                                    context_truncated=truncated)
         except Exception:
             # Any generated-code failure (bad index, overflow, recursion, ...)
             # falls back to direct-text parsing below — it must never escape
@@ -170,12 +183,14 @@ def answer(
             # misattribute a codegen bug as a rate limit and drop the rest of
             # the run.
             pass
-        return AnswerResult(answer=_parse_number(raw), raw=raw, mode=mode, used_codegen=False)
+        return AnswerResult(answer=_parse_number(raw), raw=raw, mode=mode, used_codegen=False,
+                            context_truncated=truncated)
 
     user = f"ROWS:\n{ctx}\n\nQUESTION: {question}\n\nAnswer:"
     raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=max_tokens)
     num = _parse_number(raw)
-    return AnswerResult(answer=num if num is not None else raw.strip(), raw=raw, mode=mode)
+    return AnswerResult(answer=num if num is not None else raw.strip(), raw=raw, mode=mode,
+                        context_truncated=truncated)
 
 
 def evaluate_answer(pred, gold, rel_tol: float = 0.02) -> bool:

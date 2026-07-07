@@ -178,9 +178,17 @@ def main() -> int:
             break
         cb = evaluate_answer(rb.answer, q.answer)
         ct = evaluate_answer(rt.answer, q.answer)
+        if rt.context_truncated:
+            # The injected total-row chunks are appended at the END of
+            # treat_chunks — if the context budget truncated them away, the
+            # "treatment" this query actually saw collapsed back to baseline
+            # with no other trace. Surface it instead of losing it silently.
+            print(f"  [warn] qid={q.query_id}: treat context truncated — "
+                  "injected cells may have been dropped", flush=True)
         rec = {"qid": q.query_id, "osc_base": p["ob"], "osc_treat": p["ot"],
                "correct_base": cb, "correct_treat": ct,
-               "pred_base": rb.answer, "pred_treat": rt.answer, "gold": q.answer}
+               "pred_base": rb.answer, "pred_treat": rt.answer, "gold": q.answer,
+               "treat_context_truncated": rt.context_truncated}
         done[q.query_id] = rec
         rec_fh.write(json.dumps(rec) + "\n")
         rec_fh.flush()
@@ -205,6 +213,7 @@ def main() -> int:
     treat_only = sum(1 for r in recs if r["correct_treat"] and not r["correct_base"])
     both_wrong = ne - both_right - base_only - treat_only
     flips = [r for r in recs if r["osc_treat"] > r["osc_base"]]
+    n_treat_truncated = sum(1 for r in recs if r.get("treat_context_truncated"))
 
     p_acc = mcnemar_p(treat_only, base_only)
     n_nonflip_evaluated = ne - len(flips)
@@ -225,6 +234,7 @@ def main() -> int:
                        "n_evaluated": ne, "n_osc_flips_total": n_flip,
                        "n_osc_flips_evaluated": len(flips),
                        "n_nonflip_evaluated": n_nonflip_evaluated,
+                       "n_treat_context_truncated": n_treat_truncated,
                        "flips_first": args.flips_first, "cutoff": cutoff},
         "retriever": args.retriever, "k": args.k, "solver": f"groq:{args.solver_model}",
         "mode": args.mode,
@@ -268,6 +278,9 @@ def main() -> int:
     print(f"OSC-flip subset ({fs['n']} evaluated): acc {fs['acc_base']} -> {fs['acc_treat']}"
           f"   treat_only={fs['treat_only']} base_only={fs['base_only']}")
     print(f"mean injected cells/query: {out['mean_injected_cells']}")
+    if n_treat_truncated:
+        print(f"** WARNING: {n_treat_truncated}/{ne} treat contexts were truncated — "
+              "injected cells may not have reached the solver for those queries **")
     return 0
 
 
