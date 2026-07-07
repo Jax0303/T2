@@ -1,0 +1,35 @@
+[pop] HiTab dev arith m>=2: 161  retriever=dense k=10 solver=llama-3.3-70b-versatile
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  83%|████████▎ | 166/199 [00:00<00:00, 1653.83it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1844.29it/s]
+[order] flips-first: 11 OSC-flip queries run before the rest
+  [warn] qid=02cb638212c0f01dc6f041b0ac42009a: treat context truncated — injected cells may have been dropped
+  [warn] qid=89b15914091a322c15dbf7e2c6a0903c: treat context truncated — injected cells may have been dropped
+  [warn] qid=48c1fb4af5f317f1b9efba257efd0bb6: treat context truncated — injected cells may have been dropped
+  4/161  acc_b=0.000 acc_t=0.250 (80s)
+  8/161  acc_b=0.000 acc_t=0.375 (165s)
+  12/161  acc_b=0.000 acc_t=0.250 (251s)
+  [warn] qid=74d4ee7c9c8bd347793da1095a8cd4fe: treat context truncated — injected cells may have been dropped
+  16/161  acc_b=0.188 acc_t=0.375 (345s)
+  20/161  acc_b=0.300 acc_t=0.450 (397s)
+Groq rate-limited, retrying in 1s (attempt 1)
+Groq rate-limited, retrying in 2s (attempt 2)
+Groq rate-limited, retrying in 4s (attempt 3)
+Groq rate-limited, retrying in 8s (attempt 4)
+Groq rate-limited, retrying in 16s (attempt 5)
+Groq rate-limited, retrying in 32s (attempt 6)
+Groq rate-limited, retrying in 64s (attempt 7)
+Groq rate-limited, retrying in 128s (attempt 8)
+Groq rate-limited, retrying in 256s (attempt 9)
+
+[cutoff] solver failed at 24/161: RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98951, Requested 1541. Please try again in 7m5.087999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+
+=== RESULT ===
+evaluated 23/161 (cutoff=RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98951, Requested 1541. Please try again in 7m5.087999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+OSC      base 0.8323  ->  treat 0.9006  (Δ +0.0683)  [full pop, LLM-free]
+Accuracy (ours, lenient)   base 0.3913  ->  treat 0.5217  (Δ +0.1304)
+flipped wrong->right: 3   right->wrong: 0   McNemar p=0.25
+Accuracy (HiTab official)  base 0.3043  ->  treat 0.3913  (Δ +0.0870)  <- quote THIS one against other papers
+  flipped wrong->right: 2   right->wrong: 0   McNemar p=0.5
+OSC-flip subset (11 evaluated): acc 0.0 -> 0.2727   treat_only=3 base_only=0
+mean injected cells/query: 9.5
+** WARNING: 4/23 treat contexts were truncated — injected cells may not have reached the solver for those queries **
