@@ -137,16 +137,23 @@ class AnswerResult:
     context_truncated: bool = False
 
 
+_RATIO_RULE = (
+    "If the question asks for a percentage, percentage points, share, or ratio, "
+    "give the raw decimal fraction (e.g. 0.053 for \"5.3%\") — do NOT multiply by "
+    "100, even though the question says \"percent\"."
+)
 _DIRECT_SYS = (
     "You answer questions about a table. Use ONLY the rows given. "
-    "Reply with the final answer only — a number or a short phrase, no explanation."
+    "Reply with the final answer only — a number or a short phrase, no explanation. "
+    + _RATIO_RULE
 )
 _CODEGEN_SYS = (
     "You answer table questions by writing Python. Do NOT rebuild the table or "
     "create lists/dicts. Read only the few numbers you need directly from the "
     "rows and write ONE line: `answer = <arithmetic expression over those "
     "numbers>`. Use only +,-,*,/, parentheses and sum/abs/round/min/max/len. "
-    "No print(), no comments. Return a single ```python``` block with just that line."
+    "No print(), no comments. Return a single ```python``` block with just that line. "
+    + _RATIO_RULE
 )
 
 
