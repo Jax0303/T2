@@ -17,22 +17,31 @@ We reframe the task at the **retrieval stage**: retrieve the complete operand se
 as few cells as possible. Contributions:
 1. **Operand-Set Completeness (OSC)** — an all-or-nothing retrieval objective/metric
    for table aggregation (a 2025 TQA survey confirms this is unmeasured).
-2. **Header-tree scope enumeration** — a header node *is* an aggregation scope, so its
+2. **A structural ceiling diagnosis of similarity retrieval, not just a benchmark
+   number.** We show *why* BM25/dense/hybrid plateau below full completeness: unnamed
+   total/aggregate rows share neither vocabulary nor semantics with the query, so they
+   rank ~5× worse and are missed even at k=50 — this single cause explains **76%** of
+   similarity retrieval's completeness ceiling (§5.1b). This is a general, dataset-level
+   claim about *why* relevance-ranked retrieval cannot satisfy an all-or-nothing
+   objective by construction, independent of any fix we propose for it.
+3. **Header-tree scope enumeration** — a header node *is* an aggregation scope, so its
    operand set is **complete-by-construction**; this is **scope-size robust** where
    similarity retrieval collapses, and re-localizes the problem to header-path
    decomposition.
-3. **Both axes are node resolution, and a cross-encoder wins both** — picking the
+4. **Both axes are node resolution, and a cross-encoder wins both** — picking the
    right scope node (query × header joint attention) beats lexical and bi-encoder
    matchers on **col-recall@2 0.40→0.70** and **row-recall@2 0.44→0.52 (p<0.01)**.
    Plus axis-specific diagnosis: unnamed *total* rows (68% of row failures) fixed by
    total-row augmentation (row-cov 0.62→0.89).
-4. **A retriever-agnostic completeness patch that beats BM25/dense/hybrid on OSC** —
-   similarity retrieval structurally misses unnamed total rows (28.5% of operands,
-   ranked ~5× worse, 76% of its completeness ceiling); injecting them via the
-   cross-encoder column resolver (~6 cells) **significantly raises OSC for all three
-   retrievers at the same depth** (BM25 0.69→0.81, dense 0.79→0.86, hybrid 0.79→0.88,
-   p≤0.0005) and **never hurts a query**.
-5. **Honest frontier + negative results** — enumeration *alone* does not beat dense on
+5. **Case study: the ceiling diagnosis (2) is actionable, not just descriptive.** As a
+   worked proof-of-concept, not a proposed general method, we hand-inject total rows for
+   the subset of queries whose gold operands actually need one (37% of the population)
+   and show every one of BM25/dense/hybrid rises significantly there (p≤0.04) with zero
+   regression elsewhere. We are explicit that this patch is narrow on three axes — query
+   type (only total/ratio queries), detection mechanism (an English keyword heuristic,
+   not a learned one), and dataset (HiTab-specific; §5.11) — and report it as evidence
+   the diagnosis has teeth, not as a general retrieval improvement.
+6. **Honest frontier + negative results** — enumeration *alone* does not beat dense on
    raw OSC (the win is by augmentation, not replacement); completeness vs precision is a
    frontier ("100% in a small set" open); several intuitive heuristics *do not* help.
 
@@ -250,27 +259,43 @@ tokens ours delivers **OSC=1.000** while whole-table still fails 12% of queries.
 ranked chunks and plain dense is best; the patch needs ~1k tokens of headroom
 (crossover ≈1k). (E9, `e9_osc_token_budget`)
 
-**5.10 Structural total-row injection beats BM25/dense/hybrid on OSC (retriever-
-agnostic).** §5.1b says similarity retrieval structurally misses total rows; the fix is
-not to replace it but to **inject** them. Using the cross-encoder column resolver (§5.4)
-to pick 1–2 columns, we union *only those columns'* total-like rows (~6 cells) into any
-retriever's top-k. At the **same retrieval depth** (k=10; HiTab dev arith m≥2, n=161):
+**5.10 Case study: injecting total rows converts the diagnosis (2) into a measurable,
+significant fix — for the queries it applies to.** This section is **not** proposed as a
+general retriever improvement (see the scoping in Contribution 5): it is a worked
+demonstration that the ceiling diagnosis is actionable. Using the cross-encoder column
+resolver (§5.4) to pick 1–2 columns, we union *only those columns'* total-like rows
+(mean 3.3 cells/query) into any retriever's top-k. At the **same retrieval depth**
+(k=10; HiTab dev arith m≥2, n=161):
 
 | baseline | plain OSC | +injection | Δ | queries flipped | queries hurt | McNemar p |
 |---|---|---|---|---|---|---|
-| BM25 | 0.689 | **0.814** | +0.124 | 20 | **0** | **<0.0001** |
-| dense | 0.789 | **0.863** | +0.074 | 12 | **0** | **0.0005** |
-| hybrid | 0.789 | **0.882** | +0.093 | 15 | **0** | **0.0001** |
+| BM25 | 0.770 | **0.820** | +0.050 | 8 | **0** | **0.0078** |
+| dense | 0.832 | **0.870** | +0.037 | 6 | **0** | **0.0313** |
+| hybrid | 0.839 | **0.894** | +0.056 | 9 | **0** | **0.0039** |
 
-Injection only *adds* cells, so it is a strict superset — **zero queries are hurt** and
-every retriever's average OSC rises significantly for ~6 extra cells. This unifies the
-contribution: the **OSC objective** + the **ceiling diagnosis** (total rows = 76% of
-similarity failures) + the **cross-encoder column resolver** compose into a
-**retriever-agnostic completeness patch**, not an enumeration-vs-dense replacement.
-*Honest budget caveat:* under a strict **equal-cell** budget the clean significant win
-is over **BM25** (aug@10 0.925 vs plain@20 0.832 at fewer cells, p=0.014); dense/hybrid
-are matched-or-edged at fewer cells (blind all-column injection lifts OSC more, +0.27 at
-k=5, but costs ~35 cells). (`osc_total_augment`)
+Injection only *adds* cells, so it is a strict superset — **zero queries are hurt**. The
+population-average Δ (0.037–0.056) looks modest, but it is diluted by construction: only
+**37% of queries (59/161) have a gold operand that is a total-like row** — for the other
+63%, injection is a structural no-op (Δ=0.000, p=1.0 for all three, exactly as it should
+be for a targeted patch that changes nothing it isn't meant to touch). Splitting by
+whether the query actually needs a total row:
+
+| baseline | subset | plain OSC | +injection | Δ | gap closed | McNemar p |
+|---|---|---|---|---|---|---|
+| BM25 | needs total (n=59) | 0.559 | **0.695** | +0.136 | 31% | 0.0078 |
+| dense | needs total (n=59) | 0.763 | **0.864** | +0.102 | 43% | 0.0313 |
+| hybrid | needs total (n=59) | 0.712 | **0.864** | +0.153 | 53% | 0.0039 |
+| any | doesn't need total (n=102) | — | — | 0.000 | — | 1.0 |
+
+Read correctly, the result is: *for the diagnosed failure mode, the patch closes 31–53%
+of the remaining completeness gap with zero collateral damage elsewhere* — not "a
+general +4pp retrieval improvement." *Honest budget caveat:* under a deeper-budget
+comparison (aug@10, ~60 cells, vs plain@20, ~99 cells) plain@20 now **significantly
+beats** aug@10 for all three retrievers (BM25 0.820 vs 0.882 p=0.031; dense 0.870 vs
+0.950 p=0.004; hybrid 0.894 vs 0.975 p=0.004) — simply fetching more rows is a real
+competitor once the baseline itself is strong, and this comparison does not use equal
+cell counts either way (aug@10 is cheaper). The clean win is at *matched depth*, not
+matched or reduced budget. (`osc_total_augment`)
 
 **5.11 Generalization scope: where the injection win does — and cannot — transfer.**
 Applying the same pipeline to FinQA and WikiSQL (gold-operand m≥2 populations) shows
@@ -290,28 +315,39 @@ parity exactly when tables fit the budget. (`finqa_total_inject`,
 
 **Honest position.** *Enumeration alone* does **not** retrieve operand cells more often
 than similarity retrieval — on raw average OSC, dense beats our header-tree enumeration
-(0.79 > 0.65). Our win on OSC comes by **augmentation, not replacement** (§5.10): adding
-the structurally-required total rows that similarity provably cannot reach significantly
-improves BM25/dense/hybrid and never hurts a query. The contribution is about a
-*different objective*: aggregation needs the **complete** operand set, and we show
-(§5.1b) that **similarity retrieval cannot satisfy that objective by construction** —
-28.5% of operands are structurally-required total rows it ranks ~5× worse and misses
-even at k=50, explaining 76% of its completeness ceiling. Against that, our contribution
-is: (i) **OSC** as the all-or-nothing completeness objective existing relevance/ranking
+(dense@10 now 0.83 post-bugfix, §5.1b; the enumeration-side number predates this
+session's gold/row-path fixes and needs re-verification before being re-quoted — see
+`codebase-audit-bugfixes-2026-07-07` — omitted here rather than re-stating a stale
+figure). The contribution is about a *different objective*:
+aggregation needs the **complete** operand set, and we show (§5.1b) that **similarity
+retrieval cannot satisfy that objective by construction** — 28.5% of operands are
+structurally-required total rows it ranks ~5× worse and misses even at k=50, explaining
+76% of its completeness ceiling. This diagnosis — general, and independent of any fix —
+is the primary claim; ranked below it, in order of how general each result actually is:
+(i) **OSC** as the all-or-nothing completeness objective existing relevance/ranking
 retrievers (incl. 2026 cell-level table RAG: FT-RAG, Topo-RAG — partial recall / nDCG)
-do not target; (ii) **header-tree enumeration**, complete-by-construction and
-scope-robust, that reaches the cells similarity cannot; (iii) a **cross-encoder
-node-resolution** result on *both* axes (significant on row-recall p=0.007 and
-col-recall; column generalizing to AITQA) — a real retriever improvement, though on the
-row axis its end-to-end OSC lift is only directional (+0.05, p=0.08), bounded by the
-column-axis ceiling; (iv) a **retriever-agnostic total-row injection** that
-**significantly raises OSC for BM25/dense/hybrid** (p≤0.0005, never hurting a query;
-§5.10); (v) **scalability** — 9× fewer tokens, feasible where whole-table
-serialization is not (§5.9). We are explicit that the proposed method trades
-average-recall for a completeness *guarantee* + efficiency, and that closing the raw-OSC
-gap (the query→node decomposition bottleneck) remains open.
+do not target; (ii) the **ceiling diagnosis** itself (above); (iii) **header-tree
+enumeration**, complete-by-construction and scope-robust, that reaches the cells
+similarity cannot — though it does not beat baseline OSC on its own; (iv) a
+**cross-encoder node-resolution** result on *both* axes (significant on row-recall
+p=0.007 and col-recall; column generalizing to AITQA) — a real retriever improvement,
+though on the row axis its end-to-end OSC lift is only directional (+0.05, p=0.08),
+bounded by the column-axis ceiling; (v) **scalability** — 9× fewer tokens, feasible
+where whole-table serialization is not (§5.9). The **total-row injection case study**
+(§5.10) is deliberately *not* listed here as a general contribution — it demonstrates
+(ii) is actionable within a narrow, explicitly-scoped slice (37% of queries, HiTab-only,
+keyword-heuristic detection; see limitations), and should be read as a worked example,
+not as evidence of a general retrieval improvement.
 
 ### Open / limitations
+- **The total-row injection case study (§5.10) is narrow on three independent axes**:
+  query type (only the 37% of queries whose gold needs a total/ratio row — no effect,
+  positive or negative, on the rest), detection mechanism (an English regex keyword
+  heuristic for "total"/"overall"/"all", not a learned classifier — unlikely to
+  transfer to other total-row phrasings or languages without rework), and dataset
+  (HiTab-specific — §5.11 shows it is inapplicable to WikiSQL and unnecessary for
+  FinQA). A learned total-row classifier replacing the keyword heuristic is the natural
+  next step if this is to be generalized rather than reported as a case study.
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
   methods (LLM/fine-tuned schema linker); future work.
 - End-to-end answer accuracy is solver-limited (8b); a stronger solver is needed.
