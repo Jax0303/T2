@@ -40,7 +40,7 @@ import numpy as np
 
 from rag_agent.bench.hitab import load_queries
 from rag_agent.data.loader import load_table
-from rag_agent.eval.operand_set import operand_set_completeness
+from rag_agent.eval.operand_set import operand_set_completeness, per_cell_recall
 from rag_agent.retrieve.header_enum import total_like_rows_hybrid
 from rag_agent.retrieve.operand_retriever import HybridRetriever, _tok
 from rag_agent.query.operand_decomposer import Embedder
@@ -111,6 +111,9 @@ def main() -> int:
     arms = ([f"{m}_plain" for m in methods] + [f"{m}_inject" for m in methods]
             + ["ohd_strict", "ohd_trunc", "ohd_dual_strict", "ohd_dual_trunc"])
     osc_at = {a: {B: [] for B in BUDGETS} for a in arms}
+    # mean per-cell recall alongside OSC — the reference-paper metric; the OSC↔recall
+    # gap at each budget is the "partial recall is not completeness" exhibit
+    rec_at = {a: {B: [] for B in BUDGETS} for a in arms}
     whole_tok_single, whole_tok_dual = [], []
 
     for q in pop:
@@ -145,13 +148,17 @@ def main() -> int:
             for k in KGRID:
                 base = cells_of_chunks(ot, R, ranks[m][:k])
                 aug = base | resolver_tcells
-                pts_p.append((tokens_of(ot, base), operand_set_completeness(gold, base)))
-                pts_i.append((tokens_of(ot, aug), operand_set_completeness(gold, aug)))
+                pts_p.append((tokens_of(ot, base), operand_set_completeness(gold, base),
+                              per_cell_recall(gold, base)))
+                pts_i.append((tokens_of(ot, aug), operand_set_completeness(gold, aug),
+                              per_cell_recall(gold, aug)))
             for B in BUDGETS:
-                fit_p = [o for (t, o) in pts_p if t <= B]
-                fit_i = [o for (t, o) in pts_i if t <= B]
-                osc_at[f"{m}_plain"][B].append(fit_p[-1] if fit_p else 0.0)
-                osc_at[f"{m}_inject"][B].append(fit_i[-1] if fit_i else 0.0)
+                fit_p = [(o, rc) for (t, o, rc) in pts_p if t <= B]
+                fit_i = [(o, rc) for (t, o, rc) in pts_i if t <= B]
+                osc_at[f"{m}_plain"][B].append(fit_p[-1][0] if fit_p else 0.0)
+                rec_at[f"{m}_plain"][B].append(fit_p[-1][1] if fit_p else 0.0)
+                osc_at[f"{m}_inject"][B].append(fit_i[-1][0] if fit_i else 0.0)
+                rec_at[f"{m}_inject"][B].append(fit_i[-1][1] if fit_i else 0.0)
 
         # OHD arms: whole numeric table, row-major cell order (their serialization)
         cells_rm = sorted(numeric_cells(ot, range(ot.n_rows), range(ot.n_cols)))
@@ -160,10 +167,14 @@ def main() -> int:
         t_single, t_dual = tot_chars // 3, (2 * tot_chars) // 3
         whole_tok_single.append(t_single)
         whole_tok_dual.append(t_dual)
-        osc_whole = operand_set_completeness(gold, set(cells_rm))
+        cellset_rm = set(cells_rm)
+        osc_whole = operand_set_completeness(gold, cellset_rm)
+        rec_whole = per_cell_recall(gold, cellset_rm)
         for B in BUDGETS:
             osc_at["ohd_strict"][B].append(osc_whole if t_single <= B else 0.0)
+            rec_at["ohd_strict"][B].append(rec_whole if t_single <= B else 0.0)
             osc_at["ohd_dual_strict"][B].append(osc_whole if t_dual <= B else 0.0)
+            rec_at["ohd_dual_strict"][B].append(rec_whole if t_dual <= B else 0.0)
             for arm, mult in (("ohd_trunc", 1), ("ohd_dual_trunc", 2)):
                 budget_chars, cum, pref = B * 3 // mult, 0, []
                 for (rc, cost) in zip(cells_rm, line_costs):
@@ -172,6 +183,7 @@ def main() -> int:
                         break
                     pref.append(rc)
                 osc_at[arm][B].append(operand_set_completeness(gold, set(pref)))
+                rec_at[arm][B].append(per_cell_recall(gold, set(pref)))
 
     # ---- aggregate + paired tests ----------------------------------------
     from scipy.stats import binomtest
@@ -188,6 +200,8 @@ def main() -> int:
                         "p90": float(np.percentile(whole_tok_dual, 90))}},
            "osc_at_budget": {a: {str(B): round(sum(v) / n, 4)
                                  for B, v in osc_at[a].items()} for a in arms},
+           "recall_at_budget": {a: {str(B): round(sum(v) / n, 4)
+                                    for B, v in rec_at[a].items()} for a in arms},
            "paired_inject_vs_ohd_trunc": {}}
 
     # paired significance: hybrid_inject vs the generous ohd_trunc, per budget
@@ -213,6 +227,10 @@ def main() -> int:
     print("\nOSC @ token budget B\n" + hdr)
     for a in arms:
         row = "".join(f"{out['osc_at_budget'][a][str(B)]:>8.3f}" for B in BUDGETS)
+        print(f"{a:<18}{row}")
+    print("\nmean per-cell recall @ token budget B\n" + hdr)
+    for a in arms:
+        row = "".join(f"{out['recall_at_budget'][a][str(B)]:>8.3f}" for B in BUDGETS)
         print(f"{a:<18}{row}")
     print("\npaired hybrid_inject vs ohd_trunc (generous OHD):")
     print(f"{'B':>7}{'inj':>8}{'ohd':>8}{'Δ':>8}{'inj>':>6}{'ohd>':>6}{'p':>10}")

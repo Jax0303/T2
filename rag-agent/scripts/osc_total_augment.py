@@ -29,7 +29,7 @@ import numpy as np
 
 from rag_agent.bench.hitab import load_queries
 from rag_agent.data.loader import load_table
-from rag_agent.eval.operand_set import operand_set_completeness
+from rag_agent.eval.operand_set import operand_set_completeness, per_cell_recall
 from rag_agent.retrieve.header_enum import total_like_rows_hybrid, is_ratio_query
 from rag_agent.retrieve.operand_retriever import HybridRetriever, _tok
 from rag_agent.query.operand_decomposer import Embedder
@@ -106,15 +106,21 @@ def main() -> int:
         totals[tid] = numeric_cells(ot, tr, range(ot.n_cols))
 
     methods = ("bm25", "dense", "hybrid")
-    # acc[method][k] = {"osc_plain":sum, "osc_aug":sum, "cells_plain":sum, "cells_aug":sum}
-    acc = {m: {k: dict(osc_p=0.0, osc_a=0.0, c_p=0, c_a=0) for k in KS} for m in methods}
+    # acc[method][k] = {"osc_plain":sum, "osc_aug":sum, "cells_plain":sum, "cells_aug":sum,
+    #                   "rec_plain":sum, "rec_aug":sum}  (rec = mean per-cell recall, the
+    # reference-paper contrast metric: high recall with low OSC is the paper's motivation)
+    acc = {m: {k: dict(osc_p=0.0, osc_a=0.0, c_p=0, c_a=0, rec_p=0.0, rec_a=0.0)
+               for k in KS} for m in methods}
     aug_cells_added = 0
     # matched-budget paired test: aug@AUG_K (fewer cells) vs plain@PLAIN_K (more cells)
     AUG_K, PLAIN_K = args.aug_k, args.plain_k
     paired = {m: [] for m in methods}   # (osc_aug@AUG_K, osc_plain@PLAIN_K) per query
     # strict per-query cell-matched test: aug@AUG_K vs plain@k' where cells(plain@k')>=cells(aug)
     cellmatch = {m: [] for m in methods}   # (osc_aug, osc_plain_matched, cells_aug, kp) per query
-    samedepth = {m: [] for m in methods}   # (osc_aug@AUG_K, osc_plain@AUG_K) per query
+    # (osc_aug@AUG_K, osc_plain@AUG_K, needs_total) per query; needs_total = the query's
+    # gold actually contains a total-like-row operand (the diagnosed failure mode) —
+    # injection is a structural no-op for the rest, so §5.10 reports the split
+    samedepth = {m: [] for m in methods}
 
     for q in pop:
         ot = ots[q.gold_table_id]
@@ -122,6 +128,7 @@ def main() -> int:
         gold = q.gold_operands
         all_tcells = totals[q.gold_table_id]
         trows = total_rows[q.gold_table_id]
+        needs_total = any(int(op.row) in trows for op in gold)
         inject_on = not (args.ratio_only_aug and not is_ratio_query(q.question))
         # query-targeted columns from the cross-encoder column resolver (computed once)
         resolver_cols = None
@@ -173,6 +180,8 @@ def main() -> int:
                 acc[m][k]["osc_a"] += oa
                 acc[m][k]["c_p"] += len(base)
                 acc[m][k]["c_a"] += len(aug)
+                acc[m][k]["rec_p"] += per_cell_recall(gold, base)
+                acc[m][k]["rec_a"] += per_cell_recall(gold, aug)
             paired[m].append((osc_by_k[("a", AUG_K)], osc_by_k[("p", PLAIN_K)]))
             # strict cell-matched plain: smallest plain k' giving >= aug@AUG_K cells
             base_aug = cells_of_chunks(ot, R, ranks[m][:AUG_K])
@@ -187,7 +196,7 @@ def main() -> int:
                 cp = cells_of_chunks(ot, R, ranks[m][:PLAIN_GRID[-1]])
                 osc_p_matched = operand_set_completeness(gold, cp)
             cellmatch[m].append((osc_by_k[("a", AUG_K)], osc_p_matched, cells_aug_q, kp_used))
-            samedepth[m].append((osc_by_k[("a", AUG_K)], osc_by_k[("p", AUG_K)]))
+            samedepth[m].append((osc_by_k[("a", AUG_K)], osc_by_k[("p", AUG_K)], needs_total))
 
     out = {"population": {"name": "arithmetic_m>=2", "n": n},
            "ratio_only_aug": args.ratio_only_aug,
@@ -207,6 +216,8 @@ def main() -> int:
                 "delta": round((a["osc_a"] - a["osc_p"]) / n, 4),
                 "cells_plain": round(a["c_p"] / n, 1),
                 "cells_aug": round(a["c_a"] / n, 1),
+                "recall_plain": round(a["rec_p"] / n, 4),
+                "recall_aug": round(a["rec_a"] / n, 4),
             }
     # matched-budget paired significance: aug@AUG_K vs plain@PLAIN_K (aug uses fewer cells)
     from scipy.stats import binomtest
@@ -227,14 +238,36 @@ def main() -> int:
     out["same_depth_test"] = {"k": AUG_K, "methods": {}}
     for m in methods:
         sd = samedepth[m]
-        flip = sum(1 for a, p in sd if a > p)
-        hurt = sum(1 for a, p in sd if p > a)
+        flip = sum(1 for a, p, _ in sd if a > p)
+        hurt = sum(1 for a, p, _ in sd if p > a)
         pv = binomtest(flip, flip + hurt, 0.5).pvalue if (flip + hurt) else 1.0
         out["same_depth_test"]["methods"][m] = {
-            "osc_plain": round(sum(p for _, p in sd) / n, 4),
-            "osc_aug": round(sum(a for a, _ in sd) / n, 4),
-            "delta": round((sum(a for a, _ in sd) - sum(p for _, p in sd)) / n, 4),
+            "osc_plain": round(sum(p for _, p, _ in sd) / n, 4),
+            "osc_aug": round(sum(a for a, _, _ in sd) / n, 4),
+            "delta": round((sum(a for a, _, _ in sd) - sum(p for _, p, _ in sd)) / n, 4),
             "flipped": flip, "hurt": hurt, "mcnemar_p": round(float(pv), 6)}
+
+    # same-depth split by whether the query's gold needs a total-like row at all —
+    # the population-average delta is diluted by construction (no-op for the rest)
+    n_needs = sum(1 for _, _, nt in samedepth[methods[0]] if nt)
+    out["same_depth_subgroups"] = {"k": AUG_K, "n_needs_total": n_needs,
+                                   "n_no_total": n - n_needs, "methods": {}}
+    for m in methods:
+        sub = {}
+        for label, want in (("needs_total", True), ("no_total", False)):
+            grp = [(a, p) for a, p, nt in samedepth[m] if nt is want]
+            gn = len(grp)
+            flip = sum(1 for a, p in grp if a > p)
+            hurt = sum(1 for a, p in grp if p > a)
+            pv = binomtest(flip, flip + hurt, 0.5).pvalue if (flip + hurt) else 1.0
+            osc_p = sum(p for _, p in grp) / gn if gn else 0.0
+            osc_a = sum(a for a, _ in grp) / gn if gn else 0.0
+            sub[label] = {"n": gn, "osc_plain": round(osc_p, 4), "osc_aug": round(osc_a, 4),
+                          "delta": round(osc_a - osc_p, 4),
+                          "gap_closed": round((osc_a - osc_p) / (1 - osc_p), 4)
+                                        if osc_p < 1 else None,
+                          "flipped": flip, "hurt": hurt, "mcnemar_p": round(float(pv), 6)}
+        out["same_depth_subgroups"]["methods"][m] = sub
 
     # strict per-query cell-matched paired test (plain gets >= aug's cell budget)
     out["cell_matched_test"] = {"aug_k": AUG_K, "note": "plain@k' with cells>=aug cells",
@@ -259,12 +292,13 @@ def main() -> int:
 
     print(f"\nmean total-cells injected/query: {out['mean_total_cells_injected']}")
     print(f"\n{'method':<8}{'k':>4}{'OSC plain':>11}{'OSC +tot':>10}{'Δ':>8}"
-          f"{'cells_p':>9}{'cells_a':>9}")
+          f"{'cells_p':>9}{'cells_a':>9}{'rec_p':>8}{'rec_a':>8}")
     for m in methods:
         for k in KS:
             r = out["methods"][m][f"@{k}"]
             print(f"{m:<8}{k:>4}{r['osc_plain']:>11.3f}{r['osc_aug']:>10.3f}"
-                  f"{r['delta']:>+8.3f}{r['cells_plain']:>9.1f}{r['cells_aug']:>9.1f}")
+                  f"{r['delta']:>+8.3f}{r['cells_plain']:>9.1f}{r['cells_aug']:>9.1f}"
+                  f"{r['recall_plain']:>8.3f}{r['recall_aug']:>8.3f}")
     mb = out["matched_budget_test"]
     print(f"\n== matched-budget paired: aug@{mb['aug_k']} (fewer cells) vs plain@{mb['plain_k']} ==")
     print(f"{'method':<8}{'OSC aug':>9}{'OSC plain':>11}{'Δ':>8}{'aug>':>6}{'pl>':>5}{'p':>9}")
@@ -272,6 +306,17 @@ def main() -> int:
         t = mb["methods"][m]
         print(f"{m:<8}{t['osc_aug']:>9.3f}{t['osc_plain']:>11.3f}{t['delta']:>+8.3f}"
               f"{t['aug_only']:>6}{t['plain_only']:>5}{t['mcnemar_p']:>9.4f}")
+    sg = out["same_depth_subgroups"]
+    print(f"\n== same-depth@{sg['k']} split: needs-total n={sg['n_needs_total']} "
+          f"/ no-total n={sg['n_no_total']} ==")
+    print(f"{'method':<8}{'subset':<13}{'OSC pl':>8}{'OSC aug':>9}{'Δ':>8}"
+          f"{'gap%':>7}{'flip':>6}{'p':>10}")
+    for m in methods:
+        for label in ("needs_total", "no_total"):
+            t = sg["methods"][m][label]
+            gap = f"{t['gap_closed']*100:.0f}%" if t["gap_closed"] is not None else "—"
+            print(f"{m:<8}{label:<13}{t['osc_plain']:>8.3f}{t['osc_aug']:>9.3f}"
+                  f"{t['delta']:>+8.3f}{gap:>7}{t['flipped']:>6}{t['mcnemar_p']:>10.5f}")
     cm = out["cell_matched_test"]
     print(f"\n== STRICT cell-matched paired: aug@{cm['aug_k']} vs plain@k'(cells>=aug) ==")
     print(f"{'method':<8}{'OSC aug':>9}{'OSC pl':>9}{'Δ':>8}{'aug>':>6}{'pl>':>5}"

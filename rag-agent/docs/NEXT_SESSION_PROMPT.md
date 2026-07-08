@@ -43,15 +43,27 @@
    (학습 없이, 형제/자식 행 합과 값이 맞는지 산술 검증 — 언어독립). 기존 키워드판의 조상경로
    과매칭 버그도 발견·수정. hybrid(keyword∪structural)가 이제 기본값, §5.10 최신 수치:
    bm25 0.770→0.814(p=.016), dense 0.832→0.863(**p=.063 유의성 상실**), hybrid 0.839→0.888(p=.008).
+   **⚠ 이 수치는 MiniLM resolver로 측정된 것(브랜치 분기 사고) — 정본은 위 1번 완료 노트의
+   bge-reranker 재측정 수치(.876/.863/.907).**
 
 ## 이번에 할 것 (우선순위)
-1. **`docs/RESULTS.md`, `docs/LAB_MEETING_BRIEF.md`를 PAPER_DRAFT.md와 동기화** — 이번 세션에
-   PAPER_DRAFT.md만 갱신했고 나머지 두 문서는 여전히 버그 수정 전 stale 수치(BM25 0.689→0.814 등)를
-   갖고 있음. 특히 LAB_MEETING_BRIEF는 발표용이라 우선순위 높음.
-2. **H6 표본 확대**: 70B/gpt-oss-120b 쿼터 회복 후 같은 명령 + `--resume`으로 이어서(`--flips-first`
-   유지, 프롬프트/지표는 이미 수정판). 특히 gpt-oss-120b의 p=.012는 n=37 시점 결과라 더 키우면
-   검정력이 세짐 — 이번 세션 실험 스크립트가 `answer_accuracy_official` 블록을 자동 계산하니
-   따로 계산할 필요 없음.
+1. ~~**`docs/RESULTS.md`, `docs/LAB_MEETING_BRIEF.md`를 PAPER_DRAFT.md와 동기화**~~ ✅ **완료
+   (2026-07-08)**: 두 문서 모두 상단에 post-audit 최신 스냅샷 섹션 추가(§5.10 하이브리드 탐지
+   수치, H6 공식EM 3솔버, E9, §5.11 스코프, 지표 정책), 옛 섹션엔 "감사 이전 측정치" 경고 배너.
+   E2 열거-단독과 07-03 test split 수치는 재측정 전이라 "재검증 필요"로만 표시(날조 안 함).
+   **추가로 같은 날 오후: §5.10/E9에 per-cell recall 병기(교수님 레퍼런스-지표 요구) + 재실행.**
+   이 과정에서 발견: 아래 6번의 0.814/0.863/0.888은 브랜치 분기 사고로 **MiniLM resolver**로 측정된
+   값이었음(이 세션 브랜치가 06-29에서 분기해 07-03의 bge-reranker 기본값 변경이 없었음). bge-reranker
+   정본 재측정: **BM25 .770→.876(p=1.5e-5), dense .832→.863(p=.0625 n.s.), hybrid .839→.907(p=.001)**,
+   주입 4.4셀, needs-total 서브그룹 gap 폐쇄 65%/31%/58%. 단 strict cell-matched는 **BM25만 유의**
+   (dense/hybrid +0.019 n.s.) — 06-29 "strict 셋 다 승리"는 pre-audit이므로 폐기, test split 재실행 필요.
+   E9도 post-audit 재측정(250–8k 전 구간 p≤.004, @8k 1.000 vs 0.870) + recall_at_budget 추가.
+   PAPER_DRAFT §4/§5.9b/§5.10/기여5, RESULTS.md, LAB_MEETING_BRIEF, e9 summary 전부 반영됨.
+2. **H6 표본 확대** — 🔶 진행 중 (07-08 오후 1회차 resume 완료): gpt-oss-120b **37→86/161**,
+   공식EM 0.395→0.500(Δ+.105, 11:2, **p=.022 유의 유지**), OSC-flip 11개에선 0.00→0.73;
+   70B 23→52/161(0.346→0.404, 3:0, p=.25 여전히 n부족). Δ가 n=37 때보다 준 건 flips-first
+   희석(예상된 것). **잔여: 120b 75개(~2일), 70B 109개(~4일)** — 쿼터 회복(일일)마다 같은 명령
+   + `--resume` 반복. treat truncation 4건 감지됨(주입이 솔버에 안 닿은 쿼리 — 해석 시 주의).
    ```
    PYTHONPATH=. /home/user/T2/hart-table-retrieval/.venv/bin/python scripts/answer_accuracy_injection.py \
      --solver-model openai/gpt-oss-120b --codegen-max-tokens 1024 --flips-first --resume \

@@ -35,9 +35,9 @@ as few cells as possible. Contributions:
    total-row augmentation (row-cov 0.62→0.89).
 5. **Case study: the ceiling diagnosis (2) is actionable, not just descriptive.** As a
    worked proof-of-concept, not a proposed general method, we hand-inject total rows for
-   the subset of queries whose gold operands actually need one (37% of the population)
-   and show every one of BM25/dense/hybrid rises significantly there (p≤0.04) with zero
-   regression elsewhere. We are explicit that this patch is narrow on three axes — query
+   the subset of queries whose gold operands actually need one (35% of the population)
+   and show BM25 and RRF-hybrid rise significantly there (p≤0.001, closing 58–65% of
+   their completeness gap; dense directionally, p=.06) with zero regression elsewhere. We are explicit that this patch is narrow on three axes — query
    type (only total/ratio queries), detection mechanism (an English keyword heuristic,
    not a learned one), and dataset (HiTab-specific; §5.11) — and report it as evidence
    the diagnosis has teeth, not as a general retrieval improvement.
@@ -95,10 +95,16 @@ as few cells as possible. Contributions:
 - **Data.** HiTab dev; gold operands resolved from `linked_cells.quantity_link` by
   value-matching (`bench/hitab.py`). Population: arithmetic aggregations with scope
   **m≥2, n=161**; selection/comparison excluded (value-matching cannot build gold).
-- **Metrics.** OSC (primary); **col-recall@k** / **row-recall@k** (gold columns/rows
+- **Metrics.** OSC (primary); **mean per-cell recall** reported alongside OSC in the
+  main comparisons (the graceful metric reference table-RAG systems report — the
+  OSC↔recall gap is itself an exhibit: partial recall is not completeness);
+  **col-recall@k** / **row-recall@k** (gold columns/rows
   within the top-k scope-nodes — the node-resolution metric per axis); row-/col-axis
   coverage; mean cells
-  (precision); answer accuracy (numeric-match + exact-match) for the generation stage.
+  (precision); answer accuracy for the generation stage — cross-paper numbers use
+  HiTab's own scorer (`hitab_exact_match`); our lenient `numeric_match` is
+  diagnostic-only. Table-level retrieval is additionally benchmarked on standard IR
+  metrics (R@1/5/10, MRR, nDCG@10; `multidataset_retrieval`).
 - **Models.** Embedder `BAAI/bge-small-en-v1.5`; cross-encoders
   `ms-marco-MiniLM-L-6-v2` and `BAAI/bge-reranker-base`; solver Groq
   `llama-3.1-8b-instant` (codegen) — all retrieval is LLM-free; only the answer stage
@@ -241,68 +247,97 @@ matters**. LLM-free, identical per-cell rendering and population for all arms;
 retrieval arms take the largest k that fits B (no gold peeking); OHD arms get both a
 *strict* variant (whole table or nothing — OHD has no selection mechanism) and a
 *generous* row-major-prefix truncation it does not actually have. Whole-table cost:
-mean 4,254 tokens (p90 11,807; OHD's faithful dual serialization doubles it). OSC@B:
+mean 4,382 tokens (p90 12,332; OHD's faithful dual serialization doubles it).
+OSC@B (re-measured post-audit 2026-07-08):
 
 | B (tokens) | 1000 | 2000 | 4000 | 8000 | 16000 |
 |---|---|---|---|---|---|
-| **hybrid+inject (ours)** | **0.752** | **0.888** | **0.957** | **1.000** | 1.000 |
-| dense plain | 0.689 | 0.845 | 0.932 | 0.957 | 1.000 |
-| ohd_trunc (generous) | 0.553 | 0.671 | 0.820 | 0.876 | 1.000 |
-| ohd_dual_strict (faithful) | 0.050 | 0.273 | 0.416 | 0.658 | 0.795 |
+| **hybrid+inject (ours)** | **0.764** | **0.876** | **0.963** | **1.000** | 1.000 |
+| dense plain | 0.721 | 0.851 | 0.944 | 0.981 | 1.000 |
+| ohd_trunc (generous) | 0.553 | 0.671 | 0.807 | 0.870 | 1.000 |
+| ohd_dual_strict (faithful) | 0.050 | 0.273 | 0.416 | 0.652 | 0.795 |
 
-Paired vs the *generous* OHD arm, injection wins at **every** B in 500–8k (Δ +0.12 to
-+0.22, McNemar p≤0.013, at B≥2k flips ≥20 vs ≤3); vs faithful OHD the gap is ~0.5 OSC.
+Paired vs the *generous* OHD arm, injection wins at **every** B in 250–8k (Δ +0.12 to
++0.21, McNemar p≤0.004, at B≥2k flips ≥21 vs ≤4); vs faithful OHD the gap is ~0.5 OSC.
 Whole-table only reaches parity at **B≥16k** — precisely the regime where selection is
 unnecessary, matching the generalization study's scope claim (§5.11 / FinQA). At 8k
-tokens ours delivers **OSC=1.000** while whole-table still fails 12% of queries.
+tokens ours delivers **OSC=1.000** while whole-table still fails 13% of queries.
+**Mean per-cell recall — the metric reference systems report — hides this ordering:**
+at B=2k hybrid-plain scores recall 0.92 while completing only 0.84 of queries, and
+ohd_trunc@8k reports recall 0.92 with 13% of queries uncomputable; at 4k every strong
+arm sits in a 0.96–0.98 recall band while OSC spans 0.81–0.98. Partial recall's
+per-cell credit is exactly what an all-or-nothing aggregation cannot spend.
 *Honest caveat:* at starvation budgets (≤500 tokens) injected total cells crowd out
-ranked chunks and plain dense is best; the patch needs ~1k tokens of headroom
-(crossover ≈1k). (E9, `e9_osc_token_budget`)
+ranked chunks and plain dense is best (@500: 0.497 plain vs 0.441 inject); the patch
+needs ~1k tokens of headroom (crossover ≈1k). (E9, `e9_osc_token_budget`)
 
 **5.10 Case study: injecting total rows converts the diagnosis (2) into a measurable,
 significant fix — for the queries it applies to.** This section is **not** proposed as a
 general retriever improvement (see the scoping in Contribution 5): it is a worked
 demonstration that the ceiling diagnosis is actionable. Using the cross-encoder column
-resolver (§5.4) to pick 1–2 columns, we union *only those columns'* total-like rows
-(mean 3.0 cells/query) into any retriever's top-k. **Total-row detection is now a hybrid
+resolver (§5.4's winner, bge-reranker) to pick 1–2 columns, we union *only those
+columns'* total-like rows (mean 4.4 cells/query) into any retriever's top-k.
+**Total-row detection is now a hybrid
 of the keyword heuristic and a language-independent structural check** — a row is also
 flagged if it arithmetically sums its tree children or row-level siblings, regardless of
 its text label (`is_total_row_structural`; catches e.g. an unlabeled "federal government"
 subtotal the keyword regex misses). Structural detection *alone* under-performs keyword
 alone (it tends to (re)find totals similarity retrieval could already reach); the union
 is never worse than keyword alone and widens applicability. At the **same retrieval
-depth** (k=10; HiTab dev arith m≥2, n=161):
+depth** (k=10; HiTab dev arith m≥2, n=161; re-measured post-audit 2026-07-08), with
+mean per-cell recall — the reference metric — alongside:
 
-| baseline | plain OSC | +injection | Δ | queries flipped | queries hurt | McNemar p |
-|---|---|---|---|---|---|---|
-| BM25 | 0.770 | **0.814** | +0.043 | 7 | **0** | **0.0156** |
-| dense | 0.832 | **0.863** | +0.031 | 5 | **0** | 0.0625 (n.s.) |
-| hybrid | 0.839 | **0.888** | +0.050 | 8 | **0** | **0.0078** |
+| baseline | plain OSC | +injection | Δ | flipped | hurt | McNemar p | recall plain→aug |
+|---|---|---|---|---|---|---|---|
+| BM25 | 0.770 | **0.876** | +0.106 | 17 | **0** | **1.5e-5** | 0.887→0.945 |
+| dense | 0.832 | 0.863 | +0.031 | 5 | **0** | 0.0625 (n.s.) | 0.920→0.946 |
+| hybrid | 0.839 | **0.907** | +0.068 | 11 | **0** | **0.001** | 0.927→0.964 |
 
 Injection only *adds* cells, so it is a strict superset — **zero queries are hurt** — but
-dense's same-depth win is no longer clean (p=0.0625) at this population size; BM25 and
-RRF-hybrid remain significant. As before, the population-average Δ is diluted by
+dense's same-depth win is not clean (p=0.0625) at this population size; BM25 and
+RRF-hybrid are significant. Note the recall column: plain retrievers already score
+0.89–0.93 on averaged per-cell recall while completing only 0.77–0.84 of queries —
+the graceful metric conceals exactly the failures injection targets. As before, the
+population-average Δ is diluted by
 construction: only **35% of queries (56/161) have a gold operand that is a total-like
 row** — for the other 65%, injection is a structural no-op (Δ=0.000, p=1.0 for all
 three). Splitting by whether the query actually needs a total row:
 
 | baseline | subset | plain OSC | +injection | Δ | gap closed | McNemar p |
 |---|---|---|---|---|---|---|
-| BM25 | needs total (n=56) | 0.536 | **0.661** | +0.125 | 27% | 0.0156 |
+| BM25 | needs total (n=56) | 0.536 | **0.839** | +0.304 | **65%** | **2e-5** |
 | dense | needs total (n=56) | 0.714 | **0.804** | +0.089 | 31% | 0.0625 (n.s.) |
-| hybrid | needs total (n=56) | 0.661 | **0.804** | +0.143 | 42% | 0.0078 |
+| hybrid | needs total (n=56) | 0.661 | **0.857** | +0.196 | **58%** | **0.001** |
 | any | doesn't need total (n=105) | — | — | 0.000 | — | 1.0 |
 
-Read correctly, the result is: *for the diagnosed failure mode, the patch closes 27–42%
+Read correctly, the result is: *for the diagnosed failure mode, the patch closes 31–65%
 of the remaining completeness gap with zero collateral damage elsewhere, for BM25 and
-RRF-hybrid at conventional significance* — not "a general +3-5pp retrieval improvement,"
+RRF-hybrid at conventional significance* — not "a general +3-10pp retrieval improvement,"
 and dense specifically is a directional-but-not-significant win at this sample size.
-*Honest budget caveat:* under a deeper-budget comparison (aug@10, ~60 cells, vs plain@20,
-~99 cells) plain@20 **significantly beats** aug@10 for all three retrievers (BM25 0.814
-vs 0.882 p=0.027; dense 0.863 vs 0.950 p=0.001; hybrid 0.888 vs 0.975 p=0.003) — simply
-fetching more rows is a real competitor once the baseline itself is strong, and this
-comparison does not use equal cell counts either way (aug@10 is cheaper). The clean win
-is at *matched depth*, not matched or reduced budget. (`osc_total_augment`)
+*Honest budget caveats:* (i) under a deeper-budget comparison (aug@10, ~62 cells, vs
+plain@20, ~98 cells) plain@20 **significantly beats** aug@10 for dense (0.863 vs 0.950,
+p=0.001) and hybrid (0.907 vs 0.975, p=0.013), with BM25 at parity (0.876 vs 0.882,
+p=1.0) — simply fetching more rows is a real competitor once the baseline itself is
+strong, and this comparison does not use equal cell counts either way (aug@10 is
+cheaper). (ii) Under a strict per-query *cell-matched* budget (plain deepened until it
+holds ≥ aug's cell count) only BM25's win survives (+0.106, p<1e-4; dense and hybrid
++0.019, n.s.) — the post-audit baselines are strong enough that matched-budget claims
+must be scoped to BM25. The clean three-retriever-direction win is at *matched depth*,
+not matched budget. (`osc_total_augment`)
+
+**Answer-stage payoff (H6, preliminary — quota-limited sample).** Does the completeness
+gain convert to final answer accuracy? At a fixed capable solver (gpt-oss-120b, codegen,
+official HiTab EM), injecting total rows into dense@10 lifts EM **0.395→0.500** on the
+86/161 queries evaluated so far (paired; 11 wrong→right vs 2 right→wrong, McNemar
+**p=0.022**); on the 11 queries whose OSC flips 0→1, accuracy goes **0.00→0.73**. A
+70B solver is directional but underpowered (0.346→0.404, 3:0, p=0.25, n=52) and an 8B
+solver does not move at all (p=1.0, n=134) — completeness gains surface only above a
+solver-capability floor, consistent with §5.6's precision-dominated reading. *Caveats:*
+the sample is quota-cut and flips-first-ordered (queries injection can affect are
+evaluated first), so the evaluated-subset Δ overstates the population Δ — significance
+rests on the paired flip counts, not the means; 4/86 treatment contexts hit the context
+budget (truncation detected and counted). (`answer_accuracy_injection`,
+`results/h6_rerun_20260707/`)
 
 **5.11 Generalization scope: where the injection win does — and cannot — transfer.**
 Applying the same pipeline to FinQA and WikiSQL (gold-operand m≥2 populations) shows
