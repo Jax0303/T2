@@ -20,10 +20,17 @@ dependencies = [
     "bitsandbytes>=0.43",
     "sentence-transformers>=3.0",
     "chromadb>=0.5",
+    "rank-bm25>=0.2.2",
     "groq>=0.9",
     "tabulate>=0.9",
     "pyyaml>=6.0",
 ]
+
+[project.optional-dependencies]
+# Optional extras. faiss accelerates dense search (NumPy fallback otherwise);
+# datasets is only needed to fetch FinQA / WikiSQL.
+faiss = ["faiss-cpu>=1.7"]
+benchmarks = ["datasets>=2.0"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["rag_agent"]

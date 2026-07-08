@@ -1,0 +1,703 @@
+{
+  "bench": "finqa",
+  "mode": "grounded",
+  "summary": {
+    "n": 50,
+    "n_all": 50,
+    "n_llm_failed": 0,
+    "acc": 0.02,
+    "nm_rate": 0.22,
+    "empty_rate": 0.08,
+    "clean_bind": 0.7,
+    "acc_given_clean": 0.0286
+  },
+  "rows": [
+    {
+      "query_id": "IPG/2008/page_21.pdf-1",
+      "query": "how much more , in percent , was spent on october shares than november shares?",
+      "gold": [
+        1229.0
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Filter the rows for October and November\noctober_value = cell(\"october 1-31\", \"total number of shares purchased\")\nnovember_value = cell(\"november 1-30\", \"total number of shares purchased\")\n\n# Calculate the percentage difference\nif november_value is not None:\n    result = ((october_value - november_value) / november_value) * 100\nelse:\n    result = None"
+    },
+    {
+      "query_id": "UNP/2008/page_27.pdf-1",
+      "query": "in 2008 what was the percent of the total operating revenues that was associated with other revenues",
+      "gold": [
+        4.74
+      ],
+      "pred": "70.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Calculate the percentage of total operating revenues that was associated with other revenues in 2008\ntotal_revenue_2008 = cell(\"total\", \"2008\")\nother_revenue_2008 = cell(\"other revenues\", \"2008\")\n\nif total_revenue_2008 is not None and other_revenue_2008 is not None:\n    result = (other_revenue_2008 / total_revenue_2008) * 100\nelse:\n    result = None"
+    },
+    {
+      "query_id": "MRO/2007/page_134.pdf-4",
+      "query": "by how much did the expected annual dividends per share increase from 2005 to 2007?",
+      "gold": [
+        45.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Calculate the increase in expected annual dividends per share from 2005 to 2007\nexpected_dividends_2007 = cell('expected annual dividends per share', '2007')\nexpected_dividends_2005 = cell('expected annual dividends per share', '2005')\n\nincrease = expected_dividends_2007 - expected_dividends_2005\nresult = increase"
+    },
+    {
+      "query_id": "CME/2017/page_97.pdf-3",
+      "query": "how many directors can be elected by the class b-1 and class b-2 shareholders?",
+      "gold": [
+        5.0
+      ],
+      "pred": "1.4",
+      "correct": false,
+      "err": "",
+      "n_repair": 1,
+      "trace_flags": [],
+      "code": "class_b_1_outstanding = row_values('class b-1 common stock authorized issued and outstanding', col_filter='december 31 , 2017')[0]\nclass_b_2_outstanding = row_values('class b-2 common stock authorized issued and outstanding', col_filter='december 31 , 2017')[0]\n\ntotal_class_b_outstanding = class_b_1_outstanding + class_b_2_outstanding\n\nresult = total_class_b_outstanding"
+    },
+    {
+      "query_id": "GS/2014/page_136.pdf-2",
+      "query": "in millions in 2014 2013 and 2012 , what were the lowest amount of interest rate hedges?\\\\n\\\\n",
+      "gold": [
+        -8683.0
+      ],
+      "pred": "$ -2383 ( 2383 )",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = min(\n    cell('interest rate hedges', 'year ended december 2014'),\n    cell('interest rate hedges', 'year ended december 2013'),\n    cell('interest rate hedges', 'year ended december 2012')\n)"
+    },
+    {
+      "query_id": "PM/2015/page_127.pdf-4",
+      "query": "what was the average currency translation adjustments from 2013 to 2015 in millions?",
+      "gold": [
+        -6806.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'int'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "def average_currency_translation_adjustments():\n    # Get the values for currency translation adjustments in 2013, 2014, and 2015\n    ctas_2013 = cell('currency translation adjustments', '2013')\n    ctas_2014 = cell('currency translation adjustments', '( losses ) earnings 2014')\n    ctas_2015 = cell('currency translation adjustments', '( losses ) earnings 2015')\n    \n    # Calculate the average\n    average_cta = (ctas_2013 + ctas_2014 + ctas_2015) / 3\n    \n    return average_cta\n\nresult = average_currency_translation_adjustments()"
+    },
+    {
+      "query_id": "AMT/2010/page_34.pdf-3",
+      "query": "what is the average number of shares per registered holder as of february 11 , 2011?",
+      "gold": [
+        858775.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "def average_shares_per_holder():\n    # Filter the columns and rows for the required data\n    cols = col_values('2010', None)\n    rows = list_rows()\n    \n    # Find the row corresponding to 'february 11, 2011' (closest match to 'february 11, 2011')\n    target_row = None\n    for row in rows:\n        if 'february 11, 2011' in row:\n            target_row = row\n            break\n    \n    if target_row is None:\n        return None\n    \n    # Get the values for the target row and columns 'high' and 'low'\n    values = row_values(target_row, ['high', 'low'])\n    \n    # Calculate the average number of shares per registered holder\n    total_shares = sum(values)\n    count = len(values)\n    \n    if count == 0:\n        return None\n    \n    result = total_shares / count\n    return result\n\nresult = average_shares_per_holder()"
+    },
+    {
+      "query_id": "GS/2017/page_143.pdf-1",
+      "query": "what is the percentage change in credit net from 2016 to 2017?",
+      "gold": [
+        -39.9
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "credit_net_2016 = cell('credit net', 'level 3 assets ( liabilities ) and range of significant unobservable inputs ( average/median ) as of december 2016')\ncredit_net_2017 = cell('credit net', 'level 3 assets ( liabilities ) and range of significant unobservable inputs ( average/median ) as of december 2017')\n\nif credit_net_2016 is None or credit_net_2017 is None:\n    result = None\nelse:\n    percentage_change = ((credit_net_2017 - credit_net_2016) / credit_net_2016) * 100\n    result = percentage_change"
+    },
+    {
+      "query_id": "BLL/2010/page_28.pdf-1",
+      "query": "what was the percentage cumulative total shareholder return for ball corporation for the five year period ending 12/31/10?",
+      "gold": [
+        78.93
+      ],
+      "pred": "$ 178.93",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Find the row and column headers for Ball Corporation and 12/31/10\nball_corporation_row = 'ball corporation'\nend_date_col = '12/31/10'\n\n# Get the value from the specific cell\nvalue = cell(ball_corporation_row, end_date_col)\n\n# Assuming the value is in percentage format, we set it as the result\nresult = value"
+    },
+    {
+      "query_id": "CME/2012/page_70.pdf-1",
+      "query": "what is the percent of available potential to increase the multi-currency line of credit",
+      "gold": [
+        40.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: can only concatenate str (not \"float\") to str",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "total_assets = sum(col_values(\"cme clearingavailable assets\", row_filter=\"4\"))\ndesignated_corporate_contributions = cell(\"designated corporate contributions for futures and options ( 1 )\", \"cme clearingavailable assets\")\nguaranty_fund_contributions = cell(\"guaranty fund contributions ( 2 )\", \"cme clearingavailable assets\")\nassessment_powers = cell(\"assessment powers ( 3 )\", \"cme clearingavailable assets\")\n\navailable_potential_to_increase = designated_corporate_contributions + guaranty_fund_contributions + assessment_powers\npercent_of_available_potential = (available_potential_to_increase / total_assets) * 100\n\nresult = percent_of_available_potential"
+    },
+    {
+      "query_id": "UNP/2011/page_76.pdf-2",
+      "query": "in 2011 , did the company distribute more to shareholders than debtholders?",
+      "gold": [
+        "yes"
+      ],
+      "pred": "True",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Check if the company distributed more to shareholders than debtholders in 2011\n# We need to compare dividends payable (shareholders) with interest payable (debtholders) for 2011\n\n# Get the dividends payable for 2011\ndividends_2011 = cell(\"dividends payable\", \"dec . 31 2011\")\n\n# Get the interest payable for 2011\ninterest_2011 = cell(\"interest payable\", \"dec . 31 2011\")\n\n# Compare the two values\nif dividends_2011 > interest_2011:\n    result = True\nelse:\n    result = False"
+    },
+    {
+      "query_id": "BDX/2018/page_82.pdf-2",
+      "query": "in 2018 what was the ratio of the service cost to the interest cost",
+      "gold": [
+        66.2
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'float'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Extract the values for service cost and interest cost in 2018\nservice_cost_2018 = cell('service cost', 'pension plans 2018')\ninterest_cost_2018 = cell('interest cost', 'pension plans 2018')\n\n# Calculate the ratio of service cost to interest cost in 2018\nif service_cost_2018 is not None and interest_cost_2018 is not None:\n    result = service_cost_2018 / interest_cost_2018\nelse:\n    result = None"
+    },
+    {
+      "query_id": "PM/2018/page_24.pdf-1",
+      "query": "what is the roi of an investment in pmi from 2013 to 2014?",
+      "gold": [
+        2.1
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "roi = (cell('december 31 2014', 'pmi peer group ( 1 )') - cell('december 31 2013', 'pmi peer group ( 1 )')) / cell('december 31 2013', 'pmi peer group ( 1 )')\nresult = roi * 100"
+    },
+    {
+      "query_id": "LMT/2016/page_48.pdf-2",
+      "query": "in 2016 based on the increase in the net sales what was the ratio of the increasing factor to the offsetting factors that reduced sales",
+      "gold": [
+        40.7
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Filter rows and columns\nnet_sales_2016 = cell('net sales', '2016')\nnet_sales_2015 = cell('net sales', '2015')\n\n# Calculate the increase in net sales\nincrease_in_net_sales = net_sales_2016 - net_sales_2015\n\n# Find the offsetting factors in 2016\noffsetting_factors_2016 = cell('net sales', '2016') - cell('net sales', '2015')\n\n# Calculate the ratio of the increasing factor to the offsetting factors\nif offsetting_factors_2016 != 0:\n    ratio = increase_in_net_sales / offsetting_factors_2016\nelse:\n    ratio = None\n\nresult = ratio"
+    },
+    {
+      "query_id": "INTC/2013/page_29.pdf-4",
+      "query": "of the square feet in the us what was the percent of the owned facility of the us total",
+      "gold": [
+        92.8
+      ],
+      "pred": "0.9285714285714285",
+      "correct": true,
+      "err": "",
+      "n_repair": 1,
+      "trace_flags": [],
+      "code": "result = cell(row_header='owned facilities1', col_header='unitedstates') / cell(row_header='total facilities', col_header='unitedstates')"
+    },
+    {
+      "query_id": "BKR/2017/page_103.pdf-1",
+      "query": "what is the expense which relates to the acceleration of equity awards upon termination of employment of baker hughes employees as a percentage of stock based compensation expense?",
+      "gold": [
+        40.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = None\n\n# The question asks for the expense which relates to the acceleration of equity awards upon termination of employment of Baker Hughes employees as a percentage of stock based compensation expense.\n# We need to find the relevant row and column headers to extract the required information.\n\n# The row header should be 'stock based compensation expense'\nrow_header = 'stock based compensation expense'\n\n# The column header should be '2017'\ncol_header = '2017'\n\n# Getting the value from the table\nvalue = cell(row_header, col_header)\n\n# Assuming the value is a percentage, we can directly assign it to result\nif value is not None:\n    result = value\nelse:\n    result = None"
+    },
+    {
+      "query_id": "MAS/2018/page_35.pdf-2",
+      "query": "what was the difference in operating profit margins as adjusted between 2017 and 2018?",
+      "gold": [
+        6.0
+      ],
+      "pred": "-0.5999999999999996",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Identify the row and column headers for operating profit margins as adjusted in 2017 and 2018\nrow_header_opMarginsAdjusted_2018 = \"operating profit margins as adjusted\"\nrow_header_opMarginsAdjusted_2017 = \"operating profit margins as adjusted\"\ncol_header_2018 = \"2018\"\ncol_header_2017 = \"2017\"\n\n# Get the values for operating profit margins as adjusted for 2018 and 2017\nopMargins_2018 = cell(row_header_opMarginsAdjusted_2018, col_header_2018)\nopMargins_2017 = cell(row_header_opMarginsAdjusted_2017, col_header_2017)\n\n# Calculate the difference\ndifference = opMargins_2018 - opMargins_2017\n\n# Assign the result to the variable 'result'\nresult = difference"
+    },
+    {
+      "query_id": "AON/2009/page_46.pdf-2",
+      "query": "what is the lowest segment operating income?",
+      "gold": [
+        846.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: min() iterable argument is empty",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Find the minimum segment operating income\nmin_operating_income = min(col_values(\"segment operating income\", None))\nresult = min_operating_income"
+    },
+    {
+      "query_id": "UNP/2013/page_44.pdf-3",
+      "query": "what was the net change in the number of environmental sites from 2012 to 2013?",
+      "gold": [
+        -16.0
+      ],
+      "pred": "-17.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Calculate the net change in the number of environmental sites from 2012 to 2013\nopen_sites_ending_balance_2013 = cell('open sites ending balance atdecember 31', '2013')\nopen_sites_beginning_balance_2012 = cell('open sites beginning balance', '2012')\n\nnet_change = open_sites_ending_balance_2013 - open_sites_beginning_balance_2012\nresult = net_change"
+    },
+    {
+      "query_id": "CME/2012/page_70.pdf-2",
+      "query": "what portion of the minimum total assets available for default is related to assessment powers?",
+      "gold": [
+        72.7
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = cell(row_header=\"assessment powers ( 3 )\", col_header=\"( in millions )\") / cell(row_header=\"minimum total assets available for default ( 4 )\", col_header=\"( in millions )\")"
+    },
+    {
+      "query_id": "AAPL/2003/page_24.pdf-1",
+      "query": "what were capital expenditures associated with the retail segment since its inception , exclusive of the amount incurred during 2003 , in millions?",
+      "gold": [
+        198.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('capital expenditures', 'retail segment') - cell('capital expenditures', '2003')"
+    },
+    {
+      "query_id": "HOLX/2008/page_142.pdf-2",
+      "query": "what portion of the purchasing price is dedicated to net tangible assets?",
+      "gold": [
+        79.2
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Calculate the portion of the purchasing price dedicated to net tangible assets\nnet_tangible_assets = cell('net tangible assets acquired as of may 2 2006', 'final purchase price')\npurchasing_price = cell('final purchase price', 'final purchase price')\n\nif net_tangible_assets is not None and purchasing_price is not None:\n    result = net_tangible_assets / purchasing_price\nelse:\n    result = None"
+    },
+    {
+      "query_id": "AMT/2004/page_81.pdf-1",
+      "query": "what is the percentage change in amortization expense from from 2008 to 2009?",
+      "gold": [
+        2.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Filter the rows for 'total' which represents the amortization expense\nrow_header_total = 'total'\n# Filter the columns for years 2008 and 2009\ncol_header_2008 = '2008'\ncol_header_2009 = '2009'\n\n# Get the values for total amortization expense in 2008 and 2009\namortization_2008 = cell(row_header_total, col_header_2008)\namortization_2009 = cell(row_header_total, col_header_2009)\n\n# Calculate the percentage change\nif amortization_2008 is not None and amortization_2009 is not None:\n    percentage_change = ((amortization_2009 - amortization_2008) / amortization_2008) * 100\nelse:\n    percentage_change = None\n\nresult = percentage_change"
+    },
+    {
+      "query_id": "PM/2015/page_85.pdf-1",
+      "query": "what is the percentage change in total debt from 2014 to 2015?",
+      "gold": [
+        3.4
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "IndexError: list index out of range",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "# Filter rows for 'u.s . dollar notes'\nus_dollar_notes = row_values('u.s . dollar notes', col_filter=['face value'])\n\n# Get face values for 2014 and 2015\nface_value_2014 = us_dollar_notes[0]\nface_value_2015 = us_dollar_notes[1]\n\n# Calculate percentage change\npercentage_change = ((face_value_2015 - face_value_2014) / face_value_2014) * 100\n\nresult = percentage_change"
+    },
+    {
+      "query_id": "ABMD/2009/page_56.pdf-2",
+      "query": "what portion of contractual obligations is expected to be paid within 12 months?",
+      "gold": [
+        48.8
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'float' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Calculate the portion of contractual obligations expected to be paid within 12 months\ntotal_obligations = cell('total obligations', 'contractual obligations')\npayments_due_within_1_year = cell('contractual obligations ( 1 )', 'payments due by fiscal year ( in $ 000 2019s ) less than 1 year')\n\nif total_obligations is not None and payments_due_within_1_year is not None:\n    result = payments_due_within_1_year / total_obligations\nelse:\n    result = None"
+    },
+    {
+      "query_id": "HWM/2016/page_40.pdf-1",
+      "query": "what is the average price per share of the company 2019s common stock in the third quarter of 2016?",
+      "gold": [
+        30.0
+      ],
+      "pred": "second",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Filter rows for company 2019 and column for third quarter of 2016\ncompany_row = \"second\"\nquarter_col = \"quarter\"\n\n# Get the value for the third quarter of 2016\nthird_quarter_value = cell(company_row, quarter_col)\n\n# If the value is None, it means the cell is empty or doesn't exist\nif third_quarter_value is None:\n    result = None\nelse:\n    result = third_quarter_value"
+    },
+    {
+      "query_id": "CME/2012/page_70.pdf-4",
+      "query": "by what percentage can cme increase their current line of credit?",
+      "gold": [
+        40.0
+      ],
+      "pred": "inf",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Get the current line of credit for CME from the 'cme clearingavailable assets' column\ncurrent_line_of_credit = cell('cme clearingavailable assets', 'minimum total assets available for default ( 4 )')\n\n# If the current line of credit is not found, set it to 0\nif current_line_of_credit is None:\n    current_line_of_credit = 0\n\n# Calculate the maximum possible line of credit\n# Sum of all assets in the 'cme clearingavailable assets' column\ntotal_assets = sum(col_values('cme clearingavailable assets'))\n\n# Maximum possible line of credit is the total assets minus the current line of credit\nmax_line_of_credit = total_assets - current_line_of_credit\n\n# Calculate the increase in line of credit\nincrease_in_line_of_credit = max_line_of_credit - current_line_of_credit\n\n# Calculate the percentage increase\nif current_line_of_credit != 0:\n    percentage_increase = (increase_in_line_of_credit / current_line_of_credit) * 100\nelse:\n    percentage_increase = float('inf')  # or handle as needed, e.g., set to a very high value\n\nresult = percentage_increase"
+    },
+    {
+      "query_id": "CAG/2008/page_75.pdf-2",
+      "query": "what percentage of total inventories is comprised of finished goods in 2008?",
+      "gold": [
+        61.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'float' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "total_finished_goods_2008 = cell('finished goods', '2008')\ntotal_inventories_2008 = cell('total', '2008')\n\nif total_inventories_2008 is not None:\n    result = (total_finished_goods_2008 / total_inventories_2008) * 100\nelse:\n    result = None"
+    },
+    {
+      "query_id": "JPM/2007/page_147.pdf-2",
+      "query": "how much of the securitizations that hold asf framework loans were issued by third parties?",
+      "gold": [
+        98.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = (cell('third-party', 'december 31 2007') / cell('total', 'december 31 2007')) * 100"
+    },
+    {
+      "query_id": "UNP/2013/page_54.pdf-2",
+      "query": "in 2013 what was the percent of the total operating revenues from mexico",
+      "gold": [
+        9.6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "result = (cell(\"total operatingrevenues\", \"2013\") / cell(\"total operatingrevenues\", \"2013\")) * 100 * col_values(\"total freight revenues\", \"2013\")[0] / cell(\"total operatingrevenues\", \"2013\")"
+    },
+    {
+      "query_id": "HII/2017/page_104.pdf-1",
+      "query": "what is the percentage change in the unamortized debt issuance costs associated with the senior notes from 2016 to 2017?",
+      "gold": [
+        -21.1
+      ],
+      "pred": "125.51834130781498",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Filter rows for senior notes and unamortized debt issuance costs\nsenior_notes_2017 = cell('senior notes due december 15 2021 5.000 %', 'december 31 2017')\nsenior_notes_2016 = cell('senior notes due december 15 2021 5.000 %', 'december 31 2016')\nunamortized_debt_2017 = cell('less unamortized debt issuance costs', 'december 31 2017')\nunamortized_debt_2016 = cell('less unamortized debt issuance costs', 'december 31 2016')\n\n# Calculate the change\nchange_2017 = senior_notes_2017 - senior_notes_2016\nchange_2016 = senior_notes_2016 - unamortized_debt_2016\n\n# Calculate percentage change\npercentage_change = ((change_2017 - change_2016) / change_2016) * 100 if change_2016 != 0 else None\n\nresult = percentage_change"
+    },
+    {
+      "query_id": "UNP/2014/page_25.pdf-2",
+      "query": "if overall freight revenues in 2014 grow as the same rate as agricultural arc growth , what would projected 2015 revenues be in millions?",
+      "gold": [
+        23688.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'int'",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "# Get the growth rate of agricultural arc from 2014 to 2013\nagricultural_arc_growth_rate = cell(\"agricultural arc\", \"% (  % ) change 2013 v 2012\") / 100\n\n# Get the 2014 freight revenues\nfreight_revenues_2014 = cell(\"freight revenues\", \"millions\")\n\n# Projected 2015 freight revenues based on the growth rate\nprojected_freight_revenues_2015 = freight_revenues_2014 * (1 + agricultural_arc_growth_rate)\n\nresult = projected_freight_revenues_2015"
+    },
+    {
+      "query_id": "IP/2012/page_93.pdf-3",
+      "query": "at december 31 , 2012 , what was the percent of the total future minimum commitments under existing non-cancelable operating leases that was due in 2014",
+      "gold": [
+        14.11
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: can only concatenate str (not \"float\") to str",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Calculate the total future minimum commitments for 2014\ntotal_2014 = cell('lease obligations', '2014') + cell('purchase obligations ( a )', '2014')\n\n# Calculate the total future minimum commitments for all years after 2013\ntotal_future = cell('lease obligations', '2013') + cell('lease obligations', '2014') + cell('lease obligations', '2015') + cell('lease obligations', '2016') + cell('lease obligations', '2017') + cell('lease obligations', 'afterthat') + cell('purchase obligations ( a )', '2013') + cell('purchase obligations ( a )', '2014') + cell('purchase obligations ( a )', '2015') + cell('purchase obligations ( a )', '2016') + cell('purchase obligations ( a )', '2017') + cell('purchase obligations ( a )', 'afterthat')\n\n# Calculate the percentage of the total future minimum commitments that was due in 2014\nif total_future != 0:\n    percentage_2014 = (total_2014 / total_future) * 100\nelse:\n    percentage_2014 = 0\n\nresult = percentage_2014"
+    },
+    {
+      "query_id": "C/2017/page_328.pdf-2",
+      "query": "as of 2017 what was the ratio of the overall five-year cumulative total return for s&p 500 compared to citi",
+      "gold": [
+        1.16
+      ],
+      "pred": "1.0754521963824288",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Get the values for S&P 500 and Citi in 2017\nsp_500_2017 = cell('31-dec-2017', 's&p 500')\nciti_2017 = cell('31-dec-2017', 'citi')\n\n# Calculate the ratio of the overall five-year cumulative total return for S&P 500 compared to Citi\nif sp_500_2017 is not None and citi_2017 is not None:\n    result = sp_500_2017 / citi_2017\nelse:\n    result = None"
+    },
+    {
+      "query_id": "ETFC/2007/page_126.pdf-1",
+      "query": "what percentage of total future principal payments of corporate debt are due in 2011?",
+      "gold": [
+        13.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "total_future_principal_2011 = cell('2011', 'total future principal payments of corporate debt')\ntotal_future_principal = cell('total', 'total future principal payments of corporate debt')\n\nresult = (total_future_principal_2011 / total_future_principal) * 100 if total_future_principal else None"
+    },
+    {
+      "query_id": "RSG/2015/page_142.pdf-2",
+      "query": "what is the percentage growth of the aggregate fair values of our outstanding fuel hedge for 2014 to 2015",
+      "gold": [
+        9.9
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY",
+        "EMPTY"
+      ],
+      "code": "# Calculate the aggregate fair values for 2015 and 2016\nfair_value_2015 = sum(col_values('weighted average contractprice per gallon', row_filter='2015'))\nfair_value_2016 = sum(col_values('weighted average contractprice per gallon', row_filter='2016'))\n\n# Calculate the percentage growth\nif fair_value_2015 != 0:\n    percentage_growth = ((fair_value_2016 - fair_value_2015) / fair_value_2015) * 100\nelse:\n    percentage_growth = 0\n\nresult = percentage_growth"
+    },
+    {
+      "query_id": "CDNS/2006/page_30.pdf-4",
+      "query": "what was the difference in percentage cumulative 5-year total return to shareholders of cadence design systems , inc . 2019s common stock and the s&p 500 for the period ended december 30 , 2006?",
+      "gold": [
+        55.07
+      ],
+      "pred": "-40.78352958601793",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Define the headers\ncadence_design_systems_inc = \"cadence design systems inc .\"\ns_p_500 = \"s & p 500\"\n\n# Get the values for 2019 and 2006\ncadence_2019 = cell(cadence_design_systems_inc, \"december 30 2006\")\ns_p_500_2006 = cell(s_p_500, \"december 30 2006\")\n\n# Calculate the difference in percentage cumulative 5-year total return\nif cadence_2019 is not None and s_p_500_2006 is not None:\n    result = (cadence_2019 - s_p_500_2006) / s_p_500_2006 * 100\nelse:\n    result = None"
+    },
+    {
+      "query_id": "ABMD/2004/page_26.pdf-2",
+      "query": "total future minimum lease payments due after 5 years are what percent of the total remaining?",
+      "gold": [
+        15.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "IndexError: list index out of range",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Calculate the total future minimum lease payments due after 5 years\nfuture_payments = sum(col_values(\"total future minimum lease payments\", \"year ending march 31,\")[5:])\n# Calculate the total remaining future minimum lease payments\ntotal_remaining = col_values(\"total future minimum lease payments\", \"year ending march 31,\")[-1]\n\n# Calculate the percentage\nif total_remaining != 0:\n    result = (future_payments / total_remaining) * 100\nelse:\n    result = None"
+    },
+    {
+      "query_id": "IPG/2008/page_93.pdf-1",
+      "query": "what portion of the total estimated future contingent acquisition obligation is due in the 12 months?",
+      "gold": [
+        19.3
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'float'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "total_contingent_acquisition_payments = cell('total contingent acquisition payments', 'total')\none_year_payments = cell('deferred acquisition payments', 'total')\n\nresult = one_year_payments / total_contingent_acquisition_payments"
+    },
+    {
+      "query_id": "LMT/2005/page_40.pdf-1",
+      "query": "what percent of total commitments expire in less than 1 year?",
+      "gold": [
+        82.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "total_comms = cell('total commitments', 'commitment expiration by period total commitment')\nless_than_1_year_comms = cell('total commitments', 'commitment expiration by period less than 1 year ( a )')\n\nif total_comms is not None and less_than_1_year_comms is not None:\n    result = (less_than_1_year_comms / total_comms) * 100\nelse:\n    result = None"
+    },
+    {
+      "query_id": "APD/2016/page_96.pdf-1",
+      "query": "considering the years 2014-2016 , what was the average cash paid for interest?",
+      "gold": [
+        117.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "def average_cash_paid_for_interest():\n    # Filter rows for the years 2014-2016\n    debt_rows = row_values(\"total debt\", col_filter=[\"2016\", \"2015\"])\n    \n    # Calculate the average cash paid for interest\n    total_interest = 0\n    count = 0\n    for debt in debt_rows:\n        if debt is not None:\n            total_interest += debt\n            count += 1\n    \n    if count > 0:\n        result = total_interest / count\n    else:\n        result = None\n\naverage_cash_paid_for_interest()"
+    },
+    {
+      "query_id": "PM/2015/page_127.pdf-2",
+      "query": "what is the percentage increase in total accumulated other comprehensive losses from 2013 to 2014?",
+      "gold": [
+        62.9
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Calculate the percentage increase in total accumulated other comprehensive losses from 2013 to 2014\ntotal_2013 = cell('total accumulated other comprehensive losses', '2013')\ntotal_2014 = cell('total accumulated other comprehensive losses', '2014')\n\nif total_2013 is not None and total_2014 is not None:\n    percentage_increase = ((total_2014 - total_2013) / total_2013) * 100\n    result = percentage_increase\nelse:\n    result = None"
+    },
+    {
+      "query_id": "APD/2013/page_32.pdf-1",
+      "query": "what was the percentual increase of other income due to favorable foreign exchange and reimbursements in 2011?",
+      "gold": [
+        11.46
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'str' and 'float'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Get the values for 2011\nother_income_2011 = cell('interest expense', '2011') - cell('less : capitalized interest', '2011')\n\n# Get the values for 2012\nother_income_2012 = cell('interest expense', '2012') - cell('less : capitalized interest', '2012')\n\n# Calculate the percentual increase\nif other_income_2011 != 0:\n    percentual_increase = ((other_income_2012 - other_income_2011) / other_income_2011) * 100\nelse:\n    percentual_increase = float('inf')  # or handle division by zero as needed\n\nresult = percentual_increase"
+    },
+    {
+      "query_id": "RSG/2017/page_142.pdf-2",
+      "query": "what was the percent change in the weighted average cost per share from 2016 to 2017",
+      "gold": [
+        31.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "# Calculate the weighted average cost per share for 2016 and 2017\nweighted_avg_cost_2016 = cell('weighted average cost per share', '2016')\nweighted_avg_cost_2017 = cell('weighted average cost per share', '2017')\n\n# Calculate the percent change\npercent_change = ((weighted_avg_cost_2017 - weighted_avg_cost_2016) / weighted_avg_cost_2016) * 100\n\nresult = percent_change"
+    },
+    {
+      "query_id": "GPN/2009/page_70.pdf-1",
+      "query": "what is the average yearly amortization expense related to contract-based intangible assets , ( in thousands ) ?",
+      "gold": [
+        103.1
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ZeroDivisionError: division by zero",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = sum(col_values(\"contract-based intangible assets\", \"total\")) / len(col_values(\"contract-based intangible assets\", \"total\"))"
+    },
+    {
+      "query_id": "PNC/2009/page_41.pdf-4",
+      "query": "what percentage of total commercial mortgages were at fair value?",
+      "gold": [
+        71.1
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'float'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "total_commercial_mortgages = cell('total commercial mortgages', 'dec.31 2009')\nfair_value_commercial_mortgages = cell('commercial mortgages at fair value', 'dec.31 2009')\n\npercentage = (fair_value_commercial_mortgages / total_commercial_mortgages) * 100\n\nresult = percentage"
+    },
+    {
+      "query_id": "KHC/2016/page_23.pdf-4",
+      "query": "as of december 31 , 2016 , what percentage of manufacturing and processing facilities are owned?",
+      "gold": [
+        95.4
+      ],
+      "pred": "2.017010935601458",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Get the total number of manufacturing and processing facilities\ntotal_facilities = cell('united states', 'owned') + cell('united states', 'leased') + \\\n                   cell('canada', 'owned') + cell('canada', 'leased') + \\\n                   cell('europe', 'owned') + cell('europe', 'leased') + \\\n                   cell('rest of world', 'owned') + cell('rest of world', 'leased')\n\n# Get the number of owned facilities\nowned_facilities = cell('united states', 'owned') + cell('canada', 'owned') + \\\n                   cell('europe', 'owned') + cell('rest of world', 'owned')\n\n# Calculate the percentage of owned facilities\nif total_facilities > 0:\n    result = (owned_facilities / total_facilities) * 100\nelse:\n    result = 0"
+    },
+    {
+      "query_id": "VNO/2012/page_84.pdf-2",
+      "query": "what was the total five year change in the s&p 500 index?",
+      "gold": [
+        9.0
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 2,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = sum(col_values('s&p 500 index', None))"
+    },
+    {
+      "query_id": "ETR/2002/page_86.pdf-2",
+      "query": "in 2002 what was the ratio of the annual cash sinking fund requirements for debt outstanding that was due in 2004 to 2005",
+      "gold": [
+        1.7
+      ],
+      "pred": "0.9995012468827931",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Calculate the ratio of the annual cash sinking fund requirements for debt outstanding due in 2004 to 2005 in 2002\nresult = (\n    row_values(\"2004\", col_filter=\"2003\")[-1] / \n    row_values(\"2005\", col_filter=\"2003\")[-1]\n)"
+    },
+    {
+      "query_id": "VRTX/2003/page_71.pdf-2",
+      "query": "what percent of the total common stock plans are related to the vertex 401 ( k ) plan?",
+      "gold": [
+        0.6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'str' and 'str'",
+      "n_repair": 2,
+      "trace_flags": [],
+      "code": "total_common_stock = cell('total', 'common stock under stock and option plans')\nvertex_401k_plan = cell('common stock under the vertex 401 ( k ) plan', 'common stock under stock and option plans')\n\npercent_vertex_401k = (vertex_401k_plan / total_common_stock) * 100\n\nresult = percent_vertex_401k"
+    }
+  ]
+}

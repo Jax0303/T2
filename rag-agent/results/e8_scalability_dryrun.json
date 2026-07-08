@@ -1,0 +1,50 @@
+{
+  "experiment": "E7_retrieval_ablation",
+  "hypothesis": "H5/H6: at a fixed solver, retrieval (small+complete) vs whole-table/dense; gain tracks precision",
+  "split": "dev",
+  "seed": 42,
+  "llm": "groq:llama-3.1-8b-instant",
+  "mode": "codegen",
+  "baseline_arm": "ohd_lite",
+  "dry_run": true,
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161
+  },
+  "arms": {
+    "enum_treated": {
+      "osc": 0.6522,
+      "mean_cells": 39.5,
+      "mean_tokens": 953.0,
+      "n_oversize_est": 0,
+      "token_ratio_vs_ohd_lite": 8.94
+    },
+    "enum_cross": {
+      "osc": 0.5963,
+      "mean_cells": 30.8,
+      "mean_tokens": 753.0,
+      "n_oversize_est": 0,
+      "token_ratio_vs_ohd_lite": 11.31
+    },
+    "ohd_lite": {
+      "osc": 1.0,
+      "mean_cells": 160.0,
+      "mean_tokens": 8518.0,
+      "n_oversize_est": 56
+    },
+    "oracle": {
+      "osc": 1.0,
+      "mean_cells": 3.0,
+      "mean_tokens": 65.0,
+      "n_oversize_est": 0,
+      "token_ratio_vs_ohd_lite": 131.04
+    },
+    "dense_k10": {
+      "osc": 0.7888,
+      "mean_cells": 57.3,
+      "mean_tokens": 1502.0,
+      "n_oversize_est": 0,
+      "token_ratio_vs_ohd_lite": 5.67
+    }
+  }
+}

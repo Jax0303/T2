@@ -1,0 +1,1020 @@
+From 3e3e756f60c77bed8c46aa6ace6ef77dea3012d8 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 7 Jun 2026 15:20:19 +0000
+Subject: [PATCH] HPIR: header-path query resolution as shared IR for
+ split-store table-RAG
+
+Main contribution: a single query-understanding module that maps an NL table
+question to a hierarchical header-path intent, applied in two regimes to attack
+both measured bottlenecks (retrieval 29% / answer 71%) whose common cause is
+that the query's target header path is never made explicit.
+
+- rag_agent/query/header_path_resolver.py
+  * expand_for_retrieval (corpus-free): strip narrative, keep header-likely
+    tokens + operation hints; keep year tokens (HiTab year columns)
+  * resolve_against_table (table-grounded): rank the table's real top/left
+    header paths against the query; every binding is guaranteed to exist
+  * resolve_intent: optional LLM refinement intersected with the real header
+    inventory + deterministic backfill, so no hallucinated binding can leak
+- scripts/hpir_retrieval_eval.py: raw vs HPIR-expanded query on the same pool
+  (dense / keyword), paired bootstrap 95% CI + exact McNemar on R@1, per-class
+- scripts/method_grounded.py: add --mode hpir (naive/grounded/hpir 3-way
+  ablation), injecting resolved header-path bindings into the grounded prompt
+- tests/test_header_path_resolver.py: 11 deterministic tests (no data/GPU),
+  full suite 30 passing
+- stores/vector_store.py: lazy chromadb import so the package imports in a bare
+  env (enables CI/unit tests without chroma)
+- docs/METHOD_HPIR.md, configs/hpir.yaml, STATE.md progress log
+
+Numbers to be produced on the data/GPU machine (this container has no HiTab
+data, GPU, Qwen, or Chroma); harness + unit tests are complete here.
+
+https://claude.ai/code/session_017qWt67PrHGBEDxRQwzXo4W
+---
+ rag-agent/STATE.md                            |  12 +
+ rag-agent/configs/hpir.yaml                   |  35 ++
+ rag-agent/docs/METHOD_HPIR.md                 | 106 ++++++
+ rag-agent/rag_agent/query/__init__.py         |  14 +
+ .../rag_agent/query/header_path_resolver.py   | 317 ++++++++++++++++++
+ rag-agent/rag_agent/stores/vector_store.py    |   3 +-
+ rag-agent/scripts/hpir_retrieval_eval.py      | 177 ++++++++++
+ rag-agent/scripts/method_grounded.py          |  28 +-
+ rag-agent/tests/test_header_path_resolver.py  | 157 +++++++++
+ 9 files changed, 839 insertions(+), 10 deletions(-)
+ create mode 100644 rag-agent/configs/hpir.yaml
+ create mode 100644 rag-agent/docs/METHOD_HPIR.md
+ create mode 100644 rag-agent/rag_agent/query/__init__.py
+ create mode 100644 rag-agent/rag_agent/query/header_path_resolver.py
+ create mode 100644 rag-agent/scripts/hpir_retrieval_eval.py
+ create mode 100644 rag-agent/tests/test_header_path_resolver.py
+
+diff --git a/rag-agent/STATE.md b/rag-agent/STATE.md
+index 1754765..2a76d3a 100644
+--- a/rag-agent/STATE.md
++++ b/rag-agent/STATE.md
+@@ -115,3 +115,15 @@
+ - [x] Decision Gate 2·4 판정 → docs/VERDICT.md (둘 다 미트리거; 풀확대 시 dense 우위·ρ=+1.0)
+ - [ ] Phase 3 — 라우팅 A1–A4/FULL + paired bootstrap + 층화 (codegen 경로, 추가 LLM 실행 필요)
+ - [ ] Gate 1·3 판정, VERDICT.md 완성
++
++## 9. 메인 기여 — HPIR (Header-Path Intent Resolution) (2026-06-07)
++주제 확정: 쿼리를 **계층 헤더경로 IR**로 변환해 분리-스토어의 검색·답변을 동시에 끌어올리는
++쿼리-이해 모듈. 두 병목(검색29%/답변71%)의 공통 원인("헤더경로 미명시")을 한 모듈로 공략.
++- [x] 코어 `rag_agent/query/header_path_resolver.py` — 결정론 + 검증형 LLM 정련(인벤토리 교집합)
++- [x] 단위테스트 `tests/test_header_path_resolver.py` (11) — 데이터 불필요, 전체 30 통과
++- [x] 검색 하니스 `scripts/hpir_retrieval_eval.py` — raw vs HPIR확장, paired bootstrap+McNemar
++- [x] 답변 하니스 `scripts/method_grounded.py --mode hpir` — naive/grounded/hpir 3-way ablation
++- [x] `docs/METHOD_HPIR.md`, `configs/hpir.yaml`
++- [x] `stores/vector_store.py` chromadb import 지연화(bare 환경 테스트 가능하게)
++- [ ] **수치 산출(로컬 RTX 3060 Ti)**: hpir_retrieval.json + method_hpir_pc20.json → METHOD_HPIR §3 표 채우기
++      (본 원격 컨테이너엔 데이터/GPU/Qwen/Chroma 부재 → 실행만 데이터 보유 머신에서)
+diff --git a/rag-agent/configs/hpir.yaml b/rag-agent/configs/hpir.yaml
+new file mode 100644
+index 0000000..b98edc8
+--- /dev/null
++++ b/rag-agent/configs/hpir.yaml
+@@ -0,0 +1,35 @@
++# HPIR — Header-Path Intent Resolution (query processing) experiment config
++# 메인 주제: 분리-스토어(VDB↔원본 헤더트리)에서 쿼리를 계층 헤더경로 IR로 변환,
++# 검색·답변 양쪽을 수치로 검증.
++
++method: "hpir"
++seed: 42
++
++# ── 검색 평가 (scripts/hpir_retrieval_eval.py) ──
++retrieval:
++  embedder: "BAAI/bge-large-en-v1.5"
++  collection: "plain_markdown_bge_large_en_v1_5"
++  device: "cuda"          # cpu | cuda
++  topk: 540               # >= pool 크기여야 full ranking
++  split: "dev"
++  variants: ["dense", "dense_hpir", "keyword", "keyword_hpir"]
++  significance: ["paired_bootstrap_95ci", "mcnemar_exact_r1"]
++  out: "results/hpir_retrieval.json"
++
++# ── 답변 평가 (scripts/method_grounded.py) ──
++answer:
++  llm: "local:Qwen/Qwen2.5-7B-Instruct"   # 4-bit
++  retrieval: "gold"       # 답변 단계 격리
++  per_class: 20           # hard 5클래스 × 20 = 100
++  repairs: 2              # grounded/hpir 자가수정 최대 횟수
++  max_tokens: 320
++  modes: ["naive", "grounded", "hpir"]
++  metric: "numeric_match_2pct"
++  ci: "bootstrap_2000"
++
++# ── resolver 하이퍼파라미터 ──
++resolver:
++  top_n_cols: 3
++  top_n_rows: 4
++  fuzzy_threshold: 0.4    # OriginalTable._fuzzy_* 기본값 재사용
++  keep_year_tokens: true  # HiTab에서 연도는 열 헤더 신호
+diff --git a/rag-agent/docs/METHOD_HPIR.md b/rag-agent/docs/METHOD_HPIR.md
+new file mode 100644
+index 0000000..897d0fb
+--- /dev/null
++++ b/rag-agent/docs/METHOD_HPIR.md
+@@ -0,0 +1,106 @@
++# METHOD_HPIR.md — Header-Path Intent Resolution
++
++생성: 2026-06-07 · 코드: `rag_agent/query/header_path_resolver.py` ·
++테스트: `tests/test_header_path_resolver.py` (11) ·
++평가: `scripts/hpir_retrieval_eval.py`, `scripts/method_grounded.py --mode hpir`
++
++---
++
++## 1. 문제 (수치 근거)
++
++분리-스토어 table-RAG(VDB ↔ 원본 헤더트리, 쿼리별 라우팅)의 두 병목은 **곱**으로 작용한다
++(`docs/VERDICT.md`, `docs/FAILURE_ANALYSIS.md`):
++
++| 병목 | 측정 | 핵심 원인 |
++|---|---|---|
++| 검색 | dense_header_path R@1 **0.49** ≫ plain 0.39 | 코퍼스가 *헤더경로*로 직렬화될 때 최고 → 그런데 검색기에 **원문 서술 질의**를 그대로 넣음(헤더 토큰 비율 낮음) |
++| 답변 | gold 표를 줘도 NM **0.447**; 답변실패의 **82%**가 bucket⑥(코드 실행됨·값 틀림) | 헤더를 **자유추측**으로 바인딩 → 빗나가도 예외 없이 조용히 틀림 |
++
++**공통 원인 한 줄:** *쿼리가 가리키는 계층 헤더경로가 파이프라인 어디에서도 명시되지 않는다.*
++
++## 2. 방법 — 헤더경로를 두 스토어의 공유 IR로
++
++HPIR는 들어온 질의를 **계층 헤더경로 의도**로 변환하는 단일 쿼리-이해 단계이며, 같은 목적함수를
++두 국면에 적용한다.
++
++```
++                         ┌──────────────────────────────┐
++   query  ────────────▶  │  Header-Path Intent Resolver │
++                         └───────┬───────────────┬──────┘
++            (corpus-free)        │               │   (table-grounded)
++        expand_for_retrieval     │               │  resolve_against_table
++                                 ▼               ▼
++                    ┌───────────────────┐  ┌──────────────────────────┐
++                    │ 헤더경로 정렬       │  │ 검색표의 실제 row/col      │
++                    │ 의사문서 → 검색     │  │ 헤더경로에 바인딩 → codegen│
++                    │ (R@1 병목 공략)     │  │ 힌트 (조용한 오류 공략)     │
++                    └───────────────────┘  └──────────────────────────┘
++```
++
++* **Regime 1 — 검색용(코퍼스-프리, `expand_for_retrieval`).** 서술을 제거하고 헤더가 될
++  법한 토큰만 남긴다(+연산 힌트). HiTab에서 **연도는 열 헤더**(`current $millions > 2014`)인
++  경우가 많아 *유지*한다 — 이는 `VERDICT.md`가 해롭다고 한 "쿼리 숫자 ↔ 전체 셀 매칭"과 다르다
++  (여기선 헤더경로 인덱스에 대한 토큰 신호). HyDE(Gao 2023)/query2doc(Wang 2023)의 구조화 변형.
++* **Regime 2 — 답변용(표-그라운디드, `resolve_against_table`).** 검색된 표의 *실제* top/left
++  헤더경로를 질의에 대해 랭킹하여 (row_path, col_path) 후보를 돌려준다. **반환 바인딩은 표에
++  존재함이 보장**되며(스토어의 fuzzy scorer 재사용), 이것이 자유추측 추출기에 없는 신호다.
++
++**노블티(차별점):**
++1. 분리-스토어 검색기의 **두 단계(검색·실행)를 잇는 명시적 공유 IR로 "계층 헤더경로"를 도입**.
++   기존 query expansion은 검색만, program-grounding(PAL/Self-Debugging)은 실행만 다룬다.
++2. **검증된 LLM 정련**(`resolve_intent`): LLM이 헤더를 골라도 **실제 인벤토리와 교집합**만
++   채택하고 결정론적 랭킹으로 백필 → LLM이 비존재 바인딩을 절대 주입 못함. self-debugging이
++   못 잡는 *예외 없는 grounding 오류*를 사전에 차단.
++3. 결정론적 코어(LLM 불필요) → **완전 단위테스트 가능**하고 저비용 베이스라인 제공.
++
++기존문헌 토대(실재): HyDE(arXiv 2212.10496), query2doc(arXiv 2303.07678), DTR(Herzig NAACL 2021),
++PAL(arXiv 2211.10435), Self-Debugging(ICLR 2024), LEVER(ICML 2023), HiTab(ACL 2022).
++
++## 3. 수치 검증 프로토콜 (메인)
++
++두 병목을 **각각 격리**해 측정한다(곱 구조이므로 분리 측정이 필수).
++
++### 3.1 검색 — 쿼리 처리 효과 격리
++`scripts/hpir_retrieval_eval.py`. 동일 검색기·동일 풀에서 **raw 질의 vs HPIR-확장 질의**만 다르게.
++
++```bash
++HITAB_DIR=/path/to/hitab CHROMA_DIR=/path/to/chroma_db \
++python scripts/hpir_retrieval_eval.py --device cuda --out results/hpir_retrieval.json
++```
++- 비교: `dense` vs `dense_hpir`, `keyword` vs `keyword_hpir`.
++- 지표: R@1/R@5/MRR/nDCG@10 + **paired bootstrap 95% CI** + **exact McNemar(R@1)**.
++- 층화: 난이도 6클래스 per-class R@1.
++- 판정선: HPIR-확장이 raw 대비 R@1을 **CI가 0을 제외**하는 폭으로 올리면 검색 기여 성립.
++
++### 3.2 답변 — 바인딩 힌트 효과 격리 (gold 검색 고정)
++`scripts/method_grounded.py`. 검색을 gold로 고정해 **답변 단계만** 본다. 3-way:
++
++```bash
++python scripts/method_grounded.py --mode naive    --per-class 20   # 하한
++python scripts/method_grounded.py --mode grounded --per-class 20   # 스키마+trace+repair
++python scripts/method_grounded.py --mode hpir     --per-class 20   # +HPIR 바인딩 힌트
++```
++- 지표: NM(±2%) overall + per-class(5 hard) + bootstrap CI(`scripts/bootstrap_ci.py`).
++- ablation 축: naive → grounded(스키마/trace/repair) → hpir(헤더경로 사전해소) 단조 비교.
++
++### 3.3 기존 측정 기준점 (동일 하니스, N=100, gold, Qwen2.5-7B-4bit, seed=42)
++| mode | NM | multi_op | arith_agg | pair_topk | single_arg | cmp_count |
++|---|---|---|---|---|---|---|
++| naive (`results/method_naive_pc20.json`) | 0.41 | 0.00 | 0.10 | 0.75 | 0.85 | 0.35 |
++| grounded (`results/method_grounded_pc20.json`) | 0.48 | 0.20 | 0.25 | 0.75 | 0.70 | 0.50 |
++| **hpir** | *측정 예정(로컬)* | | | | | |
++
++> 본 컨테이너에는 HiTab 데이터·GPU·Qwen·Chroma가 없어 수치는 **로컬(RTX 3060 Ti)에서 산출**한다.
++> 코드/하니스/단위테스트는 이 저장소에서 완결, 실행만 데이터 보유 머신에서.
++
++## 4. 한계 / 위협 타당성
++- HPIR 확장이 연도 토큰을 유지 → 연도 헤더가 없는 표에서는 noise일 수 있음(per-class로 점검).
++- gold 검색 격리는 답변 상한을 측정; end-to-end는 검색×답변 곱이라 3.1·3.2 결합 해석 필요.
++- 결정론 resolver의 fuzzy threshold(0.4)는 스토어 기본값 재사용 — 민감도는 후속 ablation 대상.
++
++## 5. 재현 자산
++- 코어: `rag_agent/query/header_path_resolver.py` (+`__init__.py`)
++- 테스트: `tests/test_header_path_resolver.py` — `python -m pytest tests/ -q` (데이터 불필요, 11+19 통과)
++- 검색 평가: `scripts/hpir_retrieval_eval.py`
++- 답변 평가: `scripts/method_grounded.py --mode {naive,grounded,hpir}`
++- 설정: `configs/hpir.yaml`
+diff --git a/rag-agent/rag_agent/query/__init__.py b/rag-agent/rag_agent/query/__init__.py
+new file mode 100644
+index 0000000..fd40f82
+--- /dev/null
++++ b/rag-agent/rag_agent/query/__init__.py
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: MIT
++"""Query-understanding layer.
++
++Resolves a natural-language table question into a *hierarchical header-path
++intent* — the shared intermediate representation between the (separate)
++vector store and the original header-tree store.
++"""
++from .header_path_resolver import (  # noqa: F401
++    HeaderPathIntent,
++    extract_target_terms,
++    expand_for_retrieval,
++    resolve_against_table,
++    resolve_intent,
++)
+diff --git a/rag-agent/rag_agent/query/header_path_resolver.py b/rag-agent/rag_agent/query/header_path_resolver.py
+new file mode 100644
+index 0000000..3346236
+--- /dev/null
++++ b/rag-agent/rag_agent/query/header_path_resolver.py
+@@ -0,0 +1,317 @@
++# SPDX-License-Identifier: MIT
++"""Header-Path Intent Resolution (HPIR).
++
++Motivation (measured, see ``docs/FAILURE_ANALYSIS.md`` / ``docs/VERDICT.md``):
++the two bottlenecks of the split-store table-RAG pipeline share one root cause —
++**the hierarchical header path the query refers to is never made explicit**.
++
++  * Retrieval bottleneck: the best retriever is the one over *header-path*
++    serialisations (``dense_header_path`` R@1 0.49 ≫ ``plain`` 0.39), yet it is
++    fed the raw narrative question, most tokens of which are not header text.
++  * Answer bottleneck: 82% of answer failures are "code runs fine but binds to
++    the wrong cell" — silent grounding errors from free-guessed header strings.
++
++HPIR is a single query-understanding step that maps the question to a structured
++header-path intent and applies it in two regimes:
++
++  1. ``expand_for_retrieval``  — corpus-free: strip narrative, keep header-likely
++     tokens (+ operation hints) → a pseudo-document aligned with the header-path
++     index. Boosts retrieval without touching the answer stage.
++  2. ``resolve_against_table`` — table-grounded: rank the retrieved table's
++     *actual* row/column header paths against the query, returning concrete
++     (row_path, col_path) bindings. The bindings are validated to *exist* in the
++     table, which is exactly the signal the free-guess extractor lacks.
++
++The module is deterministic by default (no LLM, fully unit-testable). An optional
++LLM can refine each regime, but its output is always validated against the
++table's real header inventory and falls back to the deterministic result, so the
++LLM can never introduce a non-existent binding.
++
++Related work the framing builds on (real): HyDE (Gao et al., 2023) and query2doc
++(Wang et al., 2023) for query expansion; DTR (Herzig et al., NAACL 2021) and
++header-path serialisation for table retrieval; PAL (Gao et al., 2023) and
++Self-Debugging (Chen et al., ICLR 2024) for program-grounded answering. HPIR's
++novelty is using the *hierarchical header path* as the explicit shared IR across
++both stages of a split-store retriever.
++"""
++from __future__ import annotations
++
++import re
++from dataclasses import dataclass, field
++from typing import List, Optional, Sequence, Tuple
++
++from ..router.query_classifier import QueryType, classify_query
++from ..stores.original_store import OriginalTable
++
++# ---------------------------------------------------------------------------
++# Tokenisation / term extraction
++# ---------------------------------------------------------------------------
++
++# Words that signal the *operation* rather than a header target. Dropping them
++# from the retrieval expansion keeps the pseudo-document close to header text.
++_OP_CUE_WORDS = {
++    "increase", "increased", "decrease", "decreased", "rise", "rose", "drop",
++    "dropped", "grew", "grow", "change", "changed", "difference", "differ",
++    "gap", "ratio", "fraction", "proportion", "percentage", "percent", "share",
++    "sum", "total", "combined", "average", "mean", "range", "spread", "times",
++    "more", "less", "fewer", "higher", "lower", "greater", "smaller", "larger",
++    "highest", "lowest", "largest", "smallest", "maximum", "minimum", "most",
++    "least", "biggest", "best", "worst", "peak", "top", "bottom", "compared",
++    "than", "versus", "vs", "exceed", "exceeded", "above", "below", "count",
++    "number", "how", "many", "much", "what", "which", "who", "where", "when",
++    "value", "amount", "rate",
++}
++
++# Generic stopwords (subset shared with OriginalDB; kept local to avoid coupling
++# to a script-level constant).
++_STOPWORDS = {
++    "a", "an", "the", "of", "in", "on", "at", "for", "to", "from", "by", "with",
++    "and", "or", "is", "was", "were", "be", "been", "are", "as", "it", "this",
++    "that", "do", "does", "did", "has", "have", "had", "then", "into", "their",
++    "there", "these", "those", "they", "them", "its", "his", "her", "our", "we",
++    "but", "not", "all", "any", "each", "per", "out", "over", "about", "also",
++    "between", "among", "within", "across", "during", "while", "whose", "whom",
++}
++
++_WORD_RE = re.compile(r"[A-Za-z][A-Za-z0-9_&$%/-]+|\d{4}")  # words or 4-digit years
++_YEAR_RE = re.compile(r"\b(1[89]\d{2}|20\d{2})\b")           # plausible year tokens
++
++
++def _tokenize(text: str) -> List[str]:
++    return [w.lower() for w in _WORD_RE.findall(text or "")]
++
++
++def extract_target_terms(query: str) -> List[str]:
++    """Content tokens that are *candidate header text* (order-preserving, unique).
++
++    Drops stopwords and operation cue-words but **keeps year tokens** — in HiTab,
++    years are frequently column headers (``current $millions > 2014``), so they
++    are signal for header-path retrieval (unlike free numeric-cell matching,
++    which ``VERDICT.md`` showed hurts).
++    """
++    seen: set = set()
++    out: List[str] = []
++    for tok in _tokenize(query):
++        is_year = bool(_YEAR_RE.fullmatch(tok))
++        if not is_year:
++            if tok in _STOPWORDS or tok in _OP_CUE_WORDS:
++                continue
++            if len(tok) < 3:
++                continue
++        if tok not in seen:
++            seen.add(tok)
++            out.append(tok)
++    return out
++
++
++# ---------------------------------------------------------------------------
++# Structured intent
++# ---------------------------------------------------------------------------
++
++@dataclass
++class HeaderPathIntent:
++    """Structured query intent — the shared header-path IR."""
++
++    operation: str                      # QueryType value (e.g. "arithmetic_agg")
++    needs_symbolic: bool                # arithmetic → symbolic/codegen path
++    target_terms: List[str]             # header-candidate tokens from the query
++    expansion: str                      # retrieval pseudo-document
++    col_paths: List[List[str]] = field(default_factory=list)  # table-grounded
++    row_paths: List[List[str]] = field(default_factory=list)  # table-grounded
++    source: str = "deterministic"       # "deterministic" | "llm" | "llm+fallback"
++
++    def binding_hint(self, max_each: int = 4) -> str:
++        """Human/LLM-readable suggested bindings for the grounded prompt."""
++        rows = [" > ".join(p) for p in self.row_paths[:max_each] if p]
++        cols = [" > ".join(p) for p in self.col_paths[:max_each] if p]
++        lines = [f"OPERATION: {self.operation}"]
++        if rows:
++            lines.append("LIKELY ROW HEADERS: " + " | ".join(rows))
++        if cols:
++            lines.append("LIKELY COL HEADERS: " + " | ".join(cols))
++        return "\n".join(lines)
++
++
++# ---------------------------------------------------------------------------
++# Regime 1 — corpus-free retrieval expansion
++# ---------------------------------------------------------------------------
++
++# Operation → header-likely hint tokens that the gold table's header path tends
++# to contain (e.g. a ratio question's table usually has a "total" header).
++_OP_HINTS = {
++    QueryType.ARITHMETIC_AGG: ["total", "percent"],
++    QueryType.MULTI_OP_FORMULA: ["total", "percent"],
++    QueryType.COMPARISON_OR_COUNT: ["total"],
++}
++
++
++def expand_for_retrieval(query: str, intent: Optional[HeaderPathIntent] = None) -> str:
++    """Build a header-path-aligned pseudo-document for retrieval.
++
++    Returns a space-joined token string usable by either a dense embedder or a
++    keyword retriever. Deterministic; no table needed.
++    """
++    qintent = classify_query(query)
++    terms = extract_target_terms(query)
++    hints = _OP_HINTS.get(qintent.qtype, [])
++    # Keep target terms first (highest weight under bag-of-words), then op hints.
++    tokens = terms + [h for h in hints if h not in terms]
++    return " ".join(tokens)
++
++
++# ---------------------------------------------------------------------------
++# Regime 2 — table-grounded resolution
++# ---------------------------------------------------------------------------
++
++def _rank_paths(
++    table: OriginalTable, terms: Sequence[str], axis: str, top_n: int
++) -> List[List[str]]:
++    """Rank an axis's distinct header paths by fuzzy overlap with query terms."""
++    n = table.n_cols if axis == "col" else table.n_rows
++    path_of = table.col_path if axis == "col" else table.row_path
++    query_str = " ".join(terms)
++    scored: List[Tuple[float, str, List[str]]] = []
++    seen: set = set()
++    for i in range(n):
++        p = path_of(i)
++        if not p:
++            continue
++        key = " > ".join(p)
++        if key in seen:
++            continue
++        seen.add(key)
++        s = table._fuzzy_score(query_str, p)  # reuse store's token+similarity scorer
++        if s > 0:
++            scored.append((s, key, p))
++    scored.sort(key=lambda t: (-t[0], t[1]))
++    return [p for _, _, p in scored[:top_n]]
++
++
++def resolve_against_table(
++    query: str,
++    table: OriginalTable,
++    top_n_cols: int = 3,
++    top_n_rows: int = 4,
++) -> HeaderPathIntent:
++    """Resolve the query to concrete header paths that *exist* in ``table``.
++
++    Deterministic: ranks the table's real top/left header paths against the
++    query's target terms using the store's own fuzzy scorer, so every returned
++    binding is guaranteed to be a real header path (no free guessing).
++    """
++    qintent = classify_query(query)
++    terms = extract_target_terms(query)
++    col_paths = _rank_paths(table, terms, "col", top_n_cols)
++    row_paths = _rank_paths(table, terms, "row", top_n_rows)
++    return HeaderPathIntent(
++        operation=qintent.qtype.value,
++        needs_symbolic=qintent.needs_symbolic,
++        target_terms=terms,
++        expansion=expand_for_retrieval(query),
++        col_paths=col_paths,
++        row_paths=row_paths,
++        source="deterministic",
++    )
++
++
++# ---------------------------------------------------------------------------
++# Optional LLM refinement (validated against the real header inventory)
++# ---------------------------------------------------------------------------
++
++_LLM_RESOLVE_SYS = (
++    "You map a table question to the header paths it refers to. "
++    "You are given the table's ROW HEADERS and COL HEADERS. "
++    "Return JSON {\"row_headers\": [...], \"col_headers\": [...]} choosing ONLY "
++    "from the given lists (copy strings exactly). No commentary, JSON only."
++)
++
++_JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
++
++
++def _distinct_paths(table: OriginalTable, axis: str, cap: int = 60) -> List[List[str]]:
++    n = table.n_cols if axis == "col" else table.n_rows
++    path_of = table.col_path if axis == "col" else table.row_path
++    seen, out = set(), []
++    for i in range(n):
++        p = path_of(i)
++        key = " > ".join(p)
++        if p and key not in seen:
++            seen.add(key)
++            out.append(p)
++        if len(out) >= cap:
++            break
++    return out
++
++
++def resolve_intent(
++    query: str,
++    table: OriginalTable,
++    llm=None,
++    top_n_cols: int = 3,
++    top_n_rows: int = 4,
++) -> HeaderPathIntent:
++    """Table-grounded resolution, optionally refined by an LLM.
++
++    Always starts from the deterministic resolution. If ``llm`` is given, asks it
++    to pick header paths from the real inventory and *intersects* the answer with
++    paths that actually exist; any hallucinated path is dropped and the
++    deterministic ranking backfills, so bindings remain grounded.
++    """
++    base = resolve_against_table(query, table, top_n_cols, top_n_rows)
++    if llm is None:
++        return base
++
++    import json
++
++    rows_inv = [" > ".join(p) for p in _distinct_paths(table, "row")]
++    cols_inv = [" > ".join(p) for p in _distinct_paths(table, "col")]
++    user = (
++        f"Question: {query}\n\n"
++        f"ROW HEADERS:\n- " + "\n- ".join(rows_inv) + "\n\n"
++        f"COL HEADERS:\n- " + "\n- ".join(cols_inv) + "\n\nJSON only."
++    )
++    try:
++        raw = llm.complete(system=_LLM_RESOLVE_SYS, user=user, max_tokens=200)
++    except Exception:
++        return base
++    m = _JSON_RE.search(raw or "")
++    if not m:
++        return base
++    try:
++        obj = json.loads(m.group(0))
++    except json.JSONDecodeError:
++        return base
++
++    def _valid(cands, axis) -> List[List[str]]:
++        out, seen = [], set()
++        for s in cands or []:
++            for real in _distinct_paths(table, axis):
++                key = " > ".join(real)
++                if key in seen:
++                    continue
++                # accept if the LLM string matches (substring either way) a real path
++                if table._match_path(str(s), real) or str(s).strip().lower() in key.lower():
++                    out.append(real)
++                    seen.add(key)
++                    break
++        return out
++
++    llm_rows = _valid(obj.get("row_headers"), "row")
++    llm_cols = _valid(obj.get("col_headers"), "col")
++
++    # Backfill from deterministic ranking so we never regress to empty.
++    def _merge(primary, fallback, cap):
++        out, seen = [], set()
++        for p in primary + fallback:
++            key = " > ".join(p)
++            if key not in seen:
++                seen.add(key)
++                out.append(p)
++            if len(out) >= cap:
++                break
++        return out
++
++    base.row_paths = _merge(llm_rows, base.row_paths, top_n_rows)
++    base.col_paths = _merge(llm_cols, base.col_paths, top_n_cols)
++    base.source = "llm" if (llm_rows or llm_cols) else "llm+fallback"
++    return base
+diff --git a/rag-agent/rag_agent/stores/vector_store.py b/rag-agent/rag_agent/stores/vector_store.py
+index 01c4000..9b255c2 100644
+--- a/rag-agent/rag_agent/stores/vector_store.py
++++ b/rag-agent/rag_agent/stores/vector_store.py
+@@ -12,8 +12,6 @@ from collections import OrderedDict
+ from dataclasses import dataclass
+ from typing import Dict, List, Optional
+ 
+-import chromadb
+-
+ logger = logging.getLogger(__name__)
+ 
+ 
+@@ -54,6 +52,7 @@ class VectorStore:
+         device: Optional[str] = None,
+         collection_name: Optional[str] = None,
+     ) -> None:
++        import chromadb
+         from sentence_transformers import SentenceTransformer
+         import torch
+ 
+diff --git a/rag-agent/scripts/hpir_retrieval_eval.py b/rag-agent/scripts/hpir_retrieval_eval.py
+new file mode 100644
+index 0000000..1ed0533
+--- /dev/null
++++ b/rag-agent/scripts/hpir_retrieval_eval.py
+@@ -0,0 +1,177 @@
++#!/usr/bin/env python3
++"""HPIR retrieval evaluation — does header-path query expansion improve search?
++
++Isolates the *query-processing* effect: the SAME retriever and the SAME candidate
++pool are run on (a) the raw narrative query and (b) the HPIR-expanded query
++(``rag_agent.query.expand_for_retrieval``). Any delta is attributable to query
++processing alone, not to the index or the embedder.
++
++Retrievers compared (each raw vs +HPIR):
++  dense    : Chroma BGE-large (plain_markdown collection)   — DPR/DTR lineage
++  keyword  : original-store header/cell token overlap
++
++Metrics (DTR R@k protocol; HiTab dev; single-gold binary nDCG):
++  R@1, R@5, MRR, nDCG@10  + paired bootstrap 95% CI + exact McNemar on R@1.
++
++Run (on the machine that holds the HiTab data + chroma index):
++
++  HITAB_DIR=/path/to/hitab CHROMA_DIR=/path/to/chroma_db \
++  python scripts/hpir_retrieval_eval.py --limit 1671 \
++      --out results/hpir_retrieval.json
++
++Leave ``--limit`` off for the full dev set. ``--device cuda`` for GPU embedding.
++"""
++from __future__ import annotations
++
++import argparse
++import json
++import os
++import sys
++import time
++from collections import defaultdict
++from pathlib import Path
++
++HERE = Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++sys.path.insert(0, str(HERE.parent))
++
++import codegen_eval as ce          # noqa: E402  (OriginalDB / VectorDB / loaders)
++import retrieval_eval as re_eval   # noqa: E402  (paired_bootstrap / mcnemar / metrics)
++from rag_agent.query import expand_for_retrieval  # noqa: E402
++from rag_agent.eval.metrics import difficulty_class  # noqa: E402
++
++
++def _metrics(ids, gold):
++    return {
++        "r1": re_eval.r_at_k(ids, gold, 1),
++        "r5": re_eval.r_at_k(ids, gold, 5),
++        "mrr": re_eval.mrr(ids, gold),
++        "ndcg": re_eval.ndcg_at_k(ids, gold, 10),
++    }
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--limit", type=int, default=None, help="cap eval queries")
++    ap.add_argument("--topk", type=int, default=540, help="rank depth (>= pool for full ranking)")
++    ap.add_argument("--device", default="cpu", help="embedder device: cpu|cuda")
++    ap.add_argument("--out", default="results/hpir_retrieval.json")
++    args = ap.parse_args()
++
++    # honour env overrides for portability across machines
++    ce.HITAB_DIR = os.environ.get("HITAB_DIR", ce.HITAB_DIR)
++    ce.CHROMA_DIR = os.environ.get("CHROMA_DIR", ce.CHROMA_DIR)
++
++    samples = ce.load_samples("dev")
++    if args.limit:
++        samples = samples[: args.limit]
++
++    print("Building OriginalDB pool (dev unique gold tables)...")
++    orig = ce.OriginalDB()
++    seen = set()
++    for s in samples:
++        tid = ce.get_table_id(s)
++        if tid and tid not in seen:
++            raw = ce.load_table(tid)
++            if raw:
++                orig.add(raw)
++                seen.add(tid)
++    pool = set(orig._tables)
++    print(f"  pool: {len(pool)} tables")
++
++    print(f"Loading VectorDB (BGE-large, {args.device})...")
++    vdb = ce.VectorDB(ce.CHROMA_DIR, device=args.device)
++
++    # retriever variants: (name, fn(query)->ranked_ids)
++    def dense(q):
++        return [t for t, _ in vdb.search(q, top_k=args.topk, allowed_ids=pool)]
++
++    def keyword(q):
++        return [t for t, _ in orig.keyword_search(q, top_k=args.topk)]
++
++    variants = {
++        "dense": lambda q: dense(q),
++        "dense_hpir": lambda q: dense(expand_for_retrieval(q)),
++        "keyword": lambda q: keyword(q),
++        "keyword_hpir": lambda q: keyword(expand_for_retrieval(q)),
++    }
++
++    rows = []
++    miss = 0
++    t0 = time.time()
++    for i, s in enumerate(samples):
++        q = ce.get_query(s)
++        gold = ce.get_table_id(s)
++        if gold not in pool:
++            miss += 1
++            continue
++        row = {"cls": difficulty_class(s), "gold": gold}
++        for name, fn in variants.items():
++            row[name] = _metrics(fn(q), gold)
++        rows.append(row)
++        if (i + 1) % 100 == 0:
++            print(f"  {i+1}/{len(samples)}  ({time.time()-t0:.0f}s)")
++
++    names = list(variants)
++    mets = ["r1", "r5", "mrr", "ndcg"]
++
++    def overall(name, m):
++        return sum(r[name][m] for r in rows) / len(rows) if rows else 0.0
++
++    print("\n" + "=" * 70)
++    print(f"pool {len(pool)} | eval {len(rows)} (out-of-pool gold {miss} skipped)")
++    print("=" * 70)
++    print(f"{'retriever':<16}" + "".join(f"{x:>9}" for x in ["R@1", "R@5", "MRR", "nDCG@10"]))
++    for name in names:
++        print(f"{name:<16}" + "".join(f"{overall(name, m):>9.3f}" for m in mets))
++
++    # paired comparisons: each retriever raw vs +HPIR
++    print("\npaired (HPIR - raw; 95% bootstrap CI; * excludes 0)")
++    comparisons = {}
++    for base, hpir in (("dense", "dense_hpir"), ("keyword", "keyword_hpir")):
++        print(f"\n  {base}  →  {hpir}")
++        comp = {}
++        for m in mets:
++            diffs = [r[hpir][m] - r[base][m] for r in rows]
++            mean, lo, hi = re_eval.paired_bootstrap(diffs)
++            sig = "*" if (lo > 0 or hi < 0) else " "
++            print(f"    Δ{m.upper():<8} {mean:+.4f}  [{lo:+.4f}, {hi:+.4f}] {sig}")
++            comp[m] = {"delta": mean, "ci": [lo, hi], "sig": sig.strip() == "*"}
++        b01, b10, p = re_eval.mcnemar([r[base]["r1"] for r in rows],
++                                      [r[hpir]["r1"] for r in rows])
++        print(f"    McNemar R@1: HPIR>raw={b01} raw>HPIR={b10} p={p:.4g}")
++        comp["mcnemar_r1"] = {"hpir_better": b01, "raw_better": b10, "p": p}
++        comparisons[f"{base}_vs_{hpir}"] = comp
++
++    by_cls = defaultdict(list)
++    for r in rows:
++        by_cls[r["cls"]].append(r)
++    cls_out = {}
++    print("\nper-class R@1 (dense raw vs dense+HPIR)")
++    for cls, rs in sorted(by_cls.items()):
++        a = sum(r["dense"]["r1"] for r in rs) / len(rs)
++        b = sum(r["dense_hpir"]["r1"] for r in rs) / len(rs)
++        print(f"  {cls:<22} raw={a:.3f}  hpir={b:.3f}  (n={len(rs)})")
++        cls_out[cls] = {"dense_r1": a, "dense_hpir_r1": b, "n": len(rs)}
++
++    out = {
++        "config": {
++            "pool_size": len(pool), "n_eval": len(rows), "gold_out_of_pool": miss,
++            "topk": args.topk, "device": args.device,
++            "embedder": "BAAI/bge-large-en-v1.5",
++            "collection": "plain_markdown_bge_large_en_v1_5",
++            "protocol": "DTR R@k (Herzig et al. NAACL 2021); HiTab dev; binary single-gold nDCG",
++            "method": "HPIR expand_for_retrieval (header-path query expansion)",
++        },
++        "overall": {name: {m: overall(name, m) for m in mets} for name in names},
++        "paired": comparisons,
++        "by_class": cls_out,
++    }
++    outp = Path(args.out)
++    outp.parent.mkdir(parents=True, exist_ok=True)
++    outp.write_text(json.dumps(out, indent=2, ensure_ascii=False))
++    print(f"\nsaved: {outp}")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/rag-agent/scripts/method_grounded.py b/rag-agent/scripts/method_grounded.py
+index 52c8ace..93f68f5 100644
+--- a/rag-agent/scripts/method_grounded.py
++++ b/rag-agent/scripts/method_grounded.py
+@@ -12,11 +12,13 @@
+                        trace를 모델에 되먹여 재생성(≤k)  ← 조용한 오류를 잡는 핵심 노블티
+   (4) 숫자 verifier  : 최종 result 형태 점검(정답 미사용)
+ 
+-두 모드 비교(동일 모델·질의셋·채점, 검색=gold 고정 → 답변단계만 격리):
++세 모드 비교(동일 모델·질의셋·채점, 검색=gold 고정 → 답변단계만 격리):
+   --mode naive     : 느슨한 cell(str,str) 1-shot, 스키마/트레이스/리페어 없음
+-  --mode grounded  : 위 (1)-(4) 전부
++  --mode grounded  : 위 (1)-(4) 전부 (스키마+trace+repair)
++  --mode hpir      : grounded + HPIR 헤더경로 바인딩 힌트 주입
++                     (쿼리를 표의 실제 헤더경로로 사전 해소 → 제안 바인딩을 프롬프트에 주입)
+ 
+-사용: python scripts/method_grounded.py --mode grounded --per-class 15 [--repairs 2] [--retrieval gold]
++사용: python scripts/method_grounded.py --mode hpir --per-class 15 [--repairs 2] [--retrieval gold]
+ """
+ from __future__ import annotations
+ 
+@@ -34,6 +36,7 @@ sys.path.insert(0, str(ROOT))
+ from rag_agent.data.loader import load_samples, load_table          # noqa: E402
+ from rag_agent.stores.original_store import build_original_table, _to_float  # noqa: E402
+ from rag_agent.eval.metrics import numeric_match, exact_match, difficulty_class  # noqa: E402
++from rag_agent.query import resolve_against_table                    # noqa: E402
+ 
+ SEED = 42
+ HARD = ["multi_op_formula", "arithmetic_agg", "pair_or_topk_arg", "single_arg", "comparison_or_count"]
+@@ -175,12 +178,16 @@ GROUNDED_SYS = (
+     "Assign the final answer to `result`. Output ONLY a python code block.")
+ 
+ 
+-def build_user(title, question, tt: TracedTable, grounded: bool):
++def build_user(title, question, tt: TracedTable, grounded: bool, binding_hint: str = ""):
+     s = f"Table title: {title}\nQuestion: {question}\n"
+     if grounded:
+         rows = tt.list_rows(); cols = tt.list_cols()
+         s += "\nROW HEADERS (row_header 후보):\n- " + "\n- ".join(rows)
+         s += "\n\nCOL HEADERS (col_header 후보):\n- " + "\n- ".join(cols)
++    if binding_hint:
++        # HPIR: pre-resolved header-path bindings for THIS query (a prior, not a constraint).
++        s += ("\n\nHPIR SUGGESTED BINDINGS (resolved from the question; "
++              "prefer these if correct, but verify against the lists above):\n" + binding_hint)
+     s += "\n\nWrite python that sets `result` to the answer value."
+     return s
+ 
+@@ -224,7 +231,7 @@ def needs_repair(trace, result, err):
+ # ───────────────────────── main ─────────────────────────
+ def main():
+     ap = argparse.ArgumentParser()
+-    ap.add_argument("--mode", choices=["naive", "grounded"], required=True)
++    ap.add_argument("--mode", choices=["naive", "grounded", "hpir"], required=True)
+     ap.add_argument("--per-class", type=int, default=15)
+     ap.add_argument("--repairs", type=int, default=2, help="grounded 자가수정 최대 횟수")
+     ap.add_argument("--retrieval", choices=["gold"], default="gold")
+@@ -248,7 +255,8 @@ def main():
+ 
+     from rag_agent.llm.local_qwen import LocalQwenLLM
+     llm = LocalQwenLLM(default_max_tokens=args.max_tokens)
+-    sys_p = GROUNDED_SYS if args.mode == "grounded" else NAIVE_SYS
++    grounded = args.mode in ("grounded", "hpir")
++    sys_p = GROUNDED_SYS if grounded else NAIVE_SYS
+ 
+     rows = []
+     t0 = time.time()
+@@ -265,12 +273,16 @@ def main():
+         api = {"cell": tt.cell, "col_values": tt.col_values, "row_values": tt.row_values,
+                "list_rows": tt.list_rows, "list_cols": tt.list_cols}
+ 
+-        user = build_user(ot.title, q, tt, grounded=(args.mode == "grounded"))
++        binding_hint = ""
++        if args.mode == "hpir":
++            intent = resolve_against_table(q, ot)
++            binding_hint = intent.binding_hint()
++        user = build_user(ot.title, q, tt, grounded=grounded, binding_hint=binding_hint)
+         code = strip_code(llm.complete(sys_p, user, max_tokens=args.max_tokens))
+         tt.trace = []
+         result, err = run_code(code, api)
+         n_repair = 0
+-        if args.mode == "grounded":
++        if grounded:
+             while n_repair < args.repairs and needs_repair(tt.trace, result, err):
+                 fb = trace_feedback(code, tt.trace, result, err)
+                 code = strip_code(llm.complete(sys_p, user + "\n\n" + fb, max_tokens=args.max_tokens))
+diff --git a/rag-agent/tests/test_header_path_resolver.py b/rag-agent/tests/test_header_path_resolver.py
+new file mode 100644
+index 0000000..2032eb8
+--- /dev/null
++++ b/rag-agent/tests/test_header_path_resolver.py
+@@ -0,0 +1,157 @@
++# SPDX-License-Identifier: MIT
++"""Unit tests for HPIR (header-path intent resolution).
++
++These exercise the *deterministic* path only — no torch / chroma / HiTab data —
++so they run in CI and in a bare container. The LLM-refined path is covered by a
++fake-LLM stub.
++"""
++from __future__ import annotations
++
++import sys
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
++
++from rag_agent.query import (  # noqa: E402
++    expand_for_retrieval,
++    extract_target_terms,
++    resolve_against_table,
++    resolve_intent,
++)
++from rag_agent.query.header_path_resolver import HeaderPathIntent  # noqa: E402
++from rag_agent.stores.original_store import OriginalTable  # noqa: E402
++
++
++def _toy_table() -> OriginalTable:
++    """A 3×3 HiTab-style table with hierarchical top/left header paths."""
++    top = {
++        0: ["current $millions", "2013"],
++        1: ["current $millions", "2014"],
++        2: ["constant $millions", "2014"],
++    }
++    left = {
++        0: ["all federal obligations"],
++        1: ["department of defense"],
++        2: ["health and human services"],
++    }
++    data = [
++        [100.0, 110.0, 105.0],
++        [40.0, 44.0, 42.0],
++        [19.0, 20.0, 19.5],
++    ]
++    return OriginalTable(
++        table_id="toy",
++        title="federal s&e obligations to academic institutions",
++        data=data,
++        top_paths=[top[c] for c in range(3)],
++        left_paths=[left[r] for r in range(3)],
++        top_paths_by_col=top,
++        left_paths_by_row=left,
++    )
++
++
++# --- term extraction -------------------------------------------------------
++
++def test_extract_keeps_years_drops_cues_and_stopwords():
++    q = "how many percent did federal s&e obligations increase between 2013 and 2014?"
++    terms = extract_target_terms(q)
++    assert "2013" in terms and "2014" in terms        # years are header signal
++    assert "federal" in terms and "obligations" in terms
++    for dropped in ("how", "many", "percent", "increase", "and", "did"):
++        assert dropped not in terms
++
++
++def test_extract_is_order_preserving_and_unique():
++    terms = extract_target_terms("federal federal obligations obligations")
++    assert terms == ["federal", "obligations"]
++
++
++# --- retrieval expansion ---------------------------------------------------
++
++def test_expansion_strips_narrative_keeps_targets():
++    q = "how many percent did federal obligations increase between 2013 and 2014?"
++    exp = expand_for_retrieval(q)
++    assert "increase" not in exp and "how" not in exp
++    assert "federal" in exp and "2014" in exp
++
++
++def test_expansion_adds_operation_hint_for_ratio():
++    # an arithmetic/ratio question should append a "total"/"percent" header hint
++    exp = expand_for_retrieval("what percentage of theft cases involved a female accused?")
++    assert "total" in exp.split() or "percent" in exp.split()
++
++
++# --- table-grounded resolution --------------------------------------------
++
++def test_resolve_binds_to_existing_paths_only():
++    t = _toy_table()
++    intent = resolve_against_table(
++        "federal obligations in 2014", t, top_n_cols=3, top_n_rows=4
++    )
++    # every returned binding must be a real header path of the table
++    real_cols = {" > ".join(t.col_path(c)) for c in range(t.n_cols)}
++    real_rows = {" > ".join(t.row_path(r)) for r in range(t.n_rows)}
++    for p in intent.col_paths:
++        assert " > ".join(p) in real_cols
++    for p in intent.row_paths:
++        assert " > ".join(p) in real_rows
++
++
++def test_resolve_picks_the_right_row_and_year_column():
++    t = _toy_table()
++    intent = resolve_against_table("federal obligations in 2014", t)
++    assert ["all federal obligations"] in intent.row_paths
++    assert any("2014" in p for p in intent.col_paths)
++
++
++def test_resolve_sets_operation_and_symbolic_flag():
++    t = _toy_table()
++    intent = resolve_against_table(
++        "how many percent did federal obligations increase from 2013 to 2014?", t
++    )
++    assert intent.needs_symbolic is True
++    assert intent.operation in {"arithmetic_agg", "multi_op_formula"}
++
++
++def test_binding_hint_is_readable():
++    t = _toy_table()
++    hint = resolve_against_table("federal obligations in 2014", t).binding_hint()
++    assert "OPERATION:" in hint
++    assert "all federal obligations" in hint
++
++
++# --- LLM refinement (validated against inventory) --------------------------
++
++class _FakeLLM:
++    def __init__(self, payload: str):
++        self.payload = payload
++
++    def complete(self, system: str, user: str, max_tokens: int = 200) -> str:
++        return self.payload
++
++
++def test_llm_hallucinated_path_is_dropped():
++    t = _toy_table()
++    # LLM invents a column that does not exist; resolver must not surface it.
++    bad = _FakeLLM('{"row_headers": ["all federal obligations"], '
++                   '"col_headers": ["nonexistent header 9999"]}')
++    intent = resolve_intent("federal obligations 2014", t, llm=bad)
++    real_cols = {" > ".join(t.col_path(c)) for c in range(t.n_cols)}
++    for p in intent.col_paths:
++        assert " > ".join(p) in real_cols
++    assert ["all federal obligations"] in intent.row_paths
++
++
++def test_llm_none_equals_deterministic():
++    t = _toy_table()
++    a = resolve_against_table("federal obligations 2014", t)
++    b = resolve_intent("federal obligations 2014", t, llm=None)
++    assert a.row_paths == b.row_paths and a.col_paths == b.col_paths
++
++
++def test_llm_garbage_output_falls_back():
++    t = _toy_table()
++    intent = resolve_intent("federal obligations 2014", t, llm=_FakeLLM("not json at all"))
++    # falls back to deterministic, still grounded & non-empty
++    assert isinstance(intent, HeaderPathIntent)
++    assert intent.row_paths  # backfilled from deterministic ranking
++-- 
+2.43.0

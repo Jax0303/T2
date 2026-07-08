@@ -1,0 +1,28 @@
+[corpus_cell_recall:hitab] corpus cells=72471 from 540 tables
+  BM25 built in 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  51%|█████     | 101/199 [00:00<00:00, 1004.42it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1259.11it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en-v1.5
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  dense matrix (72471, 384) in 989s
+  25/300 (14s)
+  50/300 (25s)
+  75/300 (40s)
+  100/300 (49s)
+  125/300 (66s)
+  150/300 (73s)
+  175/300 (89s)
+  200/300 (104s)
+  225/300 (121s)
+  250/300 (136s)
+  275/300 (153s)
+  300/300 (169s)
+[bm25] table@10=0.7467 cell@10=0.5667 cellfull@10=0.5233 MRR=0.3712
+[dense] table@10=0.82 cell@10=0.6033 cellfull@10=0.5567 MRR=0.4508
+[hybrid] table@10=0.84 cell@10=0.67 cellfull@10=0.6067 MRR=0.4471
+
+→ /mnt/c/Users/ugh/T2/rag-agent/results/verify_dense_postfix.json

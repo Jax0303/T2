@@ -1,0 +1,41 @@
+{
+  "experiment": "E4_format",
+  "hypothesis": "H3: structured (header-path,value) context cuts silent grounding errors",
+  "split": "dev",
+  "seed": 42,
+  "llm": "groq:llama-3.1-8b-instant",
+  "mode": "codegen",
+  "retrieval": "oracle (gold operands fixed)",
+  "flat": {
+    "n": 158,
+    "nm_accuracy": 0.3354,
+    "silent_wrong_rate": 0.6646,
+    "non_number_rate": 0.0,
+    "buckets": {
+      "correct": 53,
+      "silent_wrong": 105,
+      "non_number": 0
+    }
+  },
+  "struct": {
+    "n": 158,
+    "nm_accuracy": 0.5759,
+    "silent_wrong_rate": 0.4241,
+    "non_number_rate": 0.0,
+    "buckets": {
+      "correct": 91,
+      "silent_wrong": 67,
+      "non_number": 0
+    }
+  },
+  "delta_nm_struct_minus_flat": 0.2405,
+  "delta_nm_ci95": [
+    0.1582,
+    0.3228
+  ],
+  "mcnemar": {
+    "struct_only": 49,
+    "flat_only": 11,
+    "n_discordant": 60
+  }
+}

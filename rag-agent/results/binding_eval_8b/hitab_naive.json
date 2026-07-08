@@ -1,0 +1,770 @@
+{
+  "bench": "hitab",
+  "mode": "naive",
+  "summary": {
+    "n": 50,
+    "n_all": 50,
+    "n_llm_failed": 0,
+    "acc": 0.06,
+    "nm_rate": 0.76,
+    "empty_rate": 0.02,
+    "clean_bind": 0.22,
+    "acc_given_clean": 0.2727
+  },
+  "rows": [
+    {
+      "query_id": "fe6407e2459997d5f135e8a88892a049",
+      "query": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+      "gold": [
+        "men"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = max(cell(\"Male\", \"Alcohol or drug use of perpetrator\") / cell(\"Male\", \"Total\"), \n             cell(\"Female\", \"Alcohol or drug use of perpetrator\") / cell(\"Female\", \"Total\"))"
+    },
+    {
+      "query_id": "03e2e33b61115022766eba43568f2a2d",
+      "query": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+      "gold": [
+        264.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "SyntaxError: unterminated string literal (detected at line 2) (<string>, line 2)",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "```python\nresult = cell('Stoke City', 'Appearances') - cell('Stoke City', 'Total') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appearances') - cell('Stoke City', 'Appearances') + cell('Stoke City', 'Appear"
+    },
+    {
+      "query_id": "76958999926314d82b80a5b39f21ed76",
+      "query": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+      "gold": [
+        83.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Immigrant men', 'High-paying firm') / cell('Immigrant men', 'Total') * 100"
+    },
+    {
+      "query_id": "76863f9b68412109d717820bb24dc71a",
+      "query": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+      "gold": [
+        "filipino"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'float'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Filipina women', 'Observed') - cell('Third-plus generation white women', 'Observed')"
+    },
+    {
+      "query_id": "8d3373fa0c42ed9d0fa3af23548d1e28",
+      "query": "what percent of bert gosnell's 233 games from 1921 to 1926 is winning?",
+      "gold": [
+        25.3
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('1921-1926', 'Bert Gosnell') / cell('1921-1926', 'Bert Gosnell')) * 100"
+    },
+    {
+      "query_id": "7615f60fffd339c61c4b9181ccaeeadd",
+      "query": "what is the industry with the highest share of female gig workers among all workers?",
+      "gold": [
+        "other services"
+      ],
+      "pred": "Services",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = max([(cell('Female', industry), industry) for industry in ['Agriculture', 'Manufacturing', 'Construction', 'Services'] if cell('Female', industry) != ''] or [0])[1]"
+    },
+    {
+      "query_id": "2b46cca80468a08a89b4679e726b92be",
+      "query": "among men who had been sexually assaulted off campus, how many percent indicated that this was the type of place where it happened?",
+      "gold": [
+        39.6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('Men', 'Off-campus') / cell('Men', 'Off-campus')) * 100"
+    },
+    {
+      "query_id": "c81134db64a98f22e28cddfb7de0a1a5",
+      "query": "what was the number of police-reported hate crimes motivated by race or ethnicity in 2015?",
+      "gold": [
+        641.0
+      ],
+      "pred": "7.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('Race or ethnicity', '2015')"
+    },
+    {
+      "query_id": "c486681bfdc34de8cf73363a0e33bc8a",
+      "query": "what was the number of actual combat soldiers of the male soviet force.",
+      "gold": [
+        1426352.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: TracedTable.cell() got an unexpected keyword argument 'row_filter'",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('Male', 'Soviet Force', row_filter='Actual Combat Soldiers')"
+    },
+    {
+      "query_id": "28f1b6d455a8e8b8d9d865fbc8afe22d",
+      "query": "what the time did ali bouraleh finish the heat in a time of?",
+      "gold": [
+        14.29
+      ],
+      "pred": "14.29",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('Ali Bouraleh', 'Heat Time')"
+    },
+    {
+      "query_id": "47d85b7882f9f3eaa0ef0096a5468423",
+      "query": "what was the number of appearances made by ben alnwick for sunderland in the 2004-05 championship season?",
+      "gold": [
+        3.0
+      ],
+      "pred": "False",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Ben Alnwick', 'Club') == cell('Sunderland', 'Club') and cell('Ben Alnwick', 'Season') == '2004-05' and cell('Ben Alnwick', 'League') == 'Championship' and cell('Ben Alnwick', 'Appearances')"
+    },
+    {
+      "query_id": "da4ddf61de0f34ee83b7829102ffe6d9",
+      "query": "which age group is most likely to volunteer informally?",
+      "gold": [
+        "15 to 19"
+      ],
+      "pred": "0.18181818181818182",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('Age Group', 'Frequency of Helping Others Directly') / cell('Age Group', 'Rate of Helping Others Directly')"
+    },
+    {
+      "query_id": "9aacfbb741d62de704b6e88938389c40",
+      "query": "totally which people of which sex were more likely to have strong family networks?",
+      "gold": [
+        "women"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: '>' not supported between instances of 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = 'Men' if cell('Men', 'Strong family network') > cell('Women', 'Strong family network') else 'Women'"
+    },
+    {
+      "query_id": "1972155590794ace1ebadbc045332edb",
+      "query": "which refugee category had a lower level of education in general?",
+      "gold": [
+        "government-assisted refugees"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ValueError: min() iterable argument is empty",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = min(col_values('Refugee Category'), key=lambda x: min(row_values(x, 'Level of Education')))"
+    },
+    {
+      "query_id": "b490e86698ea52bec432fd2c062eded2",
+      "query": "those who earned their doctorates more than 25 years ago were, as expected, how many percent was more likely to be working part time in 2010?",
+      "gold": [
+        14.4
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('Working part-time', 'More than 25 years ago') / cell('Working part-time', 'Total')) * 100 - 100"
+    },
+    {
+      "query_id": "a080b456f9a596237e7683fce6d819d9",
+      "query": "business r&d is concentrated in a small number of states, how many percent are with the 10 states with the highest levels of r&d performance accounting of the $233 billion total?",
+      "gold": [
+        0.681511
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "EMPTY"
+      ],
+      "code": "total_r_d = 233 * 10**9  # convert billion to dollars\ntop_10_r_d = sum(col_values('Business R&D Performance', row_filter=lambda x: x in col_values('State')))\n\nresult = (top_10_r_d / total_r_d) * 100"
+    },
+    {
+      "query_id": "550428282b3a554a8ff831f7149e00bc",
+      "query": "how many seats were reserved totally during the 2015 sudanese general election.",
+      "gold": [
+        128.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('2015 Sudanese General Election', 'Seats Reserved')"
+    },
+    {
+      "query_id": "ae9c91e2b72da1948845d2b9c96be1f1",
+      "query": "what percentage of the cmdb deaths were caused by external causes?",
+      "gold": [
+        5.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'float' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('External causes', 'Number') / cell('Total', 'Number')) * 100"
+    },
+    {
+      "query_id": "26307595388ef79a529bd08519ff0fa2",
+      "query": "were younger people whose highest level of education was a high school diploma faced a higher probability of being in low income, or those with a postsecondary credentials below a bachelor degree?",
+      "gold": [
+        "high school diploma"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Younger', 'Postsecondary credentials below a bachelor degree') - cell('Younger', 'High school diploma')"
+    },
+    {
+      "query_id": "2802b5a96c112c97d86cf16d30653006",
+      "query": "how many percentage points of imports in capital goods were originated from the united states in 2016?",
+      "gold": [
+        48.2
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'float' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('United States', '2016') / cell('Total', '2016')) * 100"
+    },
+    {
+      "query_id": "58ffb31b4a6c9fa7241722e671be1033",
+      "query": "what percentage of 3- to 5-year-old boys had daycare centres?",
+      "gold": [
+        40.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('3- to 5 years', 'Daycare centres') / cell('3- to 5 years', 'Total')) * 100 * (cell('Boys', 'Total') / cell('Boys', 'Total'))"
+    },
+    {
+      "query_id": "91000ced8fe043bce74aeb836fc37310",
+      "query": "in 2006-07, which league did o'neil appear for portsmouth in?",
+      "gold": [
+        "premier league"
+      ],
+      "pred": "0.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('2006-07', 'League') if cell('O\\'Neil', 'Player') == cell('Portsmouth', 'Team') else None"
+    },
+    {
+      "query_id": "9d173931d9d7ad242c0aa1776525e09c",
+      "query": "what was the percentage of physical assault offenders who were under the age of 35?",
+      "gold": [
+        55
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'float'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('Physical assault', 'Age of offender') / cell('Physical assault', 'Total')) * 100"
+    },
+    {
+      "query_id": "73512fe9ca199714fb81c28e5e4f8d45",
+      "query": "how many league games did andrew williams (born 1962) play in his career?",
+      "gold": [
+        278.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Andrew Williams (born 1962)', 'League Games')"
+    },
+    {
+      "query_id": "367af9447305fe92eb98450df65bbb43",
+      "query": "what is the percentage of adults having unperceived hearing loss among the adults with audiometrically measured hearing loss?",
+      "gold": [
+        77.1
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: TracedTable.cell() missing 1 required positional argument: 'col_header'",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "# Calculate the percentage of adults having unperceived hearing loss among the adults with audiometrically measured hearing loss\ntotal_with_hearing_loss = cell('Total with audiometrically measured hearing loss')\nunperceived_hearing_loss = cell('Unperceived hearing loss')\n\n# Calculate the percentage\nresult = (unperceived_hearing_loss / total_with_hearing_loss) * 100"
+    },
+    {
+      "query_id": "8d261d5f81dc9e2b8c2b837418bdb5c2",
+      "query": "how many receptions did scott chandler play for in 2013?",
+      "gold": [
+        53.0
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Scott Chandler', 'Receptions') if cell('Scott Chandler', 'Year') == 2013 else 0"
+    },
+    {
+      "query_id": "8d6d394650f79f9ef649e572b257697e",
+      "query": "how many touchdowns did the taylor martinez score in 2010?",
+      "gold": [
+        9.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Taylor Martinez', 'Touchdowns')  # Assuming the table has a row for Taylor Martinez in 2010"
+    },
+    {
+      "query_id": "e92bb7095157dc83d89eb92bb4e91fea",
+      "query": "how many appearances did scott score with brentford?",
+      "gold": [
+        295.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Scott', 'Appearances with Brentford')"
+    },
+    {
+      "query_id": "c98c67ebe373534a366c96a294d20b11",
+      "query": "which metropolitan area has the highest average census tract incomes?",
+      "gold": [
+        "calgary"
+      ],
+      "pred": "56900.0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = max(col_values('Average census tract income (2016)'))"
+    },
+    {
+      "query_id": "93c750ff9b37050b550d4dd8d47d3946",
+      "query": "what is the average daily minutes of physical activity reported by canadian youth from the domain of household/occupation, according to the payq?",
+      "gold": [
+        5.6
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Canadian youth', 'Household/occupation') / cell('Canadian youth', 'PAYQ')"
+    },
+    {
+      "query_id": "643ada2db659a2167c1d1715c566c425",
+      "query": "what is ther percentage of refugees aged under 15 from all the other countreis in 2016?",
+      "gold": [
+        31.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "ZeroDivisionError: division by zero",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "# Calculate the total number of refugees from all other countries\ntotal_refugees = sum(col_values('Age', row_filter=lambda x: x != 'Source country')[:-1])\n\n# Calculate the number of refugees aged under 15 from all other countries\nrefugees_under_15 = sum(col_values('Age', row_filter=lambda x: x == 'Under 15')[:-1])\n\n# Calculate the percentage of refugees aged under 15 from all other countries\nresult = (refugees_under_15 / total_refugees) * 100"
+    },
+    {
+      "query_id": "00825430a0f9a7e489f756b1b8927180",
+      "query": "what is the average daily minutes of physical activity reported by canadian youth from the domain of school, according to the payq?",
+      "gold": [
+        25.8
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Canadian youth', 'Domain of school (PayQ)')"
+    },
+    {
+      "query_id": "c114398a8e91d3218e43c4a7d94eda61",
+      "query": "what is the percentage on average of cases in each year show earnings in both the t1ff and t4?",
+      "gold": [
+        71.05
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: 'int' object is not callable",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "def calculate_percentage():\n    # Get the number of years\n    num_years = len([cell('Year', 'Year') for cell in range(2000, 2012)])\n\n    # Get the total number of cases in each year\n    total_cases = [cell('Year', 'Total') for cell in range(2000, 2012)]\n\n    # Get the number of cases in each year that show earnings in both t1ff and t4\n    cases_in_both = [cell('Year', 't1ff and t4') for cell in range(2000, 2012)]\n\n    # Calculate the percentage of cases in each year that show earnings in both t1ff and t4\n    percentages = [round((cases / total) * 100, 2) for cases, total in zip(cases_in_both, total_cases)]\n\n    # Calculate the average percentage\n    result = round(sum(percentages) / num_years, 2)\n\n    return result\n\nresult = calculate_percentage()\nprint(result)"
+    },
+    {
+      "query_id": "c5e1012cc874a0ae468d65d409c007a2",
+      "query": "what was the share of men aged 55 and over in financial auditors and accountants in 2016?",
+      "gold": [
+        30.7
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Men aged 55 and over', 'Financial auditors and accountants') / cell('Men aged 55 and over', 'Total') * 100"
+    },
+    {
+      "query_id": "b54d67af14a701a13dfa08538c813dca",
+      "query": "the employment rate for aboriginal people living on reserve was 47.3% in 2011, compared to 71.1% for their counterparts living off-reserve-a difference of 23.8 percentage points.",
+      "gold": [
+        23.8
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Aboriginal people living on reserve', 'Employment rate') - cell('Aboriginal people living off-reserve', 'Employment rate')"
+    },
+    {
+      "query_id": "b160c973278a37bda23f623a9cca8f2b",
+      "query": "what was the percentage of residents of prince edward island who reported nmo cannabis use in the previous year?",
+      "gold": [
+        5.5
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Prince Edward Island', 'Percentage of residents who reported NMO cannabis use in the previous year')"
+    },
+    {
+      "query_id": "cde23ab9e26bb0cebf68a7a7be27b975",
+      "query": "in 2017, which league did rotkovic sign with side ansan greeners?",
+      "gold": [
+        "k league 2"
+      ],
+      "pred": "k league 2",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('2017', 'Signing League')"
+    },
+    {
+      "query_id": "2145f25f4edfbfb9ba968f3a16c6d035",
+      "query": "how many goals did powell score for milton keynes dons across nine seasons?",
+      "gold": [
+        46.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Powell', 'Goals') - cell('Powell', 'Goals')  # subtract to reset the value\nresult += cell('Powell', 'Milton Keynes Dons', 'Seasons')  # count the number of seasons\nresult = cell('Powell', 'Milton Keynes Dons', 'Goals')  # get the total goals scored\nresult /= cell('Powell', 'Milton Keynes Dons', 'Seasons')  # divide by the number of seasons"
+    },
+    {
+      "query_id": "29859004092bf90d1af86ccf9741809b",
+      "query": "when did the single big bro thang release?",
+      "gold": [
+        2007.0
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Release Date', 'Big Bro Thang')"
+    },
+    {
+      "query_id": "288ff92bc7cb0f790485d8bd97979b44",
+      "query": "what was the earning ratio between women and men in physical and life sciences and technologies?",
+      "gold": [
+        0.78
+      ],
+      "pred": "0.7823853884150256",
+      "correct": true,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = cell('Physical and life sciences and technologies', 'Women') / cell('Physical and life sciences and technologies', 'Men')"
+    },
+    {
+      "query_id": "1e23bfe038975bf82e4585e2124dc93f",
+      "query": "how many passing yards did kevin kolb get in 2004?",
+      "gold": [
+        2766.0
+      ],
+      "pred": "0",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Kevin Kolb', 'Passing Yards') if cell('Kevin Kolb', 'Year') == 2004 else 0"
+    },
+    {
+      "query_id": "4ea3c1908ca49ceab34fd92206ed73cb",
+      "query": "what percentage of girls have child care in their own home?",
+      "gold": [
+        11.9
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for /: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('Girls', 'Child care in own home') / cell('Girls', 'Total')) * 100"
+    },
+    {
+      "query_id": "648cb2aa7a3fdfffc2d4529a601bbc0c",
+      "query": "how many postal code were missing?",
+      "gold": [
+        2431995
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Total', 'Postal code') - cell('Total', 'Residential postal code')"
+    },
+    {
+      "query_id": "67e6b9e391a6d7cbc06ba0434725ec66",
+      "query": "what was the number of births on first nations reserves, excluding reserves with a shared postal code?",
+      "gold": [
+        12170
+      ],
+      "pred": "16240.0",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'float' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('First Nations reserves', 'Number of births')\nresult = cell('First Nations reserves', 'Number of births') - cell('Reserves with a shared postal code', 'Number of births')"
+    },
+    {
+      "query_id": "df4d10cd832d0640617227cfdf344d75",
+      "query": "for the largest of companies (25,000 or more employees), what was the r&d intensity?",
+      "gold": [
+        3.4
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Largest', 'R&D Intensity')"
+    },
+    {
+      "query_id": "b6e1458d7594fbdfb40463e7a3c687ca",
+      "query": "what was the percentage of workers expected to be in the worst job quality group (class 4)?",
+      "gold": [
+        0.264
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for *: 'NoneType' and 'int'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Class 4', 'Class Membership') * 100"
+    },
+    {
+      "query_id": "79ed76c91f336d688d4d8331a79cde99",
+      "query": "in contrast, saguenay, having reported what percentage of decreases in robbery in 2015?",
+      "gold": [
+        30
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "SyntaxError: unmatched ')' (<string>, line 1)",
+      "n_repair": 0,
+      "trace_flags": [],
+      "code": "result = (cell('Saguenay', 'Percentage decrease in robbery') - cell('Saguenay', 'Percentage decrease in robbery (previous year)')) / cell('Saguenay', 'Percentage decrease in robbery (previous year')) * 100"
+    },
+    {
+      "query_id": "f34633c5561aa6b1f76979598c7f238f",
+      "query": "which club did giannou play for in 2009-10?",
+      "gold": [
+        "kavala"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Giannou', 'Club')  # Assuming the table has a row header 'Giannou' and a column header 'Club'"
+    },
+    {
+      "query_id": "f0ac3da8c6a2410800e8ca260f44d68b",
+      "query": "which club did iturbe play for in 2013-14?",
+      "gold": [
+        "verona"
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH"
+      ],
+      "code": "result = cell('Iturbe', 'Club')"
+    },
+    {
+      "query_id": "06207ac0e0eb1b0b997b894e09ea613c",
+      "query": "for individuals aged 50 to 64, how many percentage point increase in the likelihood of being satisfied with their job is associated with a high to a very high extent of control over their hours of work?",
+      "gold": [
+        0.101
+      ],
+      "pred": "",
+      "correct": false,
+      "err": "TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'",
+      "n_repair": 0,
+      "trace_flags": [
+        "NO_MATCH",
+        "NO_MATCH"
+      ],
+      "code": "result = (cell('50-64', 'High to very high control over hours') - cell('50-64', 'Low to moderate control over hours')) / cell('50-64', 'Low to moderate control over hours') * 100"
+    }
+  ]
+}

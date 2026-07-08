@@ -40,11 +40,14 @@ def _parse_paths(root: dict) -> Tuple[List[List[str]], Dict[int, List[str]]]:
         children = node.get("children_dict") or node.get("children") or []
         if isinstance(children, dict):
             children = list(children.values())
+        # An internal node can itself own a data row/col (its line_idx), distinct
+        # from its children's rows/cols — record it regardless of leaf-ness, or
+        # that row/col's header path silently comes back empty.
+        li = node.get("line_idx")
+        if li is not None:
+            by_line_idx[int(li)] = path
         if not children:
             leaf_paths.append(path)
-            li = node.get("line_idx")
-            if li is not None:
-                by_line_idx[int(li)] = path
             return
         for ch in children:
             if isinstance(ch, dict):

@@ -1,0 +1,64 @@
+{
+  "bench": "finqa",
+  "split": "validation",
+  "seed": 42,
+  "dense": true,
+  "n_queries": 300,
+  "n_operand_queries": 238,
+  "ceiling": {
+    "fuzzy": 0.4943,
+    "embedding": 0.5716,
+    "hybrid": 0.5437
+  },
+  "operand_recall": {
+    "s1_flat|plain": {
+      "1": 0.585,
+      "3": 0.9182,
+      "5": 0.9622,
+      "10": 1.0
+    },
+    "s1_flat|operand": {
+      "1": 0.7396,
+      "3": 0.9314,
+      "5": 0.9734,
+      "10": 1.0
+    },
+    "s1_flat|oracle": {
+      "1": 0.9034,
+      "3": 1.0,
+      "5": 1.0,
+      "10": 1.0
+    },
+    "s2_headerpath|plain": {
+      "1": 0.5955,
+      "3": 0.9196,
+      "5": 0.9713,
+      "10": 1.0
+    },
+    "s2_headerpath|operand": {
+      "1": 0.7438,
+      "3": 0.9335,
+      "5": 0.9762,
+      "10": 1.0
+    },
+    "s2_headerpath|oracle": {
+      "1": 0.9034,
+      "3": 1.0,
+      "5": 1.0,
+      "10": 1.0
+    }
+  },
+  "coverage": {
+    "mean_coverage_rate": 0.875,
+    "fallback_rate": 0.1471,
+    "histogram": {
+      "0.0": 16,
+      "0.2": 4,
+      "0.5": 15,
+      "0.8": 13,
+      "1.0": 190
+    },
+    "operand_recall@5_no_fallback": 0.9713,
+    "operand_recall@5_with_fallback": 0.9832
+  }
+}

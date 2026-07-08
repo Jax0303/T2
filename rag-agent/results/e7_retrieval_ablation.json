@@ -1,0 +1,86 @@
+{
+  "experiment": "E7_retrieval_ablation",
+  "hypothesis": "H5: at fixed solver+budget, header-tree enumeration beats dense retrieval; gain tracks OSC",
+  "split": "dev",
+  "seed": 42,
+  "llm": "groq:llama-3.1-8b-instant",
+  "mode": "codegen",
+  "dry_run": false,
+  "population": {
+    "name": "arithmetic_m>=2",
+    "n": 161
+  },
+  "arms": {
+    "dense_k5": {
+      "osc": 0.5963,
+      "mean_cells": 31.9,
+      "accuracy": 0.0807,
+      "n_oversize": 0,
+      "n_error": 39,
+      "delta_acc_vs_dense_k10": 0.0124,
+      "delta_ci95_vs_dense_k10": [
+        -0.0186,
+        0.0435
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 4,
+        "base_only": 2
+      }
+    },
+    "dense_k10": {
+      "osc": 0.7888,
+      "mean_cells": 57.3,
+      "accuracy": 0.0683,
+      "n_oversize": 0,
+      "n_error": 42
+    },
+    "enum_base": {
+      "osc": 0.4161,
+      "mean_cells": 19.2,
+      "accuracy": 0.118,
+      "n_oversize": 0,
+      "n_error": 15,
+      "delta_acc_vs_dense_k10": 0.0497,
+      "delta_ci95_vs_dense_k10": [
+        0.0,
+        0.1056
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 13,
+        "base_only": 5
+      }
+    },
+    "enum_treated": {
+      "osc": 0.6522,
+      "mean_cells": 39.5,
+      "accuracy": 0.0994,
+      "n_oversize": 0,
+      "n_error": 39,
+      "delta_acc_vs_dense_k10": 0.0311,
+      "delta_ci95_vs_dense_k10": [
+        -0.0124,
+        0.0745
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 9,
+        "base_only": 4
+      }
+    },
+    "oracle": {
+      "osc": 1.0,
+      "mean_cells": 3.0,
+      "accuracy": 0.6087,
+      "n_oversize": 0,
+      "n_error": 0,
+      "delta_acc_vs_dense_k10": 0.5404,
+      "delta_ci95_vs_dense_k10": [
+        0.4658,
+        0.6149
+      ],
+      "mcnemar_vs_dense_k10": {
+        "arm_only": 88,
+        "base_only": 1
+      }
+    }
+  }
+}
