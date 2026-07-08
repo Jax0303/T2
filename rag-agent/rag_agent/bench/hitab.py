@@ -117,12 +117,7 @@ def _operand_at(ot: OriginalTable, r: int, c: int, fv: float) -> GoldOperand:
     )
 
 
-def resolve_gold_operands(ot: OriginalTable, linked_cells: dict) -> List[GoldOperand]:
-    """Resolve ``quantity_link`` cells to data-space operands.
-
-    Primary path: map the annotation's full-grid coordinates to the data matrix
-    by the table's header-block offset (the *true* annotated cell). Fall back to
-    value-matching only when no consistent offset is found (~1% of tables)."""
+def _coords_of(linked_cells: dict) -> List[tuple]:
     ql = (linked_cells or {}).get("quantity_link") or {}
     coords: List[tuple] = []
     for bucket in ql.values():
@@ -133,8 +128,48 @@ def resolve_gold_operands(ot: OriginalTable, linked_cells: dict) -> List[GoldOpe
             ij = _parse_coord(coord)
             if fv is not None and ij is not None:
                 coords.append((ij[0], ij[1], fv))
+    return coords
 
-    off = _coord_offset(ot, coords)
+
+def _table_offset(ot: OriginalTable, all_linked_cells: List[dict]) -> Optional[tuple]:
+    """(H, W) is a per-table structural constant (the header block's size), not a
+    per-query one. Solve it once from the UNION of every query's quantity_link
+    coords for this table: a single-operand (m=1) query alone supplies only one
+    value-equality constraint, which a coincidental value elsewhere in the small
+    (max_off x max_off) search grid can satisfy at the wrong offset — pooling
+    coords across all of the table's queries removes that ambiguity."""
+    coords: List[tuple] = []
+    for lc in all_linked_cells:
+        coords.extend(_coords_of(lc))
+    return _coord_offset(ot, coords)
+
+
+def resolve_gold_operands(
+    ot: OriginalTable, linked_cells: dict, offset: Optional[tuple] = None
+) -> List[GoldOperand]:
+    """Resolve ``quantity_link`` cells to data-space operands.
+
+    Primary path: map the annotation's full-grid coordinates to the data matrix
+    by the table's header-block offset (the *true* annotated cell). Fall back to
+    value-matching only when no consistent offset is found (~1% of tables).
+
+    ``offset``, if given, should be the table-level (H, W) from `_table_offset`
+    (pooled across all of the table's queries — see its docstring for why a
+    per-query-only offset is unreliable at m=1). It is validated against this
+    query's own coords before use, and re-derived per-query if it doesn't fit."""
+    coords = _coords_of(linked_cells)
+
+    off = None
+    if offset is not None:
+        H, W = offset
+        if coords and all(
+            0 <= i - H < ot.n_rows and 0 <= j - W < ot.n_cols
+            and _to_float(ot.data[i - H][j - W]) == fv
+            for i, j, fv in coords
+        ):
+            off = offset
+    if off is None:
+        off = _coord_offset(ot, coords)
     ops: List[GoldOperand] = []
     seen = set()
     if off is not None:
@@ -184,6 +219,11 @@ def load_queries(
     samples = load_samples(data_dir, split, max_samples)
     tables: Dict[str, BenchTable] = {}
     ot_cache: Dict[str, OriginalTable] = {}
+    offset_cache: Dict[str, Optional[tuple]] = {}
+    linked_by_table: Dict[str, List[dict]] = {}
+    for s in samples:
+        linked_by_table.setdefault(s.get("table_id"), []).append(s.get("linked_cells") or {})
+
     queries: List[BenchQuery] = []
     for s in samples:
         tid = s.get("table_id")
@@ -195,13 +235,17 @@ def load_queries(
             ot_cache[tid] = ot
             tables[tid] = _bench_table_from_original(ot)
         ot = ot_cache[tid]
+        if tid not in offset_cache:
+            offset_cache[tid] = _table_offset(ot, linked_by_table.get(tid, []))
         agg = s.get("aggregation")
         queries.append(BenchQuery(
             query_id=s.get("id"),
             question=s.get("question", ""),
             gold_table_id=tid,
             answer=s.get("answer", []),
-            gold_operands=resolve_gold_operands(ot, s.get("linked_cells") or {}),
+            gold_operands=resolve_gold_operands(
+                ot, s.get("linked_cells") or {}, offset=offset_cache[tid]
+            ),
             aggregation=agg[0] if isinstance(agg, list) and agg else agg,
             split=split,
             source=SOURCE,

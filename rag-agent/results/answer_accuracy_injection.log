@@ -1,0 +1,31 @@
+[pop] HiTab dev arith m>=2: 161  retriever=dense k=10 solver=llama-3.1-8b-instant
+  4/161  acc_b=0.000 acc_t=0.000 (214s)
+  8/161  acc_b=0.125 acc_t=0.125 (400s)
+  12/161  acc_b=0.250 acc_t=0.250 (498s)
+  16/161  acc_b=0.375 acc_t=0.375 (594s)
+  20/161  acc_b=0.350 acc_t=0.350 (685s)
+  24/161  acc_b=0.292 acc_t=0.292 (924s)
+  28/161  acc_b=0.286 acc_t=0.286 (1018s)
+  32/161  acc_b=0.250 acc_t=0.250 (1129s)
+  36/161  acc_b=0.278 acc_t=0.278 (1188s)
+  40/161  acc_b=0.275 acc_t=0.275 (1303s)
+  44/161  acc_b=0.250 acc_t=0.250 (1452s)
+  48/161  acc_b=0.229 acc_t=0.229 (1520s)
+Groq rate-limited, retrying in 1s (attempt 1)
+Groq rate-limited, retrying in 2s (attempt 2)
+Groq rate-limited, retrying in 4s (attempt 3)
+Groq rate-limited, retrying in 8s (attempt 4)
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_injection.py", line 198, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_injection.py", line 143, in main
+    rb = answer(q.question, base_chunks, llm, mode=args.mode)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/generate/answerer.py", line 140, in answer
+    raw = llm.complete(system=_CODEGEN_SYS, user=user, max_tokens=min(max_tokens, 160))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/groq_llm.py", line 66, in complete
+    raise RuntimeError(f"Groq retries exhausted: {last_err}")
+RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 498119, Requested 2780. Please try again in 2m35.3472s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+EXIT=0

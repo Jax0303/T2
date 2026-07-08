@@ -1,0 +1,41 @@
+{
+  "population": {
+    "name": "hitab_dev_arith_m>=2",
+    "n": 161,
+    "n_evaluated": 16,
+    "n_osc_flips_total": 19,
+    "n_osc_flips_evaluated": 16,
+    "flips_first": true,
+    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99625, Requested 1925. Please try again in 22m19.2s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+  },
+  "retriever": "dense",
+  "k": 10,
+  "solver": "groq:llama-3.3-70b-versatile",
+  "mode": "codegen",
+  "osc": {
+    "base": 0.7888,
+    "treat": 0.9068,
+    "delta": 0.118,
+    "note": "OSC over full population (LLM-free)"
+  },
+  "answer_accuracy": {
+    "base": 0.125,
+    "treat": 0.25,
+    "delta": 0.125
+  },
+  "correctness_crosstab": {
+    "both_right": 1,
+    "treat_only": 3,
+    "base_only": 1,
+    "both_wrong": 11
+  },
+  "mcnemar_p_accuracy": 0.625,
+  "osc_flip_subset": {
+    "n": 16,
+    "acc_base": 0.125,
+    "acc_treat": 0.25,
+    "treat_only": 3,
+    "base_only": 1
+  },
+  "mean_injected_cells": 21.6
+}

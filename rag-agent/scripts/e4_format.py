@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from rag_agent.bench.hitab import load_queries
 from rag_agent.bench.schema import Chunk
 from rag_agent.generate import answer as gen_answer, evaluate_answer
-from rag_agent.eval.metrics import numeric_match
+from rag_agent.eval.metrics import _to_nums
 
 SEED = 42
 ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"}
@@ -62,7 +62,10 @@ def bucket(res, gold):
     ok = evaluate_answer(res.answer, gold)
     if ok:
         return "correct"
-    if _is_number(res.answer) or numeric_match(res.answer, res.answer):
+    # numeric_match(x, x) was a self-comparison tautology (true for ANY non-empty
+    # answer, text included, via its string-substring branch) — check directly
+    # whether the raw answer parses to a number instead.
+    if _is_number(res.answer) or bool(_to_nums(res.answer)):
         return "silent_wrong"   # produced a number, but wrong
     return "non_number"          # text / refusal / no number parsed
 

@@ -1,0 +1,56 @@
+{
+  "population": {
+    "name": "hitab_dev_arith_m>=2",
+    "n": 161,
+    "n_evaluated": 23,
+    "n_osc_flips_total": 11,
+    "n_osc_flips_evaluated": 11,
+    "n_nonflip_evaluated": 12,
+    "n_treat_context_truncated": 4,
+    "flips_first": true,
+    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98951, Requested 1541. Please try again in 7m5.087999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+  },
+  "retriever": "dense",
+  "k": 10,
+  "solver": "groq:llama-3.3-70b-versatile",
+  "mode": "codegen",
+  "osc": {
+    "base": 0.8323,
+    "treat": 0.9006,
+    "delta": 0.0683,
+    "note": "OSC over full population (LLM-free)"
+  },
+  "answer_accuracy": {
+    "base": 0.3913,
+    "treat": 0.5217,
+    "delta": 0.1304,
+    "caveat": " Uses our lenient numeric_match (\u00b12%, %/fraction-scale, sign) \u2014 NOT comparable to other papers' HiTab numbers; see answer_accuracy_official for that.",
+    "metric": "numeric_match (lenient, ours)"
+  },
+  "answer_accuracy_official": {
+    "base": 0.3043,
+    "treat": 0.3913,
+    "delta": 0.087,
+    "metric": "hitab_exact_match (HiTab's own scorer, no scale leniency \u2014 the number to quote against other papers, e.g. OHD's 60.07 EM)",
+    "correctness_crosstab": {
+      "treat_only": 2,
+      "base_only": 0
+    },
+    "mcnemar_p": 0.5
+  },
+  "correctness_crosstab": {
+    "both_right": 9,
+    "treat_only": 3,
+    "base_only": 0,
+    "both_wrong": 11
+  },
+  "mcnemar_p_accuracy": 0.25,
+  "osc_flip_subset": {
+    "n": 11,
+    "acc_base": 0.0,
+    "acc_treat": 0.2727,
+    "treat_only": 3,
+    "base_only": 0
+  },
+  "mean_injected_cells": 9.5
+}

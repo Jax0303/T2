@@ -33,15 +33,19 @@ _RATIO_CUES = re.compile(
 
 
 def is_total_row(table, r: int) -> bool:
-    """True if row ``r``'s left-header path denotes a table/section total.
+    """True if row ``r``'s own header label (not its ancestors') denotes a
+    table/section total.
 
     An empty path (unparsed left header) is treated as total-like: in HiTab these
     are overwhelmingly the table-level aggregate rows the resolver cannot name.
+    Only the row's OWN final path segment is checked — checking every ancestor
+    segment would flag every descendant of an "All X" category header (e.g. every
+    child row under "all performing sectors") as itself a total, which it isn't.
     """
     path = table.row_path(r)
     if not path:
         return True
-    return any(_TOTALISH.search(str(seg)) for seg in path)
+    return bool(_TOTALISH.search(str(path[-1])))
 
 
 def total_like_rows(table) -> Set[int]:
@@ -49,6 +53,98 @@ def total_like_rows(table) -> Set[int]:
     return {r for r in range(table.n_rows)
             if is_total_row(table, r)
             and any(table.cell_num(r, c) is not None for c in range(table.n_cols))}
+
+
+# ---------------------------------------------------------------------------
+# Structural (arithmetic) total-row detection — language/keyword independent.
+#
+# ``is_total_row`` above decides "total-ness" from an English keyword regex
+# ("total"/"overall"/"all"), which cannot transfer to other phrasings or
+# languages. A total row is not defined by its label, though — it's defined by
+# its VALUE: a row is a total iff it numerically equals the sum of some other
+# rows in its own section. That's testable directly from the data, with no
+# language dependency at all.
+# ---------------------------------------------------------------------------
+
+def _children_of(table, r: int) -> List[int]:
+    """Rows whose header path is exactly one level deeper than row r's, nested
+    directly under r's own path (r is their tree parent)."""
+    rp = table.row_path(r)
+    if not rp:
+        return []
+    out = []
+    for r2 in range(table.n_rows):
+        if r2 == r:
+            continue
+        p2 = table.row_path(r2)
+        if len(p2) == len(rp) + 1 and tuple(p2[: len(rp)]) == tuple(rp):
+            out.append(r2)
+    return out
+
+
+def _siblings_of(table, r: int) -> List[int]:
+    """Rows sharing r's immediate-parent path prefix (same level, same parent)."""
+    rp = table.row_path(r)
+    if len(rp) < 1:
+        return []
+    parent = tuple(rp[:-1])
+    out = []
+    for r2 in range(table.n_rows):
+        if r2 == r:
+            continue
+        p2 = table.row_path(r2)
+        if len(p2) == len(rp) and tuple(p2[:-1]) == parent:
+            out.append(r2)
+    return out
+
+
+def _sums_group(table, r: int, group: List[int], rel_tol: float = 0.02,
+                min_group: int = 2, min_cols: int = 2) -> bool:
+    """True if row r's numeric values equal the sum of ``group``'s values in a
+    majority of the columns both sides have data for."""
+    if len(group) < min_group:
+        return False
+    checked = matched = 0
+    for c in range(table.n_cols):
+        rv = table.cell_num(r, c)
+        if rv is None:
+            continue
+        gvals = [table.cell_num(g, c) for g in group]
+        if any(v is None for v in gvals):
+            continue
+        checked += 1
+        s = sum(gvals)
+        if abs(rv - s) <= max(abs(rv), abs(s), 1.0) * rel_tol:
+            matched += 1
+    return checked >= min_cols and matched / checked >= 0.5
+
+
+def is_total_row_structural(table, r: int) -> bool:
+    """A row is total-like iff it arithmetically sums another row group in its
+    own section: either its own tree children (it is their parent node), or its
+    row-level siblings (it sits alongside the rows it totals). No text/keyword
+    involved — works regardless of language or label."""
+    return (_sums_group(table, r, _children_of(table, r))
+            or _sums_group(table, r, _siblings_of(table, r)))
+
+
+def total_like_rows_structural(table) -> Set[int]:
+    """Structural analogue of ``total_like_rows`` — see ``is_total_row_structural``."""
+    return {r for r in range(table.n_rows) if is_total_row_structural(table, r)}
+
+
+def total_like_rows_hybrid(table) -> Set[int]:
+    """Union of keyword and structural total-row detection.
+
+    Measured on HiTab dev (arith m>=2, n=161): structural alone under-performs
+    keyword alone (it tends to catch totals that were already easy for similarity
+    retrieval to find, missing the vocabulary-dissimilar ones keyword catches) but
+    the union is never worse than keyword alone (strict superset of injected
+    cells) and widens applicability (30%->35% of queries have an in-scope total
+    row) while adding a language/keyword-independent detection path. Prefer this
+    over ``total_like_rows`` for new call sites.
+    """
+    return total_like_rows(table) | total_like_rows_structural(table)
 
 
 def is_ratio_query(question: str) -> bool:
