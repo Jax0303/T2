@@ -94,3 +94,41 @@ handling.
 **Gate still passes** on the *retrieval-completeness* axis, but OHD tightens the
 representation axis: the paper must be cited, the tree representation must **not** be
 claimed as novel, and the delta stated at the objective level (retrieval/OSC).
+
+---
+
+## W1 — Freshness re-check (2026-07-08, web sweep for post-gate publications)
+
+Question: did anything published since the W0 gate (fetched 2026-06) put
+operand-set completeness on the table as a retrieval-time objective?
+**Answer: no — gate still passes.** Two new works must be cited; one honest
+tightening of the OSC-novelty claim is required.
+
+### New works found (cite both; neither competes on our axis)
+
+| Work | What it does | Why it does not scoop us |
+|---|---|---|
+| **Topo-RAG** (2601.10215, 2026-01) | Hybrid text–table retrieval; tables scored by **Cell-Aware Late Interaction** (ColBERT-style MaxSim between each query token and each cell vector) | Still **relevance ranking**: MaxSim has no term that lifts a cell no query token resembles. An unnamed total row (header empty/"total") matches no query token, so it stays unreached **by construction** — i.e. Topo-RAG sits *inside* the paradigm §5.1b diagnoses. Strengthens our claim ("even cell-level late interaction shares the ceiling"); candidate future baseline. No completeness metric, no header-tree scopes, no aggregation handling. |
+| **ASTRA** (2604.08999, 2026-04) | LLM reconstructs the table into a Logical Semantic Tree (AdaSTR), then dual-mode reasoning: tree-search navigation + code execution (DuTR). Evaluated on **HiTab and AIT-QA** | Same family as OHD: whole-table **representation + reasoning**, no retrieval/cell selection, no recall or completeness measurement, no total-row handling. Must be cited (shares our datasets); slots into the E9 frame as another "serialize/reason over the whole table" counterpart, inheriting the same context-scaling cost. |
+
+### Honest tightening — the all-or-nothing *idea* has cousins in multi-hop text QA
+
+**Perfect Recall@K** (PR@K: 1 iff *all* relevant objects are in the top-K; e.g.
+PRISM, arXiv 2510.14278) and "complete evidence set" scoring (FEVEROUS-style;
+multi-hop evidence pursuit) already exist for **passage/sentence evidence in
+multi-hop text QA**. Therefore:
+
+- Do **NOT** claim we invented all-or-nothing retrieval evaluation.
+- Claim precisely: **OSC instantiates the all-or-nothing objective for the
+  operand-cell sets of aggregation over hierarchical tables**, where the 2025
+  TQA survey confirms it is unmeasured — and the paper's weight rests on what
+  the metric *reveals* (the §5.1b structural ceiling: 28.5% unnamed-total
+  operands, median rank 39.5 vs 8, 76% of dense incompletes) and on the
+  structural completeness guarantee, not on the metric alone.
+- Action: one-sentence citation of the PR@K / complete-evidence-set lineage in
+  Related Work, positioned as "all-or-nothing objectives exist for text
+  evidence; tables' operand sets differ because the missing member is
+  *structurally* unreachable by similarity, not merely under-ranked."
+
+**W1 verdict: proceed.** Contribution ordering (diagnosis = headline, OSC =
+contribution 1) already absorbs the PR@K lineage without reframing.
