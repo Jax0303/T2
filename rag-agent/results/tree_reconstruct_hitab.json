@@ -1,0 +1,193 @@
+{
+  "population": {
+    "name": "hitab_synthetic_flatten",
+    "split": "dev",
+    "n_tables": 540
+  },
+  "boundary_mode": "known (ground truth)",
+  "col_path_exact_match": 0.9667,
+  "row_path_exact_match": 0.8822,
+  "col_paths_scored": 4413,
+  "row_paths_scored": 8944,
+  "boundary_guess_accuracy": null,
+  "by_size_bucket": {
+    "10-20": {
+      "n_tables": 246,
+      "col_path_exact_match": 0.9721,
+      "row_path_exact_match": 0.8928
+    },
+    ">20": {
+      "n_tables": 160,
+      "col_path_exact_match": 0.9549,
+      "row_path_exact_match": 0.8712
+    },
+    "<=10x10": {
+      "n_tables": 134,
+      "col_path_exact_match": 0.9703,
+      "row_path_exact_match": 0.9057
+    }
+  },
+  "examples": [
+    {
+      "table_id": "0_1_nsf21326-tab001",
+      "gold_col_paths": [
+        [
+          "2017 actual"
+        ],
+        [
+          "2018 annualized cr"
+        ],
+        [
+          "2019 proposed"
+        ]
+      ],
+      "reconstructed_col_paths": [
+        [
+          "2017 actual"
+        ],
+        [
+          "2018 annualized cr"
+        ],
+        [
+          "2019 proposed"
+        ]
+      ]
+    },
+    {
+      "table_id": "1008",
+      "gold_col_paths": [
+        [
+          "black male workers",
+          "immigrant"
+        ],
+        [
+          "black male workers",
+          "second generation"
+        ],
+        [
+          "black male workers",
+          "third generation or more"
+        ]
+      ],
+      "reconstructed_col_paths": [
+        [
+          "black male workers",
+          "immigrant"
+        ],
+        [
+          "black male workers",
+          "second generation"
+        ],
+        [
+          "black male workers",
+          "third generation or more"
+        ]
+      ]
+    },
+    {
+      "table_id": "1012",
+      "gold_col_paths": [
+        [
+          "current dollars",
+          "total expenditures",
+          "thousands of dollars"
+        ],
+        [
+          "current dollars",
+          "percentage change from previous year",
+          "percent"
+        ],
+        [
+          "current dollars",
+          "per capita cost",
+          "dollars"
+        ]
+      ],
+      "reconstructed_col_paths": [
+        [
+          "current dollars",
+          "total expenditures",
+          "thousands of dollars"
+        ],
+        [
+          "current dollars",
+          "percentage change from previous year",
+          "percent"
+        ],
+        [
+          "current dollars",
+          "per capita cost",
+          "dollars"
+        ]
+      ]
+    },
+    {
+      "table_id": "1017",
+      "gold_col_paths": [
+        [
+          "hirings",
+          "total",
+          "number"
+        ],
+        [
+          "hirings",
+          "experienced police officers",
+          "percent"
+        ],
+        [
+          "hirings",
+          "recruit",
+          "percent"
+        ]
+      ],
+      "reconstructed_col_paths": [
+        [
+          "hirings",
+          "total",
+          "number"
+        ],
+        [
+          "hirings",
+          "experienced police officers",
+          "percent"
+        ],
+        [
+          "hirings",
+          "recruit",
+          "percent"
+        ]
+      ]
+    },
+    {
+      "table_id": "1026",
+      "gold_col_paths": [
+        [
+          "men",
+          "all"
+        ],
+        [
+          "men",
+          "low-paying firm"
+        ],
+        [
+          "men",
+          "medium-low-paying firm"
+        ]
+      ],
+      "reconstructed_col_paths": [
+        [
+          "men",
+          "all"
+        ],
+        [
+          "men",
+          "low-paying firm"
+        ],
+        [
+          "men",
+          "medium-low-paying firm"
+        ]
+      ]
+    }
+  ]
+}

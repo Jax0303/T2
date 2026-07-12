@@ -9,12 +9,16 @@ relational structure inside the chunk text instead of discarding it the way a
 flat markdown row does, which is the mechanism the thesis claims reduces
 "structural information loss" at indexing time.
 
-Two granularities are supported:
+Three granularities are supported:
 
 * ``"row"`` (default) — one chunk per row, holding every cell of that row,
   matching the spec's "chunk = 1 row + header-path prefix".
 * ``"cell"`` — one chunk per cell, used by the operand-targeted retriever
   which needs to fetch individual operands rather than whole rows.
+* ``"table"`` — every cell's header-path line in one chunk (title stated
+  once, not repeated per row) — the "1 table = 1 chunk" baseline, so S2
+  (tree-mapped header path) can be compared head-to-head against S3
+  (natural-language caption) under the identical retrieval cascade.
 """
 from __future__ import annotations
 
@@ -44,8 +48,8 @@ def serialize(
     include_title: bool = True,
 ) -> List[Chunk]:
     """Serialize ``table`` with a header-path prefix on every cell."""
-    if granularity not in ("row", "cell"):
-        raise ValueError(f"granularity must be 'row' or 'cell', got {granularity!r}")
+    if granularity not in ("row", "cell", "table"):
+        raise ValueError(f"granularity must be 'row', 'cell' or 'table', got {granularity!r}")
 
     title = fmt_value(table.title)
     title_prefix = [title] if (include_title and title) else []
@@ -68,20 +72,37 @@ def serialize(
             )
         return chunks
 
-    # cell granularity
-    for r in range(table.n_rows):
-        for c in range(table.n_cols):
-            text = "\n".join(title_prefix + [_cell_line(table, r, c)])
-            chunks.append(
-                Chunk(
-                    table_id=table.table_id,
-                    chunk_id=f"{table.table_id}::{SCHEME}::r{r}c{c}",
-                    text=text,
-                    scheme=SCHEME,
-                    kind="cell",
-                    row_index=r,
-                    col_index=c,
-                    header_paths=[_cell_path(table, r, c)],
+    if granularity == "cell":
+        for r in range(table.n_rows):
+            for c in range(table.n_cols):
+                text = "\n".join(title_prefix + [_cell_line(table, r, c)])
+                chunks.append(
+                    Chunk(
+                        table_id=table.table_id,
+                        chunk_id=f"{table.table_id}::{SCHEME}::r{r}c{c}",
+                        text=text,
+                        scheme=SCHEME,
+                        kind="cell",
+                        row_index=r,
+                        col_index=c,
+                        header_paths=[_cell_path(table, r, c)],
+                    )
                 )
-            )
-    return chunks
+        return chunks
+
+    # granularity == "table": every cell's header-path line in one chunk.
+    lines = [_cell_line(table, r, c) for r in range(table.n_rows) for c in range(table.n_cols)]
+    text = "\n".join(title_prefix + lines)
+    return [
+        Chunk(
+            table_id=table.table_id,
+            chunk_id=f"{table.table_id}::{SCHEME}::table",
+            text=text,
+            scheme=SCHEME,
+            kind="table",
+            header_paths=[
+                _cell_path(table, r, c)
+                for r in range(table.n_rows) for c in range(table.n_cols)
+            ],
+        )
+    ]

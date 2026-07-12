@@ -45,9 +45,12 @@ def numeric_cells(ot, rows, cols):
     return {(r, c) for r in rows for c in cols if ot.cell_num(r, c) is not None}
 
 
-def cell_text(ot, r, c):
+def cell_text(ot, r, c, with_title=False):
     path = list(ot.row_path(r)) + list(ot.col_path(c))
-    return " > ".join(s for s in path if s) or f"r{r}c{c}"
+    text = " > ".join(s for s in path if s) or f"r{r}c{c}"
+    if with_title and ot.title:
+        text = f"{ot.title} > {text}"
+    return text
 
 
 def main() -> int:
@@ -56,6 +59,8 @@ def main() -> int:
     ap.add_argument("--split", default="dev")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--out", default="results/dense_ceiling_diag.json")
+    ap.add_argument("--with-title", action="store_true",
+                     help="prepend table title to each cell's embedded text")
     args = ap.parse_args()
 
     queries, _ = load_queries(args.data_dir, args.split)
@@ -72,7 +77,7 @@ def main() -> int:
     cache = {}
     for tid, ot in ots.items():
         cells = sorted(numeric_cells(ot, range(ot.n_rows), range(ot.n_cols)))
-        mat = np.asarray(emb.encode([cell_text(ot, r, c) for (r, c) in cells])) \
+        mat = np.asarray(emb.encode([cell_text(ot, r, c, args.with_title) for (r, c) in cells])) \
             if cells else np.zeros((0, 1))
         cache[tid] = (cells, mat)
 
@@ -129,7 +134,9 @@ def main() -> int:
     med = lambda xs: round(statistics.median(xs), 1) if xs else None
     out = {
         "population": {"name": "arithmetic_m>=2", "n": n},
-        "cell_repr": "header lineage (row-path > col-path)", "embed_model": args.embed_model,
+        "cell_repr": "table title > header lineage (row-path > col-path)" if args.with_title
+                     else "header lineage (row-path > col-path)",
+        "with_title": args.with_title, "embed_model": args.embed_model,
         "gold_operand_cells": n_gold_cells,
         "gold_in_total_rows": n_gold_total,
         "pct_gold_in_total_rows": round(n_gold_total / n_gold_cells, 4) if n_gold_cells else 0,

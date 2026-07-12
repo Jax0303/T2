@@ -1,0 +1,53 @@
+{
+  "pool_size": 246,
+  "n_eval": 200,
+  "flat": {
+    "bm25 (keyword)": {
+      "r1": 0.315,
+      "r5": 0.46,
+      "r10": 0.6,
+      "mrr": 0.4068,
+      "n": 200
+    },
+    "dense (embedding)": {
+      "r1": 0.5,
+      "r5": 0.715,
+      "r10": 0.775,
+      "mrr": 0.5953,
+      "n": 200
+    },
+    "hybrid (RRF-style avg)": {
+      "r1": 0.475,
+      "r5": 0.66,
+      "r10": 0.755,
+      "mrr": 0.5609,
+      "n": 200
+    }
+  },
+  "tree": {
+    "bm25 (keyword)": {
+      "r1": 0.705,
+      "r5": 0.895,
+      "r10": 0.925,
+      "mrr": 0.7913,
+      "n": 200
+    },
+    "dense (embedding)": {
+      "r1": 0.755,
+      "r5": 0.91,
+      "r10": 0.94,
+      "mrr": 0.8299,
+      "n": 200
+    },
+    "hybrid (RRF-style avg)": {
+      "r1": 0.815,
+      "r5": 0.94,
+      "r10": 0.965,
+      "mrr": 0.8774,
+      "n": 200
+    }
+  },
+  "tree_source": "HiTab gold header tree (given, not reconstructed)",
+  "dataset": "hitab",
+  "bucket": "10-20"
+}

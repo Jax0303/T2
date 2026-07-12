@@ -1,0 +1,33 @@
+{
+  "population": {
+    "name": "hitab_direct_lookup",
+    "split": "dev",
+    "n": 60,
+    "n_unique_tables": 33
+  },
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "scheme": "S3 (natural-language caption) + 1-table-1-chunk retrieval, 2-stage: table chunk -> cell-sentence within retrieved table",
+  "by_length": {
+    "short": {
+      "avg_table_chunk_chars": 8463.7,
+      "avg_words_per_cell_sentence": 11.34,
+      "table_recall@1": 0.9667,
+      "answer_exact_match": 0.35,
+      "answer_exact_match_given_correct_table": 0.3621
+    },
+    "medium": {
+      "avg_table_chunk_chars": 9338.1,
+      "avg_words_per_cell_sentence": 13.34,
+      "table_recall@1": 0.9333,
+      "answer_exact_match": 0.3833,
+      "answer_exact_match_given_correct_table": 0.4107
+    },
+    "long": {
+      "avg_table_chunk_chars": 11211.7,
+      "avg_words_per_cell_sentence": 16.34,
+      "table_recall@1": 0.95,
+      "answer_exact_match": 0.35,
+      "answer_exact_match_given_correct_table": 0.3684
+    }
+  }
+}
