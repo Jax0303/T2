@@ -1,0 +1,54 @@
+{
+  "pool_size": 881,
+  "n_eval": 84,
+  "flat": {
+    "bm25 (keyword)": {
+      "r1": 0.0,
+      "r5": 0.0,
+      "r10": 0.0,
+      "mrr": 0.0072,
+      "n": 84
+    },
+    "dense (embedding)": {
+      "r1": 0.0,
+      "r5": 0.0,
+      "r10": 0.0119,
+      "mrr": 0.0067,
+      "n": 84
+    },
+    "hybrid (RRF-style avg)": {
+      "r1": 0.0,
+      "r5": 0.0,
+      "r10": 0.0,
+      "mrr": 0.0051,
+      "n": 84
+    }
+  },
+  "tree": {
+    "bm25 (keyword)": {
+      "r1": 0.0595,
+      "r5": 0.4881,
+      "r10": 0.6667,
+      "mrr": 0.2534,
+      "n": 84
+    },
+    "dense (embedding)": {
+      "r1": 0.0476,
+      "r5": 0.2857,
+      "r10": 0.5,
+      "mrr": 0.1746,
+      "n": 84
+    },
+    "hybrid (RRF-style avg)": {
+      "r1": 0.0714,
+      "r5": 0.5714,
+      "r10": 0.7619,
+      "mrr": 0.271,
+      "n": 84
+    }
+  },
+  "tree_source": "self-reconstructed from raw HTML (rag_agent.reconstruct, table_description NOT used)",
+  "dataset": "multihiertt",
+  "bucket": "any",
+  "require_rowspan": true
+}

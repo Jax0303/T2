@@ -1,0 +1,49 @@
+{
+  "population": {
+    "name": "hitab_direct_lookup",
+    "split": "dev",
+    "n": 150,
+    "n_unique_tables": 72
+  },
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "scheme": "S3 (natural-language caption) + 1-table-1-chunk retrieval, 2-stage: table chunk -> cell-sentence within retrieved table",
+  "hierarchy_source": "self-reconstructed (rag_agent.reconstruct, gold tree NOT used)",
+  "by_length": {
+    "short": {
+      "avg_table_chunk_chars": 10846.9,
+      "avg_words_per_cell_sentence": 12.47,
+      "rerank_k": 5,
+      "table_recall@1": 0.82,
+      "table_recall@5": 0.98,
+      "table_recall@10": 0.9933,
+      "table_mrr": 0.9283,
+      "table_ndcg@10": 0.9442,
+      "answer_exact_match": 0.2667,
+      "answer_exact_match_given_correct_table": 0.3252
+    },
+    "medium": {
+      "avg_table_chunk_chars": 11870.4,
+      "avg_words_per_cell_sentence": 14.47,
+      "rerank_k": 5,
+      "table_recall@1": 0.8333,
+      "table_recall@5": 0.98,
+      "table_recall@10": 0.9867,
+      "table_mrr": 0.9226,
+      "table_ndcg@10": 0.9379,
+      "answer_exact_match": 0.2733,
+      "answer_exact_match_given_correct_table": 0.328
+    },
+    "long": {
+      "avg_table_chunk_chars": 14063.5,
+      "avg_words_per_cell_sentence": 17.47,
+      "rerank_k": 5,
+      "table_recall@1": 0.8067,
+      "table_recall@5": 0.98,
+      "table_recall@10": 0.9867,
+      "table_mrr": 0.9227,
+      "table_ndcg@10": 0.9383,
+      "answer_exact_match": 0.2333,
+      "answer_exact_match_given_correct_table": 0.2893
+    }
+  }
+}
