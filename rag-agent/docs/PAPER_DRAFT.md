@@ -20,7 +20,7 @@ as few cells as possible. Contributions:
 2. **A structural ceiling diagnosis of similarity retrieval, not just a benchmark
    number.** We show *why* BM25/dense/hybrid plateau below full completeness: unnamed
    total/aggregate rows share neither vocabulary nor semantics with the query, so they
-   rank ~5× worse and are missed even at k=50 — this single cause explains **76%** of
+   rank ~4× worse and are missed even at k=50 — this single cause explains **62%** of
    similarity retrieval's completeness ceiling (§5.1b). This is a general, dataset-level
    claim about *why* relevance-ranked retrieval cannot satisfy an all-or-nothing
    objective by construction, independent of any fix we propose for it.
@@ -129,20 +129,26 @@ m≥2, n=161, LLM-free):
 
 | | total-row operand | ordinary operand |
 |---|---|---|
-| share of gold operands | **28.5%** (140/491) | 71.5% |
-| median similarity rank | **39.5** | 8 |
-| reached within top-50 | **0.593** | 0.906 |
+| share of gold operands | **13.4%** (66/491) | 86.6% |
+| median similarity rank | **32.0** | 8 |
+| reached within top-50 | **0.652** | 0.897 |
 
-44.7% of queries need ≥1 total-row operand; similarity ranks those cells ~5× worse, so
-**40% are still unreached at k=50**. Dense full-set completeness plateaus accordingly
-(@10 0.366 → @50 0.714), and **76% (35/46) of the @50 incompletes are explained by an
+29.8% of queries need ≥1 total-row operand; similarity ranks those cells ~4× worse, so
+**35% are still unreached at k=50**. Dense full-set completeness plateaus accordingly
+(@10 0.429 → @50 0.770), and **62% (23/37) of the @50 incompletes are explained by an
 unreached total-row operand**. The miss is *structural, not a budget problem*: these
 cells resemble the query neither semantically (dense) nor lexically (BM25), so **no
 similarity/hybrid retriever reaches them by construction** — header-tree enumeration
 does, because a total row falls under the scope node regardless of resemblance. (This is
 the mechanism behind the completeness guarantee; `dense_ceiling_diag`.) *Caveat:
-ordinary operands also plateau below 1.0 (0.906), so total rows are the largest but not
-the only cause; `is_total_row` is a heuristic (empty/"total"/"overall" paths).*
+ordinary operands also plateau below 1.0 (0.897), so total rows are the largest but not
+the only cause; `is_total_row` is a heuristic (empty/"total"/"overall" paths). Prepending
+the table title to each cell's embedded text does **not** rescue total-row operands —
+median rank *worsens* (32.0→36.5) and reachable@50 drops (0.652→0.576), because
+statistical-report titles reuse similar phrasing across tables and dilute the
+header-path signal rather than adding table-specific discriminating signal
+(`dense_ceiling_diag --with-title`, `results/dense_ceiling_diag_with_title.json`). This
+closes the "just add the caption" objection.*
 
 **5.2 Enumeration is scope-robust and re-localizes the bottleneck (H2).** OSC |
 decomposition-correct = **1.000, flat across m**; the H1 collapse is eliminated. Raw
@@ -362,9 +368,9 @@ session's gold/row-path fixes and needs re-verification before being re-quoted �
 `codebase-audit-bugfixes-2026-07-07` — omitted here rather than re-stating a stale
 figure). The contribution is about a *different objective*:
 aggregation needs the **complete** operand set, and we show (§5.1b) that **similarity
-retrieval cannot satisfy that objective by construction** — 28.5% of operands are
-structurally-required total rows it ranks ~5× worse and misses even at k=50, explaining
-76% of its completeness ceiling. This diagnosis — general, and independent of any fix —
+retrieval cannot satisfy that objective by construction** — 13.4% of operands are
+structurally-required total rows it ranks ~4× worse and misses even at k=50, explaining
+62% of its completeness ceiling. This diagnosis — general, and independent of any fix —
 is the primary claim; ranked below it, in order of how general each result actually is:
 (i) **OSC** as the all-or-nothing completeness objective existing relevance/ranking
 retrievers (incl. 2026 cell-level table RAG: FT-RAG, Topo-RAG — partial recall / nDCG)

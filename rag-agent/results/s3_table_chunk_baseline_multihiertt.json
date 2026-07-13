@@ -1,0 +1,43 @@
+{
+  "population": {
+    "name": "multihiertt_clean_single_cell_lookup",
+    "n": 147,
+    "n_unique_tables": 150
+  },
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "scheme": "S3 (natural-language caption) + 1-table-1-chunk retrieval, 2-stage: table chunk -> cell-sentence within retrieved table",
+  "hierarchy_source": "self-reconstructed (rag_agent.reconstruct, no gold tree exists for MultiHiertt)",
+  "scorer": "numeric_match (tolerant, rel_tol=0.02) -- diagnostic, not literature-comparable",
+  "by_length": {
+    "short": {
+      "avg_table_chunk_chars": 6435.3,
+      "table_recall@1": 0.4082,
+      "table_recall@5": 0.6667,
+      "table_recall@10": 0.7483,
+      "table_mrr": 0.5325,
+      "table_ndcg@10": 0.5766,
+      "answer_match": 0.1293,
+      "answer_match_given_correct_table": 0.25
+    },
+    "medium": {
+      "avg_table_chunk_chars": 7039.1,
+      "table_recall@1": 0.4082,
+      "table_recall@5": 0.6599,
+      "table_recall@10": 0.7619,
+      "table_mrr": 0.527,
+      "table_ndcg@10": 0.5754,
+      "answer_match": 0.1224,
+      "answer_match_given_correct_table": 0.2667
+    },
+    "long": {
+      "avg_table_chunk_chars": 8339.7,
+      "table_recall@1": 0.415,
+      "table_recall@5": 0.6939,
+      "table_recall@10": 0.7415,
+      "table_mrr": 0.5284,
+      "table_ndcg@10": 0.5719,
+      "answer_match": 0.1293,
+      "answer_match_given_correct_table": 0.2459
+    }
+  }
+}

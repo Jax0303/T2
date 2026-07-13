@@ -1,0 +1,171 @@
+{
+  "population": {
+    "name": "multihiertt_html_tables",
+    "hf_dataset": "bevaya/MultiHiertt",
+    "split": "train",
+    "n_tables_seen": 31567,
+    "n_tables_parsed": 31507,
+    "n_tables_with_rowspan": 881
+  },
+  "validation_method": "segment_coverage against table_description (proxy \u2014 no gold tree exists for this dataset)",
+  "n_cells_scored": 998266,
+  "col_path_avg_segment_coverage": 0.9378,
+  "row_path_avg_segment_coverage": 0.9339,
+  "col_path_all_segments_found_rate": 0.8725,
+  "row_path_all_segments_found_rate": 0.9339,
+  "by_size_bucket": {
+    "<=10x10": {
+      "n_tables": 19641,
+      "n_cells_scored": 296387,
+      "col_path_avg_segment_coverage": 0.9392,
+      "row_path_avg_segment_coverage": 0.9423,
+      "col_path_all_segments_found_rate": 0.8861,
+      "row_path_all_segments_found_rate": 0.9423
+    },
+    ">20": {
+      "n_tables": 2538,
+      "n_cells_scored": 306870,
+      "col_path_avg_segment_coverage": 0.9404,
+      "row_path_avg_segment_coverage": 0.9271,
+      "col_path_all_segments_found_rate": 0.8719,
+      "row_path_all_segments_found_rate": 0.9271
+    },
+    "10-20": {
+      "n_tables": 9328,
+      "n_cells_scored": 395009,
+      "col_path_avg_segment_coverage": 0.9348,
+      "row_path_avg_segment_coverage": 0.9329,
+      "col_path_all_segments_found_rate": 0.8629,
+      "row_path_all_segments_found_rate": 0.9329
+    }
+  },
+  "by_complexity": {
+    "medium(nhr2-3)": {
+      "n_tables": 15658,
+      "n_cells_scored": 562061,
+      "col_path_avg_segment_coverage": 0.9541,
+      "row_path_avg_segment_coverage": 0.9244,
+      "col_path_all_segments_found_rate": 0.9081,
+      "row_path_all_segments_found_rate": 0.9244
+    },
+    "shallow(nhr=1)": {
+      "n_tables": 10088,
+      "n_cells_scored": 175129,
+      "col_path_avg_segment_coverage": 0.9416,
+      "row_path_avg_segment_coverage": 0.939,
+      "col_path_all_segments_found_rate": 0.9416,
+      "row_path_all_segments_found_rate": 0.939
+    },
+    "deep(nhr>=4)": {
+      "n_tables": 4880,
+      "n_cells_scored": 225729,
+      "col_path_avg_segment_coverage": 0.9121,
+      "row_path_avg_segment_coverage": 0.9504,
+      "col_path_all_segments_found_rate": 0.7583,
+      "row_path_all_segments_found_rate": 0.9504
+    },
+    "deep(nhr>=4)+rowspan": {
+      "n_tables": 281,
+      "n_cells_scored": 14559,
+      "col_path_avg_segment_coverage": 0.8643,
+      "row_path_avg_segment_coverage": 0.9445,
+      "col_path_all_segments_found_rate": 0.7172,
+      "row_path_all_segments_found_rate": 0.9445
+    },
+    "medium(nhr2-3)+rowspan": {
+      "n_tables": 600,
+      "n_cells_scored": 20788,
+      "col_path_avg_segment_coverage": 0.7972,
+      "row_path_avg_segment_coverage": 0.9618,
+      "col_path_all_segments_found_rate": 0.678,
+      "row_path_all_segments_found_rate": 0.9618
+    }
+  },
+  "examples": [
+    {
+      "uid": "17da9c24de4c4a43accd023a2c40b2c7",
+      "table_idx": 0,
+      "cell": [
+        3,
+        1
+      ],
+      "reconstructed_row_path": [
+        "Mortgages and notes payable"
+      ],
+      "reconstructed_col_path": [
+        "December 31, 2007",
+        "Carrying Value",
+        "(In thousands)"
+      ],
+      "description": "Table 0 shows Mortgages and notes payable of December 31, 2007 Carrying Value (In thousands) is $584,795 ."
+    },
+    {
+      "uid": "17da9c24de4c4a43accd023a2c40b2c7",
+      "table_idx": 0,
+      "cell": [
+        3,
+        2
+      ],
+      "reconstructed_row_path": [
+        "Mortgages and notes payable"
+      ],
+      "reconstructed_col_path": [
+        "December 31, 2007",
+        "Fair Value",
+        "(In thousands)"
+      ],
+      "description": "Table 0 shows Mortgages and notes payable of December 31, 2007 Fair Value (In thousands) is $603,200 ."
+    },
+    {
+      "uid": "17da9c24de4c4a43accd023a2c40b2c7",
+      "table_idx": 0,
+      "cell": [
+        3,
+        3
+      ],
+      "reconstructed_row_path": [
+        "Mortgages and notes payable"
+      ],
+      "reconstructed_col_path": [
+        "December 31, 2006",
+        "Carrying Value",
+        "(In thousands)"
+      ],
+      "description": "Table 0 shows Mortgages and notes payable of December 31, 2006 Carrying Value (In thousands) is $420,061 ."
+    },
+    {
+      "uid": "17da9c24de4c4a43accd023a2c40b2c7",
+      "table_idx": 0,
+      "cell": [
+        3,
+        4
+      ],
+      "reconstructed_row_path": [
+        "Mortgages and notes payable"
+      ],
+      "reconstructed_col_path": [
+        "December 31, 2006",
+        "Fair Value",
+        "(In thousands)"
+      ],
+      "description": "Table 0 shows Mortgages and notes payable of December 31, 2006 Fair Value (In thousands) is $449,130 ."
+    },
+    {
+      "uid": "17da9c24de4c4a43accd023a2c40b2c7",
+      "table_idx": 0,
+      "cell": [
+        4,
+        1
+      ],
+      "reconstructed_row_path": [
+        "Senior notes"
+      ],
+      "reconstructed_col_path": [
+        "December 31, 2007",
+        "Carrying Value",
+        "(In thousands)"
+      ],
+      "description": "Table 0 shows Senior notes of December 31, 2007 Carrying Value (In thousands) is $977,556 ."
+    }
+  ]
+}

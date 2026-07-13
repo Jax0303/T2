@@ -1,0 +1,24 @@
+{
+  "population": {
+    "name": "multihiertt_clean_single_cell_lookup",
+    "n": 147,
+    "n_unique_tables": 150
+  },
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "scheme": "S2 (tree-mapping: header-path prefix, the student's original method) + 1-table-1-chunk retrieval, 2-stage: table chunk -> cell-sentence within retrieved table",
+  "hierarchy_source": "self-reconstructed (rag_agent.reconstruct, no gold tree exists for MultiHiertt)",
+  "scorer": "numeric_match (tolerant, rel_tol=0.02) -- diagnostic, not literature-comparable",
+  "by_length": {
+    "n/a": {
+      "avg_table_chunk_chars": 6520.6,
+      "rerank_k": 1,
+      "table_recall@1": 0.415,
+      "table_recall@5": 0.6463,
+      "table_recall@10": 0.7279,
+      "table_mrr": 0.5332,
+      "table_ndcg@10": 0.5719,
+      "answer_match": 0.1429,
+      "answer_match_given_correct_table": 0.2623
+    }
+  }
+}

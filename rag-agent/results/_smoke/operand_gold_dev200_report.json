@@ -1,0 +1,37 @@
+{
+  "split": "dev",
+  "n_queries_loaded": 200,
+  "n_written": 200,
+  "n_gold_table_missing": 0,
+  "n_empty_operand_set": 41,
+  "empty_operand_rate": 0.205,
+  "by_depth": {
+    "d2": 91,
+    "d3+": 109
+  },
+  "by_scope": {
+    "1": 144,
+    "2": 31,
+    "3-4": 13,
+    "5-8": 8,
+    "9+": 4
+  },
+  "by_aggregation": {
+    "none": 136,
+    "div": 11,
+    "pair-argmax": 9,
+    "argmax": 8,
+    "sum": 7,
+    "min": 5,
+    "greater_than": 4,
+    "argmin": 4,
+    "average": 4,
+    "opposite": 4,
+    "topk-argmax": 2,
+    "less_than": 2,
+    "diff": 2,
+    "range": 1,
+    "pair-argmin": 1
+  },
+  "out": "results/_smoke/operand_gold_dev200.jsonl"
+}

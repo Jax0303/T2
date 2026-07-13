@@ -1,0 +1,41 @@
+{
+  "population": {
+    "name": "hitab_dev_arith_m>=2",
+    "n": 3,
+    "n_evaluated": 3,
+    "n_osc_flips_total": 3,
+    "n_osc_flips_evaluated": 3,
+    "flips_first": true,
+    "cutoff": null
+  },
+  "retriever": "dense",
+  "k": 10,
+  "solver": "groq:openai/gpt-oss-120b",
+  "mode": "codegen",
+  "osc": {
+    "base": 0.0,
+    "treat": 1.0,
+    "delta": 1.0,
+    "note": "OSC over full population (LLM-free)"
+  },
+  "answer_accuracy": {
+    "base": 0.0,
+    "treat": 0.3333,
+    "delta": 0.3333
+  },
+  "correctness_crosstab": {
+    "both_right": 0,
+    "treat_only": 1,
+    "base_only": 0,
+    "both_wrong": 2
+  },
+  "mcnemar_p_accuracy": 1.0,
+  "osc_flip_subset": {
+    "n": 3,
+    "acc_base": 0.0,
+    "acc_treat": 0.3333,
+    "treat_only": 1,
+    "base_only": 0
+  },
+  "mean_injected_cells": 112.0
+}

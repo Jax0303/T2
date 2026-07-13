@@ -1,0 +1,124 @@
+{
+  "experiment": "E5_recall_first",
+  "split": "dev",
+  "seed": 42,
+  "k_dense": 20,
+  "note": "OSC=completeness (gold subset of retrieved); mean_cells=budget",
+  "overall": {
+    "A_enum_precise": {
+      "osc": 0.4688,
+      "mean_cells": 25.6
+    },
+    "B_enum_axis_complete": {
+      "osc": 0.9062,
+      "mean_cells": 81.4
+    },
+    "C_dense_k20": {
+      "osc": 0.8438,
+      "mean_cells": 72.8
+    },
+    "D_union_B_dense": {
+      "osc": 1.0,
+      "mean_cells": 92.0
+    },
+    "E_whole_table": {
+      "osc": 1.0,
+      "mean_cells": 101.6
+    },
+    "n": 32
+  },
+  "by_scope": {
+    "2": {
+      "A_enum_precise": {
+        "osc": 0.3684,
+        "mean_cells": 15.6
+      },
+      "B_enum_axis_complete": {
+        "osc": 0.9474,
+        "mean_cells": 66.5
+      },
+      "C_dense_k20": {
+        "osc": 0.9474,
+        "mean_cells": 59.0
+      },
+      "D_union_B_dense": {
+        "osc": 1.0,
+        "mean_cells": 78.6
+      },
+      "E_whole_table": {
+        "osc": 1.0,
+        "mean_cells": 92.7
+      },
+      "n": 19
+    },
+    "3-4": {
+      "A_enum_precise": {
+        "osc": 0.6,
+        "mean_cells": 28.6
+      },
+      "B_enum_axis_complete": {
+        "osc": 1.0,
+        "mean_cells": 131.4
+      },
+      "C_dense_k20": {
+        "osc": 0.6,
+        "mean_cells": 109.4
+      },
+      "D_union_B_dense": {
+        "osc": 1.0,
+        "mean_cells": 143.6
+      },
+      "E_whole_table": {
+        "osc": 1.0,
+        "mean_cells": 151.2
+      },
+      "n": 5
+    },
+    "5-8": {
+      "A_enum_precise": {
+        "osc": 0.6,
+        "mean_cells": 55.0
+      },
+      "B_enum_axis_complete": {
+        "osc": 0.8,
+        "mean_cells": 109.0
+      },
+      "C_dense_k20": {
+        "osc": 0.6,
+        "mean_cells": 97.6
+      },
+      "D_union_B_dense": {
+        "osc": 1.0,
+        "mean_cells": 112.0
+      },
+      "E_whole_table": {
+        "osc": 1.0,
+        "mean_cells": 112.0
+      },
+      "n": 5
+    },
+    "9+": {
+      "A_enum_precise": {
+        "osc": 0.6667,
+        "mean_cells": 35.0
+      },
+      "B_enum_axis_complete": {
+        "osc": 0.6667,
+        "mean_cells": 46.7
+      },
+      "C_dense_k20": {
+        "osc": 1.0,
+        "mean_cells": 57.7
+      },
+      "D_union_B_dense": {
+        "osc": 1.0,
+        "mean_cells": 57.7
+      },
+      "E_whole_table": {
+        "osc": 1.0,
+        "mean_cells": 57.7
+      },
+      "n": 3
+    }
+  }
+}
