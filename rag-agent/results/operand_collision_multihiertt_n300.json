@@ -1,0 +1,375 @@
+{
+  "population": {
+    "name": "multihiertt_arithmetic_single_table_multi_operand",
+    "n_queries": 297,
+    "n_gold_operand_cells": 951,
+    "pct_operands_with_colliding_label": 0.3481,
+    "collision_min_tables": 5
+  },
+  "corpus": {
+    "n_tables": 1203,
+    "n_cells": 42715
+  },
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "hierarchy_source": "self-reconstructed (rag_agent.reconstruct)",
+  "score_math": "per-query min-max, alpha*dense+(1-alpha)*bm25 (HybridIndex convention)",
+  "by_scheme": {
+    "flat": {
+      "bm25": {
+        "all_covered@10": 0.2424,
+        "all_covered@20": 0.3064,
+        "all_covered@50": 0.404,
+        "operand_median_rank": {
+          "colliding_label": 471,
+          "unique_label": 35.0,
+          "total_like": 122,
+          "ordinary": 99.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2317,
+          "unique_label": 0.5264,
+          "total_like": 0.391,
+          "ordinary": 0.4267
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "dense": {
+        "all_covered@10": 0.2189,
+        "all_covered@20": 0.3064,
+        "all_covered@50": 0.3939,
+        "operand_median_rank": {
+          "colliding_label": 234,
+          "unique_label": 38.0,
+          "total_like": 94,
+          "ordinary": 75.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.3079,
+          "unique_label": 0.5282,
+          "total_like": 0.4286,
+          "ordinary": 0.4533
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "hybrid": {
+        "all_covered@10": 0.3098,
+        "all_covered@20": 0.3636,
+        "all_covered@50": 0.4579,
+        "operand_median_rank": {
+          "colliding_label": 180,
+          "unique_label": 16.0,
+          "total_like": 58,
+          "ordinary": 43.5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.3048,
+          "unique_label": 0.6215,
+          "total_like": 0.4812,
+          "ordinary": 0.5133
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "cascade_top1_tables": {
+        "all_covered@10": 0.2155,
+        "all_covered@20": 0.2492,
+        "all_covered@50": 0.2761,
+        "operand_median_rank": {
+          "colliding_label": 8.5,
+          "unique_label": 3.0,
+          "total_like": 2.0,
+          "ordinary": 4.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.1905,
+          "unique_label": 0.3363,
+          "total_like": 0.1955,
+          "ordinary": 0.3
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.2828
+      },
+      "cascade_top3_tables": {
+        "all_covered@10": 0.229,
+        "all_covered@20": 0.2997,
+        "all_covered@50": 0.3636,
+        "operand_median_rank": {
+          "colliding_label": 18,
+          "unique_label": 6.0,
+          "total_like": 2,
+          "ordinary": 7.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2413,
+          "unique_label": 0.4437,
+          "total_like": 0.218,
+          "ordinary": 0.3987
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.4141
+      }
+    },
+    "S2": {
+      "bm25": {
+        "all_covered@10": 0.33,
+        "all_covered@20": 0.4108,
+        "all_covered@50": 0.5185,
+        "operand_median_rank": {
+          "colliding_label": 94,
+          "unique_label": 13.0,
+          "total_like": 36,
+          "ordinary": 28.5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4159,
+          "unique_label": 0.6496,
+          "total_like": 0.5564,
+          "ordinary": 0.568
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "dense": {
+        "all_covered@10": 0.2626,
+        "all_covered@20": 0.3468,
+        "all_covered@50": 0.4545,
+        "operand_median_rank": {
+          "colliding_label": 89,
+          "unique_label": 24.0,
+          "total_like": 28,
+          "ordinary": 40.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4159,
+          "unique_label": 0.6004,
+          "total_like": 0.5714,
+          "ordinary": 0.528
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "hybrid": {
+        "all_covered@10": 0.3569,
+        "all_covered@20": 0.4411,
+        "all_covered@50": 0.5791,
+        "operand_median_rank": {
+          "colliding_label": 53,
+          "unique_label": 10.0,
+          "total_like": 14,
+          "ordinary": 20.5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4952,
+          "unique_label": 0.6972,
+          "total_like": 0.609,
+          "ordinary": 0.628
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "cascade_top1_tables": {
+        "all_covered@10": 0.2458,
+        "all_covered@20": 0.2727,
+        "all_covered@50": 0.303,
+        "operand_median_rank": {
+          "colliding_label": 3,
+          "unique_label": 3,
+          "total_like": 2.0,
+          "ordinary": 3.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.181,
+          "unique_label": 0.3292,
+          "total_like": 0.2256,
+          "ordinary": 0.2853
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.3064
+      },
+      "cascade_top3_tables": {
+        "all_covered@10": 0.2862,
+        "all_covered@20": 0.3434,
+        "all_covered@50": 0.4074,
+        "operand_median_rank": {
+          "colliding_label": 6.0,
+          "unique_label": 4,
+          "total_like": 3.0,
+          "ordinary": 5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2952,
+          "unique_label": 0.4754,
+          "total_like": 0.3609,
+          "ordinary": 0.42
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.4646
+      }
+    },
+    "S3": {
+      "bm25": {
+        "all_covered@10": 0.3401,
+        "all_covered@20": 0.4108,
+        "all_covered@50": 0.5185,
+        "operand_median_rank": {
+          "colliding_label": 90,
+          "unique_label": 12.0,
+          "total_like": 33,
+          "ordinary": 27.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4254,
+          "unique_label": 0.6637,
+          "total_like": 0.5714,
+          "ordinary": 0.58
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "dense": {
+        "all_covered@10": 0.2424,
+        "all_covered@20": 0.3232,
+        "all_covered@50": 0.4343,
+        "operand_median_rank": {
+          "colliding_label": 95,
+          "unique_label": 24.0,
+          "total_like": 37,
+          "ordinary": 46.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4317,
+          "unique_label": 0.5704,
+          "total_like": 0.5714,
+          "ordinary": 0.512
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "hybrid": {
+        "all_covered@10": 0.3704,
+        "all_covered@20": 0.4613,
+        "all_covered@50": 0.5926,
+        "operand_median_rank": {
+          "colliding_label": 42,
+          "unique_label": 9.0,
+          "total_like": 13,
+          "ordinary": 17.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.5238,
+          "unique_label": 0.7254,
+          "total_like": 0.609,
+          "ordinary": 0.6613
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "cascade_top1_tables": {
+        "all_covered@10": 0.2323,
+        "all_covered@20": 0.2694,
+        "all_covered@50": 0.2929,
+        "operand_median_rank": {
+          "colliding_label": 4.0,
+          "unique_label": 3.0,
+          "total_like": 2.0,
+          "ordinary": 3.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.1873,
+          "unique_label": 0.3345,
+          "total_like": 0.2105,
+          "ordinary": 0.2947
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.3064
+      },
+      "cascade_top3_tables": {
+        "all_covered@10": 0.2727,
+        "all_covered@20": 0.3367,
+        "all_covered@50": 0.3973,
+        "operand_median_rank": {
+          "colliding_label": 6,
+          "unique_label": 4.5,
+          "total_like": 2.5,
+          "ordinary": 6
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.273,
+          "unique_label": 0.4595,
+          "total_like": 0.3459,
+          "ordinary": 0.4013
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.4478
+      }
+    }
+  }
+}
