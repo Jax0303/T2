@@ -132,11 +132,15 @@ as few cells as possible. Contributions:
 - **Metrics.** OSC (primary); **mean per-cell recall** reported alongside OSC in the
   main comparisons (the graceful metric reference table-RAG systems report — the
   OSC↔recall gap is itself an exhibit: partial recall is not completeness);
-  the full literature-standard view (Recall@k, MRR, nDCG@k, set-EM@k) is computed
-  over the same records by `scripts/standard_ir_metrics_from_records.py`
+  the full literature-standard view (Hit@k, Recall@k, MRR, nDCG@k, set-EM@k) is
+  computed over the same records by `scripts/standard_ir_metrics_from_records.py`
   (`results/operand_collision_multihiertt_n300_standard_ir_metrics.json`) — the
   serialization ordering (S3≈S2 > flat; hybrid > bm25 > dense) is identical under
   every standard metric, so the finding is not an artifact of the OSC definition;
+  the lenient↔strict gap is itself an exhibit: flat/hybrid Hit@10 .512 vs
+  set-EM@10 .310 — Hit-Rate-style metrics make a retriever that drops operands
+  from half the aggregations look like it succeeds on half (the HotpotQA
+  Sup-F1 66.7 vs Sup-EM 21.95 pattern, reproduced on cells);
   **col-recall@k** / **row-recall@k** (gold columns/rows
   within the top-k scope-nodes — the node-resolution metric per axis); row-/col-axis
   coverage; mean cells

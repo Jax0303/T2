@@ -12,6 +12,9 @@ null-safe anyway: null counts as not retrieved).
 Per (scheme, retriever) over the query population:
   * recall@k   — mean per-query fraction of gold operand cells ranked <= k
                  (the graceful metric FT-RAG/MT2Net-style systems report).
+  * hit@k      — ANY gold cell ranked <= k (Hit-Rate-style, the most lenient
+                 convention in the comparison literature; the hit@k↔set_em@k
+                 gap is the "lenient metrics hide incompleteness" exhibit).
   * MRR        — mean reciprocal rank of the FIRST gold cell.
   * nDCG@k     — binary relevance (gold cells rel=1), multi-gold ideal:
                  IDCG@k = sum_{i<=min(|G|,k)} 1/log2(i+1).
@@ -45,6 +48,10 @@ def recall_at_k(gold_ranks: list, k: int) -> float:
     return sum(1 for r in gold_ranks if r is not None and r <= k) / len(gold_ranks)
 
 
+def hit_at_k(gold_ranks: list, k: int) -> int:
+    return int(any(r is not None and r <= k for r in gold_ranks))
+
+
 def rr(gold_ranks: list) -> float:
     hit = [r for r in gold_ranks if r is not None]
     return 1.0 / min(hit) if hit else 0.0
@@ -68,6 +75,8 @@ def summarize(per_query: dict) -> dict:
     out = {"n_queries": n,
            "mrr": round(sum(rr(per_query[q]) for q in qs) / n, 4)}
     for k in KS:
+        out[f"hit@{k}"] = round(
+            sum(hit_at_k(per_query[q], k) for q in qs) / n, 4)
         out[f"recall@{k}"] = round(
             sum(recall_at_k(per_query[q], k) for q in qs) / n, 4)
         out[f"ndcg@{k}"] = round(
@@ -108,13 +117,15 @@ def main() -> int:
         "_records", "") + "_standard_ir_metrics.json"
     Path(out).write_text(json.dumps(report, indent=2))
     print(f"[out] {out}")
-    hdr = (f"{'condition':<16} {'R@10':>6} {'R@20':>6} {'R@50':>6} {'MRR':>6} "
-           f"{'nDCG@10':>8} {'nDCG@50':>8} {'EM@10':>6} {'EM@50':>6}")
+    hdr = (f"{'condition':<16} {'Hit@10':>6} {'Hit@50':>6} {'R@10':>6} "
+           f"{'R@50':>6} {'MRR':>6} {'nDCG@10':>8} {'nDCG@50':>8} "
+           f"{'EM@10':>6} {'EM@50':>6}")
     print(hdr)
     for key, m in report["by_condition"].items():
-        print(f"{key:<16} {m['recall@10']:>6.3f} {m['recall@20']:>6.3f} "
-              f"{m['recall@50']:>6.3f} {m['mrr']:>6.3f} {m['ndcg@10']:>8.3f} "
-              f"{m['ndcg@50']:>8.3f} {m['set_em@10']:>6.3f} {m['set_em@50']:>6.3f}")
+        print(f"{key:<16} {m['hit@10']:>6.3f} {m['hit@50']:>6.3f} "
+              f"{m['recall@10']:>6.3f} {m['recall@50']:>6.3f} {m['mrr']:>6.3f} "
+              f"{m['ndcg@10']:>8.3f} {m['ndcg@50']:>8.3f} "
+              f"{m['set_em@10']:>6.3f} {m['set_em@50']:>6.3f}")
     return 0
 
 
