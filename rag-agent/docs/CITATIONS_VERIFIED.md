@@ -39,6 +39,20 @@ Date: 2026-07-03. ✅ = verified verbatim; ⚠️ = needs a wording fix before s
   when writing the camera-ready related work).
 - **RESDSQL** — Li et al., AAAI 2023: cross-encoder (RoBERTa) ranking-enhanced
   schema linking. Real, correctly described.
+- **MT2Net retriever recall** (verified 2026-07-15, ar5iv full text of
+  arXiv:2206.01347): "76.4% recall for the top-10 retrieved facts and 80.8%
+  recall for the top-15" — *partial* recall of supporting facts, retrieved
+  **within a single document** by a BERT bi-classifier over cell-sentences
+  ("For Innovation Systems of Segment, sales of product in 2018, ... is
+  2,894"). Note for related work: MultiHiertt itself already serializes each
+  cell into a sentence with its hierarchical row+column headers — cite when
+  positioning S3-style serialization (the primitive is theirs; our delta is
+  the corpus-level retrieval objective + OSC).
+- **HotpotQA supporting-fact EM** (verified 2026-07-15, ar5iv 1809.09600):
+  set-level exact match confirmed ("Joint EM is 1 only if both tasks achieve
+  an exact match and otherwise 0"); baseline Sup-EM 21.95 (distractor) /
+  5.28 (fullwiki) vs Sup-F1 66.66/40.98 — the EM-vs-F1 gap is the canonical
+  precedent for "all-or-nothing is much harsher than partial credit".
 
 ## ⚠️ Fix before submission
 
