@@ -87,6 +87,7 @@ def main() -> int:
 
     hits = {"lexical": {k: 0 for k in KS}, "embed": {k: 0 for k in KS},
             "cross": {k: 0 for k in KS}}
+    per_q = {s: {k: [] for k in KS} for s in hits}   # per-query 0/1 for McNemar
     for question, headers, gold in items:
         lex = lexical_rank(question, headers, max(KS))
         qv = np.asarray(emb.encode([question])[0])
@@ -95,13 +96,26 @@ def main() -> int:
         sc = ce.predict([(question, h) for h in headers])
         cr_order = sorted(range(len(headers)), key=lambda i: -float(sc[i]))[:max(KS)]
         for k in KS:
-            hits["lexical"][k] += int(gold in lex[:k])
-            hits["embed"][k] += int(gold in emb_order[:k])
-            hits["cross"][k] += int(gold in cr_order[:k])
+            for s, order in (("lexical", lex), ("embed", emb_order), ("cross", cr_order)):
+                ok = int(gold in order[:k])
+                hits[s][k] += ok
+                per_q[s][k].append(ok)
+
+    # paired exact McNemar (binomial on discordant pairs), cross vs each baseline
+    from scipy.stats import binomtest
+    sig = {}
+    for base in ("lexical", "embed"):
+        for k in KS:
+            b01 = sum(1 for c, b in zip(per_q["cross"][k], per_q[base][k]) if c and not b)
+            b10 = sum(1 for c, b in zip(per_q["cross"][k], per_q[base][k]) if b and not c)
+            p = float(binomtest(b01, b01 + b10, 0.5).pvalue) if b01 + b10 else None
+            sig[f"cross_vs_{base}@{k}"] = {"cross_only": b01, "base_only": b10,
+                                           "p_two_sided": p}
 
     out = {"dataset": "AITQA", "population": {"unique_gold_col": n},
            "metric": "col_recall@k",
-           "selectors": {s: {f"@{k}": round(hits[s][k] / n, 3) for k in KS} for s in hits}}
+           "selectors": {s: {f"@{k}": round(hits[s][k] / n, 3) for k in KS} for s in hits},
+           "mcnemar_exact": sig}
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2)

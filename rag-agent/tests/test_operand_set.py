@@ -107,3 +107,47 @@ def test_covered_gold_cells_bridges_chunks():
     assert per_cell_recall(gold, covered) == 0.5
     chunks.append(Chunk([1], [1]))  # now covers (1,1) too
     assert operand_set_completeness(gold, covered_gold_cells(gold, chunks)) == 1
+
+
+# --- rank-based OSC@k -------------------------------------------------------
+
+def test_set_recall_at_k_all_or_nothing():
+    from rag_agent.eval.operand_set import set_recall_at_k
+    assert set_recall_at_k([1, 5, 10], 10) == 1
+    assert set_recall_at_k([1, 5, 11], 10) == 0          # one miss kills the set
+    assert set_recall_at_k([1, None], 50) == 0           # never retrieved
+    assert set_recall_at_k({7: 3, 9: 50}, 50) == 1       # mapping (cell -> rank)
+    assert set_recall_at_k([], 10) == 1                  # vacuous, W1 convention
+
+
+def test_coverage_at_k_partial():
+    from rag_agent.eval.operand_set import coverage_at_k
+    assert abs(coverage_at_k([1, 5, 11], 10) - 2 / 3) < 1e-9
+    assert coverage_at_k([None, None], 10) == 0.0
+    assert coverage_at_k({1: 2, 4: 3}, 10) == 1.0
+
+
+def test_osc_at_k_summary_counts_partial_queries():
+    from rag_agent.eval.operand_set import osc_at_k_summary
+    pop = [[1, 2], [1, 40], [None, None]]
+    s = osc_at_k_summary(pop, ks=(10,))
+    assert s["n_queries"] == 3
+    assert s["set_recall@10"] == round(1 / 3, 4)
+    assert s["coverage@10"] == round((1.0 + 0.5 + 0.0) / 3, 4)
+    assert s["n_partial@10"] == 1                        # only the [1, 40] query
+
+
+def test_paired_set_recall_flip_binomial():
+    from rag_agent.eval.operand_set import paired_set_recall_flip
+    a = [[1, 99], [1, 2], [None]]                        # covered@10: 0,1,0
+    b = [[1, 2], [1, 2], [3]]                            # covered@10: 1,1,1
+    r = paired_set_recall_flip(a, b, k=10)
+    assert (r["gain"], r["loss"]) == (2, 0)
+    assert abs(r["p_two_sided"] - 0.5) < 1e-9            # 2 flips, both gains
+    r0 = paired_set_recall_flip([[1]], [[2]], k=10)
+    assert r0["p_two_sided"] is None and r0["gain"] == r0["loss"] == 0
+    try:
+        paired_set_recall_flip(a, b[:2], k=10)
+        assert False, "unaligned populations must raise"
+    except ValueError:
+        pass
