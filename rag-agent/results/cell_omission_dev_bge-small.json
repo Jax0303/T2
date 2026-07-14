@@ -1,0 +1,101 @@
+{
+  "config": {
+    "model": "BAAI/bge-small-en-v1.5",
+    "split": "dev",
+    "n_queries": 1671,
+    "n_operand_queries": 1301,
+    "table_pool": 540,
+    "seed": 42,
+    "definition": "miss_rate = mean fraction of gold operand cells absent from reader context, conditional on gold table in top-k"
+  },
+  "original_sent_long": {
+    "1": {
+      "table_found": 0.7763,
+      "n_cond": 1010,
+      "miss_rate": 0.0,
+      "any_miss": 0.0,
+      "ctx_chars": 4903
+    },
+    "5": {
+      "table_found": 0.9431,
+      "n_cond": 1227,
+      "miss_rate": 0.0,
+      "any_miss": 0.0,
+      "ctx_chars": 27364
+    },
+    "10": {
+      "table_found": 0.9639,
+      "n_cond": 1254,
+      "miss_rate": 0.0,
+      "any_miss": 0.0,
+      "ctx_chars": 54144
+    },
+    "20": {
+      "table_found": 0.9816,
+      "n_cond": 1277,
+      "miss_rate": 0.0,
+      "any_miss": 0.0,
+      "ctx_chars": 106566
+    }
+  },
+  "rowchunk_s1": {
+    "1": {
+      "table_found": 0.661,
+      "n_cond": 860,
+      "miss_rate": 0.3798,
+      "any_miss": 0.407,
+      "ctx_chars": 247
+    },
+    "5": {
+      "table_found": 0.7717,
+      "n_cond": 1004,
+      "miss_rate": 0.1698,
+      "any_miss": 0.1912,
+      "ctx_chars": 1217
+    },
+    "10": {
+      "table_found": 0.8101,
+      "n_cond": 1054,
+      "miss_rate": 0.1161,
+      "any_miss": 0.1338,
+      "ctx_chars": 2423
+    },
+    "20": {
+      "table_found": 0.8401,
+      "n_cond": 1093,
+      "miss_rate": 0.0776,
+      "any_miss": 0.0915,
+      "ctx_chars": 4862
+    }
+  },
+  "rowchunk_s2": {
+    "1": {
+      "table_found": 0.7794,
+      "n_cond": 1014,
+      "miss_rate": 0.3062,
+      "any_miss": 0.3353,
+      "ctx_chars": 602
+    },
+    "5": {
+      "table_found": 0.867,
+      "n_cond": 1128,
+      "miss_rate": 0.1012,
+      "any_miss": 0.1223,
+      "ctx_chars": 2950
+    },
+    "10": {
+      "table_found": 0.8978,
+      "n_cond": 1168,
+      "miss_rate": 0.065,
+      "any_miss": 0.0805,
+      "ctx_chars": 5893
+    },
+    "20": {
+      "table_found": 0.9301,
+      "n_cond": 1210,
+      "miss_rate": 0.0454,
+      "any_miss": 0.057,
+      "ctx_chars": 11848
+    }
+  }
+}

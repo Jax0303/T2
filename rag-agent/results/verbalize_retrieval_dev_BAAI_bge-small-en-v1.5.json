@@ -1,0 +1,104 @@
+{
+  "config": {
+    "encoder": "BAAI/bge-small-en-v1.5",
+    "split": "dev",
+    "n_queries": 1671,
+    "table_pool": 540,
+    "seed": 42,
+    "query_instr": true
+  },
+  "results": {
+    "fulltable_s1": {
+      "chunks": 540,
+      "chunk_char_p50": 2622,
+      "table_R@1": 0.556,
+      "table_R@5": 0.7552,
+      "table_R@10": 0.8265,
+      "MRR@10": 0.6472,
+      "delta_R@1_vs_fulltable_s2": -0.082,
+      "delta_ci95_vs_fulltable_s2": [
+        -0.1011,
+        -0.0634
+      ]
+    },
+    "fulltable_s2": {
+      "chunks": 540,
+      "chunk_char_p50": 7279,
+      "table_R@1": 0.6379,
+      "table_R@5": 0.839,
+      "table_R@10": 0.8881,
+      "MRR@10": 0.7256,
+      "delta_R@1_vs_fulltable_s1": 0.082,
+      "delta_ci95_vs_fulltable_s1": [
+        0.0634,
+        0.1011
+      ]
+    },
+    "sent_short": {
+      "chunks": 67315,
+      "chunk_char_p50": 27,
+      "table_R@1": 0.3291,
+      "table_R@5": 0.55,
+      "table_R@10": 0.6637,
+      "MRR@10": 0.4241,
+      "cell_hit@1": 0.1091,
+      "cell_hit@5": 0.3005,
+      "cell_hit@10": 0.3789,
+      "n_operand_queries": 1301,
+      "delta_R@1_vs_fulltable_s1": -0.2268,
+      "delta_ci95_vs_fulltable_s1": [
+        -0.2579,
+        -0.1951
+      ],
+      "delta_R@1_vs_fulltable_s2": -0.3088,
+      "delta_ci95_vs_fulltable_s2": [
+        -0.3387,
+        -0.2795
+      ]
+    },
+    "sent_medium": {
+      "chunks": 67315,
+      "chunk_char_p50": 50,
+      "table_R@1": 0.6326,
+      "table_R@5": 0.8306,
+      "table_R@10": 0.8671,
+      "MRR@10": 0.7142,
+      "cell_hit@1": 0.2275,
+      "cell_hit@5": 0.5342,
+      "cell_hit@10": 0.638,
+      "n_operand_queries": 1301,
+      "delta_R@1_vs_fulltable_s1": 0.0766,
+      "delta_ci95_vs_fulltable_s1": [
+        0.0551,
+        0.0981
+      ],
+      "delta_R@1_vs_fulltable_s2": -0.0054,
+      "delta_ci95_vs_fulltable_s2": [
+        -0.0287,
+        0.018
+      ]
+    },
+    "sent_long": {
+      "chunks": 67315,
+      "chunk_char_p50": 77,
+      "table_R@1": 0.7702,
+      "table_R@5": 0.9282,
+      "table_R@10": 0.9485,
+      "MRR@10": 0.8389,
+      "cell_hit@1": 0.4143,
+      "cell_hit@5": 0.6887,
+      "cell_hit@10": 0.7671,
+      "n_operand_queries": 1301,
+      "delta_R@1_vs_fulltable_s1": 0.2142,
+      "delta_ci95_vs_fulltable_s1": [
+        0.1885,
+        0.2382
+      ],
+      "delta_R@1_vs_fulltable_s2": 0.1323,
+      "delta_ci95_vs_fulltable_s2": [
+        0.1113,
+        0.155
+      ]
+    }
+  }
+}

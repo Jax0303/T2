@@ -1,0 +1,84 @@
+{
+  "config": {
+    "encoder": "hashing",
+    "split": "dev",
+    "n_queries": 100,
+    "table_pool": 540,
+    "seed": 42,
+    "query_instr": false
+  },
+  "results": {
+    "fulltable_s1": {
+      "chunks": 540,
+      "chunk_char_p50": 2622,
+      "table_R@1": 0.3,
+      "table_R@5": 0.46,
+      "table_R@10": 0.54,
+      "MRR@10": 0.3635
+    },
+    "fulltable_s2": {
+      "chunks": 540,
+      "chunk_char_p50": 7279,
+      "table_R@1": 0.36,
+      "table_R@5": 0.62,
+      "table_R@10": 0.71,
+      "MRR@10": 0.4521,
+      "delta_R@1_vs_fulltable_s1": 0.06,
+      "delta_ci95": [
+        -0.01,
+        0.13
+      ]
+    },
+    "sent_short": {
+      "chunks": 67315,
+      "chunk_char_p50": 27,
+      "table_R@1": 0.21,
+      "table_R@5": 0.29,
+      "table_R@10": 0.37,
+      "MRR@10": 0.2495,
+      "cell_hit@1": 0.0959,
+      "cell_hit@5": 0.137,
+      "cell_hit@10": 0.1781,
+      "n_operand_queries": 73,
+      "delta_R@1_vs_fulltable_s1": -0.09,
+      "delta_ci95": [
+        -0.21,
+        0.03
+      ]
+    },
+    "sent_medium": {
+      "chunks": 67315,
+      "chunk_char_p50": 50,
+      "table_R@1": 0.38,
+      "table_R@5": 0.5,
+      "table_R@10": 0.58,
+      "MRR@10": 0.4413,
+      "cell_hit@1": 0.0274,
+      "cell_hit@5": 0.2466,
+      "cell_hit@10": 0.3425,
+      "n_operand_queries": 73,
+      "delta_R@1_vs_fulltable_s1": 0.08,
+      "delta_ci95": [
+        0.01,
+        0.16
+      ]
+    },
+    "sent_long": {
+      "chunks": 67315,
+      "chunk_char_p50": 77,
+      "table_R@1": 0.47,
+      "table_R@5": 0.64,
+      "table_R@10": 0.74,
+      "MRR@10": 0.5488,
+      "cell_hit@1": 0.1781,
+      "cell_hit@5": 0.3836,
+      "cell_hit@10": 0.4658,
+      "n_operand_queries": 73,
+      "delta_R@1_vs_fulltable_s1": 0.17,
+      "delta_ci95": [
+        0.08,
+        0.26
+      ]
+    }
+  }
+}

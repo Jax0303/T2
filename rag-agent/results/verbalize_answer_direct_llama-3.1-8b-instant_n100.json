@@ -1,0 +1,3968 @@
+{
+  "config": {
+    "n": 100,
+    "model": "llama-3.1-8b-instant",
+    "rowchunk_k": 10,
+    "mode": "direct",
+    "max_context_tokens": 1200,
+    "tpm": 6000,
+    "reader": "groq:llama-3.1-8b-instant",
+    "embedder": "BAAI/bge-small-en-v1.5",
+    "seed": 42,
+    "context_serialization": "S1 fulltable (oracle/original/1t1c), S2 rowchunks"
+  },
+  "summary": {
+    "oracle": {
+      "accuracy": 0.27,
+      "n": 100,
+      "table_hit_rate": 0.75,
+      "acc_given_table_hit": 0.36,
+      "acc_operands_covered": 0.4
+    },
+    "original_sent": {
+      "accuracy": 0.21,
+      "n": 100,
+      "table_hit_rate": 0.56,
+      "acc_given_table_hit": 0.375,
+      "acc_operands_covered": 0.3953,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 11
+    },
+    "rag_1t1c": {
+      "accuracy": 0.16,
+      "n": 100,
+      "table_hit_rate": 0.43,
+      "acc_given_table_hit": 0.3488,
+      "acc_operands_covered": 0.4242,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 24
+    },
+    "rag_rowchunk": {
+      "accuracy": 0.36,
+      "n": 100,
+      "table_hit_rate": 0.69,
+      "acc_given_table_hit": 0.5217,
+      "acc_operands_covered": 0.5652,
+      "acc_operands_missing": 0.1111,
+      "n_operands_missing": 9
+    },
+    "delta_original_vs_rag_1t1c": {
+      "delta": 0.05,
+      "ci95": [
+        -0.01,
+        0.12
+      ]
+    },
+    "delta_original_vs_rag_rowchunk": {
+      "delta": -0.15,
+      "ci95": [
+        -0.23,
+        -0.06
+      ]
+    }
+  },
+  "records": [
+    {
+      "query_id": "fe6407e2459997d5f135e8a88892a049",
+      "question": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+      "gold": [
+        "men"
+      ],
+      "gold_table": "917",
+      "arms": {
+        "oracle": {
+          "pred": 0.322,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.322,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.322,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "men",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "03e2e33b61115022766eba43568f2a2d",
+      "question": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+      "gold": [
+        264.0
+      ],
+      "gold_table": "361_totto40968-1",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "76958999926314d82b80a5b39f21ed76",
+      "question": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+      "gold": [
+        83.0
+      ],
+      "gold_table": "1026",
+      "arms": {
+        "oracle": {
+          "pred": 0.832,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.832,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.832,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 83.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "76863f9b68412109d717820bb24dc71a",
+      "question": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+      "gold": [
+        "filipino"
+      ],
+      "gold_table": "2658",
+      "arms": {
+        "oracle": {
+          "pred": 0.07,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.07,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.07,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "8d3373fa0c42ed9d0fa3af23548d1e28",
+      "question": "what percent of bert gosnell's 233 games from 1921 to 1926 is winning?",
+      "gold": [
+        25.3
+      ],
+      "gold_table": "13_totto1439-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.253,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.344,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.253,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.253,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "7615f60fffd339c61c4b9181ccaeeadd",
+      "question": "what is the industry with the highest share of female gig workers among all workers?",
+      "gold": [
+        "other services"
+      ],
+      "gold_table": "407",
+      "arms": {
+        "oracle": {
+          "pred": "health care and social assistance",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "health care and social assistance",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "health care and social assistance",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "other services",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "2b46cca80468a08a89b4679e726b92be",
+      "question": "among men who had been sexually assaulted off campus, how many percent indicated that this was the type of place where it happened?",
+      "gold": [
+        39.6
+      ],
+      "gold_table": "2467",
+      "arms": {
+        "oracle": {
+          "pred": 77.2,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 77.2,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 77.2,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.396,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c81134db64a98f22e28cddfb7de0a1a5",
+      "question": "what was the number of police-reported hate crimes motivated by race or ethnicity in 2015?",
+      "gold": [
+        641.0
+      ],
+      "gold_table": "599",
+      "arms": {
+        "oracle": {
+          "pred": 641.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 641.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 641.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 641.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "c486681bfdc34de8cf73363a0e33bc8a",
+      "question": "what was the number of actual combat soldiers of the male soviet force.",
+      "gold": [
+        1426352.0
+      ],
+      "gold_table": "149_totto17935-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "There is no information about the number of actual combat soldiers of the male soviet force in the given rows.",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 4938.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "28f1b6d455a8e8b8d9d865fbc8afe22d",
+      "question": "what the time did ali bouraleh finish the heat in a time of?",
+      "gold": [
+        14.29
+      ],
+      "gold_table": "532_totto60899-2",
+      "arms": {
+        "oracle": {
+          "pred": 43.62,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 43.62,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "There is no information about an athlete named Ali Bouraleh in the given rows.",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 14.29,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "47d85b7882f9f3eaa0ef0096a5468423",
+      "question": "what was the number of appearances made by ben alnwick for sunderland in the 2004-05 championship season?",
+      "gold": [
+        3.0
+      ],
+      "gold_table": "129_totto15640-0",
+      "arms": {
+        "oracle": {
+          "pred": 3.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 3.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "There is no information about Ben Alnwick in the given table.",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 3.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "da4ddf61de0f34ee83b7829102ffe6d9",
+      "question": "which age group is most likely to volunteer informally?",
+      "gold": [
+        "15 to 19"
+      ],
+      "gold_table": "1296",
+      "arms": {
+        "oracle": {
+          "pred": 19.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 74.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.1,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 34.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9aacfbb741d62de704b6e88938389c40",
+      "question": "totally which people of which sex were more likely to have strong family networks?",
+      "gold": [
+        "women"
+      ],
+      "gold_table": "292",
+      "arms": {
+        "oracle": {
+          "pred": "women",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "women",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "women",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "1972155590794ace1ebadbc045332edb",
+      "question": "which refugee category had a lower level of education in general?",
+      "gold": [
+        "government-assisted refugees"
+      ],
+      "gold_table": "247",
+      "arms": {
+        "oracle": {
+          "pred": "government-assisted refugees",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "government-assisted refugees",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "refugees",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "government-assisted refugees",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "b490e86698ea52bec432fd2c062eded2",
+      "question": "those who earned their doctorates more than 25 years ago were, as expected, how many percent was more likely to be working part time in 2010?",
+      "gold": [
+        14.4
+      ],
+      "gold_table": "49_164_tab2",
+      "arms": {
+        "oracle": {
+          "pred": 0.16,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.16,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.16,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "a080b456f9a596237e7683fce6d819d9",
+      "question": "business r&d is concentrated in a small number of states, how many percent are with the 10 states with the highest levels of r&d performance accounting of the $233 billion total?",
+      "gold": [
+        0.681511
+      ],
+      "gold_table": "40_159_tab1",
+      "arms": {
+        "oracle": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.043,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "550428282b3a554a8ff831f7149e00bc",
+      "question": "how many seats were reserved totally during the 2015 sudanese general election.",
+      "gold": [
+        128.0
+      ],
+      "gold_table": "497_totto56747-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 3.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "ae9c91e2b72da1948845d2b9c96be1f1",
+      "question": "what percentage of the cmdb deaths were caused by external causes?",
+      "gold": [
+        5.5
+      ],
+      "gold_table": "380",
+      "arms": {
+        "oracle": {
+          "pred": 0.055,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.055,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "26307595388ef79a529bd08519ff0fa2",
+      "question": "were younger people whose highest level of education was a high school diploma faced a higher probability of being in low income, or those with a postsecondary credentials below a bachelor degree?",
+      "gold": [
+        "high school diploma"
+      ],
+      "gold_table": "477",
+      "arms": {
+        "oracle": {
+          "pred": 0.28,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.111,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "those with a postsecondary credentials below a bachelor degree",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "2802b5a96c112c97d86cf16d30653006",
+      "question": "how many percentage points of imports in capital goods were originated from the united states in 2016?",
+      "gold": [
+        48.2
+      ],
+      "gold_table": "1539",
+      "arms": {
+        "oracle": {
+          "pred": -34.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": -34.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": -34.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 48.2,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "58ffb31b4a6c9fa7241722e671be1033",
+      "question": "what percentage of 3- to 5-year-old boys had daycare centres?",
+      "gold": [
+        40.5
+      ],
+      "gold_table": "2754",
+      "arms": {
+        "oracle": {
+          "pred": 0.467,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.467,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.467,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.405,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "91000ced8fe043bce74aeb836fc37310",
+      "question": "in 2006-07, which league did o'neil appear for portsmouth in?",
+      "gold": [
+        "premier league"
+      ],
+      "gold_table": "568_totto65062-3",
+      "arms": {
+        "oracle": {
+          "pred": "premier league",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "premier league",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "premier league",
+          "correct": true,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "Premier League",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9d173931d9d7ad242c0aa1776525e09c",
+      "question": "what was the percentage of physical assault offenders who were under the age of 35?",
+      "gold": [
+        55
+      ],
+      "gold_table": "1509",
+      "arms": {
+        "oracle": {
+          "pred": 0.783,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.783,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.819,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.14,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "73512fe9ca199714fb81c28e5e4f8d45",
+      "question": "how many league games did andrew williams (born 1962) play in his career?",
+      "gold": [
+        278.0
+      ],
+      "gold_table": "200_totto23645-4",
+      "arms": {
+        "oracle": {
+          "pred": 278.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 655.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 59.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 377.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "367af9447305fe92eb98450df65bbb43",
+      "question": "what is the percentage of adults having unperceived hearing loss among the adults with audiometrically measured hearing loss?",
+      "gold": [
+        77.1
+      ],
+      "gold_table": "504",
+      "arms": {
+        "oracle": {
+          "pred": 0.85,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.85,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.85,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.928,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8d261d5f81dc9e2b8c2b837418bdb5c2",
+      "question": "how many receptions did scott chandler play for in 2013?",
+      "gold": [
+        53.0
+      ],
+      "gold_table": "494_totto56464-4",
+      "arms": {
+        "oracle": {
+          "pred": 43.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 1.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8d6d394650f79f9ef649e572b257697e",
+      "question": "how many touchdowns did the taylor martinez score in 2010?",
+      "gold": [
+        9.0
+      ],
+      "gold_table": "436_totto50263-3",
+      "arms": {
+        "oracle": {
+          "pred": 12.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 12.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 12.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 12.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "e92bb7095157dc83d89eb92bb4e91fea",
+      "question": "how many appearances did scott score with brentford?",
+      "gold": [
+        295.0
+      ],
+      "gold_table": "576_totto65983-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 87.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "c98c67ebe373534a366c96a294d20b11",
+      "question": "which metropolitan area has the highest average census tract incomes?",
+      "gold": [
+        "calgary"
+      ],
+      "gold_table": "873",
+      "arms": {
+        "oracle": {
+          "pred": 56900.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 56900.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 56900.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 56900.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "93c750ff9b37050b550d4dd8d47d3946",
+      "question": "what is the average daily minutes of physical activity reported by canadian youth from the domain of household/occupation, according to the payq?",
+      "gold": [
+        5.6
+      ],
+      "gold_table": "1304",
+      "arms": {
+        "oracle": {
+          "pred": 2.9,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 26.6,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 26.6,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.253,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "643ada2db659a2167c1d1715c566c425",
+      "question": "what is ther percentage of refugees aged under 15 from all the other countreis in 2016?",
+      "gold": [
+        31.0
+      ],
+      "gold_table": "245",
+      "arms": {
+        "oracle": {
+          "pred": 0.341,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.341,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.341,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.346,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "00825430a0f9a7e489f756b1b8927180",
+      "question": "what is the average daily minutes of physical activity reported by canadian youth from the domain of school, according to the payq?",
+      "gold": [
+        25.8
+      ],
+      "gold_table": "1304",
+      "arms": {
+        "oracle": {
+          "pred": 25.8,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c114398a8e91d3218e43c4a7d94eda61",
+      "question": "what is the percentage on average of cases in each year show earnings in both the t1ff and t4?",
+      "gold": [
+        71.05
+      ],
+      "gold_table": "1103",
+      "arms": {
+        "oracle": {
+          "pred": 0.727,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.727,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.727,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.727,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c5e1012cc874a0ae468d65d409c007a2",
+      "question": "what was the share of men aged 55 and over in financial auditors and accountants in 2016?",
+      "gold": [
+        30.7
+      ],
+      "gold_table": "2314",
+      "arms": {
+        "oracle": {
+          "pred": 0.88,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.88,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.88,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.307,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "b54d67af14a701a13dfa08538c813dca",
+      "question": "the employment rate for aboriginal people living on reserve was 47.3% in 2011, compared to 71.1% for their counterparts living off-reserve-a difference of 23.8 percentage points.",
+      "gold": [
+        23.8
+      ],
+      "gold_table": "1604",
+      "arms": {
+        "oracle": {
+          "pred": 23.8,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 23.8,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 23.8,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 47.3,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "b160c973278a37bda23f623a9cca8f2b",
+      "question": "what was the percentage of residents of prince edward island who reported nmo cannabis use in the previous year?",
+      "gold": [
+        5.5
+      ],
+      "gold_table": "2728",
+      "arms": {
+        "oracle": {
+          "pred": 8.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.031,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.031,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 2.7,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "cde23ab9e26bb0cebf68a7a7be27b975",
+      "question": "in 2017, which league did rotkovic sign with side ansan greeners?",
+      "gold": [
+        "k league 2"
+      ],
+      "gold_table": "520_totto59588-2",
+      "arms": {
+        "oracle": {
+          "pred": 2.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 2.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 2017.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "None",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "2145f25f4edfbfb9ba968f3a16c6d035",
+      "question": "how many goals did powell score for milton keynes dons across nine seasons?",
+      "gold": [
+        46.0
+      ],
+      "gold_table": "379_totto43610-2",
+      "arms": {
+        "oracle": {
+          "pred": 61.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 61.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 1.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 46.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "29859004092bf90d1af86ccf9741809b",
+      "question": "when did the single big bro thang release?",
+      "gold": [
+        2007.0
+      ],
+      "gold_table": "167_totto19865-3",
+      "arms": {
+        "oracle": {
+          "pred": "re-entry",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "re-entry",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "re-entry",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 2007.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "288ff92bc7cb0f790485d8bd97979b44",
+      "question": "what was the earning ratio between women and men in physical and life sciences and technologies?",
+      "gold": [
+        0.78
+      ],
+      "gold_table": "2311",
+      "arms": {
+        "oracle": {
+          "pred": 0.78,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.78,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 14.2,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.78,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "1e23bfe038975bf82e4585e2124dc93f",
+      "question": "how many passing yards did kevin kolb get in 2004?",
+      "gold": [
+        2766.0
+      ],
+      "gold_table": "62_totto7084-1",
+      "arms": {
+        "oracle": {
+          "pred": 3131.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 135.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "4ea3c1908ca49ceab34fd92206ed73cb",
+      "question": "what percentage of girls have child care in their own home?",
+      "gold": [
+        11.9
+      ],
+      "gold_table": "2754",
+      "arms": {
+        "oracle": {
+          "pred": 0.129,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.129,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.129,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "648cb2aa7a3fdfffc2d4529a601bbc0c",
+      "question": "how many postal code were missing?",
+      "gold": [
+        2431995
+      ],
+      "gold_table": "625",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 25.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "67e6b9e391a6d7cbc06ba0434725ec66",
+      "question": "what was the number of births on first nations reserves, excluding reserves with a shared postal code?",
+      "gold": [
+        12170
+      ],
+      "gold_table": "296",
+      "arms": {
+        "oracle": {
+          "pred": 12170.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 12170.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 12170.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 12170.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "df4d10cd832d0640617227cfdf344d75",
+      "question": "for the largest of companies (25,000 or more employees), what was the r&d intensity?",
+      "gold": [
+        3.4
+      ],
+      "gold_table": "104_54_nsf19316-tab002",
+      "arms": {
+        "oracle": {
+          "pred": 3.1,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 3.1,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 3.3,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 3.3,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "b6e1458d7594fbdfb40463e7a3c687ca",
+      "question": "what was the percentage of workers expected to be in the worst job quality group (class 4)?",
+      "gold": [
+        0.264
+      ],
+      "gold_table": "2696",
+      "arms": {
+        "oracle": {
+          "pred": 0.264,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.264,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.264,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.264,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "79ed76c91f336d688d4d8331a79cde99",
+      "question": "in contrast, saguenay, having reported what percentage of decreases in robbery in 2015?",
+      "gold": [
+        30
+      ],
+      "gold_table": "2003",
+      "arms": {
+        "oracle": {
+          "pred": 0.11,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.11,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.11,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "f34633c5561aa6b1f76979598c7f238f",
+      "question": "which club did giannou play for in 2009-10?",
+      "gold": [
+        "kavala"
+      ],
+      "gold_table": "336_totto38134-0",
+      "arms": {
+        "oracle": {
+          "pred": "club",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "club",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 2009.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "palermo",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "f0ac3da8c6a2410800e8ca260f44d68b",
+      "question": "which club did iturbe play for in 2013-14?",
+      "gold": [
+        "verona"
+      ],
+      "gold_table": "475_totto54184-2",
+      "arms": {
+        "oracle": {
+          "pred": "serie a",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "eerste divisie",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "eerste divisie",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "leeds united",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "06207ac0e0eb1b0b997b894e09ea613c",
+      "question": "for individuals aged 50 to 64, how many percentage point increase in the likelihood of being satisfied with their job is associated with a high to a very high extent of control over their hours of work?",
+      "gold": [
+        0.101
+      ],
+      "gold_table": "1096",
+      "arms": {
+        "oracle": {
+          "pred": 0.101,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.101,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.101,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.101,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "f56908d8d53acf69999793e0d67052ab",
+      "question": "what is the perccentage of people who felt that covid-19 had a moderate or major impact on their ability to meet financial obligations reported excellent or very good mental health?",
+      "gold": [
+        24.5
+      ],
+      "gold_table": "1488",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.245,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "7382df3d2e18187a79c888d0efdbf9ab",
+      "question": "in cases of failure to appear in court, what was the percentage of females accused in 2015?",
+      "gold": [
+        0.246448
+      ],
+      "gold_table": "345",
+      "arms": {
+        "oracle": {
+          "pred": 0.624,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.65,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.65,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.395,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "92b3542b7710b6a362c969a44aa9b980",
+      "question": "what was the number of hollow crown released via century media records in 2009, which was architects' first album to register on the uk albums chart?",
+      "gold": [
+        117.0
+      ],
+      "gold_table": "372_totto42821-0",
+      "arms": {
+        "oracle": {
+          "pred": 1.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 1.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 1.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 1.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9be99d12f74d40539a549d565d5456f9",
+      "question": "what was the percentage of canadian adults having both hearing loss and tinnitus from 2012 to 2015?",
+      "gold": [
+        14.5
+      ],
+      "gold_table": "355",
+      "arms": {
+        "oracle": {
+          "pred": 0.145,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.145,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.145,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 14.5,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "54eba16d093cd134bbae2e6b3ac06b5a",
+      "question": "how many homelessness support workers were there in alberta?",
+      "gold": [
+        795.0
+      ],
+      "gold_table": "1719",
+      "arms": {
+        "oracle": {
+          "pred": 795.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 795.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "There is no information about homelessness support workers in Alberta.",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 795.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "ddb956ac298bffd60ecce5f83c37662f",
+      "question": "when did \"some girls\" release?",
+      "gold": [
+        1994.0
+      ],
+      "gold_table": "141_totto17044-2",
+      "arms": {
+        "oracle": {
+          "pred": "ultimate kaos",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "ultimate kaos",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "There is no information about \"some girls\" release.",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 1994.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8b1eca6d2de547f3870f0c790124397c",
+      "question": "what was the largest increases in csi were recorded in the cmas of moncton?",
+      "gold": [
+        15.0
+      ],
+      "gold_table": "1927",
+      "arms": {
+        "oracle": {
+          "pred": 15.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 15.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.59,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 15.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9c20efcc80fa7e705844d2a4ec8d6250",
+      "question": "at the city level, how many incidents per 100,000 population in the cmas with the highest average annual rates of police-reported sexual assault over a six-year period in thunder bay?",
+      "gold": [
+        80.1
+      ],
+      "gold_table": "1782",
+      "arms": {
+        "oracle": {
+          "pred": 80.1,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 2.48,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 80.1,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 77.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8fc1014dd6c4dd7783d8b79703b96a1d",
+      "question": "comparing the 2000-to-2004 arrival cohort with the 2010-to-2014 cohort, what percent of the share of new temporary foreign workers from north america has declined?",
+      "gold": [
+        14.5
+      ],
+      "gold_table": "2033",
+      "arms": {
+        "oracle": {
+          "pred": 0.134,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.134,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.134,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.76,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "ce74410c01bfb5ad66b35ee9071ea4c4",
+      "question": "what was the rank of cardiff airport in 2018?",
+      "gold": [
+        20.0
+      ],
+      "gold_table": "81_totto9255-0",
+      "arms": {
+        "oracle": {
+          "pred": 14.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 14.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 14.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 20.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "c474f9865ee0ab0ede1fb51581546a82",
+      "question": "what is the rate of yukon in remand in 2018/2019?",
+      "gold": [
+        25.0
+      ],
+      "gold_table": "954",
+      "arms": {
+        "oracle": {
+          "pred": 145.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 145.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 2.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 145.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "1477d2450da6aa104666af351a9194da",
+      "question": "how many thousand dollars did the nation's 41 federally funded research and development centers (ffrdcs) spend on r&d in fy 2014?",
+      "gold": [
+        17718556.0
+      ],
+      "gold_table": "14_117_tab1",
+      "arms": {
+        "oracle": {
+          "pred": 17718556.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 17718556.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 17718556.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 17718556.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "cef6fb43ba75d86db0409be9082e6c94",
+      "question": "what is the percentage of the large increases in robbery rates reported in saint john in 2015?",
+      "gold": [
+        34.0
+      ],
+      "gold_table": "2003",
+      "arms": {
+        "oracle": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.34,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "fda324107e648d478914ec7295e448fd",
+      "question": "what percentage of 3- to 5-year-old girls had care in child's own home?",
+      "gold": [
+        10.5
+      ],
+      "gold_table": "2754",
+      "arms": {
+        "oracle": {
+          "pred": 0.105,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.105,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 10.5,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "f5cd81181cc2ef1e2f1bad1753328ca2",
+      "question": "what was the rate of handguns used in firearm-related homicides in 2015?",
+      "gold": [
+        0.28
+      ],
+      "gold_table": "1800",
+      "arms": {
+        "oracle": {
+          "pred": 0.1,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.1,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.1,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.28,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "b9b8252aa958c959ffea33f767bb4380",
+      "question": "in 2014, which league did richards appear for bodø/glimt?",
+      "gold": [
+        "tippeligaen"
+      ],
+      "gold_table": "364_totto41690-4",
+      "arms": {
+        "oracle": {
+          "pred": "tippeligaen",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "tippeligaen",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 2014.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "tippeligaen",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "617f1517c1a6fd02ee5b064439a73ab4",
+      "question": "what was the percentage of women with disabilities aged 15 or older reported the cause of their main condition to be ageing?",
+      "gold": [
+        24.4
+      ],
+      "gold_table": "1573",
+      "arms": {
+        "oracle": {
+          "pred": 0.244,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.244,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.244,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 24.4,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "c8d980afa33c751cfaec0416d5c83267",
+      "question": "overall, what percentage of women who were 15 years of age or older in canada-experienced some form of unwanted sexual behaviour while they were in a public place in the past 12 months of 2018 are?",
+      "gold": [
+        31.8
+      ],
+      "gold_table": "914",
+      "arms": {
+        "oracle": {
+          "pred": 0.318,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.318,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.318,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 31.8,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c4f1ad68877fced5818bf6239198a159",
+      "question": "in which municipalities are people less likely to have more larger personal networks, second-ring peripheral municipalities or central municipalities?",
+      "gold": [
+        "peripheral 2nd ring"
+      ],
+      "gold_table": "436",
+      "arms": {
+        "oracle": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "second-ring peripheral municipalities",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9f9d66e92bfb74548c7e4826782e4813",
+      "question": "what was the proportion of delayed tax filing for tax filers who becoming an ei recipient in the past year?",
+      "gold": [
+        2.8
+      ],
+      "gold_table": "1561",
+      "arms": {
+        "oracle": {
+          "pred": 0.028,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.028,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.028,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 2.8,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "eca0f7c2ced6970e4ff0139eb71dc957",
+      "question": "what was the percentage of violent incidents motivated by hatred of sexual orientation committed in open areas?",
+      "gold": [
+        39.0
+      ],
+      "gold_table": "742",
+      "arms": {
+        "oracle": {
+          "pred": 0.06,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "pred": 0.39,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "1505abf354f3f12a465598406e3e6d44",
+      "question": "how many billion in current dollars did canada spend on the 2017/2018 total operating expenditures for all police services?",
+      "gold": [
+        15144253.0
+      ],
+      "gold_table": "1012",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "23766bae8239cef96904fc0570f55777",
+      "question": "of all cases involving a female accused disposed of in adult criminal court in 2014/2015, what was the percentage of violent crimes?",
+      "gold": [
+        0.212749
+      ],
+      "gold_table": "345",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "pred": 0.53,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "cfe2bdd349f029da7c3338efc407ad38",
+      "question": "in which municipalities are people less likely to have more larger personal networks, first-ring peripheral municipalities or central municipalities?",
+      "gold": [
+        "peripheral 1st ring"
+      ],
+      "gold_table": "436",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c5f8f285d81ec3f54bd836c8b8ea3eee",
+      "question": "what was the total number of appearances made by henry for wolves?",
+      "gold": [
+        272.0
+      ],
+      "gold_table": "344_totto39078-3",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "9d6d6af217eebea141bbe23d12969d57",
+      "question": "where did partizan appeared for partizan?",
+      "gold": [
+        "superliga"
+      ],
+      "gold_table": "51_totto5851-3",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "d39cb0e95ff1621c9244679152f255b8",
+      "question": "by place of residence,who were most likely to participate for reasons of communal sharing?",
+      "gold": [
+        "inuit nunangat"
+      ],
+      "gold_table": "2688",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "pred": 0.45,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "a2f6f5e5a8de43d083fc37f88329b516",
+      "question": "as many girls start kindergarten from the age of 4 to 5, what proportion of this group use before- and after-school program?",
+      "gold": [
+        9.3
+      ],
+      "gold_table": "2754",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "644625e38de054364edb6fa14055874b",
+      "question": "what is the percentage of syrian refugees admitted in 2016?",
+      "gold": [
+        71.3
+      ],
+      "gold_table": "245",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "4b5227911543ea911598e78d737b89e4",
+      "question": "list the top3 cmas reported the largest decreases in csi.",
+      "gold": [
+        "st. john's",
+        "regina",
+        "vancouver"
+      ],
+      "gold_table": "1966",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "pred": -2.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "e853b9b4bc3a645884fa20c8b25757f0",
+      "question": "how manypercentage points were immigrants born in china in the family category in 2014?",
+      "gold": [
+        31.6
+      ],
+      "gold_table": "2581",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "09ff4331083c9bad0bd6b7835b197e82",
+      "question": "among the closest accused-victim relationship, which relationships were females accused of homicide least likely to kill from 2001 to 2015 in canada?",
+      "gold": [
+        "stranger"
+      ],
+      "gold_table": "344",
+      "arms": {
+        "oracle": {
+          "pred": 0.026,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "1a9f7700a233adb98b669fc60221a03d",
+      "question": "in 2015, which league did jaja participate for chongqing lifan?",
+      "gold": [
+        "chinese super league"
+      ],
+      "gold_table": "247_totto28047-3",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "ebf6adf922c6d2754fdbba48eff142b1",
+      "question": "what was the number that total general government final consumption expenditure was revised down per year between 2010 and 2014?",
+      "gold": [
+        9848
+      ],
+      "gold_table": "1186",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "pred": 1969.6,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "76623f5cb640fd8d101af12bf0bad093",
+      "question": "what was the percentage of female university graduates with student debt that had dependent children?",
+      "gold": [
+        27.0
+      ],
+      "gold_table": "2301",
+      "arms": {
+        "oracle": {
+          "pred": 0.43,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "pred": 0.43,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "4829cbc96df63f11ae9ee40e06f4661e",
+      "question": "which division did amin nazari sign with falkenbergs ff in 2016?",
+      "gold": [
+        "allsvenskan"
+      ],
+      "gold_table": "62_totto7075-0",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "pred": "League Two",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "5acdd416226f4ef908e21d88ec65b14d",
+      "question": "what's the percent that mfp growth decreased from 2000 to 2009?",
+      "gold": [
+        0.9
+      ],
+      "gold_table": "912",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "pred": 0.136,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.136,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "fcf7b9251fecad9c9542ac6f62808a13",
+      "question": "what the proportion of women who shut down or deleted an account entirely because of harassment they experienced in the past 12 months of 2018 are?",
+      "gold": [
+        4.0
+      ],
+      "gold_table": "914",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "30dd1ab5e8ebfbb0fe35bdfc87df60da",
+      "question": "for those who had been sexually assaulted, which gender had a lower proportion who indicated that in all cases the persons responsible were men, male or female?",
+      "gold": [
+        "male victims"
+      ],
+      "gold_table": "2798",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "a822c31c113bd3260f1686a3e8ccc6ca",
+      "question": "which type of young female immigrants that were more likely to be overqualified for their occupation?",
+      "gold": [
+        "visible minority population"
+      ],
+      "gold_table": "2306",
+      "arms": {
+        "oracle": {
+          "pred": 0.26,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.26,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.26,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "0dae2306e692e18bea11498783726288",
+      "question": "what was the earning ratio between women and men's median income in education?",
+      "gold": [
+        0.9
+      ],
+      "gold_table": "2311",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "7de12c1677401aa44e4fd7cff46b43f8",
+      "question": "among inuit aged 25 and over in inuit nunangat, what was the probability of experiencing food insecurity for those who had not completed high school?",
+      "gold": [
+        0.547
+      ],
+      "gold_table": "108",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "pred": 0.547,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "60688a60ccb36a268a7b08226cb0b405",
+      "question": "what is the percentage of women who stated that a woman was responsible for the most serious incident in the past 12 months of 2018?",
+      "gold": [
+        5.3
+      ],
+      "gold_table": "917",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "8fc3195ecd85405526477719f49b8a74",
+      "question": "what percentage of boys aged 6 to 9 had care in someone else's home?",
+      "gold": [
+        28.3
+      ],
+      "gold_table": "2754",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "ef29cf4ba0a3ae1f6352d0cce1f21c64",
+      "question": "how many percentage points did gdp of sport industries in prince edward island grow in 2014?",
+      "gold": [
+        0.4
+      ],
+      "gold_table": "123",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "pred": 0.4,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "4af00adb6d4e6f98e37b32fd3574716b",
+      "question": "how many percentage points did men live as part of a couple in 2011?",
+      "gold": [
+        59.2
+      ],
+      "gold_table": "2092",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "97332725a140af38960fde799071b926",
+      "question": "how many percentage points have officers been hired as experienced police officers.?",
+      "gold": [
+        20.0
+      ],
+      "gold_table": "2111",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "6c4512a2af4cf3cc158c4fad857f3099",
+      "question": "what were the percentages of women with a high school diploma or postsecondary education smoking respectively?",
+      "gold": [
+        0.47,
+        0.59
+      ],
+      "gold_table": "999",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "ca3a51aa6a682f79a0c761c7a77fbf70",
+      "question": "what is the number of unemployed persons per job vacancy in ontario?",
+      "gold": [
+        3.1
+      ],
+      "gold_table": "2123",
+      "arms": {
+        "oracle": {
+          "pred": 3.1,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    },
+    {
+      "query_id": "4756d5feadf04f35547ef701a3a8fff4",
+      "question": "in the 21 months prior to #metoo (january 1, 2016 to september 30, 2017), what was an average of victims of sexual assault per 100,000 population per quarter?",
+      "gold": [
+        15.0
+      ],
+      "gold_table": "1643",
+      "arms": {
+        "oracle": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "original_sent": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_1t1c": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        },
+        "rag_rowchunk": {
+          "error": "Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens",
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": null,
+          "pred": null
+        }
+      }
+    }
+  ]
+}
