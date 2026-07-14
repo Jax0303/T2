@@ -1,0 +1,294 @@
+{
+  "config": {
+    "n": 6,
+    "model": "llama-3.1-8b-instant",
+    "rowchunk_k": 10,
+    "mode": "direct",
+    "max_context_tokens": 1200,
+    "tpm": 6000,
+    "reader": "groq:llama-3.1-8b-instant",
+    "embedder": "BAAI/bge-small-en-v1.5",
+    "seed": 42,
+    "context_serialization": "S1 fulltable (oracle/original/1t1c), S2 rowchunks"
+  },
+  "summary": {
+    "oracle": {
+      "accuracy": 0.3333,
+      "n": 6,
+      "table_hit_rate": 1.0,
+      "acc_given_table_hit": 0.3333,
+      "acc_operands_covered": 0.6667
+    },
+    "original_sent": {
+      "accuracy": 0.1667,
+      "n": 6,
+      "table_hit_rate": 0.6667,
+      "acc_given_table_hit": 0.25,
+      "acc_operands_covered": 1.0,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 2
+    },
+    "rag_1t1c": {
+      "accuracy": 0.3333,
+      "n": 6,
+      "table_hit_rate": 0.8333,
+      "acc_given_table_hit": 0.4,
+      "acc_operands_covered": 1.0,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 1
+    },
+    "rag_rowchunk": {
+      "accuracy": 0.6667,
+      "n": 6,
+      "table_hit_rate": 1.0,
+      "acc_given_table_hit": 0.6667,
+      "acc_operands_covered": 1.0,
+      "acc_operands_missing": 0.5,
+      "n_operands_missing": 2
+    },
+    "delta_original_vs_rag_1t1c": {
+      "delta": -0.1667,
+      "ci95": [
+        -0.5,
+        0.0
+      ]
+    },
+    "delta_original_vs_rag_rowchunk": {
+      "delta": -0.5,
+      "ci95": [
+        -0.8333,
+        -0.1667
+      ]
+    }
+  },
+  "records": [
+    {
+      "query_id": "fe6407e2459997d5f135e8a88892a049",
+      "question": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+      "gold": [
+        "men"
+      ],
+      "gold_table": "917",
+      "arms": {
+        "oracle": {
+          "pred": 0.322,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.322,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.322,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "men",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "03e2e33b61115022766eba43568f2a2d",
+      "question": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+      "gold": [
+        264.0
+      ],
+      "gold_table": "361_totto40968-1",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "76958999926314d82b80a5b39f21ed76",
+      "question": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+      "gold": [
+        83.0
+      ],
+      "gold_table": "1026",
+      "arms": {
+        "oracle": {
+          "pred": 0.832,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.832,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.832,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 83.0,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "76863f9b68412109d717820bb24dc71a",
+      "question": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+      "gold": [
+        "filipino"
+      ],
+      "gold_table": "2658",
+      "arms": {
+        "oracle": {
+          "pred": 0.07,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.07,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.07,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.5,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "8d3373fa0c42ed9d0fa3af23548d1e28",
+      "question": "what percent of bert gosnell's 233 games from 1921 to 1926 is winning?",
+      "gold": [
+        25.3
+      ],
+      "gold_table": "13_totto1439-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.253,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.034,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.253,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.253,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "7615f60fffd339c61c4b9181ccaeeadd",
+      "question": "what is the industry with the highest share of female gig workers among all workers?",
+      "gold": [
+        "other services"
+      ],
+      "gold_table": "407",
+      "arms": {
+        "oracle": {
+          "pred": "health care and social assistance",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "health care and social assistance",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "health care and social assistance",
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "other services",
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    }
+  ]
+}

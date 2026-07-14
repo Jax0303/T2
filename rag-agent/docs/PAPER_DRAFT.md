@@ -1,6 +1,7 @@
 # Operand-Set Completeness: Header-Tree Retrieval for Aggregation over Hierarchical Tables — draft
 
-All numbers: HiTab `dev`, arithmetic aggregations, distinct-cell scope **m≥2 (n=161)**,
+All numbers: HiTab `dev`, arithmetic aggregations, distinct-cell scope **m≥2 (n=161,
+9.6% of the 1,671 dev questions — the multi-operand slice the claims are scoped to)**,
 current gold, seed 42, paired where applicable. LLM-free unless noted.
 
 ---
@@ -15,15 +16,28 @@ similarity retrieval drops operands.
 
 We reframe the task at the **retrieval stage**: retrieve the complete operand set with
 as few cells as possible. Contributions:
-1. **Operand-Set Completeness (OSC)** — an all-or-nothing retrieval objective/metric
-   for table aggregation (a 2025 TQA survey confirms this is unmeasured).
+1. **Operand-Set Completeness (OSC)** — we *apply and measure* an all-or-nothing
+   set-completeness criterion for table aggregation retrieval. The metric form is not
+   new: it transfers the set-level exact-match convention of HotpotQA supporting-fact
+   EM (Yang et al., EMNLP 2018) from multi-hop passage sets to operand cell sets; our
+   claim is the *application* — no table-RAG work measures it, and a 2025 TQA survey
+   confirms evidence-cell completeness is unmeasured in this area.
 2. **A structural ceiling diagnosis of similarity retrieval, not just a benchmark
-   number.** We show *why* BM25/dense/hybrid plateau below full completeness: unnamed
-   total/aggregate rows share neither vocabulary nor semantics with the query, so they
-   rank ~4× worse and are missed even at k=50 — this single cause explains **62%** of
-   similarity retrieval's completeness ceiling (§5.1b). This is a general, dataset-level
-   claim about *why* relevance-ranked retrieval cannot satisfy an all-or-nothing
-   objective by construction, independent of any fix we propose for it.
+   number — in both the single-table and the multi-table regime.** Single-table
+   (HiTab): unnamed total/aggregate rows share neither vocabulary nor semantics with
+   the query, rank ~4× worse, and are systematically under-reached even at k=50 — this
+   single cause explains **62%** of the completeness ceiling (§5.1b). Multi-table
+   corpus (MultiHiertt, 1,203 tables / 42,715 cells): the analogous mechanism is
+   **surface-form collision** — operand cells whose header labels recur across tables
+   rank 3× worse (median 22 vs 7), and structural serialization repairs exactly that
+   slice (set_recall@50 +.135, p=4e-9), with the gap **widening monotonically with
+   operand-set size**; a strong cross-encoder reranker over the same top-100 pool
+   cannot close it — flat's perfect-reranker ceiling (.566) sits *below* structural
+   retrieval's actual @50 (.593) — locating the failure in **candidate generation, not
+   ranking** (§5.1c). The claim is empirical and graded, not absolute: most operands
+   are reachable; the diagnosed slices (structurally-dissimilar totals, colliding
+   surface forms) are where relevance ranking systematically under-serves the
+   all-or-nothing objective — independent of any fix we propose.
 3. **Header-tree scope enumeration** — a header node *is* an aggregation scope, so its
    operand set is **complete-by-construction**; this is **scope-size robust** where
    similarity retrieval collapses, and re-localizes the problem to header-path
@@ -57,6 +71,10 @@ as few cells as possible. Contributions:
   row/column header trees on HiTab, but to **serialize the whole table** for the LLM
   (no retrieval/selection). Complementary to us (representation vs retrieval); we do
   **not** claim the tree representation or the (header-path=value) format as novel.
+- **Cell-level table RAG (2026): Topo-RAG (arXiv:2601.10215), FT-RAG
+  (arXiv:2605.01495).** Retrieve at cell/fragment granularity over table corpora but
+  evaluate with partial recall / nDCG — no all-or-nothing set-completeness objective;
+  the closest neighbors to our retrieval unit, differing on the metric target.
 - **Schema linking (CE-SL, RESDSQL).** Map a question to relevant **columns** with a
   **cross-encoder** — we adopt this for our column axis.
 - **Gap.** No prior work makes header-tree scope enumeration / operand-set
@@ -93,8 +111,16 @@ as few cells as possible. Contributions:
 ## 4. 실험 세팅 (Experimental Setup)
 
 - **Data.** HiTab dev; gold operands resolved from `linked_cells.quantity_link` by
-  value-matching (`bench/hitab.py`). Population: arithmetic aggregations with scope
-  **m≥2, n=161**; selection/comparison excluded (value-matching cannot build gold).
+  mapping the annotation's own grid coordinates through the table's header-block
+  offset (`bench/hitab.py`) — value-matching is only a fallback for tables with no
+  consistent offset, and an audit shows the fallback fires on **0% of this
+  population** (176/176 arithmetic m≥2 queries resolve via annotated coordinates;
+  under a hypothetical pure value-matching resolver 20.3% of operand values would
+  be ambiguous — `scripts/gold_attribution_audit.py`,
+  `results/gold_attribution_audit.json`). Population: arithmetic aggregations with
+  scope **m≥2, n=161** — **9.6% of HiTab dev's 1,671 questions**; the paper's claims
+  are scoped to this multi-operand slice. Selection/comparison excluded
+  (coordinate resolution cannot build gold for non-quantity links).
 - **Metrics.** OSC (primary); **mean per-cell recall** reported alongside OSC in the
   main comparisons (the graceful metric reference table-RAG systems report — the
   OSC↔recall gap is itself an exhibit: partial recall is not completeness);
@@ -110,7 +136,19 @@ as few cells as possible. Contributions:
   `llama-3.1-8b-instant` (codegen) — all retrieval is LLM-free; only the answer stage
   uses an LLM.
 - **Protocol.** Paired comparisons; bootstrap 95% CI + McNemar; "accuracy over
-  answered" excludes failed/oversize LLM calls. Reproduce: `scripts/e1..e7`,
+  answered" excludes failed/oversize LLM calls.
+- **Multiple comparisons.** Tests are grouped into pre-declared families with
+  **Holm–Bonferroni** applied within each: F1 serialization contrasts on MultiHiertt
+  (schemes × retrievers × k); F2 reranker contrasts (4 contrasts × k∈{10,20,50},
+  m=12); F3 same-depth injection (3 retrievers); F4 operand-set-size strata (m=4);
+  F5 node-resolution McNemars per axis; F6 AITQA McNemars (m=6). All headline
+  results survive within-family Holm at α=.05 (e.g. F1 p=4.2e-9 → corrected ≪.001;
+  F2 flat_rerank→S3_hybrid all three k survive; F2 flat_rerank→S3_rerank@50
+  corrected p=.039). Results that do **not** survive are demoted to directional in
+  the text: F2 flat_rerank→S3_rerank@10 (raw p=.049 → corrected .245), F3 dense
+  (raw p=.0625), F4 strata 5–8/9+, F6 cross-vs-embed@2 (raw p=.026 → corrected .13;
+  only @1 survives).
+- Reproduce: `scripts/e1..e7`,
   `diag_row_failures.py`, `col_select_bench.py`, `row_select_bench.py`,
   `row_select_stats.py`, `row_osc_endtoend.py`, `dense_ceiling_diag.py`,
   `osc_total_augment.py`, `retrieval_stage_eval.py`.
@@ -137,9 +175,10 @@ m≥2, n=161, LLM-free):
 **35% are still unreached at k=50**. Dense full-set completeness plateaus accordingly
 (@10 0.429 → @50 0.770), and **62% (23/37) of the @50 incompletes are explained by an
 unreached total-row operand**. The miss is *structural, not a budget problem*: these
-cells resemble the query neither semantically (dense) nor lexically (BM25), so **no
-similarity/hybrid retriever reaches them by construction** — header-tree enumeration
-does, because a total row falls under the scope node regardless of resemblance. (This is
+cells resemble the query neither semantically (dense) nor lexically (BM25), so
+similarity/hybrid retrievers **systematically under-reach them** (35% still unreached
+at k=50, vs 10% for ordinary operands) — header-tree enumeration reaches them
+regardless, because a total row falls under the scope node independent of resemblance. (This is
 the mechanism behind the completeness guarantee; `dense_ceiling_diag`.) *Caveat:
 ordinary operands also plateau below 1.0 (0.897), so total rows are the largest but not
 the only cause; `is_total_row` is a heuristic (empty/"total"/"overall" paths). Prepending
@@ -149,6 +188,33 @@ statistical-report titles reuse similar phrasing across tables and dilute the
 header-path signal rather than adding table-specific discriminating signal
 (`dense_ceiling_diag --with-title`, `results/dense_ceiling_diag_with_title.json`). This
 closes the "just add the caption" objection.*
+
+**5.1c Multi-table corpus: the ceiling persists as surface-form collision, and it is a
+candidate-generation failure a strong reranker cannot fix.** Two natural objections to
+§5.1b are (i) "the ranking is within one gold table — real RAG searches a corpus" and
+(ii) "a strong reranker would fix it." Both tested on MultiHiertt (financial reports):
+297 arithmetic multi-operand queries (951 gold operand cells) over a shared corpus of
+**1,203 tables / 42,715 cell chunks**; treatment is cell serialization — *flat* (leaf
+labels only, the naive cell-chunk VDB) vs *S3* (caption + full header path as a
+sentence). Findings: (1) the corpus-level analogue of the total-row miss is
+**surface-form collision** — operand cells whose header labels recur in ≥5 tables have
+median hybrid rank 22 vs 7 for unique labels (reached@50 0.30 vs 0.62); S3 repairs
+precisely this slice (median 11.5, reached@50 0.52), lifting hybrid set_recall@50
+**0.458→0.593** (paired flips 44:9, **p=4.2e-9**). (2) The gap **widens monotonically
+with operand-set size** (Δ@50 +.116/+.152/+.156/+.400 for scope 2/3–4/5–8/9+, first
+two strata significant; flat collapses .591→.291→.188→.000) — completeness failure
+concentrates exactly where aggregation needs completeness most. (3) A strong
+cross-encoder reranker (**bge-reranker-large**) over the *same* top-100 pool, same
+final-k, does **not** rescue flat: it significantly *hurts* set-completeness at k=10
+(−.071, p=.005; individual-relevance reordering pushes set members out) and is n.s. at
+k=50 (+.034, p=.13); flat-with-reranker still loses to plain S3 hybrid at every k
+(@10 p=3.8e-6, @50 p=1.0e-4); and flat's **pool ceiling@100 = .566** — the score a
+*perfect* reranker over that pool would get — is **below S3's actual @50 = .593**. The
+ceiling is in **candidate generation**, not ranking; serialization must inject the
+disambiguating structure before the pool is formed. Claims here are for hybrid/BM25;
+dense alone shows the level shift but not the slope pattern.
+(`operand_collision_multihiertt`, `operand_collision_rerank`, `osc_slice_analysis`;
+EXPERIMENTS.md §5, §13, §14)
 
 **5.2 Enumeration is scope-robust and re-localizes the bottleneck (H2).** OSC |
 decomposition-correct = **1.000, flat across m**; the H1 collapse is eliminated. Raw
@@ -221,11 +287,18 @@ us re-run the column-selection benchmark on a new domain:
 | bi-encoder | 0.754 | 0.886 | 0.968 |
 | **cross-encoder** | **0.820** | **0.923** | **0.979** |
 
-The ordering **generalizes** — cross-encoder best, bi-encoder worst, at every k — so
-"use a cross-encoder for the column axis" holds across domains. The *margin* is small
+The *ordering* replicates — cross-encoder best, bi-encoder worst, at every k — but
+significance splits by baseline (exact McNemar on paired 0/1, n=439): the
+cross-encoder **significantly beats the bi-encoder** (@1: 44 cross-only vs 15,
+**p=2e-4**, survives Holm; @2: 31 vs 15, raw p=.026 but corrected .13 — directional
+under the declared family correction), while its edge over the *lexical* baseline is
+**directional but not significant at any k** (@1: 32 vs 21, p=.17; @2 p=.63; @3 p=.65).
+So the transferable claim is scoped: "a cross-encoder beats bi-encoder column matching
+across domains"; vs lexical it is direction-consistent only. The margins are small
 here because AITQA columns are clean metric names (small vocabulary gap); the large
 cross-encoder gain on HiTab is specific to harder gaps ("%"↔"percentage"). OSC
 external validity remains a limitation (no operand labels outside HiTab).
+(`aitqa_col_bench`, `results/aitqa_col_bench.json`)
 
 **5.9 vs OHD-style whole-table serialization — retrieval is feasible at a fraction of
 the context.** OHD (2602.01969) builds the *same* orthogonal header trees but
@@ -289,7 +362,13 @@ flagged if it arithmetically sums its tree children or row-level siblings, regar
 its text label (`is_total_row_structural`; catches e.g. an unlabeled "federal government"
 subtotal the keyword regex misses). Structural detection *alone* under-performs keyword
 alone (it tends to (re)find totals similarity retrieval could already reach); the union
-is never worse than keyword alone and widens applicability. At the **same retrieval
+is never worse than keyword alone and widens applicability. *Circularity note: the
+detector used to diagnose the ceiling (§5.1b's `is_total_row` heuristic) is related to
+the detector used to inject the fix here; this cannot inflate the reported gains,
+because OSC is scored against **gold operand annotations**, never against detector
+output — a detector false positive only wastes budget, and a false negative only
+forgoes gain. The 62% attribution in §5.1b, however, does inherit the heuristic's
+definition of "total row" and is labeled accordingly.* At the **same retrieval
 depth** (k=10; HiTab dev arith m≥2, n=161; re-measured post-audit 2026-07-08), with
 mean per-cell recall — the reference metric — alongside:
 
@@ -331,19 +410,11 @@ holds ≥ aug's cell count) only BM25's win survives (+0.106, p<1e-4; dense and 
 must be scoped to BM25. The clean three-retriever-direction win is at *matched depth*,
 not matched budget. (`osc_total_augment`)
 
-**Answer-stage payoff (H6, preliminary — quota-limited sample).** Does the completeness
-gain convert to final answer accuracy? At a fixed capable solver (gpt-oss-120b, codegen,
-official HiTab EM), injecting total rows into dense@10 lifts EM **0.395→0.500** on the
-86/161 queries evaluated so far (paired; 11 wrong→right vs 2 right→wrong, McNemar
-**p=0.022**); on the 11 queries whose OSC flips 0→1, accuracy goes **0.00→0.73**. A
-70B solver is directional but underpowered (0.346→0.404, 3:0, p=0.25, n=52) and an 8B
-solver does not move at all (p=1.0, n=134) — completeness gains surface only above a
-solver-capability floor, consistent with §5.6's precision-dominated reading. *Caveats:*
-the sample is quota-cut and flips-first-ordered (queries injection can affect are
-evaluated first), so the evaluated-subset Δ overstates the population Δ — significance
-rests on the paired flip counts, not the means; 4/86 treatment contexts hit the context
-budget (truncation detected and counted). (`answer_accuracy_injection`,
-`results/h6_rerun_20260707/`)
+**Answer-stage payoff (H6) — deferred to Appendix A.** A quota-cut, flips-first-ordered
+partial sample (86/161) cannot support a population-level claim and is therefore
+**excluded from the main results** until the full n=161 run completes; the preliminary
+direction (capable-solver EM lift, paired flips 11:2) is recorded in Appendix A for
+transparency only and is not cited by any contribution.
 
 **5.11 Generalization scope: where the injection win does — and cannot — transfer.**
 Applying the same pipeline to FinQA and WikiSQL (gold-operand m≥2 populations) shows
@@ -367,18 +438,23 @@ than similarity retrieval — on raw average OSC, dense beats our header-tree en
 session's gold/row-path fixes and needs re-verification before being re-quoted — see
 `codebase-audit-bugfixes-2026-07-07` — omitted here rather than re-stating a stale
 figure). The contribution is about a *different objective*:
-aggregation needs the **complete** operand set, and we show (§5.1b) that **similarity
-retrieval cannot satisfy that objective by construction** — 13.4% of operands are
-structurally-required total rows it ranks ~4× worse and misses even at k=50, explaining
-62% of its completeness ceiling. This diagnosis — general, and independent of any fix —
+aggregation needs the **complete** operand set, and we show (§5.1b–c) that **similarity
+retrieval systematically under-serves that objective** — single-table: 13.4% of
+operands are structurally-required total rows it ranks ~4× worse (35% unreached at
+k=50), explaining 62% of its completeness ceiling; multi-table: colliding surface
+forms rank 3× worse, and even a perfect reranker over the flat candidate pool cannot
+reach structural serialization's actual completeness (pool ceiling .566 < .593).
+This diagnosis — graded, empirical, and independent of any fix —
 is the primary claim; ranked below it, in order of how general each result actually is:
 (i) **OSC** as the all-or-nothing completeness objective existing relevance/ranking
-retrievers (incl. 2026 cell-level table RAG: FT-RAG, Topo-RAG — partial recall / nDCG)
+retrievers (incl. 2026 cell-level table RAG: FT-RAG arXiv:2605.01495, Topo-RAG
+arXiv:2601.10215 — partial recall / nDCG)
 do not target; (ii) the **ceiling diagnosis** itself (above); (iii) **header-tree
 enumeration**, complete-by-construction and scope-robust, that reaches the cells
 similarity cannot — though it does not beat baseline OSC on its own; (iv) a
 **cross-encoder node-resolution** result on *both* axes (significant on row-recall
-p=0.007 and col-recall; column generalizing to AITQA) — a real retriever improvement,
+p=0.007 and col-recall; on AITQA the ordering replicates — significant vs bi-encoder
+(p=2e-4), directional-only vs lexical) — a real retriever improvement,
 though on the row axis its end-to-end OSC lift is only directional (+0.05, p=0.08),
 bounded by the column-axis ceiling; (v) **scalability** — 9× fewer tokens, feasible
 where whole-table serialization is not (§5.9). The **total-row injection case study**
@@ -402,8 +478,24 @@ retrieval improvement.
   retrieval could already reach rather than the vocabulary-dissimilar ones that are
   actually hard — so the current hybrid still leans on the keyword signal for its
   effect size. Testing the structural-only detector on a non-English hierarchical-table
-  benchmark (none identified yet) would be the real test of the generality claim.
+  benchmark would be the real test of the generality claim — **IM-TQA** (Zheng et al.,
+  ACL 2023; Chinese tables, 159 hierarchical test questions) is the candidate testbed;
+  measuring the structural detector's precision/recall there is queued future work.
 - Column completeness on two-entity comparisons (~25% residual) — needs heavier
   methods (LLM/fine-tuned schema linker); future work.
 - End-to-end answer accuracy is solver-limited (8b); a stronger solver is needed.
-- Single dataset (HiTab); selection/comparison aggregations excluded.
+- Single dataset (HiTab) for OSC gold; selection/comparison aggregations excluded.
+  The multi-table surface-form-collision results (§5.1c) are on MultiHiertt.
+
+### Appendix A — H6 preliminary sample (not citable; pending completion)
+
+Quota-cut, **flips-first-ordered** sample: 86/161 queries at a fixed capable solver
+(gpt-oss-120b, codegen, official HiTab EM). Injecting total rows into dense@10:
+EM 0.395→0.500 on the evaluated subset (paired flips 11 wrong→right vs 2
+right→wrong, McNemar p=0.022); on the 11 OSC-flip queries, accuracy 0.00→0.73. A 70B
+solver is directional but underpowered (0.346→0.404, 3:0, p=0.25, n=52); an 8B solver
+does not move (p=1.0, n=134). Because evaluation order prioritized queries injection
+can affect, **the subset Δ overstates the population Δ by construction**; only the
+paired flip counts are meaningful, and no main-text claim rests on this sample.
+4/86 treatment contexts hit the context budget (truncation detected and counted).
+(`answer_accuracy_injection`, `results/h6_rerun_20260707/`)

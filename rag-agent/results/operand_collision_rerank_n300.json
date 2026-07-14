@@ -1,0 +1,239 @@
+{
+  "population": {
+    "name": "multihiertt_arithmetic_single_table_multi_operand",
+    "n_queries": 297,
+    "n_gold_operand_cells": 951
+  },
+  "corpus": {
+    "n_tables": 1203,
+    "n_cells": 42715
+  },
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "reranker": "BAAI/bge-reranker-large",
+  "pool": 100,
+  "alpha": 0.5,
+  "collision_min_tables": 5,
+  "score_math": "per-query min-max, alpha*dense+(1-alpha)*bm25; rerank = cross-encoder order over the same pool",
+  "by_scheme": {
+    "flat": {
+      "hybrid_pool100": {
+        "n_queries": 297,
+        "set_recall@10": 0.3098,
+        "coverage@10": 0.4006,
+        "n_partial@10": 60,
+        "set_recall@20": 0.3636,
+        "coverage@20": 0.4733,
+        "n_partial@20": 66,
+        "set_recall@50": 0.4579,
+        "coverage@50": 0.5666,
+        "n_partial@50": 60,
+        "median_rank": {
+          "colliding_label": 22,
+          "unique_label": 7
+        },
+        "reached@50": {
+          "colliding_label": 0.3048,
+          "unique_label": 0.6215
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568
+        }
+      },
+      "rerank_pool100": {
+        "n_queries": 297,
+        "set_recall@10": 0.2391,
+        "coverage@10": 0.362,
+        "n_partial@10": 80,
+        "set_recall@20": 0.3636,
+        "coverage@20": 0.4873,
+        "n_partial@20": 71,
+        "set_recall@50": 0.4916,
+        "coverage@50": 0.5955,
+        "n_partial@50": 57,
+        "median_rank": {
+          "colliding_label": 15,
+          "unique_label": 7
+        },
+        "reached@50": {
+          "colliding_label": 0.3683,
+          "unique_label": 0.6373
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568
+        }
+      },
+      "pool_ceiling@100": 0.5657
+    },
+    "S3": {
+      "hybrid_pool100": {
+        "n_queries": 297,
+        "set_recall@10": 0.3704,
+        "coverage@10": 0.4853,
+        "n_partial@10": 76,
+        "set_recall@20": 0.4613,
+        "coverage@20": 0.5771,
+        "n_partial@20": 70,
+        "set_recall@50": 0.5926,
+        "coverage@50": 0.6912,
+        "n_partial@50": 54,
+        "median_rank": {
+          "colliding_label": 11.5,
+          "unique_label": 5
+        },
+        "reached@50": {
+          "colliding_label": 0.5238,
+          "unique_label": 0.7254
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568
+        }
+      },
+      "rerank_pool100": {
+        "n_queries": 297,
+        "set_recall@10": 0.2862,
+        "coverage@10": 0.4225,
+        "n_partial@10": 86,
+        "set_recall@20": 0.3906,
+        "coverage@20": 0.5288,
+        "n_partial@20": 85,
+        "set_recall@50": 0.5623,
+        "coverage@50": 0.6848,
+        "n_partial@50": 69,
+        "median_rank": {
+          "colliding_label": 15.0,
+          "unique_label": 6
+        },
+        "reached@50": {
+          "colliding_label": 0.5143,
+          "unique_label": 0.7324
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568
+        }
+      },
+      "pool_ceiling@100": 0.6498
+    }
+  },
+  "contrasts_set_recall_flip": {
+    "flat_hybrid->flat_rerank": {
+      "@10": {
+        "n_queries": 297,
+        "a_covered": 92,
+        "b_covered": 71,
+        "gain": 15,
+        "loss": 36,
+        "p_two_sided": 0.0046013097117665325,
+        "p_one_sided_gain": 0.9991154014081065
+      },
+      "@20": {
+        "n_queries": 297,
+        "a_covered": 108,
+        "b_covered": 108,
+        "gain": 23,
+        "loss": 23,
+        "p_two_sided": 1.0,
+        "p_one_sided_gain": 0.5585020439388018
+      },
+      "@50": {
+        "n_queries": 297,
+        "a_covered": 136,
+        "b_covered": 146,
+        "gain": 23,
+        "loss": 13,
+        "p_two_sided": 0.13249816396273675,
+        "p_one_sided_gain": 0.06624908198136838
+      }
+    },
+    "flat_rerank->S3_hybrid": {
+      "@10": {
+        "n_queries": 297,
+        "a_covered": 71,
+        "b_covered": 110,
+        "gain": 55,
+        "loss": 16,
+        "p_two_sided": 3.753237688593051e-06,
+        "p_one_sided_gain": 1.8766188442965254e-06
+      },
+      "@20": {
+        "n_queries": 297,
+        "a_covered": 108,
+        "b_covered": 137,
+        "gain": 47,
+        "loss": 18,
+        "p_two_sided": 0.00042213032347520506,
+        "p_one_sided_gain": 0.00021106516173760253
+      },
+      "@50": {
+        "n_queries": 297,
+        "a_covered": 146,
+        "b_covered": 176,
+        "gain": 44,
+        "loss": 14,
+        "p_two_sided": 0.00010049669926914809,
+        "p_one_sided_gain": 5.0248349634574043e-05
+      }
+    },
+    "S3_hybrid->S3_rerank": {
+      "@10": {
+        "n_queries": 297,
+        "a_covered": 110,
+        "b_covered": 85,
+        "gain": 19,
+        "loss": 44,
+        "p_two_sided": 0.0022275315109880345,
+        "p_one_sided_gain": 0.999550976410666
+      },
+      "@20": {
+        "n_queries": 297,
+        "a_covered": 137,
+        "b_covered": 116,
+        "gain": 17,
+        "loss": 38,
+        "p_two_sided": 0.006455803109956635,
+        "p_one_sided_gain": 0.9986663688085701
+      },
+      "@50": {
+        "n_queries": 297,
+        "a_covered": 176,
+        "b_covered": 167,
+        "gain": 8,
+        "loss": 17,
+        "p_two_sided": 0.10775214433670044,
+        "p_one_sided_gain": 0.9783573746681213
+      }
+    },
+    "flat_rerank->S3_rerank": {
+      "@10": {
+        "n_queries": 297,
+        "a_covered": 71,
+        "b_covered": 85,
+        "gain": 29,
+        "loss": 15,
+        "p_two_sided": 0.048766765904474596,
+        "p_one_sided_gain": 0.024383382952237298
+      },
+      "@20": {
+        "n_queries": 297,
+        "a_covered": 108,
+        "b_covered": 116,
+        "gain": 27,
+        "loss": 19,
+        "p_two_sided": 0.3019956131896606,
+        "p_one_sided_gain": 0.1509978065948303
+      },
+      "@50": {
+        "n_queries": 297,
+        "a_covered": 146,
+        "b_covered": 167,
+        "gain": 37,
+        "loss": 16,
+        "p_two_sided": 0.005486344876760141,
+        "p_one_sided_gain": 0.0027431724383800704
+      }
+    }
+  }
+}

@@ -88,6 +88,75 @@ def header_depth(top_paths: Sequence[Sequence[str]],
     return max(_maxlen(top_paths), _maxlen(left_paths))
 
 
+# --- rank-based OSC@k -------------------------------------------------------
+# Companion view for rank-list experiments (operand_collision_*): instead of a
+# retrieved cell set, each query carries per-operand 1-based ranks (``None`` =
+# never retrieved). OSC@k is then all-or-nothing containment in the top-k.
+
+def set_recall_at_k(ranks: Iterable, k: int) -> int:
+    """OSC at budget k: 1 iff every gold operand has rank <= k.
+
+    ``ranks`` is an iterable of Optional[int] or a mapping (cell -> rank).
+    Empty gold is vacuously complete (1), mirroring
+    :func:`operand_set_completeness` — filter empty-gold queries upstream (W1).
+    """
+    rs = list(ranks.values()) if hasattr(ranks, "values") else list(ranks)
+    return int(all(r is not None and r <= k for r in rs))
+
+
+def coverage_at_k(ranks: Iterable, k: int) -> float:
+    """Fraction of gold operands with rank <= k (partial completeness).
+
+    Diagnoses HOW a query fails: 0 = nothing found, (0,1) = incomplete
+    operand set, 1 = complete. Empty gold -> 1.0 (vacuous, see W1).
+    """
+    rs = list(ranks.values()) if hasattr(ranks, "values") else list(ranks)
+    if not rs:
+        return 1.0
+    return sum(1 for r in rs if r is not None and r <= k) / len(rs)
+
+
+def osc_at_k_summary(all_ranks: Sequence[Iterable], ks: Sequence[int] = (10, 20, 50),
+                     ndigits: int = 4) -> Dict:
+    """Population aggregate: per k, mean OSC (set recall), mean coverage, and
+    the count of partially covered queries (0 < coverage < 1) — the slice where
+    "found something but not the full operand set" lives."""
+    n = len(all_ranks)
+    out: Dict = {"n_queries": n}
+    for k in ks:
+        flags = [set_recall_at_k(r, k) for r in all_ranks]
+        covs = [coverage_at_k(r, k) for r in all_ranks]
+        out[f"set_recall@{k}"] = round(mean(flags), ndigits) if n else None
+        out[f"coverage@{k}"] = round(mean(covs), ndigits) if n else None
+        out[f"n_partial@{k}"] = sum(1 for f, c in zip(flags, covs) if not f and c > 0)
+    return out
+
+
+def paired_set_recall_flip(ranks_a: Sequence[Iterable], ranks_b: Sequence[Iterable],
+                           k: int) -> Dict:
+    """Exact two-sided binomial sign test on per-query OSC@k flips A->B
+    (operand_collision_significance.py convention). ``gain`` = covered under B
+    but not A; requires index-aligned populations over the same queries."""
+    from scipy.stats import binomtest
+
+    if len(ranks_a) != len(ranks_b):
+        raise ValueError(f"unaligned populations: {len(ranks_a)} vs {len(ranks_b)}")
+    a = [set_recall_at_k(r, k) for r in ranks_a]
+    b = [set_recall_at_k(r, k) for r in ranks_b]
+    gain = sum(1 for x, y in zip(a, b) if y and not x)
+    loss = sum(1 for x, y in zip(a, b) if x and not y)
+    res: Dict = {"n_queries": len(a), "a_covered": sum(a), "b_covered": sum(b),
+                 "gain": gain, "loss": loss}
+    if gain + loss:
+        bt = binomtest(gain, gain + loss, 0.5, alternative="two-sided")
+        bt1 = binomtest(gain, gain + loss, 0.5, alternative="greater")
+        res["p_two_sided"] = float(bt.pvalue)
+        res["p_one_sided_gain"] = float(bt1.pvalue)
+    else:
+        res["p_two_sided"] = res["p_one_sided_gain"] = None
+    return res
+
+
 # --- stratification bins ---------------------------------------------------
 
 def bin_scope(m: int) -> str:

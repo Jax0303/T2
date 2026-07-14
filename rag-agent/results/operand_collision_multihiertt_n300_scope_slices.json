@@ -1,0 +1,1121 @@
+{
+  "records": "results/operand_collision_multihiertt_n300_records.jsonl",
+  "scope_distribution": {
+    "2": 181,
+    "3-4": 79,
+    "5-8": 32,
+    "9+": 5
+  },
+  "by_retriever": {
+    "bm25": {
+      "2": {
+        "n_queries": 181,
+        "set_recall": {
+          "S2": {
+            "@10": 0.4365,
+            "@20": 0.5359,
+            "@50": 0.6354
+          },
+          "S3": {
+            "@10": 0.453,
+            "@20": 0.5359,
+            "@50": 0.6243
+          },
+          "flat": {
+            "@10": 0.337,
+            "@20": 0.4309,
+            "@50": 0.5249
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0995,
+            "@20": 0.105,
+            "@50": 0.1105
+          },
+          "S3": {
+            "@10": 0.116,
+            "@20": 0.105,
+            "@50": 0.0994
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 181,
+              "a_covered": 61,
+              "b_covered": 79,
+              "gain": 20,
+              "loss": 2,
+              "p_two_sided": 0.00012111663818359375,
+              "p_one_sided_gain": 6.0558319091796875e-05
+            },
+            "@20": {
+              "n_queries": 181,
+              "a_covered": 78,
+              "b_covered": 97,
+              "gain": 22,
+              "loss": 3,
+              "p_two_sided": 0.00015652179718017578,
+              "p_one_sided_gain": 7.826089859008789e-05
+            },
+            "@50": {
+              "n_queries": 181,
+              "a_covered": 95,
+              "b_covered": 115,
+              "gain": 26,
+              "loss": 6,
+              "p_two_sided": 0.0005350527353584766,
+              "p_one_sided_gain": 0.0002675263676792383
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 181,
+              "a_covered": 61,
+              "b_covered": 82,
+              "gain": 23,
+              "loss": 2,
+              "p_two_sided": 1.9431114196777344e-05,
+              "p_one_sided_gain": 9.715557098388672e-06
+            },
+            "@20": {
+              "n_queries": 181,
+              "a_covered": 78,
+              "b_covered": 97,
+              "gain": 23,
+              "loss": 4,
+              "p_two_sided": 0.000310748815536499,
+              "p_one_sided_gain": 0.0001553744077682495
+            },
+            "@50": {
+              "n_queries": 181,
+              "a_covered": 95,
+              "b_covered": 113,
+              "gain": 25,
+              "loss": 7,
+              "p_two_sided": 0.0021024015732109547,
+              "p_one_sided_gain": 0.0010512007866054773
+            }
+          }
+        }
+      },
+      "3-4": {
+        "n_queries": 79,
+        "set_recall": {
+          "S2": {
+            "@10": 0.1772,
+            "@20": 0.2152,
+            "@50": 0.3544
+          },
+          "S3": {
+            "@10": 0.1772,
+            "@20": 0.2152,
+            "@50": 0.3544
+          },
+          "flat": {
+            "@10": 0.1139,
+            "@20": 0.1266,
+            "@50": 0.2405
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0633,
+            "@20": 0.0886,
+            "@50": 0.1139
+          },
+          "S3": {
+            "@10": 0.0633,
+            "@20": 0.0886,
+            "@50": 0.1139
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 79,
+              "a_covered": 9,
+              "b_covered": 14,
+              "gain": 7,
+              "loss": 2,
+              "p_two_sided": 0.1796875,
+              "p_one_sided_gain": 0.08984375
+            },
+            "@20": {
+              "n_queries": 79,
+              "a_covered": 10,
+              "b_covered": 17,
+              "gain": 9,
+              "loss": 2,
+              "p_two_sided": 0.0654296875,
+              "p_one_sided_gain": 0.03271484375
+            },
+            "@50": {
+              "n_queries": 79,
+              "a_covered": 19,
+              "b_covered": 28,
+              "gain": 10,
+              "loss": 1,
+              "p_two_sided": 0.01171875,
+              "p_one_sided_gain": 0.005859375
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 79,
+              "a_covered": 9,
+              "b_covered": 14,
+              "gain": 7,
+              "loss": 2,
+              "p_two_sided": 0.1796875,
+              "p_one_sided_gain": 0.08984375
+            },
+            "@20": {
+              "n_queries": 79,
+              "a_covered": 10,
+              "b_covered": 17,
+              "gain": 9,
+              "loss": 2,
+              "p_two_sided": 0.0654296875,
+              "p_one_sided_gain": 0.03271484375
+            },
+            "@50": {
+              "n_queries": 79,
+              "a_covered": 19,
+              "b_covered": 28,
+              "gain": 10,
+              "loss": 1,
+              "p_two_sided": 0.01171875,
+              "p_one_sided_gain": 0.005859375
+            }
+          }
+        }
+      },
+      "5-8": {
+        "n_queries": 32,
+        "set_recall": {
+          "S2": {
+            "@10": 0.1562,
+            "@20": 0.25,
+            "@50": 0.3125
+          },
+          "S3": {
+            "@10": 0.1562,
+            "@20": 0.25,
+            "@50": 0.3438
+          },
+          "flat": {
+            "@10": 0.0625,
+            "@20": 0.0938,
+            "@50": 0.1875
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0937,
+            "@20": 0.1562,
+            "@50": 0.125
+          },
+          "S3": {
+            "@10": 0.0937,
+            "@20": 0.1562,
+            "@50": 0.1563
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 32,
+              "a_covered": 2,
+              "b_covered": 5,
+              "gain": 3,
+              "loss": 0,
+              "p_two_sided": 0.25,
+              "p_one_sided_gain": 0.125
+            },
+            "@20": {
+              "n_queries": 32,
+              "a_covered": 3,
+              "b_covered": 8,
+              "gain": 5,
+              "loss": 0,
+              "p_two_sided": 0.0625,
+              "p_one_sided_gain": 0.03125
+            },
+            "@50": {
+              "n_queries": 32,
+              "a_covered": 6,
+              "b_covered": 10,
+              "gain": 4,
+              "loss": 0,
+              "p_two_sided": 0.125,
+              "p_one_sided_gain": 0.0625
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 32,
+              "a_covered": 2,
+              "b_covered": 5,
+              "gain": 3,
+              "loss": 0,
+              "p_two_sided": 0.25,
+              "p_one_sided_gain": 0.125
+            },
+            "@20": {
+              "n_queries": 32,
+              "a_covered": 3,
+              "b_covered": 8,
+              "gain": 5,
+              "loss": 0,
+              "p_two_sided": 0.0625,
+              "p_one_sided_gain": 0.03125
+            },
+            "@50": {
+              "n_queries": 32,
+              "a_covered": 6,
+              "b_covered": 11,
+              "gain": 5,
+              "loss": 0,
+              "p_two_sided": 0.0625,
+              "p_one_sided_gain": 0.03125
+            }
+          }
+        }
+      },
+      "9+": {
+        "n_queries": 5,
+        "set_recall": {
+          "S2": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.2
+          },
+          "S3": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.4
+          },
+          "flat": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.2
+          },
+          "S3": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.4
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@20": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@50": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 1,
+              "gain": 1,
+              "loss": 0,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@20": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@50": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 2,
+              "gain": 2,
+              "loss": 0,
+              "p_two_sided": 0.5,
+              "p_one_sided_gain": 0.25
+            }
+          }
+        }
+      }
+    },
+    "dense": {
+      "2": {
+        "n_queries": 181,
+        "set_recall": {
+          "S2": {
+            "@10": 0.3702,
+            "@20": 0.4696,
+            "@50": 0.5856
+          },
+          "S3": {
+            "@10": 0.3481,
+            "@20": 0.453,
+            "@50": 0.5801
+          },
+          "flat": {
+            "@10": 0.3149,
+            "@20": 0.4144,
+            "@50": 0.5083
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0553,
+            "@20": 0.0552,
+            "@50": 0.0773
+          },
+          "S3": {
+            "@10": 0.0332,
+            "@20": 0.0386,
+            "@50": 0.0718
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 181,
+              "a_covered": 57,
+              "b_covered": 67,
+              "gain": 13,
+              "loss": 3,
+              "p_two_sided": 0.021270751953125,
+              "p_one_sided_gain": 0.0106353759765625
+            },
+            "@20": {
+              "n_queries": 181,
+              "a_covered": 75,
+              "b_covered": 85,
+              "gain": 18,
+              "loss": 8,
+              "p_two_sided": 0.07551869750022888,
+              "p_one_sided_gain": 0.03775934875011444
+            },
+            "@50": {
+              "n_queries": 181,
+              "a_covered": 92,
+              "b_covered": 106,
+              "gain": 21,
+              "loss": 7,
+              "p_two_sided": 0.012540951371192932,
+              "p_one_sided_gain": 0.006270475685596466
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 181,
+              "a_covered": 57,
+              "b_covered": 63,
+              "gain": 16,
+              "loss": 10,
+              "p_two_sided": 0.32693958282470703,
+              "p_one_sided_gain": 0.16346979141235352
+            },
+            "@20": {
+              "n_queries": 181,
+              "a_covered": 75,
+              "b_covered": 82,
+              "gain": 20,
+              "loss": 13,
+              "p_two_sided": 0.296206368599087,
+              "p_one_sided_gain": 0.1481031842995435
+            },
+            "@50": {
+              "n_queries": 181,
+              "a_covered": 92,
+              "b_covered": 105,
+              "gain": 26,
+              "loss": 13,
+              "p_two_sided": 0.05325191409792752,
+              "p_one_sided_gain": 0.02662595704896376
+            }
+          }
+        }
+      },
+      "3-4": {
+        "n_queries": 79,
+        "set_recall": {
+          "S2": {
+            "@10": 0.1266,
+            "@20": 0.1899,
+            "@50": 0.2785
+          },
+          "S3": {
+            "@10": 0.1139,
+            "@20": 0.1519,
+            "@50": 0.2278
+          },
+          "flat": {
+            "@10": 0.1013,
+            "@20": 0.1519,
+            "@50": 0.2278
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0253,
+            "@20": 0.038,
+            "@50": 0.0507
+          },
+          "S3": {
+            "@10": 0.0126,
+            "@20": 0.0,
+            "@50": 0.0
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 79,
+              "a_covered": 8,
+              "b_covered": 10,
+              "gain": 5,
+              "loss": 3,
+              "p_two_sided": 0.7265625,
+              "p_one_sided_gain": 0.36328125
+            },
+            "@20": {
+              "n_queries": 79,
+              "a_covered": 12,
+              "b_covered": 15,
+              "gain": 6,
+              "loss": 3,
+              "p_two_sided": 0.5078125,
+              "p_one_sided_gain": 0.25390625
+            },
+            "@50": {
+              "n_queries": 79,
+              "a_covered": 18,
+              "b_covered": 22,
+              "gain": 8,
+              "loss": 4,
+              "p_two_sided": 0.3876953125,
+              "p_one_sided_gain": 0.19384765625
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 79,
+              "a_covered": 8,
+              "b_covered": 9,
+              "gain": 4,
+              "loss": 3,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5
+            },
+            "@20": {
+              "n_queries": 79,
+              "a_covered": 12,
+              "b_covered": 12,
+              "gain": 6,
+              "loss": 6,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.61279296875
+            },
+            "@50": {
+              "n_queries": 79,
+              "a_covered": 18,
+              "b_covered": 18,
+              "gain": 9,
+              "loss": 9,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5927352905273438
+            }
+          }
+        }
+      },
+      "5-8": {
+        "n_queries": 32,
+        "set_recall": {
+          "S2": {
+            "@10": 0.0312,
+            "@20": 0.0938,
+            "@50": 0.1875
+          },
+          "S3": {
+            "@10": 0,
+            "@20": 0.0625,
+            "@50": 0.1562
+          },
+          "flat": {
+            "@10": 0,
+            "@20": 0.125,
+            "@50": 0.2188
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0312,
+            "@20": -0.0312,
+            "@50": -0.0313
+          },
+          "S3": {
+            "@10": 0,
+            "@20": -0.0625,
+            "@50": -0.0626
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 32,
+              "a_covered": 0,
+              "b_covered": 1,
+              "gain": 1,
+              "loss": 0,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5
+            },
+            "@20": {
+              "n_queries": 32,
+              "a_covered": 4,
+              "b_covered": 3,
+              "gain": 1,
+              "loss": 2,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.875
+            },
+            "@50": {
+              "n_queries": 32,
+              "a_covered": 7,
+              "b_covered": 6,
+              "gain": 2,
+              "loss": 3,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.8125
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 32,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@20": {
+              "n_queries": 32,
+              "a_covered": 4,
+              "b_covered": 2,
+              "gain": 1,
+              "loss": 3,
+              "p_two_sided": 0.625,
+              "p_one_sided_gain": 0.9375
+            },
+            "@50": {
+              "n_queries": 32,
+              "a_covered": 7,
+              "b_covered": 5,
+              "gain": 1,
+              "loss": 3,
+              "p_two_sided": 0.625,
+              "p_one_sided_gain": 0.9375
+            }
+          }
+        }
+      },
+      "9+": {
+        "n_queries": 5,
+        "set_recall": {
+          "S2": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.2
+          },
+          "S3": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.2
+          },
+          "flat": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.2
+          },
+          "S3": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0.2
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@20": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@50": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 1,
+              "gain": 1,
+              "loss": 0,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@20": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@50": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 1,
+              "gain": 1,
+              "loss": 0,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5
+            }
+          }
+        }
+      }
+    },
+    "hybrid": {
+      "2": {
+        "n_queries": 181,
+        "set_recall": {
+          "S2": {
+            "@10": 0.4751,
+            "@20": 0.5746,
+            "@50": 0.6961
+          },
+          "S3": {
+            "@10": 0.4972,
+            "@20": 0.5912,
+            "@50": 0.7072
+          },
+          "flat": {
+            "@10": 0.4365,
+            "@20": 0.4862,
+            "@50": 0.5912
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0386,
+            "@20": 0.0884,
+            "@50": 0.1049
+          },
+          "S3": {
+            "@10": 0.0607,
+            "@20": 0.105,
+            "@50": 0.116
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 181,
+              "a_covered": 79,
+              "b_covered": 86,
+              "gain": 13,
+              "loss": 6,
+              "p_two_sided": 0.1670684814453125,
+              "p_one_sided_gain": 0.08353424072265625
+            },
+            "@20": {
+              "n_queries": 181,
+              "a_covered": 88,
+              "b_covered": 104,
+              "gain": 20,
+              "loss": 4,
+              "p_two_sided": 0.001543879508972168,
+              "p_one_sided_gain": 0.000771939754486084
+            },
+            "@50": {
+              "n_queries": 181,
+              "a_covered": 107,
+              "b_covered": 126,
+              "gain": 21,
+              "loss": 2,
+              "p_two_sided": 6.604194641113281e-05,
+              "p_one_sided_gain": 3.3020973205566406e-05
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 181,
+              "a_covered": 79,
+              "b_covered": 90,
+              "gain": 18,
+              "loss": 7,
+              "p_two_sided": 0.043285250663757324,
+              "p_one_sided_gain": 0.021642625331878662
+            },
+            "@20": {
+              "n_queries": 181,
+              "a_covered": 88,
+              "b_covered": 107,
+              "gain": 25,
+              "loss": 6,
+              "p_two_sided": 0.0008779102936387062,
+              "p_one_sided_gain": 0.0004389551468193531
+            },
+            "@50": {
+              "n_queries": 181,
+              "a_covered": 107,
+              "b_covered": 128,
+              "gain": 23,
+              "loss": 2,
+              "p_two_sided": 1.9431114196777344e-05,
+              "p_one_sided_gain": 9.715557098388672e-06
+            }
+          }
+        }
+      },
+      "3-4": {
+        "n_queries": 79,
+        "set_recall": {
+          "S2": {
+            "@10": 0.1899,
+            "@20": 0.2532,
+            "@50": 0.4304
+          },
+          "S3": {
+            "@10": 0.1899,
+            "@20": 0.2532,
+            "@50": 0.443
+          },
+          "flat": {
+            "@10": 0.1392,
+            "@20": 0.2025,
+            "@50": 0.2911
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0507,
+            "@20": 0.0507,
+            "@50": 0.1393
+          },
+          "S3": {
+            "@10": 0.0507,
+            "@20": 0.0507,
+            "@50": 0.1519
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 79,
+              "a_covered": 11,
+              "b_covered": 15,
+              "gain": 5,
+              "loss": 1,
+              "p_two_sided": 0.21875,
+              "p_one_sided_gain": 0.109375
+            },
+            "@20": {
+              "n_queries": 79,
+              "a_covered": 16,
+              "b_covered": 20,
+              "gain": 7,
+              "loss": 3,
+              "p_two_sided": 0.34375,
+              "p_one_sided_gain": 0.171875
+            },
+            "@50": {
+              "n_queries": 79,
+              "a_covered": 23,
+              "b_covered": 34,
+              "gain": 12,
+              "loss": 1,
+              "p_two_sided": 0.00341796875,
+              "p_one_sided_gain": 0.001708984375
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 79,
+              "a_covered": 11,
+              "b_covered": 15,
+              "gain": 6,
+              "loss": 2,
+              "p_two_sided": 0.2890625,
+              "p_one_sided_gain": 0.14453125
+            },
+            "@20": {
+              "n_queries": 79,
+              "a_covered": 16,
+              "b_covered": 20,
+              "gain": 8,
+              "loss": 4,
+              "p_two_sided": 0.3876953125,
+              "p_one_sided_gain": 0.19384765625
+            },
+            "@50": {
+              "n_queries": 79,
+              "a_covered": 23,
+              "b_covered": 35,
+              "gain": 14,
+              "loss": 2,
+              "p_two_sided": 0.004180908203125,
+              "p_one_sided_gain": 0.0020904541015625
+            }
+          }
+        }
+      },
+      "5-8": {
+        "n_queries": 32,
+        "set_recall": {
+          "S2": {
+            "@10": 0.1562,
+            "@20": 0.1875,
+            "@50": 0.3125
+          },
+          "S3": {
+            "@10": 0.1562,
+            "@20": 0.2812,
+            "@50": 0.3438
+          },
+          "flat": {
+            "@10": 0.0625,
+            "@20": 0.125,
+            "@50": 0.1875
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0.0937,
+            "@20": 0.0625,
+            "@50": 0.125
+          },
+          "S3": {
+            "@10": 0.0937,
+            "@20": 0.1562,
+            "@50": 0.1563
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 32,
+              "a_covered": 2,
+              "b_covered": 5,
+              "gain": 3,
+              "loss": 0,
+              "p_two_sided": 0.25,
+              "p_one_sided_gain": 0.125
+            },
+            "@20": {
+              "n_queries": 32,
+              "a_covered": 4,
+              "b_covered": 6,
+              "gain": 2,
+              "loss": 0,
+              "p_two_sided": 0.5,
+              "p_one_sided_gain": 0.25
+            },
+            "@50": {
+              "n_queries": 32,
+              "a_covered": 6,
+              "b_covered": 10,
+              "gain": 5,
+              "loss": 1,
+              "p_two_sided": 0.21875,
+              "p_one_sided_gain": 0.109375
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 32,
+              "a_covered": 2,
+              "b_covered": 5,
+              "gain": 3,
+              "loss": 0,
+              "p_two_sided": 0.25,
+              "p_one_sided_gain": 0.125
+            },
+            "@20": {
+              "n_queries": 32,
+              "a_covered": 4,
+              "b_covered": 9,
+              "gain": 5,
+              "loss": 0,
+              "p_two_sided": 0.0625,
+              "p_one_sided_gain": 0.03125
+            },
+            "@50": {
+              "n_queries": 32,
+              "a_covered": 6,
+              "b_covered": 11,
+              "gain": 6,
+              "loss": 1,
+              "p_two_sided": 0.125,
+              "p_one_sided_gain": 0.0625
+            }
+          }
+        }
+      },
+      "9+": {
+        "n_queries": 5,
+        "set_recall": {
+          "S2": {
+            "@10": 0,
+            "@20": 0.2,
+            "@50": 0.4
+          },
+          "S3": {
+            "@10": 0,
+            "@20": 0.2,
+            "@50": 0.4
+          },
+          "flat": {
+            "@10": 0,
+            "@20": 0,
+            "@50": 0
+          }
+        },
+        "delta_vs_flat": {
+          "S2": {
+            "@10": 0,
+            "@20": 0.2,
+            "@50": 0.4
+          },
+          "S3": {
+            "@10": 0,
+            "@20": 0.2,
+            "@50": 0.4
+          }
+        },
+        "flip_test": {
+          "S2": {
+            "@10": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@20": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 1,
+              "gain": 1,
+              "loss": 0,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5
+            },
+            "@50": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 2,
+              "gain": 2,
+              "loss": 0,
+              "p_two_sided": 0.5,
+              "p_one_sided_gain": 0.25
+            }
+          },
+          "S3": {
+            "@10": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 0,
+              "gain": 0,
+              "loss": 0,
+              "p_two_sided": null,
+              "p_one_sided_gain": null
+            },
+            "@20": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 1,
+              "gain": 1,
+              "loss": 0,
+              "p_two_sided": 1.0,
+              "p_one_sided_gain": 0.5
+            },
+            "@50": {
+              "n_queries": 5,
+              "a_covered": 0,
+              "b_covered": 2,
+              "gain": 2,
+              "loss": 0,
+              "p_two_sided": 0.5,
+              "p_one_sided_gain": 0.25
+            }
+          }
+        }
+      }
+    }
+  }
+}
