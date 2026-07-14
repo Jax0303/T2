@@ -18,10 +18,14 @@ We reframe the task at the **retrieval stage**: retrieve the complete operand se
 as few cells as possible. Contributions:
 1. **Operand-Set Completeness (OSC)** — we *apply and measure* an all-or-nothing
    set-completeness criterion for table aggregation retrieval. The metric form is not
-   new: it transfers the set-level exact-match convention of HotpotQA supporting-fact
-   EM (Yang et al., EMNLP 2018) from multi-hop passage sets to operand cell sets; our
-   claim is the *application* — no table-RAG work measures it, and a 2025 TQA survey
-   confirms evidence-cell completeness is unmeasured in this area.
+   new — it is the standard set-level exact-match convention of multi-hop retrieval:
+   HotpotQA supporting-fact EM (Yang et al., EMNLP 2018), MDR's Passage EM — "both
+   gold passages included in the retrieved passages" (Xiong et al., ICLR 2021), and
+   Beam Retrieval's headline retrieval-EM (Zhang et al., NAACL 2024) are the same
+   all-gold-in-top-k statistic over passage sets. We transfer it from passage sets to
+   operand *cell* sets; our claim is the *application* — no table-RAG work measures
+   it, and a 2025 TQA survey does not list an evidence-completeness metric for this
+   area.
 2. **A structural ceiling diagnosis of similarity retrieval, not just a benchmark
    number — in both the single-table and the multi-table regime.** Single-table
    (HiTab): unnamed total/aggregate rows share neither vocabulary nor semantics with
@@ -87,7 +91,11 @@ as few cells as possible. Contributions:
 - **3.1 OSC.** Given query *q*, hierarchical table *T* (top/left header trees), gold
   operand set *G*: **OSC(q)=1 iff G ⊆ retrieved** (all-or-nothing subset containment) —
   the necessary condition for a correct aggregation, strictly harder than mean cell
-  recall. (`eval/operand_set.py`)
+  recall. Formally identical to multi-hop retrieval's set-EM (HotpotQA Sup-EM, MDR
+  Passage-EM, Beam Retrieval retrieval-EM) with cells in place of passages; when a
+  rank cutoff applies we write set_recall@k. Conventions (documented + unit-tested):
+  gold cells deduplicated; empty gold is vacuously 1; a never-retrieved cell (rank
+  ∅) fails every k. (`eval/operand_set.py`, 14 tests)
 - **3.2 Header-tree scope enumeration.** Resolve *q* to header-path predicates, then
   enumerate every numeric leaf under the matched row × column scope nodes
   (`retrieve/header_enum.py`). Complete-by-construction: if the scope node is correct,
