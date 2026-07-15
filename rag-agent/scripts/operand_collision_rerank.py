@@ -93,6 +93,8 @@ def main() -> int:
     ap.add_argument("--alpha", type=float, default=0.5, help="hybrid dense weight")
     ap.add_argument("--collision-min", type=int, default=5)
     ap.add_argument("--batch-size", type=int, default=64)
+    ap.add_argument("--rerank-max-length", type=int, default=192,
+                    help="cross-encoder max_length; 512 = no-truncation spotcheck")
     ap.add_argument("--out", default="results/operand_collision_rerank.json")
     args = ap.parse_args()
 
@@ -111,7 +113,7 @@ def main() -> int:
     encoder = default_encoder(model_name=args.embed_model)
     q_texts = [q["question"] for q in pop]
     q_vecs = np.asarray(encoder.encode(q_texts))
-    reranker = CrossEncoder(args.reranker, max_length=192)
+    reranker = CrossEncoder(args.reranker, max_length=args.rerank_max_length)
 
     results, records = {}, []
     cond_ranks = {}                      # (scheme, "hybrid"|"rerank") -> per-query rank maps
