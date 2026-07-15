@@ -135,8 +135,11 @@ as few cells as possible. Contributions:
   the full literature-standard view (Hit@k, Recall@k, MRR, nDCG@k, set-EM@k) is
   computed over the same records by `scripts/standard_ir_metrics_from_records.py`
   (`results/operand_collision_multihiertt_n300_standard_ir_metrics.json`) — the
-  serialization ordering (S3≈S2 > flat; hybrid > bm25 > dense) is identical under
-  every standard metric, so the finding is not an artifact of the OSC definition;
+  serialization ordering (S3≈S2 > flat, per retriever) holds under **every**
+  standard metric with zero exceptions, so the finding is not an artifact of the
+  OSC definition. (The retriever ordering is NOT claimed metric-invariant:
+  hybrid is best everywhere, but bm25 vs dense flips on lenient/deep-k views —
+  e.g. flat Hit@50 dense .643 > bm25 .559;)
   the lenient↔strict gap is itself an exhibit: flat/hybrid Hit@10 .512 vs
   set-EM@10 .310 — Hit-Rate-style metrics make a retriever that drops operands
   from half the aggregations look like it succeeds on half (the HotpotQA
