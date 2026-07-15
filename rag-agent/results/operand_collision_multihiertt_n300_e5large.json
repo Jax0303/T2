@@ -1,0 +1,375 @@
+{
+  "population": {
+    "name": "multihiertt_arithmetic_single_table_multi_operand",
+    "n_queries": 297,
+    "n_gold_operand_cells": 951,
+    "pct_operands_with_colliding_label": 0.3481,
+    "collision_min_tables": 5
+  },
+  "corpus": {
+    "n_tables": 1203,
+    "n_cells": 42715
+  },
+  "embed_model": "intfloat/e5-large-v2",
+  "hierarchy_source": "self-reconstructed (rag_agent.reconstruct)",
+  "score_math": "per-query min-max, alpha*dense+(1-alpha)*bm25 (HybridIndex convention)",
+  "by_scheme": {
+    "flat": {
+      "bm25": {
+        "all_covered@10": 0.2424,
+        "all_covered@20": 0.3064,
+        "all_covered@50": 0.404,
+        "operand_median_rank": {
+          "colliding_label": 471,
+          "unique_label": 35.0,
+          "total_like": 122,
+          "ordinary": 99.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2317,
+          "unique_label": 0.5264,
+          "total_like": 0.391,
+          "ordinary": 0.4267
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "dense": {
+        "all_covered@10": 0.2256,
+        "all_covered@20": 0.3064,
+        "all_covered@50": 0.4108,
+        "operand_median_rank": {
+          "colliding_label": 349,
+          "unique_label": 38.0,
+          "total_like": 276,
+          "ordinary": 74.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2603,
+          "unique_label": 0.5493,
+          "total_like": 0.3534,
+          "ordinary": 0.4627
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "hybrid": {
+        "all_covered@10": 0.3165,
+        "all_covered@20": 0.3973,
+        "all_covered@50": 0.4815,
+        "operand_median_rank": {
+          "colliding_label": 210,
+          "unique_label": 12.0,
+          "total_like": 106,
+          "ordinary": 34.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.3016,
+          "unique_label": 0.632,
+          "total_like": 0.4511,
+          "ordinary": 0.5253
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "cascade_top1_tables": {
+        "all_covered@10": 0.2121,
+        "all_covered@20": 0.2559,
+        "all_covered@50": 0.2963,
+        "operand_median_rank": {
+          "colliding_label": 8.5,
+          "unique_label": 3,
+          "total_like": 2.0,
+          "ordinary": 4
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.1778,
+          "unique_label": 0.338,
+          "total_like": 0.1955,
+          "ordinary": 0.296
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.3064
+      },
+      "cascade_top3_tables": {
+        "all_covered@10": 0.2424,
+        "all_covered@20": 0.3131,
+        "all_covered@50": 0.404,
+        "operand_median_rank": {
+          "colliding_label": 13,
+          "unique_label": 6,
+          "total_like": 3.5,
+          "ordinary": 7.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2952,
+          "unique_label": 0.493,
+          "total_like": 0.2556,
+          "ordinary": 0.452
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.4613
+      }
+    },
+    "S2": {
+      "bm25": {
+        "all_covered@10": 0.33,
+        "all_covered@20": 0.4108,
+        "all_covered@50": 0.5185,
+        "operand_median_rank": {
+          "colliding_label": 94,
+          "unique_label": 13.0,
+          "total_like": 36,
+          "ordinary": 28.5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4159,
+          "unique_label": 0.6496,
+          "total_like": 0.5564,
+          "ordinary": 0.568
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "dense": {
+        "all_covered@10": 0.2593,
+        "all_covered@20": 0.3838,
+        "all_covered@50": 0.4916,
+        "operand_median_rank": {
+          "colliding_label": 77,
+          "unique_label": 16.0,
+          "total_like": 30,
+          "ordinary": 29.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4317,
+          "unique_label": 0.625,
+          "total_like": 0.5338,
+          "ordinary": 0.56
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "hybrid": {
+        "all_covered@10": 0.367,
+        "all_covered@20": 0.4781,
+        "all_covered@50": 0.6027,
+        "operand_median_rank": {
+          "colliding_label": 47,
+          "unique_label": 8.0,
+          "total_like": 15,
+          "ordinary": 15.5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.5079,
+          "unique_label": 0.7342,
+          "total_like": 0.6165,
+          "ordinary": 0.66
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "cascade_top1_tables": {
+        "all_covered@10": 0.2458,
+        "all_covered@20": 0.3098,
+        "all_covered@50": 0.3468,
+        "operand_median_rank": {
+          "colliding_label": 5,
+          "unique_label": 3,
+          "total_like": 2.0,
+          "ordinary": 3.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2508,
+          "unique_label": 0.3891,
+          "total_like": 0.2406,
+          "ordinary": 0.3573
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.3569
+      },
+      "cascade_top3_tables": {
+        "all_covered@10": 0.3064,
+        "all_covered@20": 0.4007,
+        "all_covered@50": 0.4882,
+        "operand_median_rank": {
+          "colliding_label": 8.0,
+          "unique_label": 5,
+          "total_like": 7.0,
+          "ordinary": 6
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4317,
+          "unique_label": 0.5634,
+          "total_like": 0.4737,
+          "ordinary": 0.524
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.5455
+      }
+    },
+    "S3": {
+      "bm25": {
+        "all_covered@10": 0.3401,
+        "all_covered@20": 0.4108,
+        "all_covered@50": 0.5185,
+        "operand_median_rank": {
+          "colliding_label": 90,
+          "unique_label": 12.0,
+          "total_like": 33,
+          "ordinary": 27.0
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4254,
+          "unique_label": 0.6637,
+          "total_like": 0.5714,
+          "ordinary": 0.58
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "dense": {
+        "all_covered@10": 0.2626,
+        "all_covered@20": 0.3737,
+        "all_covered@50": 0.4916,
+        "operand_median_rank": {
+          "colliding_label": 81,
+          "unique_label": 18.5,
+          "total_like": 21,
+          "ordinary": 35.5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4381,
+          "unique_label": 0.6074,
+          "total_like": 0.609,
+          "ordinary": 0.536
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "hybrid": {
+        "all_covered@10": 0.367,
+        "all_covered@20": 0.4781,
+        "all_covered@50": 0.5859,
+        "operand_median_rank": {
+          "colliding_label": 55,
+          "unique_label": 9.0,
+          "total_like": 14,
+          "ordinary": 15.5
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4889,
+          "unique_label": 0.7324,
+          "total_like": 0.6316,
+          "ordinary": 0.648
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        }
+      },
+      "cascade_top1_tables": {
+        "all_covered@10": 0.2727,
+        "all_covered@20": 0.3165,
+        "all_covered@50": 0.3535,
+        "operand_median_rank": {
+          "colliding_label": 4,
+          "unique_label": 3,
+          "total_like": 2,
+          "ordinary": 4
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.2698,
+          "unique_label": 0.3785,
+          "total_like": 0.3083,
+          "ordinary": 0.3453
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.3603
+      },
+      "cascade_top3_tables": {
+        "all_covered@10": 0.3401,
+        "all_covered@20": 0.4276,
+        "all_covered@50": 0.5118,
+        "operand_median_rank": {
+          "colliding_label": 8.0,
+          "unique_label": 5,
+          "total_like": 5.5,
+          "ordinary": 6
+        },
+        "operand_reached@50": {
+          "colliding_label": 0.4349,
+          "unique_label": 0.5739,
+          "total_like": 0.4211,
+          "ordinary": 0.5427
+        },
+        "n_operands": {
+          "colliding_label": 315,
+          "unique_label": 568,
+          "total_like": 133,
+          "ordinary": 750
+        },
+        "gold_table_in_top_m": 0.5758
+      }
+    }
+  }
+}

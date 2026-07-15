@@ -268,6 +268,19 @@ completeness *framing* is.
 (`operand_collision_multihiertt --population lookup_single`, n=207 exhausts the
 clean single-cell population.)
 
+**5.1e Embedder robustness (three embedders, two families).** The §5.1c run is
+repeated end-to-end with **bge-large-en-v1.5** (same family, scaled;
+`*_n300_bgelarge*`) and **intfloat/e5-large-v2** (different family, its
+"query: "/"passage: " prefix convention respected; `*_n300_e5large*`).
+Direction reproduces in **all three embedders**: the collision penalty persists
+(flat hybrid colliding-vs-unique median 180/16 bge-small, 199/14 bge-large,
+210/12 e5) and flat→S3 hybrid completeness flips stay significant @50
+(p=4.2e-9 / 5.3e-6 / 6.5e-5). BM25 rows are bit-identical across runs (they
+never touch the embedder — a sanity check the pipeline passes). Honest scope
+note: @10 hybrid significance holds for bge-small (p=3.9e-3) and e5
+(p=1.4e-2) but decays to n.s. for bge-large — @10 claims are therefore stated
+as "2 of 3 embedders", @50 claims unconditionally.
+
 **5.2 Enumeration is scope-robust and re-localizes the bottleneck (H2).** OSC |
 decomposition-correct = **1.000, flat across m**; the H1 collapse is eliminated. Raw
 OSC equals the decomposition success rate, so the bottleneck is **header-path
