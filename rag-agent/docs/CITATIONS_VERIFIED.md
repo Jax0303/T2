@@ -64,10 +64,22 @@ Date: 2026-07-03. ✅ = verified verbatim; ⚠️ = needs a wording fix before s
 - **MAPO 45.5%** — cite the repo README checkpoint, not the paper (see above).
 - **Survey "confirms unmeasured"** — soften or find the exact quote.
 
-## Still to verify when writing related work
+## Venues for the .bib (verified 2026-07-15, primary sources)
 
-- TableRAG (two distinct papers exist: NeurIPS 2024 million-token + arXiv
-  2506.10380 heterogeneous-document — disambiguate which we mean).
-- H-STAR, Chain-of-Table, HD-RAG, AITQA (Katsis et al.) — standard, but pull
-  exact venues/years for the .bib.
-- MultiHiertt — Zhao et al., ACL 2022 (add: it is our §5.8 second OSC dataset).
+- **MultiHiertt** — Zhao et al., *ACL 2022* (2022.acl-long.454, pp. 6588–6600,
+  Dublin). Our §5.8/§5.1c second OSC dataset.
+- **AIT-QA** — Katsis et al., *NAACL 2022 Industry Track*
+  (2022.naacl-industry.34, pp. 305–314; arXiv 2106.12944).
+- **Chain-of-Table** — Wang et al., *ICLR 2024*.
+- **H-STAR** — Abhyankar, Gupta, Roth, Reddy, *NAACL 2025*
+  (arXiv 2407.05952; official repo confirms NAACL 2025).
+- **HD-RAG / MixRAG** — arXiv 2504.09554, **no published venue found** as of
+  2026-07; note the paper was RENAMED on arXiv: v1 "HD-RAG: Retrieval-Augmented
+  Generation for Hybrid Documents..." → latest "Mixture-of-RAG: Integrating
+  Text and Tables with Large Language Models". Cite as arXiv preprint under the
+  latest title, mention the HD-RAG alias (FT-RAG cites it as MixRAG).
+- **TableRAG disambiguation** — two distinct papers: (a) Chen et al., NeurIPS
+  2024, million-token table understanding; (b) arXiv 2506.10380 (Huawei),
+  heterogeneous-document RAG with SQL execution. WE mean (b) in RELATED_DELTA
+  ("Huawei-TableRAG"); if (a) is ever cited, use "TableRAG (NeurIPS 2024)"
+  explicitly.

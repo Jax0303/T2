@@ -82,8 +82,9 @@ as few cells as possible. Contributions:
 - **Schema linking (CE-SL, RESDSQL).** Map a question to relevant **columns** with a
   **cross-encoder** — we adopt this for our column axis.
 - **Gap.** No prior work makes header-tree scope enumeration / operand-set
-  completeness a retrieval-time objective for hierarchical-table aggregation; evidence-
-  cell completeness for aggregation is an unmeasured area (survey).
+  completeness a retrieval-time objective for hierarchical-table aggregation; the
+  2025 TQA survey's evaluation taxonomy lists no evidence-completeness metric
+  (softened claim — "unmeasured" only up to what the survey covers).
 - Detail: `RELATED_DELTA.md`, `related_methods_study.md`, `retrieval_algorithms_study.md`.
 
 ## 3. 방법론 (Methodology)
