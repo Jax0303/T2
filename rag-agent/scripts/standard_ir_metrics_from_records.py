@@ -86,11 +86,46 @@ def summarize(per_query: dict) -> dict:
     return out
 
 
+def paired_tests(base: dict, treat: dict) -> dict:
+    """Per-query paired significance for every metric, flat->scheme.
+
+    Continuous metrics (recall@k, ndcg@k, rr): two-sided Wilcoxon signed-rank
+    over per-query deltas. Binary metrics (hit@k, set_em@k): exact two-sided
+    binomial flip test (same convention as paired_set_recall_flip).
+    """
+    from scipy.stats import binomtest, wilcoxon
+
+    qs = sorted(base)
+    assert sorted(treat) == qs, "query sets differ between conditions"
+    out = {}
+    for k in KS:
+        for name, fn in (("recall", recall_at_k), ("ndcg", ndcg_at_k)):
+            d = [fn(treat[q], k) - fn(base[q], k) for q in qs]
+            nz = [x for x in d if x != 0.0]
+            out[f"{name}@{k}"] = {
+                "mean_delta": round(sum(d) / len(d), 4),
+                "p_wilcoxon": (float(f"{wilcoxon(nz).pvalue:.3g}") if nz else None)}
+        for name, fn in (("hit", hit_at_k), ("set_em", set_em_at_k)):
+            gain = sum(1 for q in qs if fn(treat[q], k) > fn(base[q], k))
+            loss = sum(1 for q in qs if fn(treat[q], k) < fn(base[q], k))
+            out[f"{name}@{k}"] = {
+                "gain": gain, "loss": loss,
+                "p_binomial": (float(f"{binomtest(gain, gain + loss).pvalue:.3g}")
+                               if gain + loss else None)}
+    d = [rr(treat[q]) - rr(base[q]) for q in qs]
+    nz = [x for x in d if x != 0.0]
+    out["mrr"] = {"mean_delta": round(sum(d) / len(d), 4),
+                  "p_wilcoxon": (float(f"{wilcoxon(nz).pvalue:.3g}") if nz else None)}
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("records")
     ap.add_argument("--summary", default=None,
                     help="run summary json; cross-check set_em@k == all_covered@k")
+    ap.add_argument("--baseline-scheme", default="flat")
+    ap.add_argument("--treat-schemes", default="S2,S3")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
@@ -99,6 +134,21 @@ def main() -> int:
     for (scheme, retriever) in sorted(ranks):
         report["by_condition"][f"{scheme}/{retriever}"] = summarize(
             ranks[(scheme, retriever)])
+
+    report["paired_vs_%s" % args.baseline_scheme] = {}
+    schemes = {s for s, _ in ranks}
+    for treat_scheme in args.treat_schemes.split(","):
+        if treat_scheme not in schemes:
+            continue
+        for (scheme, retriever) in sorted(ranks):
+            if scheme != args.baseline_scheme:
+                continue
+            key = (treat_scheme, retriever)
+            if key not in ranks:
+                continue
+            report["paired_vs_%s" % args.baseline_scheme][
+                f"{treat_scheme}/{retriever}"] = paired_tests(
+                    ranks[(scheme, retriever)], ranks[key])
 
     if args.summary:
         summ = json.load(open(args.summary))
@@ -126,6 +176,11 @@ def main() -> int:
               f"{m['recall@10']:>6.3f} {m['recall@50']:>6.3f} {m['mrr']:>6.3f} "
               f"{m['ndcg@10']:>8.3f} {m['ndcg@50']:>8.3f} "
               f"{m['set_em@10']:>6.3f} {m['set_em@50']:>6.3f}")
+    for key, t in report.get("paired_vs_%s" % args.baseline_scheme, {}).items():
+        ps = {m: t[m].get("p_wilcoxon", t[m].get("p_binomial"))
+              for m in ("recall@50", "ndcg@50", "mrr", "set_em@50")}
+        print(f"  {args.baseline_scheme}->{key:<12} " +
+              "  ".join(f"{m} p={p}" for m, p in ps.items()))
     return 0
 
 
