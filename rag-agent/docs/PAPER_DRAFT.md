@@ -246,7 +246,8 @@ k=50 (+.034, p=.13); flat-with-reranker still loses to plain S3 hybrid at every 
 (@10 p=3.8e-6, @50 p=1.0e-4); and flat's **pool ceiling@100 = .566** — the score a
 *perfect* reranker over that pool would get — is **below S3's actual @50 = .593**. The
 ceiling is in **candidate generation**, not ranking; serialization must inject the
-disambiguating structure before the pool is formed. Claims here are for hybrid/BM25;
+disambiguating structure before the pool is formed (**Figure 2**,
+`docs/fig2_reranker_2x2.png`). Claims here are for hybrid/BM25;
 dense alone shows the level shift but not the slope pattern (per-query paired tests:
 dense flat→S3 significant on recall/nDCG/MRR, n.s. on set-EM — the gain is real but
 does not concentrate into complete operand sets).
