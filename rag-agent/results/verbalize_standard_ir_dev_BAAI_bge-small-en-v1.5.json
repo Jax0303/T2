@@ -1,0 +1,186 @@
+{
+  "config": {
+    "encoder": "BAAI/bge-small-en-v1.5",
+    "split": "dev",
+    "n_operand_queries": 1301,
+    "table_pool": 540,
+    "ks": [
+      10,
+      20,
+      50
+    ],
+    "metric_defs": "standard_ir_metrics_from_records.py"
+  },
+  "by_condition": {
+    "sent_short": {
+      "n_queries": 1301,
+      "mrr": 0.1996,
+      "hit@10": 0.3789,
+      "recall@10": 0.3609,
+      "ndcg@10": 0.2253,
+      "set_em@10": 0.3428,
+      "hit@20": 0.455,
+      "recall@20": 0.4331,
+      "ndcg@20": 0.2446,
+      "set_em@20": 0.4151,
+      "hit@50": 0.558,
+      "recall@50": 0.5326,
+      "ndcg@50": 0.2654,
+      "set_em@50": 0.5127
+    },
+    "sent_medium": {
+      "n_queries": 1301,
+      "mrr": 0.3689,
+      "hit@10": 0.638,
+      "recall@10": 0.6098,
+      "ndcg@10": 0.4149,
+      "set_em@10": 0.5819,
+      "hit@20": 0.7087,
+      "recall@20": 0.6864,
+      "ndcg@20": 0.4364,
+      "set_em@20": 0.6603,
+      "hit@50": 0.7702,
+      "recall@50": 0.7547,
+      "ndcg@50": 0.452,
+      "set_em@50": 0.7379
+    },
+    "sent_long": {
+      "n_queries": 1301,
+      "mrr": 0.5413,
+      "hit@10": 0.7671,
+      "recall@10": 0.7353,
+      "ndcg@10": 0.5759,
+      "set_em@10": 0.7064,
+      "hit@20": 0.8347,
+      "recall@20": 0.8034,
+      "ndcg@20": 0.5955,
+      "set_em@20": 0.774,
+      "hit@50": 0.897,
+      "recall@50": 0.8706,
+      "ndcg@50": 0.6112,
+      "set_em@50": 0.8417
+    }
+  },
+  "paired_vs_sent_long": {
+    "sent_short->sent_long": {
+      "recall@10": {
+        "mean_delta": 0.3745,
+        "p_wilcoxon": 1.67e-92
+      },
+      "ndcg@10": {
+        "mean_delta": 0.3506,
+        "p_wilcoxon": 2.07e-115
+      },
+      "hit@10": {
+        "gain": 545,
+        "loss": 40,
+        "p_binomial": 2.59e-114
+      },
+      "set_em@10": {
+        "gain": 504,
+        "loss": 31,
+        "p_binomial": 3.6e-111
+      },
+      "recall@20": {
+        "mean_delta": 0.3703,
+        "p_wilcoxon": 7.14e-93
+      },
+      "ndcg@20": {
+        "mean_delta": 0.3509,
+        "p_wilcoxon": 4.46e-125
+      },
+      "hit@20": {
+        "gain": 526,
+        "loss": 32,
+        "p_binomial": 2.7e-116
+      },
+      "set_em@20": {
+        "gain": 491,
+        "loss": 24,
+        "p_binomial": 2.22e-114
+      },
+      "recall@50": {
+        "mean_delta": 0.338,
+        "p_wilcoxon": 2.87e-87
+      },
+      "ndcg@50": {
+        "mean_delta": 0.3457,
+        "p_wilcoxon": 2.93e-133
+      },
+      "hit@50": {
+        "gain": 463,
+        "loss": 22,
+        "p_binomial": 1.41e-108
+      },
+      "set_em@50": {
+        "gain": 449,
+        "loss": 21,
+        "p_binomial": 1.11e-105
+      },
+      "mrr": {
+        "mean_delta": 0.3418,
+        "p_wilcoxon": 5.02e-128
+      }
+    },
+    "sent_medium->sent_long": {
+      "recall@10": {
+        "mean_delta": 0.1255,
+        "p_wilcoxon": 8.48e-26
+      },
+      "ndcg@10": {
+        "mean_delta": 0.161,
+        "p_wilcoxon": 2.71e-57
+      },
+      "hit@10": {
+        "gain": 213,
+        "loss": 45,
+        "p_binomial": 2.57e-27
+      },
+      "set_em@10": {
+        "gain": 199,
+        "loss": 37,
+        "p_binomial": 5.14e-28
+      },
+      "recall@20": {
+        "mean_delta": 0.117,
+        "p_wilcoxon": 2.27e-26
+      },
+      "ndcg@20": {
+        "mean_delta": 0.1591,
+        "p_wilcoxon": 1.7e-63
+      },
+      "hit@20": {
+        "gain": 193,
+        "loss": 29,
+        "p_binomial": 6.45e-31
+      },
+      "set_em@20": {
+        "gain": 175,
+        "loss": 27,
+        "p_binomial": 9.6e-28
+      },
+      "recall@50": {
+        "mean_delta": 0.1159,
+        "p_wilcoxon": 5.15e-30
+      },
+      "ndcg@50": {
+        "mean_delta": 0.1592,
+        "p_wilcoxon": 4.05e-69
+      },
+      "hit@50": {
+        "gain": 178,
+        "loss": 13,
+        "p_binomial": 3.27e-38
+      },
+      "set_em@50": {
+        "gain": 147,
+        "loss": 12,
+        "p_binomial": 1.06e-30
+      },
+      "mrr": {
+        "mean_delta": 0.1724,
+        "p_wilcoxon": 2.09e-62
+      }
+    }
+  }
+}
