@@ -1,0 +1,54 @@
+{
+  "corpus": {
+    "tables": 259,
+    "body_rows": 1090,
+    "splits": "dev_tables.json,test_tables.json"
+  },
+  "detector_hits": {
+    "structural_on_chinese": 28,
+    "structural_on_english": 27,
+    "keyword_on_chinese": 0,
+    "keyword_on_english": 95
+  },
+  "structural_cross_language_agreement": {
+    "agree_rows": 1089,
+    "disagree_rows": 1,
+    "rate": 0.9991
+  },
+  "labeled_zh_total_rows": {
+    "n(rows whose own label matches 合计/总计/小计 etc.)": 89,
+    "recovered_by_structural": 21,
+    "recovered_by_keyword_regex": 0,
+    "structural_recall_on_labeled": 0.236
+  },
+  "by_table_type": {
+    "vertical": {
+      "tables": 76,
+      "struct_zh": 16,
+      "struct_en": 15,
+      "kw_zh": 0,
+      "kw_en": 51
+    },
+    "horizontal": {
+      "tables": 65,
+      "struct_zh": 0,
+      "struct_en": 0,
+      "kw_zh": 0,
+      "kw_en": 2
+    },
+    "hierarchical": {
+      "tables": 69,
+      "struct_zh": 12,
+      "struct_en": 12,
+      "kw_zh": 0,
+      "kw_en": 40
+    },
+    "complex": {
+      "tables": 49,
+      "struct_zh": 0,
+      "struct_en": 0,
+      "kw_zh": 0,
+      "kw_en": 2
+    }
+  }
+}
