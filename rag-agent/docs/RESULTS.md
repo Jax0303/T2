@@ -370,8 +370,33 @@ PYTHONPATH=. python scripts/answer_accuracy_injection.py --solver-model openai/g
   --records results/h6_rerun_20260707/gptoss120b_records.jsonl         # H6 (quota-gated)
 ```
 
-Note: this repo's working Python is the system interpreter (`/usr/bin/python3`,
-pandas + sentence-transformers); run from `rag-agent/` with `PYTHONPATH=.`. There is
-no `pytest` — run the unit tests by importing each `tests/test_*.py` and calling its
-`test_*` functions (the row-failure diagnosis / E6 add 7 tests in
-`tests/test_header_enum.py`).
+Note: this repo's working Python is `rag-agent/.venv/bin/python` (torch
+2.12.1+cu130, sentence-transformers, pytest installed 2026-07-14); run from
+`rag-agent/` with `PYTHONPATH=.` and `pytest tests/`.
+
+---
+
+## Addendum 2026-07-15 (defense-closure session)
+
+All numbers n=297 post-audit unless stated; details in PAPER_DRAFT.md §§4–5.
+
+- **Standard-metric view + paired significance** (§4 Metrics): Hit@k / R@k /
+  MRR / nDCG@k / set-EM@k over the collision records, Wilcoxon + exact
+  binomial per contrast — serialization ordering (S3≈S2>flat) holds under
+  every metric; bm25/hybrid significant on all, dense on graded only.
+  `scripts/standard_ir_metrics_from_records.py`.
+- **Single-cell control slice** (§5.1d): lookup_single population (n=207
+  exhausts it) — all nine scheme×retriever contrasts significant, dense
+  included; dense fails the *conjunction*, not retrieval.
+- **Embedder robustness / M5 closed** (§5.1e): bge-small + bge-large +
+  e5-large-v2 (prefixes) — direction reproduces in all three; @10 claims
+  "2 of 3" (bge-large n.s.), @50 unconditional.
+- **Reranker max_length spotcheck**: pairs are ≤95 tokens; 192 never
+  truncates; 512 bit-identical (`*_rerank_spot_ml{192,512}_n50.json`).
+- **IM-TQA language-independence**: structural total detection fires
+  identically on zh/en versions of the same grids (99.9% row agreement);
+  keyword regex 0 hits on Chinese. `results/imtqa_structural_detector.json`.
+- **Figures rebuilt to publication style**: fig1 (scope decay), fig2
+  (reranker 2×2), fig3 (injection case study, post-audit data). The pre-audit
+  three-panel frontier and all June-era ladder/table images were deleted
+  (git-recoverable); superseded June planning docs likewise.

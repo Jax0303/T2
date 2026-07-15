@@ -454,6 +454,19 @@ mean per-cell recall — the reference metric — alongside:
 | dense | 0.832 | 0.863 | +0.031 | 5 | **0** | 0.0625 (n.s.) | 0.920→0.946 |
 | hybrid | 0.839 | **0.907** | +0.068 | 11 | **0** | **0.001** | 0.927→0.964 |
 
+(**Figure 3** visualizes this table plus the budget frontier.)
+  > *Fig. 3 caption:* Total-row injection on HiTab (dev arith $m{\ge}2$,
+  > $n{=}161$, post-audit gold). (a) OSC vs retrieved-cell budget: injection
+  > (solid) Pareto-dominates the plain retriever (dashed) for every retriever
+  > above the starvation regime. (b) At the same retrieval depth ($k{=}10$),
+  > injection lifts OSC with **zero hurt queries** (McNemar: BM25 $p{=}1.5
+  > \times 10^{-5}$, hybrid $p{=}.001$; dense $+.031$, n.s.).
+  > (`scripts/fig3_injection_case_study.py`, from
+  > `results/osc_total_augment_resolver.json`.) *The earlier three-panel
+  > frontier figure (pre-audit gold, incl. a frozen-test panel never re-run
+  > post-audit) was deleted 2026-07-15; a test-split panel requires re-running
+  > `osc_total_augment.py --split test` on current gold.*
+
 Injection only *adds* cells, so it is a strict superset — **zero queries are hurt** — but
 dense's same-depth win is not clean (p=0.0625) at this population size; BM25 and
 RRF-hybrid are significant. Note the recall column: plain retrievers already score
