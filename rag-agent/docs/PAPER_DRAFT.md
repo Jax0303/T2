@@ -143,7 +143,15 @@ as few cells as possible. Contributions:
   the lenient↔strict gap is itself an exhibit: flat/hybrid Hit@10 .512 vs
   set-EM@10 .310 — Hit-Rate-style metrics make a retriever that drops operands
   from half the aggregations look like it succeeds on half (the HotpotQA
-  Sup-F1 66.7 vs Sup-EM 21.95 pattern, reproduced on cells);
+  Sup-F1 66.7 vs Sup-EM 21.95 pattern, reproduced on cells). Terminology
+  guard: our Hit@k is **cell-level** (any gold cell ≤ k); FT-RAG's "Hit Rate"
+  is table-level (right table retrieved) — same name, different event, never
+  numerically comparable. Paired significance accompanies every standard
+  metric in the same file (Wilcoxon signed-rank for graded, exact binomial
+  flips for binary): flat→S2/S3 is significant on **all** metrics × all k for
+  BM25 and hybrid (p≤1.4e-4); for dense the graded metrics are significant
+  too (recall/nDCG/MRR p≤5.9e-3) and only set-EM stays n.s. — dense's gain is
+  real but doesn't concentrate into complete sets;
   **col-recall@k** / **row-recall@k** (gold columns/rows
   within the top-k scope-nodes — the node-resolution metric per axis); row-/col-axis
   coverage; mean cells
@@ -213,7 +221,9 @@ closes the "just add the caption" objection.*
 candidate-generation failure a strong reranker cannot fix.** Two natural objections to
 §5.1b are (i) "the ranking is within one gold table — real RAG searches a corpus" and
 (ii) "a strong reranker would fix it." Both tested on MultiHiertt (financial reports):
-297 arithmetic multi-operand queries (951 gold operand cells) over a shared corpus of
+297 arithmetic multi-operand queries (951 gold operand instances; **883 unique cells**
+after per-query dedup — every per-cell/rank metric is over the deduped sets, matching
+the OSC dedup convention) over a shared corpus of
 **1,203 tables / 42,715 cell chunks**; treatment is cell serialization — *flat* (leaf
 labels only, the naive cell-chunk VDB) vs *S3* (caption + full header path as a
 sentence). Findings: (1) the corpus-level analogue of the total-row miss is
@@ -232,7 +242,9 @@ k=50 (+.034, p=.13); flat-with-reranker still loses to plain S3 hybrid at every 
 *perfect* reranker over that pool would get — is **below S3's actual @50 = .593**. The
 ceiling is in **candidate generation**, not ranking; serialization must inject the
 disambiguating structure before the pool is formed. Claims here are for hybrid/BM25;
-dense alone shows the level shift but not the slope pattern.
+dense alone shows the level shift but not the slope pattern (per-query paired tests:
+dense flat→S3 significant on recall/nDCG/MRR, n.s. on set-EM — the gain is real but
+does not concentrate into complete operand sets).
 (`operand_collision_multihiertt`, `operand_collision_rerank`, `osc_slice_analysis`;
 EXPERIMENTS.md §5, §13, §14)
 
