@@ -1,0 +1,239 @@
+<mxfile host="app.diagrams.net" agent="claude-code" version="24.7.7">
+  <diagram id="page-design" name="1. 실험 설계">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== stage headers ===== -->
+        <mxCell id="h1" value="&lt;b&gt;① 계층형 표 + 질의&lt;/b&gt;" style="text;html=1;fontSize=13;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="18" width="230" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="h2" value="&lt;b&gt;② 헤더 트리 복원&lt;/b&gt;" style="text;html=1;fontSize=13;align=left;" vertex="1" parent="1">
+          <mxGeometry x="300" y="18" width="210" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="h3" value="&lt;b&gt;③ 셀 직렬화 — 3가지 파이프라인&lt;/b&gt;" style="text;html=1;fontSize=13;align=left;" vertex="1" parent="1">
+          <mxGeometry x="560" y="18" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="h5" value="&lt;b&gt;⑤ 평가 지표&lt;/b&gt;" style="text;html=1;fontSize=13;align=left;" vertex="1" parent="1">
+          <mxGeometry x="990" y="18" width="220" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ===== example table ===== -->
+        <mxCell id="t00" value="" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="30" y="50" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tRev" value="&lt;b&gt;Revenue&lt;/b&gt;" style="rounded=0;html=1;fillColor=#e8e8e8;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="140" y="50" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t10" value="" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="30" y="74" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t2018" value="2018" style="rounded=0;html=1;fillColor=#e8e8e8;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="140" y="74" width="65" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t2019" value="2019" style="rounded=0;html=1;fillColor=#e8e8e8;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="205" y="74" width="65" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tAmer" value="&lt;b&gt;Americas&lt;/b&gt;" style="rounded=0;html=1;align=left;spacingLeft=4;fillColor=#f5f5f5;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="30" y="98" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tAmerV" value="" style="rounded=0;html=1;fillColor=#fafafa;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="140" y="98" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tPx1" value="&amp;nbsp;&amp;nbsp;Product X" style="rounded=0;html=1;align=left;spacingLeft=4;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="30" y="122" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tPx1a" value="1,148" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="140" y="122" width="65" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tPx1b" value="&lt;b&gt;1,320&lt;/b&gt;" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="205" y="122" width="65" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tEur" value="&lt;b&gt;Europe&lt;/b&gt;" style="rounded=0;html=1;align=left;spacingLeft=4;fillColor=#f5f5f5;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="30" y="146" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tEurV" value="" style="rounded=0;html=1;fillColor=#fafafa;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="140" y="146" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tPx2" value="&amp;nbsp;&amp;nbsp;Product X" style="rounded=0;html=1;align=left;spacingLeft=4;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="30" y="170" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tPx2a" value="980" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="140" y="170" width="65" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tPx2b" value="&lt;b&gt;1,020&lt;/b&gt;" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="205" y="170" width="65" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="tNote" value="&lt;font color=&quot;#c0392b&quot;&gt;잎 라벨 “Product X” 중복 = &lt;b&gt;피연산자 충돌&lt;/b&gt;&lt;br&gt;(gold 피연산자의 34.8%가 충돌 라벨)&lt;/font&gt;" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="198" width="250" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- query box -->
+        <mxCell id="qbox" value="&lt;b&gt;질의&lt;/b&gt; (MultiHiertt, 산술·다중 피연산자, n=297)&lt;br&gt;“Product X의 2019년 매출 합은?”&lt;br&gt;gold 피연산자 = {1,320, 1,020} — &lt;b&gt;둘 다&lt;/b&gt; 찾아야 정답" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=6;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="246" width="250" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ===== header tree ===== -->
+        <mxCell id="treeBox" value="" style="rounded=1;html=1;dashed=1;fillColor=none;strokeColor=#aaaaaa;" vertex="1" parent="1">
+          <mxGeometry x="300" y="50" width="225" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="rowLab" value="행 트리" style="text;html=1;fontSize=10;fontColor=#888888;align=left;" vertex="1" parent="1">
+          <mxGeometry x="308" y="54" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="nRootR" value="ROOT" style="rounded=1;html=1;fontSize=10;fillColor=#f5f5f5;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="380" y="74" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="nAmer" value="Americas" style="rounded=1;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="315" y="114" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="nEur" value="Europe" style="rounded=1;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="425" y="114" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="nPxA" value="Product X" style="rounded=1;html=1;fontSize=10;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="312" y="154" width="85" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="nPxE" value="Product X" style="rounded=1;html=1;fontSize=10;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="418" y="154" width="85" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="eR1" style="html=1;endArrow=none;strokeColor=#999999;" edge="1" parent="1" source="nRootR" target="nAmer"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eR2" style="html=1;endArrow=none;strokeColor=#999999;" edge="1" parent="1" source="nRootR" target="nEur"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eR3" style="html=1;endArrow=none;strokeColor=#999999;" edge="1" parent="1" source="nAmer" target="nPxA"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eR4" style="html=1;endArrow=none;strokeColor=#999999;" edge="1" parent="1" source="nEur" target="nPxE"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="colLab" value="열 트리" style="text;html=1;fontSize=10;fontColor=#888888;align=left;" vertex="1" parent="1">
+          <mxGeometry x="308" y="188" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="nRev" value="Revenue" style="rounded=1;html=1;fontSize=10;fillColor=#f5f5f5;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="375" y="208" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="n2018" value="2018" style="rounded=1;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="330" y="248" width="55" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="n2019" value="2019" style="rounded=1;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="410" y="248" width="55" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="eC1" style="html=1;endArrow=none;strokeColor=#999999;" edge="1" parent="1" source="nRev" target="n2018"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eC2" style="html=1;endArrow=none;strokeColor=#999999;" edge="1" parent="1" source="nRev" target="n2019"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="treeNote" value="&lt;font color=&quot;#888888&quot;&gt;raw grid에서 트리 자동 복원&lt;br&gt;(rag_agent.reconstruct)&lt;/font&gt;" style="text;html=1;fontSize=9;align=left;" vertex="1" parent="1">
+          <mxGeometry x="308" y="292" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eTab2Tree" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="tRev" target="treeBox">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="285" y="80" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- ===== 3 pipelines ===== -->
+        <mxCell id="pFlat" value="&lt;b&gt;P1 · flat — 잎(leaf) 라벨만&lt;/b&gt;&lt;br&gt;“Product X 2019: 1,320”&lt;br&gt;“Product X 2019: 1,020”&lt;br&gt;&lt;font color=&quot;#c0392b&quot;&gt;→ 두 셀이 사실상 동일 텍스트 = 검색기가 구분 불가&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=8;fillColor=#fdf1d8;strokeColor=#eda100;" vertex="1" parent="1">
+          <mxGeometry x="560" y="50" width="390" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="pS2" value="&lt;b&gt;P2 · S2 — 트리 경로(header path) 직렬화&lt;/b&gt;&lt;br&gt;“Americas &gt; Product X &gt; Revenue &gt; 2019: 1,320”&lt;br&gt;“Europe &gt; Product X &gt; Revenue &gt; 2019: 1,020”&lt;br&gt;→ 조상 경로가 두 셀을 분리" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=8;fillColor=#dff3ec;strokeColor=#1baf7a;" vertex="1" parent="1">
+          <mxGeometry x="560" y="158" width="390" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="pS3" value="&lt;b&gt;P3 · S3 — 캡션 문장 직렬화&lt;/b&gt;&lt;br&gt;“For Americas &gt; Product X, Revenue &gt; 2019 is 1,320.”&lt;br&gt;“For Europe &gt; Product X, Revenue &gt; 2019 is 1,020.”&lt;br&gt;→ 같은 정보를 자연어 문장으로" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=8;fillColor=#ddeafc;strokeColor=#2a78d6;" vertex="1" parent="1">
+          <mxGeometry x="560" y="266" width="390" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="eT2P1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="treeBox" target="pFlat"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eT2P2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="treeBox" target="pS2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eT2P3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="treeBox" target="pS3"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===== retrieval ===== -->
+        <mxCell id="h4" value="&lt;b&gt;④ 셀 단위 검색 (동일 검색기 3종)&lt;/b&gt;" style="text;html=1;fontSize=13;align=left;" vertex="1" parent="1">
+          <mxGeometry x="560" y="374" width="330" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="corpus" value="셀 단위 청크 코퍼스 — &lt;b&gt;1,203 tables / 42,715 cells&lt;/b&gt; (파이프라인별 동일 셀, 표현만 다름)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="560" y="400" width="390" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="rBm25" value="&lt;b&gt;BM25&lt;/b&gt;&lt;br&gt;(sparse)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="560" y="460" width="118" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rDense" value="&lt;b&gt;Dense&lt;/b&gt;&lt;br&gt;(bge-small-en-v1.5)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="696" y="460" width="118" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rHyb" value="&lt;b&gt;Hybrid&lt;/b&gt;&lt;br&gt;(α=0.5, min-max)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="832" y="460" width="118" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="retNote" value="&lt;font color=&quot;#888888&quot;&gt;3 직렬화 × 3 검색기 = 9조건 · 동일 질의 297개 (paired 비교)&lt;/font&gt;" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="560" y="516" width="390" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="eP1C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#eda100;" edge="1" parent="1" source="pFlat" target="corpus">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="530" y="96" /><mxPoint x="530" y="420" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="eP2C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1baf7a;" edge="1" parent="1" source="pS2" target="corpus">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="540" y="204" /><mxPoint x="540" y="420" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="eP3C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2a78d6;" edge="1" parent="1" source="pS3" target="corpus"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eC2R1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="corpus" target="rBm25"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eC2R2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="corpus" target="rDense"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eC2R3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="corpus" target="rHyb"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eQ2R" value="top-k 셀 검색" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="qbox" target="rBm25">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="155" y="485" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- ===== metrics ===== -->
+        <mxCell id="mStd" value="&lt;b&gt;문헌 표준 지표 (경쟁 논문들이 쓰는 채점)&lt;/b&gt;&lt;br&gt;Hit@k · Recall@k · MRR · nDCG@k&lt;br&gt;&lt;font color=&quot;#666666&quot;&gt;MT2Net: recall@10 · FT-RAG: Hit Rate@1 · Topo-RAG: nDCG@10 · MixRAG: HiT@1&lt;br&gt;→ 전부 부분 적중을 인정하는 &lt;b&gt;관대한&lt;/b&gt; 채점&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=8;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="990" y="50" width="380" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="mStrict" value="&lt;b&gt;엄격 지표: set-EM@k (= OSC) — 문제정의용&lt;/b&gt;&lt;br&gt;gold 피연산자 셀이 &lt;b&gt;전부&lt;/b&gt; top-k 안 ⇒ 1, 하나라도 빠지면 0&lt;br&gt;&lt;font color=&quot;#666666&quot;&gt;계보: HotpotQA Sup-EM · MDR Passage-EM · Beam Retrieval EM&lt;br&gt;(멀티홉 검색의 all-or-nothing 관행을 셀 단위에 적용)&lt;/font&gt;&lt;br&gt;산술 질의는 피연산자 1개만 빠져도 오답 → &lt;b&gt;완전성 = 정답 가능성&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=8;fillColor=#fdeaea;strokeColor=#c0392b;" vertex="1" parent="1">
+          <mxGeometry x="990" y="190" width="380" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="mNote" value="&lt;font color=&quot;#888888&quot;&gt;두 지표군을 &lt;b&gt;같은 검색 기록&lt;/b&gt;에서 동시에 계산&lt;br&gt;→ “자체 지표라서 이긴 것” 반박 가능 (2페이지 ③)&lt;/font&gt;" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="990" y="330" width="380" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="eR2M1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="rHyb" target="mStrict">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="970" y="485" /><mxPoint x="970" y="255" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="eR2M2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;" edge="1" parent="1" source="rHyb" target="mStd">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="970" y="485" /><mxPoint x="970" y="110" /></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="p1foot" value="&lt;font color=&quot;#888888&quot;&gt;데이터: MultiHiertt dev (post-audit gold, 2026-07-07 이후 재측정본만 사용) · 결과 수치는 2페이지&lt;/font&gt;" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="600" width="700" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-results" name="2. 결과 요약">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="560" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="rh" value="&lt;b&gt;결과 요약 — MultiHiertt 충돌 실험 (n=297, post-audit) + HiTab 사례연구&lt;/b&gt;" style="text;html=1;fontSize=15;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="800" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1" value="&lt;b&gt;① 문제 증명 — flat은 라벨 충돌에서 무너진다&lt;/b&gt;&lt;br&gt;&lt;br&gt;충돌 라벨 피연산자 중위 랭크 (hybrid): &lt;b&gt;180위&lt;/b&gt; vs 비충돌 &lt;b&gt;16위&lt;/b&gt; (≈11×)&lt;br&gt;BM25는 471위 vs 35위 (≈13×)&lt;br&gt;&lt;font color=&quot;#666666&quot;&gt;→ “계층을 버린 직렬화”의 실패 지점을 정량화&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=10;fillColor=#fdf1d8;strokeColor=#eda100;" vertex="1" parent="1">
+          <mxGeometry x="30" y="56" width="430" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c2" value="&lt;b&gt;② 처방 — 트리 경로/캡션 직렬화가 페널티 제거&lt;/b&gt;&lt;br&gt;&lt;br&gt;충돌 중위 랭크: 180 → &lt;b&gt;42–53&lt;/b&gt; (hybrid, S3/S2)&lt;br&gt;set-EM@50 (hybrid): flat .458 → S2 .579 / S3 &lt;b&gt;.593&lt;/b&gt; (+.12~.14)&lt;br&gt;&lt;font color=&quot;#666666&quot;&gt;유의성: nDCG@10은 6/6 대비 모두 p&amp;lt;.001 · set-EM@50은 5/6 유의 (예외 S3/dense p=.16)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=10;fillColor=#dff3ec;strokeColor=#1baf7a;" vertex="1" parent="1">
+          <mxGeometry x="490" y="56" width="430" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c3" value="&lt;b&gt;③ 지표 불변성 — “자체 지표라서 이긴 것” 아님&lt;/b&gt;&lt;br&gt;&lt;br&gt;Hit@k · Recall@k · MRR · nDCG@k · set-EM@k, 모든 k에서&lt;br&gt;직렬화 순서 &lt;b&gt;S3 ≈ S2 &amp;gt; flat&lt;/b&gt; — 예외 0건&lt;br&gt;&lt;font color=&quot;#666666&quot;&gt;(검색기 순서는 지표에 따라 흔들림: “hybrid 최상”만 불변)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=10;fillColor=#ddeafc;strokeColor=#2a78d6;" vertex="1" parent="1">
+          <mxGeometry x="950" y="56" width="430" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c4" value="&lt;b&gt;④ 왜 엄격 지표가 필요한가 (문제정의 근거)&lt;/b&gt;&lt;br&gt;&lt;br&gt;S3/hybrid @10: Hit &lt;b&gt;.626&lt;/b&gt; · Recall .485  vs  set-EM &lt;b&gt;.370&lt;/b&gt;&lt;br&gt;관대 지표로는 “잘 되는 듯” 보여도 10건 중 6건은 피연산자 누락&lt;br&gt;&lt;font color=&quot;#666666&quot;&gt;→ 산술 질의에서 누락 1개 = 오답. 격차 자체가 문제의 증거&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=10;fillColor=#fdeaea;strokeColor=#c0392b;" vertex="1" parent="1">
+          <mxGeometry x="30" y="216" width="430" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c5" value="&lt;b&gt;⑤ 사례연구 — HiTab 합계행 구조적 주입&lt;/b&gt;&lt;br&gt;&lt;br&gt;same-depth k=10 OSC: BM25 .770→&lt;b&gt;.876&lt;/b&gt; (p=1.5e-5) · hybrid .839→&lt;b&gt;.907&lt;/b&gt; (p=.001)&lt;br&gt;dense +.031 (p=.06, 경계) · &lt;b&gt;손해 0건&lt;/b&gt; (hurt=0)&lt;br&gt;&lt;font color=&quot;#666666&quot;&gt;토큰예산 B=500–8k 전 구간 유의 승 · B=8k에서 OSC=1.0&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=10;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="490" y="216" width="430" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c6" value="&lt;b&gt;⑥ 개선 폭 한 줄 요약&lt;/b&gt;&lt;br&gt;&lt;br&gt;· 충돌 랭크: 최대 13× 악화를 ~4×까지 회복&lt;br&gt;· 완전성 set-EM@50 (hybrid): &lt;b&gt;+.135&lt;/b&gt; (.458→.593)&lt;br&gt;· 표준지표도 동반 상승: nDCG@10 .300→&lt;b&gt;.391&lt;/b&gt;&lt;br&gt;· 주입(HiTab): OSC &lt;b&gt;+.07~.11&lt;/b&gt;, 부작용 0" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=10;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="950" y="216" width="430" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="banner" value="&lt;b&gt;발표 한 문장:&lt;/b&gt; 계층 표의 잎 라벨 충돌이 셀 검색을 무너뜨린다는 것을 표준 지표 + 엄격 지표(set-EM) 양쪽으로 진단했고, 트리 경로 직렬화로 그 페널티를 제거해 모든 지표에서 flat을 이겼으며, HiTab에서는 합계행 주입으로 완전성을 .91까지 올렸다 (부작용 0)." style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=10;fillColor=#fffde7;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="30" y="380" width="1350" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rfoot" value="&lt;font color=&quot;#888888&quot;&gt;출처: results/operand_collision_multihiertt_n300*.json (수치·유의성) · results/osc_total_augment_resolver.json (주입) · 전부 2026-07-07 감사 이후 재측정본&lt;/font&gt;" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="30" y="452" width="900" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
