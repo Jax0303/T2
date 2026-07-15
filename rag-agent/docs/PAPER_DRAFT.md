@@ -253,6 +253,20 @@ does not concentrate into complete operand sets).
 (`operand_collision_multihiertt`, `operand_collision_rerank`, `osc_slice_analysis`;
 EXPERIMENTS.md §5, §13, §14)
 
+**5.1d Single-cell control slice (scope=1).** On MultiHiertt pure-lookup queries
+(no program, exactly one gold cell; n=207, own corpus of 857 tables / 30,377
+cells — deltas are NOT numerically comparable to the m≥2 run), serialization
+helps just as decisively: flat→S3 hybrid all_covered@50 .623→.836 (flips 45:1,
+p=1.3e-12), and **all nine scheme×retriever contrasts are significant — dense
+included** (worst p=8.2e-5). Read with §5.1c this sharpens the dense story: at
+scope 1, set-EM degenerates to plain recall and dense's serialization gain is
+significant; dense fails specifically at the *conjunction* — landing every
+operand of a multi-cell set simultaneously — not at retrieval improvement per
+se. The serialization prescription is not multi-operand-specific; only its
+completeness *framing* is.
+(`operand_collision_multihiertt --population lookup_single`, n=207 exhausts the
+clean single-cell population.)
+
 **5.2 Enumeration is scope-robust and re-localizes the bottleneck (H2).** OSC |
 decomposition-correct = **1.000, flat across m**; the H1 collapse is eliminated. Raw
 OSC equals the decomposition success rate, so the bottleneck is **header-path

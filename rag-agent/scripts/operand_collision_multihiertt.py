@@ -67,20 +67,32 @@ def _minmax(a: np.ndarray) -> np.ndarray:
     return (a - lo) / (hi - lo)
 
 
-def load_population(max_queries: int):
-    """Arithmetic, single-table, multi-operand, table-only queries + their docs."""
+def load_population(max_queries: int, population: str = "arith_multi"):
+    """Query populations over MultiHiertt train, table-only evidence.
+
+    arith_multi   — arithmetic, single-table, multi-operand (>= 2 cells): the
+                    paper's collision population.
+    lookup_single — no program (pure lookup), exactly ONE gold cell: the
+                    scope-1 control slice (does the serialization gain persist
+                    where completeness is trivial?).
+    """
     from datasets import load_dataset
     rows = load_dataset("bevaya/MultiHiertt", split="train").to_list()
 
     queries, docs = [], {}
     for row in rows:
-        if not (row.get("program") or "").strip():
+        has_program = bool((row.get("program") or "").strip())
+        if population == "arith_multi" and not has_program:
             continue                          # arithmetic only
+        if population == "lookup_single" and has_program:
+            continue                          # pure lookup only
         if row.get("text_evidence"):
             continue                          # table-only evidence
         ev = row.get("table_evidence") or []
-        if len(ev) < 2:
-            continue                          # multi-operand (>= 2 cells)
+        want = 2 if population == "arith_multi" else 1
+        if (len(ev) < 2 and population == "arith_multi") or \
+           (len(ev) != want and population == "lookup_single"):
+            continue
         coords = []
         ok = True
         for e in ev:
@@ -211,6 +223,12 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max-queries", type=int, default=60)
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
+    ap.add_argument("--population", default="arith_multi",
+                    choices=["arith_multi", "lookup_single"])
+    ap.add_argument("--query-prefix", default="",
+                    help='e.g. "query: " for e5-family embedders')
+    ap.add_argument("--passage-prefix", default="",
+                    help='e.g. "passage: " for e5-family embedders')
     ap.add_argument("--collision-min", type=int, default=5,
                      help="operand counts as 'colliding' if its row-leaf label "
                           "occurs in >= this many distinct tables")
@@ -221,11 +239,11 @@ def main() -> int:
 
     from rank_bm25 import BM25Okapi
 
-    queries, docs = load_population(ARGS.max_queries)
+    queries, docs = load_population(ARGS.max_queries, ARGS.population)
     tables, cells, pop = build_corpus(queries, docs)
     n_q = len(pop)
     n_cells = len(cells)
-    print(f"[pop] arithmetic single-table multi-operand queries: {n_q} "
+    print(f"[pop] {ARGS.population} queries: {n_q} "
           f"(of {len(queries)} scanned) | corpus: {len(tables)} tables, {n_cells} cells")
     if not n_q:
         print("no evaluable queries — abort")
@@ -233,13 +251,13 @@ def main() -> int:
 
     encoder = default_encoder(model_name=ARGS.embed_model)
     q_texts = [q["question"] for q in pop]
-    q_vecs = np.asarray(encoder.encode(q_texts))
+    q_vecs = np.asarray(encoder.encode([ARGS.query_prefix + t for t in q_texts]))
 
     results = {}
     for scheme in ("flat", "S2", "S3"):
         print(f"\n=== scheme={scheme} ===", flush=True)
         texts = [cell_text(c, scheme) for c in cells]
-        vecs = np.asarray(encoder.encode(texts))
+        vecs = np.asarray(encoder.encode([ARGS.passage_prefix + t for t in texts]))
         bm25 = BM25Okapi([_tokenize(t) for t in texts])
 
         # ---- global cell retrieval: bm25 / dense / hybrid --------------------
@@ -275,7 +293,7 @@ def main() -> int:
         for gi, c in enumerate(cells):
             cell_idx_by_table.setdefault(c["table"], []).append(gi)
         t_texts = ["\n".join(texts[gi] for gi in cell_idx_by_table.get(k, [])) for k in table_keys]
-        t_vecs = np.asarray(encoder.encode(t_texts))
+        t_vecs = np.asarray(encoder.encode([ARGS.passage_prefix + t for t in t_texts]))
 
         for m in ARGS.cascade_tables:
             cas_ranks = []
