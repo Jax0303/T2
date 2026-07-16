@@ -1,0 +1,36 @@
+[pop] HiTab dev arith m>=2: 161  retriever=dense k=10 solver=openai/gpt-oss-120b
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  58%|█████▊    | 115/199 [00:00<00:00, 1147.90it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1618.42it/s]
+[order] flips-first: 10 OSC-flip queries run before the rest
+  4/161  acc_b=0.000 acc_t=0.750 (146s)
+  8/161  acc_b=0.000 acc_t=0.875 (344s)
+  12/161  acc_b=0.000 acc_t=0.750 (535s)
+  16/161  acc_b=0.250 acc_t=0.812 (666s)
+  20/161  acc_b=0.350 acc_t=0.800 (771s)
+  24/161  acc_b=0.458 acc_t=0.833 (868s)
+  28/161  acc_b=0.536 acc_t=0.821 (982s)
+  32/161  acc_b=0.562 acc_t=0.812 (1150s)
+  36/161  acc_b=0.583 acc_t=0.833 (1232s)
+  40/161  acc_b=0.600 acc_t=0.825 (1322s)
+  44/161  acc_b=0.591 acc_t=0.795 (1383s)
+Groq rate-limited, retrying in 1s (attempt 1)
+Groq rate-limited, retrying in 2s (attempt 2)
+Groq rate-limited, retrying in 4s (attempt 3)
+Groq rate-limited, retrying in 8s (attempt 4)
+Groq rate-limited, retrying in 16s (attempt 5)
+Groq rate-limited, retrying in 32s (attempt 6)
+Groq rate-limited, retrying in 64s (attempt 7)
+Groq rate-limited, retrying in 128s (attempt 8)
+Groq rate-limited, retrying in 256s (attempt 9)
+
+[cutoff] solver failed at 47/161: RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198770, Requested 3495. Please try again in 16m18.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+
+=== RESULT ===
+evaluated 46/161 (cutoff=RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198770, Requested 3495. Please try again in 16m18.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+OSC      base 0.8323  ->  treat 0.8944  (Δ +0.0621)  [full pop, LLM-free]
+Accuracy (ours, lenient)   base 0.587  ->  treat 0.7826  (Δ +0.1957)
+flipped wrong->right: 10   right->wrong: 1   McNemar p=0.01172
+Accuracy (HiTab official)  base 0.4783  ->  treat 0.6304  (Δ +0.1522)  <- quote THIS one against other papers
+  flipped wrong->right: 9   right->wrong: 2   McNemar p=0.06543
+OSC-flip subset (10 evaluated): acc 0.0 -> 0.9   treat_only=9 base_only=0
+mean injected cells/query: 14.9

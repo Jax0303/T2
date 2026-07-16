@@ -1,0 +1,71 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="cell-localization" name="Cell localization">
+    <mxGraphModel dx="900" dy="640" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="720" pageHeight="560" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== query ===== -->
+        <mxCell id="q" value="&lt;font style=&quot;font-size:14px&quot;&gt;query&amp;nbsp;&amp;nbsp;&lt;b&gt;Product X&lt;/b&gt; · &lt;b&gt;2019&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbe8fb;strokeColor=#1f6fd6;strokeWidth=2;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="250" y="24" width="220" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== row tree (1 level) ===== -->
+        <mxCell id="rLab" value="&lt;font style=&quot;font-size:11px&quot; color=&quot;#9aa0a6&quot;&gt;행 트리&lt;/font&gt;" style="text;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="70" y="96" width="80" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="rRoot" value="ROOT" style="rounded=1;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#9aa0a6;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="82" y="118" width="70" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="rLeaf" value="&lt;b&gt;Product X&lt;/b&gt;" style="rounded=1;html=1;fontSize=12;fillColor=#dbe8fb;strokeColor=#1f6fd6;strokeWidth=2;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="75" y="170" width="84" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="eR" style="html=1;endArrow=none;strokeColor=#1f6fd6;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="rRoot" target="rLeaf"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eqR" style="html=1;endArrow=classic;strokeColor=#9aa0a6;dashed=1;exitX=0.2;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q" target="rRoot"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===== col tree (2 levels) ===== -->
+        <mxCell id="cLab" value="&lt;font style=&quot;font-size:11px&quot; color=&quot;#9aa0a6&quot;&gt;열 트리&lt;/font&gt;" style="text;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="400" y="96" width="80" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="cAm" value="&lt;b&gt;Americas&lt;/b&gt;" style="rounded=1;html=1;fontSize=12;fillColor=#dbe8fb;strokeColor=#1f6fd6;strokeWidth=2;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="400" y="118" width="90" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cEu" value="Europe" style="rounded=1;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#9aa0a6;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="540" y="118" width="90" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c19a" value="&lt;b&gt;2019&lt;/b&gt;" style="rounded=1;html=1;fontSize=12;fillColor=#dbe8fb;strokeColor=#1f6fd6;strokeWidth=2;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="410" y="170" width="70" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c19b" value="2019" style="rounded=1;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#9aa0a6;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="550" y="170" width="70" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="eCa" style="html=1;endArrow=none;strokeColor=#1f6fd6;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cAm" target="c19a"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eCe" style="html=1;endArrow=none;strokeColor=#9aa0a6;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cEu" target="c19b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eqC" style="html=1;endArrow=classic;strokeColor=#9aa0a6;dashed=1;exitX=0.8;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q" target="cAm"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===== grid: crosshair to one cell ===== -->
+        <!-- row 0 -->
+        <mxCell id="g00" value="" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#9aa0a6;" vertex="1" parent="1"><mxGeometry x="250" y="320" width="66" height="36" as="geometry" /></mxCell>
+        <mxCell id="g01" value="" style="rounded=0;html=1;fillColor=#dbe8fb;strokeColor=#1f6fd6;" vertex="1" parent="1"><mxGeometry x="316" y="320" width="66" height="36" as="geometry" /></mxCell>
+        <mxCell id="g02" value="" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#9aa0a6;" vertex="1" parent="1"><mxGeometry x="382" y="320" width="66" height="36" as="geometry" /></mxCell>
+        <!-- row 1 (located row) -->
+        <mxCell id="g10" value="" style="rounded=0;html=1;fillColor=#dbe8fb;strokeColor=#1f6fd6;" vertex="1" parent="1"><mxGeometry x="250" y="356" width="66" height="36" as="geometry" /></mxCell>
+        <mxCell id="g11" value="&lt;b&gt;1,320&lt;/b&gt;" style="rounded=0;html=1;fontSize=13;fontColor=#ffffff;fillColor=#1f6fd6;strokeColor=#1f6fd6;strokeWidth=3;" vertex="1" parent="1"><mxGeometry x="316" y="356" width="66" height="36" as="geometry" /></mxCell>
+        <mxCell id="g12" value="" style="rounded=0;html=1;fillColor=#dbe8fb;strokeColor=#1f6fd6;" vertex="1" parent="1"><mxGeometry x="382" y="356" width="66" height="36" as="geometry" /></mxCell>
+        <!-- row 2 -->
+        <mxCell id="g20" value="" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#9aa0a6;" vertex="1" parent="1"><mxGeometry x="250" y="392" width="66" height="36" as="geometry" /></mxCell>
+        <mxCell id="g21" value="" style="rounded=0;html=1;fillColor=#dbe8fb;strokeColor=#1f6fd6;" vertex="1" parent="1"><mxGeometry x="316" y="392" width="66" height="36" as="geometry" /></mxCell>
+        <mxCell id="g22" value="" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#9aa0a6;" vertex="1" parent="1"><mxGeometry x="382" y="392" width="66" height="36" as="geometry" /></mxCell>
+
+        <!-- tree -> grid band arrows -->
+        <mxCell id="aRow" style="html=1;endArrow=classic;strokeColor=#1f6fd6;strokeWidth=2;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="rLeaf" target="g10"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="117" y="374" /></Array></mxGeometry></mxCell>
+        <mxCell id="aCol" style="html=1;endArrow=classic;strokeColor=#1f6fd6;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c19a" target="g01"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="349" y="250" /></Array></mxGeometry></mxCell>
+
+        <!-- caption -->
+        <mxCell id="cap" value="&lt;font style=&quot;font-size:14px&quot; color=&quot;#333333&quot;&gt;&lt;b&gt;행 경로 × 열 경로 = 셀 1개&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="220" y="452" width="260" height="24" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
