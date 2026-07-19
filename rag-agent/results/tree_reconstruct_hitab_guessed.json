@@ -2,14 +2,31 @@
   "population": {
     "name": "hitab_synthetic_flatten",
     "split": "dev",
-    "n_tables": 300
+    "n_tables": 540
   },
   "boundary_mode": "guessed",
-  "col_path_exact_match": 0.964,
-  "row_path_exact_match": 0.8723,
-  "col_paths_scored": 2279,
-  "row_paths_scored": 5285,
-  "boundary_guess_accuracy": 0.9967,
+  "col_path_exact_match": 0.9991,
+  "row_path_exact_match": 0.9996,
+  "col_paths_scored": 4413,
+  "row_paths_scored": 8944,
+  "boundary_guess_accuracy": 1.0,
+  "by_size_bucket": {
+    "10-20": {
+      "n_tables": 246,
+      "col_path_exact_match": 1.0,
+      "row_path_exact_match": 0.9997
+    },
+    ">20": {
+      "n_tables": 160,
+      "col_path_exact_match": 0.9969,
+      "row_path_exact_match": 0.9994
+    },
+    "<=10x10": {
+      "n_tables": 134,
+      "col_path_exact_match": 1.0,
+      "row_path_exact_match": 1.0
+    }
+  },
   "examples": [
     {
       "table_id": "0_1_nsf21326-tab001",

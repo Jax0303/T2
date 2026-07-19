@@ -15,7 +15,7 @@ Schema:
       "expression": "x1 - x2"
     }
 
-The agent uses the OriginalStore's header-path resolver to map each cell to
+The agent uses the parsed table's header-path resolver to map each cell to
 a numeric value, then evaluates ``expression`` in a sandboxed AST evaluator.
 """
 from __future__ import annotations

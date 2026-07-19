@@ -14,7 +14,6 @@ from .query_classifier import QueryIntent, QueryType
 
 class Stage(str, Enum):
     RETRIEVE = "retrieve"          # vector search
-    VERIFY = "verify"              # cross-check candidates vs OriginalStore
     SYMBOLIC = "symbolic"          # cell extract + pandas eval
     LLM_ANSWER = "llm_answer"      # fall back / general reader
 
@@ -28,15 +27,15 @@ class Plan:
 def plan_stages(intent: QueryIntent) -> Plan:
     if intent.qtype == QueryType.REASONING_ONLY:
         # No table needed — short-circuit straight to LLM.
-        return Plan([Stage.LLM_ANSWER], "reasoning-only: skip retrieve+verify+symbolic")
+        return Plan([Stage.LLM_ANSWER], "reasoning-only: skip retrieve+symbolic")
 
-    base = [Stage.RETRIEVE, Stage.VERIFY]
+    base = [Stage.RETRIEVE]
 
     if intent.needs_symbolic:
         # symbolic compute is primary; LLM still runs as fallback if extraction fails.
         return Plan(base + [Stage.SYMBOLIC, Stage.LLM_ANSWER],
                     f"{intent.qtype.value}: symbolic compute primary, LLM fallback")
 
-    # lookup / single_arg / comparison: LLM reads the verified table directly.
+    # lookup / single_arg / comparison: LLM reads the retrieved table directly.
     return Plan(base + [Stage.LLM_ANSWER],
-                f"{intent.qtype.value}: retrieve+verify+LLM (no symbolic)")
+                f"{intent.qtype.value}: retrieve+LLM (no symbolic)")

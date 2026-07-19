@@ -5,7 +5,6 @@ Covers four edits added on top of v3.1:
   Phase 0 - loader handles both `tables/{hmt,raw}/` and `tables/tables/{hmt,raw}/`
   Plan B - OriginalTable.resolve() fuzzy fallback (token/sequence-similarity)
   Plan C - symbolic_eval._safe_eval allows max/min/abs/int/round/sum only
-  Plan D - RAGAgent.run() lowers w_verify for MULTI_OP_FORMULA / ARITHMETIC_AGG
 
 These tests are intentionally offline: no model loads, no Chroma reads.
 The `chromadb` import in `rag_agent.stores.vector_store` is satisfied by a
@@ -169,86 +168,6 @@ class TestSafeEvalFunctions(unittest.TestCase):
     def test_attribute_access_blocked(self):
         with self.assertRaises(ValueError):
             self._eval("x1.__class__", {"x1": 1.0})
-
-
-class _StubLLM:
-    name = "stub"
-    def complete(self, system, user, max_tokens=256):
-        return '{"cells": [], "expression": ""}'
-
-
-class _StubVectorStore:
-    """Returns a single fake hit, so RAGAgent.run() reaches the rerank call."""
-    def search(self, query, top_k_vectors, top_k_tables):
-        from rag_agent.stores.vector_store import VectorHit
-        return [VectorHit(table_id="T_only", score=0.5, vector_id="v1",
-                          chunk_text="", meta={})]
-
-
-class TestVerifierWeightsByClass(unittest.TestCase):
-    """Plan D: w_verify is lowered for multi-cell arithmetic queries.
-
-    We monkeypatch `rerank` inside the agent module to capture the
-    (w_vector, w_verify) it was called with, then invoke the agent with
-    queries that classify to MULTI_OP_FORMULA, ARITHMETIC_AGG, and a
-    non-arithmetic lookup respectively.
-    """
-
-    def _run_with_query(self, query: str):
-        from rag_agent import agent as agent_mod
-        from rag_agent.stores.original_store import OriginalStore, OriginalTable
-        from rag_agent.agent import RAGAgent
-
-        # Minimal OriginalStore with one table so rerank actually has something.
-        store = OriginalStore()
-        t = OriginalTable(
-            table_id="T_only", title="x",
-            data=[[1.0]], top_paths=[["c"]], left_paths=[["r"]],
-        )
-        t.top_paths_by_col = {0: ["c"]}
-        t.left_paths_by_row = {0: ["r"]}
-        store._tables["T_only"] = t
-
-        captured = {}
-        original_rerank = agent_mod.rerank
-
-        def spy(query, hits, original, w_vector=0.7, w_verify=0.3):
-            captured["w_vector"] = w_vector
-            captured["w_verify"] = w_verify
-            return original_rerank(query, hits, original,
-                                   w_vector=w_vector, w_verify=w_verify)
-
-        agent_mod.rerank = spy
-        try:
-            ag = RAGAgent(store, _StubVectorStore(), llm=_StubLLM())
-            ag.run(query)
-        finally:
-            agent_mod.rerank = original_rerank
-        return captured
-
-    def test_multi_op_formula_lowers_w_verify(self):
-        # Two math symbols → MULTI_OP_FORMULA (strongest classifier signal).
-        from rag_agent.router.query_classifier import classify_query, QueryType
-        q = "what is (x1 + x2) / x3 in 2015?"
-        self.assertEqual(classify_query(q).qtype, QueryType.MULTI_OP_FORMULA)
-        captured = self._run_with_query(q)
-        self.assertAlmostEqual(captured["w_vector"], 0.9)
-        self.assertAlmostEqual(captured["w_verify"], 0.1)
-
-    def test_arithmetic_agg_lowers_w_verify(self):
-        # "ratio of X to Y" → ARITHMETIC_AGG.
-        from rag_agent.router.query_classifier import classify_query, QueryType
-        q = "what is the ratio of X to Y in 2015?"
-        self.assertEqual(classify_query(q).qtype, QueryType.ARITHMETIC_AGG)
-        captured = self._run_with_query(q)
-        self.assertAlmostEqual(captured["w_vector"], 0.9)
-        self.assertAlmostEqual(captured["w_verify"], 0.1)
-
-    def test_default_lookup_keeps_w_verify(self):
-        # Plain lookup question; should use default 0.7/0.3.
-        captured = self._run_with_query("what was the value of X in 2015?")
-        self.assertAlmostEqual(captured["w_vector"], 0.7)
-        self.assertAlmostEqual(captured["w_verify"], 0.3)
 
 
 if __name__ == "__main__":

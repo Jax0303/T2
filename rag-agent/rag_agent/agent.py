@@ -5,9 +5,12 @@ Stage flow (skipped stages are recorded in the trace, not silently dropped):
   1. classify_query(q)   → QueryIntent
   2. plan_stages(intent) → ordered list of Stage to run
   3. if RETRIEVE       : vector search top-K candidates
-  4. if VERIFY         : cross-check vs OriginalStore, rerank
-  5. if SYMBOLIC       : cell extract via LLM → safe pandas-style eval
-  6. if LLM_ANSWER     : LLM reads verified top-1 (fallback / non-arithmetic)
+  4. if SYMBOLIC       : cell extract via LLM → safe pandas-style eval
+  5. if LLM_ANSWER     : LLM reads retrieved top-1 (fallback / non-arithmetic)
+
+Retrieval is plain single-index vector RAG: the vector store is the only
+retrieval source. There is deliberately no second store of original tables to
+cross-check hits against — ranking is the vector score alone.
 
 Returns a single AgentResult; trace is exhaustive enough that downstream
 eval can re-derive per-stage metrics offline.
@@ -23,10 +26,9 @@ from .extract.cell_extractor import extract_plan
 from .extract.decomposition_extractor import extract_plan_decomposed
 from .extract.symbolic_eval import evaluate_plan
 from .llm.base import BaseLLM
-from .retrieve.verifier import rerank, verify_against_original
 from .router.policy import Plan, Stage, plan_stages
 from .router.query_classifier import QueryIntent, QueryType, classify_query
-from .stores.original_store import OriginalStore, OriginalTable
+from .stores.original_store import OriginalTable, TableIndex
 from .stores.vector_store import VectorStore
 
 
@@ -109,29 +111,23 @@ class AgentResult:
 class RAGAgent:
     def __init__(
         self,
-        original_store: OriginalStore,
+        table_index: TableIndex,
         vector_store: VectorStore,
         llm: BaseLLM,
         symbolic_llm: Optional[BaseLLM] = None,
         top_k_vectors: int = 20,
         top_k_tables: int = 5,
-        w_vector: float = 0.7,
-        w_verify: float = 0.3,
         extractor: str = "original",
-        use_verify: bool = True,
         use_symbolic: bool = True,
         oracle_retrieval: bool = False,
     ) -> None:
-        self.original = original_store
+        self.tables = table_index
         self.vector = vector_store
         self.llm = llm
         self.symbolic_llm = symbolic_llm or llm
         self.top_k_vectors = top_k_vectors
         self.top_k_tables = top_k_tables
-        self.w_vector = w_vector
-        self.w_verify = w_verify
         self.extractor = extractor
-        self.use_verify = use_verify
         self.use_symbolic = use_symbolic
         self.oracle_retrieval = oracle_retrieval
 
@@ -141,9 +137,6 @@ class RAGAgent:
         plan = plan_stages(intent)
 
         # Override plan stages based on agent-level ablation flags
-        if not self.use_verify:
-            plan.stages = [s for s in plan.stages if s != Stage.VERIFY]
-            plan.reason += " [verify OFF]"
         if not self.use_symbolic:
             plan.stages = [s for s in plan.stages if s != Stage.SYMBOLIC]
             plan.reason += " [symbolic OFF]"
@@ -159,7 +152,7 @@ class RAGAgent:
         if self.oracle_retrieval and gold_table_id:
             out.top_table_id = gold_table_id
             out.final_ranked = [{"table_id": gold_table_id, "vector_score": 1.0,
-                                 "verify_confidence": 1.0, "final_score": 1.0}]
+                                 "final_score": 1.0}]
             hits = []
         elif Stage.RETRIEVE in plan.stages:
             hits = self.vector.search(query, self.top_k_vectors, self.top_k_tables)
@@ -167,27 +160,12 @@ class RAGAgent:
         else:
             hits = []
 
-        if not self.oracle_retrieval:
-            if Stage.VERIFY in plan.stages and hits:
-                # For multi-cell arithmetic queries, generic header keywords like
-                # "total" / "percentage" match too many tables, so the verifier
-                # hurts more than it helps. Down-weight verify confidence and
-                # lean on the vector score in those cases.
-                if intent.qtype in (QueryType.MULTI_OP_FORMULA, QueryType.ARITHMETIC_AGG):
-                    w_vec, w_ver = 0.9, 0.1
-                else:
-                    w_vec, w_ver = self.w_vector, self.w_verify
-                ranked = rerank(query, hits, self.original,
-                                w_vector=w_vec, w_verify=w_ver)
-                out.final_ranked = ranked
-                out.top_table_id = ranked[0]["table_id"] if ranked else None
-            elif hits:
-                out.final_ranked = [{"table_id": h.table_id, "vector_score": h.score,
-                                     "verify_confidence": None,
-                                     "final_score": h.score} for h in hits]
-                out.top_table_id = hits[0].table_id
+        if not self.oracle_retrieval and hits:
+            out.final_ranked = [{"table_id": h.table_id, "vector_score": h.score,
+                                 "final_score": h.score} for h in hits]
+            out.top_table_id = hits[0].table_id
 
-        top_table = self.original.get(out.top_table_id) if out.top_table_id else None
+        top_table = self.tables.get(out.top_table_id) if out.top_table_id else None
 
         # --- symbolic path ---
         if Stage.SYMBOLIC in plan.stages and top_table is not None:

@@ -1,4 +1,3 @@
-from .verifier import verify_against_original, VerifyResult
 from .encoders import Encoder, HashingEncoder, default_encoder
 from .hybrid_index import HybridIndex, RetrievedChunk
 from .operand_retrieval import (
@@ -12,8 +11,6 @@ from .operand_retrieval import (
 )
 
 __all__ = [
-    "verify_against_original",
-    "VerifyResult",
     "Encoder",
     "HashingEncoder",
     "default_encoder",

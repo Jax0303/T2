@@ -128,57 +128,52 @@ def parse_html_table(html: str) -> Grid:
 # blank-after-first grid -> header paths (the actual reconstruction)
 # ---------------------------------------------------------------------------
 
-def _forward_fill(values: List[str]) -> List[str]:
-    out, last = [], ""
-    for v in values:
-        v = v.strip()
-        if v:
-            last = v
-        out.append(last)
+def _hierarchical_carry(levels: List[List[str]]) -> List[List[str]]:
+    """Shared span-tracking fill for both axes.
+
+    ``levels[d][i]`` is the header cell at depth ``d`` for data line ``i``
+    (columns for the top axis, rows for the left axis). A blank cell means
+    "the merged span begun at the last non-blank cell at this depth is still
+    covering me" — but a span belongs to ONE tree node, so it can never
+    outlive its parent: whenever a shallower depth starts a new label, every
+    deeper carry is cut off instead of bleeding into the new parent's region
+    (the dominant error mode of naive per-depth forward fill).
+    """
+    n_depths = len(levels)
+    n_lines = len(levels[0]) if levels else 0
+    carry = [""] * n_depths
+    out: List[List[str]] = []
+    for i in range(n_lines):
+        for d in range(n_depths):
+            cell = levels[d][i].strip() if i < len(levels[d]) else ""
+            if cell:
+                carry[d] = cell
+                for e in range(d + 1, n_depths):
+                    carry[e] = ""
+        out.append([seg for seg in carry if seg])
     return out
 
 
 def reconstruct_col_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1) -> List[List[str]]:
-    """One header path per DATA column (columns >= ``n_header_cols``).
-
-    Forward-fills each header row rightward, independently per row and
-    restricted to the data-column region, so a row-header label sitting in
-    column 0 never bleeds into the column paths.
-    """
+    """One header path per DATA column (columns >= ``n_header_cols``),
+    restricted to the data-column region so a row-header label sitting in
+    column 0 never bleeds into the column paths."""
     n_cols = len(grid[0]) if grid else 0
     if n_header_rows <= 0:
         return [[] for _ in range(max(n_cols - n_header_cols, 0))]
-    filled_rows = [_forward_fill(grid[r][n_header_cols:]) for r in range(n_header_rows)]
-    paths = []
-    for c in range(n_cols - n_header_cols):
-        path, prev = [], None
-        for r in range(n_header_rows):
-            seg = filled_rows[r][c] if c < len(filled_rows[r]) else ""
-            if seg and seg != prev:
-                path.append(seg)
-                prev = seg
-        paths.append(path)
-    return paths
+    levels = [grid[r][n_header_cols:] for r in range(n_header_rows)]
+    return _hierarchical_carry(levels)
 
 
 def reconstruct_row_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1) -> List[List[str]]:
-    """One header path per DATA row (rows >= ``n_header_rows``), forward-filled
-    downward per header column, mirroring :func:`reconstruct_col_paths`."""
+    """One header path per DATA row (rows >= ``n_header_rows``), mirroring
+    :func:`reconstruct_col_paths`."""
     n_rows = len(grid)
     if n_header_cols <= 0:
         return [[] for _ in range(max(n_rows - n_header_rows, 0))]
-    filled_cols = [_forward_fill([grid[r][c] for r in range(n_header_rows, n_rows)])
-                   for c in range(n_header_cols)]
-    paths = []
-    for r in range(n_rows - n_header_rows):
-        path, prev = [], None
-        for c in range(n_header_cols):
-            seg = filled_cols[c][r]
-            if seg and seg != prev:
-                path.append(seg)
-                prev = seg
-        paths.append(path)
-    return paths
+    levels = [[grid[r][c] for r in range(n_header_rows, n_rows)]
+              for c in range(n_header_cols)]
+    return _hierarchical_carry(levels)
 
 
 # ---------------------------------------------------------------------------
@@ -200,17 +195,48 @@ def looks_numeric(s: str) -> bool:
     return bool(_NUM_RE.match(s))
 
 
+def _left_region_blank(grid: Grid, r: int, n_header_cols: int) -> bool:
+    return not any(c.strip() for c in grid[r][:n_header_cols])
+
+
+def _numeric_data_row(grid: Grid, r: int, n_header_cols: int) -> bool:
+    cells = grid[r][n_header_cols:]
+    n_nonblank = sum(1 for c in cells if c.strip())
+    n_num = sum(1 for c in cells if looks_numeric(c))
+    return bool(n_nonblank) and n_num / n_nonblank >= 0.5
+
+
 def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int = 8) -> int:
-    """First row where >=50% of the non-row-header cells look numeric is
-    treated as the first DATA row; everything above it is header."""
-    for r, row in enumerate(grid):
-        if r >= max_header_rows:
+    """Guess how many top rows are column headers, two signals in priority order.
+
+    **Blank-corner signal (primary, when applicable).** In a table with row
+    labels, column-header rows leave the row-label region blank (the top-left
+    corner block), and the first data row is the first row that puts text
+    there. When the corner IS blank at row 0 we trust this transition
+    outright: it also covers the rows the numeric signal is blind to —
+    section-header rows (label on the left, all data cells blank), string-only
+    data rows, and numeric-looking sub-header rows ("1", "2") that would
+    otherwise end the header block early. Guarded by the row-0 check because
+    a corner that *carries text* ("Item", ...) says nothing about where the
+    header ends, so we fall through.
+
+    **Numeric-ratio signal (fallback).** First row where >=50% of the
+    non-row-label cells look numeric is the first data row.
+    """
+    if not grid:
+        return 0
+    limit = min(len(grid), max_header_rows)
+
+    if n_header_cols > 0 and grid[0][:n_header_cols] and _left_region_blank(grid, 0, n_header_cols):
+        for r in range(1, limit + 1):
+            if r >= len(grid):
+                break
+            if not _left_region_blank(grid, r, n_header_cols):
+                return r
+        # No row label ever appears (e.g. the table has no real row headers):
+        # the corner signal is void — fall through to the numeric scan.
+
+    for r in range(limit):
+        if _numeric_data_row(grid, r, n_header_cols):
             return r
-        cells = row[n_header_cols:]
-        if not cells:
-            continue
-        n_nonblank = sum(1 for c in cells if c.strip())
-        n_num = sum(1 for c in cells if looks_numeric(c))
-        if n_nonblank and n_num / n_nonblank >= 0.5:
-            return r
-    return min(len(grid), max_header_rows)
+    return limit

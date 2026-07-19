@@ -41,18 +41,19 @@ def flatten_to_grid(top_paths, left_paths):
     height = n_header_rows + n_rows
     grid = [["" for _ in range(width)] for _ in range(height)]
 
+    # A merged span belongs to one tree node, so a label is suppressed (blank)
+    # only while the FULL prefix (parent path included) repeats — two same-named
+    # siblings under different parents are distinct cells in a real dump.
     for c, path in enumerate(top_paths):
         for d in range(n_header_rows):
             label = path[d] if d < len(path) else ""
-            prev = top_paths[c - 1][d] if c > 0 and d < len(top_paths[c - 1]) else None
-            if label and label != prev:
+            if label and (c == 0 or top_paths[c - 1][:d + 1] != path[:d + 1]):
                 grid[d][n_header_cols + c] = label
 
     for r, path in enumerate(left_paths):
         for d in range(n_header_cols):
             label = path[d] if d < len(path) else ""
-            prev = left_paths[r - 1][d] if r > 0 and d < len(left_paths[r - 1]) else None
-            if label and label != prev:
+            if label and (r == 0 or left_paths[r - 1][:d + 1] != path[:d + 1]):
                 grid[n_header_rows + r][d] = label
 
     # Placeholder numeric data cells so guess_n_header_rows has something to

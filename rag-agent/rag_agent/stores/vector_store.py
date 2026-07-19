@@ -2,7 +2,7 @@
 
 Reuses the existing prebuilt chroma index if present so we don't re-embed.
 The serializer the chroma collection was built with is inferred from
-``collection_name`` and is independent of the OriginalStore.
+``collection_name``. This index is the agent's only retrieval source.
 """
 from __future__ import annotations
 

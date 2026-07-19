@@ -1,6 +1,12 @@
-"""Original-data store.
+"""Ingest-time table parser.
 
-Keeps HiTab tables in their parsed 2D form (data matrix + header trees).
+Turns raw HiTab JSON into a 2D form (data matrix + header trees) so the
+serializers can build chunks from it and the symbolic-compute path can address
+cells. This is a *parser*, not a retrieval store: nothing here is consulted to
+rank or verify a retrieval hit — the vector index is the only retrieval source
+(see :class:`~rag_agent.agent.RAGAgent`). ``TableIndex`` is just the in-memory
+map of what has been parsed.
+
 Exposes the lookups the symbolic-compute path needs:
 
   - get(table_id) -> OriginalTable
@@ -8,9 +14,6 @@ Exposes the lookups the symbolic-compute path needs:
   - OriginalTable.find_rows_by_header(token) / find_cols_by_header(token)
   - OriginalTable.excel_ref_to_rc("B21") -> (row_idx, col_idx) | None
 
-This store is intentionally NOT shared with the vector index; the agent
-verifies vector hits against this store rather than reading the serialized
-text it already saw during retrieval.
 """
 from __future__ import annotations
 
@@ -309,8 +312,8 @@ def build_original_table(raw: dict) -> OriginalTable:
     )
 
 
-class OriginalStore:
-    """In-memory store of OriginalTable keyed by table_id."""
+class TableIndex:
+    """In-memory map of parsed OriginalTable keyed by table_id (ingest side)."""
 
     def __init__(self) -> None:
         self._tables: Dict[str, OriginalTable] = {}
@@ -328,3 +331,8 @@ class OriginalStore:
 
     def ids(self) -> List[str]:
         return list(self._tables.keys())
+
+
+# Back-compat alias: the old name implied a second retrieval store, which the
+# architecture no longer has.
+OriginalStore = TableIndex
