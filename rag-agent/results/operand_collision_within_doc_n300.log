@@ -1,25 +1,27 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] arith_multi queries: 299 | corpus: 1203 tables, 43848 cells
+[pool] within-doc cells/query: median 136, min 42, max 445
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[pop] arith_multi queries: 297 | corpus: 1203 tables, 42715 cells
-[pool] within-doc cells/query: median 133, min 42, max 445
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2661.13it/s]
-Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:   9%|▊         | 34/393 [00:00<00:01, 335.53it/s]Loading weights:  18%|█▊        | 70/393 [00:00<00:00, 334.72it/s]Loading weights:  26%|██▋       | 104/393 [00:00<00:01, 280.94it/s]Loading weights:  34%|███▍      | 133/393 [00:00<00:00, 271.32it/s]Loading weights:  41%|████      | 161/393 [00:00<00:00, 271.81it/s]Loading weights:  48%|████▊     | 189/393 [00:00<00:00, 267.09it/s]Loading weights:  56%|█████▋    | 222/393 [00:00<00:00, 284.78it/s]Loading weights:  65%|██████▍   | 254/393 [00:00<00:00, 284.61it/s]Loading weights:  72%|███████▏  | 283/393 [00:01<00:00, 250.90it/s]Loading weights:  79%|███████▊  | 309/393 [00:01<00:00, 209.34it/s]Loading weights:  84%|████████▍ | 332/393 [00:01<00:00, 196.65it/s]Loading weights: 100%|██████████| 393/393 [00:01<00:00, 289.04it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2711.32it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:  57%|█████▋    | 224/393 [00:00<00:00, 2230.92it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 2532.91it/s]
 
-=== scheme=flat (174s) ===
-  bm25    hit@10=0.798 recall@10=0.692 mrr=0.510 ndcg@10=0.532 set_em@10=0.589 set_em@50=0.855
-  dense   hit@10=0.865 recall@10=0.721 mrr=0.591 ndcg@10=0.578 set_em@10=0.596 set_em@50=0.862
-  hybrid  hit@10=0.838 recall@10=0.721 mrr=0.575 ndcg@10=0.574 set_em@10=0.609 set_em@50=0.889
-  cross   hit@10=0.849 recall@10=0.712 mrr=0.582 ndcg@10=0.571 set_em@10=0.566 set_em@50=0.889
+=== scheme=flat (173s) ===
+  bm25    hit@10=0.796 recall@10=0.672 mrr=0.532 ndcg@10=0.533 set_em@10=0.562 set_em@50=0.866
+  dense   hit@10=0.873 recall@10=0.714 mrr=0.599 ndcg@10=0.579 set_em@10=0.579 set_em@50=0.866
+  hybrid  hit@10=0.856 recall@10=0.727 mrr=0.596 ndcg@10=0.588 set_em@10=0.609 set_em@50=0.880
+  cross   hit@10=0.873 recall@10=0.737 mrr=0.600 ndcg@10=0.588 set_em@10=0.582 set_em@50=0.900
 
-=== scheme=S2 (204s) ===
-  bm25    hit@10=0.825 recall@10=0.721 mrr=0.590 ndcg@10=0.586 set_em@10=0.603 set_em@50=0.906
-  dense   hit@10=0.879 recall@10=0.757 mrr=0.659 ndcg@10=0.631 set_em@10=0.620 set_em@50=0.906
-  hybrid  hit@10=0.896 recall@10=0.772 mrr=0.647 ndcg@10=0.638 set_em@10=0.640 set_em@50=0.929
-  cross   hit@10=0.909 recall@10=0.791 mrr=0.650 ndcg@10=0.650 set_em@10=0.663 set_em@50=0.929
+=== scheme=S2 (196s) ===
+  bm25    hit@10=0.816 recall@10=0.694 mrr=0.575 ndcg@10=0.565 set_em@10=0.575 set_em@50=0.890
+  dense   hit@10=0.873 recall@10=0.739 mrr=0.634 ndcg@10=0.607 set_em@10=0.602 set_em@50=0.886
+  hybrid  hit@10=0.886 recall@10=0.762 mrr=0.619 ndcg@10=0.616 set_em@10=0.635 set_em@50=0.923
+  cross   hit@10=0.910 recall@10=0.784 mrr=0.629 ndcg@10=0.631 set_em@10=0.649 set_em@50=0.913
 
-=== scheme=S3 (208s) ===
-  bm25    hit@10=0.822 recall@10=0.715 mrr=0.592 ndcg@10=0.586 set_em@10=0.596 set_em@50=0.906
-  dense   hit@10=0.885 recall@10=0.759 mrr=0.679 ndcg@10=0.641 set_em@10=0.620 set_em@50=0.902
-  hybrid  hit@10=0.902 recall@10=0.784 mrr=0.665 ndcg@10=0.650 set_em@10=0.653 set_em@50=0.933
-  cross   hit@10=0.909 recall@10=0.775 mrr=0.651 ndcg@10=0.640 set_em@10=0.623 set_em@50=0.939
+=== scheme=S3 (201s) ===
+  bm25    hit@10=0.809 recall@10=0.690 mrr=0.572 ndcg@10=0.562 set_em@10=0.575 set_em@50=0.893
+  dense   hit@10=0.873 recall@10=0.734 mrr=0.655 ndcg@10=0.613 set_em@10=0.582 set_em@50=0.890
+  hybrid  hit@10=0.896 recall@10=0.770 mrr=0.638 ndcg@10=0.626 set_em@10=0.639 set_em@50=0.930
+  cross   hit@10=0.903 recall@10=0.757 mrr=0.626 ndcg@10=0.614 set_em@10=0.595 set_em@50=0.916
 
 wrote -> results/operand_collision_within_doc_n300.json  (+ records -> results/operand_collision_within_doc_n300_records.jsonl)

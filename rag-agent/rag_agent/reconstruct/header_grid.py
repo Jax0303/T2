@@ -199,6 +199,19 @@ def _left_region_blank(grid: Grid, r: int, n_header_cols: int) -> bool:
     return not any(c.strip() for c in grid[r][:n_header_cols])
 
 
+# A stub-column entry that is FULLY parenthesized is a units annotation
+# ("(in millions)", "(Dollars in thousands)"), not a row label: financial
+# tables put these inside the header block, so the corner scan must not read
+# them as the first data row. Genuine labels that merely start with a paren
+# ("(Loss) income ...") are not fully wrapped and stay untouched.
+_PAREN_NOTE_RE = re.compile(r"^\(.*\)$", re.DOTALL)
+
+
+def _left_region_units_note(grid: Grid, r: int, n_header_cols: int) -> bool:
+    text = " ".join(c.strip() for c in grid[r][:n_header_cols] if c.strip())
+    return bool(text) and bool(_PAREN_NOTE_RE.match(text))
+
+
 def _numeric_data_row(grid: Grid, r: int, n_header_cols: int) -> bool:
     cells = grid[r][n_header_cols:]
     n_nonblank = sum(1 for c in cells if c.strip())
@@ -231,7 +244,8 @@ def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int
         for r in range(1, limit + 1):
             if r >= len(grid):
                 break
-            if not _left_region_blank(grid, r, n_header_cols):
+            if not _left_region_blank(grid, r, n_header_cols) and \
+                    not _left_region_units_note(grid, r, n_header_cols):
                 return r
         # No row label ever appears (e.g. the table has no real row headers):
         # the corner signal is void — fall through to the numeric scan.
