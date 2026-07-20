@@ -1,0 +1,309 @@
+<title>문장 생성 정확도 — 측정 결과</title>
+<style>
+  :root{
+    --paper:#FBFBFC; --panel:#FFFFFF; --ink:#14181D; --ink-2:#3A424C;
+    --mute:#5A6472; --rule:#DDE1E6; --rule-2:#EDEFF2;
+    --indigo:#2F4B7C; --indigo-wash:#EDF1F8;
+    --good:#1F6F5C; --good-wash:#E8F2EF;
+    --bad:#A8432B; --bad-wash:#F8ECE8;
+    --band-0:#E4E9F2; --band-1:#EDF0F6; --band-2:#F4F6F9;
+    --serif:ui-serif,Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0E1116; --panel:#151A21; --ink:#E8EBEF; --ink-2:#C2C9D2;
+      --mute:#8A94A2; --rule:#2A313A; --rule-2:#1F252D;
+      --indigo:#8FAEDC; --indigo-wash:#1A2333;
+      --good:#5FBFA3; --good-wash:#122520;
+      --bad:#E0876B; --bad-wash:#2A1713;
+      --band-0:#232C39; --band-1:#1D242E; --band-2:#181E26;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1116; --panel:#151A21; --ink:#E8EBEF; --ink-2:#C2C9D2;
+    --mute:#8A94A2; --rule:#2A313A; --rule-2:#1F252D;
+    --indigo:#8FAEDC; --indigo-wash:#1A2333;
+    --good:#5FBFA3; --good-wash:#122520;
+    --bad:#E0876B; --bad-wash:#2A1713;
+    --band-0:#232C39; --band-1:#1D242E; --band-2:#181E26;
+  }
+  :root[data-theme="light"]{
+    --paper:#FBFBFC; --panel:#FFFFFF; --ink:#14181D; --ink-2:#3A424C;
+    --mute:#5A6472; --rule:#DDE1E6; --rule-2:#EDEFF2;
+    --indigo:#2F4B7C; --indigo-wash:#EDF1F8;
+    --good:#1F6F5C; --good-wash:#E8F2EF;
+    --bad:#A8432B; --bad-wash:#F8ECE8;
+    --band-0:#E4E9F2; --band-1:#EDF0F6; --band-2:#F4F6F9;
+  }
+
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+       line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:62rem;margin:0 auto;padding:3.5rem 1.5rem 5rem;
+        display:flex;flex-direction:column;gap:3rem;}
+
+  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--mute);}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.5vw,2.6rem);
+     line-height:1.15;text-wrap:balance;margin:.4rem 0 0;letter-spacing:-.01em;}
+  .lede{font-size:1.05rem;color:var(--ink-2);max-width:64ch;margin:.85rem 0 0;}
+  h2{font-family:var(--serif);font-weight:600;font-size:1.3rem;margin:0;
+     text-wrap:balance;letter-spacing:-.005em;}
+  .sub{color:var(--mute);font-size:.93rem;max-width:68ch;margin:.4rem 0 0;}
+  section{display:flex;flex-direction:column;gap:1rem;}
+  caption{caption-side:top;text-align:left;font-family:var(--mono);
+          font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+          color:var(--mute);padding:0 0 .55rem;}
+
+  .scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;
+          background:var(--panel);}
+  table{border-collapse:collapse;font-family:var(--mono);font-size:.81rem;
+        font-variant-numeric:tabular-nums;width:100%;}
+  th,td{border-bottom:1px solid var(--rule-2);padding:.55rem .75rem;
+        text-align:right;white-space:nowrap;}
+  thead th{background:var(--band-1);border-bottom:1px solid var(--rule);
+           font-weight:600;font-size:.72rem;letter-spacing:.06em;
+           text-transform:uppercase;color:var(--ink-2);}
+  tbody th{text-align:left;font-weight:600;background:var(--band-2);}
+  tbody tr:last-child td,tbody tr:last-child th{border-bottom:none;}
+  tr.total th,tr.total td{background:var(--band-1);font-weight:600;
+                          border-top:1px solid var(--rule);color:var(--ink);}
+  td.num{color:var(--ink-2);}
+  td.perfect{color:var(--good);font-weight:600;}
+  td.flaw{color:var(--bad);font-weight:600;background:var(--bad-wash);}
+  td.zero{color:var(--good);font-weight:600;}
+  .unit{color:var(--mute);font-weight:400;}
+
+  .grid2{display:grid;gap:1rem;grid-template-columns:1fr;}
+  @media(min-width:44rem){.grid2{grid-template-columns:1fr 1fr;}}
+  .card{border:1px solid var(--rule);border-radius:3px;background:var(--panel);
+        padding:1.05rem 1.15rem;display:flex;flex-direction:column;gap:.55rem;}
+  .card h3{margin:0;font-size:.73rem;font-family:var(--mono);letter-spacing:.1em;
+           text-transform:uppercase;font-weight:600;color:var(--indigo);}
+  .card p{margin:0;font-size:.88rem;color:var(--ink-2);}
+  .verdict{font-family:var(--mono);font-size:.78rem;font-weight:600;
+           display:inline-block;padding:.15rem .45rem;border-radius:2px;
+           background:var(--indigo-wash);color:var(--indigo);
+           box-shadow:inset 0 0 0 1px var(--rule);align-self:flex-start;}
+
+  .note{font-size:.86rem;color:var(--mute);}
+  code{font-family:var(--mono);font-size:.87em;background:var(--rule-2);
+       padding:.08rem .3rem;border-radius:2px;color:var(--ink-2);}
+
+  .ex{border:1px solid var(--rule);border-radius:3px;background:var(--panel);
+      padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.75rem;}
+  .ex .row{display:flex;flex-direction:column;gap:.15rem;}
+  .ex .lab{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;
+           text-transform:uppercase;}
+  .ex .lab.g{color:var(--bad);} .ex .lab.k{color:var(--good);}
+  .ex .txt{font-family:var(--mono);font-size:.83rem;color:var(--ink-2);
+           word-break:break-word;line-height:1.65;}
+  .ex .txt ins{background:var(--bad-wash);color:var(--bad);
+               text-decoration:none;font-weight:600;
+               box-shadow:inset 0 0 0 1px var(--bad);border-radius:2px;
+               padding:0 .12rem;}
+
+  footer{border-top:1px solid var(--rule);padding-top:1.1rem;font-size:.83rem;
+         color:var(--mute);}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">scripts/sentence_accuracy_hitab.py · HiTab dev</div>
+    <h1>문장 생성 정확도 측정 결과</h1>
+    <p class="lede">셀 하나를 &ldquo;캡션 + 열 경로 + 행 경로 + 값&rdquo; 문장으로 굽는 단계의
+    정확도. 채점은 생성 문장과 정답 문장의 <strong>exact match</strong>이며, 표 하나가
+    데이터 셀 수만큼 문장을 내므로 P와 R이 각각 없는 문장을 지어냈는지 / 있어야 할 문장을
+    빠뜨렸는지를 따로 잡는다.</p>
+  </header>
+
+  <section>
+    <h2>표 크기별 결과</h2>
+    <p class="sub">n = 540개 표, 67,315개 데이터 셀. 오류는 전량 가장 큰 버킷에 몰려 있고,
+    나머지 두 버킷은 완전무결하다.</p>
+    <div class="scroll">
+      <table>
+        <caption>Table 1 · 크기 버킷별 문장 exact match</caption>
+        <thead>
+          <tr>
+            <th scope="col" style="text-align:left">표 크기</th>
+            <th scope="col">표 수</th>
+            <th scope="col">문장 수</th>
+            <th scope="col">정확</th>
+            <th scope="col">P</th>
+            <th scope="col">R</th>
+            <th scope="col">F1</th>
+            <th scope="col">오류</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">&le; 10&times;10</th>
+            <td class="num">134</td><td class="num">4,550</td><td class="num">4,550</td>
+            <td class="perfect">1.000</td><td class="perfect">1.000</td><td class="perfect">1.000</td>
+            <td class="zero">0</td>
+          </tr>
+          <tr>
+            <th scope="row">10&ndash;20</th>
+            <td class="num">246</td><td class="num">27,702</td><td class="num">27,702</td>
+            <td class="perfect">1.000</td><td class="perfect">1.000</td><td class="perfect">1.000</td>
+            <td class="zero">0</td>
+          </tr>
+          <tr>
+            <th scope="row">&gt; 20</th>
+            <td class="num">160</td><td class="num">35,063</td><td class="num">34,935</td>
+            <td class="flaw">.9963</td><td class="flaw">.9963</td><td class="flaw">.9963</td>
+            <td class="flaw">128</td>
+          </tr>
+          <tr class="total">
+            <th scope="row">전체</th>
+            <td>540</td><td>67,315</td><td>67,187</td>
+            <td>.9981</td><td>.9981</td><td>.9981</td><td>128</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">P와 R이 모든 행에서 같다 &mdash; spurious 0건, dropped 0건이므로
+    생성 문장 수와 정답 셀 수가 정확히 일치한다. 즉 누락도 날조도 없고,
+    오직 <em>내용이 틀린</em> 문장만 존재한다.</p>
+  </section>
+
+  <section>
+    <h2>오류 원인 분해</h2>
+    <p class="sub">틀린 128건이 문장의 어느 구성요소에서 깨졌는지.</p>
+    <div class="scroll">
+      <table>
+        <caption>Table 2 · 오류 유형별 건수 (전체 67,315 문장 기준)</caption>
+        <thead>
+          <tr>
+            <th scope="col" style="text-align:left">오류 유형</th>
+            <th scope="col">건수</th>
+            <th scope="col">비율</th>
+            <th scope="col" style="text-align:left">해석</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">값 오류</th>
+            <td class="zero">0</td><td class="zero">.0000</td>
+            <td style="text-align:left" class="num">셀 값 자체는 한 건도 틀리지 않음</td>
+          </tr>
+          <tr>
+            <th scope="row">행 경로 오류</th>
+            <td class="zero">0</td><td class="zero">.0000</td>
+            <td style="text-align:left" class="num">행 축 재구성은 완전</td>
+          </tr>
+          <tr>
+            <th scope="row">열 경로 오류</th>
+            <td class="flaw">128</td><td class="flaw">.0019</td>
+            <td style="text-align:left" class="num">잔여 오류 전량 &mdash; 병합 부모 아래 빈칸의 모호성</td>
+          </tr>
+          <tr>
+            <th scope="row">없는 문장 생성</th>
+            <td class="zero">0</td><td class="zero">.0000</td>
+            <td style="text-align:left" class="num">precision 손실 없음</td>
+          </tr>
+          <tr>
+            <th scope="row">문장 누락</th>
+            <td class="zero">0</td><td class="zero">.0000</td>
+            <td style="text-align:left" class="num">recall 손실 없음</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>변별력이 없었던 두 축</h2>
+    <p class="sub">실험은 세 축으로 측정했지만, 그중 둘은 결과가 완전히 동일했다.
+    보고할 때 축으로 내세우면 오히려 오해를 부른다.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>문장 스타일</h3>
+        <span class="verdict">short = medium = long</span>
+        <p>세 스타일 모두 .9981 / 오류 128건으로 <strong>완전 동일</strong>.
+        채점이 (행 경로, 열 경로, 값) 삼중항 기준이라 표층 문구 길이는 exact match에
+        영향을 주지 않는다. 스타일은 정확도가 아니라 검색 성능에서 갈릴 변수다.</p>
+      </div>
+      <div class="card">
+        <h3>헤더 경계 입력</h3>
+        <span class="verdict">추정 = 정답 경계</span>
+        <p>경계를 <code>guess_n_header_rows</code>로 추정한 파이프라인과 정답 경계를
+        넣은 대조군이 <strong>수치까지 동일</strong>. 경계 추정 정확도가 1.000이라
+        오차를 하나도 더하지 않는다 &mdash; 추정 파이프라인이 이미 천장에 붙어 있다.</p>
+      </div>
+    </div>
+    <p class="note">후자가 실험의 핵심 결과다. 보통은 &ldquo;정답 경계를 주면 더 잘 나온다&rdquo;는
+    격차가 남는데, 여기서는 그 격차가 0이므로 <strong>남은 오류를 경계 추정 탓으로 돌릴 수 없다</strong>.</p>
+  </section>
+
+  <section>
+    <h2>잔여 오류의 정체</h2>
+    <p class="sub">128건은 모두 같은 실패 유형이다. 실제 출력 예시:</p>
+    <div class="ex">
+      <div class="row">
+        <span class="lab g">생성</span>
+        <span class="txt">In results by county, lyndon baines johnson democratic<ins>, %</ins> for sandoval is 3332.</span>
+      </div>
+      <div class="row">
+        <span class="lab k">정답</span>
+        <span class="txt">In results by county, lyndon baines johnson democratic for sandoval is 3332.</span>
+      </div>
+    </div>
+    <p class="note">열 경로에 <code>%</code> 한 마디가 더 붙었다. 병합된 부모 밑의 빈칸이
+    &ldquo;자식이 계속된다&rdquo;인지 &ldquo;자식이 없다&rdquo;인지 평면 격자에는 정보가 없어서 생기는
+    <strong>정보이론적 한계</strong>이며, 휴리스틱으로 줄일 수는 있어도 원리적으로 0이 되지 않는다.
+    <code>colspan</code>/<code>rowspan</code> 마크업을 보존하는 입력에서만 제거 가능 &mdash;
+    7월 데드라인 기준 향후 과제로만 남긴다.</p>
+  </section>
+
+  <section>
+    <h2>부수 지표</h2>
+    <div class="scroll">
+      <table>
+        <caption>Table 3 · 파이프라인 건전성 지표</caption>
+        <thead>
+          <tr>
+            <th scope="col" style="text-align:left">지표</th>
+            <th scope="col">값</th>
+            <th scope="col" style="text-align:left">비고</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">경계 추정 정확도</th>
+            <td class="perfect">1.000</td>
+            <td style="text-align:left" class="num">540개 표 전부 헤더/데이터 경계 적중</td>
+          </tr>
+          <tr>
+            <th scope="row">주소 충돌 문장</th>
+            <td class="num">853</td>
+            <td style="text-align:left" class="num">동일 주소를 갖는 문장 &mdash; 수정 전 2,372에서 감소</td>
+          </tr>
+          <tr>
+            <th scope="row">열 경로 재구성 exact</th>
+            <td class="num">.9991</td>
+            <td style="text-align:left" class="num">경로 단위 (문장 단위와 별개 집계)</td>
+          </tr>
+          <tr>
+            <th scope="row">행 경로 재구성 exact</th>
+            <td class="num">.9996</td>
+            <td style="text-align:left" class="num">행 축이 오히려 더 정확</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">주소 충돌 853건은 오류가 아니다 &mdash; 서로 다른 셀이 같은 헤더 주소를
+    갖는 표가 실제로 존재한다는 뜻이며, 검색 단계에서 후보를 가를 수 없는 상한으로 작용한다.</p>
+  </section>
+
+  <footer>
+    출처: <code>results/sentence_accuracy_hitab.json</code> (추정 경계),
+    <code>results/sentence_accuracy_hitab_known_boundary.json</code> (정답 경계 대조군),
+    <code>results/tree_reconstruct_hitab.json</code> (경로 단위 재구성).
+    모집단 <code>hitab_synthetic_flatten_with_values</code>, HiTab dev, n=540.
+  </footer>
+
+</div>
