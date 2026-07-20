@@ -103,10 +103,18 @@ as few cells as possible. Contributions:
   (this step is a no-op there); against those gold trees (n=540) reconstruction is
   exact-match col 99.91% / row 99.96%, with boundary guessing at 1.000 — i.e. the
   guessed-boundary pipeline matches the known-boundary ceiling. End-to-end sentence
-  generation is exact-match P/R/F1 .9981 with zero value errors; the residual 0.19%
-  (128/67,315 cells) is entirely column-path error and is information-theoretically
-  unrecoverable from a flattened grid (a blank under a merged parent is ambiguous
-  between "continues" and "absent"), recoverable only from colspan/rowspan markup.
+  generation is exact-match P/R/F1 .9981 with zero value errors. The residual 0.19%
+  (128/67,315 cells) is information-theoretically unrecoverable from a flattened grid:
+  a blank under a merged parent is ambiguous between "continues" and "absent", and is
+  recoverable only from colspan/rowspan markup. Those 128 cells all carry a column-path
+  error, but this is **not** evidence of an axis-specific weakness — a single carry
+  routine serves both axes on transposed input, and at path level the two axes fail
+  about equally (≈4 wrong paths each, col 4/4413 vs row 4/8944). Column faults dominate
+  the cell count for two reasons: these tables average 16.6 data rows against 8.2 data
+  columns, so one bad column path corrupts ~2× the cells one bad row path does; and the
+  row faults happened to land on rows carrying no values, which emit no sentence and so
+  are invisible to the sentence-level metric (the tree-level metric scores a
+  placeholder-filled grid and does see them).
 - **3.1 OSC.** Given query *q*, hierarchical table *T* (top/left header trees), gold
   operand set *G*: **OSC(q)=1 iff G ⊆ retrieved** (all-or-nothing subset containment) —
   the necessary condition for a correct aggregation, strictly harder than mean cell

@@ -319,13 +319,51 @@
     </div>
     <p class="note">그 결과가 <code>10-20</code> 버킷이다: 트리 행 경로는 <strong>.9997</strong>로
     오류가 있는데 문장 F1은 <strong>1.000</strong>이다. 그래서 Table 2의 &ldquo;행 경로 오류 0건&rdquo;도
-    행 축이 완벽하다는 뜻이 아니라, <em>값이 있는 행에서는</em> 틀린 적이 없다는 뜻이다.
-    산수도 맞는다 &mdash; 틀린 열 ~4개 &times; 표당 데이터 행 ~32개 &asymp; 128건.
+    행 축이 완벽하다는 뜻이 아니라, <em>값이 있는 행에서는</em> 틀린 적이 없다는 뜻이다.</p>
+
+    <h3 style="font-family:var(--serif);font-size:1.02rem;margin:.6rem 0 0;font-weight:600">
+      따라서 &ldquo;열 축이 약하다&rdquo;고 말할 수 없다</h3>
+    <p class="sub" style="margin-top:.2rem">문장 오류가 <code>128 : 0</code>이라 열 축 문제로 보이지만,
+    경로 단위로 보면 두 축은 <strong>거의 같은 횟수로 실패</strong>한다. 재구성은 단일 carry 루틴
+    (<code>_hierarchical_carry</code>)을 입력만 전치해 두 축에 똑같이 적용하므로, 축별 로직 자체가 없다.</p>
+    <div class="scroll">
+      <table>
+        <caption>Table 4 · Why column faults dominate the cell count</caption>
+        <thead>
+          <tr>
+            <th scope="col" style="text-align:left">Axis</th>
+            <th scope="col">Paths scored</th>
+            <th scope="col">Wrong paths</th>
+            <th scope="col">Path exact</th>
+            <th scope="col">Cells per fault</th>
+            <th scope="col">Sentence errors</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Column</th>
+            <td class="num">4,413</td><td class="num">~4</td><td class="num">.9991</td>
+            <td class="num">16.6</td><td class="flaw">128</td>
+          </tr>
+          <tr>
+            <th scope="row">Row</th>
+            <td class="num">8,944</td><td class="num">~4</td><td class="num">.9996</td>
+            <td class="num">8.2</td><td class="num">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">두 가지가 겹쳐 <code>128 : 0</code>이 된다. <strong>①</strong> 이 표들은 평균
+    세로 16.6 &times; 가로 8.2로 세로가 길어, 열 경로 하나가 망가지면 행 경로 하나보다
+    <strong>약 2배 많은 셀</strong>을 오염시킨다. <strong>②</strong> 행 쪽 오류 ~4개는 하필
+    값이 없는 행에 떨어져 문장이 생성되지 않았고, 그래서 문장 지표에 잡히지 않았다
+    (트리 지표는 placeholder로 채운 격자를 보므로 잡아낸다).
     <br><br>
     <strong>다만 이것이 부풀린 수치라는 뜻은 아니다.</strong> 색인에 실제로 들어가는 것은 문장뿐이므로,
     &ldquo;색인되는 문장의 정확도&rdquo;라는 주장에는 이 지표가 옳다. 틀리는 것은 측정이 아니라 해석이다.
     발표·논문에서 <code>.9981</code>은 <strong>문장 정확도</strong>로만 쓰고, 트리 정확도는
-    <code>.9991</code>/<code>.9996</code>을 따로 인용할 것.</p>
+    <code>.9991</code>/<code>.9996</code>을 따로 인용할 것. 그리고 잔여 오류를
+    <strong>&ldquo;열 축 문제&rdquo;로 귀속하지 말 것.</strong></p>
   </section>
 
   <footer>
