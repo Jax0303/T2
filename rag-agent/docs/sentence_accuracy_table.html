@@ -125,17 +125,17 @@
     나머지 두 버킷은 완전무결하다.</p>
     <div class="scroll">
       <table>
-        <caption>Table 1 · 크기 버킷별 문장 exact match</caption>
+        <caption>Table 1 · Sentence exact match by table-size bucket</caption>
         <thead>
           <tr>
-            <th scope="col" style="text-align:left">표 크기</th>
-            <th scope="col">표 수</th>
-            <th scope="col">문장 수</th>
-            <th scope="col">정확</th>
-            <th scope="col">P</th>
-            <th scope="col">R</th>
+            <th scope="col" style="text-align:left">Table size</th>
+            <th scope="col">Tables</th>
+            <th scope="col">Sentences</th>
+            <th scope="col">Exact correct</th>
+            <th scope="col">Precision</th>
+            <th scope="col">Recall</th>
             <th scope="col">F1</th>
-            <th scope="col">오류</th>
+            <th scope="col">Errors</th>
           </tr>
         </thead>
         <tbody>
@@ -158,7 +158,7 @@
             <td class="flaw">128</td>
           </tr>
           <tr class="total">
-            <th scope="row">전체</th>
+            <th scope="row">All</th>
             <td>540</td><td>67,315</td><td>67,187</td>
             <td>.9981</td><td>.9981</td><td>.9981</td><td>128</td>
           </tr>
@@ -175,40 +175,40 @@
     <p class="sub">틀린 128건이 문장의 어느 구성요소에서 깨졌는지.</p>
     <div class="scroll">
       <table>
-        <caption>Table 2 · 오류 유형별 건수 (전체 67,315 문장 기준)</caption>
+        <caption>Table 2 · Error decomposition (over all 67,315 sentences)</caption>
         <thead>
           <tr>
-            <th scope="col" style="text-align:left">오류 유형</th>
-            <th scope="col">건수</th>
-            <th scope="col">비율</th>
-            <th scope="col" style="text-align:left">해석</th>
+            <th scope="col" style="text-align:left">Error type</th>
+            <th scope="col">Count</th>
+            <th scope="col">Rate</th>
+            <th scope="col" style="text-align:left">Reading</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">값 오류</th>
+            <th scope="row">Wrong value</th>
             <td class="zero">0</td><td class="zero">.0000</td>
-            <td style="text-align:left" class="num">셀 값 자체는 한 건도 틀리지 않음</td>
+            <td style="text-align:left" class="num">No cell value is ever misreported</td>
           </tr>
           <tr>
-            <th scope="row">행 경로 오류</th>
+            <th scope="row">Wrong row path</th>
             <td class="zero">0</td><td class="zero">.0000</td>
-            <td style="text-align:left" class="num">행 축 재구성은 완전</td>
+            <td style="text-align:left" class="num">Not proof of a perfect row axis &mdash; see caveat below</td>
           </tr>
           <tr>
-            <th scope="row">열 경로 오류</th>
+            <th scope="row">Wrong column path</th>
             <td class="flaw">128</td><td class="flaw">.0019</td>
-            <td style="text-align:left" class="num">잔여 오류 전량 &mdash; 병합 부모 아래 빈칸의 모호성</td>
+            <td style="text-align:left" class="num">All residual error &mdash; blank under a merged parent is ambiguous</td>
           </tr>
           <tr>
-            <th scope="row">없는 문장 생성</th>
+            <th scope="row">Spurious sentence</th>
             <td class="zero">0</td><td class="zero">.0000</td>
-            <td style="text-align:left" class="num">precision 손실 없음</td>
+            <td style="text-align:left" class="num">No precision loss</td>
           </tr>
           <tr>
-            <th scope="row">문장 누락</th>
+            <th scope="row">Dropped sentence</th>
             <td class="zero">0</td><td class="zero">.0000</td>
-            <td style="text-align:left" class="num">recall 손실 없음</td>
+            <td style="text-align:left" class="num">No recall loss</td>
           </tr>
         </tbody>
       </table>
@@ -263,40 +263,69 @@
     <h2>부수 지표</h2>
     <div class="scroll">
       <table>
-        <caption>Table 3 · 파이프라인 건전성 지표</caption>
+        <caption>Table 3 · Pipeline health metrics</caption>
         <thead>
           <tr>
-            <th scope="col" style="text-align:left">지표</th>
-            <th scope="col">값</th>
-            <th scope="col" style="text-align:left">비고</th>
+            <th scope="col" style="text-align:left">Metric</th>
+            <th scope="col">Value</th>
+            <th scope="col" style="text-align:left">Note</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">경계 추정 정확도</th>
+            <th scope="row">Boundary guess accuracy</th>
             <td class="perfect">1.000</td>
-            <td style="text-align:left" class="num">540개 표 전부 헤더/데이터 경계 적중</td>
+            <td style="text-align:left" class="num">Header/data split correct on all 540 tables</td>
           </tr>
           <tr>
-            <th scope="row">주소 충돌 문장</th>
+            <th scope="row">Duplicate-address sentences</th>
             <td class="num">853</td>
-            <td style="text-align:left" class="num">동일 주소를 갖는 문장 &mdash; 수정 전 2,372에서 감소</td>
+            <td style="text-align:left" class="num">Two cells sharing one address &mdash; down from 2,372</td>
           </tr>
           <tr>
-            <th scope="row">열 경로 재구성 exact</th>
+            <th scope="row">Column-path exact (tree)</th>
             <td class="num">.9991</td>
-            <td style="text-align:left" class="num">경로 단위 (문장 단위와 별개 집계)</td>
+            <td style="text-align:left" class="num">Scored per path, on a different grid &mdash; see caveat</td>
           </tr>
           <tr>
-            <th scope="row">행 경로 재구성 exact</th>
+            <th scope="row">Row-path exact (tree)</th>
             <td class="num">.9996</td>
-            <td style="text-align:left" class="num">행 축이 오히려 더 정확</td>
+            <td style="text-align:left" class="num">Scored per path, on a different grid &mdash; see caveat</td>
           </tr>
         </tbody>
       </table>
     </div>
     <p class="note">주소 충돌 853건은 오류가 아니다 &mdash; 서로 다른 셀이 같은 헤더 주소를
     갖는 표가 실제로 존재한다는 뜻이며, 검색 단계에서 후보를 가를 수 없는 상한으로 작용한다.</p>
+  </section>
+
+  <section>
+    <h2>주의 &mdash; 문장 점수로 트리 정확도를 말할 수 없다</h2>
+    <p class="sub">Table 1의 F1은 <strong>&ldquo;만들어진 문장이 정확한가&rdquo;</strong>이지
+    <strong>&ldquo;트리가 정확한가&rdquo;</strong>가 아니다. 두 실험은 채점하는 격자가 다르다.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>트리 실험</h3>
+        <p>모든 데이터 칸을 placeholder <code>"1"</code>로 채운 격자를 쓴다
+        (<code>tree_reconstruct_hitab.py</code>). 칸이 전부 차 있으므로
+        <strong>모든 행의 경로가 채점된다.</strong></p>
+      </div>
+      <div class="card">
+        <h3>문장 실험</h3>
+        <p>진짜 값을 넣고, <strong>빈 칸에는 문장을 만들지 않는다</strong>
+        (<code>if not _nonempty(...): continue</code>). 값이 하나도 없는 행의 경로가
+        틀려도 <strong>문장이 생성되지 않아 채점되지 않는다.</strong></p>
+      </div>
+    </div>
+    <p class="note">그 결과가 <code>10-20</code> 버킷이다: 트리 행 경로는 <strong>.9997</strong>로
+    오류가 있는데 문장 F1은 <strong>1.000</strong>이다. 그래서 Table 2의 &ldquo;행 경로 오류 0건&rdquo;도
+    행 축이 완벽하다는 뜻이 아니라, <em>값이 있는 행에서는</em> 틀린 적이 없다는 뜻이다.
+    산수도 맞는다 &mdash; 틀린 열 ~4개 &times; 표당 데이터 행 ~32개 &asymp; 128건.
+    <br><br>
+    <strong>다만 이것이 부풀린 수치라는 뜻은 아니다.</strong> 색인에 실제로 들어가는 것은 문장뿐이므로,
+    &ldquo;색인되는 문장의 정확도&rdquo;라는 주장에는 이 지표가 옳다. 틀리는 것은 측정이 아니라 해석이다.
+    발표·논문에서 <code>.9981</code>은 <strong>문장 정확도</strong>로만 쓰고, 트리 정확도는
+    <code>.9991</code>/<code>.9996</code>을 따로 인용할 것.</p>
   </section>
 
   <footer>
