@@ -96,6 +96,31 @@
   .path .arrow{color:var(--mute);padding:0 .12rem;}
   .note{font-size:.86rem;color:var(--mute);}
 
+  .treewrap{display:grid;gap:1rem;grid-template-columns:1fr;}
+  @media(min-width:50rem){.treewrap{grid-template-columns:1.35fr 1fr;}}
+  .treebox{border:1px solid var(--rule);border-radius:3px;background:var(--panel);
+           padding:1.05rem 1.15rem;overflow-x:auto;}
+  .treebox h3{margin:0 0 .8rem;font-size:.73rem;font-family:var(--mono);
+              letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+              color:var(--indigo);}
+  .tree,.tree ul{list-style:none;margin:0;padding:0;}
+  .tree ul{margin-left:.55rem;padding-left:.95rem;border-left:1px solid var(--rule);}
+  .tree li{position:relative;padding-left:.85rem;line-height:2;}
+  .tree li::before{content:"";position:absolute;left:0;top:1em;width:.62rem;
+                   height:1px;background:var(--rule);}
+  .tree>li{padding-left:0;} .tree>li::before{display:none;}
+  .node{font-family:var(--mono);font-size:.8rem;color:var(--ink);
+        white-space:nowrap;}
+  .node.root{font-weight:600;color:var(--indigo);}
+  .node.leaf{color:var(--ink-2);}
+  .node .idx{color:var(--mute);font-size:.72rem;padding-left:.35rem;}
+  .node.short{background:var(--good-wash);box-shadow:inset 0 0 0 1px var(--good);
+              border-radius:2px;padding:.05rem .3rem;color:var(--good);
+              font-weight:600;}
+  .node.short .idx{color:var(--good);opacity:.8;}
+  .axis{font-family:var(--mono);font-size:.72rem;color:var(--mute);
+        letter-spacing:.08em;text-transform:uppercase;}
+
   .sentence{font-family:var(--mono);font-size:.87rem;line-height:1.8;
             border-left:2px solid var(--rule);padding:.15rem 0 .15rem 1rem;
             color:var(--ink-2);word-break:break-word;}
@@ -290,7 +315,115 @@
   </section>
 
   <section>
-    <div class="step"><span class="step-n">4</span><h2>주소가 문장이 된다</h2></div>
+    <div class="step"><span class="step-n">4</span><h2>트리는 만들어지는 게 아니라 드러난다</h2></div>
+    <p class="sub">코드는 노드 객체 트리를 조립하지 않는다. <code>reconstruct_col_paths</code>와
+    <code>reconstruct_row_paths</code>가 내놓는 것은 <strong>열마다 / 행마다 경로 하나씩</strong>이고,
+    트리는 그 경로들이 앞부분을 공유하면서 <strong>저절로 드러나는 구조</strong>다.
+    앞 절의 carry 리셋이 바로 이 경로들을 만드는 단계이고, 아래는 그 결과를 접두사로 합친 것이다.</p>
+    <div class="treewrap">
+      <div class="treebox">
+        <h3>열 트리 · 3층</h3>
+        <ul class="tree">
+          <li><span class="node root">Table</span>
+            <ul>
+              <li><span class="axis">columns</span>
+                <ul>
+                  <li><span class="node">FY2023</span>
+                    <ul>
+                      <li><span class="node">Domestic</span>
+                        <ul>
+                          <li><span class="node leaf">Amount<span class="idx">c0</span></span></li>
+                          <li><span class="node leaf">%<span class="idx">c1</span></span></li>
+                        </ul>
+                      </li>
+                      <li><span class="node">Overseas</span>
+                        <ul>
+                          <li><span class="node leaf">Amount<span class="idx">c2</span></span></li>
+                          <li><span class="node leaf">%<span class="idx">c3</span></span></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li><span class="node">FY2024</span>
+                    <ul>
+                      <li><span class="node">Domestic</span>
+                        <ul>
+                          <li><span class="node leaf">Amount<span class="idx">c4</span></span></li>
+                          <li><span class="node leaf">%<span class="idx">c5</span></span></li>
+                        </ul>
+                      </li>
+                      <li><span class="node">Overseas</span>
+                        <ul>
+                          <li><span class="node leaf">Amount<span class="idx">c6</span></span></li>
+                          <li><span class="node leaf">%<span class="idx">c7</span></span></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li><span class="node">Total</span>
+                    <ul>
+                      <li><span class="node short">Amount<span class="idx">c8</span></span></li>
+                      <li><span class="node short">%<span class="idx">c9</span></span></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="treebox">
+        <h3>행 트리 · 2층</h3>
+        <ul class="tree">
+          <li><span class="node root">Table</span>
+            <ul>
+              <li><span class="axis">rows</span>
+                <ul>
+                  <li><span class="node">Revenue</span>
+                    <ul>
+                      <li><span class="node leaf">Product<span class="idx">r0</span></span></li>
+                      <li><span class="node leaf">Service<span class="idx">r1</span></span></li>
+                    </ul>
+                  </li>
+                  <li><span class="node">Expenses</span>
+                    <ul>
+                      <li><span class="node leaf">R&amp;D<span class="idx">r2</span></span></li>
+                      <li><span class="node leaf">SG&amp;A<span class="idx">r3</span></span></li>
+                    </ul>
+                  </li>
+                  <li><span class="node short">Grand Total<span class="idx">r4</span></span></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">표시한 가지가 <strong>얕은 가지</strong>다. <code>Total</code>은 3층이 아니라 2층에서,
+    <code>Grand Total</code>은 2층이 아니라 <em>1층에서</em> 잎이 된다 &mdash; 트리가 고르지 않다.
+    이 들쭉날쭉함이 곧 앞 절의 carry 리셋이며, 리셋을 빼먹으면 이 잎들이 억지로 한 층 더 내려가
+    <code>Total &gt; Overseas &gt; Amount</code> 같은 없는 가지가 생긴다.</p>
+    <div class="grid2" style="margin-top:.35rem">
+      <div class="card">
+        <h3>잎만이 주소다</h3>
+        <p>데이터 열 10개 = 열 트리의 잎 10개, 데이터 행 5개 = 행 트리의 잎 5개.
+        중간 노드(<code>FY2023</code>, <code>Revenue</code>)는 데이터를 직접 가리키지 않고
+        경로의 마디로만 쓰인다.</p>
+      </div>
+      <div class="card">
+        <h3>같은 라벨, 다른 노드</h3>
+        <p><code>Amount</code>는 잎에 5번 나타나지만 서로 다른 5개 노드다.
+        부모가 달라 경로가 다르기 때문이며, 그래서 라벨이 겹쳐도 주소는 겹치지 않는다.</p>
+      </div>
+    </div>
+    <p class="note"><strong>셀은 트리에 없다.</strong> 셀은 부모가 둘(행 하나, 열 하나)이라
+    어느 한 트리에도 속할 수 없다. 트리 두 그루는 <em>주소 체계</em>이고, 셀은 잎 하나와 잎 하나가
+    만나는 교차점에서 주소를 부여받는 값이다 &mdash; 예컨대 <code>c8</code>와 <code>r4</code>가
+    만나는 자리가 2,535다.</p>
+  </section>
+
+  <section>
+    <div class="step"><span class="step-n">5</span><h2>주소가 문장이 된다</h2></div>
     <p class="sub">셀은 부모가 둘(행·열)이라 트리에 들어갈 수 없다. 트리는 주소 체계이고,
     셀은 두 경로가 교차하는 지점에서 주소를 부여받는 값이다. 색인 시 이 주소를 문장에 구워 넣기 때문에
     검색은 트리를 타지 않고 순수 벡터 유사도로도 올바른 노드에 떨어진다.</p>
@@ -306,7 +439,7 @@
   </section>
 
   <section>
-    <div class="step"><span class="step-n">5</span><h2>현재 정확도</h2></div>
+    <div class="step"><span class="step-n">6</span><h2>현재 정확도</h2></div>
     <dl class="facts">
       <div><dt>열 경로 exact</dt><dd>99.91%<small>HiTab gold tree, n=540</small></dd></div>
       <div><dt>행 경로 exact</dt><dd>99.96%<small>같은 모집단</small></dd></div>
