@@ -115,6 +115,17 @@ as few cells as possible. Contributions:
   row faults happened to land on rows carrying no values, which emit no sentence and so
   are invisible to the sentence-level metric (the tree-level metric scores a
   placeholder-filled grid and does see them).
+  On MultiHiertt no gold tree exists, so reconstruction is checked only against the
+  corpus's per-cell `table_description` sentences by `segment_coverage` (the fraction of
+  a produced path's segments whose tokens appear in that sentence). **These figures are
+  not comparable to the HiTab exact-match numbers and must not be quoted beside them.**
+  The proxy is precision-only: a path that drops a segment still scores 1.0, as does a
+  path with its segments reordered or one that borrows a word from the other axis; only
+  surplus segments are penalised. It is also depth-limited — the script fixes
+  `n_header_cols=1`, so 99.9% of scored row paths are depth 1 and the row figure tests
+  no hierarchy at all, while 51% of column paths reach depth ≥2. Read MultiHiertt as a
+  sanity check that reconstruction does not collapse on real scraped HTML, not as an
+  accuracy measurement.
 - **3.1 OSC.** Given query *q*, hierarchical table *T* (top/left header trees), gold
   operand set *G*: **OSC(q)=1 iff G ⊆ retrieved** (all-or-nothing subset containment) —
   the necessary condition for a correct aggregation, strictly harder than mean cell
