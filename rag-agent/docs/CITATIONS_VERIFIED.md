@@ -54,6 +54,24 @@ Date: 2026-07-03. ✅ = verified verbatim; ⚠️ = needs a wording fix before s
   5.28 (fullwiki) vs Sup-F1 66.66/40.98 — the EM-vs-F1 gap is the canonical
   precedent for "all-or-nothing is much harsher than partial credit".
 
+- **Header/data row classification (table structure recognition)** — supports the
+  numeric-vs-text header-boundary heuristic `guess_n_header_rows` (§3.0). Framing:
+  cite the *principle* as standard practice; the ≥50%-numeric threshold + 4-digit-year
+  exclusion is our deterministic instance, **not** any single paper's rule verbatim
+  (corrects an earlier misstatement that the rule was borrowed as-is).
+  - **Adelfio & Samet**, *Schema Extraction for Tabular Data on the Web*,
+    PVLDB 6(6):421–432, 2013. ✅ verified from primary PDF (vldb.org/pvldb/vol6/p421):
+    CRF row classification into header(H)/data(D)/metadata/aggregate; feature list
+    includes `IsNumeric?`; verbatim "Header rows often contain relatively short
+    textual values, rather than numbers or dates" — directly grounds the heuristic.
+  - **Cafarella et al.**, *WebTables: Exploring the Power of Tables on the Web*,
+    PVLDB 1(1):538–549, 2008. Foundational web-table header detection. ⚠️ re-verify
+    full text for the header-detection mechanism before camera-ready.
+  - **Fang, Mitra, Tang, Giles**, *Table Header Detection and Classification*,
+    AAAI 2012. Title/venue via search (cdn.aaai.org/ojs/8206); ⚠️ verify primary.
+  - **Zhang & Balog**, *Web Table Extraction, Retrieval and Augmentation: A Survey*,
+    2020, arXiv:2002.00207. Survey anchor — header detection is an established subtask.
+
 ## ⚠️ Fix before submission
 
 - **"CE-SL"** is NOT a standalone paper — it is a baseline label used in later

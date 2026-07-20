@@ -89,6 +89,24 @@ as few cells as possible. Contributions:
 
 ## 3. 방법론 (Methodology)
 
+- **3.0 Header-tree reconstruction (preprocessing).** For corpora shipping raw HTML
+  grids with no explicit tree (MultiHiertt), we rebuild the row/column header trees
+  first (`reconstruct/header_grid.py`). Separating header rows from data rows by cell
+  content type — header cells are short text, data cells numeric — is a standard
+  table-structure-recognition heuristic (Cafarella et al., 2008; Adelfio & Samet,
+  2013); we adopt a lightweight deterministic instance: the first row whose
+  non-row-header cells are ≥50% numeric is taken as the first data row
+  (`guess_n_header_rows`), excluding bare 4-digit years (numeric-looking but column
+  labels) and rows whose stub cell is a fully parenthesised units note
+  ("(Dollars in millions)"), which otherwise reads as the first data row in 39% of
+  financial tables. We do **not** claim this rule as novel. HiTab ships gold trees
+  (this step is a no-op there); against those gold trees (n=540) reconstruction is
+  exact-match col 99.91% / row 99.96%, with boundary guessing at 1.000 — i.e. the
+  guessed-boundary pipeline matches the known-boundary ceiling. End-to-end sentence
+  generation is exact-match P/R/F1 .9981 with zero value errors; the residual 0.19%
+  (128/67,315 cells) is entirely column-path error and is information-theoretically
+  unrecoverable from a flattened grid (a blank under a merged parent is ambiguous
+  between "continues" and "absent"), recoverable only from colspan/rowspan markup.
 - **3.1 OSC.** Given query *q*, hierarchical table *T* (top/left header trees), gold
   operand set *G*: **OSC(q)=1 iff G ⊆ retrieved** (all-or-nothing subset containment) —
   the necessary condition for a correct aggregation, strictly harder than mean cell

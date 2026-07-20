@@ -1,0 +1,330 @@
+<title>다계층 표 — 헤더 트리 재구성</title>
+<style>
+  :root{
+    --paper:#FBFBFC; --panel:#FFFFFF; --ink:#14181D; --ink-2:#3A424C;
+    --mute:#5A6472; --rule:#DDE1E6; --rule-2:#EDEFF2;
+    --indigo:#2F4B7C; --indigo-wash:#EDF1F8;
+    --good:#1F6F5C; --good-wash:#E8F2EF;
+    --bad:#A8432B; --bad-wash:#F8ECE8;
+    --band-0:#E4E9F2; --band-1:#EDF0F6; --band-2:#F4F6F9;
+    --serif:ui-serif,Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0E1116; --panel:#151A21; --ink:#E8EBEF; --ink-2:#C2C9D2;
+      --mute:#8A94A2; --rule:#2A313A; --rule-2:#1F252D;
+      --indigo:#8FAEDC; --indigo-wash:#1A2333;
+      --good:#5FBFA3; --good-wash:#122520;
+      --bad:#E0876B; --bad-wash:#2A1713;
+      --band-0:#232C39; --band-1:#1D242E; --band-2:#181E26;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1116; --panel:#151A21; --ink:#E8EBEF; --ink-2:#C2C9D2;
+    --mute:#8A94A2; --rule:#2A313A; --rule-2:#1F252D;
+    --indigo:#8FAEDC; --indigo-wash:#1A2333;
+    --good:#5FBFA3; --good-wash:#122520;
+    --bad:#E0876B; --bad-wash:#2A1713;
+    --band-0:#232C39; --band-1:#1D242E; --band-2:#181E26;
+  }
+  :root[data-theme="light"]{
+    --paper:#FBFBFC; --panel:#FFFFFF; --ink:#14181D; --ink-2:#3A424C;
+    --mute:#5A6472; --rule:#DDE1E6; --rule-2:#EDEFF2;
+    --indigo:#2F4B7C; --indigo-wash:#EDF1F8;
+    --good:#1F6F5C; --good-wash:#E8F2EF;
+    --bad:#A8432B; --bad-wash:#F8ECE8;
+    --band-0:#E4E9F2; --band-1:#EDF0F6; --band-2:#F4F6F9;
+  }
+
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+       line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:60rem;margin:0 auto;padding:3.5rem 1.5rem 5rem;
+        display:flex;flex-direction:column;gap:3.25rem;}
+
+  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--mute);}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.5vw,2.7rem);
+     line-height:1.15;text-wrap:balance;margin:.4rem 0 0;letter-spacing:-.01em;}
+  .lede{font-size:1.05rem;color:var(--ink-2);max-width:62ch;margin:.85rem 0 0;}
+  h2{font-family:var(--serif);font-weight:600;font-size:1.32rem;margin:0;
+     text-wrap:balance;letter-spacing:-.005em;}
+  .sub{color:var(--mute);font-size:.93rem;max-width:66ch;margin:.4rem 0 0;}
+  section{display:flex;flex-direction:column;gap:1rem;}
+  .step{display:flex;align-items:baseline;gap:.7rem;}
+  .step-n{font-family:var(--mono);font-size:.72rem;color:var(--indigo);
+          border:1px solid var(--rule);border-radius:2px;padding:.1rem .4rem;
+          flex:none;background:var(--indigo-wash);}
+
+  .scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;
+          background:var(--panel);}
+  table{border-collapse:collapse;font-family:var(--mono);font-size:.79rem;
+        font-variant-numeric:tabular-nums;width:100%;}
+  th,td{border:1px solid var(--rule);padding:.42rem .6rem;text-align:right;
+        white-space:nowrap;}
+  th{font-weight:600;text-align:center;color:var(--ink);}
+  .lv0{background:var(--band-0);} .lv1{background:var(--band-1);}
+  .lv2{background:var(--band-2);}
+  .stub{text-align:left;background:var(--band-1);font-weight:600;}
+  .stub-2{text-align:left;background:var(--band-2);font-weight:400;}
+  .corner{background:var(--band-0);}
+  td{color:var(--ink-2);}
+
+  .blank{color:var(--mute);opacity:.5;text-align:center;font-style:normal;}
+  .flat td,.flat th{text-align:center;}
+  .flat .txt{text-align:left;}
+
+  mark.reset{background:var(--good-wash);color:var(--good);
+             box-shadow:inset 0 0 0 1px var(--good);border-radius:2px;
+             padding:0 .15rem;font-weight:600;}
+  .cell-reset{background:var(--good-wash);box-shadow:inset 0 0 0 2px var(--good);}
+
+  .cmp{display:grid;gap:1rem;grid-template-columns:1fr;}
+  @media(min-width:46rem){.cmp{grid-template-columns:1fr 1fr;}}
+  .card{border:1px solid var(--rule);border-radius:3px;background:var(--panel);
+        padding:1.05rem 1.15rem;display:flex;flex-direction:column;gap:.6rem;}
+  .card.bad{border-color:var(--bad);background:var(--bad-wash);}
+  .card.good{border-color:var(--good);background:var(--good-wash);}
+  .card h3{margin:0;font-size:.74rem;font-family:var(--mono);letter-spacing:.1em;
+           text-transform:uppercase;font-weight:600;}
+  .card.bad h3{color:var(--bad);} .card.good h3{color:var(--good);}
+  .path{font-family:var(--mono);font-size:.83rem;line-height:1.75;
+        color:var(--ink);word-break:break-word;}
+  .path .seg-x{color:var(--bad);font-weight:600;text-decoration:line-through;
+               text-decoration-thickness:1px;}
+  .path .arrow{color:var(--mute);padding:0 .12rem;}
+  .note{font-size:.86rem;color:var(--mute);}
+
+  .sentence{font-family:var(--mono);font-size:.87rem;line-height:1.8;
+            border-left:2px solid var(--rule);padding:.15rem 0 .15rem 1rem;
+            color:var(--ink-2);word-break:break-word;}
+  .sentence.good{border-left-color:var(--good);}
+  .sentence.bad{border-left-color:var(--bad);}
+  .sentence b{color:var(--ink);font-weight:600;}
+
+  dl.facts{display:grid;grid-template-columns:1fr;gap:0;margin:0;
+           border-top:1px solid var(--rule);}
+  @media(min-width:40rem){dl.facts{grid-template-columns:repeat(3,1fr);}}
+  dl.facts>div{border-bottom:1px solid var(--rule);padding:.85rem .2rem;
+               display:flex;flex-direction:column;gap:.2rem;}
+  dt{font-size:.72rem;font-family:var(--mono);letter-spacing:.08em;
+     text-transform:uppercase;color:var(--mute);}
+  dd{margin:0;font-family:var(--mono);font-size:1.25rem;font-weight:600;
+     color:var(--indigo);font-variant-numeric:tabular-nums;}
+  dd small{font-size:.76rem;color:var(--mute);font-weight:400;display:block;
+           font-family:var(--sans);letter-spacing:0;}
+
+  footer{border-top:1px solid var(--rule);padding-top:1.1rem;font-size:.83rem;
+         color:var(--mute);}
+  code{font-family:var(--mono);font-size:.87em;background:var(--rule-2);
+       padding:.08rem .3rem;border-radius:2px;color:var(--ink-2);}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">reconstruct / header_grid.py</div>
+    <h1>다계층 구조를 가진 복잡한 표</h1>
+    <p class="lede">열 헤더 3층 × 행 헤더 2층. 사람은 병합된 칸을 보고 계층을 읽지만,
+    알고리즘이 받는 것은 병합 정보가 지워진 평면 격자다. 아래 표는 실제
+    <code>reconstruct_col_paths</code> / <code>reconstruct_row_paths</code>에
+    넣어 출력을 검증한 것이다.</p>
+  </header>
+
+  <section>
+    <div class="step"><span class="step-n">1</span><h2>사람이 보는 표</h2></div>
+    <p class="sub">반복 라벨 <code>Amount</code> / <code>%</code>가 5개 그룹에 걸쳐 10번 등장한다.
+    라벨 하나만으로는 어느 칸인지 지목할 수 없고, 오직 <strong>전체 경로</strong>만이 주소가 된다.</p>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="corner" rowspan="3" colspan="2"></th>
+            <th class="lv0" colspan="4">FY2023</th>
+            <th class="lv0" colspan="4">FY2024</th>
+            <th class="lv0" colspan="2" rowspan="2">Total</th>
+          </tr>
+          <tr>
+            <th class="lv1" colspan="2">Domestic</th>
+            <th class="lv1" colspan="2">Overseas</th>
+            <th class="lv1" colspan="2">Domestic</th>
+            <th class="lv1" colspan="2">Overseas</th>
+          </tr>
+          <tr>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="stub" rowspan="2">Revenue</th><th class="stub-2">Product</th>
+            <td>1,240</td><td>62.0</td><td>760</td><td>38.0</td>
+            <td>1,410</td><td>61.3</td><td>890</td><td>38.7</td>
+            <td>2,650</td><td>61.6</td>
+          </tr>
+          <tr>
+            <th class="stub-2">Service</th>
+            <td>520</td><td>70.3</td><td>220</td><td>29.7</td>
+            <td>610</td><td>69.3</td><td>270</td><td>30.7</td>
+            <td>1,130</td><td>69.8</td>
+          </tr>
+          <tr>
+            <th class="stub" rowspan="2">Expenses</th><th class="stub-2">R&amp;D</th>
+            <td>(310)</td><td>41.3</td><td>440</td><td>58.7</td>
+            <td>(355)</td><td>42.0</td><td>490</td><td>58.0</td>
+            <td>(665)</td><td>41.7</td>
+          </tr>
+          <tr>
+            <th class="stub-2">SG&amp;A</th>
+            <td>(280)</td><td>55.1</td><td>228</td><td>44.9</td>
+            <td>(300)</td><td>54.0</td><td>255</td><td>46.0</td>
+            <td>(580)</td><td>54.5</td>
+          </tr>
+          <tr>
+            <th class="stub" colspan="2">Grand Total</th>
+            <td>1,170</td><td>58.2</td><td>840</td><td>41.8</td>
+            <td>1,365</td><td>57.4</td><td>1,014</td><td>42.6</td>
+            <td>2,535</td><td>57.8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="step"><span class="step-n">2</span><h2>알고리즘이 받는 격자</h2></div>
+    <p class="sub">HTML의 <code>rowspan</code>/<code>colspan</code>을 버리고 렌더된 격자만 남기면,
+    병합 칸은 <em>첫 위치에만</em> 값이 남고 나머지는 빈칸이 된다. 아래 <span class="blank">·</span>가 그 빈칸이다.
+    재구성이란 이 빈칸을 조상으로부터 되채우는 일이다.</p>
+    <div class="scroll">
+      <table class="flat">
+        <tbody>
+          <tr>
+            <td class="lv0 blank">·</td><td class="lv0 blank">·</td>
+            <th class="lv0">FY2023</th><td class="lv0 blank">·</td>
+            <td class="lv0 blank">·</td><td class="lv0 blank">·</td>
+            <th class="lv0">FY2024</th><td class="lv0 blank">·</td>
+            <td class="lv0 blank">·</td><td class="lv0 blank">·</td>
+            <th class="lv0">Total</th><td class="lv0 blank">·</td>
+          </tr>
+          <tr>
+            <td class="lv1 blank">·</td><td class="lv1 blank">·</td>
+            <th class="lv1">Domestic</th><td class="lv1 blank">·</td>
+            <th class="lv1">Overseas</th><td class="lv1 blank">·</td>
+            <th class="lv1">Domestic</th><td class="lv1 blank">·</td>
+            <th class="lv1">Overseas</th><td class="lv1 blank">·</td>
+            <td class="lv1 blank cell-reset">·</td><td class="lv1 blank cell-reset">·</td>
+          </tr>
+          <tr>
+            <td class="lv2 blank">·</td><td class="lv2 blank">·</td>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+            <th class="lv2">Amount</th><th class="lv2">%</th>
+          </tr>
+          <tr>
+            <th class="stub txt">Revenue</th><th class="stub-2 txt">Product</th>
+            <td>1,240</td><td>62.0</td><td>760</td><td>38.0</td>
+            <td>1,410</td><td>61.3</td><td>890</td><td>38.7</td>
+            <td>2,650</td><td>61.6</td>
+          </tr>
+          <tr>
+            <td class="stub blank">·</td><th class="stub-2 txt">Service</th>
+            <td>520</td><td>70.3</td><td>220</td><td>29.7</td>
+            <td>610</td><td>69.3</td><td>270</td><td>30.7</td>
+            <td>1,130</td><td>69.8</td>
+          </tr>
+          <tr>
+            <th class="stub txt">Expenses</th><th class="stub-2 txt">R&amp;D</th>
+            <td>(310)</td><td>41.3</td><td>440</td><td>58.7</td>
+            <td>(355)</td><td>42.0</td><td>490</td><td>58.0</td>
+            <td>(665)</td><td>41.7</td>
+          </tr>
+          <tr>
+            <td class="stub blank">·</td><th class="stub-2 txt">SG&amp;A</th>
+            <td>(280)</td><td>55.1</td><td>228</td><td>44.9</td>
+            <td>(300)</td><td>54.0</td><td>255</td><td>46.0</td>
+            <td>(580)</td><td>54.5</td>
+          </tr>
+          <tr>
+            <th class="stub txt">Grand Total</th>
+            <td class="stub-2 blank cell-reset">·</td>
+            <td>1,170</td><td>58.2</td><td>840</td><td>41.8</td>
+            <td>1,365</td><td>57.4</td><td>1,014</td><td>42.6</td>
+            <td>2,535</td><td>57.8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">테두리로 표시한 두 곳이 함정이다. 이 빈칸들은 “위에서 이어진다”가 아니라
+    <strong>“이 축에는 자식이 없다”</strong>는 뜻이다. <code>Total</code>은 2층짜리 열이고,
+    <code>Grand Total</code>은 1층짜리 행이다.</p>
+  </section>
+
+  <section>
+    <div class="step"><span class="step-n">3</span><h2>carry 리셋 — 빈칸의 두 가지 뜻</h2></div>
+    <p class="sub">깊이별로 단순 forward-fill하면 이전 그룹의 자식 라벨이 새 부모 밑으로 새어 든다.
+    <code>_hierarchical_carry</code>는 얕은 깊이에서 새 라벨이 시작되면 그보다 깊은 carry를 전부 끊는다 —
+    span은 트리 노드 하나에 속하므로 부모보다 오래 살 수 없기 때문이다.</p>
+    <div class="cmp">
+      <div class="card bad">
+        <h3>단순 forward-fill</h3>
+        <div class="path">Total <span class="arrow">›</span> <span class="seg-x">Overseas</span> <span class="arrow">›</span> Amount</div>
+        <div class="path">Grand Total <span class="arrow">›</span> <span class="seg-x">SG&amp;A</span></div>
+        <p class="note">직전 그룹의 <code>Overseas</code>와 직전 행의 <code>SG&amp;A</code>가
+        살아남아, 합계 칸이 “해외 판관비”라는 존재하지 않는 주소를 얻는다.</p>
+      </div>
+      <div class="card good">
+        <h3>부모 span 리셋 적용</h3>
+        <div class="path">Total <span class="arrow">›</span> Amount</div>
+        <div class="path">Grand Total</div>
+        <p class="note">부모가 바뀌는 순간 깊은 carry가 끊겨, 경로 깊이가
+        열 2층 · 행 1층으로 정확히 줄어든다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="step"><span class="step-n">4</span><h2>주소가 문장이 된다</h2></div>
+    <p class="sub">셀은 부모가 둘(행·열)이라 트리에 들어갈 수 없다. 트리는 주소 체계이고,
+    셀은 두 경로가 교차하는 지점에서 주소를 부여받는 값이다. 색인 시 이 주소를 문장에 구워 넣기 때문에
+    검색은 트리를 타지 않고 순수 벡터 유사도로도 올바른 노드에 떨어진다.</p>
+    <div class="sentence good">
+      In FY revenue/expense summary, <b>Total &gt; Amount</b> for <b>Grand Total</b> is <b>2,535</b>.
+    </div>
+    <div class="sentence bad">
+      In FY revenue/expense summary, <b>Total &gt; Overseas &gt; Amount</b> for <b>Grand Total &gt; SG&amp;A</b> is <b>2,535</b>.
+    </div>
+    <p class="note">아래쪽이 리셋 없는 출력이다. 값은 같지만 주소가 거짓이라
+    이 문장은 색인에 들어가는 순간 검색을 오염시킨다 — 재구성 오류가
+    직렬화 방식에만 손해를 주고 flat에는 주지 않는 이유다.</p>
+  </section>
+
+  <section>
+    <div class="step"><span class="step-n">5</span><h2>현재 정확도</h2></div>
+    <dl class="facts">
+      <div><dt>열 경로 exact</dt><dd>99.91%<small>HiTab gold tree, n=540</small></dd></div>
+      <div><dt>행 경로 exact</dt><dd>99.96%<small>같은 모집단</small></dd></div>
+      <div><dt>경계 추정</dt><dd>1.000<small>추정 = 정답 경계 천장</small></dd></div>
+      <div><dt>문장 exact P/R/F1</dt><dd>.9981<small>값 오류 0건</small></dd></div>
+      <div><dt>잔여 오류</dt><dd>128<small>67,315셀 중, 전부 열 경로</small></dd></div>
+      <div><dt>주소 충돌</dt><dd>853<small>수정 전 2,372</small></dd></div>
+    </dl>
+    <p class="note">잔여 0.19%는 원리적 한계다. 병합된 부모 아래의 빈칸이 “계속”인지 “없음”인지는
+    평면 격자에 정보가 남아 있지 않다 — <code>colspan</code>/<code>rowspan</code> 마크업을
+    보존하는 입력에서만 제거할 수 있고, 논문에는 향후 과제로만 적는다.</p>
+  </section>
+
+  <footer>
+    표의 모든 경로는 <code>reconstruct_col_paths</code> / <code>reconstruct_row_paths</code>에
+    실제 격자를 넣어 얻은 출력이며, 대조군은 동일 격자에 리셋 없는 fill을 적용해 재현했다.
+    수치 출처: <code>results/tree_reconstruct_hitab.json</code>,
+    <code>results/sentence_accuracy_hitab.json</code>.
+  </footer>
+
+</div>
