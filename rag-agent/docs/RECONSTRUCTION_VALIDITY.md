@@ -1,8 +1,47 @@
 # What the 99.9% reconstruction number does and does not measure
 
-Status: open question, 2026-07-20. Nothing here changes a result; it records that the
-headline reconstruction figure rests on a narrower claim than §3.0 currently implies,
-and names the experiment that would settle it.
+Status: **settled, 2026-07-21** — the experiment proposed below was run
+(`scripts/tree_reconstruct_hitab_raw.py`). Result summary up front; the original
+analysis follows unchanged.
+
+| on the real grid | column axis | row axis |
+|---|---|---|
+| round trip (`tree_reconstruct_hitab.py`) | .9991 | .9996 |
+| **real grid, boundary known** (dev, 424 tables) | **.9749** | **.5781** |
+| **real grid, boundary known** (train, 2,043 tables) | **.9757** | **.5816** |
+| real grid, boundary guessed (dev) | .8819 | .5614 |
+
+Boundary detection, which scores 1.000 on the synthetic grid, scores **.7146** on real
+grids.
+
+The row figure is not an algorithm failure — it splits cleanly in two, and the split is
+the whole finding (train numbers; dev matches):
+
+| row hierarchy fits the stub-column block? | tables | paths | row exact match |
+|---|---|---|---|
+| yes | 1,216 | 18,933 | **.9946** |
+| no  | 827 | 16,130 | **.0968** |
+
+Where the grid can express the row depth, the reconstructor hits the round-trip number.
+Where it cannot, it fails almost totally — and it cannot in **41%** of tables, because
+HiTab encodes deep row hierarchies as *parent rows inside a single stub column*
+(`institution / all institutions / top 20 institutions / johns hopkins u.` all sit in
+column 0, flush, with no indentation surviving in `texts`), while `flatten_to_grid`
+renders an *n*-deep row hierarchy as *n* separate stub columns. The round trip scored a
+grid shape that 41% of real HiTab tables do not have, which is exactly why it could not
+see this.
+
+Verdict against the two outcomes named at the bottom of this file: the column axis lands
+close to the expectation (.975 vs .999, a real but modest drop concentrated at depth 3,
+.878); the row axis takes the "materially lower" branch, and **.9996 cannot stand in §3.0
+as a row-axis accuracy**.
+
+Consequences already applied: §3.0 restated, `docs/sentence_accuracy_table.html` caveated.
+Consequence *not* claimed: this does not reopen the reconstruction-improvement lever. The
+41% deficit is missing information in the input, not a fixable decoder — recovering it
+needs a signal `texts` does not carry (HTML indentation/class markup, or `merged_regions`).
+
+---
 
 ## The claim as it currently reads
 
@@ -84,6 +123,33 @@ The presence of a separate `merged_regions` field is a hint that raw grids encod
 differently from blank-after-first. Real tables also carry section-label rows, subtotal
 rows, and footnote rows interleaved into the body — none of which `flatten_to_grid` ever
 produces.
+
+## How it was actually run (deviations from the sketch above)
+
+Three things had to change, each of which would otherwise have charged the reconstructor
+for someone else's representation choice:
+
+- **Gold is the `hmt` parse, not the raw file's `top_root`/`left_root`.** The raw trees are
+  trees over header *cells*, so a header merged across two data columns appears as one node
+  on the first column only and leaves the second column's path a segment short. On table
+  1017 `merged_regions` merges "percent" across columns 2–3: the raw tree gives column 3
+  `(hirings, recruit)` where hmt — the published parse the whole pipeline treats as ground
+  truth — gives `(hirings, recruit, percent)`. Scoring against the raw tree would penalise
+  span resolution that the real gold says is correct.
+- **The header block comes from the first data line, not the header tree's extent.** Some
+  tables put a row-tree ancestor inside the data-column region (table 1045 has "ratio" at
+  column 1, which is also a data column), so `max(left_cols)+1` pushes `n_header_cols` past
+  the first data column. `min(data cols)` / `min(data rows)` is the robust definition.
+- **Grid↔gold line correspondence is verified, not assumed.** The hmt data matrix is
+  data-only and drops lines the grid keeps (an ancestor occupying a row of its own), so gold
+  lines are matched onto grid lines monotonically by leaf label — visible in the grid; only
+  the *path* is what the reconstructor must infer — then checked by value equality against
+  the hmt data matrix at ≥90%. Unverifiable tables are **excluded, not guessed**: dev scores
+  424/540 (116 excluded), train 2,043. The excluded tables are a coverage caveat on the
+  numbers above.
+
+`top_header_rows_num` is unused: over all 3,597 tables it exceeds the tree-derived
+header-row count by exactly 1 in 3,596 of them.
 
 ## Scope note
 

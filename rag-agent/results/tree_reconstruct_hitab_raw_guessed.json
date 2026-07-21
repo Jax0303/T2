@@ -1,0 +1,468 @@
+{
+  "population": {
+    "name": "hitab_real_grid",
+    "split": "dev",
+    "n_tables_requested": 540,
+    "n_tables_scored": 424,
+    "exclusions": {
+      "ok": 424,
+      "unaligned": 116
+    }
+  },
+  "gold": "hmt parse (data/tables/hmt) \u2014 same ground truth as the rest of the pipeline",
+  "input": "real source grid (data/tables/raw -> texts)",
+  "boundary_mode": "guessed",
+  "col_path_exact_match": 0.8819,
+  "row_path_exact_match": 0.5614,
+  "col_paths_scored": 3464,
+  "row_paths_scored": 7196,
+  "boundary_guess_accuracy": 0.7146,
+  "by_size_bucket": {
+    "10-20": {
+      "n_tables": 196,
+      "col_path_exact_match": 0.8638,
+      "row_path_exact_match": 0.6301
+    },
+    ">20": {
+      "n_tables": 129,
+      "col_path_exact_match": 0.9364,
+      "row_path_exact_match": 0.5114
+    },
+    "<=10x10": {
+      "n_tables": 99,
+      "col_path_exact_match": 0.8396,
+      "row_path_exact_match": 0.5935
+    }
+  },
+  "by_max_depth": {
+    "col_depth1": {
+      "n": 269,
+      "exact_match": 0.8736
+    },
+    "col_depth2": {
+      "n": 2779,
+      "exact_match": 0.882
+    },
+    "col_depth3": {
+      "n": 416,
+      "exact_match": 0.887
+    },
+    "row_depth1": {
+      "n": 744,
+      "exact_match": 0.9785
+    },
+    "row_depth2": {
+      "n": 3815,
+      "exact_match": 0.5919
+    },
+    "row_depth3": {
+      "n": 2113,
+      "exact_match": 0.3564
+    },
+    "row_depth4": {
+      "n": 524,
+      "exact_match": 0.5744
+    }
+  },
+  "row_axis_by_depth_expressible": {
+    "no": {
+      "n_tables": 177,
+      "n_paths": 3422,
+      "row_path_exact_match": 0.1113
+    },
+    "yes": {
+      "n_tables": 247,
+      "n_paths": 3774,
+      "row_path_exact_match": 0.9695
+    }
+  },
+  "error_examples": [
+    {
+      "table_id": "0_1_nsf21326-tab001",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 17,
+          "gold": [
+            "other",
+            "totalb"
+          ],
+          "rec": [
+            "totalb"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 18,
+          "gold": [
+            "other",
+            "total"
+          ],
+          "rec": [
+            "total"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1008",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 1,
+          "gold": [
+            "black male workers",
+            "immigrant"
+          ],
+          "rec": [
+            "black male workers",
+            "immigrant",
+            "percent"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent",
+            "agriculture, forestry, fishing and hunting"
+          ],
+          "rec": [
+            "agriculture, forestry, fishing and hunting"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent",
+            "mining, quarrying, and oil and gas extraction"
+          ],
+          "rec": [
+            "mining, quarrying, and oil and gas extraction"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1017",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 3,
+          "gold": [
+            "hirings",
+            "recruit",
+            "percent"
+          ],
+          "rec": [
+            "hirings",
+            "recruit"
+          ]
+        },
+        {
+          "axis": "col",
+          "grid_line": 6,
+          "gold": [
+            "departures",
+            "other",
+            "percent"
+          ],
+          "rec": [
+            "departures",
+            "other"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 17,
+          "gold": [
+            "provincial and territorial total",
+            "royal canadian mounted police operation and corporate headquarters, training academy depot division and forensic labs"
+          ],
+          "rec": [
+            "royal canadian mounted police operation and corporate headquarters, training academy depot division and forensic labs"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1026",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 1,
+          "gold": [
+            "men",
+            "all"
+          ],
+          "rec": [
+            "men",
+            "all",
+            "percent"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent",
+            "age at landing"
+          ],
+          "rec": [
+            "age at landing"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent",
+            "age at landing",
+            "20 to 24"
+          ],
+          "rec": [
+            "20 to 24"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "102_totto12065-2",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 2,
+          "gold": [
+            "games",
+            "gp"
+          ],
+          "rec": [
+            "games",
+            "gp",
+            "1"
+          ]
+        },
+        {
+          "axis": "col",
+          "grid_line": 3,
+          "gold": [
+            "games",
+            "gs"
+          ],
+          "rec": [
+            "games",
+            "gs",
+            "0"
+          ]
+        },
+        {
+          "axis": "col",
+          "grid_line": 4,
+          "gold": [
+            "kick return",
+            "ret"
+          ],
+          "rec": [
+            "kick return",
+            "ret",
+            "-"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "103_54_nsf19316-tab001",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "all companies",
+            "micro companiesa"
+          ],
+          "rec": [
+            "micro companiesa"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "all companies",
+            "micro companiesa",
+            "5-9"
+          ],
+          "rec": [
+            "5-9"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "all companies",
+            "small companies"
+          ],
+          "rec": [
+            "small companies"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1043",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 1,
+          "gold": [
+            "private incorporated firms",
+            "immigrant-owned"
+          ],
+          "rec": [
+            "private incorporated firms",
+            "immigrant-owned",
+            "percent distribution"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent distribution",
+            "industry"
+          ],
+          "rec": [
+            "industry"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent distribution",
+            "industry",
+            "unknown"
+          ],
+          "rec": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "104_54_nsf19316-tab002",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 1,
+          "gold": [
+            "micro companiesa"
+          ],
+          "rec": []
+        },
+        {
+          "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "micro companiesa",
+            "5-9"
+          ],
+          "rec": [
+            "5-9"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "small companies",
+            "10-19"
+          ],
+          "rec": [
+            "10-19"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1063",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 1,
+          "gold": [
+            "shelters"
+          ],
+          "rec": [
+            "shelters",
+            "number"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "number",
+            "newfoundland and labrador"
+          ],
+          "rec": [
+            "newfoundland and labrador"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "number",
+            "prince edward island"
+          ],
+          "rec": [
+            "prince edward island"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1097",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 1,
+          "gold": [
+            "weighted estimates",
+            "first nations"
+          ],
+          "rec": [
+            "weighted estimates",
+            "first nations",
+            "unweighted number"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "unweighted number",
+            "number"
+          ],
+          "rec": [
+            "number"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "average",
+            "average age"
+          ],
+          "rec": [
+            "average age"
+          ]
+        }
+      ]
+    }
+  ]
+}

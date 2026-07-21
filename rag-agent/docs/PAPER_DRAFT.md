@@ -100,10 +100,29 @@ as few cells as possible. Contributions:
   labels) and rows whose stub cell is a fully parenthesised units note
   ("(Dollars in millions)"), which otherwise reads as the first data row in 39% of
   financial tables. We do **not** claim this rule as novel. HiTab ships gold trees
-  (this step is a no-op there); against those gold trees (n=540) reconstruction is
-  exact-match col 99.91% / row 99.96%, with boundary guessing at 1.000 — i.e. the
-  guessed-boundary pipeline matches the known-boundary ceiling. End-to-end sentence
-  generation is exact-match P/R/F1 .9981 with zero value errors. The residual 0.19%
+  (this step is a no-op there). Two measurements against those gold trees must be kept
+  apart. **(a) Algorithm self-consistency**, on a synthetic grid our own encoder produced
+  by flattening the gold paths blank-after-first (n=540): exact-match col 99.91% /
+  row 99.96%, boundary guessing 1.000. Because the decoder is the exact inverse of that
+  encoder, this is close to definitional and is reported only as a consistency check.
+  **(b) Reconstruction accuracy on HiTab's real source grids** (`data/tables/raw`, which
+  no prior experiment read), gold from the published `hmt` parse, grid↔gold line
+  correspondence verified rather than assumed (train, 2,043 tables verified): exact-match
+  col **97.57%** / row **58.16%**, boundary guessing **.7146** (dev, 424 tables: .9749 /
+  .5781 / .7146). The row figure is not a decoder weakness but a *representation* gap, and
+  it splits cleanly: where the row hierarchy fits the stub-column block the reconstructor
+  scores **.9946** (1,216 tables), and where it does not it scores **.0968** (827 tables,
+  41%) — HiTab writes deep row hierarchies as parent rows inside a *single* stub column,
+  with the level carried by indentation that the text grid drops, whereas the synthetic
+  encoder in (a) renders an *n*-deep row hierarchy as *n* separate stub columns. So (a)
+  scored a grid shape 41% of real tables do not have. Recovering those levels needs a
+  signal the grid does not carry (HTML indentation/class markup, or `merged_regions`); it
+  is a bound on the input, not a lever we have left unpulled. See
+  `docs/RECONSTRUCTION_VALIDITY.md`. End-to-end sentence generation is exact-match P/R/F1
+  .9981 with zero value errors — but `sentence_accuracy_hitab.py` consumes the *same*
+  synthetic flatten as (a), so that figure inherits (a)'s caveat and is a
+  self-consistency number too; it has not been re-measured on the real grids. The residual
+  0.19%
   (128/67,315 cells) is information-theoretically unrecoverable from a flattened grid:
   a blank under a merged parent is ambiguous between "continues" and "absent", and is
   recoverable only from colspan/rowspan markup. Those 128 cells all carry a column-path
