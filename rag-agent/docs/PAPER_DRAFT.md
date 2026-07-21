@@ -118,12 +118,33 @@ as few cells as possible. Contributions:
   scored a grid shape 41% of real tables do not have. Recovering those levels needs a
   signal the grid does not carry (HTML indentation/class markup, or `merged_regions`); it
   is a bound on the input, not a lever we have left unpulled. See
-  `docs/RECONSTRUCTION_VALIDITY.md`. End-to-end sentence generation is exact-match P/R/F1
-  .9981 with zero value errors — but `sentence_accuracy_hitab.py` consumes the *same*
-  synthetic flatten as (a), so that figure inherits (a)'s caveat and is a
-  self-consistency number too; it has not been re-measured on the real grids. The residual
+  `docs/RECONSTRUCTION_VALIDITY.md`.
+  **(c) End-to-end sentence generation.** The artifact that actually reaches the index is
+  the verbalized sentence, so it is scored directly, on the same real grids and the same
+  value-verified alignment as (b) (`scripts/sentence_accuracy_hitab_raw.py`; the mapping
+  is 1:1 over data cells, so precision = recall and the number is a plain accuracy):
+
+  | split | tables | sentences | `short`/`medium` exact | `long` exact | value errors |
+  |---|---|---|---|---|---|
+  | train | 2,043 | 274,837 | **.7226** (.7772 value-normalized) | .5344 | 4,284 (1.6%) |
+  | dev | 424 | 55,207 | **.7476** (.7967) | .5551 | 935 (1.7%) |
+
+  Three things this says. (i) The number to cite for sentence generation is **≈.72–.75**,
+  not the .9981 that `sentence_accuracy_hitab.py` reports: that script consumes the *same*
+  synthetic flatten as (a) and is therefore a self-consistency number, superseded here.
+  (ii) The errors are **addresses, not values** — only 1.6% of wrong sentences carry a
+  wrong value, while wrong row paths (48,038) and wrong column paths (41,552) account for
+  the rest. A sentence that reaches the index with the right number under the wrong header
+  path is exactly the failure this paper is about, so this is a real ceiling on the
+  pipeline, not a cosmetic one. (iii) `long` is ~19 points worse than `short`/`medium`
+  because it spells out the full row path, so it is exposed to the row-axis gap (b)
+  quantifies; the styles differ in *how much of the reconstruction they expose*, not in
+  generation quality. 476/2,519 train tables (19%) are excluded as unalignable rather
+  than guessed at, so these figures describe the alignable majority.
+  The residual
   0.19%
-  (128/67,315 cells) is information-theoretically unrecoverable from a flattened grid:
+  (128/67,315 cells) *of the round-trip in (a)* is information-theoretically unrecoverable
+  from a flattened grid:
   a blank under a merged parent is ambiguous between "continues" and "absent", and is
   recoverable only from colspan/rowspan markup. Those 128 cells all carry a column-path
   error, but this is **not** evidence of an axis-specific weakness — a single carry

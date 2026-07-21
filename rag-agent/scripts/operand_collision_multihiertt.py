@@ -44,8 +44,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import numpy as np
 
-from rag_agent.reconstruct import guess_n_header_rows, parse_html_table, \
-    reconstruct_col_paths, reconstruct_row_paths
+from rag_agent.reconstruct import guess_n_header_cols, guess_n_header_rows, \
+    parse_html_table, reconstruct_col_paths, reconstruct_row_paths
 from rag_agent.retrieve.encoders import _tokenize, default_encoder
 
 RETRIEVERS = [("bm25", 0.0), ("dense", 1.0), ("hybrid", 0.5)]
@@ -123,24 +123,29 @@ def build_corpus(queries, docs):
             grid = parse_html_table(html)
             if len(grid) < 3 or len(grid[0]) < 2:
                 continue
+            # Row boundary first (with the 1-column default), then the column
+            # boundary from that boundary — the order validated in
+            # tree_reconstruct_hitab_raw.py, where the gold nhc is available.
             nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=1), len(grid) - 1))
+            nhc = max(1, min(guess_n_header_cols(grid, n_header_rows=nhr),
+                             len(grid[0]) - 1))
             tables[(uid, t_idx)] = {
-                "grid": grid, "nhr": nhr,
-                "rows": reconstruct_row_paths(grid, nhr, 1),
-                "cols": reconstruct_col_paths(grid, nhr, 1),
+                "grid": grid, "nhr": nhr, "nhc": nhc,
+                "rows": reconstruct_row_paths(grid, nhr, nhc),
+                "cols": reconstruct_col_paths(grid, nhr, nhc),
             }
 
     cells = []               # dicts: table, r, c (grid coords), row_path, col_path, value
     cell_index = {}          # (uid, t_idx, r, c) -> global index
     for key, t in tables.items():
-        grid, nhr = t["grid"], t["nhr"]
+        grid, nhr, nhc = t["grid"], t["nhr"], t["nhc"]
         for r in range(nhr, len(grid)):
             rp = t["rows"][r - nhr] if (r - nhr) < len(t["rows"]) else []
-            for c in range(1, len(grid[0])):
+            for c in range(nhc, len(grid[0])):
                 v = (grid[r][c] or "").strip()
                 if not v:
                     continue
-                cp = t["cols"][c - 1] if (c - 1) < len(t["cols"]) else []
+                cp = t["cols"][c - nhc] if (c - nhc) < len(t["cols"]) else []
                 cell_index[key + (r, c)] = len(cells)
                 cells.append({"table": key, "row_path": rp, "col_path": cp, "value": v})
 

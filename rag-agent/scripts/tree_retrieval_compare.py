@@ -120,8 +120,8 @@ def run_hitab(args, encoder):
 
 def run_multihiertt(args, encoder):
     from datasets import load_dataset
-    from rag_agent.reconstruct import parse_html_table, guess_n_header_rows, \
-        reconstruct_col_paths, reconstruct_row_paths
+    from rag_agent.reconstruct import parse_html_table, guess_n_header_cols, \
+        guess_n_header_rows, reconstruct_col_paths, reconstruct_row_paths
 
     ds = load_dataset(args.hf_dataset, split="train")
     # `for row in ds` decodes Arrow -> Python one row at a time and is very
@@ -144,11 +144,17 @@ def run_multihiertt(args, encoder):
                 continue
             if not in_bucket(len(grid), len(grid[0]), args.bucket):
                 continue
+            # Row boundary first (with the 1-column default), then the column
+            # boundary from that boundary — the order validated in
+            # tree_reconstruct_hitab_raw.py, where the gold nhc is available.
             nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=1), len(grid) - 1))
-            rec_cols = reconstruct_col_paths(grid, nhr, n_header_cols=1)
-            rec_rows = reconstruct_row_paths(grid, nhr, n_header_cols=1)
+            nhc = max(1, min(guess_n_header_cols(grid, n_header_rows=nhr),
+                             len(grid[0]) - 1))
+            rec_cols = reconstruct_col_paths(grid, nhr, nhc)
+            rec_rows = reconstruct_row_paths(grid, nhr, nhc)
             pool[f"{uid}::{t_idx}"] = {
-                "grid": grid, "nhr": nhr, "rec_cols": rec_cols, "rec_rows": rec_rows,
+                "grid": grid, "nhr": nhr, "nhc": nhc,
+                "rec_cols": rec_cols, "rec_rows": rec_rows,
             }
     print(f"[multihiertt] docs scanned: {n_docs}  "
           f"| tables in size bucket {args.bucket}: {len(pool)}")
@@ -157,13 +163,13 @@ def run_multihiertt(args, encoder):
     flat_texts, tree_texts = [], []
     for tid in table_ids:
         t = pool[tid]
-        grid, nhr = t["grid"], t["nhr"]
+        grid, nhr, nhc = t["grid"], t["nhr"], t["nhc"]
         flat_lines, tree_lines = [], []
         for r in range(nhr, len(grid)):
-            flat_lines.append(" | ".join(v for v in grid[r][1:] if True))
+            flat_lines.append(" | ".join(v for v in grid[r][nhc:] if True))
             rp = " > ".join(t["rec_rows"][r - nhr]) if (r - nhr) < len(t["rec_rows"]) else ""
-            for c in range(1, len(grid[0])):
-                cp = " > ".join(t["rec_cols"][c - 1]) if (c - 1) < len(t["rec_cols"]) else ""
+            for c in range(nhc, len(grid[0])):
+                cp = " > ".join(t["rec_cols"][c - nhc]) if (c - nhc) < len(t["rec_cols"]) else ""
                 path = " > ".join(x for x in (rp, cp) if x)
                 v = grid[r][c]
                 tree_lines.append(f"{path}: {v}" if path else v)

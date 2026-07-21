@@ -1,0 +1,426 @@
+{
+  "population": {
+    "name": "hitab_real_grid",
+    "split": "train",
+    "n_tables_requested": 2519,
+    "n_tables_scored": 2043,
+    "exclusions": {
+      "ok": 2043,
+      "unaligned": 476
+    }
+  },
+  "gold": "hmt parse (data/tables/hmt) verbalized by the same templates",
+  "input": "real source grid (data/tables/raw -> texts)",
+  "boundary_mode": "guessed",
+  "n_header_cols_mode": "guessed",
+  "by_style": {
+    "short": {
+      "sentences": 274837,
+      "sentence_exact": 0.7226,
+      "sentence_exact_value_normalized": 0.7772,
+      "err_wrong_value": 4284,
+      "err_wrong_row_path": 48038,
+      "err_wrong_col_path": 41552,
+      "err_number_formatting_only": 8949
+    },
+    "medium": {
+      "sentences": 274837,
+      "sentence_exact": 0.7226,
+      "sentence_exact_value_normalized": 0.7772,
+      "err_wrong_value": 4284,
+      "err_wrong_row_path": 48038,
+      "err_wrong_col_path": 41552,
+      "err_number_formatting_only": 8949
+    },
+    "long": {
+      "sentences": 274837,
+      "sentence_exact": 0.5344,
+      "sentence_exact_value_normalized": 0.5602,
+      "err_wrong_value": 4284,
+      "err_wrong_row_path": 99721,
+      "err_wrong_col_path": 41726,
+      "err_number_formatting_only": 8949
+    }
+  },
+  "by_style_by_size_bucket": {
+    "short": {
+      "10-20": {
+        "sentences": 107356,
+        "sentence_exact": 0.7618,
+        "sentence_exact_value_normalized": 0.8121,
+        "err_wrong_value": 2007,
+        "err_wrong_row_path": 14490,
+        "err_wrong_col_path": 13277,
+        "err_number_formatting_only": 4580
+      },
+      "<=10x10": {
+        "sentences": 17894,
+        "sentence_exact": 0.6759,
+        "sentence_exact_value_normalized": 0.7477,
+        "err_wrong_value": 168,
+        "err_wrong_row_path": 4357,
+        "err_wrong_col_path": 3043,
+        "err_number_formatting_only": 730
+      },
+      ">20": {
+        "sentences": 149587,
+        "sentence_exact": 0.7,
+        "sentence_exact_value_normalized": 0.7557,
+        "err_wrong_value": 2109,
+        "err_wrong_row_path": 29191,
+        "err_wrong_col_path": 25232,
+        "err_number_formatting_only": 3639
+      }
+    },
+    "medium": {
+      "10-20": {
+        "sentences": 107356,
+        "sentence_exact": 0.7618,
+        "sentence_exact_value_normalized": 0.8121,
+        "err_wrong_value": 2007,
+        "err_wrong_row_path": 14490,
+        "err_wrong_col_path": 13277,
+        "err_number_formatting_only": 4580
+      },
+      "<=10x10": {
+        "sentences": 17894,
+        "sentence_exact": 0.6759,
+        "sentence_exact_value_normalized": 0.7477,
+        "err_wrong_value": 168,
+        "err_wrong_row_path": 4357,
+        "err_wrong_col_path": 3043,
+        "err_number_formatting_only": 730
+      },
+      ">20": {
+        "sentences": 149587,
+        "sentence_exact": 0.7,
+        "sentence_exact_value_normalized": 0.7557,
+        "err_wrong_value": 2109,
+        "err_wrong_row_path": 29191,
+        "err_wrong_col_path": 25232,
+        "err_number_formatting_only": 3639
+      }
+    },
+    "long": {
+      "10-20": {
+        "sentences": 107356,
+        "sentence_exact": 0.631,
+        "sentence_exact_value_normalized": 0.662,
+        "err_wrong_value": 2007,
+        "err_wrong_row_path": 28523,
+        "err_wrong_col_path": 13390,
+        "err_number_formatting_only": 4580
+      },
+      "<=10x10": {
+        "sentences": 17894,
+        "sentence_exact": 0.4142,
+        "sentence_exact_value_normalized": 0.4459,
+        "err_wrong_value": 168,
+        "err_wrong_row_path": 9032,
+        "err_wrong_col_path": 3080,
+        "err_number_formatting_only": 730
+      },
+      ">20": {
+        "sentences": 149587,
+        "sentence_exact": 0.4794,
+        "sentence_exact_value_normalized": 0.5008,
+        "err_wrong_value": 2109,
+        "err_wrong_row_path": 62166,
+        "err_wrong_col_path": 25256,
+        "err_number_formatting_only": 3639
+      }
+    }
+  },
+  "error_examples_long_style": [
+    {
+      "table_id": "0_totto74-1",
+      "errors": [
+        {
+          "cell": [
+            0,
+            9
+          ],
+          "generated": "In career statistics, receiving, avg for 2014, tampa bay buccaneers is 10.0.",
+          "gold": "In career statistics, receiving, avg for 2014, tampa bay buccaneers is 10."
+        },
+        {
+          "cell": [
+            1,
+            9
+          ],
+          "generated": "In career statistics, receiving, avg for 2015, tampa bay buccaneers is 11.0.",
+          "gold": "In career statistics, receiving, avg for 2015, tampa bay buccaneers is 11."
+        },
+        {
+          "cell": [
+            4,
+            8
+          ],
+          "generated": "In career statistics, receiving, yds for total is 1,190.",
+          "gold": "In career statistics, receiving, yds for total is 1190."
+        }
+      ]
+    },
+    {
+      "table_id": "0_totto109-3",
+      "errors": [
+        {
+          "cell": [
+            0,
+            4
+          ],
+          "generated": "In managerial record, record, win % for rot-wei\u00df erfurt, 11 april 2003, 30 june 2003 is 10.00.",
+          "gold": "In managerial record, record, win % for rot-wei\u00df erfurt, 11 april 2003, 30 june 2003 is 10."
+        },
+        {
+          "cell": [
+            2,
+            4
+          ],
+          "generated": "In managerial record, record, win % for 1. fc kaiserslautern, 4 may 2009, 30 june 2009 is 25.00.",
+          "gold": "In managerial record, record, win % for 1. fc kaiserslautern, 4 may 2009, 30 june 2009 is 25."
+        },
+        {
+          "cell": [
+            5,
+            4
+          ],
+          "generated": "In managerial record, record, win % for 1. fc nurnberg, 25 june 2016, 7 march 2017 is 32.00.",
+          "gold": "In managerial record, record, win % for 1. fc nurnberg, 25 june 2016, 7 march 2017 is 32."
+        }
+      ]
+    },
+    {
+      "table_id": "0_totto115-4",
+      "errors": [
+        {
+          "cell": [
+            0,
+            0
+          ],
+          "generated": "In national football league statistics, 1983, sf is sf.",
+          "gold": "In national football league statistics, rushing, team for 1983 is sf."
+        },
+        {
+          "cell": [
+            0,
+            1
+          ],
+          "generated": "In national football league statistics, att for 1983, sf is 176.",
+          "gold": "In national football league statistics, rushing, att for 1983 is 176."
+        },
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In national football league statistics, yds for 1983, sf is 725.",
+          "gold": "In national football league statistics, rushing, yds for 1983 is 725."
+        }
+      ]
+    },
+    {
+      "table_id": "1000",
+      "errors": [
+        {
+          "cell": [
+            1,
+            0
+          ],
+          "generated": "In distribution of black immigrants aged 25 to 59, born in the caribbean and bermuda or in latin america, admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, principal applicants, percent for jamaica is 31.2.",
+          "gold": "In distribution of black immigrants aged 25 to 59, born in the caribbean and bermuda or in latin america, admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, principal applicants for percent, women, jamaica is 31.2."
+        },
+        {
+          "cell": [
+            1,
+            1
+          ],
+          "generated": "In distribution of black immigrants aged 25 to 59, born in the caribbean and bermuda or in latin america, admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, secondary applicants for jamaica is 9.0.",
+          "gold": "In distribution of black immigrants aged 25 to 59, born in the caribbean and bermuda or in latin america, admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, secondary applicants for percent, women, jamaica is 9."
+        },
+        {
+          "cell": [
+            1,
+            2
+          ],
+          "generated": "In distribution of black immigrants aged 25 to 59, born in the caribbean and bermuda or in latin america, admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, total for jamaica is 40.2.",
+          "gold": "In distribution of black immigrants aged 25 to 59, born in the caribbean and bermuda or in latin america, admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, total for percent, women, jamaica is 40.2."
+        }
+      ]
+    },
+    {
+      "table_id": "1001",
+      "errors": [
+        {
+          "cell": [
+            1,
+            0
+          ],
+          "generated": "In distribution of black immigrants aged 25 to 59, born in africa and admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, principal applicants, percent for ethiopia is 3.0.",
+          "gold": "In distribution of black immigrants aged 25 to 59, born in africa and admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, principal applicants for percent, women, ethiopia is 3."
+        },
+        {
+          "cell": [
+            1,
+            1
+          ],
+          "generated": "In distribution of black immigrants aged 25 to 59, born in africa and admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, secondary applicants for ethiopia is 3.6.",
+          "gold": "In distribution of black immigrants aged 25 to 59, born in africa and admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, secondary applicants for percent, women, ethiopia is 3.6."
+        },
+        {
+          "cell": [
+            1,
+            2
+          ],
+          "generated": "In distribution of black immigrants aged 25 to 59, born in africa and admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, total for ethiopia is 6.6.",
+          "gold": "In distribution of black immigrants aged 25 to 59, born in africa and admitted since 1980 at age 25 or older, by admission category, sex and country of birth, canada, 2016, economic immigrants, total for percent, women, ethiopia is 6.6."
+        }
+      ]
+    },
+    {
+      "table_id": "1002",
+      "errors": [
+        {
+          "cell": [
+            0,
+            1
+          ],
+          "generated": "In percentage of women aged 25 to 59 who were lone parents, by region of origin of the immigrant and canadian-born populations, 2001 to 2016, 2006 for total is .",
+          "gold": "In percentage of women aged 25 to 59 who were lone parents, by region of origin of the immigrant and canadian-born populations, 2001 to 2016, 2006 for total is percent."
+        },
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In percentage of women aged 25 to 59 who were lone parents, by region of origin of the immigrant and canadian-born populations, 2001 to 2016, 2011 for total is .",
+          "gold": "In percentage of women aged 25 to 59 who were lone parents, by region of origin of the immigrant and canadian-born populations, 2001 to 2016, 2011 for total is percent."
+        },
+        {
+          "cell": [
+            0,
+            3
+          ],
+          "generated": "In percentage of women aged 25 to 59 who were lone parents, by region of origin of the immigrant and canadian-born populations, 2001 to 2016, 2016 for total is .",
+          "gold": "In percentage of women aged 25 to 59 who were lone parents, by region of origin of the immigrant and canadian-born populations, 2001 to 2016, 2016 for total is percent."
+        }
+      ]
+    },
+    {
+      "table_id": "1003",
+      "errors": [
+        {
+          "cell": [
+            0,
+            0
+          ],
+          "generated": "In percentage of black immigrants aged 25 to 59 with a postsecondary diploma, by sex and region or country of birth, canada, 2016, women, non-university or university postsecondary diploma, percent is percent.",
+          "gold": "In percentage of black immigrants aged 25 to 59 with a postsecondary diploma, by sex and region or country of birth, canada, 2016, women, non-university or university postsecondary diploma for region of birth is percent."
+        },
+        {
+          "cell": [
+            0,
+            1
+          ],
+          "generated": "In percentage of black immigrants aged 25 to 59 with a postsecondary diploma, by sex and region or country of birth, canada, 2016, women, university degree only is .",
+          "gold": "In percentage of black immigrants aged 25 to 59 with a postsecondary diploma, by sex and region or country of birth, canada, 2016, women, university degree only for region of birth is percent."
+        },
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In percentage of black immigrants aged 25 to 59 with a postsecondary diploma, by sex and region or country of birth, canada, 2016, men, non-university or university postsecondary diploma is .",
+          "gold": "In percentage of black immigrants aged 25 to 59 with a postsecondary diploma, by sex and region or country of birth, canada, 2016, men, non-university or university postsecondary diploma for region of birth is percent."
+        }
+      ]
+    },
+    {
+      "table_id": "1005",
+      "errors": [
+        {
+          "cell": [
+            0,
+            0
+          ],
+          "generated": "In employment and unemployment rates (expressed as percentages) of black immigrant populations aged 25 to 59, by sex and country of birth, canada, 2016, women, employment rate, percent is percent.",
+          "gold": "In employment and unemployment rates (expressed as percentages) of black immigrant populations aged 25 to 59, by sex and country of birth, canada, 2016, women, employment rate for region of birth is percent."
+        },
+        {
+          "cell": [
+            0,
+            1
+          ],
+          "generated": "In employment and unemployment rates (expressed as percentages) of black immigrant populations aged 25 to 59, by sex and country of birth, canada, 2016, women, unemployment rate is .",
+          "gold": "In employment and unemployment rates (expressed as percentages) of black immigrant populations aged 25 to 59, by sex and country of birth, canada, 2016, women, unemployment rate for region of birth is percent."
+        },
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In employment and unemployment rates (expressed as percentages) of black immigrant populations aged 25 to 59, by sex and country of birth, canada, 2016, men, employment rate is .",
+          "gold": "In employment and unemployment rates (expressed as percentages) of black immigrant populations aged 25 to 59, by sex and country of birth, canada, 2016, men, employment rate for region of birth is percent."
+        }
+      ]
+    },
+    {
+      "table_id": "1006",
+      "errors": [
+        {
+          "cell": [
+            1,
+            0
+          ],
+          "generated": "In employment and unemployment rates (expressed as percentages) of the canadian-born black population aged 25 to 59, by sex and country of ancestry, 2016, women, employment rate, percent for caribbean and latin america is 78.3.",
+          "gold": "In employment and unemployment rates (expressed as percentages) of the canadian-born black population aged 25 to 59, by sex and country of ancestry, 2016, women, employment rate for percent, region of ancestry, caribbean and latin america is 78.3."
+        },
+        {
+          "cell": [
+            1,
+            1
+          ],
+          "generated": "In employment and unemployment rates (expressed as percentages) of the canadian-born black population aged 25 to 59, by sex and country of ancestry, 2016, women, unemployment rate for caribbean and latin america is 8.0.",
+          "gold": "In employment and unemployment rates (expressed as percentages) of the canadian-born black population aged 25 to 59, by sex and country of ancestry, 2016, women, unemployment rate for percent, region of ancestry, caribbean and latin america is 8."
+        },
+        {
+          "cell": [
+            1,
+            2
+          ],
+          "generated": "In employment and unemployment rates (expressed as percentages) of the canadian-born black population aged 25 to 59, by sex and country of ancestry, 2016, men, employment rate for caribbean and latin america is 77.3.",
+          "gold": "In employment and unemployment rates (expressed as percentages) of the canadian-born black population aged 25 to 59, by sex and country of ancestry, 2016, men, employment rate for percent, region of ancestry, caribbean and latin america is 77.3."
+        }
+      ]
+    },
+    {
+      "table_id": "1007",
+      "errors": [
+        {
+          "cell": [
+            0,
+            0
+          ],
+          "generated": "In percentage distribution of black female workers and other female workers aged 25 to 59, by industry sector and generation, canada, 2016, black female workers, immigrant, percent for agriculture, forestry, fishing and hunting is 0.2.",
+          "gold": "In percentage distribution of black female workers and other female workers aged 25 to 59, by industry sector and generation, canada, 2016, black female workers, immigrant for percent, agriculture, forestry, fishing and hunting is 0.2."
+        },
+        {
+          "cell": [
+            0,
+            1
+          ],
+          "generated": "In percentage distribution of black female workers and other female workers aged 25 to 59, by industry sector and generation, canada, 2016, black female workers, second generation for agriculture, forestry, fishing and hunting is 0.1.",
+          "gold": "In percentage distribution of black female workers and other female workers aged 25 to 59, by industry sector and generation, canada, 2016, black female workers, second generation for percent, agriculture, forestry, fishing and hunting is 0.1."
+        },
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In percentage distribution of black female workers and other female workers aged 25 to 59, by industry sector and generation, canada, 2016, black female workers, third generation or more for agriculture, forestry, fishing and hunting is 0.5.",
+          "gold": "In percentage distribution of black female workers and other female workers aged 25 to 59, by industry sector and generation, canada, 2016, black female workers, third generation or more for percent, agriculture, forestry, fishing and hunting is 0.5."
+        }
+      ]
+    }
+  ]
+}

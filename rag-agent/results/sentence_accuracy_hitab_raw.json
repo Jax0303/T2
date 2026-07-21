@@ -1,0 +1,426 @@
+{
+  "population": {
+    "name": "hitab_real_grid",
+    "split": "dev",
+    "n_tables_requested": 540,
+    "n_tables_scored": 424,
+    "exclusions": {
+      "ok": 424,
+      "unaligned": 116
+    }
+  },
+  "gold": "hmt parse (data/tables/hmt) verbalized by the same templates",
+  "input": "real source grid (data/tables/raw -> texts)",
+  "boundary_mode": "guessed",
+  "n_header_cols_mode": "guessed",
+  "by_style": {
+    "short": {
+      "sentences": 55207,
+      "sentence_exact": 0.7476,
+      "sentence_exact_value_normalized": 0.7967,
+      "err_wrong_value": 935,
+      "err_wrong_row_path": 10267,
+      "err_wrong_col_path": 6791,
+      "err_number_formatting_only": 1369
+    },
+    "medium": {
+      "sentences": 55207,
+      "sentence_exact": 0.7476,
+      "sentence_exact_value_normalized": 0.7967,
+      "err_wrong_value": 935,
+      "err_wrong_row_path": 10267,
+      "err_wrong_col_path": 6791,
+      "err_number_formatting_only": 1369
+    },
+    "long": {
+      "sentences": 55207,
+      "sentence_exact": 0.5551,
+      "sentence_exact_value_normalized": 0.5739,
+      "err_wrong_value": 935,
+      "err_wrong_row_path": 20886,
+      "err_wrong_col_path": 6802,
+      "err_number_formatting_only": 1369
+    }
+  },
+  "by_style_by_size_bucket": {
+    "short": {
+      "10-20": {
+        "sentences": 21934,
+        "sentence_exact": 0.7599,
+        "sentence_exact_value_normalized": 0.7967,
+        "err_wrong_value": 402,
+        "err_wrong_row_path": 3167,
+        "err_wrong_col_path": 3077,
+        "err_number_formatting_only": 663
+      },
+      ">20": {
+        "sentences": 29766,
+        "sentence_exact": 0.7463,
+        "sentence_exact_value_normalized": 0.8016,
+        "err_wrong_value": 477,
+        "err_wrong_row_path": 6395,
+        "err_wrong_col_path": 3091,
+        "err_number_formatting_only": 520
+      },
+      "<=10x10": {
+        "sentences": 3507,
+        "sentence_exact": 0.6821,
+        "sentence_exact_value_normalized": 0.7559,
+        "err_wrong_value": 56,
+        "err_wrong_row_path": 705,
+        "err_wrong_col_path": 623,
+        "err_number_formatting_only": 186
+      }
+    },
+    "medium": {
+      "10-20": {
+        "sentences": 21934,
+        "sentence_exact": 0.7599,
+        "sentence_exact_value_normalized": 0.7967,
+        "err_wrong_value": 402,
+        "err_wrong_row_path": 3167,
+        "err_wrong_col_path": 3077,
+        "err_number_formatting_only": 663
+      },
+      ">20": {
+        "sentences": 29766,
+        "sentence_exact": 0.7463,
+        "sentence_exact_value_normalized": 0.8016,
+        "err_wrong_value": 477,
+        "err_wrong_row_path": 6395,
+        "err_wrong_col_path": 3091,
+        "err_number_formatting_only": 520
+      },
+      "<=10x10": {
+        "sentences": 3507,
+        "sentence_exact": 0.6821,
+        "sentence_exact_value_normalized": 0.7559,
+        "err_wrong_value": 56,
+        "err_wrong_row_path": 705,
+        "err_wrong_col_path": 623,
+        "err_number_formatting_only": 186
+      }
+    },
+    "long": {
+      "10-20": {
+        "sentences": 21934,
+        "sentence_exact": 0.6127,
+        "sentence_exact_value_normalized": 0.6346,
+        "err_wrong_value": 402,
+        "err_wrong_row_path": 6395,
+        "err_wrong_col_path": 3078,
+        "err_number_formatting_only": 663
+      },
+      ">20": {
+        "sentences": 29766,
+        "sentence_exact": 0.5222,
+        "sentence_exact_value_normalized": 0.5359,
+        "err_wrong_value": 477,
+        "err_wrong_row_path": 13067,
+        "err_wrong_col_path": 3091,
+        "err_number_formatting_only": 520
+      },
+      "<=10x10": {
+        "sentences": 3507,
+        "sentence_exact": 0.4742,
+        "sentence_exact_value_normalized": 0.5161,
+        "err_wrong_value": 56,
+        "err_wrong_row_path": 1424,
+        "err_wrong_col_path": 633,
+        "err_number_formatting_only": 186
+      }
+    }
+  },
+  "error_examples_long_style": [
+    {
+      "table_id": "0_1_nsf21326-tab001",
+      "errors": [
+        {
+          "cell": [
+            16,
+            0
+          ],
+          "generated": "In table 1 federal r&d spending by mandatory and discretionary budget authority, by agency: fys 2017-19, 2017 actual for totalb is 125289.",
+          "gold": "In table 1 federal r&d spending by mandatory and discretionary budget authority, by agency: fys 2017-19, 2017 actual for other, totalb is 125289."
+        },
+        {
+          "cell": [
+            16,
+            1
+          ],
+          "generated": "In table 1 federal r&d spending by mandatory and discretionary budget authority, by agency: fys 2017-19, 2018 annualized cr for totalb is 119001.",
+          "gold": "In table 1 federal r&d spending by mandatory and discretionary budget authority, by agency: fys 2017-19, 2018 annualized cr for other, totalb is 119001."
+        },
+        {
+          "cell": [
+            16,
+            2
+          ],
+          "generated": "In table 1 federal r&d spending by mandatory and discretionary budget authority, by agency: fys 2017-19, 2019 proposed for totalb is 118056.",
+          "gold": "In table 1 federal r&d spending by mandatory and discretionary budget authority, by agency: fys 2017-19, 2019 proposed for other, totalb is 118056."
+        }
+      ]
+    },
+    {
+      "table_id": "1008",
+      "errors": [
+        {
+          "cell": [
+            0,
+            0
+          ],
+          "generated": "In percentage distribution of black male workers and other male workers aged 25 to 59, by industry sector and generation, canada, 2016, black male workers, immigrant, percent for agriculture, forestry, fishing and hunting is 0.7.",
+          "gold": "In percentage distribution of black male workers and other male workers aged 25 to 59, by industry sector and generation, canada, 2016, black male workers, immigrant for percent, agriculture, forestry, fishing and hunting is 0.7."
+        },
+        {
+          "cell": [
+            0,
+            1
+          ],
+          "generated": "In percentage distribution of black male workers and other male workers aged 25 to 59, by industry sector and generation, canada, 2016, black male workers, second generation for agriculture, forestry, fishing and hunting is 0.3.",
+          "gold": "In percentage distribution of black male workers and other male workers aged 25 to 59, by industry sector and generation, canada, 2016, black male workers, second generation for percent, agriculture, forestry, fishing and hunting is 0.3."
+        },
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In percentage distribution of black male workers and other male workers aged 25 to 59, by industry sector and generation, canada, 2016, black male workers, third generation or more for agriculture, forestry, fishing and hunting is 1.3.",
+          "gold": "In percentage distribution of black male workers and other male workers aged 25 to 59, by industry sector and generation, canada, 2016, black male workers, third generation or more for percent, agriculture, forestry, fishing and hunting is 1.3."
+        }
+      ]
+    },
+    {
+      "table_id": "1012",
+      "errors": [
+        {
+          "cell": [
+            0,
+            0
+          ],
+          "generated": "In current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018, current dollars, total expenditures, thousands of dollars for 1986/1987 is 3,771,205.",
+          "gold": "In current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018, current dollars, total expenditures, thousands of dollars for 1986/1987 is 3771205."
+        },
+        {
+          "cell": [
+            0,
+            4
+          ],
+          "generated": "In current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018, constant (2002) dollars, total expenditures, thousands of dollars for 1986/1987 is 5,748,789.",
+          "gold": "In current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018, constant (2002) dollars, total expenditures, thousands of dollars for 1986/1987 is 5748789."
+        },
+        {
+          "cell": [
+            1,
+            0
+          ],
+          "generated": "In current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018, current dollars, total expenditures, thousands of dollars for 1987/1988 is 4,027,809.",
+          "gold": "In current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018, current dollars, total expenditures, thousands of dollars for 1987/1988 is 4027809."
+        }
+      ]
+    },
+    {
+      "table_id": "1017",
+      "errors": [
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In hirings and departures of police officers, by province and territory, canada, 2017/2018, hirings, recruit for newfoundland and labrador is 32.",
+          "gold": "In hirings and departures of police officers, by province and territory, canada, 2017/2018, hirings, recruit, percent for newfoundland and labrador is 32."
+        },
+        {
+          "cell": [
+            0,
+            5
+          ],
+          "generated": "In hirings and departures of police officers, by province and territory, canada, 2017/2018, departures, other for newfoundland and labrador is 36.",
+          "gold": "In hirings and departures of police officers, by province and territory, canada, 2017/2018, departures, other, percent for newfoundland and labrador is 36."
+        },
+        {
+          "cell": [
+            1,
+            2
+          ],
+          "generated": "In hirings and departures of police officers, by province and territory, canada, 2017/2018, hirings, recruit for prince edward island is 0.",
+          "gold": "In hirings and departures of police officers, by province and territory, canada, 2017/2018, hirings, recruit, percent for prince edward island is 0."
+        }
+      ]
+    },
+    {
+      "table_id": "1026",
+      "errors": [
+        {
+          "cell": [
+            1,
+            0
+          ],
+          "generated": "In this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers), men, all, percent for 20 to 24 is 10.3.",
+          "gold": "In this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers), men, all for percent, age at landing, 20 to 24 is 10.3."
+        },
+        {
+          "cell": [
+            1,
+            1
+          ],
+          "generated": "In this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers), men, low-paying firm for 20 to 24 is 13.3.",
+          "gold": "In this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers), men, low-paying firm for percent, age at landing, 20 to 24 is 13.3."
+        },
+        {
+          "cell": [
+            1,
+            2
+          ],
+          "generated": "In this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers), men, medium-low-paying firm for 20 to 24 is 12.1.",
+          "gold": "In this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers), men, medium-low-paying firm for percent, age at landing, 20 to 24 is 12.1."
+        }
+      ]
+    },
+    {
+      "table_id": "1029",
+      "errors": [
+        {
+          "cell": [
+            0,
+            6
+          ],
+          "generated": "In average counts of adults under correctional supervision, by type of supervision and jurisdiction, 2013/2014, probation, number for newfoundland and labrador is 1,578.",
+          "gold": "In average counts of adults under correctional supervision, by type of supervision and jurisdiction, 2013/2014, probation, number for newfoundland and labrador is 1578."
+        },
+        {
+          "cell": [
+            4,
+            0
+          ],
+          "generated": "In average counts of adults under correctional supervision, by type of supervision and jurisdiction, 2013/2014, sentenced custody, number for quebec is 2,814.",
+          "gold": "In average counts of adults under correctional supervision, by type of supervision and jurisdiction, 2013/2014, sentenced custody, number for quebec is 2814."
+        },
+        {
+          "cell": [
+            4,
+            3
+          ],
+          "generated": "In average counts of adults under correctional supervision, by type of supervision and jurisdiction, 2013/2014, remand, number for quebec is 2,365.",
+          "gold": "In average counts of adults under correctional supervision, by type of supervision and jurisdiction, 2013/2014, remand, number for quebec is 2365."
+        }
+      ]
+    },
+    {
+      "table_id": "102_totto12065-2",
+      "errors": [
+        {
+          "cell": [
+            0,
+            0
+          ],
+          "generated": "In return, games, gp, 1 is 1.",
+          "gold": "In return, games, gp for 2010, min is 1."
+        },
+        {
+          "cell": [
+            0,
+            1
+          ],
+          "generated": "In return, games, gs, 0 is 0.",
+          "gold": "In return, games, gs for 2010, min is 0."
+        },
+        {
+          "cell": [
+            0,
+            2
+          ],
+          "generated": "In return, kick return, ret, - is -.",
+          "gold": "In return, kick return, ret for 2010, min is -."
+        }
+      ]
+    },
+    {
+      "table_id": "103_54_nsf19316-tab001",
+      "errors": [
+        {
+          "cell": [
+            2,
+            0
+          ],
+          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2008 for 5-9 is 3947.",
+          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2008 for all companies, micro companiesa, 5-9 is 3947."
+        },
+        {
+          "cell": [
+            2,
+            1
+          ],
+          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2009 for 5-9 is 4078.",
+          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2009 for all companies, micro companiesa, 5-9 is 4078."
+        },
+        {
+          "cell": [
+            2,
+            2
+          ],
+          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2010 for 5-9 is 3851.",
+          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2010 for all companies, micro companiesa, 5-9 is 3851."
+        }
+      ]
+    },
+    {
+      "table_id": "1043",
+      "errors": [
+        {
+          "cell": [
+            1,
+            0
+          ],
+          "generated": "In industrial distribution of private businesses, by ownership and two-digit naics industry code, canada, 2010, private incorporated firms, immigrant-owned, percent distribution for unknown is 13.6.",
+          "gold": "In industrial distribution of private businesses, by ownership and two-digit naics industry code, canada, 2010, private incorporated firms, immigrant-owned for percent distribution, industry, unknown is 13.6."
+        },
+        {
+          "cell": [
+            1,
+            1
+          ],
+          "generated": "In industrial distribution of private businesses, by ownership and two-digit naics industry code, canada, 2010, private incorporated firms, canadian-born-owned for unknown is 6.3.",
+          "gold": "In industrial distribution of private businesses, by ownership and two-digit naics industry code, canada, 2010, private incorporated firms, canadian-born-owned for percent distribution, industry, unknown is 6.3."
+        },
+        {
+          "cell": [
+            2,
+            0
+          ],
+          "generated": "In industrial distribution of private businesses, by ownership and two-digit naics industry code, canada, 2010, private incorporated firms, immigrant-owned, percent distribution for agriculture, forestry, fishing and hunting is 1.2.",
+          "gold": "In industrial distribution of private businesses, by ownership and two-digit naics industry code, canada, 2010, private incorporated firms, immigrant-owned for percent distribution, industry, agriculture, forestry, fishing and hunting is 1.2."
+        }
+      ]
+    },
+    {
+      "table_id": "104_54_nsf19316-tab002",
+      "errors": [
+        {
+          "cell": [
+            1,
+            0
+          ],
+          "generated": "In table 2. domestic r&d intensity for companies located in the united states that performed or funded r&d, by company size: 2008-15, 2008 for 5-9 is 27.9.",
+          "gold": "In table 2. domestic r&d intensity for companies located in the united states that performed or funded r&d, by company size: 2008-15, 2008 for micro companiesa, 5-9 is 27.9."
+        },
+        {
+          "cell": [
+            1,
+            1
+          ],
+          "generated": "In table 2. domestic r&d intensity for companies located in the united states that performed or funded r&d, by company size: 2008-15, 2009 for 5-9 is 9.7.",
+          "gold": "In table 2. domestic r&d intensity for companies located in the united states that performed or funded r&d, by company size: 2008-15, 2009 for micro companiesa, 5-9 is 9.7."
+        },
+        {
+          "cell": [
+            1,
+            2
+          ],
+          "generated": "In table 2. domestic r&d intensity for companies located in the united states that performed or funded r&d, by company size: 2008-15, 2010 for 5-9 is 12.9.",
+          "gold": "In table 2. domestic r&d intensity for companies located in the united states that performed or funded r&d, by company size: 2008-15, 2010 for micro companiesa, 5-9 is 12.9."
+        }
+      ]
+    }
+  ]
+}
