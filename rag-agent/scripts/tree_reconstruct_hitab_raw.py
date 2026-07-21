@@ -60,7 +60,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from rag_agent.reconstruct import guess_n_header_rows, reconstruct_col_paths, reconstruct_row_paths
+from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
+                                   reconstruct_col_paths, reconstruct_row_paths)
 
 
 # ---------------------------------------------------------------------------
@@ -190,7 +191,8 @@ def size_bucket(n_rows: int, n_cols: int) -> str:
 # scoring
 # ---------------------------------------------------------------------------
 
-def score_table(raw: dict, bt, guess_boundary: bool):
+def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
+                force_cols: int = 0):
     texts = raw.get("texts") or []
     if not texts:
         return None, "no_texts"
@@ -216,14 +218,21 @@ def score_table(raw: dict, bt, guess_boundary: bool):
 
     nhr = guess_n_header_rows(texts, n_header_cols=nhc_gold) if guess_boundary else nhr_gold
     boundary_ok = int(nhr == nhr_gold)
+    if force_cols:
+        nhc = force_cols
+    elif guess_cols:
+        nhc = guess_n_header_cols(texts, n_header_rows=nhr)
+    else:
+        nhc = nhc_gold
+    cols_ok = int(nhc == nhc_gold)
 
-    rec_cols = reconstruct_col_paths(texts, nhr, nhc_gold)
-    rec_rows = reconstruct_row_paths(texts, nhr, nhc_gold)
+    rec_cols = reconstruct_col_paths(texts, nhr, nhc)
+    rec_rows = reconstruct_row_paths(texts, nhr, nhc)
 
     col_hit = col_tot = row_hit = row_tot = 0
     errors = []
     for j, c in enumerate(cols_c):
-        i = c - nhc_gold
+        i = c - nhc
         rp = rec_cols[i] if 0 <= i < len(rec_cols) else []
         gp = bt.col_path(j)
         col_tot += 1
@@ -251,8 +260,9 @@ def score_table(raw: dict, bt, guess_boundary: bool):
         # A row path deeper than the stub block has no column to live in: the
         # grid carries the level only as indentation, which `texts` drops.
         "row_depth_expressible": max_row_depth <= nhc_gold,
+        "nhc_used": nhc,
     }
-    return (col_hit, col_tot, row_hit, row_tot, boundary_ok, errors, meta), "ok"
+    return (col_hit, col_tot, row_hit, row_tot, boundary_ok, cols_ok, errors, meta), "ok"
 
 
 def main() -> int:
@@ -262,6 +272,10 @@ def main() -> int:
     ap.add_argument("--split", default="dev")
     ap.add_argument("--max-tables", type=int, default=0)
     ap.add_argument("--guess-boundary", action="store_true")
+    ap.add_argument("--force-cols", type=int, default=0,
+                    help="pin n_header_cols to this value (the old hardcoded baseline)")
+    ap.add_argument("--guess-cols", action="store_true",
+                    help="guess n_header_cols too, instead of taking it from gold")
     ap.add_argument("--out", default="results/tree_reconstruct_hitab_raw.json")
     args = ap.parse_args()
 
@@ -279,7 +293,7 @@ def main() -> int:
     depth = defaultdict(lambda: {"total": 0, "hit": 0})
     expressible = defaultdict(lambda: {"total": 0, "hit": 0, "n_tables": 0})
     col_hit = col_tot = row_hit = row_tot = 0
-    b_ok = b_tot = 0
+    b_ok = b_tot = c_ok = 0
     reasons = Counter()
     examples = []
 
@@ -293,13 +307,14 @@ def main() -> int:
         except Exception:
             reasons["unreadable"] += 1
             continue
-        res, why = score_table(raw, tables[tid], args.guess_boundary)
+        res, why = score_table(raw, tables[tid], args.guess_boundary, args.guess_cols,
+                               args.force_cols)
         reasons[why] += 1
         if res is None:
             continue
-        ch, ct, rh, rt, bok, errs, meta = res
+        ch, ct, rh, rt, bok, cok, errs, meta = res
         col_hit += ch; col_tot += ct; row_hit += rh; row_tot += rt
-        b_tot += 1; b_ok += bok
+        b_tot += 1; b_ok += bok; c_ok += cok
         s = bucket[size_bucket(meta["n_data_rows"], meta["n_data_cols"])]
         s["n_tables"] += 1
         s["col_hit"] += ch; s["col_total"] += ct
@@ -329,6 +344,7 @@ def main() -> int:
         "row_path_exact_match": round(row_hit / row_tot, 4) if row_tot else None,
         "col_paths_scored": col_tot, "row_paths_scored": row_tot,
         "boundary_guess_accuracy": round(b_ok / b_tot, 4) if (args.guess_boundary and b_tot) else None,
+        "n_header_cols_guess_accuracy": round(c_ok / b_tot, 4) if ((args.guess_cols or args.force_cols) and b_tot) else None,
         "by_size_bucket": by_bucket,
         "by_max_depth": {k: {"n": v["total"],
                              "exact_match": round(v["hit"] / v["total"], 4) if v["total"] else None}
@@ -347,6 +363,8 @@ def main() -> int:
     print(f"boundary mode        : {out['boundary_mode']}")
     if out["boundary_guess_accuracy"] is not None:
         print(f"boundary guess acc   : {out['boundary_guess_accuracy']}")
+    if out["n_header_cols_guess_accuracy"] is not None:
+        print(f"n_header_cols acc    : {out['n_header_cols_guess_accuracy']}")
     print(f"col_path_exact_match : {out['col_path_exact_match']}  ({col_hit}/{col_tot})")
     print(f"row_path_exact_match : {out['row_path_exact_match']}  ({row_hit}/{row_tot})")
     print("\nby size bucket (max(data rows, data cols)):")

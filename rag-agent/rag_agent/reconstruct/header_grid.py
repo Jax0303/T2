@@ -254,3 +254,70 @@ def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int
         if _numeric_data_row(grid, r, n_header_cols):
             return r
     return limit
+
+
+# Statistical agencies write "no data" as a marker, not a blank. A data column
+# full of these is still a data column; counting the markers as text is what
+# made the column guess overshoot by one on 374 of 2,043 HiTab tables.
+_MISSING_MARKERS = {"..", "...", ".", "-", "--", "–", "—", "n/a", "na", "x",
+                    "f", "e", "r", "*", "†", "‡", "nil", "none", "not available"}
+
+
+def _data_like(s: str) -> bool:
+    return looks_numeric(s) or s.strip().lower() in _MISSING_MARKERS
+
+
+def _numeric_data_col(grid: Grid, c: int, n_header_rows: int) -> bool:
+    cells = [grid[r][c] for r in range(n_header_rows, len(grid))
+             if c < len(grid[r])]
+    n_nonblank = sum(1 for x in cells if x.strip())
+    n_num = sum(1 for x in cells if _data_like(x))
+    return bool(n_nonblank) and n_num / n_nonblank >= 0.5
+
+
+def guess_n_header_cols(grid: Grid, n_header_rows: int = 1,
+                        max_header_cols: int = 4) -> int:
+    """Guess how many left columns are row headers — the column-axis mirror of
+    :func:`guess_n_header_rows`, so callers stop passing a hardcoded
+    ``n_header_cols=1``.
+
+    **Blank-tail signal (primary).** A stub column's label sits at the *top* of
+    the header block and spans down, so the block's LAST header row is blank
+    over the stub columns and carries the leaf column labels everywhere else::
+
+        club     season   league                 <- header row 0
+        (blank)  (blank)  division  apps  goals  <- last header row -> 2 stubs
+
+    Measured on 2,043 HiTab tables against gold: 91.3% exact, versus 76.0% for
+    the content-type scan below. The gap is entirely text-valued tables (sports
+    and election tables whose data cells are team names and dates), where no
+    numeric-vs-text rule can find the first data column at all.
+
+    **Content-type scan (fallback, when the header block is one row deep).** The
+    first column whose cells below the header block are >=50% data-like.
+
+    Returns at least 1: treating column 0 as data would leave the row axis with
+    no labels, strictly worse than the one-column default.
+
+    Deliberately NOT solved here: a hierarchy encoded as parent rows *inside* one
+    stub column (HiTab does this in 41% of tables) is invisible to any column
+    count — see docs/RECONSTRUCTION_VALIDITY.md.
+    """
+    if not grid or not grid[0]:
+        return 1
+    limit = min(len(grid[0]), max_header_cols)
+
+    if n_header_rows >= 2 and n_header_rows - 1 < len(grid):
+        last = grid[n_header_rows - 1]
+        n = 0
+        for c in range(min(len(last), limit)):
+            if last[c].strip():
+                break
+            n += 1
+        if n >= 1:
+            return n
+
+    for c in range(limit):
+        if _numeric_data_col(grid, c, n_header_rows):
+            return max(c, 1)
+    return max(limit, 1)
