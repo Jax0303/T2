@@ -65,5 +65,14 @@ def main():
         print(f"{r['class']:28s} {r['n']:5d} {r['C0']:6.3f} {r['C1']:6.3f} {r['C2']:6.3f} {r['dC1_C0']:+7.3f} {r['dC2_C1']:+7.3f}")
 
 
+def _no_args() -> None:
+    """This script takes no options. Without a parser, argparse-style flags are
+    silently ignored and the full experiment runs anyway — which is how a bare
+    ``--help`` sweep silently regenerated committed artifacts."""
+    import argparse
+    argparse.ArgumentParser(description=__doc__).parse_args()
+
+
 if __name__ == "__main__":
+    _no_args()
     main()

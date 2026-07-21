@@ -8,6 +8,13 @@ This document covers: setup, methodology, every benchmark run made
 (v1 / v2 / v3 — with the bug fixes that produced each), and the honest
 findings. It is meant to be self-contained for a thesis appendix.
 
+> **Historical record.** These runs describe the pipeline as of v3.1. Two
+> things have changed since and are *not* retro-fitted into the numbers below:
+> the **verifier rerank stage (§3.4) was removed** — retrieval is now the vector
+> score alone, so `retrieve/verifier.py`, `--no-verify` and the `w_vector`/
+> `w_verify` weights no longer exist — and `run_eval.py` now also reports
+> **hmtEM**, HiTab's official scorer. §9 has the commands that actually run today.
+
 ---
 
 ## 1. Goal
@@ -198,7 +205,8 @@ retriever (dense VDB, structural, keyword) ranks over this same pool via
 `allowed_ids`, so the comparison is fair in distractor count. The proposed
 **structural** retriever (header-path + numeric-cell signal) and the
 **keyword** ablation are non-parametric and evaluated against this dense
-baseline with paired tests (`scripts/compare_runs.py`).
+baseline with paired tests (`scripts/compare_runs.py` — removed in `ec42d81`;
+the surviving paired-test harness is `scripts/operand_collision_significance.py`).
 
 ### 3.4 Verifier (`retrieve/verifier.py`)
 
@@ -588,29 +596,48 @@ two-sided. With n=40 this is the most we can claim.
 
 ## 9. Reproducing
 
+Run from the `rag-agent/` package root. `--data-dir` and `--chroma-dir` are
+required (there are no defaults); the Chroma table-level index must be built
+ahead of time.
+
 ```bash
-# 0. expects HiTab dev + a Chroma table-level index built ahead of time
+cd rag-agent
+export PYTHONPATH=.
+PY=.venv/bin/python
+COMMON="--data-dir data/hitab --chroma-dir data/chroma_db"
+
+# 0. wiring check, no LLM and no API key:
+$PY scripts/smoke_test.py $COMMON --device cpu --n-per-class 2
+
 # 1. local Qwen-7B run (no API key needed):
-python rag-agent/scripts/run_eval.py \
+$PY scripts/run_eval.py $COMMON \
     --llm local:Qwen/Qwen2.5-7B-Instruct \
     --per-class 8 --limit 40 \
     --retriever-device cpu \
-    --out rag-agent/results/local_qwen7b_v3.json
+    --out results/local_qwen7b_v3.json
 
 # 2. Groq Llama-3.1-8B run (free tier):
-GROQ_API_KEY=... python rag-agent/scripts/run_eval.py \
+GROQ_API_KEY=... $PY scripts/run_eval.py $COMMON \
     --llm groq:llama-3.1-8b-instant \
     --per-class 8 --limit 40 \
-    --out rag-agent/results/groq_llama3.1_8b.json
+    --out results/groq_llama3.1_8b.json
 
 # 3. mixed: Qwen as reader, 70B Groq as cell-extractor (recommended if TPD allows):
-GROQ_API_KEY=... python rag-agent/scripts/run_eval.py \
+GROQ_API_KEY=... $PY scripts/run_eval.py $COMMON \
     --llm local:Qwen/Qwen2.5-7B-Instruct \
     --symbolic-llm groq:llama-3.3-70b-versatile \
     --per-class 8 --limit 40 \
     --retriever-device cpu \
-    --out rag-agent/results/mixed.json
+    --out results/mixed.json
+
+# all ablation configs in sequence:
+bash scripts/run_all_experiments.sh data/hitab data/chroma_db \
+    --llm groq:llama-3.3-70b-versatile --retriever-device cpu
 ```
+
+> The EM/NM numbers reported in this document predate the `hmtEM` column
+> (HiTab's own scorer) that `run_eval.py` now also prints. Quote `hmtEM`
+> against other papers; `NM`'s ±2% tolerance and free-text number scan are ours.
 
 All output JSONs include per-query traces (vector top-5, verified
 top-5, intent, plan stages run, symbolic plan + resolved cells + AST

@@ -379,23 +379,31 @@ print(result)
 
 ## How to run any of these live
 
-```bash
-export GROQ_API_KEY=...   # only if using Groq backend; otherwise unset
-export LLM_BACKEND=local  # uses local Qwen-7B-4bit on GPU
-
-./rag-agent/scripts/codegen_eval.py --query "<one of the queries above>"
-```
-
-For an interactive session:
+> **Note (2026-07-22).** The `codegen_eval.py` driver these examples were written
+> against was removed in `ec42d81`; there is no single-query REPL any more. The
+> equivalent runnable path is `scripts/run_eval.py`, which draws its own
+> stratified sample rather than taking a query string.
 
 ```bash
-./rag-agent/scripts/codegen_eval.py --repl
+cd rag-agent
+export GROQ_API_KEY=...            # or --llm local:Qwen/Qwen2.5-7B-Instruct
+
+PYTHONPATH=. .venv/bin/python scripts/run_eval.py \
+    --data-dir data/hitab --chroma-dir data/chroma_db \
+    --llm groq:llama-3.3-70b-versatile --retriever-device cpu \
+    --per-class 8 --out results/demo.json
 ```
 
-Force a specific table (bypass retrieval, e.g. to demonstrate the codegen
-step in isolation):
+To isolate the symbolic/codegen step from retrieval noise (the "force a specific
+table" case above), pass gold tables straight in:
 
 ```bash
-./rag-agent/scripts/codegen_eval.py -q "..." --table 765
+PYTHONPATH=. .venv/bin/python scripts/run_eval.py \
+    --data-dir data/hitab --chroma-dir data/chroma_db \
+    --oracle-retrieval --extractor decomposition --out results/demo_oracle.json
 ```
+
+Every run writes per-query rows (retrieved top-5, extracted cells, expression,
+AST value, reader output, hmtEM/EM/NM verdicts) so a single example can be read
+back out of the JSON.
 

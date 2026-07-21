@@ -66,6 +66,11 @@ _READER_SYSTEM = (
 )
 
 _FINAL_RE = re.compile(r"final\s*answer\s*[:\-]\s*(.+?)(?:\n|$)", re.IGNORECASE | re.DOTALL)
+# A line that is only a section label carries no answer. Smaller models often
+# emit "Reasoning:" on its own line and run out of tokens before the verdict;
+# taking the first line then scored the label itself as the prediction.
+_LABEL_ONLY_RE = re.compile(r"^\s*(reasoning|thought|analysis|step\s*\d*|answer)\s*[:\-]?\s*$",
+                            re.IGNORECASE)
 
 
 def _parse_final_answer(raw: str) -> str:
@@ -73,7 +78,11 @@ def _parse_final_answer(raw: str) -> str:
     if m:
         s = m.group(1).strip()
     else:
-        s = next((ln.strip() for ln in (raw or "").splitlines() if ln.strip()), raw or "")
+        # No marker: the verdict, if any, is at the END of the reasoning, not
+        # the start. Fall back to the last content-bearing line.
+        lines = [ln.strip() for ln in (raw or "").splitlines() if ln.strip()]
+        lines = [ln for ln in lines if not _LABEL_ONLY_RE.match(ln)]
+        s = lines[-1] if lines else ""
     s = re.sub(r"^(answer|the answer is|=|:)\s*", "", s, flags=re.IGNORECASE)
     return s.rstrip(".").strip()
 

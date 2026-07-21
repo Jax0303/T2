@@ -5,7 +5,11 @@
 method: "hpir"
 seed: 42
 
-# ── 검색 평가 (scripts/hpir_retrieval_eval.py) ──
+# ⚠️ 이 config는 실행 진입점이 없다. `scripts/hpir_retrieval_eval.py`는 정리 커밋
+#    `ec42d81`에서 삭제됐고, answer 절이 가리키는 `scripts/method_grounded.py`만
+#    남아 있다. 설계 기록으로만 보존 — 돌리려면 검색 하니스를 다시 써야 한다.
+
+# ── 검색 평가 (scripts/hpir_retrieval_eval.py — 삭제됨) ──
 retrieval:
   embedder: "BAAI/bge-large-en-v1.5"
   collection: "plain_markdown_bge_large_en_v1_5"

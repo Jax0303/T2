@@ -1,33 +1,50 @@
 #!/usr/bin/env bash
-# Run the full experiment suite for the thesis.
-# Usage: bash scripts/run_all_experiments.sh --data-dir /path/to/HiTab --chroma-dir /path/to/chroma
+# Run the agent-pipeline ablation suite (run_eval.py) end to end.
+#
+# Usage: bash scripts/run_all_experiments.sh <HITAB_DIR> <CHROMA_DIR> [extra run_eval args...]
+# Example:
+#   bash scripts/run_all_experiments.sh data/hitab data/chroma_db \
+#        --llm groq:llama-3.3-70b-versatile --retriever-device cpu
+#
+# Paths are resolved relative to the rag-agent package root, so this works from
+# anywhere. Anything after the two directories is forwarded to every run.
 set -euo pipefail
 
-DATA_DIR="${1:?Usage: $0 --data-dir DIR --chroma-dir DIR}"
-shift
-CHROMA_DIR="${1:?}"
-shift
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <HITAB_DIR> <CHROMA_DIR> [extra run_eval args...]" >&2
+    exit 2
+fi
 
-SCRIPT="python rag-agent/scripts/run_eval.py"
-COMMON="--data-dir $DATA_DIR --chroma-dir $CHROMA_DIR"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+DATA_DIR="$1"; shift
+CHROMA_DIR="$1"; shift
 
-echo "=== [1/6] v3.1 baseline (original extractor) ==="
-$SCRIPT $COMMON --config rag-agent/configs/v3.1_baseline.yaml
+PY="${PYTHON:-$ROOT/.venv/bin/python}"
+[ -x "$PY" ] || PY="$(command -v python3)"
 
-echo "=== [2/6] Decomposition extractor ==="
-$SCRIPT $COMMON --config rag-agent/configs/decomposition.yaml
+cd "$ROOT"
+export PYTHONPATH="${PYTHONPATH:-.}"
 
-echo "=== [3/6] Ablation: no verifier ==="
-$SCRIPT $COMMON --config rag-agent/configs/ablation_no_verify.yaml
+CONFIGS=(
+    "v3.1_baseline           configs/v3.1_baseline.yaml"
+    "decomposition           configs/decomposition.yaml"
+    "ablation_no_symbolic    configs/ablation_no_symbolic.yaml"
+    "ablation_oracle         configs/ablation_oracle_retrieval.yaml"
+    "decomposition_oracle    configs/decomposition_oracle.yaml"
+)
 
-echo "=== [4/6] Ablation: no symbolic ==="
-$SCRIPT $COMMON --config rag-agent/configs/ablation_no_symbolic.yaml
-
-echo "=== [5/6] Ablation: oracle retrieval ==="
-$SCRIPT $COMMON --config rag-agent/configs/ablation_oracle_retrieval.yaml
-
-echo "=== [6/6] Decomposition + oracle retrieval ==="
-$SCRIPT $COMMON --config rag-agent/configs/decomposition_oracle.yaml
+i=0
+for entry in "${CONFIGS[@]}"; do
+    i=$((i + 1))
+    read -r name cfg <<<"$entry"
+    echo "=== [$i/${#CONFIGS[@]}] $name ($cfg) ==="
+    "$PY" scripts/run_eval.py \
+        --config "$cfg" \
+        --data-dir "$DATA_DIR" \
+        --chroma-dir "$CHROMA_DIR" \
+        "$@"
+done
 
 echo ""
-echo "All experiments complete. Run 'python rag-agent/scripts/aggregate_runs.py rag-agent/results/*.json' to compare."
+echo "Done. Per-run JSON (config, per-class metrics, per-query rows) is under results/."
+echo "Headline answer metric is hmtEM (HiTab's own scorer); NM is a lenient diagnostic."

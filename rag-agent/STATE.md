@@ -5,6 +5,12 @@
 > 본 문서는 T2 검색 라우팅 실험 프로토콜(v1)의 Phase 0 산출물이다. 목적: 재발명 방지를 위한
 > 기존 자산 목록화와 "재사용 / 신규" 구분.
 
+> ⚠️ **2026-06-05 시점 스냅샷 — 현재 코드베이스와 다르다.** 아래 "재사용" 판정된
+> 자산 중 `retrieve/verifier.py`, `scripts/retrieval_eval.py`, `scripts/codegen_eval.py`,
+> `scripts/bootstrap_ci.py`, `scripts/run_ablations.py`, `scripts/hpir_retrieval_eval.py`는
+> 이후 `ec42d81` 정리 커밋에서 삭제됐다. 실행 가능한 현재 진입점은
+> [`README.md`](README.md)의 "주요 스크립트" 절이 정본이다.
+
 ---
 
 ## 0. 환경 사실 (측정값)
