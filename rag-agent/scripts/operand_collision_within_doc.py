@@ -169,6 +169,7 @@ def main() -> int:
                        "collision_min_tables": args.collision_min},
         "corpus": {"n_tables": len(tables), "n_cells": len(cells)},
         "embed_model": args.embed_model,
+        "encoder": encoder.name,
         "reranker": None if args.no_cross else args.reranker,
         "score_math": "per-query min-max over the DOC pool, alpha*dense+(1-alpha)*bm25; "
                       "cross = cross-encoder over the full doc pool",

@@ -336,6 +336,7 @@ def main() -> int:
                         "collision_min_tables": ARGS.collision_min},
         "corpus": {"n_tables": len(tables), "n_cells": n_cells},
         "embed_model": ARGS.embed_model,
+        "encoder": encoder.name,
         "hierarchy_source": "self-reconstructed (rag_agent.reconstruct)",
         "score_math": "per-query min-max, alpha*dense+(1-alpha)*bm25 (HybridIndex convention)",
         "by_scheme": results,

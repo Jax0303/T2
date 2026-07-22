@@ -190,7 +190,8 @@ def main() -> int:
                        "n_queries": n_q,
                        "n_gold_operand_cells": sum(len(q["gold"]) for q in pop)},
         "corpus": {"n_tables": len(tables), "n_cells": len(cells)},
-        "embed_model": args.embed_model, "reranker": args.reranker,
+        "embed_model": args.embed_model, "encoder": encoder.name,
+        "reranker": args.reranker,
         "pool": args.pool, "alpha": args.alpha,
         "collision_min_tables": args.collision_min,
         "score_math": "per-query min-max, alpha*dense+(1-alpha)*bm25; "

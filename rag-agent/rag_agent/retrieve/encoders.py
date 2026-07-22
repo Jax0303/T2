@@ -7,7 +7,10 @@ must also import and run where ``torch`` / ``sentence-transformers`` are absent
 * :class:`SentenceTransformerEncoder` — the real BGE encoder, lazily imported.
 * :class:`HashingEncoder` — a deterministic hashed bag-of-words TF encoder using
   only NumPy. Lexical, not semantic, but enough to exercise the retrieval
-  plumbing and unit tests anywhere.
+  plumbing and unit tests anywhere. Selecting it is always explicit: either
+  construct it directly, or pass ``allow_fallback=True`` to
+  :func:`default_encoder`. It is never substituted for a failed model load
+  behind the caller's back — see that function's docstring.
 
 Both return L2-normalized row vectors so a dot product is cosine similarity.
 
@@ -99,11 +102,25 @@ class SentenceTransformerEncoder:
         return vecs.astype(np.float32)
 
 
-def default_encoder(prefer_model: bool = True, **kwargs) -> Encoder:
-    """Return a real ST encoder if its deps are importable, else HashingEncoder."""
+def default_encoder(
+    prefer_model: bool = True,
+    allow_fallback: bool = False,
+    **kwargs,
+) -> Encoder:
+    """Return a real ST encoder, or :class:`HashingEncoder` if asked to.
+
+    The fallback is **opt-in**. A silent downgrade used to be possible here, and
+    because a run only recorded the *requested* model name, a hashed-bag-of-words
+    run and a real BGE run were indistinguishable in the output JSON. Reported
+    dense numbers must be auditable, so a model that fails to load now raises;
+    pass ``allow_fallback=True`` (or ``prefer_model=False``) to accept the
+    lexical encoder deliberately. Callers writing result files should record
+    ``encoder.name``, not the requested model string.
+    """
     if prefer_model:
         try:
             return SentenceTransformerEncoder(**kwargs)
         except Exception:
-            pass
+            if not allow_fallback:
+                raise
     return HashingEncoder()

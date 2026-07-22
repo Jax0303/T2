@@ -226,6 +226,7 @@ def main() -> int:
 
     encoder = default_encoder(model_name=args.embed_model)
     out = run_hitab(args, encoder) if args.dataset == "hitab" else run_multihiertt(args, encoder)
+    out["encoder"] = encoder.name
     out["dataset"] = args.dataset
     out["bucket"] = args.bucket
     out["require_rowspan"] = args.require_rowspan
