@@ -98,6 +98,9 @@ def main() -> int:
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--out", default="results/osc_minimal_set.json")
+    ap.add_argument("--dump-records", default=None,
+                    help="jsonl of per-query features + per-config (osc, cells), "
+                         "for fitting a budget selector")
     args = ap.parse_args()
 
     queries, tables = load_queries(args.data_dir, args.split, args.max)
@@ -171,7 +174,59 @@ def main() -> int:
             sets[f"cellk{k}"] = cd
             sets[f"precise|cellk{k}"] = precise | cd
 
+        # --- nested escalation ladder ------------------------------------
+        # The named configs above are not nested (cellk5 is not a superset of
+        # dense_k1), so "spend one rung more" does not reliably buy coverage --
+        # which is what a policy needs. This ladder is cumulative by
+        # construction, so both cells and OSC are monotone in the rung index
+        # and a safety margin genuinely converts into completeness.
+        esc, acc_set = [], set()
+        for k in K_GRID:                       # cheapest first: single cells
+            acc_set |= cell_by_k[k]
+            esc.append((f"esc_cell{k}", set(acc_set)))
+        for k in K_GRID:                       # then whole rows
+            acc_set |= dense_by_k[k]
+            esc.append((f"esc_+dense{k}", set(acc_set)))
+        for nm, s in (("+precise", precise), ("+rowc", rowc), ("+colc", colc)):
+            acc_set |= s
+            esc.append((f"esc_{nm}", set(acc_set)))
+
         rec = {"m": len(gold), "gold_cells": len(gold)}
+        for nm, s in esc:
+            rec[f"{nm}__osc"] = operand_set_completeness(gold, s)
+            rec[f"{nm}__cells"] = len(s)
+        esc_hit = [i for i, (_, s) in enumerate(esc) if gold <= s]
+        rec["esc_min_rung"] = esc_hit[0] if esc_hit else None
+        rec["esc_min_cells"] = len(esc[esc_hit[0]][1]) if esc_hit else None
+
+        if args.dump_records:
+            # Features a live system can compute: resolver output, table shape,
+            # question surface. `m` and the gold cells are NOT features -- they
+            # are what we are trying to avoid needing. q.aggregation is a HiTab
+            # annotation, so it is excluded too.
+            ql = q.question.lower()
+            rec["feat"] = {
+                "n_row_paths": len(intent.row_paths),
+                "n_col_paths": len(intent.col_paths),
+                "n_scope_rows": len(R),
+                "n_scope_cols": len(C),
+                "n_precise": len(precise),
+                "n_rowc": len(rowc),
+                "n_colc": len(colc),
+                "tbl_rows": ot.n_rows,
+                "tbl_cols": ot.n_cols,
+                "tbl_numeric": len(_numeric_cells(ot)),
+                "q_tokens": len(ql.split()),
+                "q_has_total": int(any(w in ql for w in ("total", "overall", "all "))),
+                "q_has_avg": int(any(w in ql for w in ("average", "mean", "per "))),
+                "q_has_diff": int(any(w in ql for w in ("difference", "change", "increase",
+                                                        "decrease", "more than", "less than"))),
+                "q_has_ratio": int(any(w in ql for w in ("percent", "proportion", "share",
+                                                         "ratio", "%"))),
+                "q_n_numerals": sum(ch.isdigit() for ch in ql),
+                "dense_top1_cells": len(dense_by_k[1]),
+                "cell_top1_hit": len(cell_by_k[1]),
+            }
         for name, s in sets.items():
             rec[f"{name}__osc"] = operand_set_completeness(gold, s)
             rec[f"{name}__cells"] = len(s)
@@ -183,8 +238,8 @@ def main() -> int:
         if (i + 1) % 25 == 0:
             print(f"  {i+1}/{len(pop)}", flush=True)
 
-    names = [n for n in recs[0] if n.endswith("__osc")]
-    names = [n[:-5] for n in names]
+    names = [n[:-5] for n in recs[0] if n.endswith("__osc")]
+    esc_names = [n for n in names if n.startswith("esc_")]
     n = len(recs)
 
     def summ(sub):
@@ -213,6 +268,17 @@ def main() -> int:
             k: sum(1 for r in solved if r["min_config_at_osc1"] == k)
             for k in sorted({r["min_config_at_osc1"] for r in solved})},
     }
+    esc_solved = [r for r in recs if r["esc_min_rung"] is not None]
+    frontier["escalation"] = {
+        "ladder": esc_names,
+        "n_reaching_osc1": len(esc_solved),
+        "min_cells_mean": round(sum(r["esc_min_cells"] for r in esc_solved) / len(esc_solved), 1)
+        if esc_solved else None,
+        "min_cells_median": round(statistics.median(r["esc_min_cells"] for r in esc_solved), 1)
+        if esc_solved else None,
+        "rung_histogram": {esc_names[i]: sum(1 for r in esc_solved if r["esc_min_rung"] == i)
+                           for i in sorted({r["esc_min_rung"] for r in esc_solved})},
+    }
 
     out = {
         "experiment": "osc_minimal_set", "split": args.split, "seed": SEED,
@@ -230,6 +296,13 @@ def main() -> int:
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2)
+
+    if args.dump_records:
+        os.makedirs(os.path.dirname(args.dump_records) or ".", exist_ok=True)
+        with open(args.dump_records, "w") as fh:
+            for r in recs:
+                fh.write(json.dumps(r) + "\n")
+        print(f"records -> {args.dump_records}")
 
     print(f"\n{'config':<24} {'OSC':>7} {'%complete':>10} {'mean_cells':>11}")
     for c in names:

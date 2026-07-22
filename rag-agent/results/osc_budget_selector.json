@@ -1,0 +1,184 @@
+{
+  "experiment": "osc_budget_selector",
+  "seed": 42,
+  "train": "/tmp/claude-1000/-home-user-T2-1/f779b0fb-a9ce-4765-83cb-31bb47e40748/scratchpad/osc_min_train.jsonl",
+  "test": "/tmp/claude-1000/-home-user-T2-1/f779b0fb-a9ce-4765-83cb-31bb47e40748/scratchpad/osc_min_dev.jsonl",
+  "n_train": 746,
+  "n_test": 161,
+  "n_test_unreachable": 0,
+  "ladder": [
+    "esc_cell1",
+    "esc_cell2",
+    "esc_cell3",
+    "esc_cell5",
+    "esc_cell8",
+    "esc_cell12",
+    "esc_cell20",
+    "esc_cell30",
+    "esc_+dense1",
+    "esc_+dense2",
+    "esc_+dense3",
+    "esc_+dense5",
+    "esc_+dense8",
+    "esc_+dense12",
+    "esc_+dense20",
+    "esc_+dense30",
+    "esc_+precise",
+    "esc_+rowc",
+    "esc_+colc"
+  ],
+  "ladder_mean_cells": {
+    "esc_cell1": 1.0,
+    "esc_cell2": 2.0,
+    "esc_cell3": 3.0,
+    "esc_cell5": 5.0,
+    "esc_cell8": 8.0,
+    "esc_cell12": 12.0,
+    "esc_cell20": 19.7,
+    "esc_cell30": 28.8,
+    "esc_+dense1": 30.4,
+    "esc_+dense2": 32.8,
+    "esc_+dense3": 35.8,
+    "esc_+dense5": 43.2,
+    "esc_+dense8": 55.1,
+    "esc_+dense12": 71.1,
+    "esc_+dense20": 94.9,
+    "esc_+dense30": 112.1,
+    "esc_+precise": 112.5,
+    "esc_+rowc": 112.7,
+    "esc_+colc": 120.3
+  },
+  "fixed_rung": "esc_+colc",
+  "results": {
+    "fixed (train-complete rung)": {
+      "mean_cells": 141.9,
+      "median_cells": 102,
+      "osc": 1.0,
+      "pct_complete": 1.0
+    },
+    "oracle (per-query cheapest)": {
+      "mean_cells": 40.9,
+      "median_cells": 20,
+      "osc": 1.0,
+      "pct_complete": 1.0
+    },
+    "selector margin=+0": {
+      "mean_cells": 21.5,
+      "median_cells": 20,
+      "osc": 0.528,
+      "pct_complete": 0.528
+    },
+    "selector margin=+1": {
+      "mean_cells": 26.9,
+      "median_cells": 30,
+      "osc": 0.6149,
+      "pct_complete": 0.6149
+    },
+    "selector margin=+2": {
+      "mean_cells": 34.1,
+      "median_cells": 30,
+      "osc": 0.6957,
+      "pct_complete": 0.6957
+    },
+    "selector margin=+3": {
+      "mean_cells": 43.2,
+      "median_cells": 30,
+      "osc": 0.7578,
+      "pct_complete": 0.7578
+    },
+    "selector margin=+4": {
+      "mean_cells": 54.6,
+      "median_cells": 34,
+      "osc": 0.8012,
+      "pct_complete": 0.8012
+    },
+    "selector margin=+6": {
+      "mean_cells": 90.6,
+      "median_cells": 48,
+      "osc": 0.9317,
+      "pct_complete": 0.9317
+    },
+    "selector margin=+8": {
+      "mean_cells": 124.5,
+      "median_cells": 74,
+      "osc": 0.9876,
+      "pct_complete": 0.9876
+    },
+    "selector margin=+10": {
+      "mean_cells": 135.7,
+      "median_cells": 90,
+      "osc": 1.0,
+      "pct_complete": 1.0
+    },
+    "selector margin=+12": {
+      "mean_cells": 141.2,
+      "median_cells": 102,
+      "osc": 1.0,
+      "pct_complete": 1.0
+    },
+    "selector margin=+14": {
+      "mean_cells": 141.9,
+      "median_cells": 102,
+      "osc": 1.0,
+      "pct_complete": 1.0
+    },
+    "selector margin=+18": {
+      "mean_cells": 141.9,
+      "median_cells": 102,
+      "osc": 1.0,
+      "pct_complete": 1.0
+    },
+    "quantile a=0.5": {
+      "mean_cells": 19.3,
+      "median_cells": 20,
+      "osc": 0.5093,
+      "pct_complete": 0.5093
+    },
+    "quantile a=0.8": {
+      "mean_cells": 49.2,
+      "median_cells": 30,
+      "osc": 0.7826,
+      "pct_complete": 0.7826
+    },
+    "quantile a=0.9": {
+      "mean_cells": 64.3,
+      "median_cells": 54,
+      "osc": 0.8385,
+      "pct_complete": 0.8385
+    },
+    "quantile a=0.95": {
+      "mean_cells": 96.5,
+      "median_cells": 78,
+      "osc": 0.9441,
+      "pct_complete": 0.9441
+    },
+    "quantile a=0.99": {
+      "mean_cells": 128.3,
+      "median_cells": 90,
+      "osc": 0.9876,
+      "pct_complete": 0.9876
+    }
+  },
+  "best_margin_at_full_completeness": 10,
+  "feature_importance": {
+    "n_colc": 0.2158,
+    "tbl_numeric": 0.1945,
+    "n_rowc": 0.1274,
+    "q_tokens": 0.0992,
+    "n_precise": 0.0685,
+    "tbl_rows": 0.0658,
+    "q_has_total": 0.0519,
+    "tbl_cols": 0.0373,
+    "dense_top1_cells": 0.0367,
+    "q_n_numerals": 0.0356,
+    "n_scope_rows": 0.0272,
+    "n_scope_cols": 0.017,
+    "q_has_ratio": 0.0096,
+    "q_has_avg": 0.0061,
+    "n_col_paths": 0.0054,
+    "q_has_diff": 0.0021,
+    "cell_top1_hit": 0.0,
+    "n_row_paths": 0.0
+  },
+  "note": "Ladder order and model are fitted on train only; test is untouched. Labels use gold operands, features never do."
+}
