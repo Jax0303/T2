@@ -33,10 +33,10 @@ see this.
 
 Verdict against the two outcomes named at the bottom of this file: the column axis lands
 close to the expectation (.975 vs .999, a real but modest drop concentrated at depth 3,
-.878); the row axis takes the "materially lower" branch, and **.9996 cannot stand in §3.0
+.878); the row axis takes the "materially lower" branch, and **.9996 cannot stand in §3.1
 as a row-axis accuracy**.
 
-Consequences already applied: §3.0 restated, `docs/sentence_accuracy_table.html` caveated.
+Consequences already applied: §3.1 restated, `docs/sentence_accuracy_table.html` caveated.
 Consequence *not* claimed: this does not reopen the reconstruction-improvement lever. The
 41% deficit is missing information in the input, not a fixable decoder — recovering it
 needs a signal `texts` does not carry (HTML indentation/class markup, or `merged_regions`).
@@ -45,7 +45,7 @@ needs a signal `texts` does not carry (HTML indentation/class markup, or `merged
 
 ## The claim as it currently reads
 
-`docs/PAPER_DRAFT.md` §3.0 reports header-tree reconstruction at
+`docs/PAPER_DRAFT.md` §3.1 reports header-tree reconstruction at
 **col 0.9991 / row 0.9996 exact match** on HiTab dev (540 tables, 4,413 column paths /
 8,944 row paths), from `results/tree_reconstruct_hitab.json`. It is read as: *the
 reconstructor recovers hierarchical header trees from 2D grids at ~99.9% accuracy.*
@@ -91,7 +91,7 @@ for two independent reasons:
 1. MultiHiertt ships no gold header tree, so exact match is not merely hard but undefined.
    The `segment_coverage` proxy in `scripts/tree_reconstruct_multihiertt.py` is precision-only
    and hardcodes `n_header_cols=1` (99.9% of scored row paths are depth 1) — already
-   documented as unquotable in §3.0.
+   documented as unquotable in §3.1.
 2. Even with gold, 99.9% would be the wrong expectation, because MultiHiertt grids were
    never produced by `flatten_to_grid`. The round trip transfers nothing to inputs it did
    not generate.
@@ -114,9 +114,9 @@ non-circular measurement is available in full:
 
 Outcomes:
 
-- **~99%** → the expectation was right, §3.0 gets a genuine accuracy number instead of a
+- **~99%** → the expectation was right, §3.1 gets a genuine accuracy number instead of a
   round-trip one, and extrapolating to MultiHiertt becomes defensible.
-- **Materially lower** → the current 0.9991/0.9996 cannot stand in §3.0 as written and must
+- **Materially lower** → the current 0.9991/0.9996 cannot stand in §3.1 as written and must
   be relabelled as an algorithm self-consistency check.
 
 The presence of a separate `merged_regions` field is a hint that raw grids encode spans

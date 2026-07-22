@@ -15,43 +15,65 @@ which ranks passages by *relevance*, does not target: as the aggregation scope g
 similarity retrieval drops operands.
 
 We reframe the task at the **retrieval stage**: retrieve the complete operand set with
-as few cells as possible. Contributions:
-1. **Operand-Set Completeness (OSC)** — we *apply and measure* an all-or-nothing
-   set-completeness criterion for table aggregation retrieval. The metric form is not
-   new — it is the standard set-level exact-match convention of multi-hop retrieval:
-   HotpotQA supporting-fact EM (Yang et al., EMNLP 2018), MDR's Passage EM — "both
-   gold passages included in the retrieved passages" (Xiong et al., ICLR 2021), and
-   Beam Retrieval's headline retrieval-EM (Zhang et al., NAACL 2024) are the same
-   all-gold-in-top-k statistic over passage sets. We transfer it from passage sets to
-   operand *cell* sets; our claim is the *application* — no table-RAG work measures
-   it, and a 2025 TQA survey does not list an evidence-completeness metric for this
-   area.
-2. **A structural ceiling diagnosis of similarity retrieval, not just a benchmark
+as few cells as possible. Concretely, we rebuild the table's row/column header trees
+from the raw grid, verbalize **every cell** into one sentence carrying its caption and
+header paths, and index at that granularity, so a query retrieves an operand *set*
+directly instead of a passage that happens to contain some operands. Contributions:
+1. **A cell-granular table-RAG pipeline whose every stage is measured, not assumed**
+   (§3). Raw 2-D grid → reconstructed header trees (§3.1) → one sentence per cell built
+   from caption + row/column header paths (§3.2) → cell-level index and retrieval
+   (§3.3) → answer (§3.4). Each stage is scored against ground truth rather than taken
+   on trust: reconstruction against HiTab's real source grids reaches exact-match
+   **col .976 / row .582**, and the sentences that actually reach the index score
+   **.72–.75** exact — with the errors concentrated in *addresses*, not values (98% of
+   wrong sentences carry the right number under a wrong header path), which is the
+   ceiling this preprocessing imposes on everything downstream. We do **not** claim the
+   header-tree representation or the `(header-path = value)` format as novel — OHD and
+   HD-RAG build the same trees on HiTab (§2). The delta is the *retrieval-stage* use:
+   they serialize a whole table for an LLM, we verbalize per cell and index at that
+   granularity.
+2. **Operand-Set Completeness (OSC) as the objective this pipeline is scored against**
+   (§4) — an all-or-nothing set-completeness criterion for table aggregation retrieval.
+   The metric form is not new: it is the standard set-level exact-match convention of
+   multi-hop retrieval — HotpotQA supporting-fact EM (Yang et al., EMNLP 2018), MDR's
+   Passage EM, "both gold passages included in the retrieved passages" (Xiong et al.,
+   ICLR 2021), and Beam Retrieval's headline retrieval-EM (Zhang et al., NAACL 2024)
+   are the same all-gold-in-top-k statistic over passage sets. We transfer it from
+   passage sets to operand *cell* sets; the claim is the *application* — no table-RAG
+   work measures it, and a 2025 TQA survey does not list an evidence-completeness
+   metric for this area.
+3. **A structural ceiling diagnosis of similarity retrieval, not just a benchmark
    number — in both the single-table and the multi-table regime.** Single-table
    (HiTab): unnamed total/aggregate rows share neither vocabulary nor semantics with
    the query, rank ~4× worse, and are systematically under-reached even at k=50 — this
    single cause explains **62%** of the completeness ceiling (§5.1b). Multi-table
-   corpus (MultiHiertt, 1,203 tables / 42,715 cells): the analogous mechanism is
+   corpus (MultiHiertt, 1,203 tables / 43,324 cells): the analogous mechanism is
    **surface-form collision** — operand cells whose header labels recur across tables
-   rank 3× worse (median 22 vs 7), and structural serialization repairs exactly that
-   slice (set_recall@50 +.135, p=4e-9), with the gap **widening monotonically with
-   operand-set size**; a strong cross-encoder reranker over the same top-100 pool
-   cannot close it — flat's perfect-reranker ceiling (.566) sits *below* structural
-   retrieval's actual @50 (.593) — locating the failure in **candidate generation, not
-   ranking** (§5.1c). The claim is empirical and graded, not absolute: most operands
-   are reachable; the diagnosed slices (structurally-dissimilar totals, colliding
-   surface forms) are where relevance ranking systematically under-serves the
-   all-or-nothing objective — independent of any fix we propose.
-3. **Header-tree scope enumeration** — a header node *is* an aggregation scope, so its
-   operand set is **complete-by-construction**; this is **scope-size robust** where
-   similarity retrieval collapses, and re-localizes the problem to header-path
-   decomposition.
-4. **Both axes are node resolution, and a cross-encoder wins both** — picking the
-   right scope node (query × header joint attention) beats lexical and bi-encoder
-   matchers on **col-recall@2 0.40→0.70** and **row-recall@2 0.44→0.52 (p<0.01)**.
-   Plus axis-specific diagnosis: unnamed *total* rows (68% of row failures) fixed by
-   total-row augmentation (row-cov 0.62→0.89).
-5. **Case study: the ceiling diagnosis (2) is actionable, not just descriptive.** As a
+   rank an order of magnitude worse (flat/hybrid median **264.5 vs 14**), and the
+   verbalization of §3.2 repairs exactly that slice (all-covered@50 **.481 → .556**,
+   paired flips 29:7, **p=3.1e-4**). Completeness **collapses as the operand set grows**
+   (flat set-EM@50 .600→.333→.233→**.000** for scope 2/3–4/5–8/9+, while S3 holds .400
+   at $m{\ge}9$) — the failure concentrates exactly where aggregation needs completeness
+   most; we do *not* claim the treatment effect itself grows with $m$ (§5.1c).
+   A strong cross-encoder reranker over the same top-100 pool does
+   **not** substitute for it: reranking flat's pool buys nothing at @50 (15 gain / 14
+   loss, **p=1.0**) and actively hurts at @10 (12:42, p=5.2e-5), while structural
+   serialization over that same reranked baseline gains (34:13, **p=.003**). Even a
+   *perfect* reranker over flat's pool would reach only .560 — level with S3's
+   unreranked .556, and below S3's own pool ceiling of .631 — locating the constraint in
+   **candidate generation, not ranking** (§5.1c). The claim is empirical and graded, not absolute: most operands are
+   reachable; the diagnosed slices (structurally-dissimilar totals, colliding surface
+   forms) are where relevance ranking systematically under-serves the all-or-nothing
+   objective — independent of any fix we propose.
+4. **Structural augmentation where text matching runs out** (§3.5) — a header node *is*
+   an aggregation scope, so enumerating under it is **complete-by-construction** and
+   **scope-size robust** where similarity retrieval collapses; this re-localizes the
+   problem to node resolution, where both axes turn out to be the same operation and a
+   cross-encoder wins both: **col-recall@2 0.40→0.70**, **row-recall@2 0.44→0.52
+   (p<0.01)**. Plus axis-specific diagnosis: unnamed *total* rows (68% of row failures)
+   fixed by total-row augmentation (row-cov 0.62→0.89). Enumeration is additive to §3.3,
+   not a replacement for it (see 6).
+5. **Case study: the ceiling diagnosis (3) is actionable, not just descriptive.** As a
    worked proof-of-concept, not a proposed general method, we hand-inject total rows for
    the subset of queries whose gold operands actually need one (35% of the population)
    and show BM25 and RRF-hybrid rise significantly there (p≤0.001, closing 58–65% of
@@ -89,7 +111,35 @@ as few cells as possible. Contributions:
 
 ## 3. 방법론 (Methodology)
 
-- **3.0 Header-tree reconstruction (preprocessing).** For corpora shipping raw HTML
+The pipeline turns a two-dimensional table into text a retriever can index at the
+granularity an aggregation query actually needs — one cell at a time, each carrying the
+structure that locates it:
+
+```
+2-D grid  ──3.1──▶  row/column header trees  ──3.2──▶  one sentence per cell
+                                                       (caption + header paths)
+              ──3.3──▶  cell-level index + retrieval  ──3.4──▶  answer
+                                                          ▲
+                                      3.5 scope enumeration / node resolution
+                                          (structural augmentation of 3.3)
+```
+
+The claim the pipeline makes is about *where* structure has to be reinstated. A flat
+serialization discards the header hierarchy at indexing time, so a cell arrives at the
+index as a bare leaf label and a number; cells from different tables that share a leaf
+label become indistinguishable to the retriever (§5.1c). §3.1–3.2 reinstate the
+hierarchy *inside the chunk text*, so the structure survives into the embedding rather
+than having to be recovered by the ranker. §3.5 is a separate, additive mechanism for
+the residual cases where matching text is not enough.
+
+We do **not** claim the header-tree representation or the `(header-path = value)` format
+as novel — OHD and HD-RAG build the same orthogonal row/column trees on HiTab (§2). The
+delta claimed here is the *retrieval-stage* use: those systems serialize a whole table
+for an LLM, whereas we verbalize per cell and index at that granularity so a query can
+retrieve an operand set directly. Evidence that this matters is §5.1c; the honest
+accounting of what it does and does not buy is §5.9b and §5.11.
+
+- **3.1 Header-tree reconstruction.** For corpora shipping raw HTML
   grids with no explicit tree (MultiHiertt), we rebuild the row/column header trees
   first (`reconstruct/header_grid.py`). Separating header rows from data rows by cell
   content type — header cells are short text, data cells numeric — is a standard
@@ -166,33 +216,79 @@ as few cells as possible. Contributions:
   no hierarchy at all, while 51% of column paths reach depth ≥2. Read MultiHiertt as a
   sanity check that reconstruction does not collapse on real scraped HTML, not as an
   accuracy measurement.
-- **3.1 OSC.** Given query *q*, hierarchical table *T* (top/left header trees), gold
-  operand set *G*: **OSC(q)=1 iff G ⊆ retrieved** (all-or-nothing subset containment) —
-  the necessary condition for a correct aggregation, strictly harder than mean cell
-  recall. Formally identical to multi-hop retrieval's set-EM (HotpotQA Sup-EM, MDR
-  Passage-EM, Beam Retrieval retrieval-EM) with cells in place of passages; when a
-  rank cutoff applies we write set_recall@k. Conventions (documented + unit-tested):
-  gold cells deduplicated; empty gold is vacuously 1; a never-retrieved cell (rank
-  ∅) fails every k. (`eval/operand_set.py`, 14 tests)
-- **3.2 Header-tree scope enumeration.** Resolve *q* to header-path predicates, then
-  enumerate every numeric leaf under the matched row × column scope nodes
-  (`retrieve/header_enum.py`). Complete-by-construction: if the scope node is correct,
-  OSC=1 regardless of scope size.
-- **3.3 Query→node decomposition.**
-  - *Row axis* — **cross-encoder** reranking of (query, row-header node)
-    (`query/header_embed_resolver.py`, `row_mode="cross"`): beats the prior embedding
-    tree-node default on row-recall at every budget (§5.3), symmetric with the column
-    axis. The embedding matcher (semantic node match — closes vocabulary/depth gaps,
-    matches a 70b LLM, LLM-free) remains the fallback.
-  - *Column axis* — **cross-encoder** reranking of (query, column-header) — schema-
-    linking SOTA; cascade = lexical first, cross-encoder when lexical finds nothing.
-- **3.4 Diagnosis-driven augmentation.** Ratio/share queries need an *unnamed* total
-  row (the denominator): `total_like_rows` detects table/section totals (empty or
-  "total"/"overall" header) and unions them in; `expand_sibling_groups` completes a
-  partially matched sibling set. (`header_enum.py`)
-- **3.5 Recall-first guarantee.** When 100% completeness is mandatory, union/fallback
-  to a provably-complete set (axis-complete ∪ dense, or whole table) and minimize under
-  the constraint — completeness is guaranteed structurally, precision is the objective.
+- **3.2 Cell verbalization.** Each nonempty data cell becomes one chunk whose text
+  carries the cell's position in the reconstructed trees, so the header hierarchy is
+  present in the indexed string rather than discarded at chunking time
+  (`serialization/`, `serialize/verbalize.py`). Three schemes are ablated
+  single-variable through a shared `Chunk` envelope:
+
+  | scheme | rendering of one cell | what it tests |
+  |---|---|---|
+  | **S1 / flat** | `{row_leaf} {col_leaf}: {v}` — leaf labels only | structure-agnostic baseline: the hierarchy is dropped |
+  | **S2 / header-path** | `Revenue > 2023 > Q1: 1,234` — full `row_path + col_path` prefix | hierarchy as an explicit delimited path |
+  | **S3 / caption** | `For {row path}, {col path} is {v}.` — a sentence | hierarchy in the surface form the embedder was pretrained on |
+
+  Sentence rendering has three **length presets** — the sentence-length ablation axis —
+  ordered by how much header/title context each spells out: `short` (leaf headers only,
+  no caption) → `medium` (adds the caption) → `long` (caption + the full hierarchical
+  paths). Exact templates live in `serialize/verbalize.py` (used for the sentence-length
+  study) and `serialization/caption.py` (the S3 scheme); the two modules instantiate the
+  same ordering with different wordings, and the operand experiments use the **medium**
+  preset shown in the table above. The presets differ in *how much of the reconstruction
+  each sentence exposes*, not in generation quality — which is why `long` inherits the
+  row-axis gap of §3.1(b) and scores ~19 points lower (§3.1(c)). All three schemes
+  support `row` / `cell` / `table`
+  granularity; the operand experiments index at **cell** granularity, because an
+  aggregation query needs individual operands, not whole rows. `table` granularity is
+  the "1 table = 1 chunk" baseline that lets S2 and S3 be compared head-to-head under
+  an identical retrieval cascade (§5.9).
+
+  The hypothesis S2→S3 tests is that sentence-shaped text embeds closer to a
+  natural-language question than a `>`-delimited path does, at the cost of more tokens
+  per cell. The accuracy of this step is not assumed — §3.1(c) scores the produced
+  sentences directly against the real source grids (**.72–.75** exact, errors
+  concentrated in *addresses* rather than values), which is the ceiling this stage
+  imposes on everything downstream.
+- **3.3 Cell-level indexing and retrieval.** The verbalized cells are indexed as
+  independent chunks and scored per query by BM25, a dense bi-encoder, or their
+  RRF-hybrid (`retrieve/hybrid_index.py`; per-query min-max normalization, then
+  `alpha*dense + (1-alpha)*bm25`). The same encoder embeds both chunks and queries — the
+  index holds a single encoder instance to enforce it. Retrieval is **LLM-free**
+  throughout; only §3.4 uses a model. Because indexing is per cell, a query's result is
+  a *set* of cells, which is what makes the completeness objective (§4) measurable at
+  all.
+- **3.4 Answer generation.** The retrieved cell set is handed to the solver in codegen
+  mode, which emits an arithmetic program over the retrieved values rather than a
+  free-form number (`generation/codegen.py`, `generate/answerer.py`). This keeps the
+  retrieval contribution separable from the reader's arithmetic: a query whose operand
+  set is incomplete cannot be rescued by the reader, and §5.10/Appendix A use exactly
+  that separation to test whether completing the set converts into answer accuracy.
+- **3.5 Structural augmentation of 3.3.** §5.1c shows that verbalization does not close
+  the completeness gap on its own, and that the residual is a *candidate-generation*
+  failure rather than a ranking one. The following mechanisms are additive to 3.3 and
+  are evaluated as such — the win reported in §5 is by augmentation, not replacement.
+  - *Header-tree scope enumeration.* A header node **is** an aggregation scope, so
+    enumerating every numeric leaf under the matched row × column scope nodes is
+    complete-by-construction: if the scope node is correct, the operand set is complete
+    regardless of its size (`retrieve/header_enum.py`). This relocates the problem from
+    ranking to node resolution.
+  - *Query→node resolution* — the bottleneck enumeration relocates the problem to.
+    Both axes are the same operation (match the query against a header node), and a
+    cross-encoder wins both. *Row axis*: cross-encoder reranking of (query, row-header
+    node) (`query/header_embed_resolver.py`, `row_mode="cross"`) beats the prior
+    embedding tree-node default on row-recall at every budget (§5.3); the embedding
+    matcher (semantic node match — closes vocabulary/depth gaps, matches a 70b LLM,
+    LLM-free) remains the fallback. *Column axis*: cross-encoder reranking of (query,
+    column-header), which is schema-linking SOTA adopted from CE-SL/RESDSQL (§2);
+    cascade = lexical first, cross-encoder when lexical finds nothing.
+  - *Diagnosis-driven augmentation.* Ratio/share queries need an *unnamed* total row
+    (the denominator): `total_like_rows` detects table/section totals (empty or
+    "total"/"overall" header) and unions them in; `expand_sibling_groups` completes a
+    partially matched sibling set (`header_enum.py`). Scope and limits of this
+    mechanism are reported as a case study, not a general method — §5.10, §5.11.
+  - *Recall-first guarantee.* When 100% completeness is mandatory, union/fallback to a
+    provably-complete set (axis-complete ∪ dense, or whole table) and minimize under the
+    constraint — completeness is guaranteed structurally, precision is the objective.
 
 ## 4. 실험 세팅 (Experimental Setup)
 
@@ -207,6 +303,17 @@ as few cells as possible. Contributions:
   scope **m≥2, n=161** — **9.6% of HiTab dev's 1,671 questions**; the paper's claims
   are scoped to this multi-operand slice. Selection/comparison excluded
   (coordinate resolution cannot build gold for non-quantity links).
+- **Operand-Set Completeness (OSC) — the primary objective.** Given query *q*,
+  hierarchical table *T* (top/left header trees) and gold operand set *G*:
+  **OSC(q)=1 iff G ⊆ retrieved** (all-or-nothing subset containment) — the necessary
+  condition for a correct aggregation, and strictly harder than mean cell recall. It is
+  formally identical to multi-hop retrieval's set-EM (HotpotQA Sup-EM, MDR Passage-EM,
+  Beam Retrieval retrieval-EM) with cells in place of passages; when a rank cutoff
+  applies we write set_recall@k. Conventions (documented + unit-tested): gold cells
+  deduplicated; empty gold is vacuously 1; a never-retrieved cell (rank ∅) fails every
+  k. (`eval/operand_set.py`, 14 tests). This is an **evaluation criterion, not a
+  component of the pipeline** — §3 is scored against it, and the contribution claimed
+  for OSC itself is its application to table aggregation, not its form (§1, §2).
 - **Metrics.** OSC (primary); **mean per-cell recall** reported alongside OSC in the
   main comparisons (the graceful metric reference table-RAG systems report — the
   OSC↔recall gap is itself an exhibit: partial recall is not completeness);
@@ -247,13 +354,23 @@ as few cells as possible. Contributions:
   **Holm–Bonferroni** applied within each: F1 serialization contrasts on MultiHiertt
   (schemes × retrievers × k); F2 reranker contrasts (4 contrasts × k∈{10,20,50},
   m=12); F3 same-depth injection (3 retrievers); F4 operand-set-size strata (m=4);
-  F5 node-resolution McNemars per axis; F6 AITQA McNemars (m=6). All headline
-  results survive within-family Holm at α=.05 (e.g. F1 p=4.2e-9 → corrected ≪.001;
-  F2 flat_rerank→S3_hybrid all three k survive; F2 flat_rerank→S3_rerank@50
-  corrected p=.039). Results that do **not** survive are demoted to directional in
-  the text: F2 flat_rerank→S3_rerank@10 (raw p=.049 → corrected .245), F3 dense
-  (raw p=.0625), F4 strata 5–8/9+, F6 cross-vs-embed@2 (raw p=.026 → corrected .13;
-  only @1 survives).
+  F5 node-resolution McNemars per axis; F6 AITQA McNemars (m=6). The headline results
+  survive within-family Holm at α=.05. **F1** (m=18): the headline
+  `hybrid/flat→S3@50` goes raw 3.13e-4 → **Holm 4.06e-3**, and **10/18** contrasts
+  survive — every BM25 contrast at every k, and hybrid at k∈{20,50}. **F2** (m=12):
+  `flat_rerank→S3_hybrid` survives at all three k (Holm 2.4e-5 / 1.1e-3 / **2.8e-2**),
+  and `flat_hybrid→flat_rerank@10` survives (raw 5.2e-5 → Holm 5.7e-4) — i.e. the
+  finding that reranking *hurts* completeness at small k is robust to correction.
+  Results that do **not** survive are demoted to directional in the text: all **dense**
+  F1 contrasts (best is `dense/flat→S2@50`, raw .007 → Holm .056) — consistent with
+  dense's gain not concentrating into complete sets; F2 `S3_hybrid→S3_rerank@10` (raw
+  .0075 → Holm .060) and `flat_rerank→S3_rerank@50` (raw .041 → Holm .205); F3 dense
+  (raw p=.0625); F4 every stratum above m=2 (raw p=1.0 / .63 / .50 — underpowered at
+  n=78/30/5); F6 cross-vs-embed@2 (raw p=.026 → corrected .13; only @1 survives).
+  Correction is currently applied at analysis time from the per-contrast p-values in
+  the `*_significance.json` / `contrasts_set_recall_flip` blocks;
+  `scripts/operand_collision_significance.py` still emits **uncorrected** p-values, so
+  raw values in that file must not be read as family-wise.
 - Reproduce: `scripts/e1..e7`,
   `diag_row_failures.py`, `col_select_bench.py`, `row_select_bench.py`,
   `row_select_stats.py`, `row_osc_endtoend.py`, `dense_ceiling_diag.py`,
@@ -299,43 +416,65 @@ closes the "just add the caption" objection.*
 candidate-generation failure a strong reranker cannot fix.** Two natural objections to
 §5.1b are (i) "the ranking is within one gold table — real RAG searches a corpus" and
 (ii) "a strong reranker would fix it." Both tested on MultiHiertt (financial reports):
-297 arithmetic multi-operand queries (951 gold operand instances; **883 unique cells**
+293 arithmetic multi-operand queries (935 gold operand instances; **866 unique cells**
 after per-query dedup — every per-cell/rank metric is over the deduped sets, matching
 the OSC dedup convention) over a shared corpus of
-**1,203 tables / 42,715 cell chunks**; treatment is cell serialization — *flat* (leaf
+**1,203 tables / 43,324 cell chunks**; treatment is cell serialization — *flat* (leaf
 labels only, the naive cell-chunk VDB) vs *S3* (caption + full header path as a
 sentence). Findings: (1) the corpus-level analogue of the total-row miss is
 **surface-form collision** — operand cells whose header labels recur in ≥5 tables have
-median hybrid rank 22 vs 7 for unique labels (reached@50 0.30 vs 0.62); S3 repairs
-precisely this slice (median 11.5, reached@50 0.52), lifting hybrid set_recall@50
-**0.458→0.593** (paired flips 44:9, **p=4.2e-9**). (2) The gap **widens monotonically
-with operand-set size** (Δ@50 +.116/+.152/+.156/+.400 for scope 2/3–4/5–8/9+, first
-two strata significant; flat collapses .591→.291→.188→.000) — completeness failure
-concentrates exactly where aggregation needs completeness most (**Figure 1**).
+median hybrid rank **264.5 vs 14** for unique labels (reached@50 0.32 vs 0.64;
+Mann–Whitney p=4.0e-18); S3 repairs precisely this slice (median **48.5**, reached@50
+0.50), lifting hybrid all-covered@50 **0.481→0.556** (paired flips **29:7**,
+**p=3.1e-4**). (2) Completeness **decays sharply with operand-set size** for every
+serialization (hybrid set-EM@50 by scope 2 / 3–4 / 5–8 / 9+: flat
+.600→.333→.233→.000, S3 .694→.346→.300→.400) — completeness failure concentrates
+exactly where aggregation needs completeness most (**Figure 1**). The flat→S3 *gap*,
+however, is **not** monotonic in $m$ and is significant only in the $m{=}2$ stratum
+(Δ@50 +.094 at $m{=}2$, flips 19:2, p=2e-4; +.013 / +.067 / +.400 at 3–4 / 5–8 / 9+,
+all n.s. at n=78 / 30 / 5). Non-monotonicity holds for both schemes and all three
+retrievers, so the earlier "gap widens monotonically with scope" reading is withdrawn:
+what the strata support is that *flat collapses* with scope, not that the treatment
+effect grows with it.
   > *Fig. 1 caption:* Set-level exact match (set-EM@50) by operand-set size
-  > $m$ on MultiHiertt (hybrid retriever, 297 queries; bars are 95% Wilson
+  > $m$ on MultiHiertt (hybrid retriever, 293 queries; bars are 95% Wilson
   > CIs). Completeness decays with aggregation scope for every serialization,
-  > but flat decays fastest (.59→.00) while S2/S3 hold .40 even at $m{\ge}9$;
-  > the flat→S3 gap is significant for the $m{=}2$ and $m{=}3\text{–}4$ strata
-  > (paired flip test, $p<.005$). (`scripts/fig1_scope_decay.py`) (3) A strong
+  > but flat decays fastest (.60→.00) while S2/S3 hold .40 even at $m{\ge}9$;
+  > the flat→S3 gap is significant in the $m{=}2$ stratum (paired flip test,
+  > 19:2, $p{=}2\times10^{-4}$); the higher strata are directionally positive
+  > but underpowered ($n{=}78/30/5$). (`scripts/fig1_scope_decay.py`) (3) A strong
 cross-encoder reranker (**bge-reranker-large**) over the *same* top-100 pool, same
 final-k, does **not** rescue flat (not a truncation artifact: reranker input pairs
 are median 40 / max 95 tokens, so max_length=192 never truncates, and an n=50
 max_length=512 spotcheck reproduces bit-identical rankings —
-`results/operand_collision_rerank_spot_ml{192,512}_n50.json`): it significantly *hurts* set-completeness at k=10
-(−.071, p=.005; individual-relevance reordering pushes set members out) and is n.s. at
-k=50 (+.034, p=.13); flat-with-reranker still loses to plain S3 hybrid at every k
-(@10 p=3.8e-6, @50 p=1.0e-4); and flat's **pool ceiling@100 = .566** — the score a
-*perfect* reranker over that pool would get — is **below S3's actual @50 = .593**. The
-ceiling is in **candidate generation**, not ranking; serialization must inject the
-disambiguating structure before the pool is formed (**Figure 2**).
+`results/operand_collision_rerank_spot_ml{192,512}_n50.json`): it significantly *hurts*
+set-completeness at k=10 (.317→.215, flips 12:42, **p=5.2e-5**; individual-relevance
+reordering pushes set members out) and buys nothing at k=50 (.481→.485, flips 15:14,
+**p=1.0**). The same is true of S3 (@10 .341→.270, p=.008), so this is a property of
+relevance reranking against a set objective, not of one serialization. Flat-with-
+reranker still loses to plain S3 hybrid at every k (@10 49:12, p=2.0e-6; @50 34:13,
+p=.003), and loses to S3-with-reranker as well (@50 24:11, p=.041).
+**The pool-ceiling comparison, however, does *not* support the stronger form of this
+claim, and we withdraw it.** Flat's `pool_ceiling@100` — the set-EM a *perfect*
+reranker over that pool would reach — is **.560**, which is not below but level with
+S3's actual @50 of **.556**. What the ceilings do show is where the headroom lies: the
+real reranker realizes almost none of flat's headroom (.485 actual vs .560 ceiling),
+and even fully realized that headroom would merely tie S3's *unreranked* retrieval,
+while S3's own pool ceiling is higher still (**.631**). So the binding constraint is
+the **candidate pool**, not the ranker; serialization must inject the disambiguating
+structure before the pool is formed (**Figure 2**). (Earlier drafts reported .566 vs
+.593 across two runs with different corpora; on a single post-fix run the gap closes
+to .004 in the opposite direction.)
   > *Fig. 2 caption:* A strong cross-encoder reranker (bge-reranker-large)
-  > cannot buy completeness: over identical top-100 hybrid pools (n=297),
-  > reranking *lowers* set-EM@10 for both serializations (flat .31→.24,
-  > $p{=}.005$; S3 .37→.29, $p{=}.002$) and is n.s. at $k{=}50$. Dashed lines
-  > mark each pool's ceiling — the set-EM a *perfect* reranker could reach;
-  > flat's ceiling (.57) lies below S3's actual @50 (.59), so no reranker over
-  > flat candidates can match S3. (`scripts/fig2_reranker_2x2.py`) Claims here are for hybrid/BM25;
+  > cannot buy completeness: over identical top-100 hybrid pools (n=293),
+  > reranking *lowers* set-EM@10 for both serializations (flat .32→.22,
+  > $p{=}5\times10^{-5}$; S3 .34→.27, $p{=}.008$) and is null at $k{=}50$
+  > (flat 15:14, $p{=}1.0$). Dashed lines mark each pool's ceiling — the set-EM
+  > a *perfect* reranker could reach. Flat's ceiling (.560) is level with S3's
+  > actual @50 (.556), not below it: the real reranker realizes almost none of
+  > that headroom (.485), and S3's own pool ceiling is higher (.631), so the
+  > pool — not the ranker — is what binds.
+  > (`scripts/fig2_reranker_2x2.py`) Claims here are for hybrid/BM25;
 dense alone shows the level shift but not the slope pattern (per-query paired tests:
 dense flat→S3 significant on recall/nDCG/MRR, n.s. on set-EM — the gain is real but
 does not concentrate into complete operand sets).
@@ -361,13 +500,16 @@ repeated end-to-end with **bge-large-en-v1.5** (same family, scaled;
 `*_n300_bgelarge*`) and **intfloat/e5-large-v2** (different family, its
 "query: "/"passage: " prefix convention respected; `*_n300_e5large*`).
 Direction reproduces in **all three embedders**: the collision penalty persists
-(flat hybrid colliding-vs-unique median 180/16 bge-small, 199/14 bge-large,
-210/12 e5) and flat→S3 hybrid completeness flips stay significant @50
-(p=4.2e-9 / 5.3e-6 / 6.5e-5). BM25 rows are bit-identical across runs (they
-never touch the embedder — a sanity check the pipeline passes). Honest scope
-note: @10 hybrid significance holds for bge-small (p=3.9e-3) and e5
-(p=1.4e-2) but decays to n.s. for bge-large — @10 claims are therefore stated
-as "2 of 3 embedders", @50 claims unconditionally.
+(flat hybrid colliding-vs-unique median **264.5/14** bge-small, **308/13**
+bge-large, **260/11** e5) and flat→S3 hybrid completeness flips stay significant
+@50 (p=**3.1e-4** / **3.1e-4** / **5.4e-3**). BM25 rows are bit-identical across
+runs (they never touch the embedder — a sanity check the pipeline passes).
+Honest scope note: at @10 the flip is significant for **e5 only** (p=1.5e-2);
+bge-small (p=.25) and bge-large (p=.70) are both n.s., so **@10 claims are stated
+as "1 of 3 embedders"** and carry no weight, while @50 claims hold
+unconditionally across all three. (Earlier drafts read "2 of 3" from the
+pre-`b10818d` run; the correction moves bge-small from significant to n.s. at
+@10 and does not affect any @50 conclusion.)
 
 **5.2 Enumeration is scope-robust and re-localizes the bottleneck (H2).** OSC |
 decomposition-correct = **1.000, flat across m**; the H1 collapse is eliminated. Raw
@@ -608,8 +750,10 @@ aggregation needs the **complete** operand set, and we show (§5.1b–c) that **
 retrieval systematically under-serves that objective** — single-table: 13.4% of
 operands are structurally-required total rows it ranks ~4× worse (35% unreached at
 k=50), explaining 62% of its completeness ceiling; multi-table: colliding surface
-forms rank 3× worse, and even a perfect reranker over the flat candidate pool cannot
-reach structural serialization's actual completeness (pool ceiling .566 < .593).
+forms rank an order of magnitude worse (median 264.5 vs 14), and a real cross-encoder
+reranker over the flat candidate pool buys no completeness at k=50 (15:14, p=1.0) while
+a *perfect* one would only tie structural serialization's unreranked result (pool
+ceiling .560 vs actual .556, with S3's own ceiling at .631).
 This diagnosis — graded, empirical, and independent of any fix —
 is the primary claim; ranked below it, in order of how general each result actually is:
 (i) **OSC** as the all-or-nothing completeness objective existing relevance/ranking

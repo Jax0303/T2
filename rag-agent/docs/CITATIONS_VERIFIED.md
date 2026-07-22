@@ -55,7 +55,7 @@ Date: 2026-07-03. ✅ = verified verbatim; ⚠️ = needs a wording fix before s
   precedent for "all-or-nothing is much harsher than partial credit".
 
 - **Header/data row classification (table structure recognition)** — supports the
-  numeric-vs-text header-boundary heuristic `guess_n_header_rows` (§3.0). Framing:
+  numeric-vs-text header-boundary heuristic `guess_n_header_rows` (§3.1). Framing:
   cite the *principle* as standard practice; the ≥50%-numeric threshold + 4-digit-year
   exclusion is our deterministic instance, **not** any single paper's rule verbatim
   (corrects an earlier misstatement that the rule was borrowed as-is).
