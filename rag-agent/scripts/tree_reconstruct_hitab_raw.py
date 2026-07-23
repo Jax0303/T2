@@ -61,7 +61,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
-                                   reconstruct_col_paths, reconstruct_row_paths)
+                                   reconstruct_col_paths,
+                                   reconstruct_paths_with_merges,
+                                   reconstruct_row_paths)
 
 
 # ---------------------------------------------------------------------------
@@ -192,7 +194,7 @@ def size_bucket(n_rows: int, n_cols: int) -> str:
 # ---------------------------------------------------------------------------
 
 def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
-                force_cols: int = 0):
+                force_cols: int = 0, use_merges: bool = False):
     texts = raw.get("texts") or []
     if not texts:
         return None, "no_texts"
@@ -226,8 +228,12 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         nhc = nhc_gold
     cols_ok = int(nhc == nhc_gold)
 
-    rec_cols = reconstruct_col_paths(texts, nhr, nhc)
-    rec_rows = reconstruct_row_paths(texts, nhr, nhc)
+    if use_merges:
+        rec_cols, rec_rows = reconstruct_paths_with_merges(
+            texts, raw.get("merged_regions") or [], nhr, nhc)
+    else:
+        rec_cols = reconstruct_col_paths(texts, nhr, nhc)
+        rec_rows = reconstruct_row_paths(texts, nhr, nhc)
 
     col_hit = col_tot = row_hit = row_tot = 0
     errors = []
@@ -276,6 +282,9 @@ def main() -> int:
                     help="pin n_header_cols to this value (the old hardcoded baseline)")
     ap.add_argument("--guess-cols", action="store_true",
                     help="guess n_header_cols too, instead of taking it from gold")
+    ap.add_argument("--use-merges", action="store_true",
+                    help="consume merged_regions (markup) instead of the texts-only "
+                         "blank-carry reconstructor — the A1 front-end")
     ap.add_argument("--out", default="results/tree_reconstruct_hitab_raw.json")
     args = ap.parse_args()
 
@@ -308,7 +317,7 @@ def main() -> int:
             reasons["unreadable"] += 1
             continue
         res, why = score_table(raw, tables[tid], args.guess_boundary, args.guess_cols,
-                               args.force_cols)
+                               args.force_cols, args.use_merges)
         reasons[why] += 1
         if res is None:
             continue

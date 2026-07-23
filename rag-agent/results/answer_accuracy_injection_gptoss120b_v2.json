@@ -2,13 +2,13 @@
   "population": {
     "name": "hitab_dev_arith_m>=2",
     "n": 161,
-    "n_evaluated": 46,
+    "n_evaluated": 92,
     "n_osc_flips_total": 10,
     "n_osc_flips_evaluated": 10,
-    "n_nonflip_evaluated": 36,
-    "n_treat_context_truncated": 0,
+    "n_nonflip_evaluated": 82,
+    "n_treat_context_truncated": 1,
     "flips_first": true,
-    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198770, Requested 3495. Please try again in 16m18.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198036, Requested 3477. Please try again in 10m53.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
   },
   "retriever": "dense",
   "k": 10,
@@ -21,28 +21,28 @@
     "note": "OSC over full population (LLM-free)"
   },
   "answer_accuracy": {
-    "base": 0.587,
-    "treat": 0.7826,
-    "delta": 0.1957,
+    "base": 0.5435,
+    "treat": 0.6413,
+    "delta": 0.0978,
     "caveat": " Uses our lenient numeric_match (\u00b12%, %/fraction-scale, sign) \u2014 NOT comparable to other papers' HiTab numbers; see answer_accuracy_official for that.",
     "metric": "numeric_match (lenient, ours)"
   },
   "answer_accuracy_official": {
-    "base": 0.4783,
-    "treat": 0.6304,
-    "delta": 0.1522,
+    "base": 0.4348,
+    "treat": 0.5217,
+    "delta": 0.087,
     "metric": "hitab_exact_match (HiTab's own scorer, no scale leniency \u2014 the number to quote against other papers, e.g. OHD's 60.07 EM)",
     "correctness_crosstab": {
-      "treat_only": 9,
+      "treat_only": 10,
       "base_only": 2
     },
-    "mcnemar_p": 0.06543
+    "mcnemar_p": 0.03857
   },
   "correctness_crosstab": {
-    "both_right": 26,
+    "both_right": 49,
     "treat_only": 10,
     "base_only": 1,
-    "both_wrong": 9
+    "both_wrong": 32
   },
   "mcnemar_p_accuracy": 0.01172,
   "osc_flip_subset": {

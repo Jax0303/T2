@@ -176,6 +176,143 @@ def reconstruct_row_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1
     return _hierarchical_carry(levels)
 
 
+def parse_html_table_with_merges(html: str):
+    """Like :func:`parse_html_table`, but ALSO returns the ``merged_regions``
+    (``rowspan``/``colspan`` geometry) instead of discarding it after resolving
+    the occupancy grid. Returns ``(grid, merged_regions)`` where ``grid`` is the
+    same blank-after-first grid and each spanning cell contributes one region
+    ``{first_row,last_row,first_column,last_column}`` — so the markup can be
+    CONSUMED via :func:`reconstruct_paths_with_merges` rather than re-inferred
+    from blanks (the realistic case when a scrape KEEPS the span attributes)."""
+    fixed = _FIX_MISSING_GT.sub(r"\1>", html)
+    p = _TableHTMLParser()
+    p.feed(fixed)
+    raw_rows = p.rows
+    if not raw_rows:
+        return [], []
+
+    active_rowspans: Dict[int, int] = {}
+    grid: Grid = []
+    merges: List[dict] = []
+    for row_cells in raw_rows:
+        row_out: List[str] = []
+        r = len(grid)
+        col = 0
+        ci = 0
+        while ci < len(row_cells) or (active_rowspans and col <= max(active_rowspans)):
+            if col in active_rowspans:
+                row_out.append("")
+                active_rowspans[col] -= 1
+                if active_rowspans[col] <= 0:
+                    del active_rowspans[col]
+                col += 1
+                continue
+            if ci >= len(row_cells):
+                col += 1
+                continue
+            cell = row_cells[ci]
+            ci += 1
+            row_out.append(cell["text"])
+            span_c = max(cell["colspan"], 1)
+            span_r = max(cell["rowspan"], 1)
+            if span_c > 1 or span_r > 1:
+                merges.append({"first_row": r, "last_row": r + span_r - 1,
+                               "first_column": col, "last_column": col + span_c - 1})
+            for _ in range(1, span_c):
+                row_out.append("")
+            if span_r > 1:
+                for cc in range(col, col + span_c):
+                    active_rowspans[cc] = max(active_rowspans.get(cc, 0), span_r - 1)
+            col += span_c
+        grid.append(row_out)
+
+    width = max((len(rr) for rr in grid), default=0)
+    for rr in grid:
+        rr.extend([""] * (width - len(rr)))
+    return grid, merges
+
+
+# ---------------------------------------------------------------------------
+# markup-aware reconstruction: consume merged_regions instead of guessing spans
+# ---------------------------------------------------------------------------
+
+def _fill_merges(grid: Grid, merged_regions: List[dict]) -> Grid:
+    """Return a rectangular copy of ``grid`` with every merged region's origin
+    text written into *all* cells it covers.
+
+    The texts-only path (:func:`reconstruct_col_paths`) has to INFER spans from
+    blank-after-first cells; here the span geometry is given by the markup
+    (``merged_regions``: ``{first_row,last_row,first_column,last_column}``),
+    so the fill is exact rather than heuristic.
+    """
+    width = max((len(r) for r in grid), default=0)
+    filled = [list(r) + [""] * (width - len(r)) for r in grid]
+    n_rows = len(filled)
+    for m in merged_regions or []:
+        r0, c0 = m.get("first_row", -1), m.get("first_column", -1)
+        r1, c1 = m.get("last_row", r0), m.get("last_column", c0)
+        if not (0 <= r0 < n_rows and 0 <= c0 < width):
+            continue
+        val = filled[r0][c0]
+        for r in range(r0, min(r1, n_rows - 1) + 1):
+            for c in range(c0, min(c1, width - 1) + 1):
+                filled[r][c] = val
+    return filled
+
+
+def reconstruct_paths_with_merges(
+    grid: Grid,
+    merged_regions: List[dict],
+    n_header_rows: int,
+    n_header_cols: int = 1,
+):
+    """Markup-aware counterpart to :func:`reconstruct_col_paths` /
+    :func:`reconstruct_row_paths`, returning ``(col_paths, row_paths)``.
+
+    Two things the texts-only path cannot do, both driven by ``merged_regions``:
+
+    1. **Exact span fill.** Each header cell's coverage is taken from the markup,
+       not inferred from blanks — no over/under-carry.
+    2. **Full-width header-band qualifier lift.** A header-band row whose entire
+       data-column region is one merged value (e.g. table 1008's ``percent``
+       spanning cols 1-8 at row 2) is not a column-distinguishing header — HiTab
+       folds it into the LEFT (row) axis as a common ancestor. This row is dropped
+       from the column paths and prepended to every row path. This is exactly the
+       parent the texts-only reconstructor loses (the cell sits in the header
+       band, outside the stub-column region ``reconstruct_row_paths`` scans).
+    """
+    filled = _fill_merges(grid, merged_regions)
+    n_rows = len(filled)
+    n_cols = len(filled[0]) if filled else 0
+    nhr = max(0, min(n_header_rows, n_rows))
+    nhc = max(0, min(n_header_cols, n_cols))
+
+    # header-band rows that are a single full-width value -> row-axis qualifiers
+    qualifiers: List[str] = []
+    qualifier_rows = set()
+    for r in range(nhr):
+        data_vals = {filled[r][c].strip() for c in range(nhc, n_cols)}
+        data_vals.discard("")
+        if len(data_vals) == 1:
+            qualifiers.append(next(iter(data_vals)))
+            qualifier_rows.add(r)
+    header_rows = [r for r in range(nhr) if r not in qualifier_rows]
+
+    def _dedup(seq: List[str]) -> List[str]:
+        out: List[str] = []
+        for v in seq:
+            v = v.strip()
+            if v and (not out or out[-1] != v):
+                out.append(v)
+        return out
+
+    col_paths = [_dedup([filled[r][c] for r in header_rows])
+                 for c in range(nhc, n_cols)]
+    row_paths = [_dedup(qualifiers + [filled[r][c] for c in range(nhc)])
+                 for r in range(nhr, n_rows)]
+    return col_paths, row_paths
+
+
 # ---------------------------------------------------------------------------
 # header/data row boundary heuristic
 # ---------------------------------------------------------------------------
