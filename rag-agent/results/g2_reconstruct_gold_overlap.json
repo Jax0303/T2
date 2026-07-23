@@ -1,0 +1,37 @@
+{
+  "population": {
+    "split": "dev",
+    "n_tables": 540
+  },
+  "error_model": "synthetic flatten->rebuild (matches tree_reconstruct_hitab), boundary known",
+  "unique_gold_operand_cells": 1626,
+  "unique_gold_operand_cells_affected": 250,
+  "unique_gold_operand_affected_rate": 0.1538,
+  "plan_framing_precision_of_errorset_onto_gold": {
+    "misreconstructed_data_cells": 10811,
+    "total_data_cells": 72471,
+    "share_of_errors_that_are_gold_operands": 0.0231
+  },
+  "by_population": {
+    "all_with_gold": {
+      "n_queries": 1301,
+      "queries_affected": 247,
+      "operand_cells": 1814,
+      "operand_cells_affected": 294,
+      "affected_by_row": 213,
+      "affected_by_col": 85,
+      "query_affected_rate": 0.1899,
+      "operand_cell_affected_rate": 0.1621
+    },
+    "arith_m>=2": {
+      "n_queries": 155,
+      "queries_affected": 44,
+      "operand_cells": 443,
+      "operand_cells_affected": 64,
+      "affected_by_row": 51,
+      "affected_by_col": 13,
+      "query_affected_rate": 0.2839,
+      "operand_cell_affected_rate": 0.1445
+    }
+  }
+}

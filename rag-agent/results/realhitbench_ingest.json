@@ -1,0 +1,521 @@
+{
+  "population": {
+    "hf_repo": "spzy/RealHiTBench",
+    "subqtypes": [
+      "Calculation",
+      "Multi-hop Numerical Reasoning"
+    ],
+    "n_agg_queries": 334,
+    "n_unique_tables": 258,
+    "n_tables_processed": 258,
+    "n_parse_fail": 0
+  },
+  "note": "descriptive characterisation only — RealHiTBench ships no gold header tree and no per-cell description, so reconstruction ACCURACY is not measurable here; answer accuracy is GROQ-gated",
+  "overall": {
+    "n_tables": 258,
+    "n_parsed": 258,
+    "n_with_merges": 210,
+    "n_degenerate": 42,
+    "parse_rate": 1.0,
+    "degenerate_rate": 0.163,
+    "mean_col_depth": 1.795,
+    "mean_row_depth": 2.163,
+    "col_depth_ge2_rate": 0.496,
+    "row_depth_ge2_rate": 0.667
+  },
+  "by_compstruccata": {
+    "BackgroundColor": {
+      "n_tables": 6,
+      "n_parsed": 6,
+      "parse_rate": 1.0,
+      "n_with_merges": 3,
+      "merge_rate": 0.5,
+      "n_degenerate": 5,
+      "degenerate_rate": 0.833,
+      "mean_grid": [
+        46.0,
+        15.5
+      ],
+      "mean_nhr": 3.167,
+      "mean_nhc": 1.833,
+      "mean_col_depth": 0.833,
+      "mean_row_depth": 1.5,
+      "col_depth_ge2_rate": 0.167,
+      "row_depth_ge2_rate": 0.167,
+      "mean_n_merges": 2.167
+    },
+    "ColumnHeaderMerge": {
+      "n_tables": 90,
+      "n_parsed": 90,
+      "parse_rate": 1.0,
+      "n_with_merges": 85,
+      "merge_rate": 0.944,
+      "n_degenerate": 9,
+      "degenerate_rate": 0.1,
+      "mean_grid": [
+        38.956,
+        18.956
+      ],
+      "mean_nhr": 3.044,
+      "mean_nhc": 1.5,
+      "mean_col_depth": 2.133,
+      "mean_row_depth": 1.856,
+      "col_depth_ge2_rate": 0.722,
+      "row_depth_ge2_rate": 0.544,
+      "mean_n_merges": 12.256
+    },
+    "ContentCompound": {
+      "n_tables": 40,
+      "n_parsed": 40,
+      "parse_rate": 1.0,
+      "n_with_merges": 34,
+      "merge_rate": 0.85,
+      "n_degenerate": 1,
+      "degenerate_rate": 0.025,
+      "mean_grid": [
+        96.35,
+        13.7
+      ],
+      "mean_nhr": 5.1,
+      "mean_nhc": 1.625,
+      "mean_col_depth": 1.7,
+      "mean_row_depth": 2.425,
+      "col_depth_ge2_rate": 0.6,
+      "row_depth_ge2_rate": 0.85,
+      "mean_n_merges": 9.0
+    },
+    "ExternalSupply": {
+      "n_tables": 18,
+      "n_parsed": 18,
+      "parse_rate": 1.0,
+      "n_with_merges": 9,
+      "merge_rate": 0.5,
+      "n_degenerate": 5,
+      "degenerate_rate": 0.278,
+      "mean_grid": [
+        47.667,
+        23.333
+      ],
+      "mean_nhr": 4.111,
+      "mean_nhc": 2.333,
+      "mean_col_depth": 1.778,
+      "mean_row_depth": 2.056,
+      "col_depth_ge2_rate": 0.333,
+      "row_depth_ge2_rate": 0.667,
+      "mean_n_merges": 20.722
+    },
+    "MultiColumnClassified": {
+      "n_tables": 55,
+      "n_parsed": 55,
+      "parse_rate": 1.0,
+      "n_with_merges": 50,
+      "merge_rate": 0.909,
+      "n_degenerate": 6,
+      "degenerate_rate": 0.109,
+      "mean_grid": [
+        60.236,
+        10.0
+      ],
+      "mean_nhr": 3.527,
+      "mean_nhc": 2.309,
+      "mean_col_depth": 1.818,
+      "mean_row_depth": 2.818,
+      "col_depth_ge2_rate": 0.273,
+      "row_depth_ge2_rate": 0.873,
+      "mean_n_merges": 16.018
+    },
+    "SingleRowClassified": {
+      "n_tables": 42,
+      "n_parsed": 42,
+      "parse_rate": 1.0,
+      "n_with_merges": 23,
+      "merge_rate": 0.548,
+      "n_degenerate": 16,
+      "degenerate_rate": 0.381,
+      "mean_grid": [
+        50.905,
+        15.31
+      ],
+      "mean_nhr": 3.214,
+      "mean_nhc": 1.643,
+      "mean_col_depth": 1.214,
+      "mean_row_depth": 1.857,
+      "col_depth_ge2_rate": 0.262,
+      "row_depth_ge2_rate": 0.548,
+      "mean_n_merges": 6.31
+    },
+    "StructureCompound": {
+      "n_tables": 7,
+      "n_parsed": 7,
+      "parse_rate": 1.0,
+      "n_with_merges": 6,
+      "merge_rate": 0.857,
+      "n_degenerate": 0,
+      "degenerate_rate": 0.0,
+      "mean_grid": [
+        20.429,
+        17.714
+      ],
+      "mean_nhr": 2.857,
+      "mean_nhc": 2.0,
+      "mean_col_depth": 2.143,
+      "mean_row_depth": 2.143,
+      "col_depth_ge2_rate": 0.857,
+      "row_depth_ge2_rate": 0.714,
+      "mean_n_merges": 12.429
+    }
+  },
+  "examples": [
+    {
+      "FileName": "activitytime-table01",
+      "CompStrucCata": "SingleRowClassified",
+      "grid": [
+        130,
+        12
+      ],
+      "nhr": 6,
+      "nhc": 1,
+      "n_merges": 8,
+      "col_depth": 3,
+      "row_depth": 2,
+      "col_paths_head": [
+        [
+          "Average hours per day spent in primary activities 1",
+          "Married mothers",
+          "Employed full time"
+        ],
+        [
+          "Average hours per day spent in primary activities 1",
+          "Married mothers",
+          "Employed part time"
+        ],
+        [
+          "Average hours per day spent in primary activities 1",
+          "Married mothers",
+          "Not employed"
+        ],
+        [
+          "Average hours per day spent in primary activities 1",
+          "Married fathers 2",
+          "Employed full time"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "Table A-6. Time spent in primary activities 1 and the percent of married mothers and fathers who did the activities on an average day by employment status and age of youngest own household child, average for the combined years 2007-11",
+          "Total, all activities"
+        ],
+        [
+          "Table A-6. Time spent in primary activities 1 and the percent of married mothers and fathers who did the activities on an average day by employment status and age of youngest own household child, average for the combined years 2007-11",
+          "Personal care activities"
+        ],
+        [
+          "Table A-6. Time spent in primary activities 1 and the percent of married mothers and fathers who did the activities on an average day by employment status and age of youngest own household child, average for the combined years 2007-11",
+          "Sleeping"
+        ]
+      ]
+    },
+    {
+      "FileName": "activitytime-table02",
+      "CompStrucCata": "ContentCompound",
+      "grid": [
+        28,
+        11
+      ],
+      "nhr": 3,
+      "nhc": 1,
+      "n_merges": 7,
+      "col_depth": 3,
+      "row_depth": 1,
+      "col_paths_head": [
+        [
+          "Average hours per day spent in primary activities(1)",
+          "Married mothers",
+          "Employed full time"
+        ],
+        [
+          "Average hours per day spent in primary activities(1)",
+          "Married mothers",
+          "Employed part time"
+        ],
+        [
+          "Average hours per day spent in primary activities(1)",
+          "Married mothers",
+          "Not employed"
+        ],
+        [
+          "Average hours per day spent in primary activities(1)",
+          "Married fathers(2)",
+          "Employed full time"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "Total, all activities"
+        ],
+        [
+          "Personal care activities"
+        ],
+        [
+          "Sleeping"
+        ]
+      ]
+    },
+    {
+      "FileName": "activitytime-table04",
+      "CompStrucCata": "ContentCompound",
+      "grid": [
+        168,
+        13
+      ],
+      "nhr": 5,
+      "nhc": 1,
+      "n_merges": 9,
+      "col_depth": 3,
+      "row_depth": 1,
+      "col_paths_head": [
+        [
+          "Average hours per day",
+          "Both spouses work full time",
+          "Mothers"
+        ],
+        [
+          "Average hours per day",
+          "Both spouses work full time",
+          "Fathers"
+        ],
+        [
+          "Average hours per day",
+          "Mother employed part time and father employed full time",
+          "Mothers"
+        ],
+        [
+          "Average hours per day",
+          "Mother employed part time and father employed full time",
+          "Fathers"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "Total, all activities"
+        ],
+        [
+          "Personal care activities"
+        ],
+        [
+          "Sleeping"
+        ]
+      ]
+    },
+    {
+      "FileName": "activitytime-table05",
+      "CompStrucCata": "ContentCompound",
+      "grid": [
+        176,
+        13
+      ],
+      "nhr": 6,
+      "nhc": 1,
+      "n_merges": 11,
+      "col_depth": 3,
+      "row_depth": 2,
+      "col_paths_head": [
+        [
+          "Average hours per day",
+          "Both spouses work full time",
+          "Mothers"
+        ],
+        [
+          "Average hours per day",
+          "Both spouses work full time",
+          "Fathers"
+        ],
+        [
+          "Average hours per day",
+          "Mother employed part time and father employed full time",
+          "Mothers"
+        ],
+        [
+          "Average hours per day",
+          "Mother employed part time and father employed full time",
+          "Fathers"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "Table A-7. Time spent in primary activities 1 by married mothers and fathers with own household children under 18 by employment status of self and spouse and age of youngest child, average for the combined years 2009-13",
+          "Total, all activities"
+        ],
+        [
+          "Table A-7. Time spent in primary activities 1 by married mothers and fathers with own household children under 18 by employment status of self and spouse and age of youngest child, average for the combined years 2009-13",
+          "Personal care activities"
+        ],
+        [
+          "Table A-7. Time spent in primary activities 1 by married mothers and fathers with own household children under 18 by employment status of self and spouse and age of youngest child, average for the combined years 2009-13",
+          "Sleeping"
+        ]
+      ]
+    },
+    {
+      "FileName": "agriculture-table01",
+      "CompStrucCata": "SingleRowClassified",
+      "grid": [
+        67,
+        7
+      ],
+      "nhr": 5,
+      "nhc": 1,
+      "n_merges": 4,
+      "col_depth": 3,
+      "row_depth": 1,
+      "col_paths_head": [
+        [
+          "Jul.",
+          "2023",
+          "Million dollars"
+        ],
+        [
+          "Aug.",
+          "2023",
+          "Million dollars"
+        ],
+        [
+          "Change",
+          "Jul.−Aug.",
+          "Percent"
+        ],
+        [
+          "Oct.−Aug.",
+          "2022",
+          "Million dollars"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "Agricultural export value"
+        ],
+        [
+          "Major bulk products"
+        ],
+        [
+          "High-value products"
+        ]
+      ]
+    },
+    {
+      "FileName": "agriculture-table02",
+      "CompStrucCata": "StructureCompound",
+      "grid": [
+        18,
+        12
+      ],
+      "nhr": 3,
+      "nhc": 1,
+      "n_merges": 8,
+      "col_depth": 2,
+      "row_depth": 2,
+      "col_paths_head": [
+        [
+          "Fiscal years 2/",
+          "2020"
+        ],
+        [
+          "Fiscal years 2/",
+          "2021"
+        ],
+        [
+          "Fiscal years 2/",
+          "2022"
+        ],
+        [
+          "Fiscal years 2/",
+          "2023"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "Billion dollars",
+          "Agricultural exports"
+        ],
+        [
+          "Billion dollars",
+          "Agricultural imports"
+        ],
+        [
+          "Billion dollars"
+        ]
+      ]
+    },
+    {
+      "FileName": "agriculture-table03",
+      "CompStrucCata": "ExternalSupply",
+      "grid": [
+        7,
+        8
+      ],
+      "nhr": 2,
+      "nhc": 1,
+      "n_merges": 0,
+      "col_depth": 1,
+      "row_depth": 1,
+      "col_paths_head": [
+        [
+          "Average retail price"
+        ],
+        [],
+        [
+          "Preparation yield factor"
+        ],
+        [
+          "Size of a cup equivalent"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "Fresh1"
+        ],
+        [
+          "Canned, packed in syrup or water2"
+        ],
+        [
+          "1Includes various types of cherries like Bing and Rainer. USDA, Agricultural Research Service’s (ARS) National Nutrient Database for Standard Reference (SR) reports that inedible pits and stems account for 8 percent of the fruit's weight, implying a preparation yield of 92 percent, when the fruit is eaten raw."
+        ]
+      ]
+    },
+    {
+      "FileName": "agriculture-table04",
+      "CompStrucCata": "ColumnHeaderMerge",
+      "grid": [
+        14,
+        3
+      ],
+      "nhr": 2,
+      "nhc": 1,
+      "n_merges": 2,
+      "col_depth": 1,
+      "row_depth": 2,
+      "col_paths_head": [
+        [
+          "Removal of negative changes in crop yield"
+        ],
+        [
+          "Inclusion of negative changes in crop yield"
+        ]
+      ],
+      "row_paths_head": [
+        [
+          "% Yield 50th centile",
+          "All crops"
+        ],
+        [
+          "% Yield 50th centile",
+          "Barley"
+        ],
+        [
+          "% Yield 50th centile",
+          "Canola"
+        ]
+      ]
+    }
+  ]
+}

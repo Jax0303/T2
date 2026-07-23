@@ -1,0 +1,110 @@
+{
+  "population": {
+    "name": "realhitbench_agg(Calculation+MultihopNR)",
+    "n_full_subset": 334,
+    "n_target": 100,
+    "sample": 100,
+    "seed": 0,
+    "n_prepared": 97,
+    "n_table_skipped": 3,
+    "n_evaluated": 14,
+    "n_injection_active_target": 17,
+    "n_injection_active_evaluated": 14,
+    "injected_first": true,
+    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99573, Requested 1286. Please try again in 12m22.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "n_base_context_truncated": 3,
+    "n_treat_context_truncated": 7
+  },
+  "pipeline": {
+    "trees": "RECONSTRUCTED from raw HTML (markup front-end, guessed header boundaries) — no gold structure",
+    "retriever": "dense",
+    "k": 10,
+    "solver": "groq:llama-3.3-70b-versatile",
+    "mode": "codegen"
+  },
+  "note": "no OSC — RealHiTBench has no operand-cell annotations. strict = hitab_exact_match-style EM on ProcessedAnswer (deterministic, symmetric; NOT the paper's LLM-judge protocol — do not compare to the RealHiTBench leaderboard). lenient = numeric_match (internal diagnostic only).",
+  "answer_accuracy_strict": {
+    "n": 14,
+    "base": 0.0714,
+    "treat": 0.0714,
+    "delta": 0.0,
+    "treat_only": 0,
+    "base_only": 0,
+    "mcnemar_p": 1.0
+  },
+  "answer_accuracy_lenient": {
+    "n": 14,
+    "base": 0.3571,
+    "treat": 0.4286,
+    "delta": 0.0714,
+    "treat_only": 1,
+    "base_only": 0,
+    "mcnemar_p": 1.0
+  },
+  "injection_active_subset_strict": {
+    "n": 14,
+    "base": 0.0714,
+    "treat": 0.0714,
+    "delta": 0.0,
+    "treat_only": 0,
+    "base_only": 0,
+    "mcnemar_p": 1.0
+  },
+  "by_compstruccata_strict": {
+    "ColumnHeaderMerge": {
+      "n": 4,
+      "base": 0.0,
+      "treat": 0.0,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    },
+    "ContentCompound": {
+      "n": 1,
+      "base": 0.0,
+      "treat": 0.0,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    },
+    "ExternalSupply": {
+      "n": 1,
+      "base": 0.0,
+      "treat": 0.0,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    },
+    "MultiColumnClassified": {
+      "n": 2,
+      "base": 0.0,
+      "treat": 0.0,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    },
+    "SingleRowClassified": {
+      "n": 5,
+      "base": 0.2,
+      "treat": 0.2,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    },
+    "StructureCompound": {
+      "n": 1,
+      "base": 0.0,
+      "treat": 0.0,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    }
+  },
+  "mean_injected_chunks": 5.93
+}

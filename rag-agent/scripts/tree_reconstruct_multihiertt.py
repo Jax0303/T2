@@ -31,7 +31,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from rag_agent.reconstruct import guess_n_header_rows, parse_html_table, reconstruct_col_paths, reconstruct_row_paths
+from rag_agent.reconstruct import (guess_n_header_rows, parse_html_table,
+                                   parse_html_table_with_merges,
+                                   reconstruct_col_paths,
+                                   reconstruct_paths_with_merges,
+                                   reconstruct_row_paths)
 
 _TOK = re.compile(r"[a-z0-9]+")
 
@@ -84,6 +88,10 @@ def main() -> int:
     ap.add_argument("--hf-dataset", default="bevaya/MultiHiertt")
     ap.add_argument("--split", default="train")
     ap.add_argument("--max-tables", type=int, default=0, help="0 = no cap (all docs)")
+    ap.add_argument("--use-markup", action="store_true",
+                    help="KEEP the HTML rowspan/colspan markup and consume it "
+                         "(reconstruct_paths_with_merges) instead of discarding it "
+                         "into a blank-after-first grid — the 'markup-preserved scrape' case")
     ap.add_argument("--out", default="results/tree_reconstruct_multihiertt.json")
     args = ap.parse_args()
 
@@ -113,15 +121,21 @@ def main() -> int:
             n_tables += 1
             if "rowspan" in html:
                 n_rowspan_tables += 1
-            grid = parse_html_table(html)
+            if args.use_markup:
+                grid, merges = parse_html_table_with_merges(html)
+            else:
+                grid, merges = parse_html_table(html), []
             if len(grid) < 3 or len(grid[0]) < 2:
                 continue
             n_parsed += 1
 
             nhr = guess_n_header_rows(grid, n_header_cols=1)
             nhr = max(1, min(nhr, len(grid) - 1))
-            rec_cols = reconstruct_col_paths(grid, nhr, n_header_cols=1)
-            rec_rows = reconstruct_row_paths(grid, nhr, n_header_cols=1)
+            if args.use_markup:
+                rec_cols, rec_rows = reconstruct_paths_with_merges(grid, merges, nhr, n_header_cols=1)
+            else:
+                rec_cols = reconstruct_col_paths(grid, nhr, n_header_cols=1)
+                rec_rows = reconstruct_row_paths(grid, nhr, n_header_cols=1)
 
             b = size_bucket(len(grid), len(grid[0]))
             s = bucket_stats[b]

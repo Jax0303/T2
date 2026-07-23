@@ -1,0 +1,437 @@
+{
+  "population": {
+    "name": "hitab_real_grid",
+    "split": "dev",
+    "n_tables_requested": 540,
+    "n_tables_scored": 424,
+    "exclusions": {
+      "ok": 424,
+      "unaligned": 116
+    }
+  },
+  "gold": "hmt parse (data/tables/hmt) \u2014 same ground truth as the rest of the pipeline",
+  "input": "real source grid (data/tables/raw -> texts)",
+  "boundary_mode": "known (from gold trees)",
+  "col_path_exact_match": 0.9428,
+  "row_path_exact_match": 0.5446,
+  "col_paths_scored": 3464,
+  "row_paths_scored": 7196,
+  "boundary_guess_accuracy": null,
+  "n_header_cols_guess_accuracy": null,
+  "by_size_bucket": {
+    "10-20": {
+      "n_tables": 196,
+      "col_path_exact_match": 0.9664,
+      "row_path_exact_match": 0.6244
+    },
+    ">20": {
+      "n_tables": 129,
+      "col_path_exact_match": 0.9532,
+      "row_path_exact_match": 0.4893
+    },
+    "<=10x10": {
+      "n_tables": 99,
+      "col_path_exact_match": 0.856,
+      "row_path_exact_match": 0.5626
+    }
+  },
+  "by_max_depth": {
+    "col_depth1": {
+      "n": 269,
+      "exact_match": 0.9926
+    },
+    "col_depth2": {
+      "n": 2779,
+      "exact_match": 0.9449
+    },
+    "col_depth3": {
+      "n": 416,
+      "exact_match": 0.8966
+    },
+    "row_depth1": {
+      "n": 744,
+      "exact_match": 0.8858
+    },
+    "row_depth2": {
+      "n": 3815,
+      "exact_match": 0.6024
+    },
+    "row_depth3": {
+      "n": 2113,
+      "exact_match": 0.3275
+    },
+    "row_depth4": {
+      "n": 524,
+      "exact_match": 0.5153
+    }
+  },
+  "row_axis_by_depth_expressible": {
+    "no": {
+      "n_tables": 177,
+      "n_paths": 3422,
+      "row_path_exact_match": 0.1026
+    },
+    "yes": {
+      "n_tables": 247,
+      "n_paths": 3774,
+      "row_path_exact_match": 0.9454
+    }
+  },
+  "error_examples": [
+    {
+      "table_id": "0_1_nsf21326-tab001",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 17,
+          "gold": [
+            "other",
+            "totalb"
+          ],
+          "rec": [
+            "totalb"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 18,
+          "gold": [
+            "other",
+            "total"
+          ],
+          "rec": [
+            "total"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1008",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent",
+            "agriculture, forestry, fishing and hunting"
+          ],
+          "rec": [
+            "agriculture, forestry, fishing and hunting"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent",
+            "mining, quarrying, and oil and gas extraction"
+          ],
+          "rec": [
+            "mining, quarrying, and oil and gas extraction"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "percent",
+            "utilities"
+          ],
+          "rec": [
+            "utilities"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1017",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 17,
+          "gold": [
+            "provincial and territorial total",
+            "royal canadian mounted police operation and corporate headquarters, training academy depot division and forensic labs"
+          ],
+          "rec": [
+            "royal canadian mounted police operation and corporate headquarters, training academy depot division and forensic labs"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1026",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent",
+            "age at landing"
+          ],
+          "rec": [
+            "age at landing"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent",
+            "age at landing",
+            "20 to 24"
+          ],
+          "rec": [
+            "20 to 24"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "percent",
+            "age at landing",
+            "25 to 29"
+          ],
+          "rec": [
+            "25 to 29"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "103_54_nsf19316-tab001",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "all companies"
+          ],
+          "rec": [
+            "current $millions",
+            "all companies"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "all companies",
+            "micro companiesa"
+          ],
+          "rec": [
+            "current $millions",
+            "micro companiesa"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "all companies",
+            "micro companiesa",
+            "5-9"
+          ],
+          "rec": [
+            "current $millions",
+            "5-9"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1043",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent distribution",
+            "industry"
+          ],
+          "rec": [
+            "industry"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent distribution",
+            "industry",
+            "unknown"
+          ],
+          "rec": [
+            "unknown"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "percent distribution",
+            "industry",
+            "agriculture, forestry, fishing and hunting"
+          ],
+          "rec": [
+            "agriculture, forestry, fishing and hunting"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "104_54_nsf19316-tab002",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "micro companiesa",
+            "5-9"
+          ],
+          "rec": [
+            "5-9"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "small companies",
+            "10-19"
+          ],
+          "rec": [
+            "10-19"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "small companies",
+            "20-49"
+          ],
+          "rec": [
+            "20-49"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1063",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "number",
+            "newfoundland and labrador"
+          ],
+          "rec": [
+            "newfoundland and labrador"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "number",
+            "prince edward island"
+          ],
+          "rec": [
+            "prince edward island"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "number",
+            "nova scotia"
+          ],
+          "rec": [
+            "nova scotia"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1097",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 1,
+          "gold": [
+            "weighted estimates",
+            "first nations"
+          ],
+          "rec": [
+            "first nations"
+          ]
+        },
+        {
+          "axis": "col",
+          "grid_line": 2,
+          "gold": [
+            "weighted estimates",
+            "metis"
+          ],
+          "rec": [
+            "metis"
+          ]
+        },
+        {
+          "axis": "col",
+          "grid_line": 3,
+          "gold": [
+            "weighted estimates",
+            "inuit"
+          ],
+          "rec": [
+            "inuit"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1099",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent",
+            "total"
+          ],
+          "rec": [
+            "total"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent",
+            "age group"
+          ],
+          "rec": [
+            "age group"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "percent",
+            "age group",
+            "0 to 4"
+          ],
+          "rec": [
+            "0 to 4"
+          ]
+        }
+      ]
+    }
+  ]
+}

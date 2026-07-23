@@ -46,6 +46,8 @@ def main() -> int:
     ap.add_argument("--split", default="dev")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--cross-encoder", default="cross-encoder/ms-marco-MiniLM-L-6-v2")
+    ap.add_argument("--alpha", type=float, default=0.5,
+                    help="hybrid weight on the dense (embed) score; (1-alpha) on lexical")
     ap.add_argument("--out", default="results/col_select_bench.json")
     args = ap.parse_args()
 
@@ -95,7 +97,27 @@ def main() -> int:
         order = sorted(range(len(cands)), key=lambda i: -float(scores[i]))[:max(KS)]
         return [cands[i] for i in order]
 
-    selectors = {"lexical": rank_lexical, "embed": rank_embed, "cross": rank_cross}
+    def _minmax(x):
+        x = np.asarray(x, dtype=float)
+        lo, hi = x.min(), x.max()
+        return (x - lo) / (hi - lo) if hi > lo else np.zeros_like(x)
+
+    # hybrid: fuse the lexical (BM25-role) and dense (embed-role) search scores,
+    # min-max normalized per candidate list then alpha-weighted — the HybridIndex
+    # convention. This is the "add the search score as a selector feature" arm.
+    def rank_hybrid(q, ot, cands, mat):
+        if not cands:
+            return []
+        query_str = " ".join(extract_target_terms(q.question))
+        lex = _minmax([max(ot._fuzzy_score(query_str, c), 0.0) for c in cands])
+        qv = np.asarray(emb.encode([q.question])[0])
+        den = _minmax(mat @ qv)
+        score = args.alpha * den + (1.0 - args.alpha) * lex
+        order = np.argsort(-score)[:max(KS)]
+        return [cands[i] for i in order]
+
+    selectors = {"lexical": rank_lexical, "embed": rank_embed, "cross": rank_cross,
+                 "hybrid": rank_hybrid}
     hits = {s: {k: 0 for k in KS} for s in selectors}
 
     # cache col candidates + embeddings per table
@@ -116,6 +138,7 @@ def main() -> int:
                     hits[s][k] += 1
 
     out = {"population": {"name": "arithmetic_m>=2", "n": n}, "metric": "col_recall@k",
+           "hybrid_alpha": args.alpha,
            "selectors": {s: {f"@{k}": round(hits[s][k] / n, 3) for k in KS} for s in selectors}}
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as fh:
