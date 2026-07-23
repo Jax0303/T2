@@ -24,14 +24,20 @@ Differences from the HiTab run, and why:
     --flips-first: the partial-n headline Δ over-represents injection-active
     queries; complete the population before quoting an effect size.
   * Scoring: gold = `ProcessedAnswer` (numeric string throughout the
-    aggregation subset). `strict` = hitab_exact_match (WTQ-style normalisation,
-    no scale leniency — NOT RealHiTBench's own LLM-judge protocol, so do not
-    compare against the paper's leaderboard numbers; within this experiment it
-    is a symmetric, deterministic scorer for the paired test). `lenient` =
-    numeric_match (±2%, %/fraction scale) — internal diagnostic only. The
-    solver prompt's ratio rule emits fractions while RealHiTBench golds are
-    percent-scale, which strict scoring penalises BOTH arms equally; the paired
-    Δ/McNemar remain valid.
+    aggregation subset, e.g. "543", "14.44%", "63.90"). `strict` = `em_norm`:
+    strip `%`/commas from the gold, numeric equality at rel_tol 1e-3 — NO
+    scale (x100), sign, or +-2% leniency. NOT RealHiTBench's own LLM-judge
+    protocol; do not compare against the paper's leaderboard numbers. The
+    first pilot (n=14, 2026-07-23) showed hitab_exact_match is unusable here:
+    golds are percent-SCALE strings while the HiTab prompt's ratio rule makes
+    the solver emit fractions — so this script also OVERRIDES the ratio rule
+    to ask for percent-scale numbers, matching the gold convention. `lenient`
+    = numeric_match (±2%, %/fraction scale) — internal diagnostic only.
+  * Context budget: RealHiTBench rows are wide (~400 tokens each); the 4096
+    default truncated 7/14 treat contexts in the pilot, silently dropping the
+    injected chunks. Budget is 8192 here and injected chunks are capped at
+    `--max-inject` (dense-rank order, best first) so truncation stays rare;
+    per-query truncation is still recorded.
   * Population: SubQType in {Calculation, Multi-hop Numerical Reasoning} = 334
     queries / 258 tables (HiTab arith m>=2 analogue). `--sample N --seed S`
     fixes a CompStrucCata-stratified random subpopulation up front when the
@@ -57,8 +63,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import numpy as np
 
+import rag_agent.generate.answerer as answerer_mod
 from rag_agent.bench.schema import BenchTable
-from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.generate.answerer import answer, evaluate_answer
 from rag_agent.llm.groq_llm import GroqLLM
 from rag_agent.query.operand_decomposer import Embedder
@@ -73,6 +79,39 @@ from rag_agent.stores.original_store import _to_float
 HF_REPO = "spzy/RealHiTBench"
 AGG_SUBQTYPES = {"Calculation", "Multi-hop Numerical Reasoning"}
 BenchTable.cell_num = lambda self, r, c: _to_float(self.cell(r, c))  # type: ignore[attr-defined]
+
+# RealHiTBench golds are percent-SCALE ("14.44%", "63.90"), unlike the fraction
+# convention the shared answerer prompt enforces for HiTab — align the solver's
+# output convention with this dataset's gold convention.
+_RHB_RATIO_RULE = (
+    "If the question asks for a percentage or share, give the number on the "
+    "0-100 percent scale (e.g. 14.44 for \"14.44%\") — do NOT give a 0-1 fraction."
+)
+
+
+def _patch_ratio_rule() -> None:
+    for name in ("_DIRECT_SYS", "_CODEGEN_SYS"):
+        setattr(answerer_mod, name,
+                getattr(answerer_mod, name).replace(answerer_mod._RATIO_RULE,
+                                                    _RHB_RATIO_RULE))
+
+
+def em_norm(pred, gold_str, rel_tol: float = 1e-5) -> bool:
+    """Deterministic strict scorer for RealHiTBench golds: `%`/comma-normalised
+    numeric equality at ``rel_tol`` (HiTab-grade float tolerance — absorbs FP
+    noise only, e.g. 21091.0 vs "21091.09" passes at 4e-6 but a wrong-cell
+    near-miss like 1119760 vs 1119800 at 3.6e-5 fails). No x100/sign/±2%
+    leniency (see docstring)."""
+    g_s = str(gold_str).strip().rstrip("%").replace(",", "")
+    try:
+        g = float(g_s)
+    except ValueError:
+        return str(pred).strip().lower() == str(gold_str).strip().lower()
+    try:
+        p = float(str(pred).strip().rstrip("%").replace(",", ""))
+    except (TypeError, ValueError):
+        return False
+    return abs(p - g) <= rel_tol * max(abs(g), 1e-9)
 
 
 def build_table(fname: str, hf_repo: str) -> BenchTable | None:
@@ -123,6 +162,11 @@ def main() -> int:
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--codegen-max-tokens", type=int, default=160,
                     help="reasoning models (gpt-oss) need ~1024")
+    ap.add_argument("--max-context-tokens", type=int, default=8192,
+                    help="context budget per solver call (wide RealHiTBench rows "
+                         "overflow the 4096 default and drop injected chunks)")
+    ap.add_argument("--max-inject", type=int, default=12,
+                    help="cap on injected total-like chunks (dense-rank order)")
     ap.add_argument("--sample", type=int, default=0,
                     help="fix a CompStrucCata-stratified random subpopulation of "
                          "this size (0 = full aggregation subset)")
@@ -164,6 +208,7 @@ def main() -> int:
           f"{f' (stratified sample of {n_full}, seed={args.seed})' if args.sample else ''}"
           f"  k={args.k} solver={args.solver_model}", flush=True)
 
+    _patch_ratio_rule()
     emb = Embedder(args.embed_model, device="cpu")
     llm = GroqLLM(model_name=args.solver_model, retry_on_429=8)
 
@@ -196,8 +241,10 @@ def main() -> int:
         order = R._rank(np.asarray(R._emb) @ qv)
         base_idx = list(order[:args.k])
         base_chunks = [R.chunks[i] for i in base_idx]
-        extra_idx = [i for i in total_chunk_idx[q["FileName"]]
-                     if i not in set(base_idx)]
+        rank_of = {i: r for r, i in enumerate(order)}
+        extra_idx = sorted((i for i in total_chunk_idx[q["FileName"]]
+                            if i not in set(base_idx)),
+                           key=lambda i: rank_of.get(i, len(order)))[:args.max_inject]
         treat_chunks = base_chunks + [R.chunks[i] for i in extra_idx]
         prep.append({"q": q, "base_chunks": base_chunks,
                      "treat_chunks": treat_chunks, "n_injected": len(extra_idx)})
@@ -230,8 +277,10 @@ def main() -> int:
         gold = [q["ProcessedAnswer"]]
         try:
             rb = answer(q["Question"], p["base_chunks"], llm, mode=args.mode,
+                        max_context_tokens=args.max_context_tokens,
                         codegen_max_tokens=args.codegen_max_tokens)
             rt = answer(q["Question"], p["treat_chunks"], llm, mode=args.mode,
+                        max_context_tokens=args.max_context_tokens,
                         codegen_max_tokens=args.codegen_max_tokens)
         except Exception as e:  # daily-quota 429 -> keep what we have
             cutoff = f"{type(e).__name__}: {e}"
@@ -245,8 +294,8 @@ def main() -> int:
                "n_injected": p["n_injected"],
                "correct_base": evaluate_answer(rb.answer, gold),
                "correct_treat": evaluate_answer(rt.answer, gold),
-               "correct_base_strict": hitab_exact_match(rb.answer, gold),
-               "correct_treat_strict": hitab_exact_match(rt.answer, gold),
+               "correct_base_strict": em_norm(rb.answer, gold[0]),
+               "correct_treat_strict": em_norm(rt.answer, gold[0]),
                "pred_base": rb.answer, "pred_treat": rt.answer, "gold": gold,
                "base_context_truncated": rb.context_truncated,
                "treat_context_truncated": rt.context_truncated}
@@ -264,6 +313,11 @@ def main() -> int:
 
     recs = [done[f"rhb-{p['q']['id']}"] for p in prep
             if f"rhb-{p['q']['id']}" in done]
+    # recompute strict from stored pred/gold so resumed records written under an
+    # older scorer are re-scored uniformly by the current em_norm
+    for r in recs:
+        r["correct_base_strict"] = em_norm(r["pred_base"], r["gold"][0])
+        r["correct_treat_strict"] = em_norm(r["pred_treat"], r["gold"][0])
     ne = len(recs)
     if not ne:
         print("no evaluations recorded (quota exhausted immediately?)")
@@ -305,10 +359,11 @@ def main() -> int:
                      "retriever": "dense", "k": args.k,
                      "solver": f"groq:{args.solver_model}", "mode": args.mode},
         "note": ("no OSC — RealHiTBench has no operand-cell annotations. strict = "
-                 "hitab_exact_match-style EM on ProcessedAnswer (deterministic, "
-                 "symmetric; NOT the paper's LLM-judge protocol — do not compare "
-                 "to the RealHiTBench leaderboard). lenient = numeric_match "
-                 "(internal diagnostic only)."),
+                 "em_norm on ProcessedAnswer (%/comma-normalised numeric equality, "
+                 "rel_tol 1e-3, no scale/sign leniency; solver prompt asks percent-"
+                 "scale to match the gold convention). Deterministic and symmetric, "
+                 "NOT the paper's LLM-judge protocol — do not compare to the "
+                 "RealHiTBench leaderboard. lenient = numeric_match (diagnostic)."),
         "answer_accuracy_strict": block(recs, strict=True),
         "answer_accuracy_lenient": block(recs, strict=False),
         "injection_active_subset_strict": block(inj_recs, strict=True) if inj_recs else None,
