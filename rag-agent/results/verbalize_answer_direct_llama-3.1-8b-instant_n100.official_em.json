@@ -1,0 +1,37 @@
+{
+  "rescored_from": "verbalize_answer_direct_llama-3.1-8b-instant_n100.json",
+  "reader": "groq:llama-3.1-8b-instant",
+  "primary_metric": "hmt_exact_match (HiTab official scorer)",
+  "summary": {
+    "oracle": {
+      "hmt_exact_match": 0.18,
+      "n": 100
+    },
+    "original_sent": {
+      "hmt_exact_match": 0.13,
+      "n": 100
+    },
+    "rag_1t1c": {
+      "hmt_exact_match": 0.1,
+      "n": 100
+    },
+    "rag_rowchunk": {
+      "hmt_exact_match": 0.29,
+      "n": 100
+    },
+    "delta_original_vs_rag_1t1c": {
+      "delta": 0.03,
+      "ci95": [
+        -0.03,
+        0.09
+      ]
+    },
+    "delta_original_vs_rag_rowchunk": {
+      "delta": -0.16,
+      "ci95": [
+        -0.24,
+        -0.09
+      ]
+    }
+  }
+}
