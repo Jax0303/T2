@@ -1,0 +1,38 @@
+{
+  "population": {
+    "dataset": "hitab",
+    "split": "dev",
+    "n_queries": 234,
+    "min_operands": 2,
+    "aligned_tables": 424
+  },
+  "reconstruction_accuracy": {
+    "col_exact": 0.9428,
+    "row_exact": 0.5446,
+    "note": "merge-aware front-end at gold boundary; cross-check vs tree_reconstruct_hitab_raw_merged"
+  },
+  "retriever": "dense (bge-small, within-table pool)",
+  "metric": "set-EM@k (all gold operand cells ranked <= k)",
+  "arms": {
+    "flat": "baseline serialization (leaf labels only)",
+    "S2_gold": "my method on GOLD tree (perfect structure = ceiling)",
+    "S2_recon": "my method on RECONSTRUCTED tree (what raw data gets)"
+  },
+  "set_em": {
+    "flat": {
+      "set_em@10": 0.3205,
+      "set_em@20": 0.4573,
+      "set_em@50": 0.7094
+    },
+    "S2_gold": {
+      "set_em@10": 0.406,
+      "set_em@20": 0.5769,
+      "set_em@50": 0.8291
+    },
+    "S2_recon": {
+      "set_em@10": 0.3932,
+      "set_em@20": 0.5726,
+      "set_em@50": 0.8162
+    }
+  }
+}

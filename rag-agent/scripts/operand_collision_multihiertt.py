@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import re
 import statistics
 import sys
@@ -179,6 +180,14 @@ def cell_text(cell, scheme: str) -> str:
         return f"{lab}: {v}" if lab else v
     if scheme == "S2":                        # full tree-mapped header path
         path = " > ".join([*rp, *cp])
+        return f"{path}: {v}" if path else v
+    if scheme == "S2_shuf":                   # LENGTH CONTROL for S2: identical
+        # token multiset and length as S2, hierarchical ORDER destroyed. Isolates
+        # "correct structure" from "more text": flat->S2_shuf = effect of adding
+        # ancestor words at all; S2_shuf->S2 = pure structure at fixed length.
+        segs = [*rp, *cp]
+        random.Random(hash(tuple(segs)) & 0xFFFFFFFF).shuffle(segs)
+        path = " > ".join(segs)
         return f"{path}: {v}" if path else v
     if scheme == "S3":                        # caption sentence (medium preset)
         row = " > ".join(rp)

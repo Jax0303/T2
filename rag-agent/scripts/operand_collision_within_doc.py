@@ -110,7 +110,7 @@ def main() -> int:
         reranker = CrossEncoder(args.reranker, max_length=args.rerank_max_length)
 
     records, results = [], {}
-    for scheme in ("flat", "S2", "S3"):
+    for scheme in ("flat", "S2", "S2_shuf", "S3"):
         t0 = time.time()
         texts = [cell_text(c, scheme) for c in cells]
         vecs = np.asarray(encoder.encode(texts))

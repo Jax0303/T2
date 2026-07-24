@@ -1,53 +1,55 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""External-validity leg of the 2-dataset strategy: answer accuracy on RealHiTBench.
+"""Raw-dataset leg of the 2-dataset strategy: MY METHOD vs BASELINE serialization.
 
-`scripts/answer_accuracy_injection.py` measured the total-row-injection payoff on
-HiTab, where header trees are GOLD (dataset-provided). This is the same paired
-experiment on RealHiTBench (Zhang et al., ACL 2025; HF `spzy/RealHiTBench`), where
-tables are genuinely RAW PhpSpreadsheet HTML and the header trees the pipeline
-retrieves over are RECONSTRUCTED by our markup front-end
-(`parse_html_table_with_merges` + `reconstruct_paths_with_merges` with guessed
-header boundaries) — i.e. the full "arbitrary raw table" pipeline end to end:
+The thesis claim on genuinely RAW hierarchical tables (no gold structure, only
+parse structure + gold answers) is that *my* preprocessing — reconstruct the
+header tree, then verbalize every cell 1:1 as a sentence carrying its full
+row/col header path (S2) — beats the structure-naive baseline serialization
+(S1, leaf headers only) on BOTH retrieval and answer accuracy, and does so
+independently of the solver LLM (same retriever, same LLM, only the
+serialization differs).
 
-  raw HTML -> reconstruct tree -> S2 cell-sentence chunks -> dense top-k
-    baseline  = top-k row-chunks                      -> solver -> answer
-    treatment = top-k UNION total-like row-chunks     -> solver -> answer
+RealHiTBench (Zhang et al., ACL 2025; HF `spzy/RealHiTBench`) is the raw dataset:
+tables are PhpSpreadsheet HTML and the header trees the pipeline retrieves over
+are RECONSTRUCTED by our markup front-end (`parse_html_table_with_merges` +
+`reconstruct_paths_with_merges` with guessed header boundaries). This script is
+the ANSWER-accuracy leg of the my-vs-baseline comparison (retrieval accuracy
+needs gold operand cells, which RealHiTBench does not ship — that leg runs on
+MultiHiertt/HiTab via the within-doc bench):
 
-Differences from the HiTab run, and why:
-  * NO OSC. RealHiTBench has no operand-cell annotations (gold answers only), so
-    operand-set completeness cannot be computed. We record the injected-cell
-    count and score ANSWER accuracy only (the metric this dataset is for).
-  * Ordering: no OSC-flip ordering is possible; `--injected-first` runs queries
-    where the treatment actually adds chunks first, so a daily-quota cutoff
-    still yields discordance-informative pairs. Same caveat as HiTab's
-    --flips-first: the partial-n headline Δ over-represents injection-active
-    queries; complete the population before quoting an effect size.
+  raw HTML -> reconstruct tree -> serialize cells -> dense top-k -> solver -> answer
+    base  (baseline) = S1 flat serialization  (leaf headers only)
+    treat (mine)     = S2 header-path serialization  (full row/col path per cell)
+
+Both arms use the SAME dense retriever, SAME solver, SAME k; the ONLY difference
+is the serialization the retriever indexes and the solver reads. A positive Δ
+(treat - base) is my method beating the baseline; McNemar tests the paired flip
+counts (S2-only-correct vs S1-only-correct).
+
+Notes / caveats:
+  * NO OSC / no retrieval-accuracy here: RealHiTBench has no operand-cell
+    annotations (gold answers only), so operand-set completeness / set-EM is
+    not computable. We score ANSWER accuracy only.
   * Scoring: gold = `ProcessedAnswer` (numeric string throughout the
     aggregation subset, e.g. "543", "14.44%", "63.90"). `strict` = `em_norm`:
-    strip `%`/commas from the gold, numeric equality at rel_tol 1e-3 — NO
+    strip `%`/commas from the gold, numeric equality at rel_tol 1e-5 — NO
     scale (x100), sign, or +-2% leniency. NOT RealHiTBench's own LLM-judge
-    protocol; do not compare against the paper's leaderboard numbers. The
-    first pilot (n=14, 2026-07-23) showed hitab_exact_match is unusable here:
-    golds are percent-SCALE strings while the HiTab prompt's ratio rule makes
-    the solver emit fractions — so this script also OVERRIDES the ratio rule
+    protocol; do not compare against the paper's leaderboard numbers. Golds
+    are percent-SCALE strings, so the solver prompt's ratio rule is OVERRIDDEN
     to ask for percent-scale numbers, matching the gold convention. `lenient`
     = numeric_match (±2%, %/fraction scale) — internal diagnostic only.
-  * Context budget: RealHiTBench rows are wide (~400 tokens each); the 4096
-    default truncated 7/14 treat contexts in the pilot, silently dropping the
-    injected chunks. Budget is 8192 here and injected chunks are capped at
-    `--max-inject` (dense-rank order, best first) so truncation stays rare;
-    per-query truncation is still recorded.
+  * Context budget: RealHiTBench rows are wide (~400 tokens each); budget is
+    8192 and per-query truncation is recorded.
   * Population: SubQType in {Calculation, Multi-hop Numerical Reasoning} = 334
-    queries / 258 tables (HiTab arith m>=2 analogue). `--sample N --seed S`
-    fixes a CompStrucCata-stratified random subpopulation up front when the
-    full 334 is quota-infeasible; the sample is deterministic, so --resume
-    continues the SAME subpopulation across days.
+    queries / 258 tables. `--sample N --seed S` fixes a CompStrucCata-stratified
+    random subpopulation up front; deterministic, so --resume continues the SAME
+    subpopulation across days. Queries run in id order.
 
 Run (needs GROQ_API_KEY):
   PYTHONPATH=. python3 scripts/realhitbench_answer_accuracy.py \
     --solver-model llama-3.3-70b-versatile --codegen-max-tokens 160 \
-    --sample 100 --injected-first --resume
+    --sample 100 --seed 0 --resume
 """
 from __future__ import annotations
 
@@ -71,9 +73,8 @@ from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
                                    parse_html_table_with_merges,
                                    reconstruct_paths_with_merges)
-from rag_agent.retrieve.header_enum import total_like_rows_hybrid
 from rag_agent.retrieve.operand_retriever import HybridRetriever
-from rag_agent.serialize import S2, serialize_table
+from rag_agent.serialize import S1, S2, serialize_table
 from rag_agent.stores.original_store import _to_float
 
 HF_REPO = "spzy/RealHiTBench"
@@ -157,6 +158,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--hf-repo", default=HF_REPO)
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
+    ap.add_argument("--device", default=None,
+                    help="embedder device (default: cuda if available else cpu)")
     ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--solver-model", default="llama-3.3-70b-versatile")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
@@ -164,21 +167,15 @@ def main() -> int:
                     help="reasoning models (gpt-oss) need ~1024")
     ap.add_argument("--max-context-tokens", type=int, default=8192,
                     help="context budget per solver call (wide RealHiTBench rows "
-                         "overflow the 4096 default and drop injected chunks)")
-    ap.add_argument("--max-inject", type=int, default=12,
-                    help="cap on injected total-like chunks (dense-rank order)")
+                         "overflow the 4096 default)")
     ap.add_argument("--sample", type=int, default=0,
                     help="fix a CompStrucCata-stratified random subpopulation of "
                          "this size (0 = full aggregation subset)")
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--injected-first", action="store_true",
-                    help="run queries whose treatment adds chunks first (quota "
-                         "cutoff still yields informative pairs; partial-n Δ is "
-                         "then NOT population-representative)")
     ap.add_argument("--resume", action="store_true")
-    ap.add_argument("--out", default="results/realhitbench_answer_accuracy.json")
+    ap.add_argument("--out", default="results/realhitbench_s1_vs_s2.json")
     ap.add_argument("--records",
-                    default="results/realhitbench_answer_accuracy_records.jsonl")
+                    default="results/realhitbench_s1_vs_s2_records.jsonl")
     args = ap.parse_args()
 
     from huggingface_hub import hf_hub_download
@@ -206,28 +203,34 @@ def main() -> int:
     n = len(pop)
     print(f"[pop] RealHiTBench agg (Calculation+Multi-hop NR): {n}"
           f"{f' (stratified sample of {n_full}, seed={args.seed})' if args.sample else ''}"
-          f"  k={args.k} solver={args.solver_model}", flush=True)
+          f"  k={args.k} solver={args.solver_model}  arms: base=S1(flat) vs treat=S2(mine)",
+          flush=True)
 
     _patch_ratio_rule()
-    emb = Embedder(args.embed_model, device="cpu")
+    if args.device is None:
+        import torch
+        args.device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"[device] embedder on {args.device}", flush=True)
+    emb = Embedder(args.embed_model, device=args.device)
     llm = GroqLLM(model_name=args.solver_model, retry_on_429=8)
 
-    # ---- reconstruct + index each table lazily (LLM-free) -----------------
+    # ---- reconstruct each table once, index it under BOTH serializations ----
     tables: dict[str, BenchTable | None] = {}
-    retr: dict[str, HybridRetriever] = {}
-    total_chunk_idx: dict[str, list[int]] = {}
+    retr_s1: dict[str, HybridRetriever] = {}
+    retr_s2: dict[str, HybridRetriever] = {}
 
     def get_table(fname: str):
         if fname not in tables:
             t = build_table(fname, args.hf_repo)
             tables[fname] = t
             if t is not None:
-                R = HybridRetriever(serialize_table(t, S2), emb)
-                retr[fname] = R
-                trows = total_like_rows_hybrid(t)
-                total_chunk_idx[fname] = [i for i, ch in enumerate(R.chunks)
-                                          if set(ch.rows) & trows]
+                retr_s1[fname] = HybridRetriever(serialize_table(t, S1), emb)
+                retr_s2[fname] = HybridRetriever(serialize_table(t, S2), emb)
         return tables[fname]
+
+    def topk_chunks(R: HybridRetriever, qv: np.ndarray):
+        order = R._rank(np.asarray(R._emb) @ qv)
+        return [R.chunks[i] for i in order[:args.k]]
 
     # ---- retrieval contexts for every query (LLM-free) --------------------
     prep, n_table_skipped = [], 0
@@ -236,26 +239,12 @@ def main() -> int:
         if t is None:
             n_table_skipped += 1
             continue
-        R = retr[q["FileName"]]
         qv = np.asarray(emb.encode([q["Question"]])[0])
-        order = R._rank(np.asarray(R._emb) @ qv)
-        base_idx = list(order[:args.k])
-        base_chunks = [R.chunks[i] for i in base_idx]
-        rank_of = {i: r for r, i in enumerate(order)}
-        extra_idx = sorted((i for i in total_chunk_idx[q["FileName"]]
-                            if i not in set(base_idx)),
-                           key=lambda i: rank_of.get(i, len(order)))[:args.max_inject]
-        treat_chunks = base_chunks + [R.chunks[i] for i in extra_idx]
-        prep.append({"q": q, "base_chunks": base_chunks,
-                     "treat_chunks": treat_chunks, "n_injected": len(extra_idx)})
-    n_inj_active = sum(1 for p in prep if p["n_injected"])
+        prep.append({"q": q,
+                     "base_chunks": topk_chunks(retr_s1[q["FileName"]], qv),
+                     "treat_chunks": topk_chunks(retr_s2[q["FileName"]], qv)})
     print(f"[prep] {len(prep)} queries prepared ({n_table_skipped} skipped: table "
-          f"unusable); treatment adds chunks on {n_inj_active}", flush=True)
-
-    if args.injected_first:
-        prep.sort(key=lambda p: (-p["n_injected"], p["q"]["id"]))
-        print(f"[order] injected-first: {n_inj_active} injection-active queries "
-              "run before the rest", flush=True)
+          f"unusable)", flush=True)
 
     done: dict[str, dict] = {}
     if args.resume and Path(args.records).exists():
@@ -287,11 +276,7 @@ def main() -> int:
             print(f"\n[cutoff] solver failed at {qi+1}/{len(prep)}: {cutoff}",
                   flush=True)
             break
-        if rt.context_truncated:
-            print(f"  [warn] qid={qid}: treat context truncated — injected "
-                  "chunks may have been dropped", flush=True)
         rec = {"qid": qid, "cata": q["CompStrucCata"],
-               "n_injected": p["n_injected"],
                "correct_base": evaluate_answer(rb.answer, gold),
                "correct_treat": evaluate_answer(rt.answer, gold),
                "correct_base_strict": em_norm(rb.answer, gold[0]),
@@ -306,8 +291,8 @@ def main() -> int:
         if n_run % 4 == 0:
             d = list(done.values())
             print(f"  {len(done)}/{len(prep)}  "
-                  f"acc_b={sum(r['correct_base'] for r in d)/len(d):.3f} "
-                  f"acc_t={sum(r['correct_treat'] for r in d)/len(d):.3f} "
+                  f"acc_S1={sum(r['correct_base'] for r in d)/len(d):.3f} "
+                  f"acc_S2={sum(r['correct_treat'] for r in d)/len(d):.3f} "
                   f"({time.time()-t0:.0f}s)", flush=True)
     rec_fh.close()
 
@@ -326,8 +311,8 @@ def main() -> int:
     def block(rs, strict: bool):
         kb = "correct_base_strict" if strict else "correct_base"
         kt = "correct_treat_strict" if strict else "correct_treat"
-        b = sum(r[kt] and not r[kb] for r in rs)   # treat-only
-        c = sum(r[kb] and not r[kt] for r in rs)   # base-only
+        b = sum(r[kt] and not r[kb] for r in rs)   # treat(S2/mine)-only
+        c = sum(r[kb] and not r[kt] for r in rs)   # base(S1/baseline)-only
         m = len(rs)
         return {"n": m,
                 "base": round(sum(r[kb] for r in rs) / m, 4),
@@ -336,7 +321,6 @@ def main() -> int:
                 "treat_only": b, "base_only": c,
                 "mcnemar_p": round(float(mcnemar_p(b, c)), 5)}
 
-    inj_recs = [r for r in recs if r["n_injected"]]
     by_cata = {}
     for cata in sorted({r["cata"] for r in recs}):
         by_cata[cata] = block([r for r in recs if r["cata"] == cata], strict=True)
@@ -347,49 +331,44 @@ def main() -> int:
             "n_full_subset": n_full, "n_target": n,
             "sample": args.sample or None, "seed": args.seed,
             "n_prepared": len(prep), "n_table_skipped": n_table_skipped,
-            "n_evaluated": ne,
-            "n_injection_active_target": n_inj_active,
-            "n_injection_active_evaluated": len(inj_recs),
-            "injected_first": args.injected_first, "cutoff": cutoff,
+            "n_evaluated": ne, "cutoff": cutoff,
             "n_base_context_truncated": sum(r["base_context_truncated"] for r in recs),
             "n_treat_context_truncated": sum(r["treat_context_truncated"] for r in recs),
         },
+        "arms": {"base": "S1 (s1_flat) — baseline serialization, leaf headers only",
+                 "treat": "S2 (s2_headerpath) — mine, full row/col header path per cell"},
         "pipeline": {"trees": "RECONSTRUCTED from raw HTML (markup front-end, "
                               "guessed header boundaries) — no gold structure",
                      "retriever": "dense", "k": args.k,
-                     "solver": f"groq:{args.solver_model}", "mode": args.mode},
-        "note": ("no OSC — RealHiTBench has no operand-cell annotations. strict = "
-                 "em_norm on ProcessedAnswer (%/comma-normalised numeric equality, "
-                 "rel_tol 1e-3, no scale/sign leniency; solver prompt asks percent-"
-                 "scale to match the gold convention). Deterministic and symmetric, "
-                 "NOT the paper's LLM-judge protocol — do not compare to the "
-                 "RealHiTBench leaderboard. lenient = numeric_match (diagnostic)."),
+                     "solver": f"groq:{args.solver_model}", "mode": args.mode,
+                     "controls": "same retriever/solver/k for both arms; only the "
+                                 "serialization differs (isolates preprocessing)"},
+        "note": ("no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell "
+                 "annotations (answer accuracy only). strict = em_norm on "
+                 "ProcessedAnswer (%/comma-normalised numeric equality, rel_tol 1e-5, "
+                 "no scale/sign leniency; solver prompt asks percent-scale to match "
+                 "the gold convention). Deterministic and symmetric, NOT the paper's "
+                 "LLM-judge protocol — do not compare to the RealHiTBench leaderboard. "
+                 "lenient = numeric_match (diagnostic)."),
         "answer_accuracy_strict": block(recs, strict=True),
         "answer_accuracy_lenient": block(recs, strict=False),
-        "injection_active_subset_strict": block(inj_recs, strict=True) if inj_recs else None,
         "by_compstruccata_strict": by_cata,
-        "mean_injected_chunks": round(sum(r["n_injected"] for r in recs) / ne, 2),
     }
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2, ensure_ascii=False)
 
     s, l = out["answer_accuracy_strict"], out["answer_accuracy_lenient"]
-    print("\n=== RESULT (RealHiTBench, reconstructed trees) ===")
+    print("\n=== RESULT (RealHiTBench, reconstructed trees; S1 baseline vs S2 mine) ===")
     print(f"evaluated {ne}/{len(prep)} (cutoff={cutoff})")
-    print(f"Accuracy strict-EM   base {s['base']}  ->  treat {s['treat']}  "
-          f"(Δ {s['delta']:+.4f})   treat_only={s['treat_only']} "
-          f"base_only={s['base_only']}  McNemar p={s['mcnemar_p']}")
-    print(f"Accuracy lenient     base {l['base']}  ->  treat {l['treat']}  "
+    print(f"Accuracy strict-EM   S1(base) {s['base']}  ->  S2(mine) {s['treat']}  "
+          f"(Δ {s['delta']:+.4f})   S2_only={s['treat_only']} "
+          f"S1_only={s['base_only']}  McNemar p={s['mcnemar_p']}")
+    print(f"Accuracy lenient     S1 {l['base']}  ->  S2 {l['treat']}  "
           f"(Δ {l['delta']:+.4f})   [internal diagnostic]")
-    if inj_recs:
-        i = out["injection_active_subset_strict"]
-        print(f"injection-active subset (n={i['n']}): {i['base']} -> {i['treat']}  "
-              f"treat_only={i['treat_only']} base_only={i['base_only']}")
     print("by CompStrucCata (strict):")
     for k, v in by_cata.items():
         print(f"  {k:<24} n={v['n']:>3}  {v['base']} -> {v['treat']}  (Δ {v['delta']:+.3f})")
-    print(f"mean injected chunks/query: {out['mean_injected_chunks']}")
     print(f"wrote -> {args.out}")
     return 0
 

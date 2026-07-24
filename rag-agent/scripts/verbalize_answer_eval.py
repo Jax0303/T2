@@ -34,6 +34,7 @@ from rag_agent.serialize.serializers import serialize_table, fulltable_chunk, S1
 from rag_agent.serialize.verbalize import verbalize_table  # noqa: E402
 from rag_agent.retrieve.encoders import SentenceTransformerEncoder  # noqa: E402
 from rag_agent.generate.answerer import answer, evaluate_answer  # noqa: E402
+from rag_agent.eval.metrics import hitab_exact_match  # noqa: E402
 
 SEED = 42
 MODEL = "BAAI/bge-small-en-v1.5"
@@ -72,7 +73,20 @@ def main():
     # Groq free tier: TPM 6000는 요청당 상한이기도 함 → 컨텍스트 예산을 그 아래로.
     ap.add_argument("--max-context-tokens", type=int, default=1200)
     ap.add_argument("--tpm", type=int, default=6000, help="token/min throttle budget")
+    ap.add_argument("--arms", default=",".join(ARMS),
+                    help="comma-separated subset of arms to run; each arm costs one "
+                         "LLM call per query, and Groq's daily token budget is the "
+                         "binding constraint on how many queries we can score")
+    ap.add_argument("--out", default=None)
+    ap.add_argument("--resume", action="store_true",
+                    help="reuse per-query results already in --out and only call the "
+                         "LLM for the rest; the daily token cap truncates every run, "
+                         "so a full-split number has to be accumulated across days")
     args = ap.parse_args()
+    arms = tuple(a.strip() for a in args.arms.split(",") if a.strip())
+    unknown = [a for a in arms if a not in ARMS]
+    if unknown:
+        raise SystemExit(f"unknown arm(s) {unknown}; choose from {list(ARMS)}")
 
     load_env()
     from rag_agent.llm.groq_llm import GroqLLM
@@ -136,7 +150,14 @@ def main():
         raise ValueError(arm)
 
     # --- 실행 --------------------------------------------------------------
-    out = ROOT / "results" / f"verbalize_answer_{args.mode}_{args.model.replace('/','_')}_n{args.n}.json"
+    out = Path(args.out) if args.out else (
+        ROOT / "results" / f"verbalize_answer_{args.mode}_{args.model.replace('/','_')}_n{args.n}.json")
+    done = {}
+    if args.resume and out.exists():
+        prev = json.loads(out.read_text())
+        for r in prev.get("records", []):
+            done[r["query_id"]] = r
+        print(f"[resume] {len(done)} queries already scored in {out}")
     sent_log = []  # (timestamp, est_tokens) — TPM 스로틀용
 
     def throttle(est_tokens: int):
@@ -150,12 +171,15 @@ def main():
         sent_log.append((now, est_tokens))
 
     records = []
-    acc = {a: [] for a in ARMS}
     t0 = time.time()
+    stopped = None
     for qi, q in enumerate(sample):
+        if q.query_id in done:
+            records.append(done[q.query_id])
+            continue
         rec = {"query_id": q.query_id, "question": q.question,
                "gold": q.answer, "gold_table": q.gold_table_id, "arms": {}}
-        for arm in ARMS:
+        for arm in arms:
             chunks, tid = context_for(arm, qi, q)
             est = min(sum(len(c.text) for c in chunks),
                       args.max_context_tokens * 4) // 4 + 400
@@ -164,36 +188,50 @@ def main():
                 res = answer(q.question, chunks, llm, mode=args.mode,
                              max_context_tokens=args.max_context_tokens)
             except Exception as e:
-                rec["arms"][arm] = {"error": str(e)[:200], "correct": False,
-                                    "table_hit": False, "operands_covered": None,
-                                    "truncated": None, "pred": None}
-                acc[arm].append(0)
-                continue
-            ok = evaluate_answer(res.answer, q.answer)
-            acc[arm].append(1 if ok else 0)
+                # A refused call is missing data, not a wrong answer. Scoring it 0
+                # (what this loop used to do) silently deflates every arm the daily
+                # token cap cuts off. Stop and keep what is already scored.
+                stopped = f"{type(e).__name__}: {str(e)[:300]}"
+                rec = None
+                break
             gold_chunks = [c for c in chunks if c.table_id == q.gold_table_id]
             covered = (bool(gold_chunks) and all(
                 any(c.covers(op.row, op.col) for c in gold_chunks)
                 for op in q.gold_operands)) if q.gold_operands else None
             rec["arms"][arm] = {
                 "pred": res.answer if not isinstance(res.answer, float) else round(res.answer, 6),
-                "correct": ok,
+                # hmtEM is HiTab's own scorer and the only number comparable to
+                # another paper's HiTab accuracy; `correct` (EM or ±2% numeric) is
+                # ours and stays as a diagnostic only.
+                "hmt_em": hitab_exact_match(res.answer, q.answer),
+                "correct": evaluate_answer(res.answer, q.answer),
                 "table_hit": (tid == q.gold_table_id) if tid else bool(gold_chunks),
                 "operands_covered": covered,
                 "truncated": res.context_truncated,
             }
+        if rec is None:
+            break
         records.append(rec)
-        if (qi + 1) % 10 == 0:
-            line = " ".join(f"{a}={np.mean(acc[a]):.3f}" for a in ARMS)
-            print(f"  {qi+1}/{len(sample)} ({time.time()-t0:.0f}s) {line}", flush=True)
-            out.write_text(json.dumps({"partial": qi + 1, "records": records},
+        if len(records) % 10 == 0:
+            line = " ".join(
+                f"{a}={np.mean([r['arms'][a]['hmt_em'] for r in records if a in r['arms']]):.3f}"
+                for a in arms)
+            print(f"  {len(records)}/{len(sample)} ({time.time()-t0:.0f}s) hmtEM {line}", flush=True)
+            out.write_text(json.dumps({"partial": len(records), "records": records},
                                       ensure_ascii=False))
+    if stopped:
+        print(f"[stopped early after {len(records)} queries] {stopped}", flush=True)
+
+    acc = {a: [r["arms"][a]["hmt_em"] for r in records if a in r["arms"]] for a in arms}
+    acc_lenient = {a: [r["arms"][a]["correct"] for r in records if a in r["arms"]] for a in arms}
+    sample = [q for q in sample if any(r["query_id"] == q.query_id for r in records)]
 
     # --- 집계 --------------------------------------------------------------
     summary = {}
-    for arm in ARMS:
+    for arm in arms:
         v = np.array(acc[arm], dtype=float)
-        s = {"accuracy": round(float(v.mean()), 4), "n": len(v)}
+        s = {"hmt_exact_match": round(float(v.mean()), 4), "n": len(v),
+             "accuracy_lenient_ours": round(float(np.mean(acc_lenient[arm])), 4)}
         hits = np.array([r["arms"][arm]["table_hit"] for r in records])
         s["table_hit_rate"] = round(float(hits.mean()), 4)
         if hits.any():
@@ -209,10 +247,21 @@ def main():
         summary[arm] = s
         print(arm, s)
 
-    # paired bootstrap: ours − 각 RAG
+    # A single-arm run still needs an interval, because the point of the number is
+    # to be held against another paper's published HiTab EM.
     rng2 = np.random.default_rng(SEED)
-    idx = rng2.integers(0, len(sample), size=(2000, len(sample)))
+    n_eval = len(records)
+    idx = rng2.integers(0, n_eval, size=(2000, n_eval)) if n_eval else None
+    for arm in arms:
+        v = np.array(acc[arm], float)
+        d = v[idx].mean(1)
+        lo, hi = np.percentile(d, [2.5, 97.5])
+        summary[arm]["hmt_em_ci95"] = [round(float(lo), 4), round(float(hi), 4)]
+
+    # paired bootstrap: ours − 각 RAG
     for base in ("rag_1t1c", "rag_rowchunk"):
+        if base not in arms or "original_sent" not in arms:
+            continue
         a, b = np.array(acc["original_sent"], float), np.array(acc[base], float)
         d = a[idx].mean(1) - b[idx].mean(1)
         lo, hi = np.percentile(d, [2.5, 97.5])
@@ -225,6 +274,10 @@ def main():
     out.write_text(json.dumps({
         "config": vars(args) | {"reader": llm.name, "embedder": MODEL, "seed": SEED,
                                 "context_serialization": "S1 fulltable (oracle/original/1t1c), S2 rowchunks"},
+        "population": {"name": "hitab_dev_random_sample", "requested": args.n,
+                       "evaluated": len(records), "stopped_early": stopped},
+        "primary_metric": "hmt_exact_match (HiTab's official scorer) — the number to "
+                          "quote against published HiTab accuracies",
         "summary": summary, "records": records,
     }, indent=2, ensure_ascii=False))
     print("saved →", out)

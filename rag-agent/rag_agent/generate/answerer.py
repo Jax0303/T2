@@ -114,6 +114,28 @@ def _extract_code(text: str) -> str:
     return "\n".join(lines)
 
 
+# A reply that IS a number, allowing the decoration a model puts around one:
+# currency, a percent sign, thousands separators, a trailing period.
+_BARE_NUM_RE = re.compile(r"^[\$€£]?\s*(-?\d[\d,]*\.?\d*)\s*%?\.?$")
+
+
+def _as_bare_number(text: str) -> Optional[float]:
+    """Float if the whole reply is a single number, else ``None``.
+
+    Not ``_parse_number``: that one digs a number out of arbitrary prose, which
+    silently turns a correct *string* answer into a wrong number — HiTab's gold
+    includes labels like ``"15 to 19"``, and scoring those as ``19.0`` is an
+    unforced error. HiTab's own scorer does no prose extraction either.
+    """
+    m = _BARE_NUM_RE.match((text or "").strip())
+    if not m:
+        return None
+    try:
+        return float(m.group(1).replace(",", ""))
+    except ValueError:
+        return None
+
+
 def _parse_number(text: str) -> Optional[float]:
     m = _NUM_RE.findall(text.replace(",", ""))
     if not m:
@@ -138,9 +160,10 @@ class AnswerResult:
 
 
 _RATIO_RULE = (
-    "If the question asks for a percentage, percentage points, share, or ratio, "
-    "give the raw decimal fraction (e.g. 0.053 for \"5.3%\") — do NOT multiply by "
-    "100, even though the question says \"percent\"."
+    "Scale rule. If you COMPUTE a percentage, share or ratio yourself (one number "
+    "divided by another), report the raw decimal fraction (0.053, not 5.3) even "
+    "though the question says \"percent\". If instead the value is already printed "
+    "in a cell, report it exactly as printed — do NOT rescale it."
 )
 _DIRECT_SYS = (
     "You answer questions about a table. Use ONLY the rows given. "
@@ -195,7 +218,11 @@ def answer(
 
     user = f"ROWS:\n{ctx}\n\nQUESTION: {question}\n\nAnswer:"
     raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=max_tokens)
-    num = _parse_number(raw)
+    if not raw and getattr(llm, "last_finish_reason", None) == "length":
+        # The budget went entirely to hidden reasoning. Scoring the empty string
+        # would count a non-answer as a wrong answer; buy one retry instead.
+        raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=max_tokens * 4)
+    num = _as_bare_number(raw)
     return AnswerResult(answer=num if num is not None else raw.strip(), raw=raw, mode=mode,
                         context_truncated=truncated)
 
