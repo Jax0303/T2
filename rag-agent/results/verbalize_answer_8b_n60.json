@@ -1,0 +1,2616 @@
+{
+  "config": {
+    "n": 60,
+    "model": "llama-3.1-8b-instant",
+    "rowchunk_k": 10,
+    "mode": "direct",
+    "max_context_tokens": 1200,
+    "tpm": 6000,
+    "arms": "oracle,original_sent,rag_1t1c,rag_rowchunk",
+    "out": "results/verbalize_answer_8b_n60.json",
+    "resume": true,
+    "reader": "groq:llama-3.1-8b-instant",
+    "embedder": "BAAI/bge-small-en-v1.5",
+    "seed": 42,
+    "context_serialization": "S1 fulltable (oracle/original/1t1c), S2 rowchunks"
+  },
+  "population": {
+    "name": "hitab_dev_random_sample",
+    "requested": 60,
+    "evaluated": 60,
+    "stopped_early": null
+  },
+  "primary_metric": "hmt_exact_match (HiTab's official scorer) — the number to quote against published HiTab accuracies",
+  "summary": {
+    "oracle": {
+      "hmt_exact_match": 0.2833,
+      "n": 60,
+      "accuracy_lenient_ours": 0.3667,
+      "table_hit_rate": 1.0,
+      "acc_given_table_hit": 0.2833,
+      "acc_operands_covered": 0.2955,
+      "hmt_em_ci95": [
+        0.1667,
+        0.4
+      ]
+    },
+    "original_sent": {
+      "hmt_exact_match": 0.2167,
+      "n": 60,
+      "accuracy_lenient_ours": 0.2833,
+      "table_hit_rate": 0.7167,
+      "acc_given_table_hit": 0.3023,
+      "acc_operands_covered": 0.303,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 11,
+      "hmt_em_ci95": [
+        0.1167,
+        0.3167
+      ]
+    },
+    "rag_1t1c": {
+      "hmt_exact_match": 0.15,
+      "n": 60,
+      "accuracy_lenient_ours": 0.2167,
+      "table_hit_rate": 0.5333,
+      "acc_given_table_hit": 0.25,
+      "acc_operands_covered": 0.2917,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 20,
+      "hmt_em_ci95": [
+        0.0667,
+        0.25
+      ]
+    },
+    "rag_rowchunk": {
+      "hmt_exact_match": 0.3167,
+      "n": 60,
+      "accuracy_lenient_ours": 0.4,
+      "table_hit_rate": 0.9,
+      "acc_given_table_hit": 0.3519,
+      "acc_operands_covered": 0.3333,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 8,
+      "hmt_em_ci95": [
+        0.2,
+        0.4333
+      ]
+    },
+    "delta_original_vs_rag_1t1c": {
+      "delta": 0.0667,
+      "ci95": [
+        -0.0167,
+        0.15
+      ]
+    },
+    "delta_original_vs_rag_rowchunk": {
+      "delta": -0.1,
+      "ci95": [
+        -0.2333,
+        0.0167
+      ]
+    }
+  },
+  "records": [
+    {
+      "query_id": "fe6407e2459997d5f135e8a88892a049",
+      "question": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+      "gold": [
+        "men"
+      ],
+      "gold_table": "917",
+      "arms": {
+        "oracle": {
+          "pred": 0.342,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.342,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.342,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.53,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "03e2e33b61115022766eba43568f2a2d",
+      "question": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+      "gold": [
+        264.0
+      ],
+      "gold_table": "361_totto40968-1",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "76958999926314d82b80a5b39f21ed76",
+      "question": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+      "gold": [
+        83.0
+      ],
+      "gold_table": "1026",
+      "arms": {
+        "oracle": {
+          "pred": 0.832,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.832,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.832,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 83.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "76863f9b68412109d717820bb24dc71a",
+      "question": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+      "gold": [
+        "filipino"
+      ],
+      "gold_table": "2658",
+      "arms": {
+        "oracle": {
+          "pred": 0.826,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.826,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.826,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.1,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "8d3373fa0c42ed9d0fa3af23548d1e28",
+      "question": "what percent of bert gosnell's 233 games from 1921 to 1926 is winning?",
+      "gold": [
+        25.3
+      ],
+      "gold_table": "13_totto1439-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.253,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.344,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.253,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.253,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "7615f60fffd339c61c4b9181ccaeeadd",
+      "question": "what is the industry with the highest share of female gig workers among all workers?",
+      "gold": [
+        "other services"
+      ],
+      "gold_table": "407",
+      "arms": {
+        "oracle": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "other services",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "2b46cca80468a08a89b4679e726b92be",
+      "question": "among men who had been sexually assaulted off campus, how many percent indicated that this was the type of place where it happened?",
+      "gold": [
+        39.6
+      ],
+      "gold_table": "2467",
+      "arms": {
+        "oracle": {
+          "pred": 0.772,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.772,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.772,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.396,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c81134db64a98f22e28cddfb7de0a1a5",
+      "question": "what was the number of police-reported hate crimes motivated by race or ethnicity in 2015?",
+      "gold": [
+        641.0
+      ],
+      "gold_table": "599",
+      "arms": {
+        "oracle": {
+          "pred": 641.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 641.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 641.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 641.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "c486681bfdc34de8cf73363a0e33bc8a",
+      "question": "what was the number of actual combat soldiers of the male soviet force.",
+      "gold": [
+        1426352.0
+      ],
+      "gold_table": "149_totto17935-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "There is no information about the number of actual combat soldiers of the male soviet force in the given table.",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 4938.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "28f1b6d455a8e8b8d9d865fbc8afe22d",
+      "question": "what the time did ali bouraleh finish the heat in a time of?",
+      "gold": [
+        14.29
+      ],
+      "gold_table": "532_totto60899-2",
+      "arms": {
+        "oracle": {
+          "pred": "3:43.62",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "3:43.62",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "none",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 14.29,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "47d85b7882f9f3eaa0ef0096a5468423",
+      "question": "what was the number of appearances made by ben alnwick for sunderland in the 2004-05 championship season?",
+      "gold": [
+        3.0
+      ],
+      "gold_table": "129_totto15640-0",
+      "arms": {
+        "oracle": {
+          "pred": 3.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 3.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 3.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "da4ddf61de0f34ee83b7829102ffe6d9",
+      "question": "which age group is most likely to volunteer informally?",
+      "gold": [
+        "15 to 19"
+      ],
+      "gold_table": "1296",
+      "arms": {
+        "oracle": {
+          "pred": 0.91,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "65 to 74",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "25 to 34",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9aacfbb741d62de704b6e88938389c40",
+      "question": "totally which people of which sex were more likely to have strong family networks?",
+      "gold": [
+        "women"
+      ],
+      "gold_table": "292",
+      "arms": {
+        "oracle": {
+          "pred": "women",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.53,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "women",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "women",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "1972155590794ace1ebadbc045332edb",
+      "question": "which refugee category had a lower level of education in general?",
+      "gold": [
+        "government-assisted refugees"
+      ],
+      "gold_table": "247",
+      "arms": {
+        "oracle": {
+          "pred": "government-assisted refugees",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "government-assisted refugees",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.005,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.729,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "b490e86698ea52bec432fd2c062eded2",
+      "question": "those who earned their doctorates more than 25 years ago were, as expected, how many percent was more likely to be working part time in 2010?",
+      "gold": [
+        14.4
+      ],
+      "gold_table": "49_164_tab2",
+      "arms": {
+        "oracle": {
+          "pred": 0.144,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.144,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.144,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.21,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "a080b456f9a596237e7683fce6d819d9",
+      "question": "business r&d is concentrated in a small number of states, how many percent are with the 10 states with the highest levels of r&d performance accounting of the $233 billion total?",
+      "gold": [
+        0.681511
+      ],
+      "gold_table": "40_159_tab1",
+      "arms": {
+        "oracle": {
+          "pred": 0.026,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.026,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.026,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.043,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "550428282b3a554a8ff831f7149e00bc",
+      "question": "how many seats were reserved totally during the 2015 sudanese general election.",
+      "gold": [
+        128.0
+      ],
+      "gold_table": "497_totto56747-0",
+      "arms": {
+        "oracle": {
+          "pred": 213.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 213.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 213.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 3.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "ae9c91e2b72da1948845d2b9c96be1f1",
+      "question": "what percentage of the cmdb deaths were caused by external causes?",
+      "gold": [
+        5.5
+      ],
+      "gold_table": "380",
+      "arms": {
+        "oracle": {
+          "pred": 0.055,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.055,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "26307595388ef79a529bd08519ff0fa2",
+      "question": "were younger people whose highest level of education was a high school diploma faced a higher probability of being in low income, or those with a postsecondary credentials below a bachelor degree?",
+      "gold": [
+        "high school diploma"
+      ],
+      "gold_table": "477",
+      "arms": {
+        "oracle": {
+          "pred": 0.28,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "0.1 / 0.126 = 0.794",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "0.28 / 0.11 = 2.545",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "2802b5a96c112c97d86cf16d30653006",
+      "question": "how many percentage points of imports in capital goods were originated from the united states in 2016?",
+      "gold": [
+        48.2
+      ],
+      "gold_table": "1539",
+      "arms": {
+        "oracle": {
+          "pred": 65.5,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 65.5,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 65.5,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 48.2,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "58ffb31b4a6c9fa7241722e671be1033",
+      "question": "what percentage of 3- to 5-year-old boys had daycare centres?",
+      "gold": [
+        40.5
+      ],
+      "gold_table": "2754",
+      "arms": {
+        "oracle": {
+          "pred": 0.467,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.467,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.467,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.405,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "91000ced8fe043bce74aeb836fc37310",
+      "question": "in 2006-07, which league did o'neil appear for portsmouth in?",
+      "gold": [
+        "premier league"
+      ],
+      "gold_table": "568_totto65062-3",
+      "arms": {
+        "oracle": {
+          "pred": "premier league",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "premier league",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "premier league",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "Premier League",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9d173931d9d7ad242c0aa1776525e09c",
+      "question": "what was the percentage of physical assault offenders who were under the age of 35?",
+      "gold": [
+        55
+      ],
+      "gold_table": "1509",
+      "arms": {
+        "oracle": {
+          "pred": 0.83,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.83,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.828,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.53,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "73512fe9ca199714fb81c28e5e4f8d45",
+      "question": "how many league games did andrew williams (born 1962) play in his career?",
+      "gold": [
+        278.0
+      ],
+      "gold_table": "200_totto23645-4",
+      "arms": {
+        "oracle": {
+          "pred": 278.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 655.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 59.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 377.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "367af9447305fe92eb98450df65bbb43",
+      "question": "what is the percentage of adults having unperceived hearing loss among the adults with audiometrically measured hearing loss?",
+      "gold": [
+        77.1
+      ],
+      "gold_table": "504",
+      "arms": {
+        "oracle": {
+          "pred": 0.85,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.85,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.85,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "0.928 / 0.541 = 0.716",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8d261d5f81dc9e2b8c2b837418bdb5c2",
+      "question": "how many receptions did scott chandler play for in 2013?",
+      "gold": [
+        53.0
+      ],
+      "gold_table": "494_totto56464-4",
+      "arms": {
+        "oracle": {
+          "pred": 43.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 63.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 1.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8d6d394650f79f9ef649e572b257697e",
+      "question": "how many touchdowns did the taylor martinez score in 2010?",
+      "gold": [
+        9.0
+      ],
+      "gold_table": "436_totto50263-3",
+      "arms": {
+        "oracle": {
+          "pred": 12.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 12.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 12.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 12.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "e92bb7095157dc83d89eb92bb4e91fea",
+      "question": "how many appearances did scott score with brentford?",
+      "gold": [
+        295.0
+      ],
+      "gold_table": "576_totto65983-0",
+      "arms": {
+        "oracle": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 87.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "c98c67ebe373534a366c96a294d20b11",
+      "question": "which metropolitan area has the highest average census tract incomes?",
+      "gold": [
+        "calgary"
+      ],
+      "gold_table": "873",
+      "arms": {
+        "oracle": {
+          "pred": 56900.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 56900.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 56900.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 56900.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "93c750ff9b37050b550d4dd8d47d3946",
+      "question": "what is the average daily minutes of physical activity reported by canadian youth from the domain of household/occupation, according to the payq?",
+      "gold": [
+        5.6
+      ],
+      "gold_table": "1304",
+      "arms": {
+        "oracle": {
+          "pred": 2.9,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 26.6,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 26.6,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "643ada2db659a2167c1d1715c566c425",
+      "question": "what is ther percentage of refugees aged under 15 from all the other countreis in 2016?",
+      "gold": [
+        31.0
+      ],
+      "gold_table": "245",
+      "arms": {
+        "oracle": {
+          "pred": 0.341,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.341,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.341,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.346,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "00825430a0f9a7e489f756b1b8927180",
+      "question": "what is the average daily minutes of physical activity reported by canadian youth from the domain of school, according to the payq?",
+      "gold": [
+        25.8
+      ],
+      "gold_table": "1304",
+      "arms": {
+        "oracle": {
+          "pred": 25.8,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c114398a8e91d3218e43c4a7d94eda61",
+      "question": "what is the percentage on average of cases in each year show earnings in both the t1ff and t4?",
+      "gold": [
+        71.05
+      ],
+      "gold_table": "1103",
+      "arms": {
+        "oracle": {
+          "pred": 0.727,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.727,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.727,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.727,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "c5e1012cc874a0ae468d65d409c007a2",
+      "question": "what was the share of men aged 55 and over in financial auditors and accountants in 2016?",
+      "gold": [
+        30.7
+      ],
+      "gold_table": "2314",
+      "arms": {
+        "oracle": {
+          "pred": 0.88,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.88,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.88,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.307,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "b54d67af14a701a13dfa08538c813dca",
+      "question": "the employment rate for aboriginal people living on reserve was 47.3% in 2011, compared to 71.1% for their counterparts living off-reserve-a difference of 23.8 percentage points.",
+      "gold": [
+        23.8
+      ],
+      "gold_table": "1604",
+      "arms": {
+        "oracle": {
+          "pred": 23.8,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 23.8,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 23.8,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 47.3,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "b160c973278a37bda23f623a9cca8f2b",
+      "question": "what was the percentage of residents of prince edward island who reported nmo cannabis use in the previous year?",
+      "gold": [
+        5.5
+      ],
+      "gold_table": "2728",
+      "arms": {
+        "oracle": {
+          "pred": 8.5,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.031,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.031,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 2.7,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "cde23ab9e26bb0cebf68a7a7be27b975",
+      "question": "in 2017, which league did rotkovic sign with side ansan greeners?",
+      "gold": [
+        "k league 2"
+      ],
+      "gold_table": "520_totto59588-2",
+      "arms": {
+        "oracle": {
+          "pred": "K League 2",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "K League 2",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "I don't have information about Rotkovic signing with Ansan Greeners in 2017.",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "none",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "2145f25f4edfbfb9ba968f3a16c6d035",
+      "question": "how many goals did powell score for milton keynes dons across nine seasons?",
+      "gold": [
+        46.0
+      ],
+      "gold_table": "379_totto43610-2",
+      "arms": {
+        "oracle": {
+          "pred": 61.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 61.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 1.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 46.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "29859004092bf90d1af86ccf9741809b",
+      "question": "when did the single big bro thang release?",
+      "gold": [
+        2007.0
+      ],
+      "gold_table": "167_totto19865-3",
+      "arms": {
+        "oracle": {
+          "pred": 171.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 171.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 171.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 2007.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "288ff92bc7cb0f790485d8bd97979b44",
+      "question": "what was the earning ratio between women and men in physical and life sciences and technologies?",
+      "gold": [
+        0.78
+      ],
+      "gold_table": "2311",
+      "arms": {
+        "oracle": {
+          "pred": 0.78,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.78,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "13.3 / 14.2",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.78,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "1e23bfe038975bf82e4585e2124dc93f",
+      "question": "how many passing yards did kevin kolb get in 2004?",
+      "gold": [
+        2766.0
+      ],
+      "gold_table": "62_totto7084-1",
+      "arms": {
+        "oracle": {
+          "pred": 3131.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 135.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "4ea3c1908ca49ceab34fd92206ed73cb",
+      "question": "what percentage of girls have child care in their own home?",
+      "gold": [
+        11.9
+      ],
+      "gold_table": "2754",
+      "arms": {
+        "oracle": {
+          "pred": 0.129,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.129,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 12.9,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "648cb2aa7a3fdfffc2d4529a601bbc0c",
+      "question": "how many postal code were missing?",
+      "gold": [
+        2431995
+      ],
+      "gold_table": "625",
+      "arms": {
+        "oracle": {
+          "pred": "2431995 - 972655 = 1459340",
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "2431995 - 972655 = 1459340",
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "2431995 - 972655 = 1459340",
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 25.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "67e6b9e391a6d7cbc06ba0434725ec66",
+      "question": "what was the number of births on first nations reserves, excluding reserves with a shared postal code?",
+      "gold": [
+        12170
+      ],
+      "gold_table": "296",
+      "arms": {
+        "oracle": {
+          "pred": 12170.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 12170.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 12170.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 16240.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "df4d10cd832d0640617227cfdf344d75",
+      "question": "for the largest of companies (25,000 or more employees), what was the r&d intensity?",
+      "gold": [
+        3.4
+      ],
+      "gold_table": "104_54_nsf19316-tab002",
+      "arms": {
+        "oracle": {
+          "pred": 3.1,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 3.1,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 3.3,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 3.3,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "b6e1458d7594fbdfb40463e7a3c687ca",
+      "question": "what was the percentage of workers expected to be in the worst job quality group (class 4)?",
+      "gold": [
+        0.264
+      ],
+      "gold_table": "2696",
+      "arms": {
+        "oracle": {
+          "pred": 0.264,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.264,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.264,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.264,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "79ed76c91f336d688d4d8331a79cde99",
+      "question": "in contrast, saguenay, having reported what percentage of decreases in robbery in 2015?",
+      "gold": [
+        30
+      ],
+      "gold_table": "2003",
+      "arms": {
+        "oracle": {
+          "pred": 0.11,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.11,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.11,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "f34633c5561aa6b1f76979598c7f238f",
+      "question": "which club did giannou play for in 2009-10?",
+      "gold": [
+        "kavala"
+      ],
+      "gold_table": "336_totto38134-0",
+      "arms": {
+        "oracle": {
+          "pred": "2009-10",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "club",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 2009.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "kavala",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "f0ac3da8c6a2410800e8ca260f44d68b",
+      "question": "which club did iturbe play for in 2013-14?",
+      "gold": [
+        "verona"
+      ],
+      "gold_table": "475_totto54184-2",
+      "arms": {
+        "oracle": {
+          "pred": "serie a",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "eerste divisie",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "eerste divisie",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "leeds united",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "06207ac0e0eb1b0b997b894e09ea613c",
+      "question": "for individuals aged 50 to 64, how many percentage point increase in the likelihood of being satisfied with their job is associated with a high to a very high extent of control over their hours of work?",
+      "gold": [
+        0.101
+      ],
+      "gold_table": "1096",
+      "arms": {
+        "oracle": {
+          "pred": 0.101,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.101,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.101,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.101,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "f56908d8d53acf69999793e0d67052ab",
+      "question": "what is the perccentage of people who felt that covid-19 had a moderate or major impact on their ability to meet financial obligations reported excellent or very good mental health?",
+      "gold": [
+        24.5
+      ],
+      "gold_table": "1488",
+      "arms": {
+        "oracle": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.245,
+          "hmt_em": false,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "7382df3d2e18187a79c888d0efdbf9ab",
+      "question": "in cases of failure to appear in court, what was the percentage of females accused in 2015?",
+      "gold": [
+        0.246448
+      ],
+      "gold_table": "345",
+      "arms": {
+        "oracle": {
+          "pred": 0.624,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.35,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.35,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.395,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "92b3542b7710b6a362c969a44aa9b980",
+      "question": "what was the number of hollow crown released via century media records in 2009, which was architects' first album to register on the uk albums chart?",
+      "gold": [
+        117.0
+      ],
+      "gold_table": "372_totto42821-0",
+      "arms": {
+        "oracle": {
+          "pred": 117.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 117.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 117.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 1.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9be99d12f74d40539a549d565d5456f9",
+      "question": "what was the percentage of canadian adults having both hearing loss and tinnitus from 2012 to 2015?",
+      "gold": [
+        14.5
+      ],
+      "gold_table": "355",
+      "arms": {
+        "oracle": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 14.5,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "54eba16d093cd134bbae2e6b3ac06b5a",
+      "question": "how many homelessness support workers were there in alberta?",
+      "gold": [
+        795.0
+      ],
+      "gold_table": "1719",
+      "arms": {
+        "oracle": {
+          "pred": 795.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 795.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 795.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "ddb956ac298bffd60ecce5f83c37662f",
+      "question": "when did \"some girls\" release?",
+      "gold": [
+        1994.0
+      ],
+      "gold_table": "141_totto17044-2",
+      "arms": {
+        "oracle": {
+          "pred": "ultimate kaos",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "ultimate kaos",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "-",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 1994.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8b1eca6d2de547f3870f0c790124397c",
+      "question": "what was the largest increases in csi were recorded in the cmas of moncton?",
+      "gold": [
+        15.0
+      ],
+      "gold_table": "1927",
+      "arms": {
+        "oracle": {
+          "pred": 15.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 15.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 59.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 15.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "9c20efcc80fa7e705844d2a4ec8d6250",
+      "question": "at the city level, how many incidents per 100,000 population in the cmas with the highest average annual rates of police-reported sexual assault over a six-year period in thunder bay?",
+      "gold": [
+        80.1
+      ],
+      "gold_table": "1782",
+      "arms": {
+        "oracle": {
+          "pred": 80.1,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 2.48,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 80.1,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 77.5,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "8fc1014dd6c4dd7783d8b79703b96a1d",
+      "question": "comparing the 2000-to-2004 arrival cohort with the 2010-to-2014 cohort, what percent of the share of new temporary foreign workers from north america has declined?",
+      "gold": [
+        14.5
+      ],
+      "gold_table": "2033",
+      "arms": {
+        "oracle": {
+          "pred": 0.134,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 0.134,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.134,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 0.053,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "ce74410c01bfb5ad66b35ee9071ea4c4",
+      "question": "what was the rank of cardiff airport in 2018?",
+      "gold": [
+        20.0
+      ],
+      "gold_table": "81_totto9255-0",
+      "arms": {
+        "oracle": {
+          "pred": 14.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 14.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 14.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 20.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    }
+  ]
+}

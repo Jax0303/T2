@@ -1,0 +1,264 @@
+{
+  "config": {
+    "n": 60,
+    "model": "llama-3.3-70b-versatile",
+    "rowchunk_k": 10,
+    "mode": "direct",
+    "max_context_tokens": 1200,
+    "tpm": 6000,
+    "arms": "oracle,original_sent,rag_1t1c,rag_rowchunk",
+    "out": "results/verbalize_answer_70b_n60.json",
+    "resume": true,
+    "reader": "groq:llama-3.3-70b-versatile",
+    "embedder": "BAAI/bge-small-en-v1.5",
+    "seed": 42,
+    "context_serialization": "S1 fulltable (oracle/original/1t1c), S2 rowchunks"
+  },
+  "population": {
+    "name": "hitab_dev_random_sample",
+    "requested": 60,
+    "evaluated": 4,
+    "stopped_early": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98578, Requested 1865. Please try again in 6m22.752s. Need mor"
+  },
+  "primary_metric": "hmt_exact_match (HiTab's official scorer) — the number to quote against published HiTab accuracies",
+  "summary": {
+    "oracle": {
+      "hmt_exact_match": 0.25,
+      "n": 4,
+      "accuracy_lenient_ours": 0.25,
+      "table_hit_rate": 1.0,
+      "acc_given_table_hit": 0.25,
+      "acc_operands_covered": 0.5,
+      "hmt_em_ci95": [
+        0.0,
+        0.75
+      ]
+    },
+    "original_sent": {
+      "hmt_exact_match": 0.25,
+      "n": 4,
+      "accuracy_lenient_ours": 0.25,
+      "table_hit_rate": 0.75,
+      "acc_given_table_hit": 0.3333,
+      "acc_operands_covered": 1.0,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 1,
+      "hmt_em_ci95": [
+        0.0,
+        0.75
+      ]
+    },
+    "rag_1t1c": {
+      "hmt_exact_match": 0.25,
+      "n": 4,
+      "accuracy_lenient_ours": 0.25,
+      "table_hit_rate": 0.75,
+      "acc_given_table_hit": 0.3333,
+      "acc_operands_covered": 1.0,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 1,
+      "hmt_em_ci95": [
+        0.0,
+        0.75
+      ]
+    },
+    "rag_rowchunk": {
+      "hmt_exact_match": 0.5,
+      "n": 4,
+      "accuracy_lenient_ours": 0.5,
+      "table_hit_rate": 1.0,
+      "acc_given_table_hit": 0.5,
+      "acc_operands_covered": 1.0,
+      "acc_operands_missing": 0.0,
+      "n_operands_missing": 1,
+      "hmt_em_ci95": [
+        0.0,
+        1.0
+      ]
+    },
+    "delta_original_vs_rag_1t1c": {
+      "delta": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "delta_original_vs_rag_rowchunk": {
+      "delta": -0.25,
+      "ci95": [
+        -0.75,
+        0.0
+      ]
+    }
+  },
+  "records": [
+    {
+      "query_id": "fe6407e2459997d5f135e8a88892a049",
+      "question": "about one in three respondents stated that the most serious instance they experienced was related to the alcohol or drug use of the perpetrator, which gender with this being was slightly more common in the past 12 months of 2018?",
+      "gold": [
+        "men"
+      ],
+      "gold_table": "917",
+      "arms": {
+        "oracle": {
+          "pred": "Female",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "female",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "Female",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "men",
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "03e2e33b61115022766eba43568f2a2d",
+      "question": "clive clarke moved to west ham united in 2005, how many appearances did he make for stoke city?",
+      "gold": [
+        264.0
+      ],
+      "gold_table": "361_totto40968-1",
+      "arms": {
+        "oracle": {
+          "pred": 223.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 115.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 0.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": false,
+          "operands_covered": false,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 79.0,
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": false,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "query_id": "76958999926314d82b80a5b39f21ed76",
+      "question": "how many percent of immigrant men starting in high-paying firms have found their first paid job in the first full year after arrival?",
+      "gold": [
+        83.0
+      ],
+      "gold_table": "1026",
+      "arms": {
+        "oracle": {
+          "pred": 83.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": 83.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": 83.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": 83.0,
+          "hmt_em": true,
+          "correct": true,
+          "table_hit": true,
+          "operands_covered": true,
+          "truncated": true
+        }
+      }
+    },
+    {
+      "query_id": "76863f9b68412109d717820bb24dc71a",
+      "question": "which gourp has the higher employment rates, filipina women higher or third-plus generation white women by observed?",
+      "gold": [
+        "filipino"
+      ],
+      "gold_table": "2658",
+      "arms": {
+        "oracle": {
+          "pred": "filipina women",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "original_sent": {
+          "pred": "filipina women",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_1t1c": {
+          "pred": "filipina women",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        },
+        "rag_rowchunk": {
+          "pred": "Third-plus generation white women",
+          "hmt_em": false,
+          "correct": false,
+          "table_hit": true,
+          "operands_covered": null,
+          "truncated": false
+        }
+      }
+    }
+  ]
+}
