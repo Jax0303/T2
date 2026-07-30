@@ -26,7 +26,7 @@ Two granularities, matching S1/S2:
 """
 from __future__ import annotations
 
-from typing import List
+from typing import List, Sequence
 
 from .base import Chunk, TableView, fmt_value, join_path
 
@@ -35,35 +35,77 @@ SCHEME = "S3"
 LENGTHS = ("short", "medium", "long")
 
 
-def _cell_sentence(table: TableView, row: int, col: int, length: str, include_title: bool) -> str:
-    row_path = join_path(table.row_path(row))
-    col_path = join_path(table.col_path(col))
-    value = fmt_value(table.cell(row, col))
-    title = fmt_value(table.title) if include_title else ""
+def caption_sentence(
+    title,
+    row_path: Sequence[str],
+    col_path: Sequence[str],
+    value=None,
+    length: str = "medium",
+) -> str:
+    """Render ONE index-unit sentence from a title + the two header paths.
+
+    This is the single source of truth for the S3 sentence template — the
+    "table caption + column header path + row header path + cell value into a
+    sentence template" index unit. :func:`_cell_sentence` is a thin adapter over
+    it, so anything that needs the same rendering (bench selectors, ablations)
+    can call this directly instead of hand-rolling a lookalike that silently
+    drifts from what the index actually contains.
+
+    Paths are joined with :func:`~rag_agent.serialization.base.join_path`, which
+    formats each segment and drops empty ones — so a path carrying a blank
+    segment does not produce a dangling ``"North America > "``.
+
+    ``value=None`` renders the same sentence with the ``"is {value}"`` predicate
+    omitted, naming a header *scope* rather than asserting a cell's contents.
+    That form addresses a candidate header node, not an index unit, so use it
+    only where the thing being ranked is a node (e.g. the column/row selection
+    benches) — the deployed index always renders with a value.
+    """
+    if length not in LENGTHS:
+        raise ValueError(f"length must be one of {LENGTHS}, got {length!r}")
+    row_s = join_path(row_path)
+    col_s = join_path(col_path)
+    title_s = fmt_value(title) if title else ""
+    has_val = value is not None
+    val_s = fmt_value(value) if has_val else ""
 
     if length == "short":
-        if row_path and col_path:
-            return f"{row_path} {col_path}: {value}."
-        label = col_path or row_path
-        return f"{label}: {value}." if label else f"{value}."
+        tail = f": {val_s}." if has_val else "."
+        if row_s and col_s:
+            return f"{row_s} {col_s}{tail}"
+        label = col_s or row_s
+        return f"{label}{tail}" if label else (f"{val_s}." if has_val else ".")
 
     if length == "medium":
-        if row_path and col_path:
-            return f"For {row_path}, {col_path} is {value}."
-        if col_path:
-            return f"{col_path} is {value}."
-        if row_path:
-            return f"{row_path} is {value}."
-        return f"The value is {value}."
+        pred = f" is {val_s}" if has_val else ""
+        if row_s and col_s:
+            return f"For {row_s}, {col_s}{pred}."
+        if col_s:
+            return f"{col_s}{pred}."
+        if row_s:
+            return f"{row_s}{pred}."
+        return f"The value{pred}." if has_val else "The value."
 
-    if length == "long":
-        clause = f"among {row_path}, " if row_path else ""
-        what = f"the value of {col_path}" if col_path else "the value"
-        if title:
-            return f"In the table '{title}', {clause}{what} is {value}."
-        return f"{clause}{what} is {value}.".capitalize()
+    # length == "long"
+    clause = f"among {row_s}, " if row_s else ""
+    what = f"the value of {col_s}" if col_s else "the value"
+    pred = f" is {val_s}" if has_val else ""
+    if title_s:
+        return f"In the table '{title_s}', {clause}{what}{pred}."
+    return f"{clause}{what}{pred}.".capitalize()
 
-    raise ValueError(f"length must be one of {LENGTHS}, got {length!r}")
+
+def _cell_sentence(table: TableView, row: int, col: int, length: str, include_title: bool) -> str:
+    # fmt_value first: an empty cell is a value that happens to be blank ("is ."),
+    # NOT an absent value — passing None through would drop the predicate and
+    # silently change every blank cell's index unit.
+    return caption_sentence(
+        table.title if include_title else "",
+        table.row_path(row),
+        table.col_path(col),
+        value=fmt_value(table.cell(row, col)),
+        length=length,
+    )
 
 
 def serialize(

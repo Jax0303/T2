@@ -37,10 +37,14 @@ from rag_agent.data.loader import load_table
 from rag_agent.query.header_path_resolver import _distinct_paths, extract_target_terms
 from rag_agent.query.header_embed_resolver import _node_candidates
 from rag_agent.query.operand_decomposer import Embedder
+from rag_agent.serialization.caption import caption_sentence
 from rag_agent.stores.original_store import build_original_table
 
 ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"}
 KS = (1, 2, 3, 4)
+# Match OperandTargetedRetriever's caption_length default, so the selector ranks
+# in the same text space the deployed index is built in.
+CAPTION_LENGTH = "long"
 
 
 class TableCands(NamedTuple):
@@ -113,14 +117,14 @@ def main() -> int:
         order = sorted(range(len(tc.cands)), key=lambda i: -float(scores[i]))[:max(KS)]
         return [tc.cands[i] for i in order]
 
-    # caption: rank a candidate row node by a sentence-shaped rendering instead
-    # of the bare ">"-joined path, to test whether sentence text embeds closer
-    # to a natural-language question (the S3 hypothesis).
-    # CAVEAT: `_cap_text` below is a local approximation, NOT the deployed
-    # rendering. The operand retriever indexes cells with S2
-    # (`operand_retrieval.py` -> `header_path.serialize`), and the S3 renderer
-    # that does exist (`serialization/caption.py::_cell_sentence`, "long")
-    # formats differently. Do not read this arm as "what the retriever sees".
+    # caption: rank a candidate row node by the S3 caption sentence — the
+    # deployed index unit (`OperandTargetedRetriever` indexes scheme="S3"), so
+    # this selector scores candidates in the same text space the retriever
+    # embeds. Rendered by `caption_sentence`, the same function that builds the
+    # index units, so the two cannot drift apart.
+    # One documented gap: an index unit names a CELL and carries its value,
+    # while a selector candidate is a header NODE with no single value, so the
+    # sentence is rendered value-less (`value=None`).
     def rank_caption(q, ot, tc, qv):
         if not tc.cands:
             return []
@@ -131,9 +135,9 @@ def main() -> int:
                  "caption": rank_caption}
     hits = {s: {k: 0 for k in KS} for s in selectors}
 
+    # A row candidate is a row_path; its col_path is empty.
     def _cap_text(title, path):
-        body = " > ".join(path)
-        return f"In the table '{title}', among {body}, the value." if title else f"Among {body}, the value."
+        return caption_sentence(title, path, (), value=None, length=CAPTION_LENGTH)
 
     # Per-table row candidates + embeddings. `mat` embeds the bare ">"-joined
     # path (embed selector), `cap` the caption sentence (caption selector).

@@ -3,9 +3,12 @@
 Instead of issuing one query for the whole question, HPIR decomposes the
 question into the individual *operands* it needs — each a hierarchical header
 path identifying a cell — and the retriever fetches each operand separately
-from a hybrid index over the table's S2 cell chunks. The union of those hits is
-the evidence passed downstream, optionally widened by the structural complement
-(see ``inject_structural`` on :meth:`OperandTargetedRetriever.retrieve`).
+from a hybrid index over the table's cell chunks. Each such chunk is one index
+unit: by default the S3 caption sentence (title + row path + col path + value),
+with S2 header-path prefixes available for comparison. The union of those hits
+is the evidence passed downstream, optionally widened by the structural
+complement (see ``inject_structural`` on
+:meth:`OperandTargetedRetriever.retrieve`).
 
 The headline metric is ``operand_recall@k``: of the operands the gold answer
 actually depends on, how many were surfaced in the top-k retrieved cells. The
@@ -24,6 +27,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence
 
 from ..query.header_path_resolver import extract_target_terms, resolve_intent
+from ..serialization import caption as s3
 from ..serialization import header_path as s2
 from ..serialization.base import Chunk
 from ..stores.original_store import OriginalTable
@@ -152,26 +156,54 @@ class OperandRetrievalResult:
 
 
 class OperandTargetedRetriever:
-    """Indexes S2 cell chunks per table and retrieves operand by operand.
+    """Indexes cell chunks per table and retrieves operand by operand.
 
     Parameters
     ----------
+    scheme:
+        Which serialization renders an index unit — ``"S3"`` (default: the
+        caption sentence built from table title + row path + col path + value)
+        or ``"S2"`` (header-path prefix, ``"Revenue > 2023 > Q1: 1,234"``).
+        Both carry the hierarchical path inside the index unit's own text,
+        which is the property the surface-collision argument rests on; they
+        differ in whether that path is rendered as prose or as a delimited
+        prefix.
+
+        S3 is the canonical index unit. ``"S2"`` is kept because the repo's
+        earlier retrieval measurements were taken under it — results produced
+        with one scheme are not comparable to results produced with the other,
+        so a run must state which it used.
+    caption_length:
+        Index-unit sentence length when ``scheme="S3"``: ``"short"``,
+        ``"medium"`` or ``"long"``, trading index size against how much header
+        context each sentence spells out. Ignored under S2.
     fusion, alpha, rrf_k:
         Similarity-search fusion, forwarded to :class:`HybridIndex`.
     """
 
     def __init__(self, encoder: Optional[Encoder] = None, alpha: float = 0.5,
+                 scheme: str = "S3", caption_length: str = "long",
                  fusion: str = "weighted", rrf_k: int = 60) -> None:
+        if scheme not in ("S2", "S3"):
+            raise ValueError(f"scheme must be 'S2' or 'S3', got {scheme!r}")
         self.encoder = encoder
         self.alpha = alpha
+        self.scheme = scheme
+        self.caption_length = caption_length
         self.fusion = fusion
         self.rrf_k = rrf_k
         self._index_cache: Dict[str, HybridIndex] = {}
         self._attrs: Dict[str, StructuralAttributes] = {}
 
+    def _serialize(self, table: OriginalTable) -> List[Chunk]:
+        if self.scheme == "S3":
+            return s3.serialize(table, granularity="cell",
+                                length=self.caption_length)
+        return s2.serialize(table, granularity="cell")
+
     def index_table(self, table: OriginalTable) -> HybridIndex:
         if table.table_id not in self._index_cache:
-            chunks = s2.serialize(table, granularity="cell")
+            chunks = self._serialize(table)
             # Structural attribution happens HERE, once per table, and its
             # result is stored on the index units — the complementary-retrieval
             # component only reads it back at query time.
