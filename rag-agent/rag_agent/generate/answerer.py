@@ -218,7 +218,7 @@ def answer(
 
     user = f"ROWS:\n{ctx}\n\nQUESTION: {question}\n\nAnswer:"
     raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=max_tokens)
-    if not raw and getattr(llm, "last_finish_reason", None) == "length":
+    if not raw and llm.last_finish_reason == "length":
         # The budget went entirely to hidden reasoning. Scoring the empty string
         # would count a non-answer as a wrong answer; buy one retry instead.
         raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=max_tokens * 4)

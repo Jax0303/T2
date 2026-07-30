@@ -46,10 +46,15 @@ Notes / caveats:
     random subpopulation up front; deterministic, so --resume continues the SAME
     subpopulation across days. Queries run in id order.
 
-Run (needs GROQ_API_KEY):
+Run (needs the chosen backend's key: GROQ_API_KEY / OPENAI_API_KEY):
   PYTHONPATH=. python3 scripts/realhitbench_answer_accuracy.py \
-    --solver-model llama-3.3-70b-versatile --codegen-max-tokens 160 \
-    --sample 100 --seed 0 --resume
+    --solver-backend groq --solver-model llama-3.3-70b-versatile \
+    --codegen-max-tokens 160 --sample 100 --seed 0 --resume
+
+Omit --solver-model to take the backend's own default. Give each backend its
+OWN --out/--records paths: the records file carries no solver field, so a
+--resume onto another backend's file silently mixes solvers and the mix is
+not recoverable after the fact.
 """
 from __future__ import annotations
 
@@ -68,7 +73,7 @@ import numpy as np
 import rag_agent.generate.answerer as answerer_mod
 from rag_agent.bench.schema import BenchTable
 from rag_agent.generate.answerer import answer, evaluate_answer
-from rag_agent.llm.groq_llm import GroqLLM
+from rag_agent.llm.factory import build_llm
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
                                    parse_html_table_with_merges,
@@ -161,7 +166,16 @@ def main() -> int:
     ap.add_argument("--device", default=None,
                     help="embedder device (default: cuda if available else cpu)")
     ap.add_argument("--k", type=int, default=10)
-    ap.add_argument("--solver-model", default="llama-3.3-70b-versatile")
+    ap.add_argument("--solver-backend", default="groq",
+                    choices=["groq", "openai", "local"],
+                    help="solver family. A second backend is how the S1-vs-S2 "
+                         "result is shown to be solver-independent — keep each "
+                         "backend in its OWN --records file, never mixed")
+    ap.add_argument("--solver-model", default="",
+                    help="empty = that backend's own default (see llm/factory.py); "
+                         "a Groq model name here would be a 400 on --solver-backend "
+                         "openai, and the failure only surfaces after the full "
+                         "reconstruct+index pass")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--codegen-max-tokens", type=int, default=160,
                     help="reasoning models (gpt-oss) need ~1024")
@@ -212,7 +226,8 @@ def main() -> int:
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"[device] embedder on {args.device}", flush=True)
     emb = Embedder(args.embed_model, device=args.device)
-    llm = GroqLLM(model_name=args.solver_model, retry_on_429=8)
+    llm = build_llm(f"{args.solver_backend}:{args.solver_model}", retry_on_429=8)
+    print(f"[solver] {llm.name}", flush=True)
 
     # ---- reconstruct each table once, index it under BOTH serializations ----
     tables: dict[str, BenchTable | None] = {}
@@ -340,7 +355,9 @@ def main() -> int:
         "pipeline": {"trees": "RECONSTRUCTED from raw HTML (markup front-end, "
                               "guessed header boundaries) — no gold structure",
                      "retriever": "dense", "k": args.k,
-                     "solver": f"groq:{args.solver_model}", "mode": args.mode,
+                     # llm.name, not the raw args: --solver-model may be empty
+                     # and resolved to the backend's default by the factory.
+                     "solver": llm.name, "mode": args.mode,
                      "controls": "same retriever/solver/k for both arms; only the "
                                  "serialization differs (isolates preprocessing)"},
         "note": ("no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell "

@@ -39,11 +39,7 @@ class GroqLLM(BaseLLM):
                 "GROQ_API_KEY not set. Get a free key at https://console.groq.com/keys"
             )
         self.client = Groq(api_key=key, timeout=request_timeout)
-        # Set on every call. Reasoning models (gpt-oss, qwen3) spend the completion
-        # budget on hidden reasoning first and then return content="" with
-        # finish_reason="length" — indistinguishable from a model that answered
-        # nothing unless the caller can see this.
-        self.last_finish_reason: str | None = None
+        self.last_finish_reason: str | None = None  # see BaseLLM
 
     def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
         last_err: Exception | None = None

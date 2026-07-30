@@ -1,0 +1,111 @@
+{
+  "population": {
+    "name": "realhitbench_agg(Calculation+MultihopNR)",
+    "n_full_subset": 334,
+    "n_target": 97,
+    "sample": 97,
+    "seed": 0,
+    "n_prepared": 94,
+    "n_table_skipped": 3,
+    "n_evaluated": 94,
+    "cutoff": null,
+    "n_base_context_truncated": 0,
+    "n_treat_context_truncated": 2
+  },
+  "arms": {
+    "base": "S1 (s1_flat) — baseline serialization, leaf headers only",
+    "treat": "S2 (s2_headerpath) — mine, full row/col header path per cell"
+  },
+  "pipeline": {
+    "trees": "RECONSTRUCTED from raw HTML (markup front-end, guessed header boundaries) — no gold structure",
+    "retriever": "dense",
+    "k": 10,
+    "solver": "openai:gpt-5.1",
+    "mode": "codegen",
+    "controls": "same retriever/solver/k for both arms; only the serialization differs (isolates preprocessing)"
+  },
+  "note": "no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell annotations (answer accuracy only). strict = em_norm on ProcessedAnswer (%/comma-normalised numeric equality, rel_tol 1e-5, no scale/sign leniency; solver prompt asks percent-scale to match the gold convention). Deterministic and symmetric, NOT the paper's LLM-judge protocol — do not compare to the RealHiTBench leaderboard. lenient = numeric_match (diagnostic).",
+  "answer_accuracy_strict": {
+    "n": 94,
+    "base": 0.1596,
+    "treat": 0.3085,
+    "delta": 0.1489,
+    "treat_only": 18,
+    "base_only": 4,
+    "mcnemar_p": 0.00434
+  },
+  "answer_accuracy_lenient": {
+    "n": 94,
+    "base": 0.2447,
+    "treat": 0.3936,
+    "delta": 0.1489,
+    "treat_only": 19,
+    "base_only": 5,
+    "mcnemar_p": 0.00661
+  },
+  "by_compstruccata_strict": {
+    "BackgroundColor": {
+      "n": 2,
+      "base": 0.5,
+      "treat": 0.0,
+      "delta": -0.5,
+      "treat_only": 0,
+      "base_only": 1,
+      "mcnemar_p": 1.0
+    },
+    "ColumnHeaderMerge": {
+      "n": 34,
+      "base": 0.1176,
+      "treat": 0.3235,
+      "delta": 0.2059,
+      "treat_only": 8,
+      "base_only": 1,
+      "mcnemar_p": 0.03906
+    },
+    "ContentCompound": {
+      "n": 16,
+      "base": 0.125,
+      "treat": 0.25,
+      "delta": 0.125,
+      "treat_only": 3,
+      "base_only": 1,
+      "mcnemar_p": 0.625
+    },
+    "ExternalSupply": {
+      "n": 6,
+      "base": 0.3333,
+      "treat": 0.3333,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    },
+    "MultiColumnClassified": {
+      "n": 17,
+      "base": 0.0588,
+      "treat": 0.2941,
+      "delta": 0.2353,
+      "treat_only": 4,
+      "base_only": 0,
+      "mcnemar_p": 0.125
+    },
+    "SingleRowClassified": {
+      "n": 16,
+      "base": 0.25,
+      "treat": 0.375,
+      "delta": 0.125,
+      "treat_only": 3,
+      "base_only": 1,
+      "mcnemar_p": 0.625
+    },
+    "StructureCompound": {
+      "n": 3,
+      "base": 0.3333,
+      "treat": 0.3333,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    }
+  }
+}

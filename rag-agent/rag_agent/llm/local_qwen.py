@@ -20,6 +20,8 @@ class LocalQwenLLM(BaseLLM):
         device: Optional[str] = None,
         quantization: Optional[str] = "4bit",   # None | "4bit" | "8bit"
         default_max_tokens: int = 256,
+        retry_on_429: int = 0,  # inert: no rate limit locally. Accepted so a
+                                # caller can hand the same kwargs to any backend.
     ) -> None:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer

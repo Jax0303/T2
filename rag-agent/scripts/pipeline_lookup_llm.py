@@ -120,7 +120,7 @@ def main() -> int:
                 ctx = "\n".join(topk_sentences(q.gold_table_id, qv, s, args.topk))
                 user = f"ROWS:\n{ctx}\n\nQUESTION: {q.question}\n\nAnswer:"
                 raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
-                if not raw and getattr(llm, "last_finish_reason", None) == "length":
+                if not raw and llm.last_finish_reason == "length":
                     raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=1024)
                 ok = bool(hitab_exact_match(raw, q.answer))
                 done[(q.query_id, s)] = ok
