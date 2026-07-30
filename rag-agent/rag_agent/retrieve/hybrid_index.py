@@ -30,6 +30,20 @@ def _minmax(scores: np.ndarray) -> np.ndarray:
     return (scores - lo) / (hi - lo)
 
 
+def _rrf(scores: np.ndarray, rrf_k: int) -> np.ndarray:
+    """Reciprocal-rank contribution ``1 / (rrf_k + rank)``, rank 1-based.
+
+    Rank fusion is scale-free: it reads only the ORDER each backend produces, so
+    a backend whose raw scores are bunched together cannot dominate the sum the
+    way it can under min-max normalization (which stretches any spread to [0,1]).
+    """
+    if scores.size == 0:
+        return scores
+    ranks = np.empty(scores.size, dtype=np.int64)
+    ranks[np.argsort(-scores, kind="stable")] = np.arange(1, scores.size + 1)
+    return 1.0 / (rrf_k + ranks)
+
+
 @dataclass
 class RetrievedChunk:
     chunk: Chunk
@@ -49,8 +63,25 @@ class HybridIndex:
         Dense encoder; defaults to :func:`default_encoder` (real model if its
         deps import, else the hashing fallback).
     alpha:
-        Final score = ``alpha * dense + (1 - alpha) * bm25`` after per-query
-        min-max normalization. ``alpha=0`` is BM25-only, ``alpha=1`` dense-only.
+        Weight on the dense signal. Under ``fusion="weighted"`` the final score
+        is ``alpha * dense + (1 - alpha) * bm25`` after per-query min-max
+        normalization; under ``fusion="rrf"`` it weights the two reciprocal-rank
+        contributions instead. ``alpha=0`` is BM25-only, ``alpha=1`` dense-only.
+    fusion:
+        How the lexical and dense signals are combined — the two embodiments of
+        the similarity-search component:
+
+        * ``"weighted"`` (default) — per-query min-max normalization then
+          weighted sum. Uses score magnitudes, so a confident backend can carry
+          a query outright.
+        * ``"rrf"`` — reciprocal rank fusion (Cormack et al. 2009). Uses only
+          each backend's ordering, which makes it robust when the two score
+          scales are not comparable.
+
+        Default stays ``"weighted"`` so existing measurements are unaffected.
+    rrf_k:
+        Rank-fusion damping constant; ignored unless ``fusion="rrf"``. 60 is the
+        value from the original paper and the one the repo's scripts use.
     """
 
     def __init__(
@@ -58,11 +89,17 @@ class HybridIndex:
         chunks: Sequence[Chunk],
         encoder: Optional[Encoder] = None,
         alpha: float = 0.5,
+        fusion: str = "weighted",
+        rrf_k: int = 60,
     ) -> None:
         from rank_bm25 import BM25Okapi
 
+        if fusion not in ("weighted", "rrf"):
+            raise ValueError(f"fusion must be 'weighted' or 'rrf', got {fusion!r}")
         self.chunks: List[Chunk] = list(chunks)
         self.alpha = alpha
+        self.fusion = fusion
+        self.rrf_k = rrf_k
         self.encoder = encoder or default_encoder()
 
         texts = [c.text for c in self.chunks]
@@ -103,7 +140,11 @@ class HybridIndex:
             return []
         bm = self._bm25_scores(query)
         dn = self._dense_scores(query)
-        combined = self.alpha * _minmax(dn) + (1.0 - self.alpha) * _minmax(bm)
+        if self.fusion == "rrf":
+            combined = (self.alpha * _rrf(dn, self.rrf_k)
+                        + (1.0 - self.alpha) * _rrf(bm, self.rrf_k))
+        else:
+            combined = self.alpha * _minmax(dn) + (1.0 - self.alpha) * _minmax(bm)
         k = min(k, len(self.chunks))
         # argpartition for top-k, then sort that slice
         top = np.argpartition(-combined, k - 1)[:k]

@@ -4,7 +4,8 @@ Instead of issuing one query for the whole question, HPIR decomposes the
 question into the individual *operands* it needs — each a hierarchical header
 path identifying a cell — and the retriever fetches each operand separately
 from a hybrid index over the table's S2 cell chunks. The union of those hits is
-the evidence passed downstream.
+the evidence passed downstream, optionally widened by the structural complement
+(see ``inject_structural`` on :meth:`OperandTargetedRetriever.retrieve`).
 
 The headline metric is ``operand_recall@k``: of the operands the gold answer
 actually depends on, how many were surfaced in the top-k retrieved cells. The
@@ -28,6 +29,7 @@ from ..serialization.base import Chunk
 from ..stores.original_store import OriginalTable
 from .encoders import Encoder
 from .hybrid_index import HybridIndex, RetrievedChunk
+from .structure_attr import StructuralAttributes, aggregate_chunks
 
 _NORM_RE = re.compile(r"[^a-z0-9]+")
 
@@ -140,6 +142,7 @@ class OperandRetrievalResult:
     per_operand: List[OperandHit]
     retrieved: List[RetrievedChunk]   # deduped union, best-score first
     confidence: float = 0.0           # HPIR decomposition confidence in [0, 1]
+    n_injected: int = 0               # units added by the structural complement
 
     def covered_header_paths(self) -> List[List[str]]:
         paths: List[List[str]] = []
@@ -149,22 +152,45 @@ class OperandRetrievalResult:
 
 
 class OperandTargetedRetriever:
-    """Indexes S2 cell chunks per table and retrieves operand by operand."""
+    """Indexes S2 cell chunks per table and retrieves operand by operand.
 
-    def __init__(self, encoder: Optional[Encoder] = None, alpha: float = 0.5) -> None:
+    Parameters
+    ----------
+    fusion, alpha, rrf_k:
+        Similarity-search fusion, forwarded to :class:`HybridIndex`.
+    """
+
+    def __init__(self, encoder: Optional[Encoder] = None, alpha: float = 0.5,
+                 fusion: str = "weighted", rrf_k: int = 60) -> None:
         self.encoder = encoder
         self.alpha = alpha
+        self.fusion = fusion
+        self.rrf_k = rrf_k
         self._index_cache: Dict[str, HybridIndex] = {}
+        self._attrs: Dict[str, StructuralAttributes] = {}
 
     def index_table(self, table: OriginalTable) -> HybridIndex:
         if table.table_id not in self._index_cache:
             chunks = s2.serialize(table, granularity="cell")
+            # Structural attribution happens HERE, once per table, and its
+            # result is stored on the index units — the complementary-retrieval
+            # component only reads it back at query time.
+            attrs = StructuralAttributes.compute(table)
+            attrs.stamp(chunks)
+            self._attrs[table.table_id] = attrs
             self._index_cache[table.table_id] = HybridIndex(
-                chunks, encoder=self.encoder, alpha=self.alpha
+                chunks, encoder=self.encoder, alpha=self.alpha,
+                fusion=self.fusion, rrf_k=self.rrf_k,
             )
             # Reuse the index's encoder for later tables so embeddings stay consistent.
             self.encoder = self._index_cache[table.table_id].encoder
         return self._index_cache[table.table_id]
+
+    def structural_attributes(self, table: OriginalTable) -> StructuralAttributes:
+        """The table's stored structural attributes, computing the index on
+        first use. A lookup on every later call — never a re-determination."""
+        self.index_table(table)
+        return self._attrs[table.table_id]
 
     def retrieve(
         self,
@@ -172,7 +198,17 @@ class OperandTargetedRetriever:
         table: OriginalTable,
         k: int = 5,
         llm=None,
+        inject_structural: bool = False,
     ) -> OperandRetrievalResult:
+        """Retrieve operand by operand.
+
+        ``inject_structural`` turns on the structural complement: the index
+        units already flagged as aggregate rows are unioned into the result.
+        The point of the complement is to reach cells the similarity signal did
+        NOT rank, so the flagged units are added regardless of their score —
+        reusing the similarity signal to decide would defeat the purpose. The
+        determination itself was made at index time; this is a lookup.
+        """
         index = self.index_table(table)
         operands = decompose_operands(query, table, llm=llm)
 
@@ -186,8 +222,18 @@ class OperandTargetedRetriever:
                 if cur is None or h.score > cur.score:
                     best[h.chunk.chunk_id] = h
 
+        n_injected = 0
+        if inject_structural:
+            for ch in aggregate_chunks(index.chunks):
+                if ch.chunk_id not in best:
+                    # score 0.0: it was admitted structurally, not by similarity.
+                    best[ch.chunk_id] = RetrievedChunk(chunk=ch, score=0.0,
+                                                       bm25=0.0, dense=0.0)
+                    n_injected += 1
+
         retrieved = sorted(best.values(), key=lambda h: -h.score)
         return OperandRetrievalResult(
+            n_injected=n_injected,
             query=query,
             table_id=table.table_id,
             operands=operands,
