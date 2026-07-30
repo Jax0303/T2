@@ -26,6 +26,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import NamedTuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -42,6 +43,13 @@ ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"
 KS = (1, 2, 3, 4)
 
 
+class TableCands(NamedTuple):
+    """One table's candidate nodes and the embedding of each text rendering."""
+    cands: list          # ancestor-node candidate paths
+    mat: np.ndarray      # rows aligned to `cands`: ">"-joined path
+    cap: np.ndarray      # rows aligned to `cands`: caption sentence
+
+
 def rows_of(table, paths):
     out = set()
     for p in paths:
@@ -55,8 +63,6 @@ def main() -> int:
     ap.add_argument("--split", default="dev")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--cross-encoder", default="cross-encoder/ms-marco-MiniLM-L-6-v2")
-    ap.add_argument("--alpha", type=float, default=0.5,
-                    help="hybrid weight on the dense (embed) score; (1-alpha) on lexical")
     ap.add_argument("--out", default="results/row_select_bench.json")
     args = ap.parse_args()
 
@@ -80,74 +86,90 @@ def main() -> int:
     # ancestor node covers many gold rows in one top-k slot, while a
     # leaf-restricted lexical selector needs one slot per gold row regardless of
     # match quality.
-    def rank_lexical(q, ot, cands, mat):
-        if not cands:
+    # Every selector takes (query, table, TableCands, query vector) so the
+    # dispatch below is uniform; each ignores the parts it does not need.
+    def rank_lexical(q, ot, tc, qv):
+        if not tc.cands:
             return []
         query_str = " ".join(extract_target_terms(q.question))
         scored = []
-        for c in cands:
+        for c in tc.cands:
             s = ot._fuzzy_score(query_str, c)
             if s > 0:
                 scored.append((s, " > ".join(c), c))
         scored.sort(key=lambda t: (-t[0], t[1]))
         return [c for _, _, c in scored[:max(KS)]]
 
-    def rank_embed(q, ot, cands, mat):
-        if not cands:
+    def rank_embed(q, ot, tc, qv):
+        if not tc.cands:
             return []
-        qv = np.asarray(emb.encode([q.question])[0])
-        order = np.argsort(-(mat @ qv))[:max(KS)]
-        return [cands[i] for i in order]
+        order = np.argsort(-(tc.mat @ qv))[:max(KS)]
+        return [tc.cands[i] for i in order]
 
-    def rank_cross(q, ot, cands, mat):
-        if not cands:
+    def rank_cross(q, ot, tc, qv):
+        if not tc.cands:
             return []
-        scores = ce.predict([(q.question, " > ".join(c)) for c in cands])
-        order = sorted(range(len(cands)), key=lambda i: -float(scores[i]))[:max(KS)]
-        return [cands[i] for i in order]
+        scores = ce.predict([(q.question, " > ".join(c)) for c in tc.cands])
+        order = sorted(range(len(tc.cands)), key=lambda i: -float(scores[i]))[:max(KS)]
+        return [tc.cands[i] for i in order]
 
-    def _minmax(x):
-        x = np.asarray(x, dtype=float)
-        lo, hi = x.min(), x.max()
-        return (x - lo) / (hi - lo) if hi > lo else np.zeros_like(x)
-
-    # hybrid: fuse the lexical (BM25-role) and dense (embed-role) search scores,
-    # min-max normalized per candidate list then alpha-weighted — the HybridIndex
-    # convention. This is the "add the search score as a selector feature" arm.
-    def rank_hybrid(q, ot, cands, mat):
-        if not cands:
+    # caption: rank a candidate row node by a sentence-shaped rendering instead
+    # of the bare ">"-joined path, to test whether sentence text embeds closer
+    # to a natural-language question (the S3 hypothesis).
+    # CAVEAT: `_cap_text` below is a local approximation, NOT the deployed
+    # rendering. The operand retriever indexes cells with S2
+    # (`operand_retrieval.py` -> `header_path.serialize`), and the S3 renderer
+    # that does exist (`serialization/caption.py::_cell_sentence`, "long")
+    # formats differently. Do not read this arm as "what the retriever sees".
+    def rank_caption(q, ot, tc, qv):
+        if not tc.cands:
             return []
-        query_str = " ".join(extract_target_terms(q.question))
-        lex = _minmax([max(ot._fuzzy_score(query_str, c), 0.0) for c in cands])
-        qv = np.asarray(emb.encode([q.question])[0])
-        den = _minmax(mat @ qv)
-        score = args.alpha * den + (1.0 - args.alpha) * lex
-        order = np.argsort(-score)[:max(KS)]
-        return [cands[i] for i in order]
+        order = np.argsort(-(tc.cap @ qv))[:max(KS)]
+        return [tc.cands[i] for i in order]
 
     selectors = {"lexical": rank_lexical, "embed": rank_embed, "cross": rank_cross,
-                 "hybrid": rank_hybrid}
+                 "caption": rank_caption}
     hits = {s: {k: 0 for k in KS} for s in selectors}
 
-    # cache row candidates + embeddings per table
-    cache = {}
-    for tid, ot in ots.items():
-        cands = _node_candidates(_distinct_paths(ot, "row"))
-        mat = np.asarray(emb.encode([" > ".join(c) for c in cands])) if cands else np.zeros((0, 1))
-        cache[tid] = (cands, mat)
+    def _cap_text(title, path):
+        body = " > ".join(path)
+        return f"In the table '{title}', among {body}, the value." if title else f"Among {body}, the value."
 
-    for q in pop:
+    # Per-table row candidates + embeddings. `mat` embeds the bare ">"-joined
+    # path (embed selector), `cap` the caption sentence (caption selector).
+    # Both are encoded in ONE call over all tables: at ~21 candidates per table
+    # a per-table encode is a batch the model never fills.
+    tids = list(ots)
+    cand_lists = [_node_candidates(_distinct_paths(ots[t], "row")) for t in tids]
+    path_texts = [" > ".join(c) for cands in cand_lists for c in cands]
+    cap_texts = [_cap_text(ots[t].title, c)
+                 for t, cands in zip(tids, cand_lists) for c in cands]
+    path_mat = np.asarray(emb.encode(path_texts)) if path_texts else np.zeros((0, 1))
+    cap_mat = np.asarray(emb.encode(cap_texts)) if cap_texts else np.zeros((0, 1))
+
+    cache, off = {}, 0
+    for tid, cands in zip(tids, cand_lists):
+        cache[tid] = TableCands(cands, path_mat[off:off + len(cands)],
+                                cap_mat[off:off + len(cands)])
+        off += len(cands)
+
+    # One batched encode for the whole query set: embed and caption both rank
+    # against this vector, so encoding per-selector meant embedding each
+    # question twice, each time as a batch of one.
+    qvecs = np.asarray(emb.encode([q.question for q in pop]))
+
+    for qi, q in enumerate(pop):
         ot = ots[q.gold_table_id]
         gold_rows = {o.row for o in q.gold_operands}
-        cands, mat = cache[q.gold_table_id]
+        tc = cache[q.gold_table_id]
         for s, fn in selectors.items():
-            ranked = fn(q, ot, cands, mat)
+            ranked = fn(q, ot, tc, qvecs[qi])
             for k in KS:
                 if gold_rows <= rows_of(ot, ranked[:k]):
                     hits[s][k] += 1
 
     out = {"population": {"name": "arithmetic_m>=2", "n": n}, "metric": "row_recall@k",
-           "cross_encoder": args.cross_encoder, "hybrid_alpha": args.alpha,
+           "embed_model": args.embed_model, "cross_encoder": args.cross_encoder,
            "selectors": {s: {f"@{k}": round(hits[s][k] / n, 3) for k in KS} for s in selectors}}
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as fh:
