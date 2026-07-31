@@ -7,10 +7,10 @@
     "seed": 0,
     "n_prepared": 94,
     "n_table_skipped": 3,
-    "n_evaluated": 23,
-    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99649, Requested 1250. Please try again in 12m56.736s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "n_evaluated": 44,
+    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98238, Requested 3430. Please try again in 24m1.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
     "n_base_context_truncated": 0,
-    "n_treat_context_truncated": 0
+    "n_treat_context_truncated": 1
   },
   "arms": {
     "base": "S1 (s1_flat) — baseline serialization, leaf headers only",
@@ -26,22 +26,22 @@
   },
   "note": "no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell annotations (answer accuracy only). strict = em_norm on ProcessedAnswer (%/comma-normalised numeric equality, rel_tol 1e-5, no scale/sign leniency; solver prompt asks percent-scale to match the gold convention). Deterministic and symmetric, NOT the paper's LLM-judge protocol — do not compare to the RealHiTBench leaderboard. lenient = numeric_match (diagnostic).",
   "answer_accuracy_strict": {
-    "n": 23,
-    "base": 0.3478,
-    "treat": 0.3913,
-    "delta": 0.0435,
-    "treat_only": 2,
+    "n": 44,
+    "base": 0.2045,
+    "treat": 0.3409,
+    "delta": 0.1364,
+    "treat_only": 7,
     "base_only": 1,
-    "mcnemar_p": 1.0
+    "mcnemar_p": 0.07031
   },
   "answer_accuracy_lenient": {
-    "n": 23,
-    "base": 0.4783,
-    "treat": 0.4783,
-    "delta": 0.0,
-    "treat_only": 1,
-    "base_only": 1,
-    "mcnemar_p": 1.0
+    "n": 44,
+    "base": 0.3182,
+    "treat": 0.4318,
+    "delta": 0.1136,
+    "treat_only": 7,
+    "base_only": 2,
+    "mcnemar_p": 0.17969
   },
   "by_compstruccata_strict": {
     "BackgroundColor": {
@@ -54,19 +54,19 @@
       "mcnemar_p": 1.0
     },
     "ColumnHeaderMerge": {
-      "n": 3,
-      "base": 0.6667,
-      "treat": 0.6667,
-      "delta": 0.0,
-      "treat_only": 0,
+      "n": 8,
+      "base": 0.25,
+      "treat": 0.5,
+      "delta": 0.25,
+      "treat_only": 2,
       "base_only": 0,
-      "mcnemar_p": 1.0
+      "mcnemar_p": 0.5
     },
     "ContentCompound": {
-      "n": 10,
-      "base": 0.2,
-      "treat": 0.3,
-      "delta": 0.1,
+      "n": 12,
+      "base": 0.1667,
+      "treat": 0.25,
+      "delta": 0.0833,
       "treat_only": 1,
       "base_only": 0,
       "mcnemar_p": 1.0
@@ -81,25 +81,25 @@
       "mcnemar_p": 1.0
     },
     "MultiColumnClassified": {
-      "n": 1,
+      "n": 8,
       "base": 0.0,
-      "treat": 0.0,
-      "delta": 0.0,
-      "treat_only": 0,
+      "treat": 0.25,
+      "delta": 0.25,
+      "treat_only": 2,
       "base_only": 0,
-      "mcnemar_p": 1.0
+      "mcnemar_p": 0.5
     },
     "SingleRowClassified": {
-      "n": 3,
-      "base": 0.3333,
-      "treat": 0.6667,
-      "delta": 0.3333,
-      "treat_only": 1,
+      "n": 8,
+      "base": 0.25,
+      "treat": 0.5,
+      "delta": 0.25,
+      "treat_only": 2,
       "base_only": 0,
-      "mcnemar_p": 1.0
+      "mcnemar_p": 0.5
     },
     "StructureCompound": {
-      "n": 1,
+      "n": 3,
       "base": 0.0,
       "treat": 0.0,
       "delta": 0.0,
