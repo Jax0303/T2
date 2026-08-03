@@ -1,0 +1,98 @@
+{
+  "leg": "semantic header-path resolver (EmbedResolver) wired into OperandTargetedRetriever, vs the lexical scorer",
+  "population": {
+    "name": "hitab_arith_with_operands",
+    "split": "dev",
+    "n": 214,
+    "n_m_ge_2": 161
+  },
+  "index_unit": {
+    "scheme": "S3",
+    "length": "long",
+    "granularity": "cell"
+  },
+  "control": "per-query budget-matched: lexical ranking cut to the treatment's exact cell count (deep pool k=80)",
+  "all": {
+    "5": {
+      "osc_lex": 0.4252,
+      "osc_emb": 0.4673,
+      "osc_lex_budget_matched": 0.4346,
+      "delta_vs_matched": 0.0327,
+      "pcr_lex": 0.5655,
+      "pcr_emb": 0.6389,
+      "cells_lex": 10.1262,
+      "cells_emb": 11.9907,
+      "b_emb_only": 27,
+      "c_matched_only": 20,
+      "p_mcnemar": 0.381693
+    },
+    "10": {
+      "osc_lex": 0.5514,
+      "osc_emb": 0.6402,
+      "osc_lex_budget_matched": 0.5888,
+      "delta_vs_matched": 0.0514,
+      "pcr_lex": 0.6798,
+      "pcr_emb": 0.7865,
+      "cells_lex": 18.0935,
+      "cells_emb": 20.6729,
+      "b_emb_only": 31,
+      "c_matched_only": 20,
+      "p_mcnemar": 0.16078
+    },
+    "20": {
+      "osc_lex": 0.6916,
+      "osc_emb": 0.743,
+      "osc_lex_budget_matched": 0.6776,
+      "delta_vs_matched": 0.0654,
+      "pcr_lex": 0.7781,
+      "pcr_emb": 0.8556,
+      "cells_lex": 31.9439,
+      "cells_emb": 34.972,
+      "b_emb_only": 30,
+      "c_matched_only": 16,
+      "p_mcnemar": 0.054076
+    }
+  },
+  "m_ge_2": {
+    "5": {
+      "osc_lex": 0.3043,
+      "osc_emb": 0.3416,
+      "osc_lex_budget_matched": 0.3106,
+      "delta_vs_matched": 0.031,
+      "pcr_lex": 0.4907,
+      "pcr_emb": 0.5698,
+      "cells_lex": 10.4969,
+      "cells_emb": 12.1739,
+      "b_emb_only": 22,
+      "c_matched_only": 17,
+      "p_mcnemar": 0.522397
+    },
+    "10": {
+      "osc_lex": 0.4348,
+      "osc_emb": 0.5466,
+      "osc_lex_budget_matched": 0.472,
+      "delta_vs_matched": 0.0746,
+      "pcr_lex": 0.6055,
+      "pcr_emb": 0.7411,
+      "cells_lex": 18.5342,
+      "cells_emb": 20.8447,
+      "b_emb_only": 30,
+      "c_matched_only": 18,
+      "p_mcnemar": 0.111403
+    },
+    "20": {
+      "osc_lex": 0.5963,
+      "osc_emb": 0.6646,
+      "osc_lex_budget_matched": 0.5714,
+      "delta_vs_matched": 0.0932,
+      "pcr_lex": 0.7113,
+      "pcr_emb": 0.8143,
+      "cells_lex": 32.4161,
+      "cells_emb": 35.205,
+      "b_emb_only": 30,
+      "c_matched_only": 15,
+      "p_mcnemar": 0.035698
+    }
+  },
+  "note": "Quote delta_vs_matched, not osc_emb - osc_lex: the latter includes the evidence-set growth a better resolver causes."
+}

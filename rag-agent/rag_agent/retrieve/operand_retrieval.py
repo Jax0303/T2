@@ -69,6 +69,7 @@ def decompose_operands(
     llm=None,
     max_rows: int = 2,
     max_cols: int = 2,
+    encoder=None,
 ) -> List[Operand]:
     """Decompose ``query`` into operand header-path targets via HPIR.
 
@@ -76,7 +77,8 @@ def decompose_operands(
     (row, col) operands; if one axis is empty, falls back to single-axis
     operands so retrieval still has something to target.
     """
-    intent = resolve_intent(query, table, llm=llm, top_n_cols=max_cols, top_n_rows=max_rows)
+    intent = resolve_intent(query, table, llm=llm, top_n_cols=max_cols,
+                            top_n_rows=max_rows, encoder=encoder)
     rows = intent.row_paths[:max_rows] or [[]]
     cols = intent.col_paths[:max_cols] or [[]]
     value_type = "number" if intent.needs_symbolic else "value"
@@ -183,7 +185,8 @@ class OperandTargetedRetriever:
 
     def __init__(self, encoder: Optional[Encoder] = None, alpha: float = 0.5,
                  scheme: str = "S3", caption_length: str = "long",
-                 fusion: str = "weighted", rrf_k: int = 60) -> None:
+                 fusion: str = "weighted", rrf_k: int = 60,
+                 embed_resolver: bool = False) -> None:
         if scheme not in ("S2", "S3"):
             raise ValueError(f"scheme must be 'S2' or 'S3', got {scheme!r}")
         self.encoder = encoder
@@ -192,6 +195,12 @@ class OperandTargetedRetriever:
         self.caption_length = caption_length
         self.fusion = fusion
         self.rrf_k = rrf_k
+        # Resolve header paths with the semantic tree-node resolver instead of
+        # the lexical scorer. Off by default so existing results stay
+        # reproducible. Built lazily in retrieve(), once index_table() has
+        # settled self.encoder, and kept so its per-table cache survives.
+        self.embed_resolver = embed_resolver
+        self._resolver = None
         self._index_cache: Dict[str, HybridIndex] = {}
         self._attrs: Dict[str, StructuralAttributes] = {}
 
@@ -242,7 +251,13 @@ class OperandTargetedRetriever:
         determination itself was made at index time; this is a lookup.
         """
         index = self.index_table(table)
-        operands = decompose_operands(query, table, llm=llm)
+        if self.embed_resolver and self._resolver is None:
+            # index_table() has just settled self.encoder, so the resolver and
+            # the index always score against the same embedding space.
+            from ..query.header_embed_resolver import EmbedResolver
+            self._resolver = EmbedResolver(self.encoder)
+        operands = decompose_operands(query, table, llm=llm,
+                                      encoder=self._resolver)
 
         per_operand: List[OperandHit] = []
         best: Dict[str, RetrievedChunk] = {}

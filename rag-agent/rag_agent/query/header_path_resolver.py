@@ -192,13 +192,32 @@ def resolve_against_table(
     table: OriginalTable,
     top_n_cols: int = 3,
     top_n_rows: int = 4,
+    encoder=None,
 ) -> HeaderPathIntent:
     """Resolve the query to concrete header paths that *exist* in ``table``.
 
     Deterministic: ranks the table's real top/left header paths against the
     query's target terms using the store's own fuzzy scorer, so every returned
     binding is guaranteed to be a real header path (no free guessing).
+
+    ``encoder`` delegates the ranking to
+    :class:`~rag_agent.query.header_embed_resolver.EmbedResolver` — semantic
+    tree-node matching, which the enumeration scripts have used for a while but
+    which the operand-targeted retrieval path was never wired to. Off by
+    default: every result in ``results/`` predates the wiring and was produced
+    by the lexical scorer, so flipping the default would silently make them
+    non-comparable.
     """
+    if encoder is not None:
+        # An EmbedResolver may be passed directly instead of a bare encoder —
+        # it caches candidate embeddings per table, which a fresh instance per
+        # call would throw away.
+        if hasattr(encoder, "resolve"):
+            return encoder.resolve(query, table)
+        # Local import: header_embed_resolver imports from this module.
+        from .header_embed_resolver import EmbedResolver
+        return EmbedResolver(encoder, top_n_cols=top_n_cols,
+                             top_n_rows=top_n_rows).resolve(query, table)
     qintent = classify_query(query)
     terms = extract_target_terms(query)
     col_paths = _rank_paths(table, terms, "col", top_n_cols)
@@ -249,6 +268,7 @@ def resolve_intent(
     llm=None,
     top_n_cols: int = 3,
     top_n_rows: int = 4,
+    encoder=None,
 ) -> HeaderPathIntent:
     """Table-grounded resolution, optionally refined by an LLM.
 
@@ -257,7 +277,7 @@ def resolve_intent(
     paths that actually exist; any hallucinated path is dropped and the
     deterministic ranking backfills, so bindings remain grounded.
     """
-    base = resolve_against_table(query, table, top_n_cols, top_n_rows)
+    base = resolve_against_table(query, table, top_n_cols, top_n_rows, encoder=encoder)
     if llm is None:
         return base
 
