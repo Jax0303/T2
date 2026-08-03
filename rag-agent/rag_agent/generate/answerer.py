@@ -40,12 +40,27 @@ def format_context(
     total rows) needs to know when that content silently missed the budget
     instead of assuming every chunk it built made it into the prompt.
     """
+    # 0 (or negative) = no budget: used by the frontier-reader run that lifts
+    # the Groq-era 1200-token cap so context is never the confound.
+    if max_context_tokens <= 0:
+        text = "\n".join(ch.text for ch in chunks)
+        return (text, False) if return_meta else text
     budget = max_context_tokens * _CHARS_PER_TOKEN
     out, used = [], 0
     truncated = False
     for ch in chunks:
         line = ch.text
-        if used + len(line) > budget and out:
+        remaining = budget - used
+        if remaining <= 0:
+            truncated = True
+            break
+        if len(line) > remaining:
+            # Admit only the head that fits. Previously the *first* chunk was let
+            # in whole regardless of budget (the old ``... and out`` guard), so
+            # whole-table arms bypassed the cap while row-chunk arms were
+            # truncated — the arms were not a matched condition. Truncating here
+            # makes every arm respect the same budget.
+            out.append(line[:remaining])
             truncated = True
             break
         out.append(line)

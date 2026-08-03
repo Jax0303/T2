@@ -66,11 +66,20 @@ def encode_cached(enc, tag: str, texts):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--n", type=int, default=120)
-    ap.add_argument("--model", default="llama-3.1-8b-instant")
+    ap.add_argument("--n", type=int, default=120,
+                    help="sample size; ignored when --population dev_full")
+    ap.add_argument("--model", default="llama-3.1-8b-instant",
+                    help="reader spec: bare name → groq (back-compat), or an "
+                         "explicit backend e.g. 'openai:gpt-4.1-mini', "
+                         "'groq:llama-3.3-70b-versatile', 'local:Qwen/Qwen2.5-7B-Instruct'")
+    ap.add_argument("--population", default="random_sample",
+                    choices=["random_sample", "dev_full"],
+                    help="random_sample: shuffle+take n (hard-slice era default). "
+                         "dev_full: the whole HiTab dev split (standard population).")
     ap.add_argument("--rowchunk-k", type=int, default=10)
     ap.add_argument("--mode", default="direct", choices=["direct", "codegen"])
     # Groq free tier: TPM 6000는 요청당 상한이기도 함 → 컨텍스트 예산을 그 아래로.
+    # 0 = 무제한(예산 해제); 프론티어 리더 런에서 컨텍스트를 교란요인에서 제거할 때 사용.
     ap.add_argument("--max-context-tokens", type=int, default=1200)
     ap.add_argument("--tpm", type=int, default=6000, help="token/min throttle budget")
     ap.add_argument("--arms", default=",".join(ARMS),
@@ -89,13 +98,21 @@ def main():
         raise SystemExit(f"unknown arm(s) {unknown}; choose from {list(ARMS)}")
 
     load_env()
-    from rag_agent.llm.groq_llm import GroqLLM
-    llm = GroqLLM(model_name=args.model)
+    from rag_agent.llm.factory import build_llm
+    # bare model name stays a Groq call (back-compat); an explicit backend
+    # prefix (openai:/local:/groq:) routes to the right reader.
+    spec = args.model if ":" in args.model else f"groq:{args.model}"
+    llm = build_llm(spec)
 
     queries, tables = load_queries("data/hitab", "dev")
-    rng = random.Random(SEED)
-    rng.shuffle(queries)
-    sample = queries[:args.n]
+    if args.population == "dev_full":
+        # Standard HiTab dev population. Sorted for a stable resume order; --n
+        # is ignored so the number is over the whole split, not a hard slice.
+        sample = sorted(queries, key=lambda q: q.query_id)
+    else:
+        rng = random.Random(SEED)
+        rng.shuffle(queries)
+        sample = queries[:args.n]
     table_order = sorted(tables)
     tid2col = {t: i for i, t in enumerate(table_order)}
     print(f"n={len(sample)} pool={len(table_order)} reader={llm.name} mode={args.mode}")
@@ -150,8 +167,10 @@ def main():
         raise ValueError(arm)
 
     # --- 실행 --------------------------------------------------------------
+    safe_model = args.model.replace("/", "_").replace(":", "_")
+    tag = "devfull" if args.population == "dev_full" else f"n{args.n}"
     out = Path(args.out) if args.out else (
-        ROOT / "results" / f"verbalize_answer_{args.mode}_{args.model.replace('/','_')}_n{args.n}.json")
+        ROOT / "results" / f"verbalize_answer_{args.mode}_{safe_model}_{tag}.json")
     done = {}
     if args.resume and out.exists():
         prev = json.loads(out.read_text())
@@ -181,8 +200,9 @@ def main():
                "gold": q.answer, "gold_table": q.gold_table_id, "arms": {}}
         for arm in arms:
             chunks, tid = context_for(arm, qi, q)
-            est = min(sum(len(c.text) for c in chunks),
-                      args.max_context_tokens * 4) // 4 + 400
+            full = sum(len(c.text) for c in chunks)
+            cap = full if args.max_context_tokens <= 0 else min(full, args.max_context_tokens * 4)
+            est = cap // 4 + 400
             throttle(est)
             try:
                 res = answer(q.question, chunks, llm, mode=args.mode,
@@ -274,8 +294,11 @@ def main():
     out.write_text(json.dumps({
         "config": vars(args) | {"reader": llm.name, "embedder": MODEL, "seed": SEED,
                                 "context_serialization": "S1 fulltable (oracle/original/1t1c), S2 rowchunks"},
-        "population": {"name": "hitab_dev_random_sample", "requested": args.n,
-                       "evaluated": len(records), "stopped_early": stopped},
+        "population": {"name": ("hitab_dev_full" if args.population == "dev_full"
+                                else "hitab_dev_random_sample"),
+                       "requested": (len(sample) if args.population == "dev_full" else args.n),
+                       "evaluated": len(records), "stopped_early": stopped,
+                       "max_context_tokens": args.max_context_tokens},
         "primary_metric": "hmt_exact_match (HiTab's official scorer) — the number to "
                           "quote against published HiTab accuracies",
         "summary": summary, "records": records,
