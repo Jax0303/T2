@@ -154,6 +154,14 @@ HiTab 표 전체 토큰 중앙값이 2,995(단일)/5,991(이중)이다.
 
 ①②를 기여로 서술하면 방어 불가능하다. 대응 선행 연구:
 
+- **Zhao et al. (2022), *MultiHiertt / MT2Net*, ACL, arXiv:2206.01347 §4 (5쪽) — 가장 가까운 선행연구.
+  원문 인용: "we turn each cell into a sentence, along with its hierarchical row and column headers",
+  예시 "For Innovation Systems of Segment, sales of product in 2018, Year Ended December 31 is 2,894",
+  "the top-n sentences are retrieved as supporting facts". 즉 셀당 문장 + 행·열 계층 헤더 +
+  top-n 검색이 이미 2022년에 있다. 본 저장소 S3 캡션 템플릿과 형식이 사실상 동일하다.
+  → **②(셀 단위 색인)를 기여로 서술하면 이 문단 하나로 무너진다.**
+  갈라지는 지점은 MT2Net이 top-n을 리더에 넘길 뿐 **집합 완전성을 지표로 삼지 않는다**는 것(§1.2 OSC).
+  2026-08-05 원문 PDF 직접 확인.**
 - Oguz et al. (2022), *UniK-QA*, NAACL Findings, arXiv:2012.14610 — 표 셀의 문장화 후 텍스트 리트리버 적용
 - Chen et al. (2024), *TableRAG*, NeurIPS, arXiv:2410.04739 — schema-cell retrieval
 - Herzig et al. (2021), *Open Domain QA over Tables via Dense Retrieval*, NAACL, arXiv:2103.12011 — 행/열 특징 주입

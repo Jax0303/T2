@@ -3,6 +3,10 @@
 Research code for a masters thesis on RAG over **hierarchical tables** (HiTab,
 MultiHiertt, RealHiTBench, FinQA, WikiSQL, AIT-QA, IM-TQA).
 
+Start at the repo-root [`README.md`](../README.md) for how the contribution is
+stated and what is prior art; [`STATUS-2026-08-06.md`](STATUS-2026-08-06.md) is the
+current handoff note.
+
 **Rule this repo runs on** (from `NEXT.md`): *every number carries the results
 file it came from.* A number without a source does not go in a document. This
 README follows it — each figure below names its file under `results/`.
@@ -14,8 +18,13 @@ README follows it — each figure below names its file under `results/`.
 An aggregation question ("total revenue across all divisions") needs **every**
 operand cell. Miss one and the sum is wrong — there is no partial credit at the
 answer. But the retrieval literature scores per-fact recall, which cannot see
-this failure: MultiHiertt reports 76.4% recall@10 while its own error analysis
-lists **Missing Operand at 21%** (arXiv 2206.01347, Table 6).
+this failure — a healthy recall@10 is compatible with most aggregation queries
+missing at least one operand.
+
+⚠️ Do **not** motivate this with MultiHiertt's error table. Its Table 6
+(Wrong Operand or Span 43%, Missing Operand 21%) classifies the *generated
+program*, and the paper never splits those into "retriever did not return the
+cell" vs "reasoner did not use it". See the root README.
 
 So the metric this repo optimises is **Operand-Set Completeness (OSC)**: 1 iff
 every gold operand was retrieved, 0 otherwise. `rag_agent/eval/operand_set.py`.
@@ -26,7 +35,7 @@ Read this before quoting anything as novel.
 
 | Component | Status |
 |---|---|
-| Cell → (caption + row path + col path) sentence as the retrieval unit | **Prior art.** MultiHiertt (2206.01347, 2022) does exactly this, verbatim. Adopt and cite it; do not present it as proposed. |
+| Cell → (caption + row path + col path) sentence as the retrieval unit | **Prior art.** MultiHiertt/MT2Net (2206.01347, 2022) §4 does exactly this, verbatim — including extracting the hierarchy by script rather than annotation, and the flat-vs-hierarchical comparison. Adopt and cite it; do not present it as proposed. |
 | Header-path vs leaf-only serialization gain | **Prior art.** OHD (2602.01969) Table 2 ablation: 53.33 (markdown) → 60.07 (lineage), +6.7pp. |
 | Set-level all-or-nothing completeness as a *retrieval objective* | Open — the literature measures per-fact recall. |
 | Language-independent structural aggregate-row detection + injection | Open; HiTab-scoped case study, not a general method. |
@@ -67,10 +76,18 @@ both-axes resolution .285 → .537 and OSC:
 `train` split run: `results/resolver_osc_matched_train.json`.
 
 **Structural total-row injection, HiTab** — a case study, not the headline.
-Index-time detection, zero per-query cost, official `hitab_exact_match`
-.395 → .500 on gpt-oss-120b (n=86, p=.022) → `results/h6_rerun_20260707/`.
-Applies to ~37% of HiTab queries and does not transfer: WikiSQL has no total
-cells, FinQA tables are too small (median 5 rows).
+Index-time detection, zero per-query cost.
+
+⚠️ **The population-lift numbers this README used to quote (.395 → .500, n=86,
+p=.022) are withdrawn** — they were an artifact of where a token-limited run
+stopped, with `--flips-first` concentrating the 10 flipped queries at the front.
+Scored to completion the effect is +.019, p=.581 (gpt-4o, n=161). No truncated-
+sample p-value from this leg is citable. See `RESEARCH_STRUCTURE.md` §4.3.
+
+What holds: injection changes retrieval on 10/161 queries (6.2%), and on exactly
+those, accuracy goes .00 → .90 (gpt-oss-120b, 9:0) and .00 → .50 (gpt-4o, 5:0),
+zero losses. Ceiling on population lift ≈ 5.6pp. Also HiTab-only: WikiSQL has no
+total cells, FinQA tables are too small (median 5 rows).
 
 ## What failed (kept, because the mechanisms are clean)
 
@@ -130,11 +147,29 @@ GROQ_API_KEY=... PYTHONPATH=. .venv/bin/python scripts/answer_accuracy_resolver.
 LLM legs append one record per query and resume with `--resume`, so a daily
 token cutoff never loses work.
 
+## Diagnoses OSC makes visible
+
+Not repeated here — tables and p-values in the root [`README.md`](../README.md):
+reranking breaks the set only under a narrow budget (@50 the effect is gone;
+`results/operand_collision_rerank_n300.json` and the pool-size sweep
+`results/ea_pool_size_sweep_*.json` agree independently), and the header-path gain
+is lexical with **no detectable order effect** over six shuffle draws
+(`results/shuf_spread_s{1..5}.json`).
+
 ## Open
 
-- Answer-accuracy leg for the resolver fix (`scripts/answer_accuracy_resolver.py`)
-  — retrieval gains do not convert automatically: total-row injection converted
-  on gpt-oss-120b and not at all on llama-3.1-8b.
-- Resolver fix on MultiHiertt / RealHiTBench.
-- Row-axis reconstruction sits at .582 on real grids; 41% of tables encode the
-  hierarchy in a single stub column, so the information is absent, not misread.
+Priority order (see [`STATUS-2026-08-06.md`](STATUS-2026-08-06.md)):
+
+1. **Query decomposition.** `osc_given_decomp = 1.00` — once decomposition is right
+   retrieval never misses, so the remaining ceiling is entirely here (67/161 correct
+   at base). The one large unexplored axis.
+2. Answer-accuracy leg for the resolver fix (`scripts/answer_accuracy_resolver.py`)
+   — retrieval gains do not convert automatically: total-row injection converted
+   on gpt-oss-120b and not at all on llama-3.1-8b.
+3. Resolver fix on MultiHiertt / RealHiTBench (measured on HiTab only so far).
+4. Row-axis reconstruction sits at .582 on real grids; 41% of tables encode the
+   hierarchy in a single stub column, so the information is absent, not misread.
+
+**Do not** add re-retrieval rungs, adjacency heuristics, or gate stages without
+first designing the budget-matched control — all three have already been measured
+as budget effects.
