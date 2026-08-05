@@ -1,0 +1,105 @@
+{
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "run_started_utc": "2026-08-05T09:18:40+00:00"
+  },
+  "leg": "semantic header-path resolver (EmbedResolver) wired into OperandTargetedRetriever, vs the lexical scorer",
+  "population": {
+    "name": "hitab_arith_with_operands",
+    "split": "train",
+    "n": 1006,
+    "n_m_ge_2": 750
+  },
+  "index_unit": {
+    "scheme": "S3",
+    "length": "long",
+    "granularity": "cell"
+  },
+  "control": "per-query budget-matched: lexical ranking cut to the treatment's exact cell count (deep pool k=80)",
+  "all": {
+    "5": {
+      "osc_lex": 0.4175,
+      "osc_emb": 0.5,
+      "osc_lex_budget_matched": 0.4513,
+      "delta_vs_matched": 0.0487,
+      "pcr_lex": 0.5555,
+      "pcr_emb": 0.6201,
+      "cells_lex": 9.7396,
+      "cells_emb": 12.2366,
+      "b_emb_only": 128,
+      "c_matched_only": 79,
+      "p_mcnemar": 0.000808
+    },
+    "10": {
+      "osc_lex": 0.5358,
+      "osc_emb": 0.6034,
+      "osc_lex_budget_matched": 0.5656,
+      "delta_vs_matched": 0.0378,
+      "pcr_lex": 0.6578,
+      "pcr_emb": 0.7092,
+      "cells_lex": 17.4891,
+      "cells_emb": 21.0457,
+      "b_emb_only": 111,
+      "c_matched_only": 73,
+      "p_mcnemar": 0.006224
+    },
+    "20": {
+      "osc_lex": 0.674,
+      "osc_emb": 0.7346,
+      "osc_lex_budget_matched": 0.6948,
+      "delta_vs_matched": 0.0398,
+      "pcr_lex": 0.7678,
+      "pcr_emb": 0.8045,
+      "cells_lex": 30.9215,
+      "cells_emb": 35.1531,
+      "b_emb_only": 97,
+      "c_matched_only": 57,
+      "p_mcnemar": 0.001588
+    }
+  },
+  "m_ge_2": {
+    "5": {
+      "osc_lex": 0.3067,
+      "osc_emb": 0.392,
+      "osc_lex_budget_matched": 0.34,
+      "delta_vs_matched": 0.052,
+      "pcr_lex": 0.4918,
+      "pcr_emb": 0.553,
+      "cells_lex": 10.1267,
+      "cells_emb": 12.2987,
+      "b_emb_only": 102,
+      "c_matched_only": 63,
+      "p_mcnemar": 0.002977
+    },
+    "10": {
+      "osc_lex": 0.4333,
+      "osc_emb": 0.5107,
+      "osc_lex_budget_matched": 0.4653,
+      "delta_vs_matched": 0.0454,
+      "pcr_lex": 0.597,
+      "pcr_emb": 0.6527,
+      "cells_lex": 18.1187,
+      "cells_emb": 21.192,
+      "b_emb_only": 90,
+      "c_matched_only": 56,
+      "p_mcnemar": 0.006119
+    },
+    "20": {
+      "osc_lex": 0.592,
+      "osc_emb": 0.6707,
+      "osc_lex_budget_matched": 0.616,
+      "delta_vs_matched": 0.0547,
+      "pcr_lex": 0.7179,
+      "pcr_emb": 0.7644,
+      "cells_lex": 31.268,
+      "cells_emb": 35.212,
+      "b_emb_only": 87,
+      "c_matched_only": 46,
+      "p_mcnemar": 0.000477
+    }
+  },
+  "note": "Quote delta_vs_matched, not osc_emb - osc_lex: the latter includes the evidence-set growth a better resolver causes."
+}

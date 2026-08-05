@@ -42,6 +42,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
 
 from rag_agent.retrieve.encoders import _tokenize, default_encoder
+from rag_agent.runenv import run_env
 
 from operand_collision_multihiertt import (_minmax, _norm_label, build_corpus,
                                            cell_text, load_population)
@@ -78,7 +79,16 @@ def main() -> int:
     ap.add_argument("--no-cross", action="store_true",
                     help="skip the cross-encoder condition (embedding-only run)")
     ap.add_argument("--out", default="results/operand_collision_within_doc.json")
+    ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--schemes", nargs="+", default=["flat", "S2", "S2_shuf", "S3"])
+    ap.add_argument("--shuffle-seed", type=int, default=None,
+                    help="S2_shuf permutation draw; defaults to --seed. Vary it to "
+                         "estimate the spread over draws (RESEARCH_STRUCTURE.md §4)")
     args = ap.parse_args()
+    env = run_env(args.seed, args.embed_model)
+    import operand_collision_multihiertt as _ocm
+    _ocm.SHUF_SEED = args.seed if args.shuffle_seed is None else args.shuffle_seed
+    env["shuffle_seed"] = _ocm.SHUF_SEED
 
     from rank_bm25 import BM25Okapi
 
@@ -110,7 +120,7 @@ def main() -> int:
         reranker = CrossEncoder(args.reranker, max_length=args.rerank_max_length)
 
     records, results = [], {}
-    for scheme in ("flat", "S2", "S2_shuf", "S3"):
+    for scheme in args.schemes:
         t0 = time.time()
         texts = [cell_text(c, scheme) for c in cells]
         vecs = np.asarray(encoder.encode(texts))
@@ -160,6 +170,7 @@ def main() -> int:
                   flush=True)
 
     out = {
+        "env": env,
         "population": {"name": f"multihiertt_{args.population}_within_doc",
                        "n_queries": n_q,
                        "pool": "within-document (all tables of the query's own doc)",

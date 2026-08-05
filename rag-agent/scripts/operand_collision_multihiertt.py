@@ -53,6 +53,10 @@ from rag_agent.runenv import run_env
 
 RETRIEVERS = [("bm25", 0.0), ("dense", 1.0), ("hybrid", 0.5)]
 KS = (10, 20, 50)
+# S2_shuf draws ONE permutation per cell. Callers vary this to estimate the
+# spread over draws instead of quoting a single one -- the old 4-decimal
+# "S2 == S2_shuf" coincidence came from quoting one. RESEARCH_STRUCTURE.md §4.
+SHUF_SEED = 42
 
 _TOTAL_RE = re.compile(r"\btotal\b", re.IGNORECASE)
 
@@ -190,7 +194,8 @@ def cell_text(cell, scheme: str) -> str:
         segs = [*rp, *cp]
         # crc32, not hash(): str hashing is salted per process (PYTHONHASHSEED),
         # so --seed did NOT pin this permutation. RESEARCH_STRUCTURE.md §6.
-        random.Random(zlib.crc32("\x1f".join(segs).encode())).shuffle(segs)
+        random.Random(zlib.crc32(f"{SHUF_SEED}\x1f".encode()
+                                 + "\x1f".join(segs).encode())).shuffle(segs)
         path = " > ".join(segs)
         return f"{path}: {v}" if path else v
     if scheme == "S3":                        # caption sentence (medium preset)
