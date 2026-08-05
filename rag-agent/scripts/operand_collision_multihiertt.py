@@ -39,6 +39,7 @@ import random
 import re
 import statistics
 import sys
+import zlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -48,6 +49,7 @@ import numpy as np
 from rag_agent.reconstruct import guess_n_header_cols, guess_n_header_rows, \
     parse_html_table, reconstruct_col_paths, reconstruct_row_paths
 from rag_agent.retrieve.encoders import _tokenize, default_encoder
+from rag_agent.runenv import run_env
 
 RETRIEVERS = [("bm25", 0.0), ("dense", 1.0), ("hybrid", 0.5)]
 KS = (10, 20, 50)
@@ -186,7 +188,9 @@ def cell_text(cell, scheme: str) -> str:
         # "correct structure" from "more text": flat->S2_shuf = effect of adding
         # ancestor words at all; S2_shuf->S2 = pure structure at fixed length.
         segs = [*rp, *cp]
-        random.Random(hash(tuple(segs)) & 0xFFFFFFFF).shuffle(segs)
+        # crc32, not hash(): str hashing is salted per process (PYTHONHASHSEED),
+        # so --seed did NOT pin this permutation. RESEARCH_STRUCTURE.md §6.
+        random.Random(zlib.crc32("\x1f".join(segs).encode())).shuffle(segs)
         path = " > ".join(segs)
         return f"{path}: {v}" if path else v
     if scheme == "S3":                        # caption sentence (medium preset)
@@ -249,7 +253,9 @@ def main() -> int:
     ap.add_argument("--cascade-tables", type=int, nargs="+", default=[1, 3],
                      help="cascade variants: pool the cells of the top-M tables")
     ap.add_argument("--out", default="results/operand_collision_multihiertt.json")
+    ap.add_argument("--seed", type=int, default=42)
     ARGS = ap.parse_args()
+    env = run_env(ARGS.seed, ARGS.embed_model)
 
     from rank_bm25 import BM25Okapi
 
@@ -339,6 +345,7 @@ def main() -> int:
                     if cells[g]["n_tables_with_label"] >= ARGS.collision_min)
     n_gold = sum(len(q["gold"]) for q in pop)
     out = {
+        "env": env,
         "population": {"name": "multihiertt_arithmetic_single_table_multi_operand",
                         "n_queries": n_q, "n_gold_operand_cells": n_gold,
                         "pct_operands_with_colliding_label": round(n_collide / n_gold, 4),

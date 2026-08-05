@@ -41,6 +41,7 @@ from rag_agent.data.loader import load_table
 from rag_agent.eval.operand_set import operand_set_completeness, per_cell_recall
 from rag_agent.retrieve.encoders import default_encoder
 from rag_agent.retrieve.operand_retrieval import OperandTargetedRetriever
+from rag_agent.runenv import run_env
 from rag_agent.stores.original_store import build_original_table
 
 ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"}
@@ -67,7 +68,9 @@ def main() -> int:
                     help="lexical ranked pool, cut per query to the treatment's size")
     ap.add_argument("--max", type=int, default=0)
     ap.add_argument("--out", default="")
+    ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
+    env = run_env(args.seed, args.embed_model)
     out_path = args.out or f"results/resolver_osc_matched_{args.split}.json"
 
     queries, _ = load_queries(args.data_dir, args.split)
@@ -130,6 +133,7 @@ def main() -> int:
 
     m2 = [r for r in recs if r["m"] >= 2]
     out = {
+        "env": env,
         "leg": "semantic header-path resolver (EmbedResolver) wired into "
                "OperandTargetedRetriever, vs the lexical scorer",
         "population": {"name": "hitab_arith_with_operands", "split": args.split,

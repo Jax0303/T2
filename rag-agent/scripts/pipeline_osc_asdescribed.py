@@ -47,6 +47,7 @@ from rag_agent.eval.operand_set import operand_set_completeness, per_cell_recall
 from rag_agent.retrieve.completeness_gate import retrieve_with_gate
 from rag_agent.retrieve.encoders import default_encoder
 from rag_agent.retrieve.operand_retrieval import OperandTargetedRetriever
+from rag_agent.runenv import run_env
 from rag_agent.stores.original_store import build_original_table
 
 ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"}
@@ -90,7 +91,9 @@ def main() -> int:
     ap.add_argument("--k", type=int, default=5, help="base k for the gated arm")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--out", default="results/pipeline_osc_asdescribed.json")
+    ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
+    env = run_env(args.seed, args.embed_model)
 
     queries, _bench_tables = load_queries(args.data_dir, args.split)
     pop = [q for q in queries
@@ -168,6 +171,7 @@ def main() -> int:
     g2 = [r for r in gate_recs if r["m"] >= 2]
     fired = [r for r in gate_recs if r["fired"]]
     out = {
+        "env": env,
         "pipeline": "AS DESCRIBED — OperandTargetedRetriever(S3 caption cells) "
                     "+ index-time structural attribution + completeness gate",
         "note": "NOT comparable to the HybridRetriever/S2-row-chunk OSC scripts "

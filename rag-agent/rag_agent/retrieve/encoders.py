@@ -14,9 +14,11 @@ must also import and run where ``torch`` / ``sentence-transformers`` are absent
 
 Both return L2-normalized row vectors so a dot product is cosine similarity.
 
-Embedding-consistency rule (from the prompt spec): the **same encoder must embed
-both the chunks and the queries**. The retriever enforces this by holding a
-single encoder instance for both.
+Embedding-consistency rule: the **same encoder must embed both the chunks and
+the queries**. The retriever enforces this by holding a single encoder instance
+for both. Provenance of that encoder is a reproducibility item — see
+``RESEARCH_STRUCTURE.md`` §6 (재현성 부채: 임베딩 모델 리비전 / 실행 환경), which is
+also why the hashing fallback is never substituted silently.
 """
 from __future__ import annotations
 

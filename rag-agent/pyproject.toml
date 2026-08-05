@@ -20,7 +20,10 @@ dependencies = [
     "bitsandbytes>=0.43",
     "sentence-transformers>=3.0",
     "chromadb>=0.5",
-    "rank-bm25>=0.2.2",
+    "rank-bm25==0.2.2",      # pinned: every call site relies on its BM25Okapi
+                             # defaults (k1=1.5, b=0.75, epsilon=0.25)
+    "scipy>=1.11",           # significance tests (binomtest / mannwhitneyu)
+    "scikit-learn>=1.4",     # budget selector
     "groq>=0.9",
     "tabulate>=0.9",
     "pyyaml>=6.0",

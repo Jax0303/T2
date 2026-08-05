@@ -12,14 +12,19 @@ space ``rag_agent.bench.hitab.resolve_gold_operands`` resolves operands into).
 Gold/retrieved collections may be either ``(row, col)`` tuples or objects
 exposing ``.row``/``.col`` (e.g. :class:`~rag_agent.bench.schema.GoldOperand`).
 
-Stratification variables (per the research spec, §4):
+This is the OSC of ``RESEARCH_STRUCTURE.md`` §1.2 (주 지표 — OSC); the ranking
+forms ``set_recall_at_k`` / ``all_covered@k`` / ``set_em@k`` below are the same
+concept, and ``per_cell_recall`` is its partial-credit contrast metric.
+
+Stratification variables (see ``RESEARCH_STRUCTURE.md`` §3.2 for the full list
+of manipulated variables, and §3.1 for the m≥2 population splits):
   * ``scope_size`` m = number of distinct gold operand cells (aggregation scope).
   * ``header_depth`` d = max header-path length over the table's top/left trees.
   * ``aggregation`` = HiTab aggregation type (sum/avg/diff/count/...).
 
-Note on naming: the retrieval *budget* (top-k) is ``k`` elsewhere in the repo;
-here the aggregation *scope size* is ``m`` to avoid the collision flagged in the
-spec review.
+Note on naming: the retrieval *budget* (top-k) is ``k`` in ``RESEARCH_STRUCTURE.md``
+§3.2 (예산 k ∈ {1,3,5,10,20,50}) and elsewhere in the repo; here the aggregation
+*scope size* is ``m`` to avoid colliding with it.
 """
 from __future__ import annotations
 
