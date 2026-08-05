@@ -34,7 +34,7 @@ from rag_agent.bench.schema import BenchTable
 from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate.answerer import answer, evaluate_answer
-from rag_agent.llm.groq_llm import GroqLLM
+from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.header_enum import total_like_rows_hybrid
 from rag_agent.retrieve.operand_retriever import HybridRetriever, _tok
 from rag_agent.query.operand_decomposer import Embedder
@@ -99,7 +99,11 @@ def main() -> int:
     emb = Embedder(args.embed_model, device="cpu")
     # long 429 backoff: 70b TPM is 12k and codegen calls are ~2k tokens, so
     # per-minute throttling is expected; only a *daily* quota should abort the run
-    llm = GroqLLM(model_name=args.solver_model, retry_on_429=8)
+    # A bare model name stays Groq so existing --resume records keep their solver;
+    # "openai:gpt-5.1" etc. picks another backend. Never resume across backends:
+    # the arms in one records file must come from one solver.
+    llm = build_llm(args.solver_model if ":" in args.solver_model
+                    else f"groq:{args.solver_model}", retry_on_429=8)
 
     need = {q.gold_table_id for q in pop}
     retr, total_chunk_idx = {}, {}
@@ -257,7 +261,7 @@ def main() -> int:
                        "n_nonflip_evaluated": n_nonflip_evaluated,
                        "n_treat_context_truncated": n_treat_truncated,
                        "flips_first": args.flips_first, "cutoff": cutoff},
-        "retriever": args.retriever, "k": args.k, "solver": f"groq:{args.solver_model}",
+        "retriever": args.retriever, "k": args.k, "solver": llm.name,
         "mode": args.mode,
         "osc": {"base": round(sum(p["ob"] for p in prep) / n, 4),
                 "treat": round(sum(p["ot"] for p in prep) / n, 4),
