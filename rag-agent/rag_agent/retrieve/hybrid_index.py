@@ -6,9 +6,20 @@ combination of a lexical (BM25) and a dense (cosine) signal. Scores from each
 backend are min-max normalized per query before combining, so the ``alpha``
 weight is meaningful regardless of the backends' raw score scales.
 
-FAISS is used for the dense search when available; otherwise a NumPy matrix
-product is used (table-scale corpora make this a non-issue). The encoder is held
-once and used for both chunks and queries, enforcing embedding consistency.
+The dense half is a vector index, not an ad-hoc matrix product: cell sentences
+are embedded once and searched by inner product from a FAISS ``IndexFlatIP``.
+The index is *exact* (it scans every vector), which is the whole reason for
+choosing it over an ANN store — approximate search would silently reorder
+results and invalidate every retrieval number already on disk. ``vector_backend
+="numpy"`` selects the equivalent matmul, kept because it is the reference the
+FAISS path is checked against (``tests/test_vector_backend.py``) and because
+CPU-only checkouts without faiss must still run.
+
+The index is in-memory and per-run by construction: it is built from the chunks
+handed to the constructor and dropped with them, so no run inherits state from
+the previous one. :meth:`HybridIndex.close` makes that explicit where a script
+builds many indexes in a loop. The encoder is held once and used for both chunks
+and queries, enforcing embedding consistency.
 """
 from __future__ import annotations
 
@@ -42,6 +53,32 @@ def _rrf(scores: np.ndarray, rrf_k: int) -> np.ndarray:
     ranks = np.empty(scores.size, dtype=np.int64)
     ranks[np.argsort(-scores, kind="stable")] = np.arange(1, scores.size + 1)
     return 1.0 / (rrf_k + ranks)
+
+
+DENSE_BACKENDS = ("faiss", "numpy")
+
+
+def resolve_dense_backend(name: str = "auto") -> str:
+    """Which vector backend a run would use. ``"auto"`` prefers faiss.
+
+    An explicit ``"faiss"`` lets the ImportError through instead of degrading to
+    numpy: a result file that says it used the vector index must not have been
+    produced by something else. ``"auto"`` may degrade, but the choice it made is
+    recorded (:func:`rag_agent.runenv.run_env` splices it into ``env``), so the
+    fallback is never silent the way an unrecorded one would be.
+    """
+    if name not in DENSE_BACKENDS + ("auto",):
+        raise ValueError(f"vector_backend must be one of "
+                         f"{DENSE_BACKENDS + ('auto',)}, got {name!r}")
+    if name == "numpy":
+        return name
+    try:
+        import faiss  # noqa: F401
+    except ImportError:
+        if name == "faiss":
+            raise
+        return "numpy"
+    return "faiss"
 
 
 @dataclass
@@ -82,6 +119,11 @@ class HybridIndex:
     rrf_k:
         Rank-fusion damping constant; ignored unless ``fusion="rrf"``. 60 is the
         value from the original paper and the one the repo's scripts use.
+    vector_backend:
+        ``"faiss"`` (exact ``IndexFlatIP``), ``"numpy"`` (equivalent matmul), or
+        ``"auto"`` — faiss when importable. The two produce the same ranking;
+        see :func:`resolve_dense_backend`. The resolved name is on
+        ``self.vector_backend``.
     """
 
     def __init__(
@@ -91,6 +133,7 @@ class HybridIndex:
         alpha: float = 0.5,
         fusion: str = "weighted",
         rrf_k: int = 60,
+        vector_backend: str = "auto",
     ) -> None:
         from rank_bm25 import BM25Okapi
 
@@ -108,27 +151,41 @@ class HybridIndex:
         self._emb = (
             self.encoder.encode(texts) if texts else np.zeros((0, 1), dtype=np.float32)
         )
-        self._faiss = self._try_build_faiss(self._emb)
+        self.vector_backend = resolve_dense_backend(vector_backend)
+        self._index = (self._build_index(self._emb)
+                       if self.vector_backend == "faiss" else None)
 
     @staticmethod
-    def _try_build_faiss(emb: np.ndarray):
+    def _build_index(emb: np.ndarray):
         if emb.shape[0] == 0:
             return None
-        try:
-            import faiss
+        import faiss
 
-            index = faiss.IndexFlatIP(emb.shape[1])
-            index.add(np.ascontiguousarray(emb))
-            return index
-        except Exception:
-            return None
+        index = faiss.IndexFlatIP(emb.shape[1])
+        index.add(np.ascontiguousarray(emb, dtype=np.float32))
+        return index
+
+    def close(self) -> None:
+        """Drop the vector index. Nothing was persisted, so this leaves no state
+        for a later run to pick up; call it in loops that build many indexes."""
+        self._index = None
 
     def _dense_scores(self, query: str) -> np.ndarray:
         if self._emb.shape[0] == 0:
             return np.zeros(0, dtype=np.float32)
         q = self.encoder.encode([query])[0].astype(np.float32)
         # cosine == dot product since rows are L2-normalized
-        return self._emb @ q
+        if self._index is None:
+            return self._emb @ q
+        # ntotal, not k: weighted fusion min-max-normalizes over the FULL dense
+        # score vector, so a truncated search would change the normalizer and
+        # with it the ranking. IndexFlatIP is exhaustive, so this is the same
+        # arithmetic as the matmul, just executed by the index.
+        sims, ids = self._index.search(np.ascontiguousarray(q.reshape(1, -1)),
+                                       self._index.ntotal)
+        out = np.empty(self._emb.shape[0], dtype=np.float32)
+        out[ids[0]] = sims[0]
+        return out
 
     def _bm25_scores(self, query: str) -> np.ndarray:
         if self._bm25 is None:

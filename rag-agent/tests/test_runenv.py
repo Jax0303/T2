@@ -15,4 +15,6 @@ def test_seeds_are_actually_set():
     assert a == b
     assert env["seed"] == 42
     assert env["embed_model"] == "BAAI/bge-small-en-v1.5"
-    assert set(env) == {"seed", "device", "torch", "embed_model", "run_started_utc"}
+    assert set(env) == {"seed", "device", "torch", "embed_model",
+                        "vector_backend", "run_started_utc"}
+    assert env["vector_backend"] in ("faiss", "numpy")

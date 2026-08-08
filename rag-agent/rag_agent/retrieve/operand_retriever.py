@@ -4,7 +4,14 @@
 Each table is serialized to row chunks (S2 by default); a hybrid retriever scores
 chunks with BM25 + dense cosine fused by reciprocal-rank fusion (RRF, k=60 — the
 Cormack et al. 2009 default, no tuning). Dense uses an in-memory normalized
-embedding matrix (table chunk counts are small, so no faiss/Chroma is needed).
+embedding matrix scored by matmul.
+
+This is the *older* retriever, kept as-is because a dozen scripts under
+``scripts/`` produced results on disk with it. The current cell-stage path is
+:class:`rag_agent.retrieve.hybrid_index.HybridIndex`, whose dense half runs on a
+FAISS ``IndexFlatIP``; the two agree to float rounding (see
+``tests/test_vector_backend.py``). Do not "modernize" this one without
+re-running everything that cites it.
 
 Retrieval modes:
   * ``operand``  — decompose the query into operand header paths, search each

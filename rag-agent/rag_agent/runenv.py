@@ -36,10 +36,15 @@ def run_env(seed: int, embed_model: str) -> dict:
         if torch.cuda.is_available():
             device = torch.cuda.get_device_name(0)
 
+    from .retrieve.hybrid_index import resolve_dense_backend
+
     return {
         "seed": seed,
         "device": device,
         "torch": torch_version,
         "embed_model": embed_model,
+        # which vector backend the dense stage will use; "auto" degrades to
+        # numpy when faiss is absent, and this is where that shows up
+        "vector_backend": resolve_dense_backend(),
         "run_started_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }

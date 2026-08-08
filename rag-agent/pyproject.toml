@@ -19,7 +19,8 @@ dependencies = [
     "transformers>=4.40",
     "bitsandbytes>=0.43",
     "sentence-transformers>=3.0",
-    "chromadb>=0.5",
+    "chromadb>=0.5",        # table-stage vector store (persistent)
+    "faiss-cpu>=1.7",       # cell-stage vector index (exact IndexFlatIP, per-run)
     "rank-bm25==0.2.2",      # pinned: every call site relies on its BM25Okapi
                              # defaults (k1=1.5, b=0.75, epsilon=0.25)
     "scipy>=1.11",           # significance tests (binomtest / mannwhitneyu)
@@ -30,9 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Optional extras. faiss accelerates dense search (NumPy fallback otherwise);
 # datasets is only needed to fetch FinQA / WikiSQL.
-faiss = ["faiss-cpu>=1.7"]
 benchmarks = ["datasets>=2.0"]
 
 [tool.hatch.build.targets.wheel]
