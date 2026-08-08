@@ -77,7 +77,7 @@ def main() -> int:
     print(f"[pop] hitab {args.split} arith w/ operands: {len(pop)}", flush=True)
 
     enc = default_encoder(model_name=args.embed_model)
-    r = OperandTargetedRetriever(encoder=enc, scheme="S3", caption_length="long",
+    r = OperandTargetedRetriever(encoder=enc, scheme="S3", caption_template="structural",
                                  embed_resolver=True)
 
     ots, recs = {}, []

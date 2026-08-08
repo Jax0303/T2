@@ -51,7 +51,7 @@ from rag_agent.eval.metrics import hitab_exact_match, mrr, ndcg_at_k, recall_at_
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.reconstruct import reconstruct_col_paths, reconstruct_row_paths
 from rag_agent.serialization import serialize
-from rag_agent.serialization.caption import LENGTHS
+from rag_agent.serialization.templates import STRUCTURAL
 
 
 def flatten_to_grid(top_paths, left_paths):
@@ -98,19 +98,19 @@ def reconstruct_table(bt):
     return replace(bt, top_paths=rec_cols, left_paths=rec_rows)
 
 
-def build_table_corpus(tables: dict, length: str):
+def build_table_corpus(tables: dict, template: str):
     """One S3 chunk per table (granularity='table')."""
     ids, texts = [], []
     for tid, bt in tables.items():
-        chunk = serialize(bt, scheme="S3", length=length, granularity="table")[0]
+        chunk = serialize(bt, scheme="S3", template=template, granularity="table")[0]
         ids.append(tid)
         texts.append(chunk.text)
     return ids, texts
 
 
-def build_cell_candidates(bt, length: str):
+def build_cell_candidates(bt, template: str):
     """Per-cell S3 sentences + the value each sentence names, for a single table."""
-    chunks = serialize(bt, scheme="S3", length=length, granularity="cell", include_title=False)
+    chunks = serialize(bt, scheme="S3", template=template, granularity="cell", include_title=False)
     texts = [c.text for c in chunks]
     values = [bt.cell(c.row_index, c.col_index) for c in chunks]
     return texts, values
@@ -151,8 +151,8 @@ def main() -> int:
     emb = Embedder(args.embed_model, device="cpu")
     results = {}
 
-    for length in LENGTHS:
-        print(f"\n=== length={length} ===")
+    for length in (STRUCTURAL,):   # length axis retired; one canonical template
+        print(f"\n=== template={length} ===")
         table_ids, table_texts = build_table_corpus(eval_tables, length)
         table_vecs = np.asarray(emb.encode(table_texts))
         avg_chars = round(sum(len(t) for t in table_texts) / len(table_texts), 1)

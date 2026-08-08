@@ -48,7 +48,7 @@ from rag_agent.eval.metrics import mrr, ndcg_at_k, numeric_match, recall_at_k
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.reconstruct import guess_n_header_rows, parse_html_table, reconstruct_col_paths, reconstruct_row_paths
 from rag_agent.serialization import serialize
-from rag_agent.serialization.caption import LENGTHS
+from rag_agent.serialization.templates import STRUCTURAL
 
 
 @dataclass
@@ -149,7 +149,7 @@ def _serialize_kwargs(scheme: str, length: str) -> dict:
     """S3 (caption) takes a length preset; S2 (header-path / tree-mapping)
     has no such axis -- omit it so header_path.serialize() doesn't choke on
     an unknown kwarg."""
-    return {"length": length} if scheme == "S3" else {}
+    return {"template": length} if scheme == "S3" else {}
 
 
 def build_table_corpus(tables: dict, scheme: str, length: str):
@@ -198,10 +198,10 @@ def main() -> int:
 
     emb = Embedder(args.embed_model, device="cpu")
     results = {}
-    lengths = LENGTHS if args.scheme == "S3" else ("n/a",)
+    lengths = (STRUCTURAL,) if args.scheme == "S3" else ("n/a",)   # length axis retired
 
     for length in lengths:
-        print(f"\n=== scheme={args.scheme} length={length} ===")
+        print(f"\n=== scheme={args.scheme} template={length} ===")
         table_ids, table_texts = build_table_corpus(tables, args.scheme, length)
         table_vecs = np.asarray(emb.encode(table_texts))
         avg_chars = round(sum(len(t) for t in table_texts) / len(table_texts), 1) if table_texts else 0

@@ -33,9 +33,9 @@ from rag_agent.stores.original_store import build_original_table
 
 ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"}
 KS = (1, 2, 3)
-# Match OperandTargetedRetriever's caption_length default, so the selector ranks
+# Match OperandTargetedRetriever's caption_template default, so the selector ranks
 # in the same text space the deployed index is built in.
-CAPTION_LENGTH = "long"
+CAPTION_TEMPLATE = "structural"
 
 
 class TableCands(NamedTuple):
@@ -128,7 +128,7 @@ def main() -> int:
 
     # A column candidate is a col_path; its row_path is empty.
     def _cap_text(title, path):
-        return caption_sentence(title, (), path, value=None, length=CAPTION_LENGTH)
+        return caption_sentence(title, (), path, value=None, template=CAPTION_TEMPLATE)
 
     # Per-table col candidates + embeddings. `mat` embeds the bare ">"-joined
     # path (embed selector), `cap` the caption sentence (caption selector).

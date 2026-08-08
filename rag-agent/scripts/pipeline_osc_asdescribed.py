@@ -105,9 +105,9 @@ def main() -> int:
 
     enc = default_encoder(model_name=args.embed_model)
     retriever = OperandTargetedRetriever(encoder=enc, scheme="S3",
-                                         caption_length="long")
+                                         caption_template="structural")
     print(f"[pipeline] OperandTargetedRetriever scheme={retriever.scheme} "
-          f"caption_length={retriever.caption_length} fusion={retriever.fusion}",
+          f"caption_template={retriever.caption_template} fusion={retriever.fusion}",
           flush=True)
 
     ots: dict = {}
@@ -179,7 +179,7 @@ def main() -> int:
                 "described system has a measurement of its own.",
         "population": {"name": "hitab_arith_with_operands", "split": args.split,
                        "n": len(recs), "n_m_ge_2": sum(1 for r in recs if r["m"] >= 2)},
-        "index_unit": {"scheme": retriever.scheme, "length": retriever.caption_length,
+        "index_unit": {"scheme": retriever.scheme, "template": retriever.caption_template,
                        "granularity": "cell", "fusion": retriever.fusion},
         "osc_by_budget": {str(k): osc_at(k) for k in K_LIST},
         "osc_by_budget_m_ge_2": {str(k): osc_at(k, True) for k in K_LIST},

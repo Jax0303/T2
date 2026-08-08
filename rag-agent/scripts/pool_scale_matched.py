@@ -98,14 +98,14 @@ def main() -> int:
     enc = default_encoder(model_name=args.embed_model)
     # the treatment's resolver + per-table index (single-table condition), reused
     # only for its decomposition -- searching happens on the corpus index below
-    r = OperandTargetedRetriever(encoder=enc, scheme="S3", caption_length="long",
+    r = OperandTargetedRetriever(encoder=enc, scheme="S3", caption_template="structural",
                                  embed_resolver=True)
 
     # corpus pool: every table of the population, one index
     chunks = []
     for tid, ot in ots.items():
         if ot is not None:
-            chunks.extend(s3.serialize(ot, granularity="cell", length="long"))
+            chunks.extend(s3.serialize(ot, granularity="cell", template="structural"))
     n_gold_tables = len([o for o in ots.values() if o])
     n_distractor = 0
     if args.distractor_split:
@@ -118,7 +118,7 @@ def main() -> int:
                 dot = build_original_table(load_table(tid, args.data_dir))
             except Exception:
                 continue
-            chunks.extend(s3.serialize(dot, granularity="cell", length="long"))
+            chunks.extend(s3.serialize(dot, granularity="cell", template="structural"))
             n_distractor += 1
         print(f"[pool] +{n_distractor} distractor tables from "
               f"{args.distractor_split}", flush=True)

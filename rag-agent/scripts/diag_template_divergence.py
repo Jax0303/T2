@@ -77,9 +77,9 @@ def main() -> int:
             continue
         t = build_original_table(raw)
         a_long = {(c.row_index, c.col_index): c.text
-                  for c in caption_serialize(t, length="long", granularity="cell")}
+                  for c in caption_serialize(t, template="structural", granularity="cell")}
         a_med = {(c.row_index, c.col_index): c.text
-                 for c in caption_serialize(t, length="medium", granularity="cell")}
+                 for c in caption_serialize(t, template="mt2net", granularity="cell")}
         n = 0
         for (r, c), a_txt in a_long.items():
             v = t.cell(r, c)

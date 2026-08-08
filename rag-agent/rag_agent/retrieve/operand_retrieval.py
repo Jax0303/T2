@@ -184,7 +184,7 @@ class OperandTargetedRetriever:
     """
 
     def __init__(self, encoder: Optional[Encoder] = None, alpha: float = 0.5,
-                 scheme: str = "S3", caption_length: str = "long",
+                 scheme: str = "S3", caption_template: str = "structural",
                  fusion: str = "weighted", rrf_k: int = 60,
                  embed_resolver: bool = False) -> None:
         if scheme not in ("S2", "S3"):
@@ -192,7 +192,7 @@ class OperandTargetedRetriever:
         self.encoder = encoder
         self.alpha = alpha
         self.scheme = scheme
-        self.caption_length = caption_length
+        self.caption_template = caption_template
         self.fusion = fusion
         self.rrf_k = rrf_k
         # Resolve header paths with the semantic tree-node resolver instead of
@@ -207,7 +207,7 @@ class OperandTargetedRetriever:
     def _serialize(self, table: OriginalTable) -> List[Chunk]:
         if self.scheme == "S3":
             return s3.serialize(table, granularity="cell",
-                                length=self.caption_length)
+                                template=self.caption_template)
         return s2.serialize(table, granularity="cell")
 
     def index_table(self, table: OriginalTable) -> HybridIndex:

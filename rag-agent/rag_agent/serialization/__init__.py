@@ -8,8 +8,9 @@ single-variable:
 * **S2** (:mod:`rag_agent.serialization.header_path`) — every cell prefixed
   with its hierarchical header path (``Revenue > 2023 > Q1: 1,234``).
 * **S3** (:mod:`rag_agent.serialization.caption`) — every cell rendered as a
-  natural-language sentence (``Among Revenue 2023 Q1, the value is 1,234.``),
-  with a ``length`` preset (``"short"``/``"medium"``/``"long"``).
+  natural-language sentence, under one of two named templates
+  (``"structural"`` = this work, ``"mt2net"`` = the provisional reproduction of
+  Zhao et al. 2022 §4). Sentence length is no longer an experimental axis.
 
 Use :func:`serialize` to pick a scheme by name::
 
@@ -32,7 +33,7 @@ def serialize(table: TableView, scheme: str = "S2", **kwargs) -> List[Chunk]:
 
     Extra keyword arguments are forwarded to the underlying serializer
     (e.g. ``granularity="cell"`` for S2/S3, ``include_title=False`` for all
-    three, ``length="short"|"medium"|"long"`` for S3).
+    three, ``template="structural"|"mt2net"`` for S3).
     """
     if scheme == "S1":
         return flat.serialize(table, **kwargs)

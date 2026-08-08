@@ -1,38 +1,39 @@
-"""S3 — Natural-language caption serialization.
+"""S3 — cell -> sentence index units.
 
-Where S2 encodes header hierarchy as a ``>``-joined path prefix
-(``Revenue > 2023 > Q1: 1,234``), S3 renders the same cell as a sentence a
-retriever's embedder was actually pretrained on, e.g.::
+Each cell becomes one sentence carrying its hierarchical row and column header
+paths, so the retriever scores text an embedder was pretrained on rather than a
+delimited path fragment.
 
-    Among the regional population distribution, Seoul is 950.
+Which sentence is rendered is a **template** choice, not a length choice — see
+:mod:`rag_agent.serialization.templates`. The ``short``/``medium``/``long``
+preset axis is retired: sentence length is no longer an experimental variable.
 
-The hypothesis this scheme tests: sentence-shaped text should embed closer to
-a natural-language question than a ``>``-delimited path does, at the cost of
-being longer (more tokens per cell, cheaper per-chunk information density).
-Three ``length`` presets trade off how much header/title context each
-sentence spells out — this is the "experiment with sentence length" axis:
+* ``templates.STRUCTURAL`` — this work's index unit. Byte-identical to the old
+  ``length="long"``, so results on disk produced under ``"long"`` remain
+  reproducible from this code.
+* ``templates.MT2NET`` — provisional reproduction of Zhao et al. (2022) §4.
 
-* ``"short"``  — ``"{col}: {value}"`` prefixed by the row header if present.
-* ``"medium"`` — ``"For {row path}, {col path} is {value}."``
-* ``"long"``   — ``"In the table '{title}', among {row path}, the value of
-  {col path} is {value}."``
-
-Two granularities, matching S1/S2:
-
-* ``"row"``   — one chunk per row (default).
-* ``"cell"``  — one chunk per cell.
-* ``"table"`` — the whole table as a single chunk (title stated once, not
-  repeated per sentence) — the "1 table = 1 chunk" baseline.
+Granularity is unchanged: ``"row"`` (default), ``"cell"``, ``"table"``.
 """
 from __future__ import annotations
 
 from typing import List, Sequence
 
-from .base import Chunk, TableView, fmt_value, join_path
+from .base import Chunk, TableView, fmt_value
+from .templates import MT2NET, STRUCTURAL, TEMPLATES, render
 
 
 SCHEME = "S3"
-LENGTHS = ("short", "medium", "long")
+
+
+def _reject_length(kwargs) -> None:
+    if "length" in kwargs:
+        raise TypeError(
+            "the short/medium/long length axis is retired; pass "
+            "template='structural' (was length='long') or template='mt2net' "
+            "(the provisional MT2Net reproduction). See "
+            "rag_agent/serialization/templates.py"
+        )
 
 
 def caption_sentence(
@@ -40,62 +41,27 @@ def caption_sentence(
     row_path: Sequence[str],
     col_path: Sequence[str],
     value=None,
-    length: str = "medium",
+    template: str = STRUCTURAL,
+    **kwargs,
 ) -> str:
     """Render ONE index-unit sentence from a title + the two header paths.
 
-    This is the single source of truth for the S3 sentence template — the
-    "table caption + column header path + row header path + cell value into a
-    sentence template" index unit. :func:`_cell_sentence` is a thin adapter over
-    it, so anything that needs the same rendering (bench selectors, ablations)
-    can call this directly instead of hand-rolling a lookalike that silently
-    drifts from what the index actually contains.
+    Single source of truth for the S3 sentence, so anything needing the same
+    rendering (bench selectors, ablations) calls this instead of hand-rolling a
+    lookalike that silently drifts from what the index actually contains.
 
-    Paths are joined with :func:`~rag_agent.serialization.base.join_path`, which
-    formats each segment and drops empty ones — so a path carrying a blank
-    segment does not produce a dangling ``"North America > "``.
-
-    ``value=None`` renders the same sentence with the ``"is {value}"`` predicate
-    omitted, naming a header *scope* rather than asserting a cell's contents.
-    That form addresses a candidate header node, not an index unit, so use it
-    only where the thing being ranked is a node (e.g. the column/row selection
-    benches) — the deployed index always renders with a value.
+    ``value=None`` omits the ``"is {value}"`` predicate, naming a header *scope*
+    rather than a cell's contents — use only where the ranked thing is a header
+    node. The deployed index always renders with a value.
     """
-    if length not in LENGTHS:
-        raise ValueError(f"length must be one of {LENGTHS}, got {length!r}")
-    row_s = join_path(row_path)
-    col_s = join_path(col_path)
-    title_s = fmt_value(title) if title else ""
-    has_val = value is not None
-    val_s = fmt_value(value) if has_val else ""
-
-    if length == "short":
-        tail = f": {val_s}." if has_val else "."
-        if row_s and col_s:
-            return f"{row_s} {col_s}{tail}"
-        label = col_s or row_s
-        return f"{label}{tail}" if label else (f"{val_s}." if has_val else ".")
-
-    if length == "medium":
-        pred = f" is {val_s}" if has_val else ""
-        if row_s and col_s:
-            return f"For {row_s}, {col_s}{pred}."
-        if col_s:
-            return f"{col_s}{pred}."
-        if row_s:
-            return f"{row_s}{pred}."
-        return f"The value{pred}." if has_val else "The value."
-
-    # length == "long"
-    clause = f"among {row_s}, " if row_s else ""
-    what = f"the value of {col_s}" if col_s else "the value"
-    pred = f" is {val_s}" if has_val else ""
-    if title_s:
-        return f"In the table '{title_s}', {clause}{what}{pred}."
-    return f"{clause}{what}{pred}.".capitalize()
+    _reject_length(kwargs)
+    if kwargs:
+        raise TypeError(f"unexpected keyword arguments: {sorted(kwargs)}")
+    return render(template, title, row_path, col_path, value)
 
 
-def _cell_sentence(table: TableView, row: int, col: int, length: str, include_title: bool) -> str:
+def _cell_sentence(table: TableView, row: int, col: int, template: str,
+                   include_title: bool) -> str:
     # fmt_value first: an empty cell is a value that happens to be blank ("is ."),
     # NOT an absent value — passing None through would drop the predicate and
     # silently change every blank cell's index unit.
@@ -104,31 +70,34 @@ def _cell_sentence(table: TableView, row: int, col: int, length: str, include_ti
         table.row_path(row),
         table.col_path(col),
         value=fmt_value(table.cell(row, col)),
-        length=length,
+        template=template,
     )
 
 
 def serialize(
     table: TableView,
-    length: str = "medium",
+    template: str = STRUCTURAL,
     granularity: str = "row",
     include_title: bool = True,
+    **kwargs,
 ) -> List[Chunk]:
-    """Serialize ``table`` into natural-language caption sentences."""
-    if length not in LENGTHS:
-        raise ValueError(f"length must be one of {LENGTHS}, got {length!r}")
+    """Serialize ``table`` into cell-sentence chunks under ``template``."""
+    _reject_length(kwargs)
+    if kwargs:
+        raise TypeError(f"unexpected keyword arguments: {sorted(kwargs)}")
+    if template not in TEMPLATES:
+        raise ValueError(f"template must be one of {TEMPLATES}, got {template!r}")
     if granularity not in ("row", "cell", "table"):
         raise ValueError(f"granularity must be 'row', 'cell' or 'table', got {granularity!r}")
 
-    # "long" already states the title inside every sentence; for row/table
-    # chunks that would repeat it on every line, so state it once up front
-    # instead and drop it from the per-cell sentence.
+    # STRUCTURAL states the title inside every sentence; for row/table chunks
+    # that would repeat it on every line, so state it once up front instead.
     per_cell_title = include_title and granularity == "cell"
     title = fmt_value(table.title)
     title_line = [title] if (include_title and title and granularity != "cell") else []
 
     def cell_line(r: int, c: int) -> str:
-        return _cell_sentence(table, r, c, length, per_cell_title)
+        return _cell_sentence(table, r, c, template, per_cell_title)
 
     if granularity == "cell":
         chunks: List[Chunk] = []
@@ -138,14 +107,14 @@ def serialize(
                 chunks.append(
                     Chunk(
                         table_id=table.table_id,
-                        chunk_id=f"{table.table_id}::{SCHEME}::{length}::r{r}c{c}",
+                        chunk_id=f"{table.table_id}::{SCHEME}::{template}::r{r}c{c}",
                         text=text,
                         scheme=SCHEME,
                         kind="cell",
                         row_index=r,
                         col_index=c,
                         header_paths=[list(table.row_path(r)) + list(table.col_path(c))],
-                        metadata={"length": length},
+                        metadata={"template": template},
                     )
                 )
         return chunks
@@ -158,13 +127,13 @@ def serialize(
             chunks.append(
                 Chunk(
                     table_id=table.table_id,
-                    chunk_id=f"{table.table_id}::{SCHEME}::{length}::r{r}",
+                    chunk_id=f"{table.table_id}::{SCHEME}::{template}::r{r}",
                     text=text,
                     scheme=SCHEME,
                     kind="row",
                     row_index=r,
                     header_paths=[list(table.row_path(r)) + list(table.col_path(c)) for c in range(table.n_cols)],
-                    metadata={"length": length},
+                    metadata={"template": template},
                 )
             )
         return chunks
@@ -175,7 +144,7 @@ def serialize(
     return [
         Chunk(
             table_id=table.table_id,
-            chunk_id=f"{table.table_id}::{SCHEME}::{length}::table",
+            chunk_id=f"{table.table_id}::{SCHEME}::{template}::table",
             text=text,
             scheme=SCHEME,
             kind="table",
@@ -183,6 +152,6 @@ def serialize(
                 list(table.row_path(r)) + list(table.col_path(c))
                 for r in range(table.n_rows) for c in range(table.n_cols)
             ],
-            metadata={"length": length},
+            metadata={"template": template},
         )
     ]
