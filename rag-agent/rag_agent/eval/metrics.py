@@ -225,10 +225,43 @@ def _hmt_equal(p, g) -> bool:
 def hitab_exact_match(pred, gold) -> bool:
     """HiTab's own official scorer: exact after minimal normalisation, no tolerance
     beyond floating-point noise. Use this (not ``numeric_match``) for any number
-    that will be quoted alongside another paper's reported HiTab accuracy."""
+    that will be quoted alongside another paper's reported HiTab accuracy.
+
+    ``pred`` must already be in the same SHAPE as ``gold``: HiTab's own eval is
+    handed a list of predicted cell values, so a multi-value gold compared
+    against one free-text string fails on type before any value is looked at.
+    An LLM answers in free text, so LLM callers want
+    :func:`hitab_exact_match_text`, which bridges that gap first.
+    """
     if pred is None:
         return False
     return _hmt_equal(_hmt_process(pred), _hmt_process(gold))
+
+
+_MULTI_SPLIT = re.compile(r"\s*(?:,|;|\band\b|\bto\b)\s*", flags=re.I)
+
+
+def hitab_exact_match_text(pred_text, gold) -> bool:
+    """:func:`hitab_exact_match` for a free-text LLM answer.
+
+    Only one thing is added, and it is a shape fix rather than any leniency: when
+    gold holds several values, the model's single line is split on the separators
+    it actually uses (``,`` ``;`` ``and`` ``to``) so the comparison happens value
+    by value, the way HiTab's own eval receives it. Without this, a model that
+    answered "57.0, 31.2, 11.8" to a gold of ``[57.0, 31.2, 11.8]`` scores zero.
+
+    Values are still compared by the official scorer with no tolerance, no
+    percent rescaling and no reordering, so a number produced here stays
+    comparable with published HiTab accuracies.
+    """
+    if pred_text is None:
+        return False
+    if hitab_exact_match(pred_text, gold):
+        return True
+    if not (isinstance(gold, list) and len(gold) > 1 and isinstance(pred_text, str)):
+        return False
+    parts = [p for p in _MULTI_SPLIT.split(pred_text.strip()) if p]
+    return len(parts) > 1 and hitab_exact_match(parts, gold)
 
 
 # --- retrieval-side metrics ------------------------------------------------

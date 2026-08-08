@@ -74,11 +74,19 @@ def test_prose_and_labels_stay_strings():
         assert _as_bare_number(text) is None, text
 
 
-def test_scale_rule_distinguishes_computed_from_printed():
-    """HiTab stores a COMPUTED ratio as a decimal fraction (0.053), but a
-    percentage already printed in a cell stays as printed (25.3). An unscoped
-    "never multiply by 100" told the reader to divide looked-up cells by 100,
-    which the official scorer counts as wrong."""
+def test_scale_rule_names_both_cell_kinds():
+    """The rule is set by the SOURCE CELLS, not by how the answer was obtained.
+
+    The earlier wording here said a computed ratio is always a decimal fraction
+    (0.053). Measured against dev gold, that holds only when the cells are
+    counts: where the cells are already percentages the computed answer stays a
+    percentage (19.4, not 0.194). One rule -- arithmetic on the printed values,
+    reported unchanged -- covers 26 of the 27 scale mismatches observed in
+    results/baseline_comparison_llm_records.jsonl, so both branches must be
+    spelled out or the reader picks the wrong one.
+    """
     from rag_agent.generate.answerer import _RATIO_RULE
-    assert "COMPUTE" in _RATIO_RULE
-    assert "as printed" in _RATIO_RULE
+    assert "NEVER multiply or divide by 100" in _RATIO_RULE
+    assert "already" in _RATIO_RULE and "percentages" in _RATIO_RULE  # cells-are-% branch
+    assert "counts" in _RATIO_RULE                                    # cells-are-counts branch
+    assert "as printed" in _RATIO_RULE                                # looked-up branch

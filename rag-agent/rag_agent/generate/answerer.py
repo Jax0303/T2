@@ -174,16 +174,33 @@ class AnswerResult:
     context_truncated: bool = False
 
 
+# HiTab gold answers are whatever the arithmetic over the PRINTED cell values
+# yields, with no rescaling anywhere: a sum of cells that are already percentages
+# stays a percentage (19.4), a count divided by a count stays a fraction
+# (0.071998). Measured on the 27 scale mismatches in results/baseline_comparison_
+# llm_records.jsonl, this single rule accounts for 26; the leftover is a sign
+# ("opposite") case. The previous wording mandated a decimal fraction for any
+# ratio the model computed, which is right only for the count case and was
+# costing every percentage-cell question.
 _RATIO_RULE = (
-    "Scale rule. If you COMPUTE a percentage, share or ratio yourself (one number "
-    "divided by another), report the raw decimal fraction (0.053, not 5.3) even "
-    "though the question says \"percent\". If instead the value is already printed "
-    "in a cell, report it exactly as printed — do NOT rescale it."
+    "Scale rule. Compute with the numbers exactly as printed in the table and "
+    "report the result unchanged. NEVER multiply or divide by 100 to convert "
+    "between a percentage and a fraction, even when the question says \"percent\", "
+    "\"proportion\", \"share\" or \"ratio\". If the cells you use are already "
+    "percentages, their sum or difference is still a percentage (report 19.4, not "
+    "0.194). If the cells are counts, one divided by another is a plain fraction "
+    "(report 0.072, not 7.2). If the answer is simply printed in a cell, report it "
+    "exactly as printed."
+)
+_ANSWER_FORM_RULE = (
+    " If the question asks for more than one value, give them on one line "
+    "separated by commas, in the order asked. For a text answer, copy the cell's "
+    "wording exactly, adding nothing."
 )
 _DIRECT_SYS = (
     "You answer questions about a table. Use ONLY the rows given. "
     "Reply with the final answer only — a number or a short phrase, no explanation. "
-    + _RATIO_RULE
+    + _RATIO_RULE + _ANSWER_FORM_RULE
 )
 _CODEGEN_SYS = (
     "You answer table questions by writing Python. Do NOT rebuild the table or "

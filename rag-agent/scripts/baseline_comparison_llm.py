@@ -68,7 +68,7 @@ _load_dotenv()
 import numpy as np
 
 from rag_agent.bench.hitab import load_queries
-from rag_agent.eval.metrics import hitab_exact_match
+from rag_agent.eval.metrics import hitab_exact_match_text
 from rag_agent.generate.answerer import _DIRECT_SYS
 from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
@@ -290,7 +290,7 @@ def main() -> int:
                 if not raw_out and llm.last_finish_reason == "length":
                     raw_out = llm.complete(system=_DIRECT_SYS, user=user,
                                            max_tokens=1024)
-                ok = bool(hitab_exact_match(raw_out, q.answer))
+                ok = bool(hitab_exact_match_text(raw_out, q.answer))
                 done[(q.query_id, arm)] = ok
                 rec_fh.write(json.dumps({
                     "query_id": q.query_id, "arm": arm, "kind": q.kind,
@@ -344,7 +344,9 @@ def main() -> int:
                "equal token budget, oracle table gate, official HiTab scorer",
         "dataset": f"hitab_{args.split}",
         "solver": args.model,
-        "scorer": "hitab_exact_match",
+        "scorer": "hitab_exact_match_text (official scorer; free-text answers are "
+                  "split into a value list when gold holds several values, which "
+                  "is the shape HiTab's own eval receives -- no tolerance added)",
         "budget_tokens": args.budget,
         "budget_tokenizer": args.embed_model,
         "arms": {"table_md": "whole table as markdown, one block",
