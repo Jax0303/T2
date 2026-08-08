@@ -29,7 +29,14 @@ from .base import BaseLLM
 
 logger = logging.getLogger(__name__)
 
-_ENDPOINT = "https://api.openai.com/v1/chat/completions"
+_DEFAULT_BASE = "https://api.openai.com/v1"
+
+# Providers that speak the OpenAI chat-completions contract, so the same client
+# reaches all of them by changing only the base URL and the key. Set
+# OPENAI_COMPAT_BASE_URL (+ the matching key) to use one.
+#   Google Gemini  https://generativelanguage.googleapis.com/v1beta/openai
+#   DeepSeek       https://api.deepseek.com/v1
+#   Together       https://api.together.xyz/v1
 
 
 class OpenAILLM(BaseLLM):
@@ -40,8 +47,17 @@ class OpenAILLM(BaseLLM):
         temperature: float = 0.0,
         request_timeout: float = 120.0,
         retry_on_429: int = 8,
+        base_url: str | None = None,
     ) -> None:
-        self.name = f"openai:{model_name}"
+        base = (base_url or os.environ.get("OPENAI_COMPAT_BASE_URL")
+                or _DEFAULT_BASE).rstrip("/")
+        self._endpoint = f"{base}/chat/completions"
+        self._is_openai = base == _DEFAULT_BASE
+        # The provider is part of what produced a number, so it goes in the name
+        # that result files record -- "openai:gpt-4o" and a Gemini run must not
+        # be indistinguishable afterwards.
+        host = "openai" if self._is_openai else base.split("//")[-1].split("/")[0]
+        self.name = f"{host}:{model_name}"
         self.model_name = model_name
         self.temperature = temperature
         self.request_timeout = request_timeout
@@ -50,21 +66,26 @@ class OpenAILLM(BaseLLM):
         if not key:
             raise RuntimeError(
                 "OPENAI_API_KEY not set. Create one at "
-                "https://platform.openai.com/api-keys"
+                "https://platform.openai.com/api-keys, or point "
+                "OPENAI_COMPAT_BASE_URL at another OpenAI-compatible provider "
+                "and put that provider's key in OPENAI_API_KEY."
             )
         self._key = key
         self.last_finish_reason: str | None = None  # see BaseLLM
 
     def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
         # Newer OpenAI models reject `max_tokens`; `max_completion_tokens` is the
-        # accepted spelling across both the 4.x and reasoning families.
+        # accepted spelling across both the 4.x and reasoning families. The
+        # compatible providers went the other way and kept `max_tokens`, so the
+        # spelling follows the host rather than the model.
+        cap = "max_completion_tokens" if self._is_openai else "max_tokens"
         payload = {
             "model": self.model_name,
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
-            "max_completion_tokens": max_tokens,
+            cap: max_tokens,
         }
         # Reasoning models accept only the default temperature; sending 0.0 is a
         # 400. Non-reasoning models keep the deterministic setting.
@@ -80,7 +101,7 @@ class OpenAILLM(BaseLLM):
         for attempt in range(1 + self.retry_on_429):
             # urlopen mutates the Request it is handed (unredirected headers,
             # full_url on redirect), so build a fresh one around the shared body.
-            req = urllib.request.Request(_ENDPOINT, data=data, headers=headers)
+            req = urllib.request.Request(self._endpoint, data=data, headers=headers)
             try:
                 with urllib.request.urlopen(req, timeout=self.request_timeout) as fh:
                     body = json.load(fh)
