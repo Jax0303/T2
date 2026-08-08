@@ -73,6 +73,9 @@ class OpenAILLM(BaseLLM):
                 "and put that provider's key in OPENAI_API_KEY."
             )
         self._key = key
+        # Cleared the first time the provider rejects `temperature`; read it to
+        # find out whether a run was actually deterministic.
+        self._send_temperature = True
         self.last_finish_reason: str | None = None  # see BaseLLM
 
     def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
@@ -91,7 +94,7 @@ class OpenAILLM(BaseLLM):
         }
         # Reasoning models accept only the default temperature; sending 0.0 is a
         # 400. Non-reasoning models keep the deterministic setting.
-        if not self._is_reasoning():
+        if not self._is_reasoning() and self._send_temperature:
             payload["temperature"] = self.temperature
         # Loop-invariant: the prompt carries the serialized table and runs to
         # tens of KB, so encode it once instead of per retry.
@@ -116,6 +119,21 @@ class OpenAILLM(BaseLLM):
             except urllib.error.HTTPError as exc:
                 detail = exc.read().decode(errors="replace")[:300]
                 last_err = RuntimeError(f"HTTP {exc.code}: {detail}")
+                # Some models (Claude 5 via the compat layer) reject `temperature`
+                # outright rather than ignoring it. Drop it for the rest of this
+                # object's life and retry once -- the alternative is maintaining a
+                # per-provider list of which models still accept it. This LOSES the
+                # temperature=0 determinism guarantee, so it is logged at warning
+                # level and recorded on the object for result files to read.
+                if (exc.code == 400 and "temperature" in detail
+                        and self._send_temperature):
+                    self._send_temperature = False
+                    logger.warning("%s rejects temperature; retrying without it "
+                                   "(sampling is now the provider default, NOT "
+                                   "temperature=%s)", self.name, self.temperature)
+                    payload.pop("temperature", None)
+                    data = json.dumps(payload).encode()
+                    continue
                 # 429 = rate limit, 5xx = transient. A daily/credit exhaustion
                 # also arrives as 429; the caller decides whether to stop.
                 if not (exc.code == 429 or exc.code >= 500):
