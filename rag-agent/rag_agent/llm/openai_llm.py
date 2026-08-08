@@ -34,6 +34,8 @@ _DEFAULT_BASE = "https://api.openai.com/v1"
 # Providers that speak the OpenAI chat-completions contract, so the same client
 # reaches all of them by changing only the base URL and the key. Set
 # OPENAI_COMPAT_BASE_URL (+ the matching key) to use one.
+#   Anthropic      https://api.anthropic.com/v1     (its OpenAI-compat layer;
+#                  the native endpoint is /v1/messages and is NOT this contract)
 #   Google Gemini  https://generativelanguage.googleapis.com/v1beta/openai
 #   DeepSeek       https://api.deepseek.com/v1
 #   Together       https://api.together.xyz/v1
