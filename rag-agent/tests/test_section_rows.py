@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Section-row promotion on the row axis (rag_agent/reconstruct/header_grid.py)."""
-from rag_agent.reconstruct import reconstruct_row_paths
+from rag_agent.reconstruct import guess_n_header_rows, reconstruct_row_paths
 
 
 def test_section_row_becomes_the_parent_level():
@@ -31,6 +31,28 @@ def test_section_label_need_not_sit_in_the_stub():
     ]
     paths = reconstruct_row_paths(grid, n_header_rows=1, n_header_cols=1)
     assert paths[1] == ["percent", "utilities"]
+
+
+def test_a_leading_title_row_is_not_a_boundary():
+    # Spreadsheet exports (RealHiTBench is PhpSpreadsheet HTML) open with a
+    # one-cell title, which is a section row by shape. Treating it as the end
+    # of the header block returned nhr=0 and wiped the header off 43 of 92
+    # tables. HiTab grids have no title row, so no HiTab split catches this.
+    grid = [
+        ["Inland fisheries", "", "", ""],
+        ["area", "2010", "2011", "2012"],
+        ["Australia", "1376", "1084", "1074"],
+    ]
+    assert guess_n_header_rows(grid, n_header_cols=1) == 2
+
+
+def test_a_section_row_under_a_real_header_still_ends_it():
+    grid = [
+        ["region", "2023", "2024"],
+        ["north", "", ""],
+        ["seoul", "1", "2"],
+    ]
+    assert guess_n_header_rows(grid, n_header_cols=1) == 1
 
 
 def test_no_section_rows_is_unchanged():

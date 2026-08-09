@@ -38,7 +38,7 @@ import numpy as np
 from rag_agent.bench.hitab import load_queries
 from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.generate.answerer import _DIRECT_SYS
-from rag_agent.llm.groq_llm import GroqLLM
+from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
 from point3_reconstruction_cost import build_table_paths, cell_text
 
@@ -95,7 +95,9 @@ def main() -> int:
     print(f"[pop] {len(pop)} lookup queries | model={args.model} | top-{args.topk}", flush=True)
 
     enc = default_encoder(model_name="BAAI/bge-small-en-v1.5")
-    llm = GroqLLM(model_name=args.model)
+    # A bare model name stays Groq so existing --resume records keep their
+    # solver; "openai:claude-sonnet-5" reaches any OpenAI-compatible provider.
+    llm = build_llm(args.model if ":" in args.model else f"groq:{args.model}")
 
     def topk_sentences(tid, qv, scheme, k):
         pt, bt = paths[tid], tables[tid]
@@ -143,7 +145,7 @@ def main() -> int:
     complete = [q.query_id for q in pop
                 if (q.query_id, "flat") in done and (q.query_id, "S2") in done]
     out = {
-        "dataset": "hitab_lookup_llm_reader", "model": args.model, "topk": args.topk,
+        "dataset": "hitab_lookup_llm_reader", "model": llm.name, "topk": args.topk,
         "table": "oracle (gate-1 solved: HiTab table recall@20=1.0)",
         "scorer": "hitab_exact_match",
         "n_complete_both_arms": len(complete),

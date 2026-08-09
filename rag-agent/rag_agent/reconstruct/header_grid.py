@@ -457,9 +457,20 @@ def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int
         # No row label ever appears (e.g. the table has no real row headers):
         # the corner signal is void — fall through to the numeric scan.
 
+    # A section row can only END a header block, never BE one: on a spreadsheet
+    # export the first row is a one-cell TITLE, which is a section row by shape
+    # and made this loop return a header block of zero on 43 of 92 RealHiTBench
+    # tables. HiTab grids carry no title row, so no HiTab split could show it.
+    # So the rule waits until a row that actually looks like a header (two or
+    # more filled cells) has been seen.
+    seen_header_row = False
     for r in range(limit):
-        if _section_boundary(grid, r) or _numeric_data_row(grid, r, n_header_cols):
+        if seen_header_row and _section_boundary(grid, r):
             return r
+        if _numeric_data_row(grid, r, n_header_cols):
+            return r
+        seen_header_row = seen_header_row or sum(
+            1 for x in grid[r] if str(x).strip()) >= 2
 
     # Neither signal fired: a text-valued table (Wikipedia discographies, cast
     # lists) where no numeric rule can ever find the first data row. Returning

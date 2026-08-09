@@ -44,7 +44,7 @@ from rag_agent.data.loader import load_table
 from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate.answerer import answer, evaluate_answer
-from rag_agent.llm.groq_llm import GroqLLM
+from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
 from rag_agent.retrieve.operand_retrieval import OperandTargetedRetriever
 from rag_agent.stores.original_store import build_original_table
@@ -135,7 +135,10 @@ def main() -> int:
                 done[r["qid"]] = r
         print(f"[resume] {len(done)} qids skipped", flush=True)
 
-    llm = GroqLLM(model_name=args.solver_model, retry_on_429=8)
+    # A bare model name stays Groq so existing --resume records keep their
+    # solver; "openai:claude-sonnet-5" reaches any OpenAI-compatible provider.
+    llm = build_llm(args.solver_model if ":" in args.solver_model
+                    else f"groq:{args.solver_model}", retry_on_429=8)
     Path(args.records).parent.mkdir(parents=True, exist_ok=True)
     rec_fh = open(args.records, "a" if args.resume else "w")
     t0, cutoff = time.time(), None
@@ -155,6 +158,9 @@ def main() -> int:
             break
         rec = {
             "qid": q.query_id, "table_id": q.gold_table_id,
+            # raw prediction + gold, so a scorer change can be re-applied
+            # offline instead of paying for the answers again
+            "pred_lex": ab.answer, "pred_emb": at.answer, "gold": q.answer,
             "osc_lex": p["ob"], "osc_emb": p["ot"],
             "em_lex": int(hitab_exact_match(ab.answer, q.answer)),
             "em_emb": int(hitab_exact_match(at.answer, q.answer)),
@@ -175,7 +181,7 @@ def main() -> int:
         "leg": "embedding header-path resolver -> answer accuracy",
         "population": {"name": f"hitab_arith_m_ge_{args.min_operands}",
                        "split": args.split, "n": n, "n_planned": len(prep)},
-        "config": {"k": args.k, "solver": args.solver_model, "mode": args.mode,
+        "config": {"k": args.k, "solver": llm.name, "mode": args.mode,
                    "index_unit": "S3/long/cell", "flips_first": args.flips_first},
         "cutoff": cutoff,
         "n_truncated": {"lex": sum(r["trunc_lex"] for r in rs),
