@@ -7,25 +7,17 @@
   },
   "embed_model": "BAAI/bge-small-en-v1.5",
   "scheme": "S3 (natural-language caption) + 1-table-1-chunk retrieval, 2-stage: table chunk -> cell-sentence within retrieved table",
+  "hierarchy_source": "HiTab gold tree (given, not reconstructed)",
   "by_length": {
-    "short": {
-      "avg_table_chunk_chars": 10256.4,
-      "avg_words_per_cell_sentence": 11.77,
-      "table_recall@1": 0.88,
-      "answer_exact_match": 0.3133,
-      "answer_exact_match_given_correct_table": 0.3561
-    },
-    "medium": {
-      "avg_table_chunk_chars": 11279.9,
-      "avg_words_per_cell_sentence": 13.77,
-      "table_recall@1": 0.8667,
-      "answer_exact_match": 0.32,
-      "answer_exact_match_given_correct_table": 0.3692
-    },
-    "long": {
+    "structural": {
       "avg_table_chunk_chars": 13473.0,
       "avg_words_per_cell_sentence": 16.77,
+      "rerank_k": 1,
       "table_recall@1": 0.84,
+      "table_recall@5": 0.98,
+      "table_recall@10": 0.9867,
+      "table_mrr": 0.9061,
+      "table_ndcg@10": 0.926,
       "answer_exact_match": 0.26,
       "answer_exact_match_given_correct_table": 0.3095
     }
