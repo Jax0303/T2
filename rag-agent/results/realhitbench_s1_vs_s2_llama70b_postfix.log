@@ -1,0 +1,19 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pop] RealHiTBench agg (Calculation+Multi-hop NR): 97 (stratified sample of 334, seed=0)  k=10 solver=llama-3.3-70b-versatile  arms: base=S1(flat) vs treat=S2(mine)
+[device] embedder on cuda
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 85/199 [00:00<00:00, 783.56it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1080.24it/s]
+[solver] groq:llama-3.3-70b-versatile
+[prep] 94 queries prepared (3 skipped: table unusable)
+Groq rate-limited, retrying in 1s (attempt 1)
+  4/94  acc_S1=0.250 acc_S2=0.250 (63s)
+  8/94  acc_S1=0.250 acc_S2=0.250 (126s)
+  12/94  acc_S1=0.500 acc_S2=0.417 (216s)
+  16/94  acc_S1=0.562 acc_S2=0.500 (311s)
+  20/94  acc_S1=0.550 acc_S2=0.500 (379s)
+  24/94  acc_S1=0.458 acc_S2=0.417 (422s)
+Groq rate-limited, retrying in 1s (attempt 1)
+Groq rate-limited, retrying in 2s (attempt 2)
+Groq rate-limited, retrying in 4s (attempt 3)
+Groq rate-limited, retrying in 8s (attempt 4)
+Groq rate-limited, retrying in 16s (attempt 5)
+Groq rate-limited, retrying in 32s (attempt 6)

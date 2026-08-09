@@ -13,18 +13,18 @@
     "n_treat_context_truncated": 2
   },
   "arms": {
-    "base": "S1 (s1_flat) \u2014 baseline serialization, leaf headers only",
-    "treat": "S2 (s2_headerpath) \u2014 mine, full row/col header path per cell"
+    "base": "S1 (s1_flat) — baseline serialization, leaf headers only",
+    "treat": "S2 (s2_headerpath) — mine, full row/col header path per cell"
   },
   "pipeline": {
-    "trees": "RECONSTRUCTED from raw HTML (markup front-end, guessed header boundaries) \u2014 no gold structure",
+    "trees": "RECONSTRUCTED from raw HTML (markup front-end, guessed header boundaries) — no gold structure",
     "retriever": "dense",
     "k": 10,
     "solver": "openai:gpt-5.1",
     "mode": "codegen",
     "controls": "same retriever/solver/k for both arms; only the serialization differs (isolates preprocessing)"
   },
-  "note": "no OSC / no retrieval-accuracy \u2014 RealHiTBench has no operand-cell annotations (answer accuracy only). strict = em_norm on ProcessedAnswer (%/comma-normalised numeric equality, rounded to the gold's own decimal places, no scale/sign leniency; solver prompt asks percent-scale to match the gold convention). Deterministic and symmetric, NOT the paper's LLM-judge protocol \u2014 do not compare to the RealHiTBench leaderboard. lenient = numeric_match (diagnostic).",
+  "note": "no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell annotations (answer accuracy only). strict = em_norm on ProcessedAnswer (%/comma-normalised numeric equality, rounded to the gold's own decimal places, no scale/sign leniency; solver prompt asks percent-scale to match the gold convention). Deterministic and symmetric, NOT the paper's LLM-judge protocol — do not compare to the RealHiTBench leaderboard. lenient = numeric_match (diagnostic).",
   "answer_accuracy_strict": {
     "n": 94,
     "base": 0.1809,
@@ -108,5 +108,6 @@
       "mcnemar_p": 1.0
     }
   },
-  "scorer_note": "strict blocks re-scored offline from stored pred/gold by scripts/rescore_realhitbench.py; em_norm now compares at the gold's own decimal places instead of a 1e-5 relative tolerance"
+  "scorer_note": "strict blocks re-scored offline from stored pred/gold by scripts/rescore_realhitbench.py; em_norm now compares at the gold's own decimal places instead of a 1e-5 relative tolerance",
+  "pipeline_stale": "PRE-FIX PIPELINE — DO NOT CITE. Produced before commits a88a827/7ee9dc7 changed header-boundary estimation; 25 of the 92 tables this leg runs on reconstruct differently now, so these contexts are not the ones the current code builds. The records cannot be resumed onto the new pipeline either (mixed contexts). Superseded by the *_postfix run."
 }
