@@ -1,0 +1,71 @@
+{
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-09T12:22:28+00:00"
+  },
+  "leg": "decomposer capability: can the decomposed header paths address the gold operand set at all, before any retrieval happens?",
+  "population": {
+    "name": "hitab_arith_with_operands",
+    "split": "dev",
+    "n": 214,
+    "n_m_ge_2": 161
+  },
+  "operand_cap": 4,
+  "all": {
+    "n": 214,
+    "ceiling_rate": 0.3645,
+    "gold_cell_coverage": 0.4173,
+    "mean_cells_named": 8.16,
+    "mean_gold_m": 2.54,
+    "mean_operands_found": 3.97,
+    "share_gold_larger_than_operand_cap": 0.1028,
+    "gold_m_histogram": {
+      "1": 53,
+      "2": 113,
+      "3": 20,
+      "4": 6,
+      "5": 2,
+      "6": 7,
+      "7": 3,
+      "8": 1,
+      "9": 1,
+      "10": 2,
+      "11": 1,
+      "12": 5
+    },
+    "ceiling_by_over_cap": {
+      "within_cap": 0.3958,
+      "over_cap": 0.0909
+    }
+  },
+  "m_ge_2": {
+    "n": 161,
+    "ceiling_rate": 0.2112,
+    "gold_cell_coverage": 0.3727,
+    "mean_cells_named": 8.77,
+    "mean_gold_m": 3.05,
+    "mean_operands_found": 3.96,
+    "share_gold_larger_than_operand_cap": 0.1366,
+    "gold_m_histogram": {
+      "2": 113,
+      "3": 20,
+      "4": 6,
+      "5": 2,
+      "6": 7,
+      "7": 3,
+      "8": 1,
+      "9": 1,
+      "10": 2,
+      "11": 1,
+      "12": 5
+    },
+    "ceiling_by_over_cap": {
+      "within_cap": 0.2302,
+      "over_cap": 0.0909
+    }
+  }
+}

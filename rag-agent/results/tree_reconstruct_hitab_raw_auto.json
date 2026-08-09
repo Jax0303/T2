@@ -12,69 +12,69 @@
   "gold": "hmt parse (data/tables/hmt) \u2014 same ground truth as the rest of the pipeline",
   "input": "real source grid (data/tables/raw -> texts)",
   "boundary_mode": "guessed",
-  "col_path_exact_match": 0.8556,
-  "row_path_exact_match": 0.5321,
+  "col_path_exact_match": 0.9174,
+  "row_path_exact_match": 0.6829,
   "col_paths_scored": 17408,
   "row_paths_scored": 35063,
-  "boundary_guess_accuracy": 0.6916,
-  "n_header_cols_guess_accuracy": 0.9085,
+  "boundary_guess_accuracy": 0.9334,
+  "n_header_cols_guess_accuracy": 0.9246,
   "by_size_bucket": {
     "10-20": {
       "n_tables": 936,
-      "col_path_exact_match": 0.88,
-      "row_path_exact_match": 0.6392
+      "col_path_exact_match": 0.9168,
+      "row_path_exact_match": 0.7632
     },
     "<=10x10": {
       "n_tables": 479,
-      "col_path_exact_match": 0.8135,
-      "row_path_exact_match": 0.4405
+      "col_path_exact_match": 0.9134,
+      "row_path_exact_match": 0.7495
     },
     ">20": {
       "n_tables": 628,
-      "col_path_exact_match": 0.8364,
-      "row_path_exact_match": 0.4812
+      "col_path_exact_match": 0.9207,
+      "row_path_exact_match": 0.624
     }
   },
   "by_max_depth": {
     "col_depth1": {
       "n": 1323,
-      "exact_match": 0.876
+      "exact_match": 0.9932
     },
     "col_depth2": {
       "n": 14132,
-      "exact_match": 0.8665
+      "exact_match": 0.9166
     },
     "col_depth3": {
       "n": 1953,
-      "exact_match": 0.7629
+      "exact_match": 0.8715
     },
     "row_depth1": {
       "n": 4031,
-      "exact_match": 0.8871
+      "exact_match": 0.9127
     },
     "row_depth2": {
       "n": 17575,
-      "exact_match": 0.5747
+      "exact_match": 0.8378
     },
     "row_depth3": {
       "n": 10685,
-      "exact_match": 0.3394
+      "exact_match": 0.4727
     },
     "row_depth4": {
       "n": 2772,
-      "exact_match": 0.4892
+      "exact_match": 0.1764
     }
   },
   "row_axis_by_depth_expressible": {
     "no": {
       "n_tables": 827,
       "n_paths": 16130,
-      "row_path_exact_match": 0.0859
+      "row_path_exact_match": 0.4774
     },
     "yes": {
       "n_tables": 1216,
       "n_paths": 18933,
-      "row_path_exact_match": 0.9123
+      "row_path_exact_match": 0.8579
     }
   },
   "error_examples": [
@@ -118,36 +118,39 @@
       "table_id": "1000",
       "errors": [
         {
-          "axis": "col",
-          "grid_line": 1,
+          "axis": "row",
+          "grid_line": 13,
           "gold": [
-            "economic immigrants",
-            "principal applicants"
+            "percent",
+            "total"
           ],
           "rec": [
-            "economic immigrants",
-            "principal applicants",
-            "percent"
+            "percent",
+            "women",
+            "total"
           ]
         },
         {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 14,
           "gold": [
             "percent",
-            "women"
+            "men"
           ],
-          "rec": []
+          "rec": [
+            "men"
+          ]
         },
         {
           "axis": "row",
-          "grid_line": 4,
+          "grid_line": 15,
           "gold": [
             "percent",
-            "women",
+            "men",
             "jamaica"
           ],
           "rec": [
+            "men",
             "jamaica"
           ]
         }
@@ -157,36 +160,39 @@
       "table_id": "1001",
       "errors": [
         {
-          "axis": "col",
-          "grid_line": 1,
+          "axis": "row",
+          "grid_line": 21,
           "gold": [
-            "economic immigrants",
-            "principal applicants"
+            "percent",
+            "total"
           ],
           "rec": [
-            "economic immigrants",
-            "principal applicants",
-            "percent"
+            "percent",
+            "women",
+            "total"
           ]
         },
         {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 22,
           "gold": [
             "percent",
-            "women"
+            "men"
           ],
-          "rec": []
+          "rec": [
+            "men"
+          ]
         },
         {
           "axis": "row",
-          "grid_line": 4,
+          "grid_line": 23,
           "gold": [
             "percent",
-            "women",
+            "men",
             "ethiopia"
           ],
           "rec": [
+            "men",
             "ethiopia"
           ]
         }
@@ -197,12 +203,25 @@
       "errors": [
         {
           "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "black population"
+          ],
+          "rec": [
+            "immigrant women",
+            "black population"
+          ]
+        },
+        {
+          "axis": "row",
           "grid_line": 6,
           "gold": [
             "black population",
             "total"
           ],
           "rec": [
+            "immigrant women",
+            "black population",
             "total"
           ]
         },
@@ -215,19 +234,9 @@
             "caribbean and latin america"
           ],
           "rec": [
-            "caribbean and latin america"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 8,
-          "gold": [
+            "immigrant women",
             "black population",
-            "total",
-            "africa"
-          ],
-          "rec": [
-            "africa"
+            "caribbean and latin america"
           ]
         }
       ]
@@ -310,113 +319,40 @@
       "table_id": "1006",
       "errors": [
         {
-          "axis": "col",
-          "grid_line": 1,
+          "axis": "row",
+          "grid_line": 7,
           "gold": [
-            "women",
-            "employment rate"
+            "percent",
+            "country of ancestry"
           ],
           "rec": [
-            "women",
-            "employment rate",
-            "percent"
+            "country of ancestry"
           ]
         },
         {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 8,
           "gold": [
             "percent",
-            "region of ancestry"
-          ],
-          "rec": []
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
-            "percent",
-            "region of ancestry",
-            "caribbean and latin america"
+            "country of ancestry",
+            "jamaica"
           ],
           "rec": [
-            "caribbean and latin america"
-          ]
-        }
-      ]
-    },
-    {
-      "table_id": "1007",
-      "errors": [
-        {
-          "axis": "col",
-          "grid_line": 1,
-          "gold": [
-            "black female workers",
-            "immigrant"
-          ],
-          "rec": [
-            "black female workers",
-            "immigrant",
-            "percent"
+            "country of ancestry",
+            "jamaica"
           ]
         },
         {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 9,
           "gold": [
             "percent",
-            "agriculture, forestry, fishing and hunting"
+            "country of ancestry",
+            "haiti"
           ],
           "rec": [
-            "agriculture, forestry, fishing and hunting"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
-            "percent",
-            "mining, quarrying, and oil and gas extraction"
-          ],
-          "rec": [
-            "mining, quarrying, and oil and gas extraction"
-          ]
-        }
-      ]
-    },
-    {
-      "table_id": "100_totto11752-0",
-      "errors": [
-        {
-          "axis": "col",
-          "grid_line": 2,
-          "gold": [
-            "fastest lap",
-            "no"
-          ],
-          "rec": []
-        },
-        {
-          "axis": "col",
-          "grid_line": 3,
-          "gold": [
-            "fastest lap",
-            "driver"
-          ],
-          "rec": []
-        },
-        {
-          "axis": "col",
-          "grid_line": 4,
-          "gold": [
-            "fastest lap",
-            "team"
-          ],
-          "rec": [
-            "team",
-            "erebus motorsport",
-            "triple eight race engineering"
+            "country of ancestry",
+            "haiti"
           ]
         }
       ]
@@ -458,6 +394,70 @@
           "rec": [
             "fa cup",
             "apps"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1010",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "percent",
+            "low income before taxes"
+          ],
+          "rec": [
+            "percent",
+            "black children",
+            "low income before taxes"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent",
+            "low income before taxes",
+            "2000"
+          ],
+          "rec": [
+            "percent",
+            "black children",
+            "low income before taxes",
+            "2000"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "percent",
+            "low income before taxes",
+            "2005"
+          ],
+          "rec": [
+            "percent",
+            "black children",
+            "low income before taxes",
+            "2005"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1014",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 9,
+          "gold": [
+            "civilian personnel as a proportion of total personnel",
+            "percent"
+          ],
+          "rec": [
+            "civilian personnel as a proportion of total personnel"
           ]
         }
       ]

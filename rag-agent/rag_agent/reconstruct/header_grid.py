@@ -165,14 +165,66 @@ def reconstruct_col_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1
     return _hierarchical_carry(levels)
 
 
-def reconstruct_row_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1) -> List[List[str]]:
+def section_label(row: List[str]) -> str:
+    """The label of a SECTION row, or "" if this is not one.
+
+    A section row carries exactly one text and no data — a group heading whose
+    scope is every row beneath it until the next one. It is the row axis's only
+    way to express a level the stub block has no column for, and unlike the
+    column axis it leaves no merged span behind: the source marked it by
+    indentation, which the published grid has already stripped.
+
+    The label is not always in the stub. HiTab writes these as ``('', 'percent',
+    '', '')`` as often as ``('other', '', '', '')``, so keying on the stub
+    column alone finds well under half of them.
+    """
+    filled = [str(x).strip() for x in row if str(x).strip()]
+    return filled[0] if len(filled) == 1 else ""
+
+
+def reconstruct_row_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1,
+                          use_section_rows: bool = True) -> List[List[str]]:
     """One header path per DATA row (rows >= ``n_header_rows``), mirroring
-    :func:`reconstruct_col_paths`."""
+    :func:`reconstruct_col_paths`.
+
+    ``use_section_rows`` prepends the section-row level above the stub columns,
+    so a hierarchy deeper than the stub block still has somewhere to live.
+    Pass False for the stub-only reconstruction this replaced.
+    """
     n_rows = len(grid)
     if n_header_cols <= 0:
         return [[] for _ in range(max(n_rows - n_header_rows, 0))]
-    levels = [[grid[r][c] for r in range(n_header_rows, n_rows)]
-              for c in range(n_header_cols)]
+    body = range(n_header_rows, n_rows)
+    levels = [[grid[r][c] for r in body] for c in range(n_header_cols)]
+
+    # Only when the stub is a single column. With two or more the hierarchy
+    # already has columns to live in, and a lone filled row is far more often a
+    # spacer or unit annotation than a level -- promoting it there costs more
+    # than it recovers (HiTab dev expressible bucket .9971 -> .9881).
+    if use_section_rows and n_header_cols == 1:
+        # Consecutive section rows declare NESTED levels: nothing separates a
+        # heading from its sub-heading but adjacency, so a run of length L is a
+        # stack L deep. A section row that follows data opens a fresh stack --
+        # whether it is a sibling of the last heading or its child is not
+        # recoverable from a grid that dropped the indentation.
+        stacks, stack, run = [], [], 0
+        for i, r in enumerate(body):
+            lab = section_label(grid[r])
+            if lab:
+                stack = (stack if run else [])[:] + [lab]
+                run += 1
+                # the heading is not also its own child: blank its stub so the
+                # label cannot appear twice in the same path
+                for d in range(n_header_cols):
+                    levels[d][i] = ""
+            else:
+                run = 0
+            stacks.append(stack)
+        depth = max((len(s) for s in stacks), default=0)
+        if depth:
+            levels = [[s[d] if d < len(s) else "" for s in stacks]
+                      for d in range(depth)] + levels
+
     return _hierarchical_carry(levels)
 
 
@@ -356,6 +408,22 @@ def _numeric_data_row(grid: Grid, r: int, n_header_cols: int) -> bool:
     return bool(n_nonblank) and n_num / n_nonblank >= 0.5
 
 
+def _section_boundary(grid: Grid, r: int) -> bool:
+    """A section row ends the header block.
+
+    Both signals below walk straight past one: its stub is blank, so the corner
+    scan sees no row label, and it holds no numbers, so the numeric scan sees no
+    data. That is the dominant boundary error -- 93 of 121 dev misses overshoot
+    by exactly one, and five of the first six examples are a section row sitting
+    immediately under the header. It belongs to the row-header structure of the
+    DATA region (gold puts the boundary above it), so stopping here is the same
+    fact `section_label` already encodes, not a patch. A parenthesised units
+    note is excluded: those really do live inside the header block.
+    """
+    lab = section_label(grid[r])
+    return bool(lab) and not _PAREN_NOTE_RE.match(lab.strip())
+
+
 def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int = 8) -> int:
     """Guess how many top rows are column headers, two signals in priority order.
 
@@ -381,6 +449,8 @@ def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int
         for r in range(1, limit + 1):
             if r >= len(grid):
                 break
+            if _section_boundary(grid, r):
+                return r
             if not _left_region_blank(grid, r, n_header_cols) and \
                     not _left_region_units_note(grid, r, n_header_cols):
                 return r
@@ -388,9 +458,19 @@ def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int
         # the corner signal is void — fall through to the numeric scan.
 
     for r in range(limit):
-        if _numeric_data_row(grid, r, n_header_cols):
+        if _section_boundary(grid, r) or _numeric_data_row(grid, r, n_header_cols):
             return r
-    return limit
+
+    # Neither signal fired: a text-valued table (Wikipedia discographies, cast
+    # lists) where no numeric rule can ever find the first data row. Returning
+    # `limit` here declared the top EIGHT rows header on 9 dev tables whose real
+    # answer was 2 -- the worst available guess. Header rows carry the blanks
+    # their merges leave behind, so the first row with no blank at all is the
+    # first data row.
+    for r in range(1, limit):
+        if all(str(x).strip() for x in grid[r]):
+            return r
+    return 1
 
 
 # Statistical agencies write "no data" as a marker, not a blank. A data column
@@ -444,17 +524,28 @@ def guess_n_header_cols(grid: Grid, n_header_rows: int = 1,
         return 1
     limit = min(len(grid[0]), max_header_cols)
 
+    tail = 0
     if n_header_rows >= 2 and n_header_rows - 1 < len(grid):
         last = grid[n_header_rows - 1]
-        n = 0
         for c in range(min(len(last), limit)):
             if last[c].strip():
                 break
-            n += 1
-        if n >= 1:
-            return n
+            tail += 1
 
+    scan = None
     for c in range(limit):
         if _numeric_data_col(grid, c, n_header_rows):
-            return max(c, 1)
+            scan = max(c, 1)
+            break
+
+    # The blank tail overcounts a data column whose label is merged DOWNWARD:
+    # "mean" sits at header row 1 and the last header row is blank under it, so
+    # the tail reads it as a second stub. The content scan sees straight through
+    # that -- its cells are numbers. So where the scan actually found a data
+    # column, it caps the tail; where it found none (the text-valued sports and
+    # election tables the tail exists for) the tail stands alone.
+    if tail >= 1:
+        return min(tail, scan) if scan is not None else tail
+    if scan is not None:
+        return scan
     return max(limit, 1)

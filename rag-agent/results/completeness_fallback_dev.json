@@ -1,0 +1,464 @@
+{
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-09T12:18:50+00:00"
+  },
+  "leg": "gold-free completeness verdict driving budget escalation, against a fixed budget matched on mean cells spent",
+  "population": {
+    "name": "hitab_arith_with_operands",
+    "split": "dev",
+    "n": 214,
+    "n_m_ge_2": 161
+  },
+  "rungs": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64
+  ],
+  "verdict": "every decomposed operand has a retrieved cell whose header path carries all of its segments (no gold)",
+  "all": {
+    "n": 214,
+    "fixed_curve": [
+      {
+        "rung": 4,
+        "cells": 4,
+        "osc": 0.3458
+      },
+      {
+        "rung": 8,
+        "cells": 7.96,
+        "osc": 0.5514
+      },
+      {
+        "rung": 12,
+        "cells": 11.83,
+        "osc": 0.6402
+      },
+      {
+        "rung": 16,
+        "cells": 15.67,
+        "osc": 0.715
+      },
+      {
+        "rung": 24,
+        "cells": 23.1,
+        "osc": 0.7757
+      },
+      {
+        "rung": 32,
+        "cells": 30.33,
+        "osc": 0.8224
+      },
+      {
+        "rung": 48,
+        "cells": 43.53,
+        "osc": 0.8832
+      },
+      {
+        "rung": 64,
+        "cells": 55.03,
+        "osc": 0.9159
+      }
+    ],
+    "loop_curve": [
+      {
+        "margin": 0,
+        "osc": 0.6729,
+        "cells": 22.68,
+        "fixed_curve_osc_at_same_spend": 0.7723,
+        "delta_vs_curve": -0.0994,
+        "nearest_fixed_rung": 24,
+        "loop_only": 10,
+        "fixed_only": 32,
+        "p_mcnemar_vs_nearest_rung": 0.000941,
+        "rung_hist": {
+          "4": 35,
+          "8": 42,
+          "12": 32,
+          "16": 27,
+          "24": 17,
+          "32": 16,
+          "48": 14,
+          "64": 31
+        }
+      },
+      {
+        "margin": 1,
+        "osc": 0.7664,
+        "cells": 28.21,
+        "fixed_curve_osc_at_same_spend": 0.8087,
+        "delta_vs_curve": -0.0424,
+        "nearest_fixed_rung": 32,
+        "loop_only": 8,
+        "fixed_only": 20,
+        "p_mcnemar_vs_nearest_rung": 0.035698,
+        "rung_hist": {
+          "4": 0,
+          "8": 35,
+          "12": 42,
+          "16": 32,
+          "24": 27,
+          "32": 17,
+          "48": 16,
+          "64": 45
+        }
+      },
+      {
+        "margin": 2,
+        "osc": 0.8271,
+        "cells": 33.69,
+        "fixed_curve_osc_at_same_spend": 0.8379,
+        "delta_vs_curve": -0.0108,
+        "nearest_fixed_rung": 32,
+        "loop_only": 8,
+        "fixed_only": 7,
+        "p_mcnemar_vs_nearest_rung": 1.0,
+        "rung_hist": {
+          "4": 0,
+          "8": 0,
+          "12": 35,
+          "16": 42,
+          "24": 32,
+          "32": 27,
+          "48": 17,
+          "64": 61
+        }
+      },
+      {
+        "margin": 3,
+        "osc": 0.8645,
+        "cells": 39.56,
+        "fixed_curve_osc_at_same_spend": 0.8649,
+        "delta_vs_curve": -0.0004,
+        "nearest_fixed_rung": 48,
+        "loop_only": 4,
+        "fixed_only": 8,
+        "p_mcnemar_vs_nearest_rung": 0.387695,
+        "rung_hist": {
+          "4": 0,
+          "8": 0,
+          "12": 0,
+          "16": 35,
+          "24": 42,
+          "32": 32,
+          "48": 27,
+          "64": 78
+        }
+      },
+      {
+        "margin": 4,
+        "osc": 0.8832,
+        "cells": 45.12,
+        "fixed_curve_osc_at_same_spend": 0.8877,
+        "delta_vs_curve": -0.0045,
+        "nearest_fixed_rung": 48,
+        "loop_only": 4,
+        "fixed_only": 4,
+        "p_mcnemar_vs_nearest_rung": 1.0,
+        "rung_hist": {
+          "4": 0,
+          "8": 0,
+          "12": 0,
+          "16": 0,
+          "24": 35,
+          "32": 42,
+          "48": 32,
+          "64": 105
+        }
+      }
+    ],
+    "verdict_quality_by_rung": {
+      "4": {
+        "fired": 179,
+        "tp": 117,
+        "fp": 62,
+        "fn": 23,
+        "precision": 0.6536,
+        "recall": 0.8357
+      },
+      "8": {
+        "fired": 137,
+        "tp": 69,
+        "fp": 68,
+        "fn": 27,
+        "precision": 0.5036,
+        "recall": 0.7188
+      },
+      "12": {
+        "fired": 105,
+        "tp": 44,
+        "fp": 61,
+        "fn": 33,
+        "precision": 0.419,
+        "recall": 0.5714
+      },
+      "16": {
+        "fired": 78,
+        "tp": 28,
+        "fp": 50,
+        "fn": 33,
+        "precision": 0.359,
+        "recall": 0.459
+      },
+      "24": {
+        "fired": 61,
+        "tp": 18,
+        "fp": 43,
+        "fn": 30,
+        "precision": 0.2951,
+        "recall": 0.375
+      },
+      "32": {
+        "fired": 45,
+        "tp": 12,
+        "fp": 33,
+        "fn": 26,
+        "precision": 0.2667,
+        "recall": 0.3158
+      },
+      "48": {
+        "fired": 31,
+        "tp": 7,
+        "fp": 24,
+        "fn": 18,
+        "precision": 0.2258,
+        "recall": 0.28
+      },
+      "64": {
+        "fired": 20,
+        "tp": 2,
+        "fp": 18,
+        "fn": 16,
+        "precision": 0.1,
+        "recall": 0.1111
+      }
+    }
+  },
+  "m_ge_2": {
+    "n": 161,
+    "fixed_curve": [
+      {
+        "rung": 4,
+        "cells": 4,
+        "osc": 0.1988
+      },
+      {
+        "rung": 8,
+        "cells": 7.97,
+        "osc": 0.4286
+      },
+      {
+        "rung": 12,
+        "cells": 11.84,
+        "osc": 0.5342
+      },
+      {
+        "rung": 16,
+        "cells": 15.69,
+        "osc": 0.6273
+      },
+      {
+        "rung": 24,
+        "cells": 23.3,
+        "osc": 0.7081
+      },
+      {
+        "rung": 32,
+        "cells": 30.72,
+        "osc": 0.7702
+      },
+      {
+        "rung": 48,
+        "cells": 43.95,
+        "osc": 0.8447
+      },
+      {
+        "rung": 64,
+        "cells": 55.21,
+        "osc": 0.8882
+      }
+    ],
+    "loop_curve": [
+      {
+        "margin": 0,
+        "osc": 0.5901,
+        "cells": 22.07,
+        "fixed_curve_osc_at_same_spend": 0.695,
+        "delta_vs_curve": -0.105,
+        "nearest_fixed_rung": 24,
+        "loop_only": 10,
+        "fixed_only": 29,
+        "p_mcnemar_vs_nearest_rung": 0.003378,
+        "rung_hist": {
+          "4": 27,
+          "8": 32,
+          "12": 23,
+          "16": 23,
+          "24": 14,
+          "32": 9,
+          "48": 11,
+          "64": 22
+        }
+      },
+      {
+        "margin": 1,
+        "osc": 0.7019,
+        "cells": 27.47,
+        "fixed_curve_osc_at_same_spend": 0.743,
+        "delta_vs_curve": -0.0411,
+        "nearest_fixed_rung": 32,
+        "loop_only": 8,
+        "fixed_only": 19,
+        "p_mcnemar_vs_nearest_rung": 0.052239,
+        "rung_hist": {
+          "4": 0,
+          "8": 27,
+          "12": 32,
+          "16": 23,
+          "24": 23,
+          "32": 14,
+          "48": 9,
+          "64": 33
+        }
+      },
+      {
+        "margin": 2,
+        "osc": 0.7764,
+        "cells": 32.8,
+        "fixed_curve_osc_at_same_spend": 0.7819,
+        "delta_vs_curve": -0.0055,
+        "nearest_fixed_rung": 32,
+        "loop_only": 8,
+        "fixed_only": 7,
+        "p_mcnemar_vs_nearest_rung": 1.0,
+        "rung_hist": {
+          "4": 0,
+          "8": 0,
+          "12": 27,
+          "16": 32,
+          "24": 23,
+          "32": 23,
+          "48": 14,
+          "64": 42
+        }
+      },
+      {
+        "margin": 3,
+        "osc": 0.8261,
+        "cells": 39.22,
+        "fixed_curve_osc_at_same_spend": 0.8181,
+        "delta_vs_curve": 0.008,
+        "nearest_fixed_rung": 48,
+        "loop_only": 4,
+        "fixed_only": 7,
+        "p_mcnemar_vs_nearest_rung": 0.548828,
+        "rung_hist": {
+          "4": 0,
+          "8": 0,
+          "12": 0,
+          "16": 27,
+          "24": 32,
+          "32": 23,
+          "48": 23,
+          "64": 56
+        }
+      },
+      {
+        "margin": 4,
+        "osc": 0.8509,
+        "cells": 45.07,
+        "fixed_curve_osc_at_same_spend": 0.849,
+        "delta_vs_curve": 0.0019,
+        "nearest_fixed_rung": 48,
+        "loop_only": 4,
+        "fixed_only": 3,
+        "p_mcnemar_vs_nearest_rung": 1.0,
+        "rung_hist": {
+          "4": 0,
+          "8": 0,
+          "12": 0,
+          "16": 0,
+          "24": 27,
+          "32": 32,
+          "48": 23,
+          "64": 79
+        }
+      }
+    ],
+    "verdict_quality_by_rung": {
+      "4": {
+        "fired": 134,
+        "tp": 108,
+        "fp": 26,
+        "fn": 21,
+        "precision": 0.806,
+        "recall": 0.8372
+      },
+      "8": {
+        "fired": 102,
+        "tp": 67,
+        "fp": 35,
+        "fn": 25,
+        "precision": 0.6569,
+        "recall": 0.7283
+      },
+      "12": {
+        "fired": 79,
+        "tp": 44,
+        "fp": 35,
+        "fn": 31,
+        "precision": 0.557,
+        "recall": 0.5867
+      },
+      "16": {
+        "fired": 56,
+        "tp": 28,
+        "fp": 28,
+        "fn": 32,
+        "precision": 0.5,
+        "recall": 0.4667
+      },
+      "24": {
+        "fired": 42,
+        "tp": 18,
+        "fp": 24,
+        "fn": 29,
+        "precision": 0.4286,
+        "recall": 0.383
+      },
+      "32": {
+        "fired": 33,
+        "tp": 12,
+        "fp": 21,
+        "fn": 25,
+        "precision": 0.3636,
+        "recall": 0.3243
+      },
+      "48": {
+        "fired": 22,
+        "tp": 7,
+        "fp": 15,
+        "fn": 18,
+        "precision": 0.3182,
+        "recall": 0.28
+      },
+      "64": {
+        "fired": 13,
+        "tp": 2,
+        "fp": 11,
+        "fn": 16,
+        "precision": 0.1538,
+        "recall": 0.1111
+      }
+    }
+  }
+}
