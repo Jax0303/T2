@@ -1,0 +1,58 @@
+{
+  "population": {
+    "name": "realhitbench_agg(Calculation+MultihopNR)",
+    "n_full_subset": 334,
+    "n_target": 97,
+    "sample": 97,
+    "seed": 0,
+    "n_prepared": 94,
+    "n_table_skipped": 3,
+    "n_evaluated": 2,
+    "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199420, Requested 5471. Please try again in 35m12.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "n_base_context_truncated": 1,
+    "n_treat_context_truncated": 1
+  },
+  "arms": {
+    "base": "whole reconstructed table as one markdown block, NO retrieval — the literature's input format",
+    "treat": "S2 (s2_headerpath) — mine, full row/col header path per cell"
+  },
+  "pipeline": {
+    "trees": "RECONSTRUCTED from raw HTML (markup front-end, guessed header boundaries) — no gold structure",
+    "retriever": "dense",
+    "k": 10,
+    "solver": "groq:openai/gpt-oss-120b",
+    "mode": "codegen",
+    "controls": "same retriever/solver/k for both arms; only the serialization differs (isolates preprocessing)"
+  },
+  "note": "no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell annotations (answer accuracy only). strict = em_norm on ProcessedAnswer (%/comma-normalised numeric equality, compared at the gold's own decimal places, no scale/sign leniency; solver prompt asks percent-scale to match the gold convention). Deterministic and symmetric, NOT the paper's LLM-judge protocol — do not compare to the RealHiTBench leaderboard. lenient = numeric_match (diagnostic).",
+  "answer_accuracy_strict": {
+    "n": 2,
+    "base": 0.0,
+    "treat": 0.0,
+    "delta": 0.0,
+    "treat_only": 0,
+    "base_only": 0,
+    "mcnemar_p": 1.0
+  },
+  "full_table_arm": null,
+  "answer_accuracy_lenient": {
+    "n": 2,
+    "base": 0.0,
+    "treat": 0.0,
+    "delta": 0.0,
+    "treat_only": 0,
+    "base_only": 0,
+    "mcnemar_p": 1.0
+  },
+  "by_compstruccata_strict": {
+    "ContentCompound": {
+      "n": 2,
+      "base": 0.0,
+      "treat": 0.0,
+      "delta": 0.0,
+      "treat_only": 0,
+      "base_only": 0,
+      "mcnemar_p": 1.0
+    }
+  }
+}

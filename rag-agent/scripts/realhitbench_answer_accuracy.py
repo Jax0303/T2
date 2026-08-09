@@ -73,7 +73,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import numpy as np
 
 import rag_agent.generate.answerer as answerer_mod
-from rag_agent.bench.schema import BenchTable
+from rag_agent.bench.schema import BenchTable, Chunk
 from rag_agent.generate.answerer import answer, evaluate_answer
 from rag_agent.llm.factory import build_llm
 from rag_agent.query.operand_decomposer import Embedder
@@ -165,6 +165,25 @@ def build_table(fname: str, hf_repo: str) -> BenchTable | None:
     )
 
 
+def table_md_chunk(t: BenchTable) -> Chunk:
+    """The WHOLE reconstructed table as one markdown block — the input format
+    the RealHiTBench paper and the table-LLM literature actually feed a model.
+
+    Scored by the same em_norm as the retrieval arms, so this measures what
+    retrieval costs us, holding the scorer fixed. It is still NOT the paper's
+    LLM-judge protocol, so it does not license a leaderboard comparison.
+    """
+    head = [""] + [" > ".join(p) for p in t.top_paths]
+    lines = ["| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
+    for i, row in enumerate(t.data):
+        lab = " > ".join(t.left_paths[i]) if i < len(t.left_paths) else ""
+        lines.append("| " + " | ".join([lab] + [str(x) for x in row]) + " |")
+    return Chunk(table_id=t.table_id, chunk_id=f"{t.table_id}::table_md",
+                 text=f"{t.title}\n" + "\n".join(lines),
+                 rows=list(range(len(t.data))),
+                 cols=list(range(len(t.data[0]) if t.data else 0)))
+
+
 def mcnemar_p(b: int, c: int) -> float:
     from scipy.stats import binomtest
     n = b + c
@@ -199,6 +218,15 @@ def main() -> int:
                          "this size (0 = full aggregation subset)")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--base-arm", default="s1", choices=["s1", "table_md"],
+                    help="what the BASE arm reads: s1 = flat serialization "
+                         "(default), table_md = the whole reconstructed table as "
+                         "markdown, no retrieval — the literature's input format. "
+                         "Reusing the base slot keeps the run at two solver calls "
+                         "per query, which the free Groq daily budget needs.")
+    ap.add_argument("--full-table", action="store_true",
+                    help="add a third arm: the whole reconstructed table as "
+                         "one markdown block, no retrieval")
     ap.add_argument("--out", default="results/realhitbench_s1_vs_s2.json")
     ap.add_argument("--records",
                     default="results/realhitbench_s1_vs_s2_records.jsonl")
@@ -268,8 +296,11 @@ def main() -> int:
             continue
         qv = np.asarray(emb.encode([q["Question"]])[0])
         prep.append({"q": q,
-                     "base_chunks": topk_chunks(retr_s1[q["FileName"]], qv),
-                     "treat_chunks": topk_chunks(retr_s2[q["FileName"]], qv)})
+                     "base_chunks": ([table_md_chunk(t)]
+                                     if args.base_arm == "table_md"
+                                     else topk_chunks(retr_s1[q["FileName"]], qv)),
+                     "treat_chunks": topk_chunks(retr_s2[q["FileName"]], qv),
+                     "md_chunks": [table_md_chunk(t)] if args.full_table else None})
     print(f"[prep] {len(prep)} queries prepared ({n_table_skipped} skipped: table "
           f"unusable)", flush=True)
 
@@ -298,6 +329,10 @@ def main() -> int:
             rt = answer(q["Question"], p["treat_chunks"], llm, mode=args.mode,
                         max_context_tokens=args.max_context_tokens,
                         codegen_max_tokens=args.codegen_max_tokens)
+            rm = (answer(q["Question"], p["md_chunks"], llm, mode=args.mode,
+                         max_context_tokens=args.max_context_tokens,
+                         codegen_max_tokens=args.codegen_max_tokens)
+                  if args.full_table else None)
         except Exception as e:  # daily-quota 429 -> keep what we have
             cutoff = f"{type(e).__name__}: {e}"
             print(f"\n[cutoff] solver failed at {qi+1}/{len(prep)}: {cutoff}",
@@ -311,6 +346,11 @@ def main() -> int:
                "pred_base": rb.answer, "pred_treat": rt.answer, "gold": gold,
                "base_context_truncated": rb.context_truncated,
                "treat_context_truncated": rt.context_truncated}
+        if rm is not None:
+            rec["pred_md"] = rm.answer
+            rec["correct_md"] = evaluate_answer(rm.answer, gold)
+            rec["correct_md_strict"] = em_norm(rm.answer, gold[0])
+            rec["md_context_truncated"] = rm.context_truncated
         done[qid] = rec
         rec_fh.write(json.dumps(rec) + "\n")
         rec_fh.flush()
@@ -330,6 +370,8 @@ def main() -> int:
     for r in recs:
         r["correct_base_strict"] = em_norm(r["pred_base"], r["gold"][0])
         r["correct_treat_strict"] = em_norm(r["pred_treat"], r["gold"][0])
+        if "pred_md" in r:
+            r["correct_md_strict"] = em_norm(r["pred_md"], r["gold"][0])
     ne = len(recs)
     if not ne:
         print("no evaluations recorded (quota exhausted immediately?)")
@@ -362,7 +404,10 @@ def main() -> int:
             "n_base_context_truncated": sum(r["base_context_truncated"] for r in recs),
             "n_treat_context_truncated": sum(r["treat_context_truncated"] for r in recs),
         },
-        "arms": {"base": "S1 (s1_flat) — baseline serialization, leaf headers only",
+        "arms": {"base": ("whole reconstructed table as one markdown block, NO "
+                          "retrieval — the literature's input format"
+                          if args.base_arm == "table_md" else
+                          "S1 (s1_flat) — baseline serialization, leaf headers only"),
                  "treat": "S2 (s2_headerpath) — mine, full row/col header path per cell"},
         "pipeline": {"trees": "RECONSTRUCTED from raw HTML (markup front-end, "
                               "guessed header boundaries) — no gold structure",
@@ -381,6 +426,17 @@ def main() -> int:
                  "LLM-judge protocol — do not compare to the RealHiTBench leaderboard. "
                  "lenient = numeric_match (diagnostic)."),
         "answer_accuracy_strict": block(recs, strict=True),
+        "full_table_arm": ({
+            "n": len(recs),
+            "table_md": round(sum(r["correct_md_strict"] for r in recs) / len(recs), 4),
+            "s2_retrieval": round(sum(r["correct_treat_strict"] for r in recs) / len(recs), 4),
+            "md_only": sum(r["correct_md_strict"] and not r["correct_treat_strict"] for r in recs),
+            "s2_only": sum(r["correct_treat_strict"] and not r["correct_md_strict"] for r in recs),
+            "mcnemar_p": round(float(mcnemar_p(
+                sum(r["correct_treat_strict"] and not r["correct_md_strict"] for r in recs),
+                sum(r["correct_md_strict"] and not r["correct_treat_strict"] for r in recs))), 5),
+            "n_md_truncated": sum(r.get("md_context_truncated", False) for r in recs),
+        } if all("correct_md_strict" in r for r in recs) and recs else None),
         "answer_accuracy_lenient": block(recs, strict=False),
         "by_compstruccata_strict": by_cata,
     }
