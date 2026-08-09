@@ -102,12 +102,21 @@ def _patch_ratio_rule() -> None:
                                                     _RHB_RATIO_RULE))
 
 
-def em_norm(pred, gold_str, rel_tol: float = 1e-5) -> bool:
-    """Deterministic strict scorer for RealHiTBench golds: `%`/comma-normalised
-    numeric equality at ``rel_tol`` (HiTab-grade float tolerance — absorbs FP
-    noise only, e.g. 21091.0 vs "21091.09" passes at 4e-6 but a wrong-cell
-    near-miss like 1119760 vs 1119800 at 3.6e-5 fails). No x100/sign/±2%
-    leniency (see docstring)."""
+def em_norm(pred, gold_str) -> bool:
+    """Deterministic strict scorer for RealHiTBench golds: `%`/comma-normalised,
+    compared at the precision the gold was written at.
+
+    This used to be a RELATIVE tolerance of 1e-5, described as absorbing float
+    noise only. It did not: relative tolerance loosens as the number grows, so
+    `21091.0` against "21091.09" passed at 4.3e-6, and `59969486.0` against
+    "59969486.20" at 3.3e-9. A dropped decimal place is a different number, not
+    noise, and forgiving it inflated the treated arm by two records per solver.
+
+    Rounding both sides to the gold's own decimal places draws the line where
+    the data does: `184.66899999999998` against "184.67" is one float printed
+    two ways and passes, while `21091.0` against "21091.09" fails. Still no
+    x100, sign or +/-2% leniency.
+    """
     g_s = str(gold_str).strip().rstrip("%").replace(",", "")
     try:
         g = float(g_s)
@@ -117,7 +126,8 @@ def em_norm(pred, gold_str, rel_tol: float = 1e-5) -> bool:
         p = float(str(pred).strip().rstrip("%").replace(",", ""))
     except (TypeError, ValueError):
         return False
-    return abs(p - g) <= rel_tol * max(abs(g), 1e-9)
+    dp = len(g_s.split(".")[1]) if "." in g_s else 0
+    return round(p, dp) == round(g, dp)
 
 
 def build_table(fname: str, hf_repo: str) -> BenchTable | None:
