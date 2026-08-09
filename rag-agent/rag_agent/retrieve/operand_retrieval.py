@@ -175,10 +175,11 @@ class OperandTargetedRetriever:
         earlier retrieval measurements were taken under it — results produced
         with one scheme are not comparable to results produced with the other,
         so a run must state which it used.
-    caption_length:
-        Index-unit sentence length when ``scheme="S3"``: ``"short"``,
-        ``"medium"`` or ``"long"``, trading index size against how much header
-        context each sentence spells out. Ignored under S2.
+    caption_template:
+        Which cell sentence renders an index unit when ``scheme="S3"`` — see
+        :mod:`rag_agent.serialization.templates`. ``"structural"`` (default) is
+        this work's unit and is byte-identical to the ``caption_length="long"``
+        this parameter replaced. Ignored under S2.
     fusion, alpha, rrf_k:
         Similarity-search fusion, forwarded to :class:`HybridIndex`.
     """

@@ -94,9 +94,10 @@ def main() -> int:
           f"k={args.k} solver={args.solver_model}", flush=True)
 
     enc = default_encoder(model_name=args.embed_model)
-    base = OperandTargetedRetriever(encoder=enc, scheme="S3", caption_length="long")
-    treat = OperandTargetedRetriever(encoder=enc, scheme="S3", caption_length="long",
-                                     embed_resolver=True)
+    # caption_template="structural" is the default and is byte-identical to the
+    # caption_length="long" this script was written against.
+    base = OperandTargetedRetriever(encoder=enc, scheme="S3")
+    treat = OperandTargetedRetriever(encoder=enc, scheme="S3", embed_resolver=True)
 
     # ---- LLM-free pass: contexts + OSC for every query --------------------
     ots, prep = {}, []
