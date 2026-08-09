@@ -5,3 +5,62 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
 Groq rate-limited, retrying in 1s (attempt 1)
 Groq rate-limited, retrying in 1s (attempt 1)
   10  (291s)
+  20  (510s)
+  30  (787s)
+Groq rate-limited, retrying in 1s (attempt 1)
+  40  (1010s)
+  50  (1233s)
+Groq rate-limited, retrying in 1s (attempt 1)
+Groq rate-limited, retrying in 2s (attempt 2)
+Groq rate-limited, retrying in 4s (attempt 3)
+Groq rate-limited, retrying in 8s (attempt 4)
+Groq rate-limited, retrying in 16s (attempt 5)
+Groq rate-limited, retrying in 32s (attempt 6)
+Groq rate-limited, retrying in 64s (attempt 7)
+Groq rate-limited, retrying in 128s (attempt 8)
+Groq rate-limited, retrying in 256s (attempt 9)
+
+[cutoff] solver failed at 60/161: RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197858, Requested 2610. Please try again in 3m22.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+{
+  "leg": "embedding header-path resolver -> answer accuracy",
+  "population": {
+    "name": "hitab_arith_m_ge_2",
+    "split": "dev",
+    "n": 59,
+    "n_planned": 161
+  },
+  "config": {
+    "k": 10,
+    "solver": "groq:openai/gpt-oss-120b",
+    "mode": "codegen",
+    "index_unit": "S3/long/cell",
+    "flips_first": false
+  },
+  "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197858, Requested 2610. Please try again in 3m22.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+  "n_truncated": {
+    "lex": 0,
+    "emb": 0
+  },
+  "note": "Evidence set is not size-matched (a better resolver searches more distinct header paths); the budget-matched control is in the OSC leg. flips_first biases a PARTIAL run's delta upward \u2014 quote a partial run's delta only with n and n_planned.",
+  "osc": {
+    "lex": 0.5254,
+    "emb": 0.5424,
+    "b_emb_only": 7,
+    "c_lex_only": 6,
+    "p_mcnemar": 1.0
+  },
+  "em": {
+    "lex": 0.339,
+    "emb": 0.3051,
+    "b_emb_only": 4,
+    "c_lex_only": 6,
+    "p_mcnemar": 0.753906
+  },
+  "num": {
+    "lex": 0.4576,
+    "emb": 0.3729,
+    "b_emb_only": 3,
+    "c_lex_only": 8,
+    "p_mcnemar": 0.226562
+  }
+}

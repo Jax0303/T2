@@ -1,0 +1,44 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pop] RealHiTBench agg (Calculation+Multi-hop NR): 97 (stratified sample of 334, seed=0)  k=10 solver=claude-sonnet-5  arms: base=S1(flat) vs treat=S2(mine)
+[device] embedder on cuda
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  46%|████▌     | 91/199 [00:00<00:00, 909.35it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1209.89it/s]
+[solver] api.anthropic.com:claude-sonnet-5
+[prep] 94 queries prepared (3 skipped: table unusable)
+api.anthropic.com:claude-sonnet-5 rejects temperature; retrying without it (sampling is now the provider default, NOT temperature=0.0)
+  4/94  acc_S1=0.250 acc_S2=0.250 (27s)
+  8/94  acc_S1=0.250 acc_S2=0.250 (47s)
+  12/94  acc_S1=0.500 acc_S2=0.417 (71s)
+  16/94  acc_S1=0.500 acc_S2=0.438 (92s)
+  20/94  acc_S1=0.500 acc_S2=0.450 (113s)
+  24/94  acc_S1=0.417 acc_S2=0.375 (137s)
+  28/94  acc_S1=0.357 acc_S2=0.393 (161s)
+  32/94  acc_S1=0.312 acc_S2=0.375 (184s)
+  36/94  acc_S1=0.278 acc_S2=0.361 (215s)
+  40/94  acc_S1=0.275 acc_S2=0.375 (239s)
+  44/94  acc_S1=0.273 acc_S2=0.341 (264s)
+  48/94  acc_S1=0.292 acc_S2=0.354 (289s)
+  52/94  acc_S1=0.269 acc_S2=0.346 (314s)
+  56/94  acc_S1=0.250 acc_S2=0.357 (330s)
+  60/94  acc_S1=0.250 acc_S2=0.333 (357s)
+  64/94  acc_S1=0.234 acc_S2=0.328 (382s)
+  68/94  acc_S1=0.221 acc_S2=0.324 (408s)
+  72/94  acc_S1=0.208 acc_S2=0.319 (434s)
+  76/94  acc_S1=0.224 acc_S2=0.342 (455s)
+  80/94  acc_S1=0.225 acc_S2=0.362 (478s)
+  84/94  acc_S1=0.214 acc_S2=0.345 (502s)
+  88/94  acc_S1=0.216 acc_S2=0.352 (523s)
+  92/94  acc_S1=0.239 acc_S2=0.380 (545s)
+
+=== RESULT (RealHiTBench, reconstructed trees; S1 baseline vs S2 mine) ===
+evaluated 94/94 (cutoff=None)
+Accuracy strict-EM   S1(base) 0.2128  ->  S2(mine) 0.2979  (Δ +0.0851)   S2_only=11 S1_only=3  McNemar p=0.05737
+Accuracy lenient     S1 0.2447  ->  S2 0.383  (Δ +0.1383)   [internal diagnostic]
+by CompStrucCata (strict):
+  BackgroundColor          n=  2  0.5 -> 0.0  (Δ -0.500)
+  ColumnHeaderMerge        n= 34  0.1471 -> 0.3235  (Δ +0.176)
+  ContentCompound          n= 16  0.125 -> 0.1875  (Δ +0.062)
+  ExternalSupply           n=  6  0.5 -> 0.5  (Δ +0.000)
+  MultiColumnClassified    n= 17  0.0588 -> 0.1765  (Δ +0.118)
+  SingleRowClassified      n= 16  0.4375 -> 0.4375  (Δ +0.000)
+  StructureCompound        n=  3  0.3333 -> 0.3333  (Δ +0.000)
+wrote -> results/realhitbench_s1_vs_s2_sonnet5.json

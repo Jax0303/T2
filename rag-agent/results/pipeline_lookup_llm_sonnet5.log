@@ -1,0 +1,26 @@
+[pop] 150 lookup queries | model=openai:claude-sonnet-5 | top-8
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  52%|█████▏    | 104/199 [00:00<00:00, 979.15it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1258.96it/s]
+api.anthropic.com:claude-sonnet-5 rejects temperature; retrying without it (sampling is now the provider default, NOT temperature=0.0)
+  25/150  flat=9/25 S2=18/25
+  50/150  flat=19/50 S2=35/50
+  75/150  flat=27/75 S2=51/75
+  100/150  flat=35/100 S2=66/100
+  125/150  flat=44/125 S2=87/125
+  150/150  flat=55/150 S2=103/150
+{
+  "dataset": "hitab_lookup_llm_reader",
+  "model": "api.anthropic.com:claude-sonnet-5",
+  "topk": 8,
+  "table": "oracle (gate-1 solved: HiTab table recall@20=1.0)",
+  "scorer": "hitab_exact_match",
+  "n_complete_both_arms": 150,
+  "answer_EM": {
+    "flat": 0.3667,
+    "S2": 0.6867
+  },
+  "n_scored": {
+    "flat": 150,
+    "S2": 150
+  }
+}

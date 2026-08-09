@@ -1,0 +1,60 @@
+{
+  "leg": "length control for the completeness claim (MultiHiertt within-doc, hybrid, n=298)",
+  "why": "S2_shuf keeps S2's exact token multiset and destroys the hierarchical ORDER. flat->S2_shuf = the effect of putting ancestor labels in the cell's own text at all; S2_shuf->S2 = correct order at fixed length. One permutation is not a control (the repo has been burned by quoting a single draw), so five draws are reported as mean and range.",
+  "n_draws": 5,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    42
+  ],
+  "S2_shuf": {
+    "set_em@10": {
+      "mean": 0.6255,
+      "min": 0.6208,
+      "max": 0.6309
+    },
+    "set_em@20": {
+      "mean": 0.804,
+      "min": 0.7987,
+      "max": 0.8121
+    },
+    "set_em@50": {
+      "mean": 0.9597,
+      "min": 0.9564,
+      "max": 0.9631
+    }
+  },
+  "reference": {
+    "set_em@10": {
+      "flat": 0.6107,
+      "S2": 0.6174,
+      "S3": 0.6342
+    },
+    "set_em@20": {
+      "flat": 0.7483,
+      "S2": 0.8154,
+      "S3": 0.8121
+    },
+    "set_em@50": {
+      "flat": 0.8826,
+      "S2": 0.9597,
+      "S3": 0.9564
+    }
+  },
+  "decomposition": {
+    "set_em@10": {
+      "flat_to_shuf_adding_ancestor_words": 0.0148,
+      "shuf_to_S2_correct_order_only": -0.0081
+    },
+    "set_em@20": {
+      "flat_to_shuf_adding_ancestor_words": 0.0557,
+      "shuf_to_S2_correct_order_only": 0.0114
+    },
+    "set_em@50": {
+      "flat_to_shuf_adding_ancestor_words": 0.0771,
+      "shuf_to_S2_correct_order_only": 0.0
+    }
+  }
+}

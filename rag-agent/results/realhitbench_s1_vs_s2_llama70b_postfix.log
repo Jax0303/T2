@@ -17,3 +17,22 @@ Groq rate-limited, retrying in 4s (attempt 3)
 Groq rate-limited, retrying in 8s (attempt 4)
 Groq rate-limited, retrying in 16s (attempt 5)
 Groq rate-limited, retrying in 32s (attempt 6)
+Groq rate-limited, retrying in 64s (attempt 7)
+Groq rate-limited, retrying in 128s (attempt 8)
+Groq rate-limited, retrying in 256s (attempt 9)
+
+[cutoff] solver failed at 26/94: RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99571, Requested 1340. Please try again in 13m7.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+
+=== RESULT (RealHiTBench, reconstructed trees; S1 baseline vs S2 mine) ===
+evaluated 25/94 (cutoff=RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99571, Requested 1340. Please try again in 13m7.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+Accuracy strict-EM   S1(base) 0.28  ->  S2(mine) 0.28  (Δ +0.0000)   S2_only=2 S1_only=2  McNemar p=1.0
+Accuracy lenient     S1 0.44  ->  S2 0.44  (Δ +0.0000)   [internal diagnostic]
+by CompStrucCata (strict):
+  BackgroundColor          n=  2  0.5 -> 0.0  (Δ -0.500)
+  ColumnHeaderMerge        n=  4  0.25 -> 0.25  (Δ +0.000)
+  ContentCompound          n= 10  0.2 -> 0.3  (Δ +0.100)
+  ExternalSupply           n=  3  0.6667 -> 0.6667  (Δ +0.000)
+  MultiColumnClassified    n=  1  0.0 -> 0.0  (Δ +0.000)
+  SingleRowClassified      n=  3  0.3333 -> 0.3333  (Δ +0.000)
+  StructureCompound        n=  2  0.0 -> 0.0  (Δ +0.000)
+wrote -> results/realhitbench_s1_vs_s2_llama70b_postfix.json
