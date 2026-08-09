@@ -1,0 +1,193 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pop] 300문항 {'lookup': 128, 'aggregate': 172} | 파싱 실패로 제외 9 | 후보 {'lookup': 211, 'aggregate': 2259}
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  39%|███▉      | 78/199 [00:00<00:00, 774.42it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1170.29it/s]
+api.anthropic.com:claude-sonnet-5 rejects temperature; retrying without it (sampling is now the provider default, NOT temperature=0.0)
+  20/300  {'table_md': '8/20', 'row_chunk': '5/20', 'flat_cell': '5/20', 'cell_sent': '7/20'}
+  40/300  {'table_md': '13/40', 'row_chunk': '12/40', 'flat_cell': '8/40', 'cell_sent': '12/40'}
+  60/300  {'table_md': '24/60', 'row_chunk': '20/60', 'flat_cell': '14/60', 'cell_sent': '20/60'}
+  80/300  {'table_md': '32/80', 'row_chunk': '28/80', 'flat_cell': '23/80', 'cell_sent': '26/80'}
+  100/300  {'table_md': '41/100', 'row_chunk': '36/100', 'flat_cell': '29/100', 'cell_sent': '32/100'}
+  120/300  {'table_md': '49/120', 'row_chunk': '44/120', 'flat_cell': '36/120', 'cell_sent': '39/120'}
+  140/300  {'table_md': '58/140', 'row_chunk': '53/140', 'flat_cell': '46/140', 'cell_sent': '49/140'}
+  160/300  {'table_md': '68/160', 'row_chunk': '64/160', 'flat_cell': '53/160', 'cell_sent': '58/160'}
+  180/300  {'table_md': '75/180', 'row_chunk': '70/180', 'flat_cell': '60/180', 'cell_sent': '62/180'}
+  200/300  {'table_md': '82/200', 'row_chunk': '77/200', 'flat_cell': '66/200', 'cell_sent': '68/200'}
+[중단] HTTP 400: {"error":{"code":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrad ... --resume 로 이어서 실행
+{
+  "overall": {
+    "n_questions": 207,
+    "n_correct": {
+      "table_md": 84,
+      "row_chunk": 78,
+      "flat_cell": 68,
+      "cell_sent": 70
+    },
+    "accuracy": {
+      "table_md": 0.4058,
+      "row_chunk": 0.3768,
+      "flat_cell": 0.3285,
+      "cell_sent": 0.3382
+    },
+    "delta_ours_minus": {
+      "table_md": -0.0676,
+      "row_chunk": -0.0386,
+      "flat_cell": 0.0097
+    },
+    "pairwise": {
+      "table_md_vs_row_chunk": {
+        "only_table_md": 26,
+        "only_row_chunk": 20,
+        "p_mcnemar": 0.461391,
+        "p_holm": 0.922782
+      },
+      "table_md_vs_flat_cell": {
+        "only_table_md": 32,
+        "only_flat_cell": 16,
+        "p_mcnemar": 0.029305,
+        "p_holm": 0.1729
+      },
+      "table_md_vs_cell_sent": {
+        "only_table_md": 25,
+        "only_cell_sent": 11,
+        "p_mcnemar": 0.028817,
+        "p_holm": 0.1729
+      },
+      "row_chunk_vs_flat_cell": {
+        "only_row_chunk": 25,
+        "only_flat_cell": 15,
+        "p_mcnemar": 0.15386,
+        "p_holm": 0.61544
+      },
+      "row_chunk_vs_cell_sent": {
+        "only_row_chunk": 26,
+        "only_cell_sent": 18,
+        "p_mcnemar": 0.291215,
+        "p_holm": 0.873646
+      },
+      "flat_cell_vs_cell_sent": {
+        "only_flat_cell": 18,
+        "only_cell_sent": 20,
+        "p_mcnemar": 0.871415,
+        "p_holm": 0.922782
+      }
+    }
+  },
+  "lookup": {
+    "n_questions": 93,
+    "n_correct": {
+      "table_md": 50,
+      "row_chunk": 46,
+      "flat_cell": 41,
+      "cell_sent": 40
+    },
+    "accuracy": {
+      "table_md": 0.5376,
+      "row_chunk": 0.4946,
+      "flat_cell": 0.4409,
+      "cell_sent": 0.4301
+    },
+    "delta_ours_minus": {
+      "table_md": -0.1075,
+      "row_chunk": -0.0645,
+      "flat_cell": -0.0108
+    },
+    "pairwise": {
+      "table_md_vs_row_chunk": {
+        "only_table_md": 17,
+        "only_row_chunk": 13,
+        "p_mcnemar": 0.584665,
+        "p_holm": 1.0
+      },
+      "table_md_vs_flat_cell": {
+        "only_table_md": 21,
+        "only_flat_cell": 12,
+        "p_mcnemar": 0.162756,
+        "p_holm": 0.813778
+      },
+      "table_md_vs_cell_sent": {
+        "only_table_md": 16,
+        "only_cell_sent": 6,
+        "p_mcnemar": 0.052479,
+        "p_holm": 0.314873
+      },
+      "row_chunk_vs_flat_cell": {
+        "only_row_chunk": 16,
+        "only_flat_cell": 11,
+        "p_mcnemar": 0.442068,
+        "p_holm": 1.0
+      },
+      "row_chunk_vs_cell_sent": {
+        "only_row_chunk": 16,
+        "only_cell_sent": 10,
+        "p_mcnemar": 0.32694,
+        "p_holm": 1.0
+      },
+      "flat_cell_vs_cell_sent": {
+        "only_flat_cell": 13,
+        "only_cell_sent": 12,
+        "p_mcnemar": 1.0,
+        "p_holm": 1.0
+      }
+    }
+  },
+  "aggregate": {
+    "n_questions": 114,
+    "n_correct": {
+      "table_md": 34,
+      "row_chunk": 32,
+      "flat_cell": 27,
+      "cell_sent": 30
+    },
+    "accuracy": {
+      "table_md": 0.2982,
+      "row_chunk": 0.2807,
+      "flat_cell": 0.2368,
+      "cell_sent": 0.2632
+    },
+    "delta_ours_minus": {
+      "table_md": -0.035,
+      "row_chunk": -0.0175,
+      "flat_cell": 0.0264
+    },
+    "pairwise": {
+      "table_md_vs_row_chunk": {
+        "only_table_md": 9,
+        "only_row_chunk": 7,
+        "p_mcnemar": 0.803619,
+        "p_holm": 1.0
+      },
+      "table_md_vs_flat_cell": {
+        "only_table_md": 11,
+        "only_flat_cell": 4,
+        "p_mcnemar": 0.118469,
+        "p_holm": 0.710815
+      },
+      "table_md_vs_cell_sent": {
+        "only_table_md": 9,
+        "only_cell_sent": 5,
+        "p_mcnemar": 0.42395,
+        "p_holm": 1.0
+      },
+      "row_chunk_vs_flat_cell": {
+        "only_row_chunk": 9,
+        "only_flat_cell": 4,
+        "p_mcnemar": 0.266846,
+        "p_holm": 1.0
+      },
+      "row_chunk_vs_cell_sent": {
+        "only_row_chunk": 10,
+        "only_cell_sent": 8,
+        "p_mcnemar": 0.814529,
+        "p_holm": 1.0
+      },
+      "flat_cell_vs_cell_sent": {
+        "only_flat_cell": 5,
+        "only_cell_sent": 8,
+        "p_mcnemar": 0.581055,
+        "p_holm": 1.0
+      }
+    }
+  }
+}
+
+wrote -> results/baseline_comparison_multihiertt.json
