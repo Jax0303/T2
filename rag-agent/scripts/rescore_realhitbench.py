@@ -75,6 +75,10 @@ def main() -> int:
                           "by scripts/rescore_realhitbench.py; em_norm now compares "
                           "at the gold's own decimal places instead of a 1e-5 "
                           "relative tolerance")
+    # the run's own note still described the tolerance it was written under
+    if isinstance(out.get("note"), str) and "rel_tol" in out["note"]:
+        out["note"] = out["note"].replace(
+            "rel_tol 1e-5", "rounded to the gold's own decimal places")
 
     print(f"{path.name}: {changed} per-record verdicts changed")
     for k in ("base", "treat", "delta", "mcnemar_p"):

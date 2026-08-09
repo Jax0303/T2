@@ -33,7 +33,9 @@ Notes / caveats:
     not computable. We score ANSWER accuracy only.
   * Scoring: gold = `ProcessedAnswer` (numeric string throughout the
     aggregation subset, e.g. "543", "14.44%", "63.90"). `strict` = `em_norm`:
-    strip `%`/commas from the gold, numeric equality at rel_tol 1e-5 — NO
+    strip `%`/commas from the gold, then compare rounded to the gold's own
+    decimal places (a relative tolerance forgave dropped decimals on the large
+    values these tables carry — see `em_norm`) — NO
     scale (x100), sign, or +-2% leniency. NOT RealHiTBench's own LLM-judge
     protocol; do not compare against the paper's leaderboard numbers. Golds
     are percent-SCALE strings, so the solver prompt's ratio rule is OVERRIDDEN
@@ -372,7 +374,8 @@ def main() -> int:
                                  "serialization differs (isolates preprocessing)"},
         "note": ("no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell "
                  "annotations (answer accuracy only). strict = em_norm on "
-                 "ProcessedAnswer (%/comma-normalised numeric equality, rel_tol 1e-5, "
+                 "ProcessedAnswer (%/comma-normalised numeric equality, compared at "
+                 "the gold's own decimal places, "
                  "no scale/sign leniency; solver prompt asks percent-scale to match "
                  "the gold convention). Deterministic and symmetric, NOT the paper's "
                  "LLM-judge protocol — do not compare to the RealHiTBench leaderboard. "
