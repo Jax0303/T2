@@ -116,6 +116,42 @@ from 10 to 19 cells; against a per-query budget-matched control the gain fell to
 > report a per-query budget-matched control — the same cell count filled by
 > similarity rank alone — before its delta is quoted.
 
+**Row reconstruction has a structural ceiling, and one table shape is at zero.**
+`scripts/tree_reconstruct_hitab_raw.py` over HiTab dev+train, 2,467 tables scored
+with the boundary guessed. A table counts as reconstructed only if **every** row
+path matches gold.
+
+| Row structure | tables | share | table exact | row-line acc |
+|---|---|---|---|---|
+| Flat — no hierarchy | 322 | 13.1% | .929 | .940 |
+| Hierarchy fits in the stub columns | 1,141 | 46.3% | .856 | .980 |
+| Section-row — heading row carries no data | 616 | 25.0% | .599 | .664 |
+| **Data-parent — the parent row carries data too** | **388** | **15.7%** | **.000** | .206 |
+
+The last row is not a rounding artifact: **0 of 388.** A parent row that also
+holds its own numbers is byte-identical in shape to its children once the grid
+drops the indentation that distinguished them, so nothing in `texts` separates
+them. `results/diag_row_axis_signal.json` measures the same fact label-wise:
+of 4,245 ancestor labels needing recovery, 70.5% sit in a section row (findable
+by shape) and 29.5% sit in a data-bearing row (not findable at all).
+
+That puts the arithmetic ceiling for row reconstruction at **≈.83** on this
+population, against .7607 measured with a gold boundary
+(`results/tree_reconstruct_hitab_raw.json`). Quote the ceiling alongside the
+score — ".76" alone reads as a weak result rather than a near-ceiling one.
+
+Splitting the 822 failures by cause:
+
+| Cause | n | share |
+|---|---|---|
+| Structural — the grid does not carry the level | 698 | 84.9% |
+| Header-boundary guessed wrong | 124 | 15.1% |
+
+Boundary guessing is **not** the bottleneck: row-boundary accuracy is .9481
+(`results/diag_boundary_dev.json`), higher than the column axis. A further 592
+tables are excluded from scoring entirely as `unaligned` — gold cannot be matched
+to the grid — and appear in none of the numbers above.
+
 ## Layout
 
 ```

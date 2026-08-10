@@ -181,7 +181,7 @@ HiTab 표 전체 토큰 중앙값이 2,995(단일)/5,991(이중)이다.
 |---|---|---|
 | ~~**E-A**~~ | ✅ **완료 2026-08-05.** 풀 {50,100,200,500,1000} × {flat, S3} × {bm25,dense,hybrid,cross}, `scripts/ea_pool_size_sweep.py` + `scripts/ea_crossover_stats.py`. 결과는 §2.2. 전체 코퍼스(43k셀) 지점은 293질의×43k = 12.7M 쌍이라 미시도 — 스윕이 구간을 괄호친다 | 2.2의 모순. 논문 핵심 그림 |
 | ~~**E-B**~~ | ✅ **완료 2026-08-05.** 3종 모두 재실행 결과가 기존 값과 **완전 일치**(수치 237/68/33개, diff 0) — 값이 흔들렸던 게 아니라 환경 기록이 없었을 뿐. `*_seed42.json`에 `env` 기록. ⚠️ 이 3종에 `operand_collision_within_doc.py`가 **빠져 있었고** 주장 4·§2.2 문서 내 수치의 실제 출처가 거기였다(S2_shuf를 돌리는 유일한 스크립트). 배선 후 재실행 → §4.1. 구 E-B 정의 (`operand_collision_multihiertt`, `resolver_osc_matched`, `pipeline_osc_asdescribed`) | 재현성 부채 |
-| **E-C** | 문장 템플릿 통일 후 길이별(short/medium/long) OSC 비교 | 3종 템플릿 공존 + 배포 설정이 최저 정확도 |
+| **E-C** | 문장 템플릿 통일 후 길이별(short/medium/long) OSC 비교. ⚠️ **범위 축소** — 실질 템플릿은 3종이 아니라 **2종**이고(스크립트 내부 사본 = `caption.py` medium과 완전일치, `diag/template_divergence.md`), 배포(long)와 메인 실험(medium)의 차이는 구현이 아니라 **길이 프리셋**이다. 남는 진짜 축은 ① `verbalize.py` 계열과의 값 표기 차이 ② 길이 선택 | 2종 템플릿 공존 + 배포 설정이 최저 정확도 (§6과 일치) |
 
 ---
 
