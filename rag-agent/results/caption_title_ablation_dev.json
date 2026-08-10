@@ -1,0 +1,264 @@
+{
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-10T00:48:11+00:00"
+  },
+  "leg": "does the table title inside the S3 cell sentence change retrieval? include_title=True vs False, everything else identical",
+  "arm": "one whole-question similarity ranking (the post-reassignment cell-retrieval arm), hybrid alpha=0.5",
+  "population": {
+    "name": "hitab_arith_with_operands",
+    "split": "dev",
+    "n": 214,
+    "n_m_ge_2": 161,
+    "n_titled_queries": 179,
+    "tables": 82
+  },
+  "scopes": {
+    "table": "candidates = the query's own table only; the title is constant across candidates, so it can only add noise",
+    "corpus": "candidates = every table of the population in one index; the title varies and could act as a table gate"
+  },
+  "all": {
+    "5": {
+      "table": {
+        "osc_with_title": 0.4299,
+        "osc_without_title": 0.4346,
+        "delta": -0.0047,
+        "pcr_with_title": 0.597,
+        "pcr_without_title": 0.5955,
+        "own_table_cells_with_title": 5,
+        "own_table_cells_without_title": 5,
+        "b_title_only": 13,
+        "c_notitle_only": 14,
+        "p_mcnemar": 1.0
+      },
+      "corpus": {
+        "osc_with_title": 0.4299,
+        "osc_without_title": 0.4019,
+        "delta": 0.028,
+        "pcr_with_title": 0.566,
+        "pcr_without_title": 0.5311,
+        "own_table_cells_with_title": 4.1402,
+        "own_table_cells_without_title": 3.9626,
+        "b_title_only": 18,
+        "c_notitle_only": 12,
+        "p_mcnemar": 0.361595
+      }
+    },
+    "10": {
+      "table": {
+        "osc_with_title": 0.5981,
+        "osc_without_title": 0.6028,
+        "delta": -0.0047,
+        "pcr_with_title": 0.7518,
+        "pcr_without_title": 0.7341,
+        "own_table_cells_with_title": 9.9019,
+        "own_table_cells_without_title": 9.9019,
+        "b_title_only": 11,
+        "c_notitle_only": 12,
+        "p_mcnemar": 1.0
+      },
+      "corpus": {
+        "osc_with_title": 0.5607,
+        "osc_without_title": 0.514,
+        "delta": 0.0467,
+        "pcr_with_title": 0.6815,
+        "pcr_without_title": 0.6346,
+        "own_table_cells_with_title": 7.8692,
+        "own_table_cells_without_title": 7.4252,
+        "b_title_only": 22,
+        "c_notitle_only": 12,
+        "p_mcnemar": 0.121449
+      }
+    },
+    "20": {
+      "table": {
+        "osc_with_title": 0.743,
+        "osc_without_title": 0.7009,
+        "delta": 0.0421,
+        "pcr_with_title": 0.8553,
+        "pcr_without_title": 0.828,
+        "own_table_cells_with_title": 19.4019,
+        "own_table_cells_without_title": 19.4019,
+        "b_title_only": 12,
+        "c_notitle_only": 3,
+        "p_mcnemar": 0.035156
+      },
+      "corpus": {
+        "osc_with_title": 0.6402,
+        "osc_without_title": 0.6262,
+        "delta": 0.014,
+        "pcr_with_title": 0.7543,
+        "pcr_without_title": 0.7285,
+        "own_table_cells_with_title": 15.0047,
+        "own_table_cells_without_title": 13.5794,
+        "b_title_only": 14,
+        "c_notitle_only": 11,
+        "p_mcnemar": 0.690038
+      }
+    }
+  },
+  "m_ge_2": {
+    "5": {
+      "table": {
+        "osc_with_title": 0.2919,
+        "osc_without_title": 0.2981,
+        "delta": -0.0062,
+        "pcr_with_title": 0.514,
+        "pcr_without_title": 0.5121,
+        "own_table_cells_with_title": 5,
+        "own_table_cells_without_title": 5,
+        "b_title_only": 8,
+        "c_notitle_only": 9,
+        "p_mcnemar": 1.0
+      },
+      "corpus": {
+        "osc_with_title": 0.2857,
+        "osc_without_title": 0.2671,
+        "delta": 0.0186,
+        "pcr_with_title": 0.4667,
+        "pcr_without_title": 0.4389,
+        "own_table_cells_with_title": 3.9627,
+        "own_table_cells_without_title": 3.764,
+        "b_title_only": 12,
+        "c_notitle_only": 9,
+        "p_mcnemar": 0.663624
+      }
+    },
+    "10": {
+      "table": {
+        "osc_with_title": 0.4845,
+        "osc_without_title": 0.4907,
+        "delta": -0.0062,
+        "pcr_with_title": 0.6888,
+        "pcr_without_title": 0.6652,
+        "own_table_cells_with_title": 9.9193,
+        "own_table_cells_without_title": 9.9193,
+        "b_title_only": 9,
+        "c_notitle_only": 10,
+        "p_mcnemar": 1.0
+      },
+      "corpus": {
+        "osc_with_title": 0.441,
+        "osc_without_title": 0.3975,
+        "delta": 0.0435,
+        "pcr_with_title": 0.6015,
+        "pcr_without_title": 0.5578,
+        "own_table_cells_with_title": 7.4534,
+        "own_table_cells_without_title": 7.0186,
+        "b_title_only": 17,
+        "c_notitle_only": 10,
+        "p_mcnemar": 0.247789
+      }
+    },
+    "20": {
+      "table": {
+        "osc_with_title": 0.6646,
+        "osc_without_title": 0.6087,
+        "delta": 0.0559,
+        "pcr_with_title": 0.8139,
+        "pcr_without_title": 0.7775,
+        "own_table_cells_with_title": 19.5031,
+        "own_table_cells_without_title": 19.5031,
+        "b_title_only": 12,
+        "c_notitle_only": 3,
+        "p_mcnemar": 0.035156
+      },
+      "corpus": {
+        "osc_with_title": 0.5404,
+        "osc_without_title": 0.5217,
+        "delta": 0.0187,
+        "pcr_with_title": 0.6921,
+        "pcr_without_title": 0.6578,
+        "own_table_cells_with_title": 14.3478,
+        "own_table_cells_without_title": 12.9565,
+        "b_title_only": 13,
+        "c_notitle_only": 10,
+        "p_mcnemar": 0.677639
+      }
+    }
+  },
+  "titled_only": {
+    "5": {
+      "table": {
+        "osc_with_title": 0.4749,
+        "osc_without_title": 0.4804,
+        "delta": -0.0055,
+        "pcr_with_title": 0.6134,
+        "pcr_without_title": 0.6117,
+        "own_table_cells_with_title": 5,
+        "own_table_cells_without_title": 5,
+        "b_title_only": 13,
+        "c_notitle_only": 14,
+        "p_mcnemar": 1.0
+      },
+      "corpus": {
+        "osc_with_title": 0.4804,
+        "osc_without_title": 0.4358,
+        "delta": 0.0446,
+        "pcr_with_title": 0.6118,
+        "pcr_without_title": 0.5449,
+        "own_table_cells_with_title": 4.5028,
+        "own_table_cells_without_title": 3.9274,
+        "b_title_only": 18,
+        "c_notitle_only": 10,
+        "p_mcnemar": 0.184933
+      }
+    },
+    "10": {
+      "table": {
+        "osc_with_title": 0.6369,
+        "osc_without_title": 0.6425,
+        "delta": -0.0056,
+        "pcr_with_title": 0.7699,
+        "pcr_without_title": 0.7487,
+        "own_table_cells_with_title": 9.8827,
+        "own_table_cells_without_title": 9.8827,
+        "b_title_only": 11,
+        "c_notitle_only": 12,
+        "p_mcnemar": 1.0
+      },
+      "corpus": {
+        "osc_with_title": 0.6313,
+        "osc_without_title": 0.5475,
+        "delta": 0.0838,
+        "pcr_with_title": 0.7452,
+        "pcr_without_title": 0.6474,
+        "own_table_cells_with_title": 8.743,
+        "own_table_cells_without_title": 7.3184,
+        "b_title_only": 22,
+        "c_notitle_only": 7,
+        "p_mcnemar": 0.00813
+      }
+    },
+    "20": {
+      "table": {
+        "osc_with_title": 0.7933,
+        "osc_without_title": 0.743,
+        "delta": 0.0503,
+        "pcr_with_title": 0.8801,
+        "pcr_without_title": 0.8474,
+        "own_table_cells_with_title": 19.3128,
+        "own_table_cells_without_title": 19.3128,
+        "b_title_only": 12,
+        "c_notitle_only": 3,
+        "p_mcnemar": 0.035156
+      },
+      "corpus": {
+        "osc_with_title": 0.7207,
+        "osc_without_title": 0.676,
+        "delta": 0.0447,
+        "pcr_with_title": 0.8269,
+        "pcr_without_title": 0.7451,
+        "own_table_cells_with_title": 16.905,
+        "own_table_cells_without_title": 13.3017,
+        "b_title_only": 14,
+        "c_notitle_only": 6,
+        "p_mcnemar": 0.115318
+      }
+    }
+  }
+}
