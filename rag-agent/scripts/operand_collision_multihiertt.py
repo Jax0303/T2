@@ -154,7 +154,12 @@ def build_corpus(queries, docs):
                     continue
                 cp = t["cols"][c - nhc] if (c - nhc) < len(t["cols"]) else []
                 cell_index[key + (r, c)] = len(cells)
-                cells.append({"table": key, "row_path": rp, "col_path": cp, "value": v})
+                # r/c are the GRID coords this cell is keyed by in cell_index and
+                # in the gold `table_evidence`. Recorded on the cell so a caller
+                # scoring against gold coordinates does not have to rebuild the
+                # key map (the OSC legs need exactly this).
+                cells.append({"table": key, "r": r, "c": c,
+                              "row_path": rp, "col_path": cp, "value": v})
 
     kept = []
     for q in queries:
