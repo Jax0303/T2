@@ -57,6 +57,7 @@ import json
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
+from typing import List
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -180,6 +181,39 @@ def norm(path):
     return tuple(s.strip().lower() for s in path if s and s.strip())
 
 
+def segment_f1(gold, rec) -> float:
+    """Graded agreement between two header paths, as a multiset F1 over segments.
+
+    Exact match is the metric this pipeline actually needs — one wrong segment
+    poisons the whole cell sentence, so there is no partial credit downstream.
+    But it is far harsher than what the table-structure-recognition literature
+    reports (TEDS, GriTS and cell-adjacency F1 are all graded), and a reader
+    coming from that side reads a 0.68 exact-match as a much worse system than
+    it is. Reporting both lets either audience place the number.
+
+    Deliberately NOT the same thing as ``segment_coverage`` in
+    ``tree_reconstruct_multihiertt.py``: that one has no gold tree to compare
+    against and checks whether a segment's words show up in the cell's
+    description sentence, which is a lenient proxy. Here the gold path exists,
+    so the comparison is against it.
+
+    F1 rather than recall because the two failure modes pull in opposite
+    directions: a dropped ancestor level costs recall, and an ancestor that
+    bled in from a sibling branch — the error the carry cutoff exists to
+    prevent — costs precision. Recall alone would score the bleed as perfect.
+    """
+    g, r = Counter(norm(gold)), Counter(norm(rec))
+    if not g and not r:
+        return 1.0
+    if not g or not r:
+        return 0.0
+    hit = sum((g & r).values())
+    if not hit:
+        return 0.0
+    prec, rec_ = hit / sum(r.values()), hit / sum(g.values())
+    return 2 * prec * rec_ / (prec + rec_)
+
+
 def size_bucket(n_rows: int, n_cols: int) -> str:
     d = max(n_rows, n_cols)
     if d <= 10:
@@ -236,6 +270,8 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         rec_rows = reconstruct_row_paths(texts, nhr, nhc)
 
     col_hit = col_tot = row_hit = row_tot = 0
+    col_f1: List[float] = []
+    row_f1: List[float] = []
     errors = []
     for j, c in enumerate(cols_c):
         i = c - nhc
@@ -244,6 +280,7 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         col_tot += 1
         ok = norm(gp) == norm(rp)
         col_hit += int(ok)
+        col_f1.append(segment_f1(gp, rp))
         if not ok and len(errors) < 3:
             errors.append({"axis": "col", "grid_line": c, "gold": gp, "rec": rp})
     for i_, r in enumerate(rows_c):
@@ -253,6 +290,7 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         row_tot += 1
         ok = norm(gp) == norm(rp)
         row_hit += int(ok)
+        row_f1.append(segment_f1(gp, rp))
         if not ok and len(errors) < 3:
             errors.append({"axis": "row", "grid_line": r, "gold": gp, "rec": rp})
 
@@ -268,6 +306,8 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         "row_depth_expressible": max_row_depth <= nhc_gold,
         "nhc_used": nhc,
     }
+    meta["col_segment_f1"] = col_f1
+    meta["row_segment_f1"] = row_f1
     return (col_hit, col_tot, row_hit, row_tot, boundary_ok, cols_ok, errors, meta), "ok"
 
 
@@ -298,9 +338,12 @@ def main() -> int:
     print(f"[pop] HiTab tables (split={args.split}): {len(tids)}")
 
     bucket = defaultdict(lambda: {"col_total": 0, "col_hit": 0, "row_total": 0,
-                                  "row_hit": 0, "n_tables": 0})
-    depth = defaultdict(lambda: {"total": 0, "hit": 0})
+                                  "row_hit": 0, "n_tables": 0,
+                                  "col_f1": [], "row_f1": []})
+    depth = defaultdict(lambda: {"total": 0, "hit": 0, "f1": []})
     expressible = defaultdict(lambda: {"total": 0, "hit": 0, "n_tables": 0})
+    all_col_f1: List[float] = []
+    all_row_f1: List[float] = []
     col_hit = col_tot = row_hit = row_tot = 0
     b_ok = b_tot = c_ok = 0
     reasons = Counter()
@@ -328,18 +371,27 @@ def main() -> int:
         s["n_tables"] += 1
         s["col_hit"] += ch; s["col_total"] += ct
         s["row_hit"] += rh; s["row_total"] += rt
+        s["col_f1"] += meta["col_segment_f1"]; s["row_f1"] += meta["row_segment_f1"]
+        all_col_f1 += meta["col_segment_f1"]; all_row_f1 += meta["row_segment_f1"]
         depth[f"col_depth{min(meta['max_col_depth'], 4)}"]["total"] += ct
         depth[f"col_depth{min(meta['max_col_depth'], 4)}"]["hit"] += ch
+        depth[f"col_depth{min(meta['max_col_depth'], 4)}"]["f1"] += meta["col_segment_f1"]
         depth[f"row_depth{min(meta['max_row_depth'], 4)}"]["total"] += rt
         depth[f"row_depth{min(meta['max_row_depth'], 4)}"]["hit"] += rh
+        depth[f"row_depth{min(meta['max_row_depth'], 4)}"]["f1"] += meta["row_segment_f1"]
         e = expressible["yes" if meta["row_depth_expressible"] else "no"]
         e["total"] += rt; e["hit"] += rh; e["n_tables"] += 1
         if errs and len(examples) < 10:
             examples.append({"table_id": tid, "errors": errs})
 
+    def mean(xs):
+        return round(sum(xs) / len(xs), 4) if xs else None
+
     by_bucket = {b: {"n_tables": s["n_tables"],
                      "col_path_exact_match": round(s["col_hit"] / s["col_total"], 4) if s["col_total"] else None,
-                     "row_path_exact_match": round(s["row_hit"] / s["row_total"], 4) if s["row_total"] else None}
+                     "row_path_exact_match": round(s["row_hit"] / s["row_total"], 4) if s["row_total"] else None,
+                     "col_path_segment_f1": mean(s["col_f1"]),
+                     "row_path_segment_f1": mean(s["row_f1"])}
                  for b, s in bucket.items()}
 
     out = {
@@ -351,12 +403,24 @@ def main() -> int:
         "boundary_mode": "guessed" if args.guess_boundary else "known (from gold trees)",
         "col_path_exact_match": round(col_hit / col_tot, 4) if col_tot else None,
         "row_path_exact_match": round(row_hit / row_tot, 4) if row_tot else None,
+        # Graded companion to the exact match above, so the number is readable
+        # next to the TSR literature (TEDS / GriTS / adjacency-F1 are all
+        # graded). Exact match stays primary: a single wrong segment poisons
+        # the cell sentence, so partial credit has no downstream meaning.
+        "col_path_segment_f1": mean(all_col_f1),
+        "row_path_segment_f1": mean(all_row_f1),
+        "segment_f1_note": ("multiset F1 over path segments, reconstructed vs GOLD "
+                            "path. NOT comparable to segment_coverage in "
+                            "tree_reconstruct_multihiertt.py, which has no gold tree "
+                            "and matches segment words against the cell's description "
+                            "sentence instead."),
         "col_paths_scored": col_tot, "row_paths_scored": row_tot,
         "boundary_guess_accuracy": round(b_ok / b_tot, 4) if (args.guess_boundary and b_tot) else None,
         "n_header_cols_guess_accuracy": round(c_ok / b_tot, 4) if ((args.guess_cols or args.force_cols) and b_tot) else None,
         "by_size_bucket": by_bucket,
         "by_max_depth": {k: {"n": v["total"],
-                             "exact_match": round(v["hit"] / v["total"], 4) if v["total"] else None}
+                             "exact_match": round(v["hit"] / v["total"], 4) if v["total"] else None,
+                             "segment_f1": mean(v["f1"])}
                          for k, v in sorted(depth.items())},
         "row_axis_by_depth_expressible": {
             k: {"n_tables": v["n_tables"], "n_paths": v["total"],
@@ -374,8 +438,10 @@ def main() -> int:
         print(f"boundary guess acc   : {out['boundary_guess_accuracy']}")
     if out["n_header_cols_guess_accuracy"] is not None:
         print(f"n_header_cols acc    : {out['n_header_cols_guess_accuracy']}")
-    print(f"col_path_exact_match : {out['col_path_exact_match']}  ({col_hit}/{col_tot})")
-    print(f"row_path_exact_match : {out['row_path_exact_match']}  ({row_hit}/{row_tot})")
+    print(f"col_path_exact_match : {out['col_path_exact_match']}  ({col_hit}/{col_tot})"
+          f"   segment_f1 {out['col_path_segment_f1']}")
+    print(f"row_path_exact_match : {out['row_path_exact_match']}  ({row_hit}/{row_tot})"
+          f"   segment_f1 {out['row_path_segment_f1']}")
     print("\nby size bucket (max(data rows, data cols)):")
     for b in ("<=10x10", "10-20", ">20"):
         if b in by_bucket:

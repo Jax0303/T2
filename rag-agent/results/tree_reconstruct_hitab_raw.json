@@ -14,6 +14,9 @@
   "boundary_mode": "known (from gold trees)",
   "col_path_exact_match": 0.9749,
   "row_path_exact_match": 0.7607,
+  "col_path_segment_f1": 0.993,
+  "row_path_segment_f1": 0.9279,
+  "segment_f1_note": "multiset F1 over path segments, reconstructed vs GOLD path. NOT comparable to segment_coverage in tree_reconstruct_multihiertt.py, which has no gold tree and matches segment words against the cell's description sentence instead.",
   "col_paths_scored": 3464,
   "row_paths_scored": 7196,
   "boundary_guess_accuracy": null,
@@ -22,47 +25,60 @@
     "10-20": {
       "n_tables": 196,
       "col_path_exact_match": 0.9725,
-      "row_path_exact_match": 0.8002
+      "row_path_exact_match": 0.8002,
+      "col_path_segment_f1": 0.9921,
+      "row_path_segment_f1": 0.9478
     },
     ">20": {
       "n_tables": 129,
       "col_path_exact_match": 0.9813,
-      "row_path_exact_match": 0.7174
+      "row_path_exact_match": 0.7174,
+      "col_path_segment_f1": 0.9948,
+      "row_path_segment_f1": 0.91
     },
     "<=10x10": {
       "n_tables": 99,
       "col_path_exact_match": 0.9705,
-      "row_path_exact_match": 0.8782
+      "row_path_exact_match": 0.8782,
+      "col_path_segment_f1": 0.9924,
+      "row_path_segment_f1": 0.9603
     }
   },
   "by_max_depth": {
     "col_depth1": {
       "n": 269,
-      "exact_match": 1.0
+      "exact_match": 1.0,
+      "segment_f1": 1.0
     },
     "col_depth2": {
       "n": 2779,
-      "exact_match": 0.9849
+      "exact_match": 0.9849,
+      "segment_f1": 0.995
     },
     "col_depth3": {
       "n": 416,
-      "exact_match": 0.8918
+      "exact_match": 0.8918,
+      "segment_f1": 0.9752
     },
     "row_depth1": {
       "n": 744,
-      "exact_match": 0.9704
+      "exact_match": 0.9704,
+      "segment_f1": 0.9901
     },
     "row_depth2": {
       "n": 3815,
-      "exact_match": 0.8899
+      "exact_match": 0.8899,
+      "segment_f1": 0.9633
     },
     "row_depth3": {
       "n": 2113,
-      "exact_match": 0.4936
+      "exact_match": 0.4936,
+      "segment_f1": 0.8608
     },
     "row_depth4": {
       "n": 524,
-      "exact_match": 0.5992
+      "exact_match": 0.5992,
+      "segment_f1": 0.8521
     }
   },
   "row_axis_by_depth_expressible": {
