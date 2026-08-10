@@ -63,10 +63,13 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 import sys
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
+from typing import List
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -104,6 +107,76 @@ def _patch_ratio_rule() -> None:
                                                     _RHB_RATIO_RULE))
 
 
+def _half_up(x: float, dp: int) -> float:
+    """Round half AWAY FROM ZERO, the convention the golds were written under.
+
+    ``round()`` is banker's rounding, so it takes ``4.125`` to ``4.12`` while the
+    gold for that cell reads "4.13". The gold is the rounded form of the true
+    value, so the scorer has to round the way whoever produced it did, or a
+    correct prediction is marked wrong on the tie alone.
+    """
+    q = Decimal(1).scaleb(-dp)
+    return float(Decimal(repr(x)).quantize(q, rounding=ROUND_HALF_UP))
+
+
+def gold_is_numeric(gold_str) -> bool:
+    """True if the gold is a single number once `%` and commas are stripped.
+
+    16 of the 94 questions in the aggregation subset have golds like "Japan",
+    "Crew C", "2015-11-03, 2403" or "Decrease by 0.03." — names, dates, IDs and
+    sentences. The solver runs in codegen mode under a prompt that requires a
+    number on the 0-100 percent scale, so those questions cannot be answered
+    correctly by construction, and they score 0 in EVERY arm. They are reported
+    as their own stratum rather than silently diluting both arms.
+    """
+    s = str(gold_str).strip().rstrip("%").replace(",", "")
+    try:
+        float(s)
+        return True
+    except (TypeError, ValueError):
+        return False
+
+
+def _f1_tokens(s) -> List[str]:
+    """Lowercase, split on non-word runs, then strip edge punctuation.
+
+    ``.`` and ``-`` have to survive INSIDE a token — ``0.03`` and ``2015-11-03``
+    are single tokens — but not at the edges, or the sentence-final period in
+    "Decrease by 0.03." makes that number a different token from "0.03".
+    """
+    return [t for t in (tok.strip(".-")
+                        for tok in re.split(r"[^0-9a-z.\-]+", str(s).strip().lower()))
+            if t]
+
+
+def token_f1(pred, gold_str) -> float:
+    """Token-level F1 — the second metric RealHiTBench reports alongside EM.
+
+    Zhao et al. score Fact Checking / Numerical Reasoning / Structure
+    Comprehending with "F1 and EM" (arXiv:2506.13405 §5.1). EM alone is the
+    stricter half of that pair, so reporting only EM understates this pipeline
+    against every number the benchmark publishes. F1 also gives the text golds
+    a way to earn partial credit — "-0.03" against "Decrease by 0.03." is 0 under
+    EM and non-zero here.
+    """
+    # A numeric gold is scored numerically, not as a bag of characters: the
+    # solver returns a raw float, so "0.2978723404255319" and the gold "0.30"
+    # share no token and would score 0 on an answer EM calls correct. On this
+    # stratum F1 collapses to EM by construction, which is the honest reading —
+    # there is no partial credit to be had inside a single number.
+    if gold_is_numeric(gold_str):
+        return float(em_norm(pred, gold_str))
+    p, g = _f1_tokens(pred), _f1_tokens(gold_str)
+    if not p or not g:
+        return float(bool(p) == bool(g))
+    common = Counter(p) & Counter(g)
+    n = sum(common.values())
+    if n == 0:
+        return 0.0
+    prec, rec = n / len(p), n / len(g)
+    return 2 * prec * rec / (prec + rec)
+
+
 def em_norm(pred, gold_str) -> bool:
     """Deterministic strict scorer for RealHiTBench golds: `%`/comma-normalised,
     compared at the precision the gold was written at.
@@ -129,7 +202,7 @@ def em_norm(pred, gold_str) -> bool:
     except (TypeError, ValueError):
         return False
     dp = len(g_s.split(".")[1]) if "." in g_s else 0
-    return round(p, dp) == round(g, dp)
+    return _half_up(p, dp) == _half_up(g, dp)
 
 
 def build_table(fname: str, hf_repo: str) -> BenchTable | None:

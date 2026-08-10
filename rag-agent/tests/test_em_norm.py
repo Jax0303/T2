@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
-from realhitbench_answer_accuracy import em_norm
+from realhitbench_answer_accuracy import em_norm, gold_is_numeric, token_f1
 
 
 def test_float_printing_noise_passes():
@@ -34,3 +34,30 @@ def test_a_near_miss_cell_still_fails():
 def test_non_numeric_gold_falls_back_to_string_equality():
     assert em_norm("Ontario", "ontario")
     assert not em_norm("Quebec", "Ontario")
+
+
+def test_ties_round_away_from_zero_like_the_golds_were():
+    # round() is banker's: it takes 4.125 to 4.12 and marks a correct answer
+    # wrong against a gold written "4.13".
+    assert em_norm(4.125, "4.13")
+    assert em_norm(2.675, "2.68")
+    # and the tie rule must not start forgiving genuinely different numbers
+    assert not em_norm(4.124, "4.13")
+
+
+def test_gold_is_numeric_separates_the_unanswerable_stratum():
+    assert gold_is_numeric("1,234.50")
+    assert gold_is_numeric("14.60%")
+    assert not gold_is_numeric("Japan")
+    assert not gold_is_numeric("Decrease by 0.03.")
+    assert not gold_is_numeric("2015-11-03, 2403")
+
+
+def test_token_f1_gives_text_golds_partial_credit():
+    assert token_f1("14.60", "14.60") == 1.0
+    assert token_f1("Japan", "Italy") == 0.0
+    # the case EM cannot score: right number, gold written as a sentence
+    assert 0.0 < token_f1("-0.03", "Decrease by 0.03.") < 1.0
+    # F1 must not reward a wrong number just for sharing a word
+    assert token_f1("Increase by 5", "Decrease by 0.03.") < \
+        token_f1("Decrease by 0.03", "Decrease by 0.03.")

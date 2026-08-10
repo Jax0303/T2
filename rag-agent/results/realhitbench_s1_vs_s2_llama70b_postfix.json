@@ -10,21 +10,23 @@
     "n_evaluated": 25,
     "cutoff": "RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99571, Requested 1340. Please try again in 13m7.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
     "n_base_context_truncated": 0,
-    "n_treat_context_truncated": 1
+    "n_treat_context_truncated": 1,
+    "n_gold_numeric": 20,
+    "n_gold_text": 5
   },
   "arms": {
-    "base": "S1 (s1_flat) — baseline serialization, leaf headers only",
-    "treat": "S2 (s2_headerpath) — mine, full row/col header path per cell"
+    "base": "S1 (s1_flat) \u2014 baseline serialization, leaf headers only",
+    "treat": "S2 (s2_headerpath) \u2014 mine, full row/col header path per cell"
   },
   "pipeline": {
-    "trees": "RECONSTRUCTED from raw HTML (markup front-end, guessed header boundaries) — no gold structure",
+    "trees": "RECONSTRUCTED from raw HTML (markup front-end, guessed header boundaries) \u2014 no gold structure",
     "retriever": "dense",
     "k": 10,
     "solver": "groq:llama-3.3-70b-versatile",
     "mode": "codegen",
     "controls": "same retriever/solver/k for both arms; only the serialization differs (isolates preprocessing)"
   },
-  "note": "no OSC / no retrieval-accuracy — RealHiTBench has no operand-cell annotations (answer accuracy only). strict = em_norm on ProcessedAnswer (%/comma-normalised numeric equality, compared at the gold's own decimal places, no scale/sign leniency; solver prompt asks percent-scale to match the gold convention). Deterministic and symmetric, NOT the paper's LLM-judge protocol — do not compare to the RealHiTBench leaderboard. lenient = numeric_match (diagnostic).",
+  "note": "no OSC / no retrieval-accuracy \u2014 RealHiTBench has no operand-cell annotations (answer accuracy only). strict = em_norm on ProcessedAnswer (%/comma-normalised numeric equality, compared at the gold's own decimal places, no scale/sign leniency; solver prompt asks percent-scale to match the gold convention). Deterministic and symmetric, NOT the paper's LLM-judge protocol \u2014 do not compare to the RealHiTBench leaderboard. lenient = numeric_match (diagnostic).",
   "answer_accuracy_strict": {
     "n": 25,
     "base": 0.28,
@@ -107,5 +109,36 @@
       "base_only": 0,
       "mcnemar_p": 1.0
     }
-  }
+  },
+  "answer_f1": {
+    "n": 25,
+    "base": 0.28,
+    "treat": 0.28,
+    "delta": 0.0
+  },
+  "answer_f1_numeric_gold": {
+    "n": 20,
+    "base": 0.35,
+    "treat": 0.35,
+    "delta": 0.0
+  },
+  "answer_accuracy_strict_numeric_gold": {
+    "n": 20,
+    "base": 0.35,
+    "treat": 0.35,
+    "delta": 0.0,
+    "treat_only": 2,
+    "base_only": 2,
+    "mcnemar_p": 1.0
+  },
+  "answer_accuracy_strict_text_gold": {
+    "n": 5,
+    "base": 0.0,
+    "treat": 0.0,
+    "delta": 0.0,
+    "treat_only": 0,
+    "base_only": 0,
+    "mcnemar_p": 1.0
+  },
+  "scorer_note": "strict blocks re-scored offline from stored pred/gold by scripts/rescore_realhitbench.py; em_norm compares at the gold's own decimal places (half-up, matching how the golds were rounded), not a relative tolerance. answer_f1 = token F1, the metric the benchmark reports beside EM. *_numeric_gold excludes questions whose gold is not a number: unanswerable under a numeric-only solver prompt, 0 in every arm, no discordant pairs."
 }
