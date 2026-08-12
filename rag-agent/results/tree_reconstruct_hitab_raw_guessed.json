@@ -12,68 +12,85 @@
   "gold": "hmt parse (data/tables/hmt) \u2014 same ground truth as the rest of the pipeline",
   "input": "real source grid (data/tables/raw -> texts)",
   "boundary_mode": "guessed",
-  "col_path_exact_match": 0.8819,
-  "row_path_exact_match": 0.5614,
+  "col_path_exact_match": 0.9238,
+  "row_path_exact_match": 0.8136,
+  "col_path_segment_f1": 0.9762,
+  "row_path_segment_f1": 0.9368,
+  "segment_f1_note": "multiset F1 over path segments, reconstructed vs GOLD path. NOT comparable to segment_coverage in tree_reconstruct_multihiertt.py, which has no gold tree and matches segment words against the cell's description sentence instead.",
   "col_paths_scored": 3464,
   "row_paths_scored": 7196,
-  "boundary_guess_accuracy": 0.7146,
+  "boundary_guess_accuracy": 0.9481,
+  "n_header_cols_guess_accuracy": null,
   "by_size_bucket": {
     "10-20": {
       "n_tables": 196,
-      "col_path_exact_match": 0.8638,
-      "row_path_exact_match": 0.6301
+      "col_path_exact_match": 0.9047,
+      "row_path_exact_match": 0.812,
+      "col_path_segment_f1": 0.9702,
+      "row_path_segment_f1": 0.9435
     },
     ">20": {
       "n_tables": 129,
-      "col_path_exact_match": 0.9364,
-      "row_path_exact_match": 0.5114
+      "col_path_exact_match": 0.9645,
+      "row_path_exact_match": 0.8058,
+      "col_path_segment_f1": 0.9883,
+      "row_path_segment_f1": 0.93
     },
     "<=10x10": {
       "n_tables": 99,
-      "col_path_exact_match": 0.8396,
-      "row_path_exact_match": 0.5935
+      "col_path_exact_match": 0.9083,
+      "row_path_exact_match": 0.8748,
+      "col_path_segment_f1": 0.9726,
+      "row_path_segment_f1": 0.953
     }
   },
   "by_max_depth": {
     "col_depth1": {
       "n": 269,
-      "exact_match": 0.8736
+      "exact_match": 1.0,
+      "segment_f1": 1.0
     },
     "col_depth2": {
       "n": 2779,
-      "exact_match": 0.882
+      "exact_match": 0.9212,
+      "segment_f1": 0.9741
     },
     "col_depth3": {
       "n": 416,
-      "exact_match": 0.887
+      "exact_match": 0.8918,
+      "segment_f1": 0.9752
     },
     "row_depth1": {
       "n": 744,
-      "exact_match": 0.9785
+      "exact_match": 0.9651,
+      "segment_f1": 0.9875
     },
     "row_depth2": {
       "n": 3815,
-      "exact_match": 0.5919
+      "exact_match": 0.8815,
+      "segment_f1": 0.9567
     },
     "row_depth3": {
       "n": 2113,
-      "exact_match": 0.3564
+      "exact_match": 0.6938,
+      "segment_f1": 0.9066
     },
     "row_depth4": {
       "n": 524,
-      "exact_match": 0.5744
+      "exact_match": 0.5878,
+      "segment_f1": 0.8415
     }
   },
   "row_axis_by_depth_expressible": {
     "no": {
       "n_tables": 177,
       "n_paths": 3422,
-      "row_path_exact_match": 0.1113
+      "row_path_exact_match": 0.6297
     },
     "yes": {
       "n_tables": 247,
       "n_paths": 3774,
-      "row_path_exact_match": 0.9695
+      "row_path_exact_match": 0.9804
     }
   },
   "error_examples": [
@@ -100,46 +117,6 @@
           ],
           "rec": [
             "total"
-          ]
-        }
-      ]
-    },
-    {
-      "table_id": "1008",
-      "errors": [
-        {
-          "axis": "col",
-          "grid_line": 1,
-          "gold": [
-            "black male workers",
-            "immigrant"
-          ],
-          "rec": [
-            "black male workers",
-            "immigrant",
-            "percent"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 3,
-          "gold": [
-            "percent",
-            "agriculture, forestry, fishing and hunting"
-          ],
-          "rec": [
-            "agriculture, forestry, fishing and hunting"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
-            "percent",
-            "mining, quarrying, and oil and gas extraction"
-          ],
-          "rec": [
-            "mining, quarrying, and oil and gas extraction"
           ]
         }
       ]
@@ -190,39 +167,16 @@
       "table_id": "1026",
       "errors": [
         {
-          "axis": "col",
-          "grid_line": 1,
-          "gold": [
-            "men",
-            "all"
-          ],
-          "rec": [
-            "men",
-            "all",
-            "percent"
-          ]
-        },
-        {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 38,
           "gold": [
-            "percent",
-            "age at landing"
+            "number",
+            "observations"
           ],
           "rec": [
-            "age at landing"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
             "percent",
-            "age at landing",
-            "20 to 24"
-          ],
-          "rec": [
-            "20 to 24"
+            "number",
+            "observations"
           ]
         }
       ]
@@ -276,6 +230,17 @@
       "errors": [
         {
           "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "all companies"
+          ],
+          "rec": [
+            "current $millions",
+            "all companies"
+          ]
+        },
+        {
+          "axis": "row",
           "grid_line": 3,
           "gold": [
             "all companies",
@@ -294,18 +259,8 @@
             "5-9"
           ],
           "rec": [
+            "micro companiesa",
             "5-9"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 5,
-          "gold": [
-            "all companies",
-            "small companies"
-          ],
-          "rec": [
-            "small companies"
           ]
         }
       ]
@@ -314,112 +269,16 @@
       "table_id": "1043",
       "errors": [
         {
-          "axis": "col",
-          "grid_line": 1,
-          "gold": [
-            "private incorporated firms",
-            "immigrant-owned"
-          ],
-          "rec": [
-            "private incorporated firms",
-            "immigrant-owned",
-            "percent distribution"
-          ]
-        },
-        {
           "axis": "row",
-          "grid_line": 3,
-          "gold": [
-            "percent distribution",
-            "industry"
-          ],
-          "rec": [
-            "industry"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
-            "percent distribution",
-            "industry",
-            "unknown"
-          ],
-          "rec": [
-            "unknown"
-          ]
-        }
-      ]
-    },
-    {
-      "table_id": "104_54_nsf19316-tab002",
-      "errors": [
-        {
-          "axis": "row",
-          "grid_line": 1,
-          "gold": [
-            "micro companiesa"
-          ],
-          "rec": []
-        },
-        {
-          "axis": "row",
-          "grid_line": 2,
-          "gold": [
-            "micro companiesa",
-            "5-9"
-          ],
-          "rec": [
-            "5-9"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
-            "small companies",
-            "10-19"
-          ],
-          "rec": [
-            "10-19"
-          ]
-        }
-      ]
-    },
-    {
-      "table_id": "1063",
-      "errors": [
-        {
-          "axis": "col",
-          "grid_line": 1,
-          "gold": [
-            "shelters"
-          ],
-          "rec": [
-            "shelters",
-            "number"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 2,
+          "grid_line": 27,
           "gold": [
             "number",
-            "newfoundland and labrador"
+            "total count"
           ],
           "rec": [
-            "newfoundland and labrador"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 3,
-          "gold": [
+            "percent distribution",
             "number",
-            "prince edward island"
-          ],
-          "rec": [
-            "prince edward island"
+            "total count"
           ]
         }
       ]
@@ -428,38 +287,164 @@
       "table_id": "1097",
       "errors": [
         {
-          "axis": "col",
-          "grid_line": 1,
+          "axis": "row",
+          "grid_line": 11,
           "gold": [
-            "weighted estimates",
-            "first nations"
+            "percent",
+            "marital status"
           ],
           "rec": [
-            "weighted estimates",
-            "first nations",
-            "unweighted number"
+            "marital status"
           ]
         },
         {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 12,
           "gold": [
-            "unweighted number",
-            "number"
+            "percent",
+            "marital status",
+            "divorced"
           ],
           "rec": [
-            "number"
+            "marital status",
+            "divorced"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 13,
+          "gold": [
+            "percent",
+            "marital status",
+            "legally married"
+          ],
+          "rec": [
+            "marital status",
+            "legally married"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1099",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "percent",
+            "age group"
+          ],
+          "rec": [
+            "age group"
           ]
         },
         {
           "axis": "row",
           "grid_line": 5,
           "gold": [
-            "average",
-            "average age"
+            "percent",
+            "age group",
+            "0 to 4"
           ],
           "rec": [
-            "average age"
+            "age group",
+            "0 to 4"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 6,
+          "gold": [
+            "percent",
+            "age group",
+            "5 to 14"
+          ],
+          "rec": [
+            "age group",
+            "5 to 14"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "109_55_fs17-ib-19314-tab004",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "all institutions",
+            "top 20 institutions"
+          ],
+          "rec": [
+            "top 20 institutions"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "all institutions",
+            "top 20 institutions",
+            "johns hopkins u.b"
+          ],
+          "rec": [
+            "johns hopkins u.b"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "all institutions",
+            "top 20 institutions",
+            "u. michigan"
+          ],
+          "rec": [
+            "u. michigan"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "10_112_tab1",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 5,
+          "gold": [
+            "current $millions",
+            "constant fy 2009 $millions"
+          ],
+          "rec": [
+            "constant fy 2009 $millions"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 6,
+          "gold": [
+            "current $millions",
+            "constant fy 2009 $millions",
+            "2012"
+          ],
+          "rec": [
+            "constant fy 2009 $millions",
+            "2012"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 7,
+          "gold": [
+            "current $millions",
+            "constant fy 2009 $millions",
+            "2013"
+          ],
+          "rec": [
+            "constant fy 2009 $millions",
+            "2013"
           ]
         }
       ]

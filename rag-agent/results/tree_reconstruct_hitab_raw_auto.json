@@ -12,124 +12,88 @@
   "gold": "hmt parse (data/tables/hmt) \u2014 same ground truth as the rest of the pipeline",
   "input": "real source grid (data/tables/raw -> texts)",
   "boundary_mode": "guessed",
-  "col_path_exact_match": 0.9175,
-  "row_path_exact_match": 0.6829,
-  "col_path_segment_f1": 0.9717,
-  "row_path_segment_f1": 0.8905,
+  "col_path_exact_match": 0.9193,
+  "row_path_exact_match": 0.8024,
+  "col_path_segment_f1": 0.9746,
+  "row_path_segment_f1": 0.9326,
   "segment_f1_note": "multiset F1 over path segments, reconstructed vs GOLD path. NOT comparable to segment_coverage in tree_reconstruct_multihiertt.py, which has no gold tree and matches segment words against the cell's description sentence instead.",
   "col_paths_scored": 17408,
   "row_paths_scored": 35063,
   "boundary_guess_accuracy": 0.9339,
-  "n_header_cols_guess_accuracy": 0.9246,
+  "n_header_cols_guess_accuracy": null,
   "by_size_bucket": {
     "10-20": {
       "n_tables": 936,
-      "col_path_exact_match": 0.9168,
-      "row_path_exact_match": 0.7632,
-      "col_path_segment_f1": 0.9718,
-      "row_path_segment_f1": 0.9191
+      "col_path_exact_match": 0.9189,
+      "row_path_exact_match": 0.8557,
+      "col_path_segment_f1": 0.9752,
+      "row_path_segment_f1": 0.9501
     },
     "<=10x10": {
       "n_tables": 479,
-      "col_path_exact_match": 0.914,
-      "row_path_exact_match": 0.7495,
-      "col_path_segment_f1": 0.9698,
-      "row_path_segment_f1": 0.9143
+      "col_path_exact_match": 0.9174,
+      "row_path_exact_match": 0.8195,
+      "col_path_segment_f1": 0.9725,
+      "row_path_segment_f1": 0.9374
     },
     ">20": {
       "n_tables": 628,
-      "col_path_exact_match": 0.9207,
-      "row_path_exact_match": 0.624,
-      "col_path_segment_f1": 0.9727,
-      "row_path_segment_f1": 0.8696
+      "col_path_exact_match": 0.9211,
+      "row_path_exact_match": 0.7675,
+      "col_path_segment_f1": 0.9747,
+      "row_path_segment_f1": 0.9214
     }
   },
   "by_max_depth": {
     "col_depth1": {
       "n": 1323,
-      "exact_match": 0.9932,
-      "segment_f1": 0.9932
+      "exact_match": 0.9955,
+      "segment_f1": 0.9955
     },
     "col_depth2": {
       "n": 14132,
-      "exact_match": 0.9168,
-      "segment_f1": 0.9701
+      "exact_match": 0.9187,
+      "segment_f1": 0.9734
     },
     "col_depth3": {
       "n": 1953,
-      "exact_match": 0.8715,
-      "segment_f1": 0.9686
+      "exact_match": 0.872,
+      "segment_f1": 0.9691
     },
     "row_depth1": {
       "n": 4031,
-      "exact_match": 0.9127,
-      "segment_f1": 0.9658
+      "exact_match": 0.9355,
+      "segment_f1": 0.9747
     },
     "row_depth2": {
       "n": 17575,
-      "exact_match": 0.8378,
-      "segment_f1": 0.9401
+      "exact_match": 0.861,
+      "segment_f1": 0.9481
     },
     "row_depth3": {
       "n": 10685,
-      "exact_match": 0.4727,
-      "segment_f1": 0.8579
+      "exact_match": 0.7194,
+      "segment_f1": 0.925
     },
     "row_depth4": {
       "n": 2772,
-      "exact_match": 0.1764,
-      "segment_f1": 0.5929
+      "exact_match": 0.5574,
+      "segment_f1": 0.8033
     }
   },
   "row_axis_by_depth_expressible": {
     "no": {
       "n_tables": 827,
       "n_paths": 16130,
-      "row_path_exact_match": 0.4774
+      "row_path_exact_match": 0.6063
     },
     "yes": {
       "n_tables": 1216,
       "n_paths": 18933,
-      "row_path_exact_match": 0.8579
+      "row_path_exact_match": 0.9695
     }
   },
   "error_examples": [
-    {
-      "table_id": "0_totto115-4",
-      "errors": [
-        {
-          "axis": "col",
-          "grid_line": 1,
-          "gold": [
-            "rushing",
-            "team"
-          ],
-          "rec": []
-        },
-        {
-          "axis": "col",
-          "grid_line": 2,
-          "gold": [
-            "rushing",
-            "att"
-          ],
-          "rec": [
-            "att"
-          ]
-        },
-        {
-          "axis": "col",
-          "grid_line": 3,
-          "gold": [
-            "rushing",
-            "yds"
-          ],
-          "rec": [
-            "yds"
-          ]
-        }
-      ]
-    },
     {
       "table_id": "1000",
       "errors": [
@@ -148,26 +112,15 @@
         },
         {
           "axis": "row",
-          "grid_line": 14,
+          "grid_line": 24,
           "gold": [
             "percent",
-            "men"
+            "total"
           ],
           "rec": [
-            "men"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 15,
-          "gold": [
             "percent",
             "men",
-            "jamaica"
-          ],
-          "rec": [
-            "men",
-            "jamaica"
+            "total"
           ]
         }
       ]
@@ -190,26 +143,15 @@
         },
         {
           "axis": "row",
-          "grid_line": 22,
+          "grid_line": 40,
           "gold": [
             "percent",
-            "men"
+            "total"
           ],
           "rec": [
-            "men"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 23,
-          "gold": [
             "percent",
             "men",
-            "ethiopia"
-          ],
-          "rec": [
-            "men",
-            "ethiopia"
+            "total"
           ]
         }
       ]
@@ -332,48 +274,6 @@
       ]
     },
     {
-      "table_id": "1006",
-      "errors": [
-        {
-          "axis": "row",
-          "grid_line": 7,
-          "gold": [
-            "percent",
-            "country of ancestry"
-          ],
-          "rec": [
-            "country of ancestry"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 8,
-          "gold": [
-            "percent",
-            "country of ancestry",
-            "jamaica"
-          ],
-          "rec": [
-            "country of ancestry",
-            "jamaica"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 9,
-          "gold": [
-            "percent",
-            "country of ancestry",
-            "haiti"
-          ],
-          "rec": [
-            "country of ancestry",
-            "haiti"
-          ]
-        }
-      ]
-    },
-    {
       "table_id": "100_totto11759-1",
       "errors": [
         {
@@ -474,6 +374,68 @@
           ],
           "rec": [
             "civilian personnel as a proportion of total personnel"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "101_totto11849-1",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 6,
+          "gold": [
+            "53",
+            "39"
+          ],
+          "rec": [
+            "total",
+            "53",
+            "39"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "102_totto11919-1",
+      "errors": [
+        {
+          "axis": "col",
+          "grid_line": 2,
+          "gold": [
+            "peak chart positions",
+            "us"
+          ],
+          "rec": [
+            "peak chart positions",
+            "us",
+            "31"
+          ]
+        },
+        {
+          "axis": "col",
+          "grid_line": 3,
+          "gold": [
+            "peak chart positions",
+            "us main"
+          ],
+          "rec": [
+            "peak chart positions",
+            "us main",
+            "57"
+          ]
+        },
+        {
+          "axis": "col",
+          "grid_line": 4,
+          "gold": [
+            "peak chart positions",
+            "us ac"
+          ],
+          "rec": [
+            "peak chart positions",
+            "us ac",
+            "27"
           ]
         }
       ]

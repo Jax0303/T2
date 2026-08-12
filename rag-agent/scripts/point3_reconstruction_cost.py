@@ -3,8 +3,8 @@
 """Point 3: how much of the S2 retrieval win is REAL structure vs RECONSTRUCTION noise?
 
 My method (S2) prepends each cell's full header path. On genuinely raw tables the
-path is RECONSTRUCTED from the grid, and row-axis reconstruction is weak (~0.54
-exact on HiTab real grids). The professor's objection: is S2's edge real, or an
+path is RECONSTRUCTED from the grid, and the row axis is the weak one (~0.82
+exact on HiTab real grids vs ~0.97 for columns). The objection: is S2's edge real, or an
 artifact that evaporates once the tree it stands on is itself half-wrong?
 
 This isolates it on HiTab, which ships BOTH the gold header tree AND the real
@@ -35,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))  # sibling scripts
 import numpy as np
 
 from rag_agent.bench.hitab import load_queries
-from rag_agent.reconstruct import reconstruct_paths_with_merges
+from rag_agent.reconstruct import reconstruct_col_paths, reconstruct_row_paths
 from rag_agent.retrieve.encoders import default_encoder
 from tree_reconstruct_hitab_raw import align, norm, tree_lines
 
@@ -48,6 +48,29 @@ def cell_text(rp, cp, v, scheme):
         return f"{lab}: {v}" if lab else str(v)
     path = " > ".join([*rp, *cp])          # S2 (gold or recon depending on rp/cp)
     return f"{path}: {v}" if path else str(v)
+
+
+def shuffle_ancestors(paths: dict, seed: int):
+    """Permute each path's ANCESTOR prefix across lines, keeping its leaf.
+
+    The decisive control for "is the S2 gain structure, or just longer strings?".
+    Leaf label, path length distribution and the table's ancestor vocabulary all
+    survive; only the line -> ancestor ASSIGNMENT is destroyed. If S2 keeps its
+    edge over flat under this, the edge was never the hierarchy.
+
+    Returns ``(shuffled, n_changed, n_total)``.
+    """
+    rng = np.random.default_rng(seed)
+    keys = sorted(paths)
+    prefixes = [list(paths[k][:-1]) for k in keys]
+    order = rng.permutation(len(keys))
+    out, changed = {}, 0
+    for pos, k in enumerate(keys):
+        leaf = paths[k][-1:]
+        new = prefixes[int(order[pos])] + list(leaf)
+        out[k] = new
+        changed += int(new != list(paths[k]))
+    return out, changed, len(keys)
 
 
 def build_table_paths(raw, bt):
@@ -71,8 +94,12 @@ def build_table_paths(raw, bt):
     if al is None:
         return None
     rows_c, cols_c, _rate = al  # rows_c[i] = grid row of bt data row i; cols_c[j] likewise
-    rec_cols, rec_rows = reconstruct_paths_with_merges(
-        texts, raw.get("merged_regions") or [], nhr, nhc)
+    # Texts-only, not reconstruct_paths_with_merges: on HiTab dev the merge-aware
+    # front-end is DOMINATED on both axes (col .943/.975, row .692/.820), so
+    # consuming the span markup costs accuracy rather than buying it. Kept as an
+    # ablation behind tree_reconstruct_hitab_raw.py --use-merges.
+    rec_cols = reconstruct_col_paths(texts, nhr, nhc)
+    rec_rows = reconstruct_row_paths(texts, nhr, nhc)
 
     gold_rp, gold_cp, rec_rp, rec_cp = {}, {}, {}, {}
     col_hit = col_tot = row_hit = row_tot = 0
@@ -125,7 +152,7 @@ def main() -> int:
             recon_acc[i] += pt["recon"][i]
     ch, ct, rh, rt = recon_acc
     print(f"[recon] aligned tables: {len(paths)}  col_exact={ch/ct:.4f} ({ct}) "
-          f"row_exact={rh/rt:.4f} ({rt})  [target ~.943/.545 confirms wiring]", flush=True)
+          f"row_exact={rh/rt:.4f} ({rt})  [target ~.975/.820 confirms wiring]", flush=True)
 
     # keep queries whose table aligned and whose gold operands are all in range
     pop = []
@@ -145,10 +172,27 @@ def main() -> int:
     enc = default_encoder(model_name=args.embed_model)
 
     # global cell list per scheme -> one encode pass each
-    schemes = ("flat", "S2_gold", "S2_recon")
+    schemes = ("flat", "S2_gold", "S2_recon", "S2_shuffled", "S2_gold_trunc")
     cell_key = []                       # (tid, i, j)
     cell_of = {}                        # (tid,i,j) -> global idx
     texts = {s: [] for s in schemes}
+    shuf_changed = shuf_total = 0
+    for si, (tid, pt) in enumerate(paths.items()):
+        sr, ch_r, tot_r = shuffle_ancestors(pt["rec_rp"], seed=si)
+        sc, ch_c, tot_c = shuffle_ancestors(pt["rec_cp"], seed=si + 100000)
+        pt["shuf_rp"], pt["shuf_cp"] = sr, sc
+        shuf_changed += ch_r + ch_c
+        shuf_total += tot_r + tot_c
+        # Gold, but cut to the reconstructed path's depth from the leaf end.
+        # Reconstruction comes out SHALLOWER than gold (recon_audit_hitab.json:
+        # 1,201 lines shallower vs 81 deeper) and the ancestors it drops carry
+        # slightly LESS question vocabulary than gold's. If dropping them is why
+        # S2_recon out-retrieves S2_gold, this arm reproduces the gain with
+        # every kept segment still exactly correct.
+        pt["trunc_rp"] = {i: (g[-len(pt["rec_rp"][i]):] if pt["rec_rp"][i] else g)
+                          for i, g in pt["gold_rp"].items()}
+        pt["trunc_cp"] = {j: (g[-len(pt["rec_cp"][j]):] if pt["rec_cp"][j] else g)
+                          for j, g in pt["gold_cp"].items()}
     for tid, pt in paths.items():
         bt = tables[tid]
         for i in range(pt["n_r"]):
@@ -159,7 +203,12 @@ def main() -> int:
                 texts["flat"].append(cell_text(pt["gold_rp"][i], pt["gold_cp"][j], v, "flat"))
                 texts["S2_gold"].append(cell_text(pt["gold_rp"][i], pt["gold_cp"][j], v, "S2"))
                 texts["S2_recon"].append(cell_text(pt["rec_rp"][i], pt["rec_cp"][j], v, "S2"))
+                texts["S2_shuffled"].append(cell_text(pt["shuf_rp"][i], pt["shuf_cp"][j], v, "S2"))
+                texts["S2_gold_trunc"].append(cell_text(pt["trunc_rp"][i], pt["trunc_cp"][j], v, "S2"))
     print(f"[cells] {len(cell_key)} data cells across {len(paths)} tables", flush=True)
+    print(f"[shuffle] {shuf_changed}/{shuf_total} lines got a different ancestor prefix "
+          f"({shuf_changed/max(shuf_total,1):.1%}) — the rest had nothing to permute",
+          flush=True)
 
     vecs = {s: np.asarray(enc.encode(texts[s])) for s in schemes}
     q_vecs = np.asarray(enc.encode([q.question for q, _ in pop]))
@@ -196,13 +245,25 @@ def main() -> int:
                        "aligned_tables": len(paths)},
         "reconstruction_accuracy": {"col_exact": round(ch / ct, 4),
                                     "row_exact": round(rh / rt, 4),
-                                    "note": "merge-aware front-end at gold boundary; "
+                                    "note": "texts-only front-end at gold boundary; "
                                             "cross-check vs tree_reconstruct_hitab_raw_merged"},
         "retriever": "dense (bge-small, within-table pool)",
         "metric": "set-EM@k (all gold operand cells ranked <= k)",
         "arms": {"flat": "baseline serialization (leaf labels only)",
                  "S2_gold": "my method on GOLD tree (perfect structure = ceiling)",
-                 "S2_recon": "my method on RECONSTRUCTED tree (what raw data gets)"},
+                 "S2_recon": "my method on RECONSTRUCTED tree (what raw data gets)",
+                 "S2_shuffled": "CONTROL: reconstructed paths with the ancestor "
+                                "prefix permuted across lines — same length, same "
+                                "vocabulary, wrong assignment. S2_recon - S2_shuffled "
+                                "is the part of the gain that is actually structural; "
+                                "S2_shuffled - flat is the part that is just longer strings.",
+                 "S2_gold_trunc": "CONTROL: GOLD paths cut to the reconstructed depth "
+                                  "from the leaf end — every kept segment correct, but "
+                                  "as short as reconstruction. Tests whether S2_recon "
+                                  "out-retrieves S2_gold because gold's extra ancestors "
+                                  "dilute the embedding rather than because recon is better."},
+        "shuffle_control": {"lines_permuted": shuf_changed, "lines_total": shuf_total,
+                            "rate": round(shuf_changed / max(shuf_total, 1), 4)},
         "set_em": setem,
     }
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
@@ -211,9 +272,11 @@ def main() -> int:
     print("\n=== POINT 3: reconstruction cost (HiTab, dense, within-table) ===")
     print(f"n={n} queries | recon col={ch/ct:.3f} row={rh/rt:.3f}")
     for k in KS:
-        f, g, r = (setem[s][f"set_em@{k}"] for s in schemes)
-        print(f"  set-EM@{k:<2}   flat {f:.3f}   S2_recon {r:.3f}   S2_gold {g:.3f}"
-              f"   | recon_cost(gold-recon)={g-r:+.3f}  method_gain(recon-flat)={r-f:+.3f}")
+        f, g, r, sh, gt = (setem[s][f"set_em@{k}"] for s in schemes)
+        print(f"  set-EM@{k:<2}  flat {f:.3f}  shuf {sh:.3f}  gold {g:.3f}  gold_trunc {gt:.3f}"
+              f"  recon {r:.3f}   | gain={r-f:+.3f}"
+              f"  (structural {r-sh:+.3f} / length-only {sh-f:+.3f})"
+              f"  dilution={gt-g:+.3f}")
     print(f"wrote -> {args.out}")
     return 0
 

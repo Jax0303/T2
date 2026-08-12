@@ -182,14 +182,53 @@ def section_label(row: List[str]) -> str:
     return filled[0] if len(filled) == 1 else ""
 
 
+def band_qualifiers(grid: Grid, n_header_rows: int, n_header_cols: int) -> List[str]:
+    """Single-value rows INSIDE the column header band, outermost first.
+
+    A unit or scope annotation is written as its own header-band row holding one
+    value and nothing else — ``('', 'percent', '', '')`` above a block of
+    percentages. Structurally it is a section row that happens to sit above the
+    data instead of inside it, and HiTab's gold puts it on the ROW path: the row
+    for "marital status" is ``['percent', 'marital status']``.
+
+    MEASURED AND REJECTED — kept as the record of a hypothesis that failed, so it
+    is not proposed again. Promoting these onto every row path scores **0 gains
+    and 110 losses** on HiTab dev (row EM .7607 -> .7454). What the rule actually
+    picks up is the STUB COLUMN'S OWN NAME — "age group at symptom onset",
+    "canadian community health survey cycle" — which names the label column and
+    belongs to no row's path. The genuine qualifiers ("percent") were already
+    being recovered by the body section-row pass, so there was nothing left to
+    win. Wired off in :func:`reconstruct_row_paths`; do not turn it on without
+    a discriminator that separates a scope annotation from a column name.
+
+    The last header row is excluded whatever it looks like: that row is the
+    column leaves, and a one-column table would otherwise donate its only column
+    header to every row path.
+    """
+    out = []
+    for r in range(max(0, n_header_rows - 1)):
+        if r >= len(grid):
+            break
+        lab = section_label(grid[r])
+        # Only a value in the DATA region counts. A lone label in the stub is the
+        # stub column's own name ("Agency"), which belongs to no row's path.
+        if lab and lab not in [str(x).strip() for x in grid[r][:n_header_cols]]:
+            out.append(lab)
+    return out
+
+
 def reconstruct_row_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1,
-                          use_section_rows: bool = True) -> List[List[str]]:
+                          use_section_rows: bool = True,
+                          use_band_qualifiers: bool = True) -> List[List[str]]:
     """One header path per DATA row (rows >= ``n_header_rows``), mirroring
     :func:`reconstruct_col_paths`.
 
     ``use_section_rows`` prepends the section-row level above the stub columns,
     so a hierarchy deeper than the stub block still has somewhere to live.
     Pass False for the stub-only reconstruction this replaced.
+
+    ``use_band_qualifiers`` additionally prepends :func:`band_qualifiers` — the
+    single-value rows in the column header band — as the outermost level.
     """
     n_rows = len(grid)
     if n_header_cols <= 0:
@@ -208,22 +247,47 @@ def reconstruct_row_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1
         # whether it is a sibling of the last heading or its child is not
         # recoverable from a grid that dropped the indentation.
         stacks, stack, run = [], [], 0
+        # The FIRST section run of the body is the table's own scope, not a
+        # sibling of what follows: a unit or population row ("percent",
+        # "current $millions") sits above the header block and stays in force
+        # over every group beneath it. Resetting to [] on the next heading drops
+        # it, which is why "marital status" reconstructs as ['marital status']
+        # where the gold reads ['percent', 'marital status']. `keep` is how much
+        # of the stack a later heading inherits instead of clearing.
+        keep = 0
+        seen_data = False
         for i, r in enumerate(body):
             lab = section_label(grid[r])
             if lab:
-                stack = (stack if run else [])[:] + [lab]
+                if run == 0 and seen_data and keep:
+                    stack = stack[:keep] + [lab]
+                else:
+                    stack = (stack if run else [])[:] + [lab]
                 run += 1
                 # the heading is not also its own child: blank its stub so the
                 # label cannot appear twice in the same path
                 for d in range(n_header_cols):
                     levels[d][i] = ""
             else:
+                # The leading run's outer levels become the persistent scope the
+                # moment data proves the run has ended. Only the run's LAST
+                # heading is a group label that later headings replace.
+                if run and not seen_data:
+                    keep = max(0, len(stack) - 1)
+                if any(str(x).strip() for x in grid[r][n_header_cols:]):
+                    seen_data = True
                 run = 0
             stacks.append(stack)
         depth = max((len(s) for s in stacks), default=0)
         if depth:
             levels = [[s[d] if d < len(s) else "" for s in stacks]
                       for d in range(depth)] + levels
+
+    # NOT applied: see band_qualifiers' docstring for why it stays off.
+    if use_band_qualifiers and False:  # pragma: no cover
+        quals = band_qualifiers(grid, n_header_rows, n_header_cols)
+        n_body = len(list(body))
+        levels = [[q] * n_body for q in quals] + levels
 
     return _hierarchical_carry(levels)
 
@@ -360,8 +424,21 @@ def reconstruct_paths_with_merges(
 
     col_paths = [_dedup([filled[r][c] for r in header_rows])
                  for c in range(nhc, n_cols)]
-    row_paths = [_dedup(qualifiers + [filled[r][c] for c in range(nhc)])
-                 for r in range(nhr, n_rows)]
+
+    # Row paths reuse reconstruct_row_paths' section-row stack. Reading the stub
+    # columns alone -- which is all this function used to do -- cannot express a
+    # level that has no stub column to live in, and on HiTab dev that is most of
+    # the row axis: stub-only scores .5446 against .8202 for the texts-only path.
+    # The grid handed over is filled in the STUB columns (exact merge spans, the
+    # thing this function is for) and original in the data columns, because
+    # section_label needs a section row's data region to still read as empty --
+    # _fill_merges would have painted a full-width heading across every column.
+    hybrid = [[filled[r][c] if c < nhc else
+               (grid[r][c] if r < len(grid) and c < len(grid[r]) else "")
+               for c in range(n_cols)]
+              for r in range(n_rows)]
+    row_paths = [_dedup(qualifiers + p)
+                 for p in reconstruct_row_paths(hybrid, nhr, nhc)]
     return col_paths, row_paths
 
 

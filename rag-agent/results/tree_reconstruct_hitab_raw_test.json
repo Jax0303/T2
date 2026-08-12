@@ -13,9 +13,9 @@
   "input": "real source grid (data/tables/raw -> texts)",
   "boundary_mode": "known (from gold trees)",
   "col_path_exact_match": 0.9709,
-  "row_path_exact_match": 0.7614,
+  "row_path_exact_match": 0.8194,
   "col_path_segment_f1": 0.9931,
-  "row_path_segment_f1": 0.9328,
+  "row_path_segment_f1": 0.9459,
   "segment_f1_note": "multiset F1 over path segments, reconstructed vs GOLD path. NOT comparable to segment_coverage in tree_reconstruct_multihiertt.py, which has no gold tree and matches segment words against the cell's description sentence instead.",
   "col_paths_scored": 3470,
   "row_paths_scored": 7136,
@@ -25,23 +25,23 @@
     "<=10x10": {
       "n_tables": 94,
       "col_path_exact_match": 0.9679,
-      "row_path_exact_match": 0.7714,
+      "row_path_exact_match": 0.8063,
       "col_path_segment_f1": 0.9918,
-      "row_path_segment_f1": 0.9364
+      "row_path_segment_f1": 0.9449
     },
     "10-20": {
       "n_tables": 192,
       "col_path_exact_match": 0.9798,
-      "row_path_exact_match": 0.8465,
+      "row_path_exact_match": 0.888,
       "col_path_segment_f1": 0.9953,
-      "row_path_segment_f1": 0.9545
+      "row_path_segment_f1": 0.9643
     },
     ">20": {
       "n_tables": 128,
       "col_path_exact_match": 0.9571,
-      "row_path_exact_match": 0.7106,
+      "row_path_exact_match": 0.7817,
       "col_path_segment_f1": 0.9901,
-      "row_path_segment_f1": 0.9197
+      "row_path_segment_f1": 0.9354
     }
   },
   "by_max_depth": {
@@ -72,8 +72,8 @@
     },
     "row_depth3": {
       "n": 2153,
-      "exact_match": 0.4863,
-      "segment_f1": 0.8738
+      "exact_match": 0.6786,
+      "segment_f1": 0.9171
     },
     "row_depth4": {
       "n": 497,
@@ -85,7 +85,7 @@
     "no": {
       "n_tables": 167,
       "n_paths": 3348,
-      "row_path_exact_match": 0.4946
+      "row_path_exact_match": 0.6183
     },
     "yes": {
       "n_tables": 247,
@@ -172,6 +172,37 @@
           "rec": [
             "2016",
             "manufacturing"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "1048",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 25,
+          "gold": [
+            "number",
+            "total"
+          ],
+          "rec": [
+            "percent distribution",
+            "number",
+            "total"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 27,
+          "gold": [
+            "percent",
+            "knowledge-based industries"
+          ],
+          "rec": [
+            "percent distribution",
+            "percent",
+            "knowledge-based industries"
           ]
         }
       ]
@@ -364,48 +395,6 @@
           ],
           "rec": [
             "quebec"
-          ]
-        }
-      ]
-    },
-    {
-      "table_id": "1140",
-      "errors": [
-        {
-          "axis": "row",
-          "grid_line": 10,
-          "gold": [
-            "percent",
-            "fathers"
-          ],
-          "rec": [
-            "fathers"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 11,
-          "gold": [
-            "percent",
-            "fathers",
-            "with pre-birth-year, birth-year, or post-birth-year roe; and received ei in the birth year"
-          ],
-          "rec": [
-            "fathers",
-            "with pre-birth-year, birth-year, or post-birth-year roe; and received ei in the birth year"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 12,
-          "gold": [
-            "percent",
-            "fathers",
-            "with pre-birth-year, birth-year, or post-birth-year roe; and received ei after the child's birth year"
-          ],
-          "rec": [
-            "fathers",
-            "with pre-birth-year, birth-year, or post-birth-year roe; and received ei after the child's birth year"
           ]
         }
       ]

@@ -65,3 +65,43 @@ def test_no_section_rows_is_unchanged():
     off = reconstruct_row_paths(grid, n_header_rows=1, n_header_cols=1,
                                 use_section_rows=False)
     assert on == off == [["seoul"], ["busan"]]
+
+
+def test_leading_section_run_is_a_persistent_scope():
+    """The body's first heading run outlives the groups beneath it.
+
+    "percent" is a unit that holds over the whole table; "age group" and
+    "marital status" are the groups inside it. Treating a heading that follows
+    data as a fresh stack drops the unit, so "marital status" reconstructs one
+    segment short of the gold ['percent', 'marital status'] — 5.95pp of HiTab
+    dev's row paths (.7607 -> .8202).
+    """
+    grid = [
+        ["characteristic", "men", "women"],
+        ["", "percent", ""],          # leading scope: holds for the whole table
+        ["age group", "", ""],        # group heading inside that scope
+        ["20 to 24", "10.3", "16.3"],
+        ["25 to 29", "24.6", "27.0"],
+        ["marital status", "", ""],   # follows data — replaces the group, NOT the scope
+        ["married", "68.2", "77.4"],
+    ]
+    paths = reconstruct_row_paths(grid, n_header_rows=1, n_header_cols=1)
+    assert paths[2] == ["percent", "age group", "20 to 24"], paths[2]
+    assert paths[4] == ["percent", "marital status"], paths[4]
+    assert paths[5] == ["percent", "marital status", "married"], paths[5]
+
+
+def test_single_leading_heading_is_not_kept_as_scope():
+    """One heading before the data is a group, not a scope — it must still be
+    replaced. Keeping it would put "north" on every southern row."""
+    grid = [
+        ["region", "2023"],
+        ["north", ""],
+        ["seoul", "1"],
+        ["south", ""],
+        ["daegu", "5"],
+    ]
+    paths = reconstruct_row_paths(grid, n_header_rows=1, n_header_cols=1)
+    assert paths[1] == ["north", "seoul"]
+    assert paths[3] == ["south", "daegu"], paths[3]
+    assert "north" not in paths[3]

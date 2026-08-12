@@ -13,7 +13,10 @@
   "input": "real source grid (data/tables/raw -> texts)",
   "boundary_mode": "known (from gold trees)",
   "col_path_exact_match": 0.9428,
-  "row_path_exact_match": 0.5446,
+  "row_path_exact_match": 0.6915,
+  "col_path_segment_f1": 0.9819,
+  "row_path_segment_f1": 0.9024,
+  "segment_f1_note": "multiset F1 over path segments, reconstructed vs GOLD path. NOT comparable to segment_coverage in tree_reconstruct_multihiertt.py, which has no gold tree and matches segment words against the cell's description sentence instead.",
   "col_paths_scored": 3464,
   "row_paths_scored": 7196,
   "boundary_guess_accuracy": null,
@@ -22,59 +25,72 @@
     "10-20": {
       "n_tables": 196,
       "col_path_exact_match": 0.9664,
-      "row_path_exact_match": 0.6244
+      "row_path_exact_match": 0.7256,
+      "col_path_segment_f1": 0.9892,
+      "row_path_segment_f1": 0.9182
     },
     ">20": {
       "n_tables": 129,
       "col_path_exact_match": 0.9532,
-      "row_path_exact_match": 0.4893
+      "row_path_exact_match": 0.6743,
+      "col_path_segment_f1": 0.9878,
+      "row_path_segment_f1": 0.8938
     },
     "<=10x10": {
       "n_tables": 99,
       "col_path_exact_match": 0.856,
-      "row_path_exact_match": 0.5626
+      "row_path_exact_match": 0.6552,
+      "col_path_segment_f1": 0.9507,
+      "row_path_segment_f1": 0.8898
     }
   },
   "by_max_depth": {
     "col_depth1": {
       "n": 269,
-      "exact_match": 0.9926
+      "exact_match": 0.9926,
+      "segment_f1": 0.9926
     },
     "col_depth2": {
       "n": 2779,
-      "exact_match": 0.9449
+      "exact_match": 0.9449,
+      "segment_f1": 0.9816
     },
     "col_depth3": {
       "n": 416,
-      "exact_match": 0.8966
+      "exact_match": 0.8966,
+      "segment_f1": 0.9771
     },
     "row_depth1": {
       "n": 744,
-      "exact_match": 0.8858
+      "exact_match": 0.8858,
+      "segment_f1": 0.957
     },
     "row_depth2": {
       "n": 3815,
-      "exact_match": 0.6024
+      "exact_match": 0.8024,
+      "segment_f1": 0.9348
     },
     "row_depth3": {
       "n": 2113,
-      "exact_match": 0.3275
+      "exact_match": 0.4633,
+      "segment_f1": 0.8444
     },
     "row_depth4": {
       "n": 524,
-      "exact_match": 0.5153
+      "exact_match": 0.5286,
+      "segment_f1": 0.8224
     }
   },
   "row_axis_by_depth_expressible": {
     "no": {
       "n_tables": 177,
       "n_paths": 3422,
-      "row_path_exact_match": 0.1026
+      "row_path_exact_match": 0.4117
     },
     "yes": {
       "n_tables": 247,
       "n_paths": 3774,
-      "row_path_exact_match": 0.9454
+      "row_path_exact_match": 0.9452
     }
   },
   "error_examples": [
@@ -164,37 +180,15 @@
       "errors": [
         {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 38,
           "gold": [
-            "percent",
-            "age at landing"
+            "number",
+            "observations"
           ],
           "rec": [
-            "age at landing"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
             "percent",
-            "age at landing",
-            "20 to 24"
-          ],
-          "rec": [
-            "20 to 24"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 5,
-          "gold": [
-            "percent",
-            "age at landing",
-            "25 to 29"
-          ],
-          "rec": [
-            "25 to 29"
+            "number",
+            "observations"
           ]
         }
       ]
@@ -235,6 +229,7 @@
           ],
           "rec": [
             "current $millions",
+            "micro companiesa",
             "5-9"
           ]
         }
@@ -245,75 +240,15 @@
       "errors": [
         {
           "axis": "row",
-          "grid_line": 3,
+          "grid_line": 27,
           "gold": [
+            "number",
+            "total count"
+          ],
+          "rec": [
             "percent distribution",
-            "industry"
-          ],
-          "rec": [
-            "industry"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
-            "percent distribution",
-            "industry",
-            "unknown"
-          ],
-          "rec": [
-            "unknown"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 5,
-          "gold": [
-            "percent distribution",
-            "industry",
-            "agriculture, forestry, fishing and hunting"
-          ],
-          "rec": [
-            "agriculture, forestry, fishing and hunting"
-          ]
-        }
-      ]
-    },
-    {
-      "table_id": "104_54_nsf19316-tab002",
-      "errors": [
-        {
-          "axis": "row",
-          "grid_line": 2,
-          "gold": [
-            "micro companiesa",
-            "5-9"
-          ],
-          "rec": [
-            "5-9"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 4,
-          "gold": [
-            "small companies",
-            "10-19"
-          ],
-          "rec": [
-            "10-19"
-          ]
-        },
-        {
-          "axis": "row",
-          "grid_line": 5,
-          "gold": [
-            "small companies",
-            "20-49"
-          ],
-          "rec": [
-            "20-49"
+            "number",
+            "total count"
           ]
         }
       ]
@@ -399,17 +334,6 @@
       "errors": [
         {
           "axis": "row",
-          "grid_line": 3,
-          "gold": [
-            "percent",
-            "total"
-          ],
-          "rec": [
-            "total"
-          ]
-        },
-        {
-          "axis": "row",
           "grid_line": 4,
           "gold": [
             "percent",
@@ -428,7 +352,61 @@
             "0 to 4"
           ],
           "rec": [
+            "age group",
             "0 to 4"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 6,
+          "gold": [
+            "percent",
+            "age group",
+            "5 to 14"
+          ],
+          "rec": [
+            "age group",
+            "5 to 14"
+          ]
+        }
+      ]
+    },
+    {
+      "table_id": "109_55_fs17-ib-19314-tab004",
+      "errors": [
+        {
+          "axis": "row",
+          "grid_line": 2,
+          "gold": [
+            "all institutions",
+            "top 20 institutions"
+          ],
+          "rec": [
+            "top 20 institutions"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 3,
+          "gold": [
+            "all institutions",
+            "top 20 institutions",
+            "johns hopkins u.b"
+          ],
+          "rec": [
+            "johns hopkins u.b"
+          ]
+        },
+        {
+          "axis": "row",
+          "grid_line": 4,
+          "gold": [
+            "all institutions",
+            "top 20 institutions",
+            "u. michigan"
+          ],
+          "rec": [
+            "u. michigan"
           ]
         }
       ]
