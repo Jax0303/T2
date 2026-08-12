@@ -179,11 +179,52 @@ def build_corpus(queries, docs):
         cell["n_tables_with_label"] = len(label_tables.get(leaf, set()))
         cell["is_total_like"] = bool(_TOTAL_RE.search(leaf))
 
+    _stamp_alien_paths(cells)
     return tables, cells, kept
+
+
+def _stamp_alien_paths(cells) -> None:
+    """Give every cell a header path lifted from a DIFFERENT table — the paths
+    the ``S3_alien`` placebo renders.
+
+    Drawn from another table rather than synthesised so the decoy is a real
+    hierarchy with real domain vocabulary; a decoy made of nonsense would be
+    trivially easy to out-retrieve and would not test anything. Deterministic
+    from the corpus (crc32 of the table key, not ``hash()``, which is salted per
+    process) so a rerun reproduces the arm exactly.
+    """
+    by_table = {}
+    for i, cell in enumerate(cells):
+        by_table.setdefault(cell["table"], []).append(i)
+    keys = sorted(by_table, key=lambda k: str(k))
+    for pos, key in enumerate(keys):
+        if len(keys) < 2:
+            donor = key                       # single-table corpus: nothing alien
+        else:
+            # a fixed derangement — table i borrows from a table that is not i
+            off = 1 + zlib.crc32(str(key).encode()) % (len(keys) - 1)
+            donor = keys[(pos + off) % len(keys)]
+        pool = by_table[donor]
+        for n, i in enumerate(by_table[key]):
+            src = cells[pool[n % len(pool)]]
+            cells[i]["alien_rp"] = src["row_path"]
+            cells[i]["alien_cp"] = src["col_path"]
+
+
+def _s3_sentence(rp, cp, v) -> str:
+    """The S3 caption sentence. One definition, so the sentence-level controls
+    below differ from S3 in their PATHS and in nothing else."""
+    row = " > ".join(rp)
+    col = " > ".join(cp)
+    if row and col:
+        return f"For {row}, {col} is {v}."
+    return f"{col or row} is {v}." if (col or row) else f"The value is {v}."
 
 
 def cell_text(cell, scheme: str) -> str:
     rp, cp, v = cell["row_path"], cell["col_path"], cell["value"]
+    if scheme == "value":                     # the floor: no labels at all
+        return str(v)
     if scheme == "flat":                      # leaf labels only, no hierarchy
         leaf_r = rp[-1] if rp else ""
         leaf_c = cp[-1] if cp else ""
@@ -204,11 +245,38 @@ def cell_text(cell, scheme: str) -> str:
         path = " > ".join(segs)
         return f"{path}: {v}" if path else v
     if scheme == "S3":                        # caption sentence (medium preset)
-        row = " > ".join(rp)
-        col = " > ".join(cp)
-        if row and col:
-            return f"For {row}, {col} is {v}."
-        return f"{col or row} is {v}." if (col or row) else f"The value is {v}."
+        return _s3_sentence(rp, cp, v)
+    if scheme == "S3_alien":                  # PLACEBO for S3: a real header path
+        # from a DIFFERENT table, rendered as the same sentence. Fluent, same
+        # register, same length distribution, and about the wrong thing. S3 must
+        # beat this, or "sentences retrieve better" is a fluency artifact rather
+        # than a claim about the cell's own headers. Stamped in build_corpus.
+        return _s3_sentence(cell["alien_rp"], cell["alien_cp"], v)
+    if scheme == "S3_pad":                    # LENGTH CONTROL for S3: this cell's
+        # OWN leaf labels repeated until the sentence matches S3's token count.
+        # Carries no ancestor the flat arm did not already have, so S3 > S3_pad
+        # is the ancestors doing work and not the token budget. Distinct from
+        # S2_shuf, which controls S2's length by permuting real ancestors --
+        # this one never shows an ancestor at all.
+        target = len(_s3_sentence(rp, cp, v).split())
+        pad_r, pad_c = rp[-1:], cp[-1:]
+        while len(_s3_sentence(pad_r, pad_c, v).split()) < target:
+            # alternate so neither axis absorbs the whole budget; a cell with an
+            # empty axis stays empty there and the other axis takes it all
+            if cp and (len(pad_c) <= len(pad_r) or not rp):
+                pad_c = pad_c + cp[-1:]
+            elif rp:
+                pad_r = pad_r + rp[-1:]
+            else:
+                break                         # both axes empty: already at target
+        return _s3_sentence(pad_r, pad_c, v)
+    # Literature head-to-head: identical encoder/pool/gold/k, only the cell->
+    # sentence template changes. Both go through the one template definition in
+    # rag_agent.serialization.templates, so neither arm is a paraphrase.
+    # mt2net readings are PROVISIONAL (one published example) -- see that module.
+    if scheme in ("mt2net", "structural"):
+        from rag_agent.serialization.templates import render
+        return render(scheme, cell.get("title"), rp, cp, v)
     raise ValueError(scheme)
 
 

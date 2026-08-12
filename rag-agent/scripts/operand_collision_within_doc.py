@@ -81,6 +81,19 @@ def main() -> int:
     ap.add_argument("--out", default="results/operand_collision_within_doc.json")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--schemes", nargs="+", default=["flat", "S2", "S2_shuf", "S3"])
+    ap.add_argument("--hyde", default="",
+                    help="LLM spec (e.g. groq:llama-3.3-70b-versatile) — retrieve "
+                         "with HyDE hypothetical passages instead of the raw query. "
+                         "The query-side control: if this closes the gap, the "
+                         "document-side claim does not survive.")
+    ap.add_argument("--hyde-n", type=int, default=1,
+                    help="passages per query (Gao et al. use 8); needs a nonzero "
+                         "--hyde-temperature to produce distinct draws")
+    ap.add_argument("--hyde-temperature", type=float, default=0.7)
+    ap.add_argument("--hyde-cache", default="data/hyde_cache.jsonl")
+    ap.add_argument("--hyde-drop-query", action="store_true",
+                    help="average the passages ALONE, leaving the query out of "
+                         "the mean (Gao et al. include it)")
     ap.add_argument("--shuffle-seed", type=int, default=None,
                     help="S2_shuf permutation draw; defaults to --seed. Vary it to "
                          "estimate the spread over draws (RESEARCH_STRUCTURE.md §4)")
@@ -112,7 +125,39 @@ def main() -> int:
         assert all(cells[g]["table"][0] == q["uid"] for g in q["gold"])
 
     encoder = default_encoder(model_name=args.embed_model)
-    q_vecs = np.asarray(encoder.encode([q["question"] for q in pop]))
+    # Query-side arm. Everything downstream (corpus, gold, retrievers, k) is
+    # untouched, so a HyDE run is comparable line-for-line against a plain one.
+    q_bm25 = [q["question"] for q in pop]
+    if args.hyde:
+        from rag_agent.llm.factory import build_llm
+        from rag_agent.query.hyde import Hyde
+        # LocalQwenLLM takes no temperature, so it cannot produce distinct draws;
+        # refuse rather than average N copies of one passage and call it n=N.
+        llm_kw = {"retry_on_429": 8}
+        if args.hyde.startswith("local:"):
+            if args.hyde_n > 1:
+                ap.error("--hyde-n > 1 needs a sampling backend; local: is greedy")
+        else:
+            llm_kw["temperature"] = args.hyde_temperature
+        h = Hyde(build_llm(args.hyde, **llm_kw),
+                 cache_path=args.hyde_cache, n=args.hyde_n)
+        print(f"[hyde] {args.hyde} n={args.hyde_n} temp={args.hyde_temperature} "
+              f"(cache={args.hyde_cache}, {len(h.cache)} entries)", flush=True)
+        passages = h.passages(q_bm25)
+        # Gao et al. average the N generated passages AND the query itself:
+        # 1/(N+1) [sum f(d_k) + f(q)]. --hyde-drop-query gives the ablation that
+        # leaves the query out, which is what "pure HyDE" means in some reports.
+        pv = [np.asarray(encoder.encode(ps)).mean(axis=0) for ps in passages]
+        qv = np.asarray(encoder.encode(q_bm25))
+        q_vecs = (np.asarray(pv) if args.hyde_drop_query
+                  else (np.asarray(pv) * args.hyde_n + qv) / (args.hyde_n + 1))
+        # BM25 has no vector to average, so it gets the passages concatenated --
+        # the lexical analogue of the same intervention.
+        q_bm25 = [" ".join([p, *ps]) if not args.hyde_drop_query else " ".join(ps)
+                  for p, ps in zip(q_bm25, passages)]
+        print(f"[hyde] example passage: {passages[0][0][:200]}", flush=True)
+    else:
+        q_vecs = np.asarray(encoder.encode(q_bm25))
 
     reranker = None
     if not args.no_cross:
@@ -136,11 +181,15 @@ def main() -> int:
             gold = {int(g) for g in q["gold"]}
             dn = _minmax(np.asarray([vecs[gi] for gi in idxs]) @ q_vecs[qi])
             bm = _minmax(np.asarray(
-                bm25_of[q["uid"]].get_scores(_tokenize(q["question"])), dtype=np.float32))
+                bm25_of[q["uid"]].get_scores(_tokenize(q_bm25[qi])), dtype=np.float32))
             orders = {}
             for name, alpha in RETRIEVERS:
                 orders[name] = np.argsort(-(alpha * dn + (1.0 - alpha) * bm))
             if reranker is not None:
+                # the REAL question, never the HyDE passage: HyDE exists to fix
+                # the register gap a bi-encoder has to cross in one dot product,
+                # and a cross-encoder reads both sides jointly, so feeding it an
+                # invented passage would replace the query with a worse one
                 pairs = [(q["question"], texts[gi]) for gi in idxs]
                 cs = reranker.predict(pairs, batch_size=args.rerank_batch_size,
                                       show_progress_bar=False)

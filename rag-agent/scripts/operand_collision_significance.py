@@ -37,6 +37,12 @@ def main() -> int:
     ap.add_argument("records")
     ap.add_argument("--out", default=None)
     ap.add_argument("--schemes", default="S2,S3")
+    ap.add_argument("--baseline", default="flat",
+                    help="arm every --schemes arm is compared AGAINST. Defaults to "
+                         "flat, the structure-naive control. Set it to an adjacent "
+                         "rung to test one step of the ladder in isolation, e.g. "
+                         "--baseline S2 --schemes S3 for the sentence-form step, or "
+                         "--baseline S3_pad --schemes S3 for the length-matched one.")
     args = ap.parse_args()
 
     rows = load(args.records)
@@ -54,7 +60,7 @@ def main() -> int:
     # (1) flat colliding vs unique, Mann-Whitney U
     t1 = {}
     for ret in retrievers:
-        flat = ranks.get(("flat", ret), {})
+        flat = ranks.get((args.baseline, ret), {})
         coll = [v for k, v in flat.items() if v is not None and meta[k][0]]
         uniq = [v for k, v in flat.items() if v is not None and not meta[k][0]]
         if not coll or not uniq:
@@ -66,12 +72,13 @@ def main() -> int:
             "median_unique": statistics.median(uniq),
             "U": float(u), "p_one_sided_greater": float(p),
         }
-    report["flat_colliding_vs_unique_mannwhitney"] = t1
+    report["baseline"] = args.baseline
+    report["baseline_colliding_vs_unique_mannwhitney"] = t1
 
     # (2) colliding operands, flat -> scheme, Wilcoxon signed-rank
     t2 = {}
     for ret in retrievers:
-        flat = ranks.get(("flat", ret), {})
+        flat = ranks.get((args.baseline, ret), {})
         for sch in schemes:
             alt = ranks.get((sch, ret), {})
             pairs = [(flat[k], alt[k]) for k in flat
@@ -85,20 +92,20 @@ def main() -> int:
             if not diffs:
                 continue
             w, p = wilcoxon(a, b, alternative="greater")  # flat ranks worse (larger)
-            t2[f"{ret}/flat->{sch}"] = {
+            t2[f"{ret}/{args.baseline}->{sch}"] = {
                 "n_pairs": len(pairs),
-                "median_flat": statistics.median(a),
+                "median_baseline": statistics.median(a),
                 "median_alt": statistics.median(b),
                 "improved": sum(1 for x, y in pairs if y < x),
                 "worsened": sum(1 for x, y in pairs if y > x),
                 "W": float(w), "p_one_sided": float(p),
             }
-    report["colliding_flat_to_scheme_wilcoxon"] = t2
+    report["colliding_baseline_to_scheme_wilcoxon"] = t2
 
     # (3) all_covered@k query flips, exact binomial sign test (two-sided)
     t3 = {}
     for ret in retrievers:
-        flat = ranks.get(("flat", ret), {})
+        flat = ranks.get((args.baseline, ret), {})
         by_q_flat = defaultdict(list)
         for (q, c), v in flat.items():
             by_q_flat[q].append(v)
@@ -124,9 +131,9 @@ def main() -> int:
                     continue
                 bt = binomtest(gains, gains + losses, 0.5, alternative="two-sided")
                 bt1 = binomtest(gains, gains + losses, 0.5, alternative="greater")
-                t3[f"{ret}/flat->{sch}@{k}"] = {
+                t3[f"{ret}/{args.baseline}->{sch}@{k}"] = {
                     "n_queries": n_q,
-                    "flat_covered": sum(cov(by_q_flat[q]) for q in by_q_flat),
+                    "baseline_covered": sum(cov(by_q_flat[q]) for q in by_q_flat),
                     "alt_covered": sum(cov(by_q_alt[q]) for q in by_q_alt),
                     "gain": gains, "loss": losses,
                     "p_two_sided": float(bt.pvalue),
@@ -139,8 +146,8 @@ def main() -> int:
     Path(out).write_text(json.dumps(report, indent=2))
     print(f"[out] {out}")
 
-    for name, block in (("(1) flat colliding vs unique (MWU)", t1),
-                        ("(2) colliding flat->scheme (Wilcoxon)", t2),
+    for name, block in ((f"(1) {args.baseline} colliding vs unique (MWU)", t1),
+                        (f"(2) colliding {args.baseline}->scheme (Wilcoxon)", t2),
                         ("(3) all_covered flips (binomial)", t3)):
         print(f"\n{name}")
         for key, st in block.items():
