@@ -13,7 +13,7 @@ serialization differs).
 RealHiTBench (Zhang et al., ACL 2025; HF `spzy/RealHiTBench`) is the raw dataset:
 tables are PhpSpreadsheet HTML and the header trees the pipeline retrieves over
 are RECONSTRUCTED by our markup front-end (`parse_html_table_with_merges` +
-`reconstruct_paths_with_merges` with guessed header boundaries). This script is
+`reconstruct_col_paths` / `reconstruct_row_paths`, guessed header boundaries). This script is
 the ANSWER-accuracy leg of the my-vs-baseline comparison (retrieval accuracy
 needs gold operand cells, which RealHiTBench does not ship — that leg runs on
 MultiHiertt/HiTab via the within-doc bench):
@@ -82,7 +82,7 @@ from rag_agent.llm.factory import build_llm
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
                                    parse_html_table_with_merges,
-                                   reconstruct_paths_with_merges)
+                                   reconstruct_col_paths, reconstruct_row_paths)
 from rag_agent.retrieve.operand_retriever import HybridRetriever
 from rag_agent.serialize import S1, S2, serialize_table
 from rag_agent.stores.original_store import _to_float
@@ -223,8 +223,11 @@ def build_table(fname: str, hf_repo: str) -> BenchTable | None:
     nhc = guess_n_header_cols(grid)
     nhr = guess_n_header_rows(grid, n_header_cols=nhc)
     nhr = max(1, min(nhr, len(grid) - 1))
-    col_paths, row_paths = reconstruct_paths_with_merges(grid, merges, nhr,
-                                                         n_header_cols=nhc)
+    # Texts-only front-end: dominated the merge-consuming one on both axes on
+    # HiTab dev (col .943 -> .975, row .692 -> .820), so the span markup is left
+    # in the blank-after-first grid rather than filled in.
+    col_paths = reconstruct_col_paths(grid, nhr, n_header_cols=nhc)
+    row_paths = reconstruct_row_paths(grid, nhr, n_header_cols=nhc)
     data = [row[nhc:] for row in grid[nhr:]]
     if not data or not data[0]:
         return None
@@ -270,6 +273,16 @@ def main() -> int:
     ap.add_argument("--device", default=None,
                     help="embedder device (default: cuda if available else cpu)")
     ap.add_argument("--k", type=int, default=10)
+    ap.add_argument("--subqtypes", default="",
+                    help="comma-separated RealHiTBench SubQTypes to run. Empty = the "
+                         "aggregation pair this leg has always used (Calculation, "
+                         "Multi-hop Numerical Reasoning). See "
+                         "scripts/rhb_difficulty_strata.py for the L1/L2/L3 ladder.")
+    ap.add_argument("--granularity", default="row", choices=["row", "cell"],
+                    help="index unit. 'cell' is the unit the method is specified "
+                         "around (one cell = one sentence); 'row' is the default "
+                         "only because the results already on disk used it, and a "
+                         "row chunk hands the solver every column of that row.")
     ap.add_argument("--solver-backend", default="groq",
                     choices=["groq", "openai", "local"],
                     help="solver family. A second backend is how the S1-vs-S2 "
@@ -308,8 +321,9 @@ def main() -> int:
     from huggingface_hub import hf_hub_download
     qa = json.load(open(hf_hub_download(args.hf_repo, "QA_final.json",
                                         repo_type="dataset")))["queries"]
-    pop = sorted((q for q in qa if q.get("SubQType") in AGG_SUBQTYPES),
-                 key=lambda q: q["id"])
+    want = (set(s.strip() for s in args.subqtypes.split(",") if s.strip())
+            or AGG_SUBQTYPES)
+    pop = sorted((q for q in qa if q.get("SubQType") in want), key=lambda q: q["id"])
     n_full = len(pop)
     if args.sample and args.sample < n_full:
         by_cata = defaultdict(list)
@@ -328,7 +342,7 @@ def main() -> int:
             picked += rng.sample(v, min(base[k], len(v)))
         pop = sorted(picked, key=lambda q: q["id"])
     n = len(pop)
-    print(f"[pop] RealHiTBench agg (Calculation+Multi-hop NR): {n}"
+    print(f"[pop] RealHiTBench {'+'.join(sorted(want))}: {n}"
           f"{f' (stratified sample of {n_full}, seed={args.seed})' if args.sample else ''}"
           f"  k={args.k} solver={args.solver_model}  arms: base=S1(flat) vs treat=S2(mine)",
           flush=True)
@@ -352,8 +366,9 @@ def main() -> int:
             t = build_table(fname, args.hf_repo)
             tables[fname] = t
             if t is not None:
-                retr_s1[fname] = HybridRetriever(serialize_table(t, S1), emb)
-                retr_s2[fname] = HybridRetriever(serialize_table(t, S2), emb)
+                g = args.granularity
+                retr_s1[fname] = HybridRetriever(serialize_table(t, S1, g), emb)
+                retr_s2[fname] = HybridRetriever(serialize_table(t, S2, g), emb)
         return tables[fname]
 
     def topk_chunks(R: HybridRetriever, qv: np.ndarray):

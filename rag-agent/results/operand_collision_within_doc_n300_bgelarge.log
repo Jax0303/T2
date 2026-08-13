@@ -1,0 +1,31 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pop] arith_multi queries: 298 | corpus: 1203 tables, 43607 cells
+[pool] within-doc cells/query: median 135, min 42, max 445
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights:   7%|▋         | 29/391 [00:00<00:01, 289.94it/s]Loading weights:  15%|█▍        | 58/391 [00:00<00:01, 246.56it/s]Loading weights:  21%|██▏       | 84/391 [00:00<00:01, 207.72it/s]Loading weights:  28%|██▊       | 108/391 [00:00<00:01, 212.29it/s]Loading weights:  34%|███▎      | 131/391 [00:00<00:01, 212.71it/s]Loading weights:  39%|███▉      | 154/391 [00:00<00:01, 215.98it/s]Loading weights:  45%|████▌     | 176/391 [00:00<00:01, 208.58it/s]Loading weights:  52%|█████▏    | 204/391 [00:00<00:00, 224.89it/s]Loading weights:  58%|█████▊    | 227/391 [00:01<00:00, 221.09it/s]Loading weights:  64%|██████▍   | 250/391 [00:01<00:00, 220.58it/s]Loading weights:  70%|██████▉   | 273/391 [00:01<00:00, 196.39it/s]Loading weights:  75%|███████▌  | 294/391 [00:01<00:00, 150.27it/s]Loading weights:  80%|███████▉  | 311/391 [00:01<00:00, 150.39it/s]Loading weights:  84%|████████▍ | 328/391 [00:01<00:00, 147.55it/s]Loading weights:  88%|████████▊ | 344/391 [00:02<00:00, 100.50it/s]Loading weights: 100%|██████████| 391/391 [00:02<00:00, 187.89it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:   5%|▌         | 20/393 [00:00<00:02, 180.75it/s]Loading weights:  11%|█         | 42/393 [00:00<00:01, 198.08it/s]Loading weights:  17%|█▋        | 65/393 [00:00<00:01, 195.09it/s]Loading weights:  25%|██▌       | 99/393 [00:00<00:01, 241.09it/s]Loading weights:  32%|███▏      | 124/393 [00:00<00:01, 209.68it/s]Loading weights:  37%|███▋      | 146/393 [00:00<00:01, 211.40it/s]Loading weights:  44%|████▍     | 173/393 [00:00<00:00, 228.18it/s]Loading weights:  50%|█████     | 197/393 [00:00<00:01, 189.56it/s]Loading weights:  55%|█████▌    | 218/393 [00:01<00:00, 176.51it/s]Loading weights:  60%|██████    | 237/393 [00:01<00:00, 157.12it/s]Loading weights:  65%|██████▍   | 254/393 [00:01<00:01, 133.52it/s]Loading weights:  71%|███████   | 280/393 [00:01<00:00, 158.67it/s]Loading weights:  77%|███████▋  | 301/393 [00:01<00:00, 169.71it/s]Loading weights:  83%|████████▎ | 327/393 [00:01<00:00, 188.34it/s]Loading weights:  88%|████████▊ | 347/393 [00:01<00:00, 189.59it/s]Loading weights: 100%|██████████| 393/393 [00:01<00:00, 209.05it/s]
+
+=== scheme=flat (324s) ===
+  bm25    hit@10=0.792 recall@10=0.668 mrr=0.521 ndcg@10=0.527 set_em@10=0.554 set_em@50=0.869
+  dense   hit@10=0.859 recall@10=0.704 mrr=0.587 ndcg@10=0.569 set_em@10=0.564 set_em@50=0.862
+  hybrid  hit@10=0.856 recall@10=0.734 mrr=0.589 ndcg@10=0.590 set_em@10=0.614 set_em@50=0.896
+  cross   hit@10=0.876 recall@10=0.737 mrr=0.593 ndcg@10=0.585 set_em@10=0.577 set_em@50=0.903
+
+=== scheme=S2 (431s) ===
+  bm25    hit@10=0.836 recall@10=0.705 mrr=0.574 ndcg@10=0.570 set_em@10=0.584 set_em@50=0.913
+  dense   hit@10=0.909 recall@10=0.744 mrr=0.644 ndcg@10=0.610 set_em@10=0.574 set_em@50=0.919
+  hybrid  hit@10=0.889 recall@10=0.757 mrr=0.642 ndcg@10=0.624 set_em@10=0.617 set_em@50=0.953
+  cross   hit@10=0.933 recall@10=0.810 mrr=0.664 ndcg@10=0.660 set_em@10=0.668 set_em@50=0.953
+
+=== scheme=S2_shuf (438s) ===
+  bm25    hit@10=0.836 recall@10=0.705 mrr=0.574 ndcg@10=0.570 set_em@10=0.584 set_em@50=0.913
+  dense   hit@10=0.896 recall@10=0.731 mrr=0.631 ndcg@10=0.597 set_em@10=0.564 set_em@50=0.906
+  hybrid  hit@10=0.883 recall@10=0.756 mrr=0.644 ndcg@10=0.623 set_em@10=0.627 set_em@50=0.943
+  cross   hit@10=0.936 recall@10=0.806 mrr=0.683 ndcg@10=0.662 set_em@10=0.658 set_em@50=0.946
+
+=== scheme=S3 (467s) ===
+  bm25    hit@10=0.836 recall@10=0.713 mrr=0.579 ndcg@10=0.578 set_em@10=0.597 set_em@50=0.913
+  dense   hit@10=0.913 recall@10=0.738 mrr=0.637 ndcg@10=0.604 set_em@10=0.564 set_em@50=0.929
+  hybrid  hit@10=0.903 recall@10=0.776 mrr=0.668 ndcg@10=0.645 set_em@10=0.638 set_em@50=0.943
+  cross   hit@10=0.940 recall@10=0.816 mrr=0.674 ndcg@10=0.668 set_em@10=0.671 set_em@50=0.956
+
+wrote -> results/operand_collision_within_doc_n300_bgelarge.json  (+ records -> results/operand_collision_within_doc_n300_bgelarge_records.jsonl)

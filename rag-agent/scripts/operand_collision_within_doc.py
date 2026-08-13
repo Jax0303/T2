@@ -41,7 +41,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
 
-from rag_agent.retrieve.encoders import _tokenize, default_encoder
+from rag_agent.retrieve.encoders import (_tokenize, default_encoder,
+                                         default_prefixes)
 from rag_agent.runenv import run_env
 
 from operand_collision_multihiertt import (_minmax, _norm_label, build_corpus,
@@ -81,6 +82,12 @@ def main() -> int:
     ap.add_argument("--out", default="results/operand_collision_within_doc.json")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--schemes", nargs="+", default=["flat", "S2", "S2_shuf", "S3"])
+    ap.add_argument("--query-prefix", default=None,
+                    help="override the embedder's trained query instruction; "
+                         'pass "" to encode queries bare (what every result file '
+                         "written before 2026-08-13 did)")
+    ap.add_argument("--passage-prefix", default=None,
+                    help="override the embedder's trained passage prefix")
     ap.add_argument("--hyde", default="",
                     help="LLM spec (e.g. groq:llama-3.3-70b-versatile) — retrieve "
                          "with HyDE hypothetical passages instead of the raw query. "
@@ -125,6 +132,18 @@ def main() -> int:
         assert all(cells[g]["table"][0] == q["uid"] for g in q["gold"])
 
     encoder = default_encoder(model_name=args.embed_model)
+    # Asymmetric-retrieval prefixes, resolved from the encoder's OWN name. bge-*-v1.5
+    # is trained with an instruction on the query side and nothing on the passage
+    # side; encoding both sides bare is a silent misuse that costs every arm at once.
+    # --query-prefix/--passage-prefix override; pass "" to reproduce a bare run.
+    qpre, ppre = default_prefixes(encoder.name)
+    if args.query_prefix is not None:
+        qpre = args.query_prefix
+    if args.passage_prefix is not None:
+        ppre = args.passage_prefix
+    env["query_prefix"], env["passage_prefix"] = qpre, ppre
+    print(f"[prefix] encoder={encoder.name} query={qpre!r} passage={ppre!r}", flush=True)
+
     # Query-side arm. Everything downstream (corpus, gold, retrievers, k) is
     # untouched, so a HyDE run is comparable line-for-line against a plain one.
     q_bm25 = [q["question"] for q in pop]
@@ -147,8 +166,13 @@ def main() -> int:
         # Gao et al. average the N generated passages AND the query itself:
         # 1/(N+1) [sum f(d_k) + f(q)]. --hyde-drop-query gives the ablation that
         # leaves the query out, which is what "pure HyDE" means in some reports.
-        pv = [np.asarray(encoder.encode(ps)).mean(axis=0) for ps in passages]
-        qv = np.asarray(encoder.encode(q_bm25))
+        # The generated passages take the PASSAGE prefix, not the query one: the
+        # whole point of HyDE is that they are already in the corpus's register,
+        # so marking them as queries would undo the intervention. Only the real
+        # query keeps the query prefix.
+        pv = [np.asarray(encoder.encode([ppre + p for p in ps])).mean(axis=0)
+              for ps in passages]
+        qv = np.asarray(encoder.encode([qpre + q for q in q_bm25]))
         q_vecs = (np.asarray(pv) if args.hyde_drop_query
                   else (np.asarray(pv) * args.hyde_n + qv) / (args.hyde_n + 1))
         # BM25 has no vector to average, so it gets the passages concatenated --
@@ -157,7 +181,7 @@ def main() -> int:
                   for p, ps in zip(q_bm25, passages)]
         print(f"[hyde] example passage: {passages[0][0][:200]}", flush=True)
     else:
-        q_vecs = np.asarray(encoder.encode(q_bm25))
+        q_vecs = np.asarray(encoder.encode([qpre + q for q in q_bm25]))
 
     reranker = None
     if not args.no_cross:
@@ -168,7 +192,10 @@ def main() -> int:
     for scheme in args.schemes:
         t0 = time.time()
         texts = [cell_text(c, scheme) for c in cells]
-        vecs = np.asarray(encoder.encode(texts))
+        # BM25 indexes the BARE text: the prefix is an embedder instruction, and
+        # feeding the same constant into every document only skews the lexical
+        # statistics. Only the dense side sees it.
+        vecs = np.asarray(encoder.encode([ppre + t for t in texts]))
         # per-doc BM25 (IDF computed inside the pool the query actually sees)
         bm25_of = {uid: BM25Okapi([_tokenize(texts[gi]) for gi in idxs])
                    for uid, idxs in pool_of.items()}

@@ -104,6 +104,36 @@ class SentenceTransformerEncoder:
         return vecs.astype(np.float32)
 
 
+# Instruction prefixes the embedder families were TRAINED with. Retrieval is
+# asymmetric -- a question and the passage answering it are not paraphrases --
+# and these models learn that asymmetry from a prefix on one side only. Encoding
+# both sides bare is a silent misuse: it still runs, still returns plausible
+# numbers, and leaves points on the floor for every arm at once.
+#
+# BGE English v1.5 puts an instruction on the QUERY and nothing on the passage.
+# E5 marks both sides. bge-m3 and the gte family were trained without prefixes,
+# so anything not listed here gets none rather than a guess.
+_QUERY_PREFIXES = {
+    "bge-": ("Represent this sentence for searching relevant passages: ", ""),
+    "e5-": ("query: ", "passage: "),
+}
+
+
+def default_prefixes(model_name: str) -> tuple:
+    """``(query_prefix, passage_prefix)`` for ``model_name``, ``("", "")`` if unknown.
+
+    Callers pass the encoder's OWN name (``encoder.name``), not the requested
+    model string -- see :func:`default_encoder` on why those can differ.
+    """
+    low = (model_name or "").lower()
+    if "bge-m3" in low:            # trained without an instruction, unlike v1.5
+        return ("", "")
+    for family, pair in _QUERY_PREFIXES.items():
+        if family in low:
+            return pair
+    return ("", "")
+
+
 def default_encoder(
     prefer_model: bool = True,
     allow_fallback: bool = False,

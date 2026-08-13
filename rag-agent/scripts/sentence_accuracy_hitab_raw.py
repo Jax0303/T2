@@ -41,14 +41,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from rag_agent.bench.schema import BenchTable
 from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
                                    reconstruct_col_paths, reconstruct_row_paths)
-from rag_agent.serialize.verbalize import STYLES, _fmt, verbalize_cell
+from rag_agent.serialize.verbalize import STYLES, _clean_path, _fmt, verbalize_cell
 from tree_reconstruct_hitab_raw import (_cell, _norm_val, align, size_bucket,
                                         tree_lines)
 
 
 def _norm_sentence(s: str) -> str:
-    """Sentence with every numeric-looking token collapsed to a canonical form."""
-    return " ".join(_norm_val(tok) for tok in s.split())
+    """Sentence with every numeric-looking token collapsed to a canonical form.
+
+    The sentence-final token carries the period ("... is 8.0."), which hides the
+    ".0" from ``_norm_val`` — so the trailing period comes off before normalising
+    and goes back after. Without this the ONE token every sentence is built
+    around, the value, is the one token that never normalises.
+    """
+    out = []
+    for tok in s.split():
+        core = tok.rstrip(".")
+        out.append(_norm_val(core) + tok[len(core):] if core else tok)
+    return " ".join(out)
 
 
 def score_table(raw: dict, bt: BenchTable, guess_boundary: bool, guess_cols: bool,
@@ -105,6 +115,13 @@ def score_table(raw: dict, bt: BenchTable, guess_boundary: bool, guess_cols: boo
             val_ok = _norm_val(rec.cell(i, j)) == _norm_val(bt.cell(i, j))
             row_ok = rec.row_path(i) == bt.row_path(i)
             col_ok = rec.col_path(j) == bt.col_path(j)
+            # what each style actually PRINTS: short/medium use leaves only, long
+            # uses the whole path. Scoring the path a style never shows would
+            # charge it for an error the reader can't see.
+            rrp, brp = _clean_path(rec.row_path(i)), _clean_path(bt.row_path(i))
+            rcp, bcp = _clean_path(rec.col_path(j)), _clean_path(bt.col_path(j))
+            leaf_ok = rrp[-1:] == brp[-1:] and rcp[-1:] == bcp[-1:]
+            full_ok = rrp == brp and rcp == bcp
             for style in STYLES:
                 got = verbalize_cell(rec, i, j, style)
                 want = verbalize_cell(bt, i, j, style)
@@ -112,6 +129,7 @@ def score_table(raw: dict, bt: BenchTable, guess_boundary: bool, guess_cols: boo
                 c["n"] += 1
                 c["exact"] += int(got == want)
                 c["exact_norm"] += int(_norm_sentence(got) == _norm_sentence(want))
+                c["path_ok"] += int(full_ok if style == "long" else leaf_ok)
                 if got != want:
                     c["err_value"] += int(not val_ok)
                     c["err_row_path"] += int(not row_ok)
@@ -183,6 +201,9 @@ def main() -> int:
             "sentences": n,
             "sentence_exact": round(c["exact"] / n, 4) if n else None,
             "sentence_exact_value_normalized": round(c["exact_norm"] / n, 4) if n else None,
+            # header structure alone, per indexed cell: the part reconstruction
+            # controls. exact_norm - path_exact is display-string noise only.
+            "path_exact": round(c["path_ok"] / n, 4) if n else None,
             "err_wrong_value": c["err_value"],
             "err_wrong_row_path": c["err_row_path"],
             "err_wrong_col_path": c["err_col_path"],
@@ -198,6 +219,14 @@ def main() -> int:
         "boundary_mode": "known (from gold trees)" if args.known_boundary else "guessed",
         "n_header_cols_mode": (f"forced={args.force_cols}" if args.force_cols
                                else "gold" if args.gold_cols else "guessed"),
+        # medium = short + the caption, and the caption is taken from the SAME
+        # BenchTable.title on both sides, so it cannot differ. On THIS metric the
+        # three styles are two conditions (leaf-only vs full-path), not three —
+        # only the retrieval experiments, where the caption changes the embedding,
+        # can separate short from medium.
+        "styles_note": ("short and medium are identical by construction here: "
+                        "medium adds only the caption, which is shared with gold. "
+                        "Treat as 2 conditions (leaf-only = short/medium, full-path = long)."),
         "by_style": {s: summarize(totals[s]) for s in STYLES},
         "by_style_by_size_bucket": {
             s: {b: summarize(c) for b, c in buckets[s].items()} for s in STYLES},
@@ -212,7 +241,8 @@ def main() -> int:
     for s in STYLES:
         v = out["by_style"][s]
         print(f"\n[{s}] sentences={v['sentences']}")
-        print(f"  exact={v['sentence_exact']}   value-normalized={v['sentence_exact_value_normalized']}")
+        print(f"  exact={v['sentence_exact']}   value-normalized={v['sentence_exact_value_normalized']}"
+              f"   path-only={v['path_exact']}")
         print(f"  errors: value={v['err_wrong_value']} row_path={v['err_wrong_row_path']} "
               f"col_path={v['err_wrong_col_path']} number_format_only={v['err_number_formatting_only']}")
     print(f"\nwrote -> {args.out}")

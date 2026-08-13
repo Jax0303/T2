@@ -1,0 +1,96 @@
+{
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-12T23:33:16+00:00"
+  },
+  "boundary_guess_contrast_size": {
+    "scored_tables": 57,
+    "tables_where_guess_differs": 2,
+    "tables": [
+      "103_54_nsf19316-tab001",
+      "78_31_nsf20309-tab004"
+    ],
+    "caveat": "guessed-vs-goldbound is only interpretable in proportion to this count; a null result over a couple of tables says nothing about what a boundary error costs"
+  },
+  "boundary_contrasts_on_best_gold_rank": {
+    "guessed->goldbound": {
+      "n_pairs": 140,
+      "n_changed": 1,
+      "improved": 0,
+      "worsened": 1,
+      "p_two_sided": 0.3173
+    },
+    "guessed->gold": {
+      "n_pairs": 140,
+      "n_changed": 52,
+      "improved": 12,
+      "worsened": 40,
+      "p_two_sided": 0.0
+    },
+    "goldbound->gold": {
+      "n_pairs": 140,
+      "n_changed": 52,
+      "improved": 13,
+      "worsened": 39,
+      "p_two_sided": 0.0
+    }
+  },
+  "population": {
+    "name": "hitab_dev_arith_m_ge_2",
+    "n_queries": 140,
+    "dropped": {
+      "unaligned": 10
+    }
+  },
+  "pool": "gold data region of the query's own table, identical in all arms",
+  "note": "arms vary ONLY the header paths the index unit is built from; a wrong boundary also leaks header rows into the deployed pool, which this design deliberately holds out",
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "retriever": "dense",
+  "ambiguous_cell_rate": {
+    "gold": 0.075,
+    "goldbound": 0.1428,
+    "guessed": 0.1428
+  },
+  "by_arm": {
+    "gold": {
+      "n_queries": 140,
+      "mrr": 0.453,
+      "hit@1": 0.3071,
+      "set_em@1": 0.0,
+      "hit@5": 0.6286,
+      "set_em@5": 0.1786,
+      "hit@10": 0.7929,
+      "set_em@10": 0.3714,
+      "hit@20": 0.8857,
+      "set_em@20": 0.5571
+    },
+    "goldbound": {
+      "n_queries": 140,
+      "mrr": 0.4771,
+      "hit@1": 0.3286,
+      "set_em@1": 0.0,
+      "hit@5": 0.6786,
+      "set_em@5": 0.2,
+      "hit@10": 0.8571,
+      "set_em@10": 0.4429,
+      "hit@20": 0.95,
+      "set_em@20": 0.5857
+    },
+    "guessed": {
+      "n_queries": 140,
+      "mrr": 0.4786,
+      "hit@1": 0.3286,
+      "set_em@1": 0.0,
+      "hit@5": 0.6857,
+      "set_em@5": 0.2,
+      "hit@10": 0.8571,
+      "set_em@10": 0.4429,
+      "hit@20": 0.95,
+      "set_em@20": 0.5857
+    }
+  }
+}

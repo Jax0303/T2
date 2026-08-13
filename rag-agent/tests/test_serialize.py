@@ -44,6 +44,42 @@ def test_s2_has_full_header_path():
     assert "assets > bonds > year > 2023: 21" in chunks[1].text
 
 
+def test_cell_granularity_is_one_chunk_per_cell():
+    t = _toy()
+    chunks = serialize_table(t, S2, granularity="cell")
+    assert len(chunks) == 4
+    assert [c.chunk_id for c in chunks[:2]] == ["t1#r0c0", "t1#r0c1"]
+    # Each cell chunk covers exactly its own cell — the property the row unit
+    # does not have, and the reason a row chunk makes retrieval look easier
+    # than it is (retrieving one row hands the solver every column of it).
+    assert chunks[0].covers(0, 0)
+    assert not chunks[0].covers(0, 1)
+    assert not any(c.covers(1, 1) for c in chunks[:3])
+
+
+def test_cell_sentence_carries_caption_and_both_paths():
+    t = _toy()
+    txt = serialize_table(t, S2, granularity="cell")[0].text
+    for fragment in ("Holdings", "assets > cash", "year > 2022", "10"):
+        assert fragment in txt, (fragment, txt)
+
+
+def test_cell_granularity_s1_stays_leaf_only():
+    t = _toy()
+    txt = serialize_table(t, S1, granularity="cell")[0].text
+    assert "2022: 10" in txt
+    assert "year >" not in txt and "assets >" not in txt
+
+
+def test_unknown_granularity_rejected():
+    t = _toy()
+    try:
+        serialize_table(t, S2, granularity="table")
+    except ValueError:
+        return
+    raise AssertionError("granularity='table' should have been rejected")
+
+
 def test_chunk_coverage_mapping():
     t = _toy()
     chunks = serialize_table(t, S2)

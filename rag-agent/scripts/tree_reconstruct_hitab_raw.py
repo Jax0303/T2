@@ -214,6 +214,29 @@ def segment_f1(gold, rec) -> float:
     return 2 * prec * rec_ / (prec + rec_)
 
 
+def hierarchy_edges(paths) -> set:
+    """Parent->child label pairs the paths of one axis imply, root edges included.
+
+    The unit the table-structure literature scores: Chen & Cafarella's hierarchy
+    extractor (SS@VLDB 2013) emits parent-child pairs and is judged on them, and
+    TUTA's bi-dimensional coordinate tree is the same edge set. Exact path match
+    above is strictly harsher — one wrong ancestor voids the whole path — so a
+    reader arriving from that literature cannot place our number without this
+    one. Both are reported; exact match stays primary because the cell sentence
+    consumes whole paths.
+
+    A set, not a multiset: an edge is one edge of the tree however many leaf
+    paths run through it. Scored per table, then summed micro across tables.
+    """
+    edges = set()
+    for p in paths:
+        prev = ""  # the root
+        for seg in norm(p):
+            edges.add((prev, seg))
+            prev = seg
+    return edges
+
+
 def size_bucket(n_rows: int, n_cols: int) -> str:
     d = max(n_rows, n_cols)
     if d <= 10:
@@ -228,7 +251,7 @@ def size_bucket(n_rows: int, n_cols: int) -> str:
 # ---------------------------------------------------------------------------
 
 def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
-                force_cols: int = 0, use_merges: bool = False):
+                force_cols: int = 0, use_merges: bool = False, tt=None):
     texts = raw.get("texts") or []
     if not texts:
         return None, "no_texts"
@@ -262,7 +285,11 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         nhc = nhc_gold
     cols_ok = int(nhc == nhc_gold)
 
-    if use_merges:
+    tt_trace = None
+    if tt is not None:
+        rec_cols, rec_rows, tt_trace = tt.reconstruct(
+            texts, nhr, nhc, raw.get("merged_regions") or [])
+    elif use_merges:
         rec_cols, rec_rows = reconstruct_paths_with_merges(
             texts, raw.get("merged_regions") or [], nhr, nhc)
     else:
@@ -273,6 +300,8 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
     col_f1: List[float] = []
     row_f1: List[float] = []
     errors = []
+    gold_paths = {"col": [], "row": []}
+    rec_paths = {"col": [], "row": []}
     for j, c in enumerate(cols_c):
         i = c - nhc
         rp = rec_cols[i] if 0 <= i < len(rec_cols) else []
@@ -281,6 +310,7 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         ok = norm(gp) == norm(rp)
         col_hit += int(ok)
         col_f1.append(segment_f1(gp, rp))
+        gold_paths["col"].append(gp); rec_paths["col"].append(rp)
         if not ok and len(errors) < 3:
             errors.append({"axis": "col", "grid_line": c, "gold": gp, "rec": rp})
     for i_, r in enumerate(rows_c):
@@ -291,8 +321,15 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
         ok = norm(gp) == norm(rp)
         row_hit += int(ok)
         row_f1.append(segment_f1(gp, rp))
+        gold_paths["row"].append(gp); rec_paths["row"].append(rp)
         if not ok and len(errors) < 3:
             errors.append({"axis": "row", "grid_line": r, "gold": gp, "rec": rp})
+
+    pair_counts = {}
+    for axis in ("col", "row"):
+        g = hierarchy_edges(gold_paths[axis])
+        rc = hierarchy_edges(rec_paths[axis])
+        pair_counts[axis] = (len(g & rc), len(rc), len(g))
 
     max_row_depth = max((len(bt.row_path(i)) for i in range(len(rows_c))), default=0)
     meta = {
@@ -308,6 +345,9 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
     }
     meta["col_segment_f1"] = col_f1
     meta["row_segment_f1"] = row_f1
+    meta["pair_counts"] = pair_counts
+    if tt_trace is not None:
+        meta["treethinker"] = tt_trace
     return (col_hit, col_tot, row_hit, row_tot, boundary_ok, cols_ok, errors, meta), "ok"
 
 
@@ -325,8 +365,23 @@ def main() -> int:
     ap.add_argument("--use-merges", action="store_true",
                     help="consume merged_regions (markup) instead of the texts-only "
                          "blank-carry reconstructor — the A1 front-end")
+    ap.add_argument("--treethinker", default="",
+                    help="LLM spec (e.g. groq:llama-3.3-70b-versatile) — reconstruct "
+                         "with RealHiTBench's TreeThinker Generate_Tree prompt instead "
+                         "of the rule-based carry-fill front-end")
+    ap.add_argument("--tt-cache", default="data/treethinker_cache.jsonl")
+    ap.add_argument("--tt-max-tokens", type=int, default=3000)
     ap.add_argument("--out", default="results/tree_reconstruct_hitab_raw.json")
     args = ap.parse_args()
+
+    tt = None
+    if args.treethinker:
+        from rag_agent.llm.factory import build_llm
+        from rag_agent.reconstruct.treethinker import TreeThinker
+        tt = TreeThinker(build_llm(args.treethinker, retry_on_429=8),
+                         cache_path=args.tt_cache, max_tokens=args.tt_max_tokens)
+        print(f"[reconstructor] TreeThinker via {args.treethinker} "
+              f"(cache={args.tt_cache}, {len(tt.cache)} entries)")
 
     from rag_agent.bench.hitab import load_queries
 
@@ -346,6 +401,7 @@ def main() -> int:
     all_row_f1: List[float] = []
     col_hit = col_tot = row_hit = row_tot = 0
     b_ok = b_tot = c_ok = 0
+    pairs = {"col": [0, 0, 0], "row": [0, 0, 0]}  # hit, n_rec, n_gold
     reasons = Counter()
     examples = []
 
@@ -360,7 +416,7 @@ def main() -> int:
             reasons["unreadable"] += 1
             continue
         res, why = score_table(raw, tables[tid], args.guess_boundary, args.guess_cols,
-                               args.force_cols, args.use_merges)
+                               args.force_cols, args.use_merges, tt)
         reasons[why] += 1
         if res is None:
             continue
@@ -379,6 +435,8 @@ def main() -> int:
         depth[f"row_depth{min(meta['max_row_depth'], 4)}"]["total"] += rt
         depth[f"row_depth{min(meta['max_row_depth'], 4)}"]["hit"] += rh
         depth[f"row_depth{min(meta['max_row_depth'], 4)}"]["f1"] += meta["row_segment_f1"]
+        for axis, (h, nr, ng) in meta["pair_counts"].items():
+            pairs[axis][0] += h; pairs[axis][1] += nr; pairs[axis][2] += ng
         e = expressible["yes" if meta["row_depth_expressible"] else "no"]
         e["total"] += rt; e["hit"] += rh; e["n_tables"] += 1
         if errs and len(examples) < 10:
@@ -386,6 +444,13 @@ def main() -> int:
 
     def mean(xs):
         return round(sum(xs) / len(xs), 4) if xs else None
+
+    def prf(hit, n_rec, n_gold):
+        p = hit / n_rec if n_rec else 0.0
+        r = hit / n_gold if n_gold else 0.0
+        return {"precision": round(p, 4), "recall": round(r, 4),
+                "f1": round(2 * p * r / (p + r), 4) if (p + r) else 0.0,
+                "n_gold_edges": n_gold, "n_rec_edges": n_rec}
 
     by_bucket = {b: {"n_tables": s["n_tables"],
                      "col_path_exact_match": round(s["col_hit"] / s["col_total"], 4) if s["col_total"] else None,
@@ -414,6 +479,12 @@ def main() -> int:
                             "tree_reconstruct_multihiertt.py, which has no gold tree "
                             "and matches segment words against the cell's description "
                             "sentence instead."),
+        # Parent-child edge P/R/F1 — the unit Chen & Cafarella's hierarchy
+        # extractor and TUTA's coordinate tree are scored on. Micro-summed over
+        # per-table edge sets. Comparable to that literature in a way neither
+        # exact match nor segment F1 is.
+        "col_pair_prf": prf(*pairs["col"]),
+        "row_pair_prf": prf(*pairs["row"]),
         "col_paths_scored": col_tot, "row_paths_scored": row_tot,
         "boundary_guess_accuracy": round(b_ok / b_tot, 4) if (args.guess_boundary and b_tot) else None,
         "n_header_cols_guess_accuracy": round(c_ok / b_tot, 4) if ((args.guess_cols or args.force_cols) and b_tot) else None,
@@ -442,6 +513,10 @@ def main() -> int:
           f"   segment_f1 {out['col_path_segment_f1']}")
     print(f"row_path_exact_match : {out['row_path_exact_match']}  ({row_hit}/{row_tot})"
           f"   segment_f1 {out['row_path_segment_f1']}")
+    for axis in ("col", "row"):
+        v = out[f"{axis}_pair_prf"]
+        print(f"{axis}_pair_prf         : P {v['precision']} / R {v['recall']} / "
+              f"F1 {v['f1']}   (gold edges {v['n_gold_edges']})")
     print("\nby size bucket (max(data rows, data cols)):")
     for b in ("<=10x10", "10-20", ">20"):
         if b in by_bucket:

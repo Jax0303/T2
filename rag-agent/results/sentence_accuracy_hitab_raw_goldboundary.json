@@ -11,135 +11,135 @@
   },
   "gold": "hmt parse (data/tables/hmt) verbalized by the same templates",
   "input": "real source grid (data/tables/raw -> texts)",
-  "boundary_mode": "guessed",
-  "n_header_cols_mode": "guessed",
+  "boundary_mode": "known (from gold trees)",
+  "n_header_cols_mode": "gold",
   "by_style": {
     "short": {
       "sentences": 55207,
-      "sentence_exact": 0.7765,
-      "sentence_exact_value_normalized": 0.8498,
-      "path_exact": 0.8663,
+      "sentence_exact": 0.8823,
+      "sentence_exact_value_normalized": 0.9599,
+      "path_exact": 0.9768,
       "err_wrong_value": 935,
-      "err_wrong_row_path": 6830,
-      "err_wrong_col_path": 3191,
-      "err_number_formatting_only": 3026
+      "err_wrong_row_path": 1414,
+      "err_wrong_col_path": 1281,
+      "err_number_formatting_only": 3245
     },
     "medium": {
       "sentences": 55207,
-      "sentence_exact": 0.7765,
-      "sentence_exact_value_normalized": 0.8498,
-      "path_exact": 0.8663,
+      "sentence_exact": 0.8823,
+      "sentence_exact_value_normalized": 0.9599,
+      "path_exact": 0.9768,
       "err_wrong_value": 935,
-      "err_wrong_row_path": 6830,
-      "err_wrong_col_path": 3191,
-      "err_number_formatting_only": 3026
+      "err_wrong_row_path": 1414,
+      "err_wrong_col_path": 1281,
+      "err_number_formatting_only": 3245
     },
     "long": {
       "sentences": 55207,
-      "sentence_exact": 0.6633,
-      "sentence_exact_value_normalized": 0.7181,
-      "path_exact": 0.7345,
+      "sentence_exact": 0.7691,
+      "sentence_exact_value_normalized": 0.8279,
+      "path_exact": 0.8446,
       "err_wrong_value": 935,
-      "err_wrong_row_path": 13071,
-      "err_wrong_col_path": 3202,
-      "err_number_formatting_only": 3026
+      "err_wrong_row_path": 7662,
+      "err_wrong_col_path": 1281,
+      "err_number_formatting_only": 3245
     }
   },
   "by_style_by_size_bucket": {
     "short": {
       "10-20": {
         "sentences": 21934,
-        "sentence_exact": 0.7942,
-        "sentence_exact_value_normalized": 0.8506,
-        "path_exact": 0.8683,
+        "sentence_exact": 0.886,
+        "sentence_exact_value_normalized": 0.9524,
+        "path_exact": 0.9707,
         "err_wrong_value": 402,
-        "err_wrong_row_path": 2157,
-        "err_wrong_col_path": 1857,
-        "err_number_formatting_only": 900
+        "err_wrong_row_path": 492,
+        "err_wrong_col_path": 643,
+        "err_number_formatting_only": 1099
       },
       ">20": {
         "sentences": 29766,
-        "sentence_exact": 0.7686,
-        "sentence_exact_value_normalized": 0.8513,
-        "path_exact": 0.8671,
+        "sentence_exact": 0.8838,
+        "sentence_exact_value_normalized": 0.9667,
+        "path_exact": 0.9826,
         "err_wrong_value": 477,
-        "err_wrong_row_path": 4259,
-        "err_wrong_col_path": 986,
-        "err_number_formatting_only": 1851
+        "err_wrong_row_path": 833,
+        "err_wrong_col_path": 518,
+        "err_number_formatting_only": 1854
       },
       "<=10x10": {
         "sentences": 3507,
-        "sentence_exact": 0.7334,
-        "sentence_exact_value_normalized": 0.8315,
-        "path_exact": 0.8469,
+        "sentence_exact": 0.8463,
+        "sentence_exact_value_normalized": 0.9498,
+        "path_exact": 0.9658,
         "err_wrong_value": 56,
-        "err_wrong_row_path": 414,
-        "err_wrong_col_path": 348,
-        "err_number_formatting_only": 275
+        "err_wrong_row_path": 89,
+        "err_wrong_col_path": 120,
+        "err_number_formatting_only": 292
       }
     },
     "medium": {
       "10-20": {
         "sentences": 21934,
-        "sentence_exact": 0.7942,
-        "sentence_exact_value_normalized": 0.8506,
-        "path_exact": 0.8683,
+        "sentence_exact": 0.886,
+        "sentence_exact_value_normalized": 0.9524,
+        "path_exact": 0.9707,
         "err_wrong_value": 402,
-        "err_wrong_row_path": 2157,
-        "err_wrong_col_path": 1857,
-        "err_number_formatting_only": 900
+        "err_wrong_row_path": 492,
+        "err_wrong_col_path": 643,
+        "err_number_formatting_only": 1099
       },
       ">20": {
         "sentences": 29766,
-        "sentence_exact": 0.7686,
-        "sentence_exact_value_normalized": 0.8513,
-        "path_exact": 0.8671,
+        "sentence_exact": 0.8838,
+        "sentence_exact_value_normalized": 0.9667,
+        "path_exact": 0.9826,
         "err_wrong_value": 477,
-        "err_wrong_row_path": 4259,
-        "err_wrong_col_path": 986,
-        "err_number_formatting_only": 1851
+        "err_wrong_row_path": 833,
+        "err_wrong_col_path": 518,
+        "err_number_formatting_only": 1854
       },
       "<=10x10": {
         "sentences": 3507,
-        "sentence_exact": 0.7334,
-        "sentence_exact_value_normalized": 0.8315,
-        "path_exact": 0.8469,
+        "sentence_exact": 0.8463,
+        "sentence_exact_value_normalized": 0.9498,
+        "path_exact": 0.9658,
         "err_wrong_value": 56,
-        "err_wrong_row_path": 414,
-        "err_wrong_col_path": 348,
-        "err_number_formatting_only": 275
+        "err_wrong_row_path": 89,
+        "err_wrong_col_path": 120,
+        "err_number_formatting_only": 292
       }
     },
     "long": {
       "10-20": {
         "sentences": 21934,
-        "sentence_exact": 0.7042,
-        "sentence_exact_value_normalized": 0.7453,
-        "path_exact": 0.7628,
+        "sentence_exact": 0.7949,
+        "sentence_exact_value_normalized": 0.845,
+        "path_exact": 0.8632,
         "err_wrong_value": 402,
-        "err_wrong_row_path": 4130,
-        "err_wrong_col_path": 1858,
-        "err_number_formatting_only": 900
+        "err_wrong_row_path": 2490,
+        "err_wrong_col_path": 643,
+        "err_number_formatting_only": 1099
       },
       ">20": {
         "sentences": 29766,
-        "sentence_exact": 0.6335,
-        "sentence_exact_value_normalized": 0.6957,
-        "path_exact": 0.7112,
+        "sentence_exact": 0.7498,
+        "sentence_exact_value_normalized": 0.8121,
+        "path_exact": 0.8278,
         "err_wrong_value": 477,
-        "err_wrong_row_path": 8280,
-        "err_wrong_col_path": 986,
-        "err_number_formatting_only": 1851
+        "err_wrong_row_path": 4822,
+        "err_wrong_col_path": 518,
+        "err_number_formatting_only": 1854
       },
       "<=10x10": {
         "sentences": 3507,
-        "sentence_exact": 0.6601,
-        "sentence_exact_value_normalized": 0.7385,
-        "path_exact": 0.7539,
+        "sentence_exact": 0.7719,
+        "sentence_exact_value_normalized": 0.8551,
+        "path_exact": 0.8711,
         "err_wrong_value": 56,
-        "err_wrong_row_path": 661,
-        "err_wrong_col_path": 358,
-        "err_number_formatting_only": 275
+        "err_wrong_row_path": 350,
+        "err_wrong_col_path": 120,
+        "err_number_formatting_only": 292
       }
     }
   },
@@ -323,27 +323,27 @@
       "errors": [
         {
           "cell": [
-            0,
-            0
+            2,
+            11
           ],
-          "generated": "In return, games, gp, 1 is 1.",
-          "gold": "In return, games, gp for 2010, min is 1."
+          "generated": "In return, punt return, avg for 2012, min is 9.0.",
+          "gold": "In return, punt return, avg for 2012, min is 9."
         },
         {
           "cell": [
-            0,
-            1
+            4,
+            11
           ],
-          "generated": "In return, games, gs, 0 is 0.",
-          "gold": "In return, games, gs for 2010, min is 0."
+          "generated": "In return, punt return, avg for 2014, min is 11.0.",
+          "gold": "In return, punt return, avg for 2014, min is 11."
         },
         {
           "cell": [
-            0,
-            2
+            8,
+            3
           ],
-          "generated": "In return, kick return, ret, - is -.",
-          "gold": "In return, kick return, ret for 2010, min is -."
+          "generated": "In return, kick return, yds for career is 1,316.",
+          "gold": "In return, kick return, yds for career is 1316."
         }
       ]
     },
@@ -352,27 +352,27 @@
       "errors": [
         {
           "cell": [
-            0,
+            2,
             0
           ],
-          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2008 for current $millions, all companies is 290680.",
-          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2008 for all companies is 290680."
+          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2008 for micro companiesa, 5-9 is 3947.",
+          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2008 for all companies, micro companiesa, 5-9 is 3947."
         },
         {
           "cell": [
-            0,
+            2,
             1
           ],
-          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2009 for current $millions, all companies is 282393.",
-          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2009 for all companies is 282393."
+          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2009 for micro companiesa, 5-9 is 4078.",
+          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2009 for all companies, micro companiesa, 5-9 is 4078."
         },
         {
           "cell": [
-            0,
+            2,
             2
           ],
-          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2010 for current $millions, all companies is 278977.",
-          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2010 for all companies is 278977."
+          "generated": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2010 for micro companiesa, 5-9 is 3851.",
+          "gold": "In table 1. domestic r&d paid for by the company and others and performed by the company, by company size: 2008-15, 2010 for all companies, micro companiesa, 5-9 is 3851."
         }
       ]
     },

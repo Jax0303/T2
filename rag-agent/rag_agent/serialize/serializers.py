@@ -57,13 +57,59 @@ def _row_text_s2(table: BenchTable, r: int) -> str:
     return head + " | ".join(cells)
 
 
-def serialize_table(table: BenchTable, scheme: str = S2) -> List[Chunk]:
-    """Serialize ``table`` into row-level chunks under the given scheme."""
+def _cell_text_s1(table: BenchTable, r: int, c: int) -> str:
+    """Flat cell: leaf headers only — the structure-naive control at cell scale."""
+    parts = [p for p in (_leaf(table.row_path(r)), _leaf(table.col_path(c))) if p]
+    v = _fmt(table.cell(r, c))
+    head = f"{table.title} | " if table.title else ""
+    return head + (" | ".join(parts) + f": {v}" if parts else v)
+
+
+def _cell_text_s2(table: BenchTable, r: int, c: int) -> str:
+    """One cell as one sentence, carrying caption + full row/col header path.
+
+    Delegates to :func:`rag_agent.serialization.templates.render` so the deployed
+    cell sentence has exactly one definition in the repo — the S3 ``structural``
+    template every cell-level result on disk was produced under.
+    """
+    from ..serialization.templates import STRUCTURAL, render
+    return render(STRUCTURAL, table.title,
+                  [p for p in table.row_path(r) if p],
+                  [p for p in table.col_path(c) if p],
+                  table.cell(r, c))
+
+
+def serialize_table(table: BenchTable, scheme: str = S2,
+                    granularity: str = "row") -> List[Chunk]:
+    """Serialize ``table`` into row- or cell-level chunks under ``scheme``.
+
+    ``granularity="cell"`` is the index unit the method is actually specified
+    around — one data cell is one sentence is one retrieval unit. ``"row"`` is
+    kept as the default because a dozen result files under ``results/`` were
+    produced with it, and a retrieved row chunk carries every column of that row,
+    which is a different (much easier) retrieval problem than picking one cell.
+    """
     if scheme not in SCHEMES:
         raise ValueError(f"unknown scheme {scheme!r}; expected one of {SCHEMES}")
+    if granularity not in ("row", "cell"):
+        raise ValueError(f"granularity must be 'row' or 'cell', got {granularity!r}")
+    chunks: List[Chunk] = []
+
+    if granularity == "cell":
+        render_cell = _cell_text_s1 if scheme == S1 else _cell_text_s2
+        for r in range(table.n_rows):
+            for c in range(table.n_cols):
+                chunks.append(Chunk(
+                    table_id=table.table_id,
+                    chunk_id=f"{table.table_id}#r{r}c{c}",
+                    text=render_cell(table, r, c),
+                    rows=[r],
+                    cols=[c],
+                ))
+        return chunks
+
     render = _row_text_s1 if scheme == S1 else _row_text_s2
     all_cols = list(range(table.n_cols))
-    chunks: List[Chunk] = []
     for r in range(table.n_rows):
         chunks.append(Chunk(
             table_id=table.table_id,
