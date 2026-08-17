@@ -1,0 +1,262 @@
+{
+  "experiment": "cell retrieval: retriever x serialization",
+  "paired_tests": {
+    "recall@1:S2_recon_vs_flat:bm25": {
+      "only_first": 12,
+      "only_second": 4,
+      "exact_p": 0.0768
+    },
+    "recall@1:S2_recon_vs_flat:dense": {
+      "only_first": 23,
+      "only_second": 4,
+      "exact_p": 0.0003
+    },
+    "answer_em:S2_recon_vs_flat:dense": {
+      "only_first": 37,
+      "only_second": 5,
+      "exact_p": 0.0
+    },
+    "recall@1:S2_recon_vs_flat:hybrid": {
+      "only_first": 23,
+      "only_second": 3,
+      "exact_p": 0.0001
+    },
+    "recall@1:S2_recon_vs_flat:cross": {
+      "only_first": 30,
+      "only_second": 7,
+      "exact_p": 0.0002
+    },
+    "recall@1:S2_gold_vs_S2_recon:bm25": {
+      "only_first": 3,
+      "only_second": 4,
+      "exact_p": 1.0
+    },
+    "recall@1:S2_gold_vs_S2_recon:dense": {
+      "only_first": 4,
+      "only_second": 4,
+      "exact_p": 1.0
+    },
+    "answer_em:S2_gold_vs_S2_recon:dense": {
+      "only_first": 5,
+      "only_second": 3,
+      "exact_p": 0.7266
+    },
+    "recall@1:S2_gold_vs_S2_recon:hybrid": {
+      "only_first": 5,
+      "only_second": 3,
+      "exact_p": 0.7266
+    },
+    "recall@1:S2_gold_vs_S2_recon:cross": {
+      "only_first": 6,
+      "only_second": 6,
+      "exact_p": 1.0
+    }
+  },
+  "population": "HiTab dev, single gold operand, seed-0 shuffle, n=100",
+  "table": "oracle (gate-1 solved: HiTab table recall@20=1.0)",
+  "pool": "every cell of the gold table",
+  "reranker": "BAAI/bge-reranker-large",
+  "cross_pool": 50,
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "topk": 8,
+  "env": {
+    "seed": 0,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-17T17:28:32+00:00"
+  },
+  "matrix": {
+    "flat": {
+      "bm25": {
+        "n": 100,
+        "recall@1": 0.2,
+        "recall@5": 0.51,
+        "recall@8": 0.62,
+        "recall@20": 0.73,
+        "MRR": 0.3314,
+        "median_rank": 5.0,
+        "answer_em": null,
+        "n_answered": 0
+      },
+      "dense": {
+        "n": 100,
+        "recall@1": 0.31,
+        "recall@5": 0.59,
+        "recall@8": 0.69,
+        "recall@20": 0.8,
+        "MRR": 0.4349,
+        "median_rank": 4.0,
+        "answer_em": 0.27,
+        "n_answered": 100
+      },
+      "hybrid": {
+        "n": 100,
+        "recall@1": 0.3,
+        "recall@5": 0.59,
+        "recall@8": 0.69,
+        "recall@20": 0.81,
+        "MRR": 0.4379,
+        "median_rank": 4.0,
+        "answer_em": null,
+        "n_answered": 0
+      },
+      "cross": {
+        "n": 100,
+        "recall@1": 0.33,
+        "recall@5": 0.66,
+        "recall@8": 0.73,
+        "recall@20": 0.84,
+        "MRR": 0.4929,
+        "median_rank": 2.0,
+        "answer_em": null,
+        "n_answered": 0
+      }
+    },
+    "S2_recon": {
+      "bm25": {
+        "n": 100,
+        "recall@1": 0.28,
+        "recall@5": 0.63,
+        "recall@8": 0.72,
+        "recall@20": 0.81,
+        "MRR": 0.4288,
+        "median_rank": 4.0,
+        "answer_em": null,
+        "n_answered": 0
+      },
+      "dense": {
+        "n": 100,
+        "recall@1": 0.5,
+        "recall@5": 0.73,
+        "recall@8": 0.79,
+        "recall@20": 0.86,
+        "MRR": 0.6103,
+        "median_rank": 1.5,
+        "answer_em": 0.59,
+        "n_answered": 100
+      },
+      "hybrid": {
+        "n": 100,
+        "recall@1": 0.5,
+        "recall@5": 0.73,
+        "recall@8": 0.75,
+        "recall@20": 0.84,
+        "MRR": 0.6023,
+        "median_rank": 1.5,
+        "answer_em": null,
+        "n_answered": 0
+      },
+      "cross": {
+        "n": 100,
+        "recall@1": 0.56,
+        "recall@5": 0.8,
+        "recall@8": 0.83,
+        "recall@20": 0.9,
+        "MRR": 0.6689,
+        "median_rank": 1.0,
+        "answer_em": null,
+        "n_answered": 0
+      }
+    },
+    "S2_gold": {
+      "bm25": {
+        "n": 100,
+        "recall@1": 0.27,
+        "recall@5": 0.64,
+        "recall@8": 0.71,
+        "recall@20": 0.81,
+        "MRR": 0.4291,
+        "median_rank": 3.5,
+        "answer_em": null,
+        "n_answered": 0
+      },
+      "dense": {
+        "n": 100,
+        "recall@1": 0.5,
+        "recall@5": 0.74,
+        "recall@8": 0.8,
+        "recall@20": 0.86,
+        "MRR": 0.6069,
+        "median_rank": 1.5,
+        "answer_em": 0.61,
+        "n_answered": 100
+      },
+      "hybrid": {
+        "n": 100,
+        "recall@1": 0.52,
+        "recall@5": 0.76,
+        "recall@8": 0.77,
+        "recall@20": 0.85,
+        "MRR": 0.6182,
+        "median_rank": 1.0,
+        "answer_em": null,
+        "n_answered": 0
+      },
+      "cross": {
+        "n": 100,
+        "recall@1": 0.56,
+        "recall@5": 0.8,
+        "recall@8": 0.82,
+        "recall@20": 0.9,
+        "MRR": 0.665,
+        "median_rank": 1.0,
+        "answer_em": null,
+        "n_answered": 0
+      }
+    }
+  },
+  "delta_S2recon_minus_flat": {
+    "bm25": {
+      "recall@1": 0.08,
+      "recall@8": 0.1,
+      "MRR": 0.0974,
+      "answer_em": null
+    },
+    "dense": {
+      "recall@1": 0.19,
+      "recall@8": 0.1,
+      "MRR": 0.1754,
+      "answer_em": 0.32
+    },
+    "hybrid": {
+      "recall@1": 0.2,
+      "recall@8": 0.06,
+      "MRR": 0.1644,
+      "answer_em": null
+    },
+    "cross": {
+      "recall@1": 0.23,
+      "recall@8": 0.1,
+      "MRR": 0.176,
+      "answer_em": null
+    }
+  },
+  "delta_S2gold_minus_S2recon": {
+    "bm25": {
+      "recall@1": -0.01,
+      "recall@8": -0.01,
+      "MRR": 0.0003,
+      "answer_em": null
+    },
+    "dense": {
+      "recall@1": 0.0,
+      "recall@8": 0.01,
+      "MRR": -0.0034,
+      "answer_em": 0.02
+    },
+    "hybrid": {
+      "recall@1": 0.02,
+      "recall@8": 0.02,
+      "MRR": 0.0159,
+      "answer_em": null
+    },
+    "cross": {
+      "recall@1": 0.0,
+      "recall@8": -0.01,
+      "MRR": -0.0039,
+      "answer_em": null
+    }
+  }
+}
