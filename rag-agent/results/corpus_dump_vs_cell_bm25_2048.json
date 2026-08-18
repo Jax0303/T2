@@ -1,0 +1,134 @@
+{
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "env": {
+    "seed": 42,
+    "device": "cpu",
+    "torch": "2.10.0+cu128",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "numpy",
+    "run_started_utc": "2026-08-18T07:48:16+00:00"
+  },
+  "population": {
+    "name": "hitab_dev_corpus_arith",
+    "n": 175,
+    "frozen": "/home/ugh/T2/rag-agent/populations/hitab_dev_corpus_arith.txt"
+  },
+  "corpus": {
+    "split": "dev",
+    "tables": 424,
+    "cells": 58759
+  },
+  "budget_tokens": 2048,
+  "budget_tokenizer": "BAAI/bge-small-en-v1.5",
+  "retriever": "bm25",
+  "arms": {
+    "dump": "table index -> whole tables in rank order while they fit",
+    "cell": "corpus-wide S2 cell index -> cells while they fit",
+    "cascade": "top-1 table by table index, then its cells only",
+    "cell2dump": "tables ranked by their best cell, dumped whole"
+  },
+  "summary": {
+    "dump": {
+      "osc": 0.8114,
+      "per_cell": 0.8114,
+      "gold_table_any": 0.8114,
+      "gold_table_whole": 0.8114,
+      "tokens": 2025.92,
+      "n_tables": 5.4571
+    },
+    "cell": {
+      "osc": 0.6114,
+      "per_cell": 0.729,
+      "gold_table_any": 0.8857,
+      "gold_table_whole": 0.0971,
+      "tokens": 2047.0457,
+      "n_tables": 10.84
+    },
+    "cascade": {
+      "osc": 0.6057,
+      "per_cell": 0.6321,
+      "gold_table_any": 0.6571,
+      "gold_table_whole": 0.3543,
+      "tokens": 1382.4286,
+      "n_tables": 1.0
+    },
+    "cell2dump": {
+      "osc": 0.7257,
+      "per_cell": 0.7257,
+      "gold_table_any": 0.7257,
+      "gold_table_whole": 0.7257,
+      "tokens": 2006.1429,
+      "n_tables": 3.7771
+    }
+  },
+  "paired_tests": {
+    "osc:cell_vs_dump": {
+      "only_first": 8,
+      "only_second": 43,
+      "exact_p": 0.0
+    },
+    "osc:cascade_vs_dump": {
+      "only_first": 0,
+      "only_second": 36,
+      "exact_p": 0.0
+    },
+    "osc:cell_vs_cascade": {
+      "only_first": 17,
+      "only_second": 16,
+      "exact_p": 1.0
+    },
+    "osc:cell2dump_vs_dump": {
+      "only_first": 16,
+      "only_second": 31,
+      "exact_p": 0.04
+    },
+    "osc:cell2dump_vs_cell": {
+      "only_first": 32,
+      "only_second": 12,
+      "exact_p": 0.0037
+    }
+  },
+  "table_recall": {
+    "by_table_index": {
+      "@1": 0.6571,
+      "@3": 0.8057,
+      "@5": 0.8686,
+      "@10": 0.96,
+      "@20": 0.9771
+    },
+    "by_cell_vote": {
+      "@1": 0.6171,
+      "@3": 0.7829,
+      "@5": 0.8457,
+      "@10": 0.88,
+      "@20": 0.9086
+    }
+  },
+  "table_recall_paired": {
+    "@1": {
+      "only_first": 20,
+      "only_second": 27,
+      "exact_p": 0.3817
+    },
+    "@3": {
+      "only_first": 18,
+      "only_second": 22,
+      "exact_p": 0.6358
+    },
+    "@5": {
+      "only_first": 15,
+      "only_second": 19,
+      "exact_p": 0.6076
+    },
+    "@10": {
+      "only_first": 1,
+      "only_second": 15,
+      "exact_p": 0.0005
+    },
+    "@20": {
+      "only_first": 0,
+      "only_second": 12,
+      "exact_p": 0.0005
+    }
+  }
+}
