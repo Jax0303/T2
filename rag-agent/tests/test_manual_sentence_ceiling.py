@@ -6,6 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
+from cell_retrieval_matrix import context_order
 from manual_sentence_ceiling import mcnemar
 
 
@@ -31,6 +32,22 @@ class TestMcNemar(unittest.TestCase):
     def test_p_never_exceeds_one(self):
         """min(n01,n10) doubling can overshoot 1 on an even split; it is clamped."""
         self.assertEqual(mcnemar([1, 0], [0, 1])["exact_p"], 1.0)
+
+
+class TestContextOrder(unittest.TestCase):
+    """--oracle-cell must make recall 1.0 without changing the context size."""
+
+    def test_plain_is_the_retriever_head(self):
+        self.assertEqual(context_order([4, 7, 1, 9], 1, 3, False), [4, 7, 1])
+
+    def test_oracle_pins_gold_first_and_drops_the_tail(self):
+        # gold 9 was rank 4 and outside k=3; it comes in, the last distractor goes
+        self.assertEqual(context_order([4, 7, 1, 9], 9, 3, True), [9, 4, 7])
+
+    def test_oracle_never_duplicates_a_gold_already_retrieved(self):
+        got = context_order([4, 7, 1, 9], 7, 3, True)
+        self.assertEqual(got, [7, 4, 1])
+        self.assertEqual(len(set(got)), 3)
 
 
 if __name__ == "__main__":

@@ -27,11 +27,20 @@ per query, so recall@k is just ``rank <= k`` and MRR is 1/rank.
 is what the method buys on real data, per retriever. With --llm the same
 orderings are handed to the reader so the price is also in answer EM.
 
+--oracle-cell pins the gold cell at the head of the context for every query, so
+cell recall is 1.0 BY CONSTRUCTION and the arms differ only in how the cell reads.
+Answer EM across serializations is only a reader comparison under this flag:
+without it the arms are handed different contexts (S2 .50 vs flat .31 recall@1),
+so their EM gap is mostly retrieval and says nothing about the reader.
+
   # pass 1: all 12 retrieval cells (loads the reranker)
   PYTHONPATH=. .venv/bin/python scripts/cell_retrieval_matrix.py --no-llm --resume
   # pass 2: answer leg on the dense column (no reranker -> GPU free for the reader)
   PYTHONPATH=. .venv/bin/python scripts/cell_retrieval_matrix.py --resume \
       --retrievers dense --model local:Qwen/Qwen2.5-7B-Instruct
+  # pass 3: reader-only leg, retrieval held at 100%
+  PYTHONPATH=. .venv/bin/python scripts/cell_retrieval_matrix.py --resume \
+      --retrievers dense --oracle-cell --out results/cell_retrieval_oracle.json
 """
 from __future__ import annotations
 
@@ -50,7 +59,7 @@ from rag_agent.generate.answerer import _DIRECT_SYS
 from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
 from rag_agent.retrieve.hybrid_index import HybridIndex
-from rag_agent.runenv import run_env
+from rag_agent.runenv import guard_resume, run_env
 from rag_agent.serialization.base import Chunk
 from manual_sentence_ceiling import build_population
 from point3_reconstruction_cost import cell_text
@@ -59,6 +68,13 @@ SERIALIZATIONS = ("flat", "S2_recon", "S2_gold")
 RETRIEVERS = ("bm25", "dense", "hybrid", "cross")
 ALPHA = {"bm25": 0.0, "dense": 1.0, "hybrid": 0.5, "cross": 1.0}
 KS = (1, 5, 8, 20)
+
+
+def context_order(order, gold_idx, k, oracle):
+    """The k unit indices handed to the reader, gold pinned first when oracle."""
+    if not oracle:
+        return order[:k]
+    return [gold_idx] + [i for i in order if i != gold_idx][: k - 1]
 
 
 def units(bt, pt, scheme):
@@ -87,8 +103,14 @@ def main() -> int:
     ap.add_argument("--model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--reranker", default="BAAI/bge-reranker-large")
     ap.add_argument("--no-llm", action="store_true")
+    ap.add_argument("--oracle-cell", action="store_true",
+                    help="pin the gold cell first in the reader context "
+                         "(recall=1.0 by construction; isolates the reader)")
     ap.add_argument("--out", default="results/cell_retrieval_matrix.json")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under\n"
+                         "a different reader/seed/population")
     args = ap.parse_args()
 
     schemes = [s for s in args.serializations.split(",") if s]
@@ -114,6 +136,8 @@ def main() -> int:
             done[(r["query_id"], r["scheme"], r["retriever"])] = r
         print(f"[resume] {len(done)} records already on disk", flush=True)
 
+    guard_resume(rec_path, env, reader=(None if llm is None else llm.name),
+                 population="hitab_dev_lookup_single", force=args.force_resume)
     rec_fh = open(rec_path, "a")
     try:
         for n_done, q in enumerate(pop, 1):
@@ -151,7 +175,9 @@ def main() -> int:
                     rec = {"query_id": q.query_id, "scheme": scheme, "retriever": r,
                            "rank": rank, "pool": len(txt)}
                     if llm is not None:
-                        ctx = "\n".join(txt[i] for i in order[: args.topk])
+                        ctx_idx = context_order(order, gi, args.topk, args.oracle_cell)
+                        rec["oracle_cell"] = bool(args.oracle_cell)
+                        ctx = "\n".join(txt[i] for i in ctx_idx)
                         user = f"ROWS:\n{ctx}\n\nQUESTION: {q.question}\n\nAnswer:"
                         raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
                         rec["correct"] = bool(hitab_exact_match(raw, q.answer))
@@ -214,6 +240,7 @@ def main() -> int:
         "pool": "every cell of the gold table",
         "reranker": args.reranker, "cross_pool": args.cross_pool,
         "reader": None if llm is None else llm.name, "topk": args.topk, "env": env,
+        "oracle_cell": bool(args.oracle_cell),
         "matrix": matrix,
         "delta_S2recon_minus_flat": {
             r: {k: delta("S2_recon", "flat", r, k)

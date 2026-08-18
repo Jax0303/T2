@@ -82,3 +82,40 @@ gold 셀이 1개뿐이므로 recall@k = `rank ≤ k`, MRR = 1/rank.
   Δ는 보수적이다.
 - cross는 dense top-50만 재점수한다. 50 밖은 dense 순서를 유지하므로 recall@20 이상은
   리랭커의 공이 아니다.
+
+## ③ 기존 방식(`flat`)은 값을 잃는 게 아니라 **주소**를 잃는다
+
+`flat` 단위는 `"잎행라벨 잎열라벨: 값"`이다 (`point3_reconstruction_cost.cell_text`).
+값은 그대로 들어간다. 없어지는 건 그 값을 표 안에서 **유일하게 만드는 조상 경로**다.
+같은 100질의의 gold 표에서 (표당 비율의 평균):
+
+| 직렬화 | gold 셀 라벨이 같은 표 안에서 중복 | gold 라벨을 공유하는 셀 수(평균) | 라벨이 중복인 셀 비율 | 문자열까지 완전 중복인 셀 비율 |
+|---|---|---|---|---|
+| `flat` | **79%** | **3.73** | .80 | .14 |
+| `S2_recon` | 8% | 1.10 | .09 | .01 |
+| `S2_gold` | 3% | 1.03 | .02 | .003 |
+
+즉 baseline에서는 질의가 정답 셀을 특정할 어휘가 인덱스에 **아예 없다** — 열 개 중
+여덟 개꼴로 정답 셀과 글자가 같은 형제 셀이 최소 하나 더 있다. 검색기를 바꿔도
+(bm25→cross) recall@1이 .20→.33에서 멈추는 이유가 이것이고, 경로를 붙이면 네 검색기
+전부에서 오르는 이유도 같다. 리랭커도 구분 불가능한 두 줄은 구분하지 못한다.
+
+## ④ 리더만 따로 보려면: `--oracle-cell`
+
+①②의 EM 비교는 **arm마다 문맥이 다르다** (`flat` recall@1 .31 vs `S2_recon` .50).
+그래서 EM 격차 +.32는 대부분 검색 격차이고, "리더가 어느 직렬화를 더 잘 읽나"는
+답이 아니다. 그걸 보려면 검색을 100%로 고정해야 한다.
+
+`scripts/cell_retrieval_matrix.py --oracle-cell`이 gold 셀을 문맥 맨 앞에 꽂는다
+(recall@1 = 1.0 by construction, top-k 크기는 그대로, 나머지 k-1칸은 검색기 순서).
+남는 차이는 오직 셀이 **어떻게 읽히는가**다.
+
+```
+PYTHONPATH=. .venv/bin/python scripts/cell_retrieval_matrix.py --resume \
+    --retrievers dense --oracle-cell --serializations flat,S2_recon,S2_gold \
+    --out results/cell_retrieval_oracle.json
+```
+
+⏳ 미실행 (GPU 있는 쪽에서 돌릴 것). 예측: `flat`은 gold가 문맥에 있어도 형제 셀과
+구분이 안 되므로(③) 근접칸 오답이 남아 `S2_recon`보다 낮게 나온다. 그 차이가
+**직렬화가 리더에게 주는 몫**, ②의 +.32에서 그걸 뺀 나머지가 검색이 주는 몫이다.
