@@ -38,7 +38,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import numpy as np
 
+from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
+from rag_agent.runenv import run_env
 from rag_agent.data.loader import load_table
 from rag_agent.eval.operand_set import operand_set_completeness, per_cell_recall
 from rag_agent.retrieve.header_enum import total_like_rows_hybrid
@@ -81,13 +83,16 @@ def main() -> int:
     ap.add_argument("--split", default="dev")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--cross-encoder", default="cross-encoder/ms-marco-MiniLM-L-6-v2")
+    ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out", default="results/e9_osc_token_budget.json")
     args = ap.parse_args()
+    env = run_env(args.seed, args.embed_model)
 
     queries, tables = load_queries(args.data_dir, args.split)
     pop = [q for q in queries
            if (q.aggregation or "none") in ARITH
            and len({(o.row, o.col) for o in q.gold_operands}) >= 2]
+    pop = pop_mod.pin(f"hitab_{args.split}_arith_m2", pop)
     n = len(pop)
     print(f"[pop] arithmetic m>=2: {n}")
 
@@ -187,7 +192,9 @@ def main() -> int:
 
     # ---- aggregate + paired tests ----------------------------------------
     from scipy.stats import binomtest
-    out = {"population": {"name": "arithmetic_m>=2", "n": n},
+    out = {"population": {"name": f"hitab_{args.split}_arith_m2", "n": n,
+                          "frozen": str(pop_mod.path(f"hitab_{args.split}_arith_m2"))},
+           "env": env,
            "config": {"kgrid": list(KGRID), "budgets": list(BUDGETS),
                       "injection": "total_rows x cross-encoder resolver cols (§5.10)",
                       "token_estimate": "chars//3 (as E7)"},

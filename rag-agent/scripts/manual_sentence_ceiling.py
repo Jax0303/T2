@@ -30,7 +30,7 @@ oracle there and here.
       diag/manual_sentence_worksheet.jsonl --n 100
   # 2. run
   PYTHONPATH=. .venv/bin/python scripts/manual_sentence_ceiling.py \
-      --manual diag/manual_sentences.jsonl --model openai:claude-sonnet-5 --resume
+      --manual diag/manual_sentences.jsonl --resume
 """
 from __future__ import annotations
 
@@ -45,12 +45,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
 
+from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
 from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.generate.answerer import _DIRECT_SYS
 from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
-from rag_agent.runenv import run_env
+from rag_agent.runenv import guard_resume, run_env
 from rag_agent.serialize.verbalize import verbalize_cell
 from point3_reconstruction_cost import build_table_paths, cell_text
 
@@ -74,8 +75,17 @@ def mcnemar(a_vals, b_vals) -> dict:
     return {"only_first": n01, "only_second": n10, "exact_p": round(p, 4)}
 
 
+POPULATION = "hitab_dev_lookup_single"
+
+
 def build_population(data_dir: str, split: str, n: int):
-    """The pipeline_lookup_llm population: single-operand lookup queries."""
+    """The pipeline_lookup_llm population: single-operand lookup queries.
+
+    The derivation below depends on the reconstructor (a table whose header tree
+    will not build is dropped), so once ``populations/hitab_dev_lookup_single.txt``
+    exists it -- not this code -- decides the membership. See
+    ``rag_agent/bench/population.py``.
+    """
     queries, tables = load_queries(data_dir, split)
     raw_dir = Path(data_dir) / "data/tables/raw"
     paths = {}
@@ -104,6 +114,8 @@ def build_population(data_dir: str, split: str, n: int):
             continue
         pop.append(q)
     random.Random(0).shuffle(pop)
+    if split == "dev":
+        pop = pop_mod.pin(POPULATION, pop)
     return pop[:n], tables, paths
 
 
@@ -133,7 +145,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--n", type=int, default=100)
     ap.add_argument("--topk", type=int, default=8)
-    ap.add_argument("--model", default="openai:claude-sonnet-5")
+    ap.add_argument("--model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--data-dir", default="data/hitab")
     ap.add_argument("--split", default="dev")
     ap.add_argument("--export", default="", help="write the worksheet and stop")
@@ -141,6 +153,9 @@ def main() -> int:
     ap.add_argument("--no-llm", action="store_true", help="retrieval only")
     ap.add_argument("--out", default="results/manual_sentence_ceiling.json")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under\n"
+                         "a different reader/seed/population")
     args = ap.parse_args()
 
     env = run_env(0, "BAAI/bge-small-en-v1.5")
@@ -176,6 +191,8 @@ def main() -> int:
             done[(r["query_id"], r["arm"])] = r
         print(f"[resume] {len(done)} (query,arm) records already on disk", flush=True)
 
+    guard_resume(rec_path, env, reader=(None if llm is None else llm.name),
+                 population=POPULATION, force=args.force_resume)
     rec_fh = open(rec_path, "a")
     try:
         for n_done, q in enumerate(pop, 1):

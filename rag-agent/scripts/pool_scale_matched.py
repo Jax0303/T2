@@ -32,6 +32,7 @@ from statistics import mean
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
 from rag_agent.data.loader import load_table
 from rag_agent.eval.operand_set import operand_set_completeness, per_cell_recall
@@ -80,6 +81,7 @@ def main() -> int:
     queries, _ = load_queries(args.data_dir, args.split)
     pop = [q for q in queries
            if (q.aggregation or "none") in ARITH and len(q.gold_operands) >= 1]
+    pop = pop_mod.pin(f"hitab_{args.split}_arith", pop)
     if args.max:
         pop = pop[: args.max]
 

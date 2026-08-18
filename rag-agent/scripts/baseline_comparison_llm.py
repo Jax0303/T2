@@ -33,7 +33,7 @@ Reported by question type, because the two regimes differ:
 
 Run:
     PYTHONPATH=. .venv/bin/python scripts/baseline_comparison_llm.py \
-        --n 300 --budget 1024 --model openai:gpt-4o --resume
+        --n 300 --budget 1024 --resume
     PYTHONPATH=. .venv/bin/python scripts/baseline_comparison_llm.py --dry-run
 """
 from __future__ import annotations
@@ -67,12 +67,13 @@ _load_dotenv()
 
 import numpy as np
 
+from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
 from rag_agent.eval.metrics import hitab_exact_match_text
 from rag_agent.generate.answerer import _DIRECT_SYS
 from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
-from rag_agent.runenv import run_env
+from rag_agent.runenv import guard_resume, run_env
 from point3_reconstruction_cost import build_table_paths, cell_text
 
 ARMS = ("table_md", "row_chunk", "flat_cell", "cell_sent")
@@ -168,14 +169,20 @@ def holm(pairs):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=300)
+    ap.add_argument("--population", default="",
+                    help="frozen population name (populations/NAME.txt); "
+                         "replaces the kind-stratified draw")
     ap.add_argument("--budget", type=int, default=1024, help="context tokens per arm")
-    ap.add_argument("--model", default="openai:gpt-4o")
+    ap.add_argument("--model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--data-dir", default="data/hitab")
     ap.add_argument("--split", default="dev")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--out", default="results/baseline_comparison_llm.json")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under\n"
+                         "a different reader/seed/population")
     ap.add_argument("--dry-run", action="store_true",
                     help="population + token stats only, no LLM calls")
     args = ap.parse_args()
@@ -212,6 +219,17 @@ def main() -> int:
     # stratified: aggregate questions are the scarce, hard regime (and the one
     # this method is built for), so take as many as exist up to half the sample
     # instead of letting a proportional draw leave the subgroup underpowered
+    if args.population:
+        # a frozen population replaces the kind-stratified draw entirely: the
+        # size strata exist precisely because that draw lands 85% of the sample
+        # on tables that fit the budget whole
+        pop = pop_mod.pin(args.population, pop)
+        kinds = {k: sum(1 for q in pop if q.kind == k) for k in ("lookup", "aggregate")}
+        print(f"[pop] {len(pop)} queries from {args.population} {kinds}", flush=True)
+        return_early = True
+    else:
+        return_early = False
+
     rng = random.Random(args.seed)
     by_kind = {k: [q for q in pop if q.kind == k] for k in ("lookup", "aggregate")}
     for v in by_kind.values():
@@ -219,9 +237,10 @@ def main() -> int:
     n_agg = min(len(by_kind["aggregate"]), args.n // 2)
     pop = by_kind["aggregate"][:n_agg] + by_kind["lookup"][: args.n - n_agg]
     rng.shuffle(pop)
-    kinds = {k: sum(1 for q in pop if q.kind == k) for k in ("lookup", "aggregate")}
-    print(f"[pop] {len(pop)} queries  {kinds} "
-          f"(available: { {k: len(v) for k, v in by_kind.items()} })", flush=True)
+    if not return_early:
+        kinds = {k: sum(1 for q in pop if q.kind == k) for k in ("lookup", "aggregate")}
+        print(f"[pop] {len(pop)} queries  {kinds} "
+              f"(available: { {k: len(v) for k, v in by_kind.items()} })", flush=True)
 
     enc = default_encoder(model_name=args.embed_model)
     bud = Budget(args.embed_model)
@@ -273,6 +292,8 @@ def main() -> int:
         print(f"[resume] {len(done)} (query,arm) results recorded", flush=True)
 
     llm = build_llm(args.model)
+    guard_resume(rec_path, env, reader=llm.name,
+                 population=None, force=args.force_resume)
     rec_fh = open(rec_path, "a")
     n_trunc = 0
     try:

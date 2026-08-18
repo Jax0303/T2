@@ -20,7 +20,7 @@ result is appended to a jsonl and skipped on re-run, so a GROQ TPD cutoff
 mid-run costs no repeated tokens — rerun with --resume after the daily reset.
 
 Run: PYTHONPATH=. .venv/bin/python scripts/pipeline_lookup_llm.py \
-        --n 150 --topk 8 --model openai/gpt-oss-120b --resume
+        --n 150 --topk 8 --resume
 """
 from __future__ import annotations
 
@@ -35,10 +35,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
 
+from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
 from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.generate.answerer import _DIRECT_SYS
 from rag_agent.llm.factory import build_llm
+from rag_agent.runenv import guard_resume
 from rag_agent.retrieve.encoders import default_encoder
 from point3_reconstruction_cost import build_table_paths, cell_text
 
@@ -47,12 +49,15 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=150)
     ap.add_argument("--topk", type=int, default=8)
-    ap.add_argument("--model", default="openai/gpt-oss-120b")
+    ap.add_argument("--model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--data-dir", default="data/hitab")
     ap.add_argument("--split", default="dev")
     ap.add_argument("--out", default="results/pipeline_lookup_llm.json")
     ap.add_argument("--resume", action="store_true",
                     help="skip (query,arm) pairs already in the records jsonl")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under "
+                         "a different reader/seed/population")
     args = ap.parse_args()
     rec_path = Path(str(Path(args.out).with_suffix("")) + "_records.jsonl")
 
@@ -84,6 +89,8 @@ def main() -> int:
             continue
         pop.append(q)
     random.Random(0).shuffle(pop)
+    if args.split == "dev":
+        pop = pop_mod.pin("hitab_dev_lookup_single", pop)
     pop = pop[: args.n]
 
     done = {}
@@ -111,6 +118,8 @@ def main() -> int:
         order = np.argsort(-(vecs @ qv))[: k]
         return [T[o] for o in order]
 
+    guard_resume(rec_path, {"seed": 0}, reader=llm.name,
+                 population="hitab_dev_lookup_single", force=args.force_resume)
     rec_fh = open(rec_path, "a")
     n_done = 0
     try:
