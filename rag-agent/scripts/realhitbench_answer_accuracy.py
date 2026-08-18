@@ -48,7 +48,7 @@ Notes / caveats:
     random subpopulation up front; deterministic, so --resume continues the SAME
     subpopulation across days. Queries run in id order.
 
-Run (needs the chosen backend's key: GROQ_API_KEY / OPENAI_API_KEY):
+Run (default solver is local; API backends need GROQ_API_KEY / OPENAI_API_KEY):
   PYTHONPATH=. python3 scripts/realhitbench_answer_accuracy.py \
     --solver-backend groq --solver-model llama-3.3-70b-versatile \
     --codegen-max-tokens 160 --sample 100 --seed 0 --resume
@@ -79,6 +79,7 @@ import rag_agent.generate.answerer as answerer_mod
 from rag_agent.bench.schema import BenchTable, Chunk
 from rag_agent.generate.answerer import answer, evaluate_answer
 from rag_agent.llm.factory import build_llm
+from rag_agent.runenv import guard_resume
 from rag_agent.query.operand_decomposer import Embedder
 from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
                                    parse_html_table_with_merges,
@@ -283,7 +284,7 @@ def main() -> int:
                          "around (one cell = one sentence); 'row' is the default "
                          "only because the results already on disk used it, and a "
                          "row chunk hands the solver every column of that row.")
-    ap.add_argument("--solver-backend", default="groq",
+    ap.add_argument("--solver-backend", default="local",
                     choices=["groq", "openai", "local"],
                     help="solver family. A second backend is how the S1-vs-S2 "
                          "result is shown to be solver-independent — keep each "
@@ -304,6 +305,9 @@ def main() -> int:
                          "this size (0 = full aggregation subset)")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under\n"
+                         "a different reader/seed/population")
     ap.add_argument("--base-arm", default="s1", choices=["s1", "table_md"],
                     help="what the BASE arm reads: s1 = flat serialization "
                          "(default), table_md = the whole reconstructed table as "
@@ -402,6 +406,8 @@ def main() -> int:
 
     # ---- solver pass: incremental append; quota cutoff keeps progress -----
     Path(args.records).parent.mkdir(parents=True, exist_ok=True)
+    guard_resume(args.records, {"seed": args.seed, "embed_model": args.embed_model}, reader=llm.name,
+                 population=None, force=args.force_resume)
     rec_fh = open(args.records, "a" if args.resume else "w")
     t0, n_run, cutoff = time.time(), 0, None
     for qi, p in enumerate(prep):

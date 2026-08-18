@@ -23,7 +23,7 @@ Cost controls: identical (question, context) answers are cached (temp=0 -> stabl
 and per-query records stream to a JSONL checkpoint so a rate-limit interruption
 resumes instead of restarting.
 
-Run (needs GROQ_API_KEY; reads rag-agent/.env if present):
+Run (default reader is local; --llm groq:... reads rag-agent/.env if present):
     PYTHONPATH=. python scripts/e7_retrieval_ablation.py --split dev \
         --llm groq:llama-3.1-8b-instant
 Dry run (no LLM; validates cell sets / OSC / context only):
@@ -251,7 +251,7 @@ def main() -> int:
     ap.add_argument("--data-dir", default="data/hitab")
     ap.add_argument("--split", default="dev")
     ap.add_argument("--max", type=int, default=None)
-    ap.add_argument("--llm", default="groq:llama-3.1-8b-instant")
+    ap.add_argument("--llm", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--device", default="cpu")

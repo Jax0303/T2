@@ -75,7 +75,7 @@ def main() -> int:
     ap.add_argument("--data-dir", default="data/hitab")
     ap.add_argument("--split", default="dev")
     ap.add_argument("--max", type=int, default=None)
-    ap.add_argument("--llm", default="groq:llama-3.1-8b-instant")
+    ap.add_argument("--llm", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--out", default="results/e4_format.json")
     args = ap.parse_args()

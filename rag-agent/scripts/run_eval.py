@@ -76,7 +76,7 @@ def build_arg_parser():
     p.add_argument("--serializer", default="plain_markdown")
     p.add_argument("--retriever-device", default=None,
                    help="cpu | cuda. Auto if omitted; pass cpu when LLM needs all VRAM.")
-    p.add_argument("--llm", default="groq:llama-3.3-70b-versatile",
+    p.add_argument("--llm", default="local:Qwen/Qwen2.5-7B-Instruct",
                    help="LLM spec for the reader + symbolic extractor (unless --symbolic-llm given). "
                         "Examples: 'local:Qwen/Qwen2.5-7B-Instruct', 'groq:llama-3.3-70b-versatile'.")
     p.add_argument("--symbolic-llm", default=None,

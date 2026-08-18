@@ -26,8 +26,8 @@ The budget-matched retrieval control lives in the OSC leg; this leg answers the
 narrower question "does the pipeline as configured answer better".
 
 Run:
-  GROQ_API_KEY=... .venv/bin/python scripts/answer_accuracy_resolver.py \
-      --solver-model openai/gpt-oss-120b --codegen-max-tokens 1024 --flips-first
+  .venv/bin/python scripts/answer_accuracy_resolver.py \
+      --codegen-max-tokens 1024 --flips-first
 """
 from __future__ import annotations
 
@@ -45,6 +45,7 @@ from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate.answerer import answer, evaluate_answer
 from rag_agent.llm.factory import build_llm
+from rag_agent.runenv import guard_resume
 from rag_agent.retrieve.encoders import default_encoder
 from rag_agent.retrieve.operand_retrieval import OperandTargetedRetriever
 from rag_agent.stores.original_store import build_original_table
@@ -70,7 +71,7 @@ def main() -> int:
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--min-operands", type=int, default=2)
-    ap.add_argument("--solver-model", default="openai/gpt-oss-120b")
+    ap.add_argument("--solver-model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--codegen-max-tokens", type=int, default=1024)
     ap.add_argument("--limit", type=int, default=None)
@@ -79,6 +80,9 @@ def main() -> int:
                          "first, so a daily-token cutoff still yields the "
                          "informative subset")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under\n"
+                         "a different reader/seed/population")
     ap.add_argument("--out", default="results/answer_accuracy_resolver.json")
     ap.add_argument("--records",
                     default="results/answer_accuracy_resolver_records.jsonl")
@@ -141,6 +145,8 @@ def main() -> int:
     llm = build_llm(args.solver_model if ":" in args.solver_model
                     else f"groq:{args.solver_model}", retry_on_429=8)
     Path(args.records).parent.mkdir(parents=True, exist_ok=True)
+    guard_resume(args.records, {"embed_model": args.embed_model}, reader=llm.name,
+                 population=None, force=args.force_resume)
     rec_fh = open(args.records, "a" if args.resume else "w")
     t0, cutoff = time.time(), None
     for qi, p in enumerate(prep):

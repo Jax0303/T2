@@ -22,7 +22,7 @@ score our inability to read prose as a serialization defect.
 
 Run:
     PYTHONPATH=. .venv/bin/python scripts/baseline_comparison_multihiertt.py \
-        --n 300 --budget 1024 --model openai:gpt-4o --resume
+        --n 300 --budget 1024 --resume
     PYTHONPATH=. .venv/bin/python scripts/baseline_comparison_multihiertt.py --dry-run
 """
 from __future__ import annotations
@@ -64,7 +64,7 @@ from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
                                    parse_html_table, reconstruct_col_paths,
                                    reconstruct_row_paths)
 from rag_agent.retrieve.encoders import default_encoder
-from rag_agent.runenv import run_env
+from rag_agent.runenv import guard_resume, run_env
 from baseline_comparison_llm import ARMS, Budget, holm, mcnemar, rank
 
 OURS = "cell_sent"
@@ -179,11 +179,14 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--budget", type=int, default=1024)
-    ap.add_argument("--model", default="openai:gpt-4o")
+    ap.add_argument("--model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--out", default="results/baseline_comparison_multihiertt.json")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under\n"
+                         "a different reader/seed/population")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     env = run_env(args.seed, args.embed_model)
@@ -244,6 +247,8 @@ def main() -> int:
         print(f"[resume] 이미 채점된 (문항,방식) {len(done)}건", flush=True)
 
     llm = build_llm(args.model)
+    guard_resume(rec_path, env, reader=llm.name,
+                 population=None, force=args.force_resume)
     rec_fh = open(rec_path, "a")
     n_trunc = 0
     try:

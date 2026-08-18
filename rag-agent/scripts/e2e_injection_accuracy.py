@@ -93,7 +93,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-dir", default="data/hitab")
     ap.add_argument("--split", default="dev")
-    ap.add_argument("--llm", default="groq:llama-3.3-70b-versatile")
+    ap.add_argument("--llm", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--cross-encoder", default="BAAI/bge-reranker-base")

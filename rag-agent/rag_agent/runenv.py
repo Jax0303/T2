@@ -7,8 +7,10 @@ parsing args, and splices the returned dict into its result JSON under ``"env"``
 """
 from __future__ import annotations
 
+import json
 import random
 from datetime import datetime, timezone
+from pathlib import Path
 
 import numpy as np
 
@@ -48,3 +50,39 @@ def run_env(seed: int, embed_model: str) -> dict:
         "vector_backend": resolve_dense_backend(),
         "run_started_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
+
+
+def guard_resume(records_path, env: dict, reader: str | None = None,
+                 population: str | None = None, force: bool = False) -> None:
+    """Refuse to append to a records file another run configuration produced.
+
+    ``--resume`` appends to whatever is already on disk. That is right when the
+    run is the same one continuing and wrong when anything that decides the
+    numbers has changed underneath -- a different reader above all (the repo
+    moved from hosted API models to a local one, so every pre-existing records
+    file was written by a different model than the default writes now).
+
+    Stores a sidecar next to the records file on first write and compares on
+    every later one. ``force`` overrides, for the case where the mismatch is
+    understood and wanted.
+    """
+    keys = {"reader": reader, "seed": env.get("seed"),
+            "embed_model": env.get("embed_model"), "population": population}
+    side = Path(str(records_path) + ".run.json")
+    if not side.exists():
+        side.parent.mkdir(parents=True, exist_ok=True)
+        side.write_text(json.dumps(keys, ensure_ascii=False, indent=2) + "\n")
+        return
+    old = json.loads(side.read_text())
+    diff = {k: (old.get(k), v) for k, v in keys.items()
+            if v is not None and old.get(k) is not None and old.get(k) != v}
+    if diff and not force:
+        lines = "\n".join(f"  {k}: on disk {o!r} != now {n!r}" for k, (o, n) in diff.items())
+        raise RuntimeError(
+            f"{records_path} was written under a different configuration:\n{lines}\n"
+            f"Mixing them puts two configurations in one file. Use a new --out, "
+            f"or pass --force-resume if the mix is intended.")
+    if not diff:
+        merged = {**old, **{k: v for k, v in keys.items() if v is not None}}
+        if merged != old:
+            side.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\n")

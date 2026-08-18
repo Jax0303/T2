@@ -136,7 +136,7 @@ def main():
     ap.add_argument("--repairs", type=int, default=2)
     ap.add_argument("--max-tokens", type=int, default=320)
     ap.add_argument("--model", default="llama-3.3-70b-versatile")
-    ap.add_argument("--backend", choices=["groq", "local"], default="groq")
+    ap.add_argument("--backend", choices=["groq", "local"], default="local")
     ap.add_argument("--meta-store", default=None,
                     help="저장된 표 메타 디렉토리(data/table_meta). 주면 grounded가 즉석추출 대신 저장본 사용")
     ap.add_argument("--out-dir", default="results/binding_eval")

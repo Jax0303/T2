@@ -15,7 +15,7 @@ injected total rows. Reports OSC (base vs treat) AND answer accuracy (base vs tr
 with the correctness cross-tab + McNemar (queries flipped wrong->right by injection).
 
 Population: HiTab dev arithmetic m>=2 (the §5.10 population).
-Run: GROQ_API_KEY=... .venv/bin/python scripts/answer_accuracy_injection.py
+Run: .venv/bin/python scripts/answer_accuracy_injection.py
 """
 from __future__ import annotations
 
@@ -35,6 +35,7 @@ from rag_agent.eval.metrics import hitab_exact_match
 from rag_agent.eval.operand_set import operand_set_completeness
 from rag_agent.generate.answerer import answer, evaluate_answer
 from rag_agent.llm.factory import build_llm
+from rag_agent.runenv import guard_resume
 from rag_agent.retrieve.header_enum import total_like_rows_hybrid
 from rag_agent.retrieve.operand_retriever import HybridRetriever, _tok
 from rag_agent.query.operand_decomposer import Embedder
@@ -70,7 +71,7 @@ def main() -> int:
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--retriever", default="dense", choices=["dense", "bm25", "hybrid"])
     ap.add_argument("--k", type=int, default=10)
-    ap.add_argument("--solver-model", default="llama-3.1-8b-instant")
+    ap.add_argument("--solver-model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--codegen-max-tokens", type=int, default=160,
                     help="completion cap for codegen; reasoning models (gpt-oss, "
@@ -81,6 +82,9 @@ def main() -> int:
                          "so a daily-token cutoff still yields the informative subset")
     ap.add_argument("--resume", action="store_true",
                     help="skip qids already present in --records (append mode)")
+    ap.add_argument("--force-resume", action="store_true",
+                    help="append even though the records file was written under "
+                         "a different reader/seed/population")
     ap.add_argument("--out", default="results/answer_accuracy_injection.json")
     ap.add_argument("--records", default="results/answer_accuracy_injection_records.jsonl")
     args = ap.parse_args()
@@ -166,6 +170,8 @@ def main() -> int:
 
     # ---- solver pass: incremental append; a daily-quota cutoff keeps progress ----
     Path(args.records).parent.mkdir(parents=True, exist_ok=True)
+    guard_resume(args.records, {"embed_model": args.embed_model}, reader=llm.name,
+                 population=None, force=args.force_resume)
     rec_fh = open(args.records, "a" if args.resume else "w")
     t0, n_run, cutoff = time.time(), 0, None
     for qi, p in enumerate(prep):

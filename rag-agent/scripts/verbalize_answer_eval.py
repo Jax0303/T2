@@ -68,7 +68,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=120,
                     help="sample size; ignored when --population dev_full")
-    ap.add_argument("--model", default="llama-3.1-8b-instant",
+    ap.add_argument("--model", default="local:Qwen/Qwen2.5-7B-Instruct",
                     help="reader spec: bare name → groq (back-compat), or an "
                          "explicit backend e.g. 'openai:gpt-4.1-mini', "
                          "'groq:llama-3.3-70b-versatile', 'local:Qwen/Qwen2.5-7B-Instruct'")
