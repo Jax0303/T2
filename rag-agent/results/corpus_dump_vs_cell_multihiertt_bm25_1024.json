@@ -1,0 +1,135 @@
+{
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "env": {
+    "seed": 42,
+    "device": "cpu",
+    "torch": "2.10.0+cu128",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "numpy",
+    "run_started_utc": "2026-08-18T08:08:12+00:00"
+  },
+  "population": {
+    "name": "multihiertt table-only, seed 42, n=400",
+    "n": 400,
+    "frozen": null
+  },
+  "corpus": {
+    "dataset": "multihiertt",
+    "split": "dev",
+    "tables": 1310,
+    "cells": 56975
+  },
+  "budget_tokens": 1024,
+  "budget_tokenizer": "BAAI/bge-small-en-v1.5",
+  "retriever": "bm25",
+  "arms": {
+    "dump": "table index -> whole tables in rank order while they fit",
+    "cell": "corpus-wide S2 cell index -> cells while they fit",
+    "cascade": "top-1 table by table index, then its cells only",
+    "cell2dump": "tables ranked by their best cell, dumped whole"
+  },
+  "summary": {
+    "dump": {
+      "osc": 0.4525,
+      "per_cell": 0.4871,
+      "gold_table_any": 0.4825,
+      "gold_table_whole": 0.4825,
+      "tokens": 1010.8625,
+      "n_tables": 5.1425
+    },
+    "cell": {
+      "osc": 0.64,
+      "per_cell": 0.7025,
+      "gold_table_any": 0.85,
+      "gold_table_whole": 0.0075,
+      "tokens": 1023.7075,
+      "n_tables": 14.14
+    },
+    "cascade": {
+      "osc": 0.25,
+      "per_cell": 0.2944,
+      "gold_table_any": 0.2925,
+      "gold_table_whole": 0.165,
+      "tokens": 528.805,
+      "n_tables": 1.0
+    },
+    "cell2dump": {
+      "osc": 0.5525,
+      "per_cell": 0.5913,
+      "gold_table_any": 0.585,
+      "gold_table_whole": 0.585,
+      "tokens": 1000.05,
+      "n_tables": 4.1975
+    }
+  },
+  "paired_tests": {
+    "osc:cell_vs_dump": {
+      "only_first": 107,
+      "only_second": 32,
+      "exact_p": 0.0
+    },
+    "osc:cascade_vs_dump": {
+      "only_first": 0,
+      "only_second": 81,
+      "exact_p": 0.0
+    },
+    "osc:cell_vs_cascade": {
+      "only_first": 167,
+      "only_second": 11,
+      "exact_p": 0.0
+    },
+    "osc:cell2dump_vs_dump": {
+      "only_first": 63,
+      "only_second": 23,
+      "exact_p": 0.0
+    },
+    "osc:cell2dump_vs_cell": {
+      "only_first": 35,
+      "only_second": 70,
+      "exact_p": 0.0008
+    }
+  },
+  "table_recall": {
+    "by_table_index": {
+      "@1": 0.2925,
+      "@3": 0.505,
+      "@5": 0.6075,
+      "@10": 0.71,
+      "@20": 0.8025
+    },
+    "by_cell_vote": {
+      "@1": 0.43,
+      "@3": 0.6675,
+      "@5": 0.735,
+      "@10": 0.8275,
+      "@20": 0.8825
+    }
+  },
+  "table_recall_paired": {
+    "@1": {
+      "only_first": 79,
+      "only_second": 24,
+      "exact_p": 0.0
+    },
+    "@3": {
+      "only_first": 80,
+      "only_second": 15,
+      "exact_p": 0.0
+    },
+    "@5": {
+      "only_first": 67,
+      "only_second": 16,
+      "exact_p": 0.0
+    },
+    "@10": {
+      "only_first": 60,
+      "only_second": 13,
+      "exact_p": 0.0
+    },
+    "@20": {
+      "only_first": 41,
+      "only_second": 9,
+      "exact_p": 0.0
+    }
+  }
+}

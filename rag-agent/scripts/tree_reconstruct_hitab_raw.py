@@ -251,7 +251,12 @@ def size_bucket(n_rows: int, n_cols: int) -> str:
 # ---------------------------------------------------------------------------
 
 def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
-                force_cols: int = 0, use_merges: bool = False, tt=None):
+                force_cols: int = 0, use_merges: bool = False, tt=None,
+                row_fn=None):
+    """``row_fn(texts, nhr, nhc) -> List[List[str]]`` replaces the rule-based row
+    reconstructor (see ``scripts/llm_tree_rescue.py``); everything else — the
+    alignment, the boundary, the scoring — stays identical so the two are
+    comparable on the same tables."""
     texts = raw.get("texts") or []
     if not texts:
         return None, "no_texts"
@@ -295,6 +300,8 @@ def score_table(raw: dict, bt, guess_boundary: bool, guess_cols: bool = False,
     else:
         rec_cols = reconstruct_col_paths(texts, nhr, nhc)
         rec_rows = reconstruct_row_paths(texts, nhr, nhc)
+    if row_fn is not None:
+        rec_rows = row_fn(texts, nhr, nhc)
 
     col_hit = col_tot = row_hit = row_tot = 0
     col_f1: List[float] = []
