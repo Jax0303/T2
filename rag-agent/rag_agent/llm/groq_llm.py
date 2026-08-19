@@ -17,24 +17,37 @@ from .base import BaseLLM
 
 logger = logging.getLogger(__name__)
 
-_RETRY_HINT = re.compile(r"try again in ([\d.]+)\s*(m?s)", re.I)
+_RETRY_HINT = re.compile(r"try again in\s+([0-9hms.]+)", re.I)
+# ms before m before s: "500ms" is half a second, not 500 minutes
+_DURATION = re.compile(r"(\d+(?:\.\d+)?)(ms|h|m|s)")
+_UNIT_S = {"ms": 0.001, "s": 1.0, "m": 60.0, "h": 3600.0}
 
 
-def retry_after(msg: str, attempt: int, cap: float = 60.0) -> float:
+def retry_after(msg: str, attempt: int, cap: float = 900.0) -> float:
     """How long to wait after a 429.
 
-    The free tier is token-per-minute limited, so a long run meets 429s as a
-    matter of course rather than as a fault. Groq says how long to wait ("Please
-    try again in 3.6825s"); honouring that beats a blind 2**attempt, which
-    either oversleeps or -- the bug this fixes -- exhausts its retries while the
-    limit window is still open and kills a multi-hour run. Falls back to
-    exponential when the hint is absent, and pads by a second because the
-    window has to actually roll over.
+    The free tier limits both tokens-per-minute and tokens-per-day, so a long
+    run meets 429s as a matter of course rather than as a fault. Groq says how
+    long to wait ("Please try again in 3.6825s"); honouring that beats a blind
+    2**attempt, which either oversleeps or -- the bug this fixes -- exhausts its
+    retries while the limit window is still open and kills a multi-hour run.
+    Falls back to exponential when the hint is absent, and pads by a second
+    because the window has to actually roll over.
+
+    The cap is 15 minutes, not one, because the daily window asks for waits in
+    minutes: capping at 60s meant eight retries covered eight minutes of a
+    ten-minute wait and the run died anyway. A wait longer than the cap is a
+    quota that will not clear inside this run, and should surface as the error
+    it is rather than as an hours-long silent sleep.
     """
-    m = _RETRY_HINT.search(msg)
-    if m:
-        secs = float(m.group(1)) / (1000 if m.group(2).lower() == "ms" else 1)
-        return min(cap, secs + 1.0)
+    hint = _RETRY_HINT.search(msg)
+    if hint:
+        # the daily limit answers in mixed units -- "10m29.424s" -- which a
+        # single number-plus-unit read as "10" and rounded down to nothing
+        parts = _DURATION.findall(hint.group(1))
+        if parts:
+            secs = sum(float(n) * _UNIT_S[u.lower()] for n, u in parts)
+            return min(cap, secs + 1.0)
     return min(cap, 2.0 ** attempt)
 
 

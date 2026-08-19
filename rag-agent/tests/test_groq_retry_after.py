@@ -18,14 +18,21 @@ def test_falls_back_to_exponential_without_a_hint():
     assert retry_after("429 too many requests", attempt=3) == 8.0
 
 
+def test_waits_out_the_daily_window_not_just_the_minute_one():
+    # TPD 429s ask for minutes; a 60s cap burned every retry inside one wait
+    assert retry_after("Please try again in 10m29.424s", attempt=0) == 630.424
+    assert round(retry_after("Please try again in 4m0.191999999s", attempt=0), 3) == 241.192
+
+
 def test_capped():
-    assert retry_after("try again in 900s", attempt=0) == 60.0
-    assert retry_after("429", attempt=20) == 60.0
+    assert retry_after("try again in 9000s", attempt=0) == 900.0
+    assert retry_after("429", attempt=20) == 900.0
 
 
 if __name__ == "__main__":
     test_honours_the_hint_and_pads_the_window()
     test_milliseconds()
     test_falls_back_to_exponential_without_a_hint()
+    test_waits_out_the_daily_window_not_just_the_minute_one()
     test_capped()
     print("ok")
