@@ -500,10 +500,33 @@ def main() -> int:
                              else "aitqa_answer_matched" if args.dataset == "aitqa"
                              else f"multihiertt_{args.mh_queries}_{args.seed}"),
                  force=args.force_resume)
-    rec_fh = open(rec_path, "w")
-
+    # Pick up where a killed run stopped. guard_resume has already refused the
+    # case where the configuration changed underneath, so whatever is on disk
+    # belongs to this run; a hosted reader on a token-per-minute limit makes
+    # these runs hours long, and starting from zero after every hiccup is how
+    # they never finish. Only complete lines count -- a half-written last line
+    # from a SIGKILL is dropped.
     recs = []
+    if rec_path.exists():
+        for line in rec_path.read_text().splitlines():
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                break
+            if not all(a in r for a in arms):
+                break        # written under a different --arms; redo from here
+            recs.append(r)
+    done = {r["query_id"] for r in recs}
+    if done:
+        print(f"[resume] {len(done)} queries already on disk", flush=True)
+    rec_fh = open(rec_path, "w")
+    for r in recs:
+        rec_fh.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
+    rec_fh.flush()
+
     for n_done, q in enumerate(pop, 1):
+        if q["query_id"] in done:
+            continue
         gold_t, gold_cells = q["gold_table"], q["gold_cells"]
         rec = {"query_id": q["query_id"], "m": len(gold_cells), "gold_table": gold_t,
                "gold_table_tokens": md_tokens(gold_t)}
