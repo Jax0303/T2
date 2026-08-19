@@ -50,5 +50,43 @@ class TestContextOrder(unittest.TestCase):
         self.assertEqual(len(set(got)), 3)
 
 
+class TestUnitsIndexIsSchemeInvariant(unittest.TestCase):
+    """--fixed-context borrows one arm's ranking to address another arm's texts.
+
+    That is only sound because ``units`` walks the grid in one order, so cell
+    index n is the same (row, col) under every serialization. If that ever stops
+    holding, --fixed-context silently compares the wrong cells.
+    """
+
+    def test_same_index_map_under_every_serialization(self):
+        from cell_retrieval_matrix import SERIALIZATIONS, units
+
+        bt = _FakeTable([["a", "b"], ["c", "d"], ["e", "f"]])
+        pt = {"n_r": 3, "n_c": 2,
+              "gold_rp": [["R0"], ["R1"], ["R2"]], "gold_cp": [["C0"], ["C1"]],
+              "rec_rp": [["r0"], ["r1"], ["r2"]], "rec_cp": [["c0"], ["c1"]]}
+
+        maps, texts = [], []
+        for scheme in SERIALIZATIONS:
+            txt, idx = units(bt, pt, scheme)
+            maps.append(idx)
+            texts.append(txt)
+            self.assertEqual(len(txt), 6)
+        self.assertEqual(maps[0], maps[1])
+        self.assertEqual(maps[1], maps[2])
+        # the point of the flag: same addresses, different renderings
+        self.assertNotEqual(texts[0], texts[1])
+        # and the address really is the value's cell
+        for (r, c), i in maps[0].items():
+            self.assertIn(bt.data[r][c], texts[1][i])
+
+
+class _FakeTable:
+    def __init__(self, data):
+        self.data = data
+        self.table_id = "t0"
+        self.title = "T"
+
+
 if __name__ == "__main__":
     unittest.main()

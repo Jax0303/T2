@@ -1,0 +1,165 @@
+{
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-19T04:09:07+00:00"
+  },
+  "population": {
+    "name": "hitab_dev_corpus_arith",
+    "n": 175,
+    "frozen": "/home/user/T2-1/rag-agent/populations/hitab_dev_corpus_arith.txt"
+  },
+  "corpus": {
+    "dataset": "hitab",
+    "split": "dev",
+    "tables": 424,
+    "cells": 58759
+  },
+  "budget_tokens": 2048,
+  "budget_tokenizer": "BAAI/bge-small-en-v1.5",
+  "retriever": "dense",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "arms": {
+    "dump": "table index -> whole tables in rank order while they fit",
+    "cell": "corpus-wide S2 cell index -> cells while they fit",
+    "cascade": "top-1 table by table index, then its cells only",
+    "cell2dump": "tables ranked by their best cell, dumped whole"
+  },
+  "summary": {
+    "dump": {
+      "osc": 0.7714,
+      "per_cell": 0.7714,
+      "gold_table_any": 0.7714,
+      "gold_table_whole": 0.7714,
+      "tokens": 2029.7257,
+      "n_tables": 4.9714,
+      "answer_em": 0.0343
+    },
+    "cell": {
+      "osc": 0.72,
+      "per_cell": 0.7993,
+      "gold_table_any": 0.9429,
+      "gold_table_whole": 0.1029,
+      "tokens": 2047.1257,
+      "n_tables": 13.4857,
+      "answer_em": 0.0171
+    },
+    "cascade": {
+      "osc": 0.6229,
+      "per_cell": 0.6444,
+      "gold_table_any": 0.6629,
+      "gold_table_whole": 0.3714,
+      "tokens": 1426.2057,
+      "n_tables": 1.0,
+      "answer_em": 0.0571
+    },
+    "cell2dump": {
+      "osc": 0.7657,
+      "per_cell": 0.7657,
+      "gold_table_any": 0.7657,
+      "gold_table_whole": 0.7657,
+      "tokens": 2010.3429,
+      "n_tables": 4.0514,
+      "answer_em": 0.0343
+    }
+  },
+  "paired_tests": {
+    "osc:cell_vs_dump": {
+      "only_first": 24,
+      "only_second": 33,
+      "exact_p": 0.2892
+    },
+    "answer_em:cell_vs_dump": {
+      "only_first": 1,
+      "only_second": 4,
+      "exact_p": 0.375
+    },
+    "osc:cascade_vs_dump": {
+      "only_first": 1,
+      "only_second": 27,
+      "exact_p": 0.0
+    },
+    "answer_em:cascade_vs_dump": {
+      "only_first": 9,
+      "only_second": 5,
+      "exact_p": 0.424
+    },
+    "osc:cell_vs_cascade": {
+      "only_first": 38,
+      "only_second": 21,
+      "exact_p": 0.0363
+    },
+    "answer_em:cell_vs_cascade": {
+      "only_first": 3,
+      "only_second": 10,
+      "exact_p": 0.0923
+    },
+    "osc:cell2dump_vs_dump": {
+      "only_first": 25,
+      "only_second": 26,
+      "exact_p": 1.0
+    },
+    "answer_em:cell2dump_vs_dump": {
+      "only_first": 1,
+      "only_second": 1,
+      "exact_p": 1.0
+    },
+    "osc:cell2dump_vs_cell": {
+      "only_first": 17,
+      "only_second": 9,
+      "exact_p": 0.1686
+    },
+    "answer_em:cell2dump_vs_cell": {
+      "only_first": 4,
+      "only_second": 1,
+      "exact_p": 0.375
+    }
+  },
+  "table_recall": {
+    "by_table_index": {
+      "@1": 0.6629,
+      "@3": 0.8171,
+      "@5": 0.8457,
+      "@10": 0.9314,
+      "@20": 0.9657
+    },
+    "by_cell_vote": {
+      "@1": 0.6,
+      "@3": 0.7943,
+      "@5": 0.8743,
+      "@10": 0.9543,
+      "@20": 0.9714
+    }
+  },
+  "table_recall_paired": {
+    "@1": {
+      "only_first": 32,
+      "only_second": 43,
+      "exact_p": 0.248
+    },
+    "@3": {
+      "only_first": 26,
+      "only_second": 30,
+      "exact_p": 0.6889
+    },
+    "@5": {
+      "only_first": 25,
+      "only_second": 20,
+      "exact_p": 0.5515
+    },
+    "@10": {
+      "only_first": 11,
+      "only_second": 7,
+      "exact_p": 0.4807
+    },
+    "@20": {
+      "only_first": 5,
+      "only_second": 4,
+      "exact_p": 1.0
+    }
+  }
+}

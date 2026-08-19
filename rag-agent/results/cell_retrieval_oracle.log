@@ -1,0 +1,22 @@
+[pop] 100 single-operand lookup queries | 3x1 cells
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  49%|████▉     | 98/199 [00:00<00:00, 979.04it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1172.42it/s]
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:01<07:41,  1.36s/it]Loading weights:   1%|          | 2/339 [00:10<32:40,  5.82s/it]Loading weights:   1%|          | 4/339 [00:11<14:15,  2.55s/it]Loading weights:   1%|▏         | 5/339 [00:11<10:20,  1.86s/it]Loading weights:   2%|▏         | 6/339 [00:12<07:43,  1.39s/it]Loading weights:   3%|▎         | 10/339 [00:26<15:00,  2.74s/it]Loading weights:   4%|▎         | 12/339 [00:26<10:20,  1.90s/it]Loading weights:  12%|█▏        | 41/339 [00:31<02:00,  2.47it/s]Loading weights:  62%|██████▏   | 210/339 [00:36<00:09, 13.40it/s]Loading weights:  65%|██████▍   | 220/339 [00:36<00:08, 14.24it/s]Loading weights: 100%|██████████| 339/339 [00:24<00:00, 13.58it/s]
+  10/100
+  20/100
+  30/100
+  40/100
+  50/100
+  60/100
+  70/100
+  80/100
+  90/100
+  100/100
+
+recall@1
+                  bm25       dense      hybrid       cross
+flat               nan      0.3100         nan         nan
+S2_recon           nan      0.5000         nan         nan
+S2_gold            nan      0.5000         nan         nan
+wrote -> results/cell_retrieval_oracle.json

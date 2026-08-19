@@ -1,0 +1,49 @@
++ cd /home/user/T2-1/rag-agent
++ export PYTHONPATH=.
++ PYTHONPATH=.
++ .venv/bin/python scripts/cell_retrieval_matrix.py --retrievers dense --oracle-cell --fixed-context S2_recon --serializations flat,S2_recon,S2_gold --out results/cell_retrieval_oracle_fixedctx.json
+[pop] 100 single-operand lookup queries | 3x1 cells
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2433.55it/s]
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<05:28,  1.03it/s]Loading weights:   1%|          | 2/339 [00:01<05:34,  1.01it/s]Loading weights:   1%|          | 4/339 [00:02<02:46,  2.01it/s]Loading weights:   1%|▏         | 5/339 [00:02<02:16,  2.45it/s]Loading weights:   2%|▏         | 6/339 [00:16<26:03,  4.70s/it]Loading weights:  56%|█████▋    | 191/339 [00:26<00:16,  9.05it/s]Loading weights:  58%|█████▊    | 197/339 [00:27<00:15,  9.37it/s]Loading weights: 100%|██████████| 339/339 [00:15<00:00, 21.51it/s]
+  10/100
+  20/100
+  30/100
+  40/100
+  50/100
+  60/100
+  70/100
+  80/100
+  90/100
+  100/100
+
+recall@1
+                  bm25       dense      hybrid       cross
+flat               nan      0.3100         nan         nan
+S2_recon           nan      0.5000         nan         nan
+S2_gold            nan      0.5000         nan         nan
+wrote -> results/cell_retrieval_oracle_fixedctx.json
++ .venv/bin/python scripts/cell_retrieval_matrix.py --retrievers dense --split train --serializations flat,S2_recon,S2_gold --out results/cell_retrieval_matrix_train.json
+[pop] 100 single-operand lookup queries | 3x1 cells
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  83%|████████▎ | 166/199 [00:00<00:00, 1655.83it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1898.26it/s]
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:04,  1.38it/s]Loading weights:   1%|          | 2/339 [00:01<03:15,  1.72it/s]Loading weights:   1%|          | 4/339 [00:01<01:29,  3.72it/s]Loading weights:   2%|▏         | 6/339 [00:01<01:00,  5.47it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:16, 19.21it/s]Loading weights:   6%|▌         | 20/339 [00:01<00:16, 19.75it/s]Loading weights:   8%|▊         | 28/339 [00:02<00:12, 24.73it/s]Loading weights:   9%|▉         | 32/339 [00:02<00:13, 22.65it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:10, 28.62it/s]Loading weights:  13%|█▎        | 44/339 [00:02<00:12, 23.35it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:09, 30.63it/s]Loading weights:  17%|█▋        | 56/339 [00:03<00:09, 29.32it/s]Loading weights:  19%|█▉        | 64/339 [00:03<00:07, 36.89it/s]Loading weights:  20%|██        | 69/339 [00:03<00:07, 35.55it/s]Loading weights:  22%|██▏       | 76/339 [00:03<00:06, 41.06it/s]Loading weights:  24%|██▍       | 81/339 [00:03<00:06, 40.39it/s]Loading weights:  26%|██▋       | 89/339 [00:03<00:05, 44.03it/s]Loading weights:  28%|██▊       | 94/339 [00:03<00:05, 44.81it/s]Loading weights:  30%|██▉       | 101/339 [00:04<00:05, 43.94it/s]Loading weights:  31%|███▏      | 106/339 [00:04<00:05, 44.21it/s]Loading weights:  33%|███▎      | 112/339 [00:04<00:04, 47.06it/s]Loading weights:  35%|███▍      | 117/339 [00:04<00:05, 41.02it/s]Loading weights:  37%|███▋      | 124/339 [00:04<00:04, 47.61it/s]Loading weights:  38%|███▊      | 130/339 [00:04<00:04, 44.36it/s]Loading weights:  40%|████      | 137/339 [00:04<00:04, 42.77it/s]Loading weights:  42%|████▏     | 144/339 [00:04<00:04, 47.13it/s]Loading weights:  44%|████▍     | 149/339 [00:05<00:05, 36.03it/s]Loading weights:  47%|████▋     | 160/339 [00:05<00:03, 46.85it/s]Loading weights:  49%|████▉     | 166/339 [00:05<00:03, 45.88it/s]Loading weights:  51%|█████     | 173/339 [00:05<00:03, 48.42it/s]Loading weights:  54%|█████▍    | 184/339 [00:19<01:21,  1.91it/s]Loading weights:  55%|█████▍    | 186/339 [00:19<01:13,  2.09it/s]Loading weights:  58%|█████▊    | 197/339 [00:19<00:39,  3.57it/s]Loading weights: 100%|██████████| 339/339 [00:08<00:00, 40.60it/s]
+  10/100
+  20/100
+  30/100
+  40/100
+  50/100
+  60/100
+  70/100
+  80/100
+  90/100
+  100/100
+
+recall@1
+                  bm25       dense      hybrid       cross
+flat               nan      0.3000         nan         nan
+S2_recon           nan      0.5200         nan         nan
+S2_gold            nan      0.5200         nan         nan
+wrote -> results/cell_retrieval_matrix_train.json

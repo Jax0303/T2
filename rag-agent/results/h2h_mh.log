@@ -1,0 +1,188 @@
+### MH head-to-head budget 256 ### 19:02
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[corpus] 1310 tables / 56975 cells | [pop] 400 queries | budget 256 | dense
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:18,  1.70it/s]Loading weights:   1%|          | 2/339 [00:01<03:18,  1.70it/s]Loading weights:   1%|          | 4/339 [00:01<01:34,  3.56it/s]Loading weights:   2%|▏         | 6/339 [00:01<01:02,  5.36it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:18, 17.23it/s]Loading weights:   6%|▌         | 19/339 [00:01<00:18, 17.62it/s]Loading weights:   9%|▊         | 29/339 [00:02<00:10, 29.39it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:06, 42.72it/s]Loading weights:  14%|█▎        | 46/339 [00:02<00:06, 45.36it/s]Loading weights:  16%|█▌        | 53/339 [00:02<00:05, 49.07it/s]Loading weights:  18%|█▊        | 60/339 [00:02<00:05, 53.31it/s]Loading weights:  19%|█▉        | 66/339 [00:02<00:05, 51.00it/s]Loading weights:  23%|██▎       | 77/339 [00:02<00:04, 60.62it/s]Loading weights:  26%|██▌       | 88/339 [00:02<00:03, 70.21it/s]Loading weights:  28%|██▊       | 96/339 [00:02<00:03, 69.97it/s]Loading weights:  31%|███       | 104/339 [00:03<00:03, 64.18it/s]Loading weights:  33%|███▎      | 113/339 [00:03<00:03, 67.82it/s]Loading weights:  37%|███▋      | 124/339 [00:03<00:02, 72.28it/s]Loading weights:  39%|███▉      | 132/339 [00:03<00:02, 69.87it/s]Loading weights:  41%|████▏     | 140/339 [00:03<00:03, 58.65it/s]Loading weights:  44%|████▍     | 149/339 [00:03<00:03, 60.35it/s]Loading weights:  46%|████▌     | 156/339 [00:03<00:02, 62.00it/s]Loading weights:  48%|████▊     | 163/339 [00:04<00:03, 48.53it/s]Loading weights:  51%|█████     | 172/339 [00:04<00:03, 55.64it/s]Loading weights:  53%|█████▎    | 179/339 [00:04<00:02, 53.76it/s]Loading weights:  55%|█████▍    | 185/339 [00:04<00:02, 54.19it/s]Loading weights:  58%|█████▊    | 196/339 [00:04<00:02, 63.08it/s]Loading weights:  60%|█████▉    | 203/339 [00:04<00:02, 62.72it/s]Loading weights:  62%|██████▏   | 210/339 [00:04<00:02, 55.91it/s]Loading weights:  65%|██████▌   | 221/339 [00:05<00:01, 64.38it/s]Loading weights:  68%|██████▊   | 232/339 [00:05<00:01, 70.00it/s]Loading weights:  71%|███████   | 240/339 [00:20<00:52,  1.88it/s]Loading weights:  72%|███████▏  | 245/339 [00:20<00:40,  2.31it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 48.90it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  52%|█████▏    | 103/199 [00:15<00:14,  6.63it/s]Loading weights: 100%|██████████| 199/199 [00:15<00:00, 12.77it/s]
+[cache] wrote bge-small-en-v1.5_1310_ee3776c19a6d6b7e.npy
+[cache] wrote bge-small-en-v1.5_56975_4712a914ef2c8089.npy
+[cache] wrote bge-small-en-v1.5_56975_8ae94d1e8ef3e116.npy
+[cache] wrote bge-small-en-v1.5_12596_4adce4a9150bc665.npy
+[index] built in 61s
+[tokens] 56975 cells / 12596 rows counted in 6s
+  25/400
+  50/400
+  75/400
+  100/400
+  125/400
+  150/400
+  175/400
+  200/400
+  225/400
+  250/400
+  275/400
+  300/400
+  325/400
+  350/400
+  375/400
+  400/400
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+dump         0.117     0.136    0.140      0.140      241    2.3    0.022
+cell         0.400     0.483    0.735      0.003      256   10.0    0.128
+cascade      0.170     0.202    0.228      0.058      199    1.0    0.052
+cell2dump    0.128     0.162    0.158      0.158      237    1.8    0.040
+row          0.400     0.468    0.598      0.005      255    5.9    0.072
+flat         0.395     0.474    0.757      0.005      256   14.5    0.085
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.228    0.390    0.465    0.573    0.657
+  by_cell_vote     0.370    0.593    0.665    0.757    0.835
+  osc:cell_vs_dump: 134:21 p=0.0
+  answer_em:cell_vs_dump: 45:3 p=0.0
+  osc:cascade_vs_dump: 34:13 p=0.0031
+  answer_em:cascade_vs_dump: 18:6 p=0.0227
+  osc:cell_vs_cascade: 108:16 p=0.0
+  answer_em:cell_vs_cascade: 35:5 p=0.0
+  osc:cell2dump_vs_dump: 13:9 p=0.5235
+  answer_em:cell2dump_vs_dump: 9:2 p=0.0654
+  osc:cell2dump_vs_cell: 15:124 p=0.0
+  answer_em:cell2dump_vs_cell: 6:41 p=0.0
+  osc:cell_vs_row: 45:45 p=1.0
+  answer_em:cell_vs_row: 33:11 p=0.0013
+  osc:cell_vs_flat: 42:40 p=0.9122
+  answer_em:cell_vs_flat: 30:13 p=0.0137
+  osc:row_vs_dump: 129:16 p=0.0
+  answer_em:row_vs_dump: 26:6 p=0.0005
+wrote -> results/corpus_dump_vs_cell_h2h_mh_dense_256.json
+### MH head-to-head budget 512 ### 19:33
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[corpus] 1310 tables / 56975 cells | [pop] 400 queries | budget 512 | dense
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:01<10:32,  1.87s/it]Loading weights:   1%|          | 2/339 [00:05<16:21,  2.91s/it]Loading weights:   1%|          | 4/339 [00:05<06:45,  1.21s/it]Loading weights:   1%|▏         | 5/339 [00:06<05:07,  1.09it/s]Loading weights:   2%|▏         | 6/339 [00:06<04:01,  1.38it/s]Loading weights:   4%|▎         | 12/339 [00:06<01:09,  4.71it/s]Loading weights:   5%|▍         | 16/339 [00:06<00:49,  6.49it/s]Loading weights:   5%|▌         | 18/339 [00:07<00:58,  5.45it/s]Loading weights:   8%|▊         | 28/339 [00:07<00:26, 11.82it/s]Loading weights:   9%|▉         | 31/339 [00:07<00:23, 13.01it/s]Loading weights:  12%|█▏        | 40/339 [00:07<00:14, 21.19it/s]Loading weights:  13%|█▎        | 44/339 [00:23<04:36,  1.07it/s]Loading weights:  15%|█▌        | 52/339 [00:23<02:43,  1.75it/s]Loading weights: 100%|██████████| 339/339 [00:12<00:00, 26.33it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  59%|█████▉    | 117/199 [00:00<00:00, 1159.29it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1544.28it/s]
+[cache] hit bge-small-en-v1.5_1310_ee3776c19a6d6b7e.npy
+[cache] hit bge-small-en-v1.5_56975_4712a914ef2c8089.npy
+[cache] hit bge-small-en-v1.5_56975_8ae94d1e8ef3e116.npy
+[cache] hit bge-small-en-v1.5_12596_4adce4a9150bc665.npy
+[index] built in 1s
+[tokens] 56975 cells / 12596 rows counted in 6s
+  25/400
+  50/400
+  75/400
+  100/400
+  125/400
+  150/400
+  175/400
+  200/400
+  225/400
+  250/400
+  275/400
+  300/400
+  325/400
+  350/400
+  375/400
+  400/400
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+dump         0.245     0.273    0.287      0.287      499    3.7    0.055
+cell         0.495     0.579    0.807      0.005      512   15.3    0.110
+cascade      0.185     0.213    0.225      0.085      316    1.0    0.048
+cell2dump    0.295     0.337    0.340      0.340      494    2.7    0.090
+row          0.492     0.560    0.680      0.013      511    9.9    0.080
+flat         0.460     0.539    0.810      0.005      512   23.6    0.072
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.225    0.395    0.475    0.580    0.667
+  by_cell_vote     0.367    0.583    0.670    0.767    0.840
+  osc:cell_vs_dump: 132:32 p=0.0
+  answer_em:cell_vs_dump: 33:11 p=0.0013
+  osc:cascade_vs_dump: 9:33 p=0.0003
+  answer_em:cascade_vs_dump: 8:11 p=0.6476
+  osc:cell_vs_cascade: 142:18 p=0.0
+  answer_em:cell_vs_cascade: 29:4 p=0.0
+  osc:cell2dump_vs_dump: 52:32 p=0.0375
+  answer_em:cell2dump_vs_dump: 20:6 p=0.0094
+  osc:cell2dump_vs_cell: 32:112 p=0.0
+  answer_em:cell2dump_vs_cell: 18:26 p=0.2912
+  osc:cell_vs_row: 44:43 p=1.0
+  answer_em:cell_vs_row: 27:15 p=0.0884
+  osc:cell_vs_flat: 49:35 p=0.1557
+  answer_em:cell_vs_flat: 26:11 p=0.0201
+  osc:row_vs_dump: 132:33 p=0.0
+  answer_em:row_vs_dump: 24:14 p=0.1433
+wrote -> results/corpus_dump_vs_cell_h2h_mh_dense_512.json
+### MH head-to-head budget 1024 ### 20:10
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[corpus] 1310 tables / 56975 cells | [pop] 400 queries | budget 1024 | dense
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:02<15:28,  2.75s/it]Loading weights:   1%|          | 2/339 [00:07<21:16,  3.79s/it]Loading weights:   1%|          | 4/339 [00:07<08:43,  1.56s/it]Loading weights:   1%|▏         | 5/339 [00:07<06:19,  1.14s/it]Loading weights:   3%|▎         | 10/339 [00:08<02:02,  2.69it/s]Loading weights:   5%|▍         | 16/339 [00:08<00:58,  5.48it/s]Loading weights:   6%|▌         | 19/339 [00:08<00:48,  6.63it/s]Loading weights:   8%|▊         | 28/339 [00:08<00:24, 12.78it/s]Loading weights:   9%|▉         | 32/339 [00:08<00:23, 13.21it/s]Loading weights:  12%|█▏        | 40/339 [00:09<00:16, 18.55it/s]Loading weights:  13%|█▎        | 44/339 [00:09<00:15, 19.11it/s]Loading weights:  15%|█▌        | 52/339 [00:09<00:10, 26.37it/s]Loading weights:  17%|█▋        | 56/339 [00:09<00:10, 27.76it/s]Loading weights:  19%|█▉        | 65/339 [00:09<00:07, 36.08it/s]Loading weights:  22%|██▏       | 76/339 [00:09<00:05, 44.02it/s]Loading weights:  24%|██▍       | 82/339 [00:09<00:06, 39.65it/s]Loading weights:  26%|██▌       | 88/339 [00:10<00:05, 42.70it/s]Loading weights:  27%|██▋       | 93/339 [00:10<00:06, 40.65it/s]Loading weights:  30%|██▉       | 101/339 [00:10<00:05, 44.30it/s]Loading weights:  33%|███▎      | 112/339 [00:10<00:04, 53.23it/s]Loading weights:  35%|███▍      | 118/339 [00:10<00:04, 50.33it/s]Loading weights:  37%|███▋      | 124/339 [00:10<00:04, 51.40it/s]Loading weights:  38%|███▊      | 130/339 [00:10<00:04, 48.83it/s]Loading weights:  40%|████      | 137/339 [00:11<00:04, 44.98it/s]Loading weights:  44%|████▎     | 148/339 [00:11<00:03, 53.85it/s]Loading weights:  45%|████▌     | 154/339 [00:11<00:03, 51.49it/s]Loading weights:  47%|████▋     | 161/339 [00:11<00:03, 52.63it/s]Loading weights:  51%|█████     | 172/339 [00:11<00:02, 58.49it/s]Loading weights:  53%|█████▎    | 178/339 [00:11<00:02, 57.38it/s]Loading weights:  55%|█████▍    | 185/339 [00:11<00:02, 53.68it/s]Loading weights:  58%|█████▊    | 196/339 [00:12<00:02, 58.82it/s]Loading weights:  60%|█████▉    | 202/339 [00:12<00:02, 52.87it/s]Loading weights:  61%|██████▏   | 208/339 [00:27<01:26,  1.52it/s]Loading weights:  62%|██████▏   | 210/339 [00:27<01:16,  1.68it/s]Loading weights: 100%|██████████| 339/339 [00:14<00:00, 23.26it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  64%|██████▍   | 128/199 [00:00<00:00, 1264.14it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1569.93it/s]
+[cache] hit bge-small-en-v1.5_1310_ee3776c19a6d6b7e.npy
+[cache] hit bge-small-en-v1.5_56975_4712a914ef2c8089.npy
+[cache] hit bge-small-en-v1.5_56975_8ae94d1e8ef3e116.npy
+[cache] hit bge-small-en-v1.5_12596_4adce4a9150bc665.npy
+[index] built in 1s
+[tokens] 56975 cells / 12596 rows counted in 6s
+  25/400
+  50/400
+  75/400
+  100/400
+  125/400
+  150/400
+  175/400
+  200/400
+  225/400
+  250/400
+  275/400
+  300/400
+  325/400
+  350/400
+  375/400
+  400/400
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+dump         0.372     0.395    0.390      0.390     1011    6.0    0.072
+cell         0.580     0.655    0.848      0.005     1024   24.4    0.110
+cascade      0.193     0.220    0.223      0.155      453    1.0    0.043
+cell2dump    0.495     0.532    0.527      0.527     1005    4.1    0.107
+row          0.562     0.623    0.723      0.018     1023   16.9    0.075
+flat         0.537     0.612    0.850      0.007     1024   39.4    0.083
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.223    0.383    0.463    0.555    0.647
+  by_cell_vote     0.367    0.585    0.657    0.750    0.830
+  osc:cell_vs_dump: 124:41 p=0.0
+  answer_em:cell_vs_dump: 29:14 p=0.0315
+  osc:cascade_vs_dump: 0:72 p=0.0
+  answer_em:cascade_vs_dump: 5:17 p=0.0169
+  osc:cell_vs_cascade: 170:15 p=0.0
+  answer_em:cell_vs_cascade: 32:5 p=0.0
+  osc:cell2dump_vs_dump: 83:34 p=0.0
+  answer_em:cell2dump_vs_dump: 26:12 p=0.0336
+  osc:cell2dump_vs_cell: 38:72 p=0.0015
+  answer_em:cell2dump_vs_cell: 23:24 p=1.0
+  osc:cell_vs_row: 44:37 p=0.5052
+  answer_em:cell_vs_row: 30:16 p=0.0541
+  osc:cell_vs_flat: 55:38 p=0.0966
+  answer_em:cell_vs_flat: 27:16 p=0.1263
+  osc:row_vs_dump: 118:42 p=0.0
+  answer_em:row_vs_dump: 18:17 p=1.0
+wrote -> results/corpus_dump_vs_cell_h2h_mh_dense_1024.json
+### MH head-to-head budget 2048 ### 20:56
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[corpus] 1310 tables / 56975 cells | [pop] 400 queries | budget 2048 | dense
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<05:24,  1.04it/s]Loading weights:   1%|          | 2/339 [00:03<10:44,  1.91s/it]Loading weights:   1%|          | 4/339 [00:03<04:42,  1.19it/s]Loading weights:   1%|▏         | 5/339 [00:04<03:47,  1.47it/s]Loading weights:   2%|▏         | 6/339 [00:04<03:02,  1.82it/s]Loading weights:   5%|▍         | 16/339 [00:04<00:35,  9.02it/s]Loading weights:   6%|▌         | 20/339 [00:04<00:28, 11.20it/s]Loading weights:   8%|▊         | 28/339 [00:04<00:16, 18.50it/s]Loading weights:  10%|▉         | 33/339 [00:05<00:13, 22.70it/s]Loading weights:  12%|█▏        | 41/339 [00:05<00:09, 30.92it/s]Loading weights:  15%|█▌        | 52/339 [00:05<00:06, 42.93it/s]Loading weights:  17%|█▋        | 59/339 [00:05<00:05, 47.68it/s]Loading weights:  19%|█▉        | 66/339 [00:05<00:06, 44.32it/s]Loading weights:  22%|██▏       | 76/339 [00:05<00:05, 51.77it/s]Loading weights:  24%|██▍       | 83/339 [00:05<00:05, 49.93it/s]Loading weights:  26%|██▋       | 89/339 [00:05<00:05, 49.12it/s]Loading weights:  28%|██▊       | 95/339 [00:06<00:04, 51.02it/s]Loading weights:  30%|██▉       | 101/339 [00:06<00:05, 45.85it/s]Loading weights:  33%|███▎      | 112/339 [00:06<00:03, 58.28it/s]Loading weights:  35%|███▌      | 119/339 [00:06<00:03, 60.65it/s]Loading weights:  37%|███▋      | 126/339 [00:06<00:04, 51.94it/s]Loading weights:  40%|████      | 137/339 [00:06<00:03, 61.13it/s]Loading weights:  44%|████▎     | 148/339 [00:06<00:02, 65.94it/s]Loading weights:  46%|████▌     | 155/339 [00:07<00:02, 62.36it/s]Loading weights:  48%|████▊     | 162/339 [00:07<00:03, 50.37it/s]Loading weights:  51%|█████     | 172/339 [00:07<00:02, 58.32it/s]Loading weights:  53%|█████▎    | 179/339 [00:23<01:33,  1.70it/s]Loading weights:  55%|█████▍    | 185/339 [00:23<01:09,  2.21it/s]Loading weights: 100%|██████████| 339/339 [00:10<00:00, 32.99it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  60%|█████▉    | 119/199 [00:00<00:00, 1185.35it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1556.43it/s]
+[cache] hit bge-small-en-v1.5_1310_ee3776c19a6d6b7e.npy
+[cache] hit bge-small-en-v1.5_56975_4712a914ef2c8089.npy
+[cache] hit bge-small-en-v1.5_56975_8ae94d1e8ef3e116.npy
+[cache] hit bge-small-en-v1.5_12596_4adce4a9150bc665.npy
+[index] built in 16s
+[tokens] 56975 cells / 12596 rows counted in -10s
+  25/400
+  50/400
+Terminated
+### FAILED 2048 ###
+### MH H2H DONE ### 22:03

@@ -2,18 +2,19 @@
   "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
   "env": {
     "seed": 42,
-    "device": "cpu",
-    "torch": "2.10.0+cu128",
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
     "embed_model": "BAAI/bge-small-en-v1.5",
-    "vector_backend": "numpy",
-    "run_started_utc": "2026-08-18T07:41:45+00:00"
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-18T16:51:39+00:00"
   },
   "population": {
     "name": "hitab_dev_corpus_arith",
     "n": 175,
-    "frozen": "/home/ugh/T2/rag-agent/populations/hitab_dev_corpus_arith.txt"
+    "frozen": "/home/user/T2-1/rag-agent/populations/hitab_dev_corpus_arith.txt"
   },
   "corpus": {
+    "dataset": "hitab",
     "split": "dev",
     "tables": 424,
     "cells": 58759

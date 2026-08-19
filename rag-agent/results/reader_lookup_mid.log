@@ -1,0 +1,71 @@
+### lookup reader budget 512 ###
+[corpus] 424 tables / 58759 cells | [pop] 100 queries | budget 512 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:04<27:30,  4.88s/it]Loading weights:   1%|          | 2/339 [00:11<32:19,  5.76s/it]Loading weights:   1%|          | 4/339 [00:28<41:24,  7.42s/it]Loading weights:   9%|▉         | 30/339 [00:33<03:56,  1.31it/s]Loading weights:  76%|███████▌  | 258/339 [00:38<00:06, 12.37it/s]Loading weights:  79%|███████▉  | 268/339 [00:38<00:05, 12.94it/s]Loading weights: 100%|██████████| 339/339 [00:23<00:00, 14.23it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  62%|██████▏   | 123/199 [00:00<00:00, 1190.60it/s]Loading weights: 100%|██████████| 199/199 [00:15<00:00, 12.81it/s]  
+[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
+[cache] hit bge-small-en-v1.5_58759_b6c60bb8588560e0.npy
+[index] built in 0s
+[tokens] 58759 cells counted in 2s
+  25/100
+  50/100
+  75/100
+  100/100
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+dump         0.450     0.450    0.450      0.450      495    2.4    0.300
+cell         0.750     0.750    0.930      0.020      511    6.0    0.430
+cascade      0.750     0.750    0.790      0.110      472    1.0    0.510
+cell2dump    0.370     0.370    0.370      0.370      474    1.9    0.240
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.790    0.890    0.930    0.950    0.980
+  by_cell_vote     0.640    0.810    0.880    0.920    0.960
+  osc:cell_vs_dump: 36:6 p=0.0
+  answer_em:cell_vs_dump: 22:9 p=0.0294
+  osc:cascade_vs_dump: 32:2 p=0.0
+  answer_em:cascade_vs_dump: 25:4 p=0.0001
+  osc:cell_vs_cascade: 11:11 p=1.0
+  answer_em:cell_vs_cascade: 10:18 p=0.1849
+  osc:cell2dump_vs_dump: 1:9 p=0.0215
+  answer_em:cell2dump_vs_dump: 2:8 p=0.1094
+  osc:cell2dump_vs_cell: 2:40 p=0.0
+  answer_em:cell2dump_vs_cell: 4:23 p=0.0003
+wrote -> results/corpus_dump_vs_cell_lookup_dense_512.json
+### lookup reader budget 1024 ###
+[corpus] 424 tables / 58759 cells | [pop] 100 queries | budget 1024 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:40,  1.54it/s]Loading weights:   1%|          | 2/339 [00:01<02:52,  1.95it/s]Loading weights:   1%|          | 4/339 [00:01<01:17,  4.30it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:50,  6.55it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:14, 22.34it/s]Loading weights:   6%|▋         | 22/339 [00:01<00:11, 27.31it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:09, 31.86it/s]Loading weights:   9%|▉         | 32/339 [00:01<00:10, 30.30it/s]Loading weights:  12%|█▏        | 40/339 [00:01<00:07, 40.86it/s]Loading weights:  13%|█▎        | 45/339 [00:02<00:07, 41.27it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:06, 46.73it/s]Loading weights:  17%|█▋        | 58/339 [00:02<00:05, 47.03it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:05, 50.44it/s]Loading weights:  22%|██▏       | 76/339 [00:02<00:04, 58.05it/s]Loading weights:  24%|██▍       | 82/339 [00:02<00:04, 54.48it/s]Loading weights:  26%|██▋       | 89/339 [00:02<00:04, 56.37it/s]Loading weights:  29%|██▉       | 100/339 [00:02<00:03, 66.24it/s]Loading weights:  32%|███▏      | 107/339 [00:03<00:03, 64.27it/s]Loading weights:  34%|███▎      | 114/339 [00:18<02:20,  1.60it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 49.78it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  58%|█████▊    | 116/199 [00:00<00:00, 1155.10it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1464.23it/s]
+[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
+[cache] hit bge-small-en-v1.5_58759_b6c60bb8588560e0.npy
+[index] built in 0s
+[tokens] 58759 cells counted in 3s
+  25/100
+  50/100
+  75/100
+  100/100
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+dump         0.710     0.710    0.710      0.710     1004    3.5    0.470
+cell         0.810     0.810    0.960      0.030     1023    9.5    0.420
+cascade      0.780     0.780    0.790      0.290      870    1.0    0.470
+cell2dump    0.680     0.680    0.680      0.680      975    2.8    0.430
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.790    0.890    0.930    0.950    0.980
+  by_cell_vote     0.640    0.810    0.880    0.920    0.960
+  osc:cell_vs_dump: 20:10 p=0.0987
+  answer_em:cell_vs_dump: 15:20 p=0.4996
+  osc:cascade_vs_dump: 11:4 p=0.1185
+  answer_em:cascade_vs_dump: 14:14 p=1.0
+  osc:cell_vs_cascade: 13:10 p=0.6776
+  answer_em:cell_vs_cascade: 14:19 p=0.4869
+  osc:cell2dump_vs_dump: 8:11 p=0.6476
+  answer_em:cell2dump_vs_dump: 5:9 p=0.424
+  osc:cell2dump_vs_cell: 5:18 p=0.0106
+  answer_em:cell2dump_vs_cell: 13:12 p=1.0
+wrote -> results/corpus_dump_vs_cell_lookup_dense_1024.json
+### LOOKUP MID DONE ###

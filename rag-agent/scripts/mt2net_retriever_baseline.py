@@ -63,6 +63,24 @@ def summarize(per_query: dict) -> dict:
     return out
 
 
+def fill_by_index(order, texts, count, limit):
+    """Greedily take units in rank order while they fit, returning WHICH ones.
+
+    Same rule as ``Budget.fill`` -- a unit too long to fit is skipped, not a
+    stopping point, so one fat cell cannot shut out every shorter one behind
+    it. Budget.fill returns the texts; OSC needs the indices, which is the only
+    reason this exists.
+    """
+    kept, used = [], 0
+    for gi in order:
+        n = count(texts[gi])
+        if used + n > limit:
+            continue
+        kept.append(gi)
+        used += n
+    return kept, used
+
+
 def pools(pop, cells):
     """query uid -> global indices of every cell in that query's own document."""
     by_uid = {}
@@ -90,13 +108,30 @@ def main() -> int:
                          "cross-dataset transfer leg needs these weights, and "
                          "retraining to get them back costs a GPU-quarter-hour")
     ap.add_argument("--out", default="results/mt2net_retriever_baseline.json")
+    ap.add_argument("--population", default="arith_multi",
+                    choices=["arith_multi", "lookup_single"],
+                    help="lookup_single exists because the standardised reader "
+                         "is a 4-bit local 7B that scores .02-.05 on arithmetic "
+                         "(corpus_dump_vs_cell_reader_dense_*): an answer leg on "
+                         "arith_multi measures the reader, not the retriever")
+    ap.add_argument("--reader", default="",
+                    help="answer the questions too (e.g. "
+                         "local:Qwen/Qwen2.5-7B-Instruct). Both arms get the same "
+                         "pool, budget, prompt and scorer, so an EM difference is "
+                         "a difference in what the RETRIEVER put in the window")
+    ap.add_argument("--budget", type=int, default=512,
+                    help="reader context tokens per arm")
+    ap.add_argument("--ours-scheme", default="S3",
+                    help="our arm's deployed index unit, against mt2net's own "
+                         "template. System-level: each retriever gets the cell "
+                         "text it actually ships")
     args = ap.parse_args()
 
     rng = random.Random(args.seed)
     env = run_env(args.seed, args.model)
 
     total = args.eval_queries + args.train_queries
-    queries, docs = load_population(total)
+    queries, docs = load_population(total, args.population)
     ev_q, tr_q = queries[:args.eval_queries], queries[args.eval_queries:]
     ev_uids = {q["uid"] for q in ev_q}
     tr_q = [q for q in tr_q if q["uid"] not in ev_uids]      # no shared documents
@@ -188,14 +223,47 @@ def main() -> int:
     # --- eval: score every cell of the query's own document, rank by P(relevant)
     ev_texts = [cell_text(c, args.scheme) for c in ev_cells]
     ev_pools = pools(ev_pop, ev_cells)
-    per_query, records = {}, []
+
+    # --- answer leg: their retriever and ours, same pool, budget, prompt, scorer.
+    # Each arm reads the cell text it actually ships, so this is a system-level
+    # comparison of "what did the retriever put in the window", not a template
+    # ablation -- that one is operand_collision_within_doc's job.
+    llm = bud = None
+    if args.reader:
+        from rag_agent.eval.metrics import hitab_exact_match_text
+        from rag_agent.generate.answerer import _DIRECT_SYS
+        from rag_agent.llm.factory import build_llm
+        from rag_agent.retrieve.encoders import default_encoder
+        from baseline_comparison_llm import Budget
+
+        llm, bud = build_llm(args.reader), Budget()
+        ours_texts = [cell_text(c, args.ours_scheme) for c in ev_cells]
+        ours_enc = default_encoder()
+        ours_emb = ours_enc.encode(ours_texts)
+        ours_emb = ours_emb / (np.linalg.norm(ours_emb, axis=1, keepdims=True) + 1e-9)
+        q_emb = ours_enc.encode([q["question"] for q in ev_pop])
+        q_emb = q_emb / (np.linalg.norm(q_emb, axis=1, keepdims=True) + 1e-9)
+
+        def fill(order, texts):
+            return fill_by_index(order, texts, bud.count, args.budget)
+
+        def answer(kept, texts, question, gold_answer):
+            """Same prompt frame as corpus_dump_vs_cell, so EM is on one ruler."""
+            user = ("CONTEXT:\n" + "\n".join(texts[gi] for gi in kept)
+                    + f"\n\nQUESTION: {question}\n\nAnswer:")
+            out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
+            if not out_txt and llm.last_finish_reason == "length":
+                out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=1024)
+            return int(bool(hitab_exact_match_text(out_txt, gold_answer))), out_txt[:120]
+
+    per_query, records, ans = {}, [], []
     for qi, q in enumerate(ev_pop):
         idxs = ev_pools[q["uid"]]
         gold = {int(g) for g in q["gold"]}
         scores = predict([(q["question"], ev_texts[gi]) for gi in idxs])
+        mt_order = [idxs[int(l)] for l in np.argsort(-np.asarray(scores))]
         rank_of = {}
-        for pos_, local in enumerate(np.argsort(-np.asarray(scores)), 1):
-            gi = idxs[int(local)]
+        for pos_, gi in enumerate(mt_order, 1):
             if gi in gold:
                 rank_of[gi] = pos_
                 if len(rank_of) == len(gold):
@@ -204,13 +272,28 @@ def main() -> int:
         for g in gold:
             records.append({"scheme": args.scheme, "retriever": "mt2net_bert",
                             "query": qi, "cell": g, "rank": rank_of.get(g)})
+        if llm is not None:
+            sims = ours_emb[idxs] @ q_emb[qi]
+            ours_order = [idxs[int(l)] for l in np.argsort(-sims)]
+            gold_answer = docs[q["uid"]]["answer"]
+            rec = {"query": qi, "uid": q["uid"], "gold": sorted(gold),
+                   "answer": gold_answer}
+            for arm, order, txts in (("mt2net_bert", mt_order, ev_texts),
+                                     ("ours", ours_order, ours_texts)):
+                kept, used = fill(order, txts)
+                em, pred = answer(kept, txts, q["question"], gold_answer)
+                rec[arm] = {"answer_em": em, "tokens": used, "pred": pred,
+                            "n_cells": len(kept), "osc": int(gold <= set(kept))}
+            ans.append(rec)
+            if len(ans) % 25 == 0:
+                print(f"  [answer] {len(ans)}/{len(ev_pop)}", flush=True)
 
     out = {
         "env": env,
         "leg": "MT2Net's BERT-base binary-classifier retriever, trained here and "
                "evaluated on the same population/pool/gold/sentences as "
                "operand_collision_within_doc.py, so the scorer is the only variable",
-        "population": {"name": "multihiertt_arith_multi_within_doc",
+        "population": {"name": f"multihiertt_{args.population}_within_doc",
                        "n_queries": len(ev_pop),
                        "pool": "within-document (all tables of the query's own doc)"},
         "train": {"n_queries": len(tr_pop), "n_pairs": len(examples),
@@ -224,6 +307,21 @@ def main() -> int:
                   "than the original by data budget alone",
         "by_scheme": {args.scheme: {"mt2net_bert": summarize(per_query)}},
     }
+    if ans:
+        from manual_sentence_ceiling import mcnemar
+        agg = lambda a, k: round(float(np.mean([r[a][k] for r in ans])), 4)
+        out["answer_leg"] = {
+            "reader": llm.name, "budget_tokens": args.budget,
+            "ours_scheme": args.ours_scheme, "n": len(ans),
+            "note": "both arms: same within-document pool, same budget, same "
+                    "prompt frame, same scorer; only the ranking differs",
+            "summary": {a: {k: agg(a, k) for k in
+                            ("answer_em", "osc", "tokens", "n_cells")}
+                        for a in ("mt2net_bert", "ours")},
+            "paired": {m: mcnemar([r["ours"][m] for r in ans],
+                                  [r["mt2net_bert"][m] for r in ans])
+                       for m in ("answer_em", "osc")},
+        }
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as fh:
         json.dump(out, fh, indent=2)
@@ -231,6 +329,18 @@ def main() -> int:
     with open(rec_path, "w") as fh:
         for rec in records:
             fh.write(json.dumps(rec) + "\n")
+    if ans:
+        with open(str(Path(args.out).with_suffix("")) + "_answer.jsonl", "w") as fh:
+            for rec in ans:
+                fh.write(json.dumps(rec, ensure_ascii=False, default=str) + "\n")
+        al = out["answer_leg"]
+        print(f"\n=== answer leg (budget {args.budget}, {llm.name}) ===")
+        for a, s_ in al["summary"].items():
+            print(f"  {a:12} EM={s_['answer_em']:.3f} OSC={s_['osc']:.3f} "
+                  f"tok={s_['tokens']:.0f} cells={s_['n_cells']:.1f}")
+        for m, v in al["paired"].items():
+            print(f"  ours vs mt2net {m}: {v['only_first']}:{v['only_second']} "
+                  f"p={v['exact_p']}")
 
     s = out["by_scheme"][args.scheme]["mt2net_bert"]
     print(f"\n=== mt2net_bert ({args.scheme}) ===")

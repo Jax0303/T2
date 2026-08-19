@@ -70,6 +70,33 @@ ALPHA = {"bm25": 0.0, "dense": 1.0, "hybrid": 0.5, "cross": 1.0}
 KS = (1, 5, 8, 20)
 
 
+def scheme_orders(txt, question, retrievers, table_id, scheme, enc, ce, cross_pool):
+    """Rank order over ``txt`` per retriever. One index build serves them all."""
+    from rag_agent.retrieve.hybrid_index import _minmax
+    chunks = [Chunk(table_id=table_id, chunk_id=f"{table_id}::{n}",
+                    text=t, scheme=scheme, kind="cell") for n, t in enumerate(txt)]
+    index = HybridIndex(chunks, encoder=enc, alpha=0.5)
+    try:
+        bm = index._bm25_scores(question)
+        dn = index._dense_scores(question)
+    finally:
+        index.close()
+    out = {}
+    for r in retrievers:
+        if r == "cross":
+            pool = np.argsort(-dn)[:cross_pool]
+            ce_scores = ce.predict([(question, txt[i]) for i in pool])
+            order = list(pool[np.argsort(-np.asarray(ce_scores))])
+            # candidates the first stage never proposed keep their dense order
+            seen = set(int(i) for i in pool)
+            order = order + [i for i in np.argsort(-dn) if int(i) not in seen]
+        else:
+            a = ALPHA[r]
+            order = list(np.argsort(-(a * _minmax(dn) + (1 - a) * _minmax(bm))))
+        out[r] = order
+    return out
+
+
 def context_order(order, gold_idx, k, oracle):
     """The k unit indices handed to the reader, gold pinned first when oracle."""
     if not oracle:
@@ -106,6 +133,10 @@ def main() -> int:
     ap.add_argument("--oracle-cell", action="store_true",
                     help="pin the gold cell first in the reader context "
                          "(recall=1.0 by construction; isolates the reader)")
+    ap.add_argument("--fixed-context", default=None, metavar="SCHEME",
+                    help="draw the reader context from SCHEME's retrieval order for "
+                         "every arm, so the arms differ in rendering only and not "
+                         "in which cells they see (retrieval metrics stay per-arm)")
     ap.add_argument("--out", default="results/cell_retrieval_matrix.json")
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--force-resume", action="store_true",
@@ -115,6 +146,8 @@ def main() -> int:
 
     schemes = [s for s in args.serializations.split(",") if s]
     retrievers = [r for r in args.retrievers.split(",") if r]
+    if args.fixed_context and args.fixed_context not in SERIALIZATIONS:
+        ap.error(f"--fixed-context must be one of {SERIALIZATIONS}")
     env = run_env(0, "BAAI/bge-small-en-v1.5")
 
     pop, tables, paths = build_population(args.data_dir, args.split, args.n)
@@ -137,12 +170,20 @@ def main() -> int:
         print(f"[resume] {len(done)} records already on disk", flush=True)
 
     guard_resume(rec_path, env, reader=(None if llm is None else llm.name),
-                 population="hitab_dev_lookup_single", force=args.force_resume)
+                 population=f"hitab_{args.split}_lookup_single",
+                 force=args.force_resume)
     rec_fh = open(rec_path, "a")
     try:
         for n_done, q in enumerate(pop, 1):
             bt, pt = tables[q.gold_table_id], paths[q.gold_table_id]
             gold = (q.gold_operands[0].row, q.gold_operands[0].col)
+            # cell n is the same cell under every scheme (units() walks the grid in
+            # one order), so one arm's ranking can address another arm's texts
+            donor = None
+            if args.fixed_context and llm is not None:
+                dtxt, _ = units(bt, pt, args.fixed_context)
+                donor = scheme_orders(dtxt, q.question, retrievers, bt.table_id,
+                                      args.fixed_context, enc, ce, args.cross_pool)
             for scheme in schemes:
                 todo = [r for r in retrievers
                         if (q.query_id, scheme, r) not in done
@@ -151,32 +192,23 @@ def main() -> int:
                     continue
                 txt, idx = units(bt, pt, scheme)
                 gi = idx[gold]
-                chunks = [Chunk(table_id=bt.table_id, chunk_id=f"{bt.table_id}::{n}",
-                                text=t, scheme=scheme, kind="cell") for n, t in enumerate(txt)]
                 # one index per (table, scheme): both backends are built once and
                 # every retriever below is a different read of the same scores
-                index = HybridIndex(chunks, encoder=enc, alpha=0.5)
-                bm = index._bm25_scores(q.question)
-                dn = index._dense_scores(q.question)
-                from rag_agent.retrieve.hybrid_index import _minmax
+                ords = scheme_orders(txt, q.question, todo, bt.table_id, scheme,
+                                     enc, ce, args.cross_pool)
                 for r in todo:
-                    if r == "cross":
-                        pool = np.argsort(-dn)[: args.cross_pool]
-                        ce_scores = ce.predict([(q.question, txt[i]) for i in pool])
-                        order = list(pool[np.argsort(-np.asarray(ce_scores))])
-                        # candidates the first stage never proposed keep their
-                        # dense order behind the reranked head
-                        seen = set(int(i) for i in pool)
-                        order = order + [i for i in np.argsort(-dn) if int(i) not in seen]
-                    else:
-                        a = ALPHA[r]
-                        order = list(np.argsort(-(a * _minmax(dn) + (1 - a) * _minmax(bm))))
+                    order = ords[r]
                     rank = int(order.index(gi)) + 1
                     rec = {"query_id": q.query_id, "scheme": scheme, "retriever": r,
                            "rank": rank, "pool": len(txt)}
                     if llm is not None:
-                        ctx_idx = context_order(order, gi, args.topk, args.oracle_cell)
+                        # retrieval metrics above are always this arm's own order;
+                        # only the reader context may be borrowed, so that the arms
+                        # differ in rendering alone
+                        ctx_src = donor[r] if donor is not None else order
+                        ctx_idx = context_order(ctx_src, gi, args.topk, args.oracle_cell)
                         rec["oracle_cell"] = bool(args.oracle_cell)
+                        rec["fixed_context"] = args.fixed_context
                         ctx = "\n".join(txt[i] for i in ctx_idx)
                         user = f"ROWS:\n{ctx}\n\nQUESTION: {q.question}\n\nAnswer:"
                         raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
@@ -185,7 +217,6 @@ def main() -> int:
                     done[(q.query_id, scheme, r)] = rec
                     rec_fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
                     rec_fh.flush()
-                index.close()
             if n_done % 10 == 0:
                 print(f"  {n_done}/{len(pop)}", flush=True)
     except RuntimeError as e:
@@ -241,6 +272,7 @@ def main() -> int:
         "reranker": args.reranker, "cross_pool": args.cross_pool,
         "reader": None if llm is None else llm.name, "topk": args.topk, "env": env,
         "oracle_cell": bool(args.oracle_cell),
+        "fixed_context": args.fixed_context,
         "matrix": matrix,
         "delta_S2recon_minus_flat": {
             r: {k: delta("S2_recon", "flat", r, k)

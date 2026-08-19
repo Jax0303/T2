@@ -50,8 +50,10 @@ bm25는 −.091(p=.0479)로 지는데 dense는 −.006으로 **비긴다**(38:39
    첫 실행만 58k셀 인코딩을 낸다.
 2. **hybrid / cross** — L-14에서 헤더 경로 이득이 가장 컸던 검색기들
    (`diag/cell_retrieval_matrix.md`: recall@1 flat→S2가 dense +.19 / hybrid +.20 / cross +.23).
-3. **답변 EM 레그** — 지금 지표는 전부 LLM-free(OSC/per_cell)다. 교차점이 답변
-   정확도에서도 같은 자리에 있는지 확인해야 논문 그림이 된다. 로컬 리더 필요 → GPU 머신.
+3. ~~**답변 EM 레그**~~ — **완료 2026-08-20.** 교차점은 답변 EM에도 같은 자리에 있다
+   (S2 기준). 그리고 **S3로 바꾸면 교차점이 2048 밖으로 밀린다** — 1024에서 S2는 표
+   덤프에 졌는데(.42 vs .47) S3는 이긴다(.61 vs .47, p=.0243). 3개 데이터셋 표는
+   `CLAUDE.md` §코퍼스 규모 정면대결.
 
 ```
 PYTHONPATH=. .venv/bin/python scripts/corpus_dump_vs_cell.py \
