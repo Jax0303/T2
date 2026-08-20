@@ -172,3 +172,51 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
 [index] built in 1s
 [tokens] 58759 cells / 7196 rows counted in 6s
   25/100
+  50/100
+  75/100
+  100/100
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+cell         0.710     0.710    0.860      0.000      252    1.9    0.550
+dump         0.130     0.130    0.130      0.130      242    1.7    0.090
+row          0.580     0.580    0.640      0.040      255    3.5    0.280
+flat         0.580     0.580    0.680      0.000      256    7.2    0.120
+cell2dump    0.130     0.130    0.130      0.130      222    1.4    0.090
+cascade      0.650     0.650    0.770      0.000      240    1.0    0.500
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.770    0.910    0.930    0.960    0.990
+  by_cell_vote     0.790    0.910    0.940    0.960    0.980
+  osc:cell_vs_dump: 59:1 p=0.0
+  answer_em:cell_vs_dump: 48:2 p=0.0
+  osc:cascade_vs_dump: 53:1 p=0.0
+  answer_em:cascade_vs_dump: 43:2 p=0.0
+  osc:cell_vs_cascade: 8:2 p=0.1094
+  answer_em:cell_vs_cascade: 8:3 p=0.2266
+  osc:cell2dump_vs_dump: 0:0 p=1.0
+  answer_em:cell2dump_vs_dump: 0:0 p=1.0
+  osc:cell2dump_vs_cell: 1:59 p=0.0
+  answer_em:cell2dump_vs_cell: 2:48 p=0.0
+  osc:cell_vs_row: 22:9 p=0.0294
+  answer_em:cell_vs_row: 37:10 p=0.0001
+  osc:cell_vs_flat: 21:8 p=0.0241
+  answer_em:cell_vs_flat: 45:2 p=0.0
+  osc:row_vs_dump: 48:3 p=0.0
+  answer_em:row_vs_dump: 23:4 p=0.0003
+wrote -> results/corpus_dump_vs_cell_hyb_hitab_256.json
+### hybrid aitqa 256 ### 10:41
+[corpus] 113 tables / 5320 cells | [pop] 451 queries | budget 256 | hybrid
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:28,  1.62it/s]Loading weights:   1%|          | 2/339 [00:01<03:09,  1.78it/s]Loading weights:   1%|          | 4/339 [00:01<01:22,  4.05it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:54,  6.15it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:14, 21.99it/s]Loading weights:   6%|▌         | 21/339 [00:01<00:12, 25.87it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:08, 34.89it/s]Loading weights:  10%|▉         | 33/339 [00:01<00:08, 35.66it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:07, 40.01it/s]Loading weights:  14%|█▎        | 46/339 [00:02<00:06, 44.49it/s]Loading weights:  16%|█▌        | 53/339 [00:02<00:05, 50.65it/s]Loading weights:  19%|█▉        | 64/339 [00:02<00:04, 63.70it/s]Loading weights:  21%|██        | 71/339 [00:02<00:04, 64.49it/s]Loading weights:  23%|██▎       | 78/339 [00:02<00:04, 55.68it/s]Loading weights:  26%|██▋       | 89/339 [00:02<00:03, 65.45it/s]Loading weights:  29%|██▉       | 100/339 [00:02<00:03, 69.68it/s]Loading weights:  32%|███▏      | 108/339 [00:02<00:03, 67.59it/s]Loading weights:  34%|███▍      | 115/339 [00:03<00:03, 57.53it/s]Loading weights:  37%|███▋      | 125/339 [00:03<00:03, 61.22it/s]Loading weights:  40%|████      | 136/339 [00:03<00:03, 63.20it/s]Loading weights:  42%|████▏     | 143/339 [00:03<00:03, 64.05it/s]Loading weights:  44%|████▍     | 150/339 [00:03<00:03, 57.70it/s]Loading weights:  47%|████▋     | 161/339 [00:03<00:02, 66.60it/s]Loading weights:  50%|████▉     | 168/339 [00:20<01:41,  1.69it/s]Loading weights:  51%|█████     | 173/339 [00:20<01:19,  2.09it/s]Loading weights:  54%|█████▍    | 184/339 [00:20<00:45,  3.38it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 52.21it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  67%|██████▋   | 134/199 [00:00<00:00, 1336.42it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1742.64it/s]
+[cache] hit bge-small-en-v1.5_113_2271f8be55e3814a.npy
+[cache] hit bge-small-en-v1.5_5320_b6ff6e022dab839f.npy
+[cache] hit bge-small-en-v1.5_5320_809f10326b9391f2.npy
+[cache] hit bge-small-en-v1.5_1315_1af6a52336a42943.npy
+[index] built in 0s
+[tokens] 5320 cells / 1315 rows counted in 1s
+  25/451
+  50/451
+  75/451
+  100/451
