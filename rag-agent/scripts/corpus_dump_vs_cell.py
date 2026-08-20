@@ -18,6 +18,9 @@ is where a fixed token budget is better spent:
   cell2dump  rank CELLS corpus-wide, then dump the whole TABLE each top cell
              belongs to -- locate with the fine-grained index, deliver with the
              unit that carries a whole operand set
+  cellrow    the same trick one level down: rank CELLS, deliver the ROW each top
+             cell sits in. The index unit and the context unit are separate
+             choices, and every other arm here ties them together
 
 One budget, one encoder, one population, one pool for all three. Scored
 LLM-free first, because the two things that decide the answer are visible
@@ -66,7 +69,8 @@ from manual_sentence_ceiling import mcnemar
 from point3_reconstruction_cost import build_table_paths, cell_text
 from rag_agent.serialization.caption import caption_sentence
 
-ARMS = ("dump", "cell", "cascade", "cell2dump", "row", "flat", "group", "capped")
+ARMS = ("dump", "cell", "cascade", "cell2dump", "cellrow", "row", "flat",
+        "group", "capped")
 
 
 class _CachedEncoder:
@@ -474,6 +478,10 @@ def main() -> int:
     print(f"[tokens] {len(cell_tok)} cells / {len(row_tok)} rows counted in "
           f"{time.time() - t0:.0f}s", flush=True)
 
+    # (table, row) -> row-chunk index, so the cellrow arm can go from a ranked
+    # cell to the row that carries it without rescanning row_owner per query
+    row_of = {ro: k for k, ro in enumerate(C.row_owner)}
+
     # what the grouped arm renders: one header per table, one short line per cell
     grp_head = {t: f"[table] {C.title.get(t, '')}".rstrip() for t in tids}
     grp_line = [f"  {' > '.join(rp)} | {' > '.join(cp)} : {v}"
@@ -611,6 +619,29 @@ def main() -> int:
                 for tid in seen_tables:
                     parts.append(grp_head[tid])
                     parts.extend(grp_line[p_] for p_ in bucket[tid])
+            elif arm == "cellrow":
+                # the cell index chooses, the row unit delivers. `row` ranks
+                # rows by the row's own text, which reads as a bag of numbers;
+                # this keeps the cell sentence as the thing being scored and
+                # only changes what the reader is handed. Separates the INDEX
+                # unit from the CONTEXT unit, which every other arm conflates.
+                taken = set()
+                for pos in c_order:
+                    tid, i, _ = cell_owner[pos]
+                    k = row_of.get((tid, i))
+                    if k is None or k in taken:
+                        continue
+                    n = int(row_tok[k])
+                    if used + n > args.budget:
+                        if used + int(row_tok.min()) > args.budget:
+                            break
+                        continue
+                    used += n
+                    taken.add(k)
+                    parts.append(C.row_text[k])
+                    in_ctx |= {(tid, i, j) for j in range(C.shape[tid][1])}
+                    if tid not in seen_tables:
+                        seen_tables.append(tid)
             elif arm == "row":
                 # a row chunk delivers the whole data row, so every cell of it
                 # counts as retrieved -- that is the point of the unit
@@ -682,6 +713,7 @@ def main() -> int:
                  # the head-to-head the paper needs: ours against the two units
                  # published table-RAG actually uses, all paying to find the table
                  ("cell", "row"), ("cell", "flat"), ("row", "dump"),
+                 ("cellrow", "cell"), ("cellrow", "row"), ("cellrow", "dump"),
                  ("group", "cell"), ("group", "dump"), ("group", "row"),
                  ("capped", "cell"), ("capped", "group")):
         if a not in arms or b not in arms:
@@ -710,6 +742,7 @@ def main() -> int:
                  "cell": "corpus-wide S2 cell index -> cells while they fit",
                  "cascade": "top-1 table by table index, then its cells only",
                  "cell2dump": "tables ranked by their best cell, dumped whole",
+                 "cellrow": "rows ranked by their best cell, emitted as rows",
                  "row": "corpus-wide row-chunk index -> whole data rows",
                  "flat": "corpus-wide cell index, LEAF labels only (ablation)",
                  "capped": f"like `cell` but at most {args.cap} cells per table",
