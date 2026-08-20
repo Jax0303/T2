@@ -58,3 +58,20 @@ def test_unmeasured_bench_uses_hierarchical_prior():
     assert best_matcher("multihiertt") == "embedding"
     assert not is_measured("multihiertt")
     assert is_measured("hitab")
+
+
+def test_retriever_default_is_the_embedding_fix():
+    """The decomposition stage now defaults to the semantic resolver.
+
+    The header-path decomposer used to default to the lexical scorer, which is
+    net-negative on HiTab (operand_recall@5 0.9053 plain -> 0.8300). The fix is
+    for embedding to be the DEFAULT; an explicit embed_resolver=False still pins
+    the lexical baseline. Constructed without an encoder so no model loads.
+    """
+    pytest.importorskip("pandas")  # constructing the retriever pulls the stack
+    from rag_agent.retrieve.operand_retrieval import OperandTargetedRetriever
+    assert OperandTargetedRetriever().embed_resolver is True
+    assert OperandTargetedRetriever(embed_resolver=False).embed_resolver is False
+    # per-corpus policy: flat WikiSQL (hybrid best, embedding < fuzzy) -> lexical
+    assert OperandTargetedRetriever(bench="wikisql").embed_resolver is False
+    assert OperandTargetedRetriever(bench="hitab").embed_resolver is True

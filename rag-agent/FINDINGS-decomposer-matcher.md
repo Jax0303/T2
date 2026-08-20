@@ -62,37 +62,61 @@ embedding 매처다(train n=1,006, k=5/10/20 각각 +.049/.038/.040, p<.015,
 
 ---
 
-## 이번에 반영한 것 (코드)
+## 중요 — 두 단계 중 어디가 임베딩인가
 
-매처 선택을 **근거에 못박은 정책**으로 만들었다. 커밋된 천장의 argmax와 코드가 어긋나면
-테스트가 깨진다 — 새 실행으로 숫자를 갱신하지 않는 한 정책을 바꿀 수 없다.
+파이프라인에는 임베딩이 들어갈 자리가 둘이다. 헷갈리지 말 것:
 
-- `rag_agent/query/matcher_policy.py` — `best_matcher(bench)` + `BENCH_CEILING`
-  (위 표를 그대로, 출처 주석과 함께). torch/임베더 의존 없음.
-- `rag_agent/query/operand_decomposer.py` — `best_matcher` 재수출.
-- `tests/test_decomposer_matcher_policy.py` — 정책 == `results/operand_rag/*/summary.json`
-  argmax 임을 검증(순수 stdlib, venv 없이 실행됨).
+- **검색(retrieval) 단계** — 셀을 문장(S3)으로 바꿔 **dense 임베딩 + BM25로 검색**.
+  `HybridIndex`. **이미 임베딩이다.** "문장 생성 → 임베딩 → 검색"이 여기다. 안 건드렸다.
+- **분해(decomposition) 단계** — 검색 *전에* "이 질문이 표의 어떤 헤더경로(셀)를 필요로 하나"를
+  정하는 단계. `resolve_against_table` / `_rank_paths`. **여기만 fuzzy(어휘 겹침)로 남아 있었다.**
+  이 문서의 수정 대상이 바로 이 단계다.
 
-**의도적으로 기본값은 뒤집지 않았다.** `header_path_resolver.resolve_against_table`는
-"embedding을 기본으로 켜면 `results/`의 기존 수치가 조용히 비교 불가가 된다"고 명시했고,
-파이프라인 기본을 바꾸는 것은 논문 주장 범위가 걸린 결정이라(NEXT.md §3) 지도교수 확인
-대상이다. 정책은 **한 줄로 채택 가능하게** 배선만 해 뒀다.
+즉 이번 변경은 새 방법이 아니라, **파이프라인에서 유일하게 임베딩이 아니던 분해 단계를
+임베딩으로 바꿔 방법 전체를 일관되게** 만든 것이다.
 
-## 채택하려면 (연구 결정)
+## 이번에 반영한 것 (코드) — 기본값을 고침
 
-계층형 벤치의 분해 경로에 임베딩 매처를 기본으로 건다:
+1. **분해 단계 기본값을 임베딩으로 전환.**
+   `OperandTargetedRetriever(embed_resolver=...)`의 기본값을 `None`(=정책)으로 바꿨고,
+   `None`이면 `best_matcher(bench)=="embedding"`(bench 미지정 시 계층형 가정으로 **True**).
+   → 이제 **방법의 기본 분해기 = 임베딩**. `embed_resolver=False`는 어휘 베이스라인 고정용.
+   (`rag_agent/retrieve/operand_retrieval.py`)
 
-```python
-from rag_agent.query.matcher_policy import best_matcher
-# decompose_operands(...) / resolve_intent(...) 호출부에 encoder=EmbedResolver(enc) 를
-# best_matcher(bench)=="embedding"/"hybrid" 일 때 전달.
+2. **커밋된 수치가 조용히 바뀌지 않도록 모든 어휘 베이스라인을 명시 고정.**
+   `answer_accuracy_resolver.py`(base), `resolver_osc_matched.py`(lex),
+   `pipeline_osc_asdescribed.py`, 단위테스트 2개에 `embed_resolver=False`를 박았다.
+   나머지 스크립트는 이미 명시적으로 `embed_resolver=True`였다. → **기존 결과 파일 전부 그대로.**
+   `pipeline_osc_asdescribed.py`는 "AS DESCRIBED" 방법이지만 커밋된 결과
+   (`results/pipeline_osc_asdescribed*.json`, `gate_k*.json`)를 지키려 고정해 뒀다.
+   **임베딩 방법으로 재기준선을 잡으려면 그 `embed_resolver=False`를 지우고 재실행하면 된다.**
+
+3. **매처 정책을 근거에 못박음.**
+   `rag_agent/query/matcher_policy.py`(`best_matcher`+`BENCH_CEILING`, 출처 주석),
+   `tests/test_decomposer_matcher_policy.py`가 정책 == `results/operand_rag/*/summary.json`
+   argmax 임을, 그리고 **분해 기본값이 임베딩임**을 검증. 순수 stdlib.
+
+## 검증(실행) — 답변 LLM은 로컬
+
+`scripts/answer_accuracy_resolver.py`가 그대로 검증 하네스다. base(어휘) vs treat(임베딩)를
+같은 질의·같은 k·같은 리더로 짝지어 잰다. **답변 리더 기본값을 로컬 Qwen2.5-7B로 바꿨다**
+(Groq 일일 한도 없이 돌아감):
+
+```
+.venv/bin/python scripts/answer_accuracy_resolver.py --mode direct
 ```
 
-## 아직 열려 있는 것 (정직하게)
+이때 출력의 **`[osc]` 줄**(리더 호출 전, LLM 불필요)이 분해기 수정의 핵심 증거다 —
+어휘 vs 임베딩 분해기의 **operand-set 완전성**을 바로 보여준다.
 
-천장(ceiling) 이득이 **recall → 답변 정확도**로 전환되는지는 자동이 아니다. 저장소의 반복된
-교훈이다(총합행 주입은 gpt-oss-120b에서만 전환, llama-3.1-8b에서 0 — STATUS §1.6).
-전환 확인은 `scripts/answer_accuracy_resolver.py`를 **gpt-oss-120b(effort=low)** 로 돌려야
-하고, 이는 현재 Groq 일일 한도로 막혀 있다(아티팩트 "The leg that is still open").
-이 문서는 그 실행 없이 **매처 선택이 근거대로 되어 있음**까지만 못박는다.
-전환 숫자가 나오기 전까지 "이 변경이 답변 정확도를 올린다"고 인용 금지.
+## 정직한 한계 — 로컬 리더의 산술 천장
+
+이 레그의 모집단은 **다중 피연산자(집계형)** 질문이고, 4-bit 7B 로컬 리더는 산술을 거의 못 한다
+(아티팩트: arm 무관 .02–.06). 따라서 **답변 EM은 두 arm 모두 낮게** 나오고, 그것은 분해기가
+아니라 리더를 재는 것이다(STATUS §1.6: 주입도 gpt-oss-120b에서만 전환, llama-3.1-8b에서 0).
+그래서:
+
+- **분해기 수정의 효과**는 `[osc]`(완전성, LLM-free)로 읽는다 — 로컬로 충분.
+- **답변 EM 숫자**가 필요하면 계산되는 리더로 바꾼다(`--solver-model openai/gpt-oss-120b`).
+
+"이 변경이 답변 정확도를 올린다"는 계산 가능한 리더에서 전환이 확인되기 전까지 인용 금지.

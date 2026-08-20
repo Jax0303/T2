@@ -25,7 +25,17 @@ distinct header paths, so it searches more often (|E| ~21.9 vs 17.5 at k=10).
 The budget-matched retrieval control lives in the OSC leg; this leg answers the
 narrower question "does the pipeline as configured answer better".
 
-Run:
+The ``[osc]`` line this prints is the LLM-free evidence: operand-set completeness
+for the lexical (base) vs embedding (treat) decomposer, computed before any reader
+is called. That is where the decomposer fix shows regardless of reader ability. A
+local 4-bit 7B reader answers lookups but caps arithmetic (see the artifact), so on
+the multi-operand population its answer EM is low for BOTH arms; read the ``osc``
+block for the retrieval effect and switch to a computing reader for the answer EM.
+
+Run (local reader, no quota):
+  .venv/bin/python scripts/answer_accuracy_resolver.py --mode direct
+
+Run (hosted reader that can compute, for the answer-EM number):
   GROQ_API_KEY=... .venv/bin/python scripts/answer_accuracy_resolver.py \
       --solver-model openai/gpt-oss-120b --codegen-max-tokens 1024 --flips-first
 """
@@ -70,7 +80,10 @@ def main() -> int:
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--min-operands", type=int, default=2)
-    ap.add_argument("--solver-model", default="openai/gpt-oss-120b")
+    # Local reader by default (LocalQwenLLM loads 4-bit on CUDA out of the box),
+    # so the leg runs without the Groq daily-token quota. A capable hosted reader
+    # (openai/gpt-oss-120b) is still selectable for the arithmetic population.
+    ap.add_argument("--solver-model", default="local:Qwen/Qwen2.5-7B-Instruct")
     ap.add_argument("--mode", default="codegen", choices=["codegen", "direct"])
     ap.add_argument("--codegen-max-tokens", type=int, default=1024)
     ap.add_argument("--limit", type=int, default=None)
@@ -96,7 +109,9 @@ def main() -> int:
     enc = default_encoder(model_name=args.embed_model)
     # caption_template="structural" is the default and is byte-identical to the
     # caption_length="long" this script was written against.
-    base = OperandTargetedRetriever(encoder=enc, scheme="S3")
+    # base = lexical decomposer (pinned explicit: the embedding resolver is now
+    # the constructor default, and base is the lexical baseline of this A/B).
+    base = OperandTargetedRetriever(encoder=enc, scheme="S3", embed_resolver=False)
     treat = OperandTargetedRetriever(encoder=enc, scheme="S3", embed_resolver=True)
 
     # ---- LLM-free pass: contexts + OSC for every query --------------------

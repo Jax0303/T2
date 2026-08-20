@@ -104,8 +104,13 @@ def main() -> int:
     print(f"[pop] arithmetic w/ operands: {len(pop)} (m>=2: {n_m2})", flush=True)
 
     enc = default_encoder(model_name=args.embed_model)
+    # Pinned lexical to keep this script's committed results
+    # (results/pipeline_osc_asdescribed*.json, results/gate_k*.json) comparable —
+    # they predate the embedding resolver becoming the constructor default.
+    # Remove embed_resolver=False and re-run to re-baseline onto the fixed method.
     retriever = OperandTargetedRetriever(encoder=enc, scheme="S3",
-                                         caption_template="structural")
+                                         caption_template="structural",
+                                         embed_resolver=False)
     print(f"[pipeline] OperandTargetedRetriever scheme={retriever.scheme} "
           f"caption_template={retriever.caption_template} fusion={retriever.fusion}",
           flush=True)

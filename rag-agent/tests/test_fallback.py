@@ -160,7 +160,8 @@ def test_full_path_on_hitab_logs_decision():
     from rag_agent.retrieve.encoders import HashingEncoder
 
     samples = load_hitab(split="dev", max_samples=10)
-    r = OperandTargetedRetriever(encoder=HashingEncoder(dim=256), alpha=0.5)
+    r = OperandTargetedRetriever(encoder=HashingEncoder(dim=256), alpha=0.5,
+                                 embed_resolver=False)  # unit-test the lexical path
     for s in samples:
         t = from_hitab_raw(s["table"])
         res = r.retrieve(s["question"], t, k=5)
