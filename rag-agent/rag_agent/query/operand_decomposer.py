@@ -24,9 +24,18 @@ from difflib import SequenceMatcher
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
 from .header_path_resolver import extract_target_terms, expand_for_retrieval
+from .matcher_policy import best_matcher, is_measured, BENCH_CEILING
 from ..bench.schema import BenchTable, GoldOperand
 
 MATCHERS = ("fuzzy", "embedding", "hybrid")
+
+# Re-exported so callers can pick the evidence-backed matcher per corpus without
+# reaching into a second module. See matcher_policy for the committed sources.
+__all__ = [
+    "MATCHERS", "Operand", "Embedder", "candidate_paths", "rank_paths",
+    "decompose", "header_path_match_accuracy",
+    "best_matcher", "is_measured", "BENCH_CEILING",
+]
 
 
 @dataclass

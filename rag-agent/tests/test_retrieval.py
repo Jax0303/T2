@@ -119,7 +119,8 @@ def test_operand_recall_monotonic_in_k_on_hitab():
     from rag_agent.retrieve.operand_retrieval import OperandTargetedRetriever
 
     samples = load_hitab(split="dev", max_samples=15)
-    r = OperandTargetedRetriever(encoder=HashingEncoder(dim=512), alpha=0.5)
+    r = OperandTargetedRetriever(encoder=HashingEncoder(dim=512), alpha=0.5,
+                                 embed_resolver=False)  # unit-test the lexical path
     means = {}
     for kk in (1, 5, 10):
         vals = []

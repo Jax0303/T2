@@ -27,6 +27,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence
 
 from ..query.header_path_resolver import extract_target_terms, resolve_intent
+from ..query.matcher_policy import best_matcher
 from ..serialization import caption as s3
 from ..serialization import header_path as s2
 from ..serialization.base import Chunk
@@ -187,7 +188,8 @@ class OperandTargetedRetriever:
     def __init__(self, encoder: Optional[Encoder] = None, alpha: float = 0.5,
                  scheme: str = "S3", caption_template: str = "structural",
                  fusion: str = "weighted", rrf_k: int = 60,
-                 embed_resolver: bool = False) -> None:
+                 embed_resolver: Optional[bool] = None,
+                 bench: Optional[str] = None) -> None:
         if scheme not in ("S2", "S3"):
             raise ValueError(f"scheme must be 'S2' or 'S3', got {scheme!r}")
         self.encoder = encoder
@@ -196,10 +198,28 @@ class OperandTargetedRetriever:
         self.caption_template = caption_template
         self.fusion = fusion
         self.rrf_k = rrf_k
-        # Resolve header paths with the semantic tree-node resolver instead of
-        # the lexical scorer. Off by default so existing results stay
-        # reproducible. Built lazily in retrieve(), once index_table() has
-        # settled self.encoder, and kept so its per-table cache survives.
+        # Resolve header paths in the DECOMPOSITION stage (which cells to look
+        # for) with the semantic tree-node resolver instead of the lexical
+        # scorer. This is the one stage of the pipeline that was not already
+        # embedding-based: the S3 cell sentences are dense-embedded and searched
+        # in HybridIndex, but header-path decomposition still matched by fuzzy
+        # token overlap. Semantic matching is the measured winner on hierarchical
+        # corpora — decomposition ceiling fuzzy .3029 -> embedding .4855 on HiTab
+        # (results/operand_rag/hitab/summary.json) — and the current fuzzy path
+        # is net-negative (operand_recall@5 plain .9053 -> fuzzy-operand .8300,
+        # oracle .9742). So it is the DEFAULT here; ``embed_resolver=False`` pins
+        # the old lexical scorer for a baseline arm, and results produced under
+        # each are not comparable, so a run must state which it used.
+        #
+        # ``None`` (the default) decides by the per-corpus policy when ``bench``
+        # is given, else assumes the hierarchical case (embedding) that every
+        # corpus this pipeline runs on falls under. An explicit True/False always
+        # wins, so a baseline that passes False is unaffected by this default.
+        if embed_resolver is None:
+            embed_resolver = (
+                best_matcher(bench) == "embedding" if bench else True
+            )
+        self.bench = bench
         self.embed_resolver = embed_resolver
         self._resolver = None
         self._index_cache: Dict[str, HybridIndex] = {}
