@@ -109,6 +109,24 @@ embedding 매처다(train n=1,006, k=5/10/20 각각 +.049/.038/.040, p<.015,
 이때 출력의 **`[osc]` 줄**(리더 호출 전, LLM 불필요)이 분해기 수정의 핵심 증거다 —
 어휘 vs 임베딩 분해기의 **operand-set 완전성**을 바로 보여준다.
 
+## 표 검색을 먼저 하는 실제 파이프라인 (cascade)
+
+기존 답변 레그는 전부 **정답 표를 공짜로 깔고** 시작했다(within-doc, 표 검색 = 오라클).
+실제 시스템처럼 **쿼리 → 표 검색 → 셀 검색 → 답**으로 닫는 레그를 추가했다:
+
+- `rag_agent/retrieve/cascade.py` — `TableIndex`(표 하나 = 그 표의 S3 셀 문장 전체를 한
+  문서로 임베딩) + `cascade_retrieve`(top-M 표를 고르고 그 안에서만 셀 검색, 셀은 `chunk_id`로
+  병합). 셀 인덱스와 **같은 인코더**를 써 임베딩 공간을 일치시킨다.
+- `scripts/answer_accuracy_cascade.py` — 코퍼스 = 스플릿의 모든 표(진짜 distractor 포함).
+  `--top-m`으로 표를 몇 개 남길지, `--oracle-table`로 1단계를 건너뛰어 within-doc 천장을 같은
+  하네스에서 비교. 리더 기본값은 로컬 Qwen.
+- 보고: **`table_hit@M`**(1단계 정확도) · **`osc`**(정답 표 셀로만 채점) · `em`/`num`(답).
+
+**정직한 예상:** 1단계 표 검색은 이 저장소의 알려진 병목이다 — MultiHiertt에서
+`gold_table_in_top1 ≈ 27~45%`(`NEXT.md §3`, `results/operand_collision_multihiertt_n300.json`).
+따라서 cascade의 최종 EM은 오라클-표 within-doc 숫자보다 **낮게** 나온다. 그 낙차가 곧
+"표를 먼저 찾는 비용"이고, `--oracle-table`과의 차이로 정확히 측정된다.
+
 ## 정직한 한계 — 로컬 리더의 산술 천장
 
 이 레그의 모집단은 **다중 피연산자(집계형)** 질문이고, 4-bit 7B 로컬 리더는 산술을 거의 못 한다
