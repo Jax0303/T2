@@ -1,0 +1,205 @@
+{
+  "experiment": "cell-sentence collision rate (no LLM, no encoder)",
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "none \u2014 no encoder in this diagnostic",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-22T14:43:37+00:00"
+  },
+  "datasets": {
+    "hitab": {
+      "tables": 424,
+      "titled": 0.9929,
+      "flat": {
+        "sentence": {
+          "n_cells": 58759,
+          "distinct": 39478,
+          "dup_cell_rate": 0.4171,
+          "cross_table_cell_rate": 0.2785,
+          "cross_table_classes": 2310,
+          "max_class": 468,
+          "max_class_tables": 82
+        },
+        "address": {
+          "n_cells": 58759,
+          "distinct": 16811,
+          "dup_cell_rate": 0.8454,
+          "cross_table_cell_rate": 0.4755,
+          "cross_table_classes": 1458,
+          "max_class": 1537,
+          "max_class_tables": 100
+        }
+      },
+      "S2": {
+        "sentence": {
+          "n_cells": 58759,
+          "distinct": 57048,
+          "dup_cell_rate": 0.051,
+          "cross_table_cell_rate": 0.0482,
+          "cross_table_classes": 1202,
+          "max_class": 63,
+          "max_class_tables": 63
+        },
+        "address": {
+          "n_cells": 58759,
+          "distinct": 53841,
+          "dup_cell_rate": 0.1312,
+          "cross_table_cell_rate": 0.1131,
+          "cross_table_classes": 2320,
+          "max_class": 100,
+          "max_class_tables": 100
+        }
+      },
+      "S3": {
+        "sentence": {
+          "n_cells": 58759,
+          "distinct": 57467,
+          "dup_cell_rate": 0.0398,
+          "cross_table_cell_rate": 0.037,
+          "cross_table_classes": 965,
+          "max_class": 36,
+          "max_class_tables": 36
+        },
+        "address": {
+          "n_cells": 58759,
+          "distinct": 55384,
+          "dup_cell_rate": 0.0914,
+          "cross_table_cell_rate": 0.0731,
+          "cross_table_classes": 1515,
+          "max_class": 47,
+          "max_class_tables": 47
+        }
+      }
+    },
+    "multihiertt": {
+      "tables": 1310,
+      "titled": 0.0,
+      "flat": {
+        "sentence": {
+          "n_cells": 56975,
+          "distinct": 49687,
+          "dup_cell_rate": 0.2122,
+          "cross_table_cell_rate": 0.0869,
+          "cross_table_classes": 2027,
+          "max_class": 23,
+          "max_class_tables": 7
+        },
+        "address": {
+          "n_cells": 56975,
+          "distinct": 30737,
+          "dup_cell_rate": 0.6631,
+          "cross_table_cell_rate": 0.2786,
+          "cross_table_classes": 4053,
+          "max_class": 72,
+          "max_class_tables": 20
+        }
+      },
+      "S2": {
+        "sentence": {
+          "n_cells": 56975,
+          "distinct": 52746,
+          "dup_cell_rate": 0.1253,
+          "cross_table_cell_rate": 0.0589,
+          "cross_table_classes": 1472,
+          "max_class": 23,
+          "max_class_tables": 5
+        },
+        "address": {
+          "n_cells": 56975,
+          "distinct": 43415,
+          "dup_cell_rate": 0.3632,
+          "cross_table_cell_rate": 0.1369,
+          "cross_table_classes": 2693,
+          "max_class": 30,
+          "max_class_tables": 13
+        }
+      },
+      "S3": {
+        "sentence": {
+          "n_cells": 56975,
+          "distinct": 52682,
+          "dup_cell_rate": 0.1271,
+          "cross_table_cell_rate": 0.061,
+          "cross_table_classes": 1516,
+          "max_class": 23,
+          "max_class_tables": 5
+        },
+        "address": {
+          "n_cells": 56975,
+          "distinct": 43290,
+          "dup_cell_rate": 0.3663,
+          "cross_table_cell_rate": 0.1414,
+          "cross_table_classes": 2775,
+          "max_class": 30,
+          "max_class_tables": 13
+        }
+      }
+    },
+    "aitqa": {
+      "tables": 113,
+      "titled": 0.0,
+      "flat": {
+        "sentence": {
+          "n_cells": 5320,
+          "distinct": 4639,
+          "dup_cell_rate": 0.2383,
+          "cross_table_cell_rate": 0.1962,
+          "cross_table_classes": 484,
+          "max_class": 8,
+          "max_class_tables": 7
+        },
+        "address": {
+          "n_cells": 5320,
+          "distinct": 3174,
+          "dup_cell_rate": 0.6282,
+          "cross_table_cell_rate": 0.4105,
+          "cross_table_classes": 736,
+          "max_class": 39,
+          "max_class_tables": 10
+        }
+      },
+      "S2": {
+        "sentence": {
+          "n_cells": 5320,
+          "distinct": 4888,
+          "dup_cell_rate": 0.1494,
+          "cross_table_cell_rate": 0.141,
+          "cross_table_classes": 345,
+          "max_class": 8,
+          "max_class_tables": 7
+        },
+        "address": {
+          "n_cells": 5320,
+          "distinct": 4269,
+          "dup_cell_rate": 0.3013,
+          "cross_table_cell_rate": 0.2694,
+          "cross_table_classes": 524,
+          "max_class": 39,
+          "max_class_tables": 8
+        }
+      },
+      "S3": {
+        "sentence": {
+          "n_cells": 5320,
+          "distinct": 4883,
+          "dup_cell_rate": 0.1506,
+          "cross_table_cell_rate": 0.1421,
+          "cross_table_classes": 346,
+          "max_class": 8,
+          "max_class_tables": 7
+        },
+        "address": {
+          "n_cells": 5320,
+          "distinct": 4257,
+          "dup_cell_rate": 0.3041,
+          "cross_table_cell_rate": 0.2748,
+          "cross_table_classes": 529,
+          "max_class": 47,
+          "max_class_tables": 8
+        }
+      }
+    }
+  }
+}
