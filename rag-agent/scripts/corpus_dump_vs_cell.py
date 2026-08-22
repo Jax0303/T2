@@ -57,7 +57,9 @@ import numpy as np
 from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
 from rag_agent.eval.metrics import hitab_exact_match_text
-from rag_agent.generate.answerer import _DIRECT_SYS
+from rag_agent.generate.answerer import (
+    _DIRECT_SYS, _CODEGEN_SYS, _extract_code, _safe_exec,
+)
 from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
 from rag_agent.retrieve.hybrid_index import HybridIndex, _minmax
@@ -390,6 +392,15 @@ def main() -> int:
                          "local:Qwen/Qwen2.5-7B-Instruct). Every arm gets the same "
                          "budget and the same prompt frame, so an answer-EM "
                          "difference is a difference in what the budget bought")
+    ap.add_argument("--answer-mode", default="direct", choices=["direct", "codegen"],
+                    help="direct: the reader writes the final answer. codegen: the "
+                         "reader writes one Python line `answer = <expr over cell "
+                         "numbers>` and PYTHON computes it — a reading-side lever "
+                         "for the arithmetic population, where a local 7B can pick "
+                         "the cells but cannot do the mental math. Keep separate "
+                         "--out/--records per mode: the two are not comparable")
+    ap.add_argument("--codegen-max-tokens", type=int, default=512,
+                    help="completion cap for the codegen line")
     ap.add_argument("--cell-scheme", default="S2", choices=["S2", "S3"],
                     help="what the CELL arm indexes. S2 is the bare header path "
                          "('a > b > c: v'); S3 is this work's deployed index unit "
@@ -503,7 +514,8 @@ def main() -> int:
 
     rec_path = Path(str(Path(out_path).with_suffix("")) + "_records.jsonl")
     rec_path.parent.mkdir(parents=True, exist_ok=True)
-    guard_resume(rec_path, env, reader=(llm.name if llm else None),
+    guard_resume(rec_path, env,
+                 reader=(f"{llm.name}#{args.answer_mode}" if llm else None),
                  population=(args.population if args.dataset == "hitab"
                              else "aitqa_answer_matched" if args.dataset == "aitqa"
                              else f"multihiertt_{args.mh_queries}_{args.seed}"),
@@ -686,12 +698,32 @@ def main() -> int:
                         "gold_table_whole": int(gold_all <= in_ctx),
                         "tokens": used, "n_tables": len(seen_tables)}
             if llm is not None:
-                user = (f"CONTEXT:\n" + "\n".join(parts)
-                        + f"\n\nQUESTION: {q['question']}\n\nAnswer:")
-                out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
-                if not out_txt and llm.last_finish_reason == "length":
-                    out_txt = llm.complete(system=_DIRECT_SYS, user=user,
-                                           max_tokens=1024)
+                if args.answer_mode == "codegen":
+                    # The reader only names the cells and writes the arithmetic;
+                    # Python evaluates it. Offloads the mental math a local 7B
+                    # fails (osc=1 yet wrong answer) to an exact evaluator.
+                    user = (f"ROWS:\n" + "\n".join(parts)
+                            + f"\n\nQUESTION: {q['question']}\n\nOne line: answer = ...")
+                    raw = llm.complete(system=_CODEGEN_SYS, user=user,
+                                       max_tokens=args.codegen_max_tokens)
+                    val = None
+                    try:
+                        val = _safe_exec(_extract_code(raw))
+                    except Exception:
+                        val = None
+                    if val is not None:
+                        out_txt = (f"{val:.0f}" if float(val).is_integer()
+                                   else f"{val:g}")
+                    else:
+                        out_txt = raw  # fell through; score whatever text came back
+                    rec[arm]["used_codegen"] = int(val is not None)
+                else:
+                    user = (f"CONTEXT:\n" + "\n".join(parts)
+                            + f"\n\nQUESTION: {q['question']}\n\nAnswer:")
+                    out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
+                    if not out_txt and llm.last_finish_reason == "length":
+                        out_txt = llm.complete(system=_DIRECT_SYS, user=user,
+                                               max_tokens=1024)
                 rec[arm]["answer_em"] = int(bool(
                     hitab_exact_match_text(out_txt, q["answer"])))
                 rec[arm]["pred"] = out_txt[:120]
@@ -736,6 +768,7 @@ def main() -> int:
                    "tables": len(tids), "cells": len(cell_chunks)},
         "budget_tokens": args.budget, "budget_tokenizer": args.embed_model,
         "retriever": args.retriever, "reader": llm.name if llm else None,
+        "answer_mode": args.answer_mode,
         "cell_scheme": args.cell_scheme, "arms_run": list(arms),
         "cell_title": not args.no_title,
         "arms": {"dump": "table index -> whole tables in rank order while they fit",
