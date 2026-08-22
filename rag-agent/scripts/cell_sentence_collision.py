@@ -37,7 +37,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from corpus_dump_vs_cell import aitqa_corpus, hitab_corpus, multihiertt_corpus
+from corpus_dump_vs_cell import (aitqa_corpus, hitab_corpus, multihiertt_corpus,
+                                 realhitbench_corpus)
 from point3_reconstruction_cost import cell_text
 from rag_agent.runenv import run_env
 from rag_agent.serialization.caption import caption_sentence
@@ -91,6 +92,7 @@ def main() -> int:
         "hitab": lambda: hitab_corpus(args.data_dir, args.split, ""),
         "multihiertt": lambda: multihiertt_corpus(args.mh_queries, args.seed),
         "aitqa": lambda: aitqa_corpus(),
+        "realhitbench": lambda: realhitbench_corpus(),
     }
     out = {"experiment": "cell-sentence collision rate (no LLM, no encoder)",
            "env": run_env(args.seed, "none — no encoder in this diagnostic"), "datasets": {}}
@@ -98,15 +100,33 @@ def main() -> int:
         C = load()
         d = {"tables": len(C.tids), "titled": round(
             sum(1 for t in C.tids if C.title.get(t)) / max(1, len(C.tids)), 4)}
+        # A corpus where only SOME tables carry a title splits the title's effect
+        # from everything else about a dataset. Across corpora the title is
+        # confounded with domain, reader difficulty and sentence length; inside
+        # one, it is not.
+        has_title = [bool(C.title.get(t)) for t, _, _ in C.cell_owner]
+        mixed = 0 < sum(has_title) < len(has_title)
         for scheme in ("flat", "S2", "S3"):
             d[scheme] = {
                 "sentence": collisions(render(C, scheme, True), C.cell_owner),
                 "address": collisions(render(C, scheme, False), C.cell_owner),
             }
+            if mixed:
+                addr = render(C, scheme, False)
+                for lab, want in (("titled", True), ("untitled", False)):
+                    idx = [k for k, t in enumerate(has_title) if t == want]
+                    d[scheme][lab] = collisions([addr[k] for k in idx],
+                                                [C.cell_owner[k] for k in idx])
         out["datasets"][name] = d
         print(f"[{name}] {d['tables']} tables, title {d['titled']:.1%}", flush=True)
         for scheme in ("flat", "S2", "S3"):
             a, s = d[scheme]["address"], d[scheme]["sentence"]
+            if "titled" in d[scheme]:
+                t_, u_ = d[scheme]["titled"], d[scheme]["untitled"]
+                print(f"  {scheme:4s} titled {t_['dup_cell_rate']:.1%} "
+                      f"(cross-table {t_['cross_table_cell_rate']:.1%})"
+                      f"  |  untitled {u_['dup_cell_rate']:.1%} "
+                      f"(cross-table {u_['cross_table_cell_rate']:.1%})", flush=True)
             print(f"  {scheme:4s} address dup {a['dup_cell_rate']:.1%} "
                   f"(cross-table {a['cross_table_cell_rate']:.1%}, "
                   f"worst class {a['max_class']} cells / {a['max_class_tables']} tables)"

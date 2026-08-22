@@ -6,7 +6,7 @@
     "torch": "2.12.1+cu130",
     "embed_model": "none \u2014 no encoder in this diagnostic",
     "vector_backend": "faiss",
-    "run_started_utc": "2026-08-22T14:43:37+00:00"
+    "run_started_utc": "2026-08-22T19:05:39+00:00"
   },
   "datasets": {
     "hitab": {
@@ -30,6 +30,24 @@
           "cross_table_classes": 1458,
           "max_class": 1537,
           "max_class_tables": 100
+        },
+        "titled": {
+          "n_cells": 58274,
+          "distinct": 16782,
+          "dup_cell_rate": 0.8444,
+          "cross_table_cell_rate": 0.4721,
+          "cross_table_classes": 1450,
+          "max_class": 1537,
+          "max_class_tables": 100
+        },
+        "untitled": {
+          "n_cells": 485,
+          "distinct": 103,
+          "dup_cell_rate": 0.9691,
+          "cross_table_cell_rate": 0.0,
+          "cross_table_classes": 0,
+          "max_class": 7,
+          "max_class_tables": 1
         }
       },
       "S2": {
@@ -50,6 +68,24 @@
           "cross_table_classes": 2320,
           "max_class": 100,
           "max_class_tables": 100
+        },
+        "titled": {
+          "n_cells": 58274,
+          "distinct": 53362,
+          "dup_cell_rate": 0.1321,
+          "cross_table_cell_rate": 0.1141,
+          "cross_table_classes": 2320,
+          "max_class": 100,
+          "max_class_tables": 100
+        },
+        "untitled": {
+          "n_cells": 485,
+          "distinct": 479,
+          "dup_cell_rate": 0.0247,
+          "cross_table_cell_rate": 0.0,
+          "cross_table_classes": 0,
+          "max_class": 2,
+          "max_class_tables": 1
         }
       },
       "S3": {
@@ -70,6 +106,24 @@
           "cross_table_classes": 1515,
           "max_class": 47,
           "max_class_tables": 47
+        },
+        "titled": {
+          "n_cells": 58274,
+          "distinct": 54905,
+          "dup_cell_rate": 0.0919,
+          "cross_table_cell_rate": 0.0737,
+          "cross_table_classes": 1515,
+          "max_class": 47,
+          "max_class_tables": 47
+        },
+        "untitled": {
+          "n_cells": 485,
+          "distinct": 479,
+          "dup_cell_rate": 0.0247,
+          "cross_table_cell_rate": 0.0,
+          "cross_table_classes": 0,
+          "max_class": 2,
+          "max_class_tables": 1
         }
       }
     },
@@ -198,6 +252,124 @@
           "cross_table_classes": 529,
           "max_class": 47,
           "max_class_tables": 8
+        }
+      }
+    },
+    "realhitbench": {
+      "tables": 536,
+      "titled": 0.3825,
+      "flat": {
+        "sentence": {
+          "n_cells": 148140,
+          "distinct": 112971,
+          "dup_cell_rate": 0.3326,
+          "cross_table_cell_rate": 0.1717,
+          "cross_table_classes": 7360,
+          "max_class": 206,
+          "max_class_tables": 13
+        },
+        "address": {
+          "n_cells": 148140,
+          "distinct": 40677,
+          "dup_cell_rate": 0.8556,
+          "cross_table_cell_rate": 0.4135,
+          "cross_table_classes": 7293,
+          "max_class": 1991,
+          "max_class_tables": 13
+        },
+        "titled": {
+          "n_cells": 61767,
+          "distinct": 19277,
+          "dup_cell_rate": 0.8241,
+          "cross_table_cell_rate": 0.3069,
+          "cross_table_classes": 2300,
+          "max_class": 1991,
+          "max_class_tables": 11
+        },
+        "untitled": {
+          "n_cells": 86373,
+          "distinct": 23807,
+          "dup_cell_rate": 0.8542,
+          "cross_table_cell_rate": 0.373,
+          "cross_table_classes": 3721,
+          "max_class": 279,
+          "max_class_tables": 8
+        }
+      },
+      "S2": {
+        "sentence": {
+          "n_cells": 148140,
+          "distinct": 123726,
+          "dup_cell_rate": 0.2417,
+          "cross_table_cell_rate": 0.1446,
+          "cross_table_classes": 7041,
+          "max_class": 206,
+          "max_class_tables": 13
+        },
+        "address": {
+          "n_cells": 148140,
+          "distinct": 83032,
+          "dup_cell_rate": 0.5663,
+          "cross_table_cell_rate": 0.3045,
+          "cross_table_classes": 9132,
+          "max_class": 1991,
+          "max_class_tables": 13
+        },
+        "titled": {
+          "n_cells": 61767,
+          "distinct": 39345,
+          "dup_cell_rate": 0.4848,
+          "cross_table_cell_rate": 0.2679,
+          "cross_table_classes": 3720,
+          "max_class": 1991,
+          "max_class_tables": 11
+        },
+        "untitled": {
+          "n_cells": 86373,
+          "distinct": 46348,
+          "dup_cell_rate": 0.5888,
+          "cross_table_cell_rate": 0.2721,
+          "cross_table_classes": 4370,
+          "max_class": 279,
+          "max_class_tables": 7
+        }
+      },
+      "S3": {
+        "sentence": {
+          "n_cells": 148140,
+          "distinct": 125814,
+          "dup_cell_rate": 0.2225,
+          "cross_table_cell_rate": 0.116,
+          "cross_table_classes": 6065,
+          "max_class": 141,
+          "max_class_tables": 6
+        },
+        "address": {
+          "n_cells": 148140,
+          "distinct": 89582,
+          "dup_cell_rate": 0.5034,
+          "cross_table_cell_rate": 0.2018,
+          "cross_table_classes": 5150,
+          "max_class": 1324,
+          "max_class_tables": 6
+        },
+        "titled": {
+          "n_cells": 61767,
+          "distinct": 43277,
+          "dup_cell_rate": 0.383,
+          "cross_table_cell_rate": 0.1029,
+          "cross_table_classes": 777,
+          "max_class": 1324,
+          "max_class_tables": 3
+        },
+        "untitled": {
+          "n_cells": 86373,
+          "distinct": 46305,
+          "dup_cell_rate": 0.5895,
+          "cross_table_cell_rate": 0.2725,
+          "cross_table_classes": 4373,
+          "max_class": 279,
+          "max_class_tables": 6
         }
       }
     }

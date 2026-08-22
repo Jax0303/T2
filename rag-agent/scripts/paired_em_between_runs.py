@@ -41,8 +41,11 @@ def main() -> int:
 
     A, B = load(args.a_records), load(args.b_records)
     qids = sorted(set(A) & set(B))
-    arms = [k for k in A[qids[0]] if isinstance(A[qids[0]][k], dict)
-            and args.metric in A[qids[0]][k]]
+    # only arms BOTH runs carry: a run may have been launched with --arms cell
+    # when that is the only arm the comparison needs
+    def _arms(r):
+        return {k for k, v in r.items() if isinstance(v, dict) and args.metric in v}
+    arms = sorted(_arms(A[qids[0]]) & _arms(B[qids[0]]))
     out = {"a": args.a_records, "b": args.b_records, "n": len(qids),
            "n_a_only": len(set(A) - set(B)), "n_b_only": len(set(B) - set(A)),
            "metric": args.metric, "arms": {}}

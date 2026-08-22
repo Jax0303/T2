@@ -288,6 +288,146 @@ def aitqa_corpus(data_dir: str = "data/aitqa") -> Corpus:
                   rowner, {t: '' for t in tids}, cpaths)
 
 
+def _rhb_split_title(grid):
+    """Peel the free-text title rows off the top of a spreadsheet grid.
+
+    Statistical spreadsheets put the table's name in its own full-width row
+    ("Table A-6. Time spent in primary activities ..."), which an Excel -> HTML
+    export turns into a row whose only filled cell is column 0. RealHiTBench
+    ships tables that way, so the title has to be RECOVERED from the grid rather
+    than read off a field -- and it is present for only about half the corpus,
+    which is exactly what makes this dataset the within-corpus title contrast
+    that HiTab (99.3% titled) vs MultiHiertt/AIT-QA (0%) cannot be.
+
+    Stripping matters for correctness, not tidiness: left in place, the title row
+    is counted by ``guess_n_header_rows`` as a header level and
+    ``_hierarchical_carry`` prepends it to EVERY column path. S2 would then carry
+    the title for free and the S2-vs-S3 contrast would measure nothing.
+
+    Returns ``(title, grid_without_title)``.
+    """
+    title, n_strip = "", 0
+    for row in grid[:6]:
+        filled = [str(c).strip() for c in row if str(c).strip()]
+        if len(filled) > 1:
+            break                     # two labels on one row: the header band
+        n_strip += 1                  # 0 or 1 filled cell: preamble, not data
+        t = filled[0] if filled else ""
+        # The FIRST prose line above the table is its name. The ones after it are
+        # boilerplate that repeats across the corpus ("Back to contents", "This
+        # worksheet contains one table", "Source: ..."), and taking those as part
+        # of the title would hand every cell of the table the same junk string.
+        # A bare number or a short code is not a name either.
+        if not title and len(t) >= 15 and " " in t:
+            title = t
+    # a grid that is ALL preamble is not a table; keep at least three rows
+    if n_strip and len(grid) - n_strip >= 3:
+        return title, grid[n_strip:]
+    return "", grid
+
+
+def realhitbench_corpus(data_dir: str = "data/realhitbench",
+                        subqtypes: tuple = ()) -> Corpus:
+    """RealHiTBench (Zhang et al., ACL Findings 2025; arXiv:2506.13405).
+
+    The fourth hierarchical benchmark and the first where the TITLE varies inside
+    one corpus -- see :func:`_rhb_split_title`. Tables are Excel -> HTML exports
+    with ``rowspan``/``colspan`` intact, so the same reconstruction front-end the
+    other corpora use applies unchanged.
+
+    Gold cells are not annotated. As in :func:`aitqa_corpus` they are recovered by
+    matching the answer strings against cell values, and a question whose match
+    count differs from its answer count is dropped rather than scored against an
+    over-inclusive gold set. ``subqtypes`` defaults to every type, because the
+    answer match is what defines the population: whatever the dataset called a
+    question, it survives only if its answer resolves to a unique set of cells.
+
+    Cells with an EMPTY value are not indexed. An Excel -> HTML export ships the
+    sheet's whole used range, so 55.9% of the grid cells here hold nothing, while
+    the other three corpora are dense and have no such cells. Indexing a blank is
+    indexing noise, and dropping it costs every arm the same.
+    """
+    import re
+
+    from rag_agent.reconstruct import (guess_n_header_cols, guess_n_header_rows,
+                                       parse_html_table_with_merges,
+                                       reconstruct_col_paths, reconstruct_row_paths)
+
+    def norm(s):
+        return re.sub(r"[\s,$%]", "", str(s)).strip().lower()
+
+    qa = json.load(open(f"{data_dir}/QA_final.json"))["queries"]
+    want = set(subqtypes)
+    qs_raw = [q for q in qa if not want or q.get("SubQType") in want]
+
+    md, ttext, shape, ctext, owner = {}, {}, {}, [], []
+    ftext, rtext, rowner, titles, cpaths = [], [], [], {}, []
+    data_of, tids = {}, []
+    for tid in sorted({q["FileName"] for q in qs_raw}):
+        f = Path(data_dir) / "html" / f"{tid}.html"
+        if not f.exists():
+            continue
+        try:
+            grid, _ = parse_html_table_with_merges(f.read_text(errors="replace"))
+        except Exception:
+            continue
+        if not grid or len(grid) < 3 or len(grid[0]) < 2:
+            continue
+        title, grid = _rhb_split_title(grid)
+        nhc = guess_n_header_cols(grid)
+        nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=nhc), len(grid) - 1))
+        cols = reconstruct_col_paths(grid, nhr, n_header_cols=nhc)
+        rows = reconstruct_row_paths(grid, nhr, n_header_cols=nhc)
+        data = [[str(x).strip() for x in r[nhc:]] for r in grid[nhr:]]
+        if not data or not data[0]:
+            continue
+        tids.append(tid)
+        titles[tid] = title
+        data_of[tid] = data
+        # the title row is part of the table as shipped, so the whole-table arm
+        # keeps it -- the cell arms have to earn the title by repeating it
+        md[tid] = ([f"| {title} |"] if title else []) + \
+                  ["| " + " | ".join(str(x) for x in r) + " |" for r in grid[:nhr]] + \
+                  ["|" + "---|" * len(grid[0])] + \
+                  ["| " + " | ".join(str(x) for x in r) + " |" for r in grid[nhr:]]
+        heads = {lab for p in list(rows) + list(cols) for lab in p if lab}
+        ttext[tid] = " ".join(x for x in (title, " | ".join(sorted(heads))) if x)
+        shape[tid] = (len(data), len(data[0]))
+        for i, row in enumerate(data):
+            rp = list(rows[i]) if i < len(rows) else []
+            cells = []
+            for j, v in enumerate(row):
+                cp = list(cols[j]) if j < len(cols) else []
+                cells.append(f"{(cp or [''])[-1]}: {v}")
+                if not str(v).strip():
+                    continue          # blank sheet padding, see the docstring
+                ctext.append(cell_text(list(rp), cp, v, "S2"))
+                ftext.append(cell_text(list(rp), cp, v, "flat"))
+                cpaths.append((list(rp), cp, v))
+                owner.append((tid, i, j))
+            joined = " | ".join(cells)
+            rtext.append(f"{' > '.join(rp)} | {joined}" if rp else joined)
+            rowner.append((tid, i))
+
+    qs = []
+    for q in qs_raw:
+        tid = q["FileName"]
+        if tid not in data_of:
+            continue
+        ans = str(q.get("ProcessedAnswer") or q.get("FinalAnswer") or "")
+        want_v = [norm(a) for a in ans.split(",") if norm(a)]
+        if not want_v:
+            continue
+        found = {(tid, i, j) for i, row in enumerate(data_of[tid])
+                 for j, v in enumerate(row) if norm(v) in set(want_v)}
+        if not found or len(found) != len(set(want_v)):
+            continue                      # unresolved, or the match is ambiguous
+        qs.append({"query_id": str(q["id"]), "question": q["Question"],
+                   "answer": ans, "gold_table": tid, "gold_cells": found})
+    return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
+                  rowner, titles, cpaths)
+
+
 def multihiertt_corpus(n_queries: int, seed: int) -> Corpus:
     """Same shape from MultiHiertt, where a table is an HTML string in a document.
 
@@ -373,11 +513,20 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dataset", default="hitab",
-                    choices=["hitab", "multihiertt", "aitqa"])
+                    choices=["hitab", "multihiertt", "aitqa", "realhitbench"])
     ap.add_argument("--mh-queries", type=int, default=400,
                     help="MultiHiertt questions to sample (their documents become "
                          "the corpus)")
     ap.add_argument("--data-dir", default="data/hitab")
+    ap.add_argument("--rhb-subqtypes", nargs="*", default=[],
+                    help="RealHiTBench SubQType values to keep; the default keeps "
+                         "every type. The population is defined by the ANSWER "
+                         "MATCH, not by the label: a question survives only if its "
+                         "answer strings resolve to a unique set of data cells, "
+                         "which is a cell lookup whatever the dataset called it. "
+                         "Filtering to Value-Matching first would cost 52% of the "
+                         "population (243 -> 116) and leave the title split at "
+                         "n=45, too thin to test")
     ap.add_argument("--split", default="dev")
     ap.add_argument("--population", default="hitab_dev_arith")
     ap.add_argument("--budget", type=int, default=1024, help="context tokens per arm")
@@ -434,6 +583,8 @@ def main() -> int:
         C = hitab_corpus(args.data_dir, args.split, args.population)
     elif args.dataset == "aitqa":
         C = aitqa_corpus()
+    elif args.dataset == "realhitbench":
+        C = realhitbench_corpus(subqtypes=tuple(args.rhb_subqtypes))
     else:
         C = multihiertt_corpus(args.mh_queries, args.seed)
     pop = C.queries[: args.max_queries] if args.max_queries else C.queries
@@ -518,6 +669,8 @@ def main() -> int:
                  reader=(f"{llm.name}#{args.answer_mode}" if llm else None),
                  population=(args.population if args.dataset == "hitab"
                              else "aitqa_answer_matched" if args.dataset == "aitqa"
+                             else f"rhb_{'_'.join(args.rhb_subqtypes)}"
+                             if args.dataset == "realhitbench"
                              else f"multihiertt_{args.mh_queries}_{args.seed}"),
                  force=args.force_resume)
     # Pick up where a killed run stopped. guard_resume has already refused the
@@ -760,6 +913,9 @@ def main() -> int:
         "population": {"name": args.population if args.dataset == "hitab" else
                        "aitqa, gold cells recovered by answer match, ambiguous dropped"
                        if args.dataset == "aitqa" else
+                       f"realhitbench {'/'.join(args.rhb_subqtypes)}, gold cells "
+                       "recovered by answer match, ambiguous dropped"
+                       if args.dataset == "realhitbench" else
                        f"multihiertt table-only, seed {args.seed}, n={args.mh_queries}",
                        "n": len(recs),
                        "frozen": (str(pop_mod.path(args.population))
