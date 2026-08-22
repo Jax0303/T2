@@ -1,0 +1,169 @@
+{
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-22T19:40:58+00:00"
+  },
+  "population": {
+    "name": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+    "n": 243,
+    "frozen": null
+  },
+  "corpus": {
+    "dataset": "realhitbench",
+    "split": "dev",
+    "tables": 536,
+    "cells": 148140
+  },
+  "budget_tokens": 512,
+  "budget_tokenizer": "BAAI/bge-small-en-v1.5",
+  "retriever": "dense",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "answer_mode": "direct",
+  "cell_scheme": "S2",
+  "arms_run": [
+    "dump",
+    "cell",
+    "row",
+    "flat"
+  ],
+  "cell_title": true,
+  "arms": {
+    "dump": "table index -> whole tables in rank order while they fit",
+    "cell": "corpus-wide S2 cell index -> cells while they fit",
+    "cascade": "top-1 table by table index, then its cells only",
+    "cell2dump": "tables ranked by their best cell, dumped whole",
+    "cellrow": "rows ranked by their best cell, emitted as rows",
+    "row": "corpus-wide row-chunk index -> whole data rows",
+    "flat": "corpus-wide cell index, LEAF labels only (ablation)",
+    "capped": "like `cell` but at most 3 cells per table",
+    "group": "same cells and same ranking as `cell`, but rendered grouped by table with the title stated ONCE -- the title is 29% of every S3 sentence and is what the gain comes from, so paying for it per table instead of per cell buys back budget at no information loss"
+  },
+  "summary": {
+    "dump": {
+      "osc": 0.0947,
+      "per_cell": 0.0947,
+      "gold_table_any": 0.0947,
+      "gold_table_whole": 0.0947,
+      "tokens": 467.5062,
+      "n_tables": 1.3909,
+      "answer_em": 0.0494
+    },
+    "cell": {
+      "osc": 0.3992,
+      "per_cell": 0.4063,
+      "gold_table_any": 0.856,
+      "gold_table_whole": 0.0,
+      "tokens": 512.0,
+      "n_tables": 6.9342,
+      "answer_em": 0.1934
+    },
+    "row": {
+      "osc": 0.3004,
+      "per_cell": 0.3091,
+      "gold_table_any": 0.6914,
+      "gold_table_whole": 0.0041,
+      "tokens": 510.7531,
+      "n_tables": 4.3992,
+      "answer_em": 0.1687
+    },
+    "flat": {
+      "osc": 0.3416,
+      "per_cell": 0.3492,
+      "gold_table_any": 0.8395,
+      "gold_table_whole": 0.0,
+      "tokens": 512.0,
+      "n_tables": 9.3539,
+      "answer_em": 0.1111
+    }
+  },
+  "paired_tests": {
+    "osc:cell_vs_dump": {
+      "only_first": 90,
+      "only_second": 16,
+      "exact_p": 0.0
+    },
+    "answer_em:cell_vs_dump": {
+      "only_first": 44,
+      "only_second": 9,
+      "exact_p": 0.0
+    },
+    "osc:cell_vs_row": {
+      "only_first": 41,
+      "only_second": 17,
+      "exact_p": 0.0022
+    },
+    "answer_em:cell_vs_row": {
+      "only_first": 25,
+      "only_second": 19,
+      "exact_p": 0.4514
+    },
+    "osc:cell_vs_flat": {
+      "only_first": 25,
+      "only_second": 11,
+      "exact_p": 0.0288
+    },
+    "answer_em:cell_vs_flat": {
+      "only_first": 27,
+      "only_second": 7,
+      "exact_p": 0.0008
+    },
+    "osc:row_vs_dump": {
+      "only_first": 63,
+      "only_second": 13,
+      "exact_p": 0.0
+    },
+    "answer_em:row_vs_dump": {
+      "only_first": 38,
+      "only_second": 9,
+      "exact_p": 0.0
+    }
+  },
+  "table_recall": {
+    "by_table_index": {
+      "@1": 0.4198,
+      "@3": 0.6543,
+      "@5": 0.7613,
+      "@10": 0.8189,
+      "@20": 0.8807
+    },
+    "by_cell_vote": {
+      "@1": 0.5021,
+      "@3": 0.7366,
+      "@5": 0.8025,
+      "@10": 0.9012,
+      "@20": 0.9342
+    }
+  },
+  "table_recall_paired": {
+    "@1": {
+      "only_first": 48,
+      "only_second": 28,
+      "exact_p": 0.0286
+    },
+    "@3": {
+      "only_first": 53,
+      "only_second": 33,
+      "exact_p": 0.0399
+    },
+    "@5": {
+      "only_first": 35,
+      "only_second": 25,
+      "exact_p": 0.2451
+    },
+    "@10": {
+      "only_first": 30,
+      "only_second": 10,
+      "exact_p": 0.0022
+    },
+    "@20": {
+      "only_first": 19,
+      "only_second": 6,
+      "exact_p": 0.0146
+    }
+  }
+}

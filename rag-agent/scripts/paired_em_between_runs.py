@@ -36,6 +36,12 @@ def main() -> int:
     ap.add_argument("a_records")
     ap.add_argument("b_records")
     ap.add_argument("--metric", default="answer_em")
+    ap.add_argument("--groups", default="",
+                    help="JSON {query_id: label} to also report the test WITHIN "
+                         "each label. The repo's per-query analyses (repairable / "
+                         "stuck / unique, title present / absent) are all this "
+                         "shape, and a paired test on a subgroup is the same test "
+                         "on fewer pairs -- not a different one")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
 
@@ -60,6 +66,25 @@ def main() -> int:
         print(f"  {arm:6s} a={sum(a)/len(a):.3f}  b={sum(b)/len(b):.3f}  "
               f"b_only={st['only_second']} a_only={st['only_first']} "
               f"p={st['exact_p']:.4g}")
+    if args.groups:
+        groups = json.loads(Path(args.groups).read_text())
+        out["groups"] = {}
+        for lab in sorted({groups[q] for q in qids if q in groups}):
+            sel = [q for q in qids if groups.get(q) == lab]
+            out["groups"][lab] = {"n": len(sel), "arms": {}}
+            print(f"\n[{lab}] n={len(sel)}")
+            for arm in arms:
+                a = [A[q][arm][args.metric] for q in sel]
+                b = [B[q][arm][args.metric] for q in sel]
+                st = mcnemar(a, b)
+                out["groups"][lab]["arms"][arm] = {
+                    "a": round(sum(a) / len(a), 4) if a else None,
+                    "b": round(sum(b) / len(b), 4) if b else None, **st}
+                if a:
+                    print(f"  {arm:6s} a={sum(a)/len(a):.3f}  b={sum(b)/len(b):.3f}  "
+                          f"b_only={st['only_second']} a_only={st['only_first']} "
+                          f"p={st['exact_p']:.4g}")
+
     if args.out:
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)
         json.dump(out, open(args.out, "w"), indent=2)
