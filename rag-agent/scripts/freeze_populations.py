@@ -70,6 +70,23 @@ def hitab_dev_lookup_all(data_dir: str) -> tuple[list[str], dict]:
         "used_by": ["corpus_dump_vs_cell (MT2Net head-to-head)"]}
 
 
+def hitab_test_lookup_all(data_dir: str) -> tuple[list[str], dict]:
+    """The same derivation as ``hitab_dev_lookup_all``, on the untouched split.
+
+    Every design choice in this repo was made on dev. This is the confirmation
+    population: same filter, same seed-0 order, whole pool, no pin to unset
+    (``build_population`` pins dev only). It is derived ONCE, here, and the
+    numbers that come out of it are reported whichever way they fall.
+    """
+    from manual_sentence_ceiling import build_population
+    pop, _, _ = build_population(data_dir, "test", 10**9)
+    return [q.query_id for q in pop], {
+        "dataset": "hitab", "split": "test", "filter": "len(gold_operands)==1 and "
+        "build_table_paths is not None and operand in grid",
+        "order": "random.Random(0).shuffle", "n": len(pop),
+        "used_by": ["corpus_dump_vs_cell (test-split confirmation)"]}
+
+
 def hitab_arith(data_dir: str, split: str, m_min: int) -> tuple[list[str], dict]:
     """The matched-control populations.
 
@@ -191,6 +208,7 @@ def hitab_corpus_arith(data_dir: str, split: str) -> tuple[list[str], dict]:
 SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
+    "hitab_test_lookup_all": lambda a: hitab_test_lookup_all(a.data_dir),
     "hitab_dev_arith": lambda a: hitab_arith(a.data_dir, "dev", 1),
     "hitab_dev_arith_m2": lambda a: hitab_arith(a.data_dir, "dev", 2),
     "hitab_train_arith": lambda a: hitab_arith(a.data_dir, "train", 1),
