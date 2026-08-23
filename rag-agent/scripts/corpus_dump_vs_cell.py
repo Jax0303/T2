@@ -553,14 +553,18 @@ def main() -> int:
     ap.add_argument("--codegen-max-tokens", type=int, default=512,
                     help="completion cap for the codegen line")
     ap.add_argument("--cell-scheme", default="S2",
-                    choices=["S2", "S3", "S3c", "mt2net"],
+                    choices=["S2", "S2r", "S3", "S3c", "mt2net"],
                     help="what the CELL arm indexes. S2 is the bare header path "
                          "('a > b > c: v'); S3 is this work's deployed index unit "
                          "-- a sentence stating the table title and both paths "
                          "(rag_agent/serialization/caption.py); S3c is S3 where a "
                          "title exists and S2 where none does, since the frame is "
-                         "the title's seat and costs budget without one. Only the "
-                         "cell and cascade arms change; dump/row/flat do not read it")
+                         "the title's seat and costs budget without one. S2r is S2 "
+                         "with each axis reversed to leaf-first -- the SAME tokens "
+                         "in a different order, which is the only way to price "
+                         "MT2Net's leaf-first reading apart from its sentence "
+                         "frame. Only the cell and cascade arms change; "
+                         "dump/row/flat do not read it")
     ap.add_argument("--cap", type=int, default=3,
                     help="`capped` arm: at most this many cells from any one "
                          "table. 18 of the 24 oracle-condition failures answered "
@@ -606,6 +610,15 @@ def main() -> int:
 
     tbl_chunks = [Chunk(table_id=tid, chunk_id=f"t::{tid}", text=C.table_text[tid],
                         scheme="table", kind="table") for tid in tids]
+    if args.cell_scheme == "S2r":
+        # Word order, and nothing else. MT2Net beat S2 on HiTab's untitled
+        # condition (.540 vs .430, 15:4, p=.0192) and tied it on AIT-QA, and the
+        # two templates differ in BOTH word order and sentence frame. S3c already
+        # removed the frame; reversing each axis to leaf-first removes the order,
+        # leaving a string with the same token multiset as S2 -- so a difference
+        # here cannot be capacity, the way every other template contrast can.
+        C.cell_text[:] = [cell_text(rp[::-1], cp[::-1], v, "S2")
+                          for rp, cp, v in C.cell_paths]
     if args.cell_scheme in ("S3", "S3c", "mt2net"):
         # re-render from the same paths the S2 text was built from, so the
         # schemes differ in rendering only and the cell SET stays identical.

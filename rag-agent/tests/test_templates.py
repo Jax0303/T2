@@ -83,3 +83,26 @@ def test_structural_compact_collapses_whitespace_like_every_other_template():
 
     got = render(STRUCTURAL_COMPACT, "", [], ["Fuel Expense       (in millions)"], "$9,307")
     assert got == "Fuel Expense (in millions): $9,307"
+
+
+def test_s2r_reverses_each_axis_and_keeps_every_token():
+    """S2r is the capacity-controlled contrast: same tokens, leaf-first order.
+
+    Every other template contrast in this repo changes sentence LENGTH, so a
+    difference can always be blamed on how many cells fit the budget. This one
+    cannot -- if the multiset ever stops matching, the experiment that prices
+    word order apart from the sentence frame is no longer controlled.
+    """
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    from point3_reconstruction_cost import cell_text
+
+    rp, cp, v = ["a", "b"], ["c", "d"], "1"
+    s2 = cell_text(rp, cp, v, "S2")
+    s2r = cell_text(rp[::-1], cp[::-1], v, "S2")
+    assert s2 == "a > b > c > d: 1"
+    assert s2r == "b > a > d > c: 1"
+    # segment multiset, not whitespace split -- ": 1" rides on the last segment
+    seg = lambda t: sorted(t.rsplit(": ", 1)[0].split(" > "))
+    assert seg(s2) == seg(s2r)
