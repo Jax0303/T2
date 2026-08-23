@@ -41,6 +41,35 @@ def hitab_dev_lookup_single(data_dir: str) -> tuple[list[str], dict]:
                     "pipeline_lookup_llm"]}
 
 
+def hitab_dev_lookup_all(data_dir: str) -> tuple[list[str], dict]:
+    """Every dev lookup query, not the first 100 of them.
+
+    ``hitab_dev_lookup_single`` takes the first 100 after a seed-0 shuffle, which
+    is enough to separate arms that differ by 20-40 points and not enough to
+    separate ones that differ by 7 (ours .610 vs the MT2Net template .540 came out
+    17:10, p=.25). Taking the WHOLE derived pool -- 830 -- is the version of "more
+    data" that cannot be accused of stopping where it suited: there is nothing
+    left to add, so no stopping point was chosen. test stays untouched.
+    """
+    from manual_sentence_ceiling import build_population
+    import rag_agent.bench.population as _pm
+    from manual_sentence_ceiling import POPULATION as _pinned
+    # build_population pins dev to the 100-query freeze; derive the full pool by
+    # asking for the split it does not pin, then re-deriving dev without the pin
+    orig = _pm.pin
+    _pm.pin = lambda name, pop: pop          # noqa: E731 -- restored below
+    try:
+        pop, _, _ = build_population(data_dir, "dev", 10**9)
+    finally:
+        _pm.pin = orig
+    return [q.query_id for q in pop], {
+        "dataset": "hitab", "split": "dev", "filter": "len(gold_operands)==1 and "
+        "build_table_paths is not None and operand in grid",
+        "order": "random.Random(0).shuffle", "n": len(pop),
+        "superset_of": _pinned,
+        "used_by": ["corpus_dump_vs_cell (MT2Net head-to-head)"]}
+
+
 def hitab_arith(data_dir: str, split: str, m_min: int) -> tuple[list[str], dict]:
     """The matched-control populations.
 
@@ -161,6 +190,7 @@ def hitab_corpus_arith(data_dir: str, split: str) -> tuple[list[str], dict]:
 
 SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
+    "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
     "hitab_dev_arith": lambda a: hitab_arith(a.data_dir, "dev", 1),
     "hitab_dev_arith_m2": lambda a: hitab_arith(a.data_dir, "dev", 2),
     "hitab_train_arith": lambda a: hitab_arith(a.data_dir, "train", 1),
