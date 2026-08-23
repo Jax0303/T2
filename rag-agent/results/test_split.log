@@ -1,0 +1,263 @@
+### START results/test_s3c_512.json 00:34:06 ###
+[corpus] 414 tables / 58460 cells | [pop] 769 queries | budget 512 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[cache] hit bge-small-en-v1.5_414_082cac91ad8c3481.npy
+[cache] hit bge-small-en-v1.5_58460_242671bfb9e2b75e.npy
+[cache] hit bge-small-en-v1.5_58460_79ea58c40afc72ed.npy
+[cache] hit bge-small-en-v1.5_7136_8da36e23de4fec08.npy
+[index] built in 2s
+[tokens] 58460 cells / 7136 rows counted in 8s
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/corpus_dump_vs_cell.py", line 996, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/corpus_dump_vs_cell.py", line 889, in main
+    out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 66, in complete
+    out = self.model.generate(**inputs, **gen_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2584, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2791, in _sample
+    while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2610, in _has_unfinished_sequences
+    elif this_peer_finished:
+         ^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+### OK results/test_s3c_512.json 00:37:12 ###
+### START results/test_mt2net_512.json 00:37:12 ###
+[corpus] 414 tables / 58460 cells | [pop] 769 queries | budget 512 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[cache] hit bge-small-en-v1.5_414_082cac91ad8c3481.npy
+[cache] wrote bge-small-en-v1.5_58460_c75bb769a62175e3.npy
+[cache] hit bge-small-en-v1.5_58460_79ea58c40afc72ed.npy
+[cache] hit bge-small-en-v1.5_7136_8da36e23de4fec08.npy
+[index] built in 23s
+[tokens] 58460 cells / 7136 rows counted in 3s
+  25/769
+  50/769
+  75/769
+  100/769
+  125/769
+  150/769
+  175/769
+  200/769
+  225/769
+  250/769
+  275/769
+  300/769
+  325/769
+  350/769
+  375/769
+  400/769
+  425/769
+  450/769
+  475/769
+  500/769
+  525/769
+  550/769
+  575/769
+  600/769
+  625/769
+  650/769
+  675/769
+  700/769
+  725/769
+  750/769
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+flat         0.622     0.622    0.839      0.003      512   13.9    0.195
+cell         0.806     0.806    0.938      0.003      512    6.1    0.491
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.731    0.893    0.925    0.955    0.968
+  by_cell_vote     0.746    0.880    0.909    0.936    0.971
+  osc:cell_vs_flat: 162:20 p=0.0
+  answer_em:cell_vs_flat: 265:37 p=0.0
+wrote -> results/test_mt2net_512.json
+### OK results/test_mt2net_512.json 01:05:34 ###
+### START results/test_s3c_1024.json 01:05:34 ###
+[corpus] 414 tables / 58460 cells | [pop] 769 queries | budget 1024 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[cache] hit bge-small-en-v1.5_414_082cac91ad8c3481.npy
+[cache] hit bge-small-en-v1.5_58460_242671bfb9e2b75e.npy
+[cache] hit bge-small-en-v1.5_58460_79ea58c40afc72ed.npy
+[cache] hit bge-small-en-v1.5_7136_8da36e23de4fec08.npy
+[index] built in 1s
+[tokens] 58460 cells / 7136 rows counted in 5s
+  25/769
+  50/769
+  75/769
+  100/769
+  125/769
+  150/769
+  175/769
+  200/769
+  225/769
+  250/769
+  275/769
+  300/769
+  325/769
+  350/769
+  375/769
+  400/769
+  425/769
+  450/769
+  475/769
+  500/769
+  525/769
+  550/769
+  575/769
+  600/769
+  625/769
+  650/769
+  675/769
+  700/769
+  725/769
+  750/769
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+flat         0.694     0.694    0.876      0.005     1024   22.0    0.193
+cell         0.831     0.831    0.936      0.031     1022    3.8    0.589
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.731    0.893    0.925    0.955    0.968
+  by_cell_vote     0.824    0.926    0.944    0.968    0.981
+  osc:cell_vs_flat: 134:29 p=0.0
+  answer_em:cell_vs_flat: 322:17 p=0.0
+wrote -> results/test_s3c_1024.json
+### OK results/test_s3c_1024.json 01:37:29 ###
+### START results/test_mt2net_1024.json 01:37:29 ###
+[corpus] 414 tables / 58460 cells | [pop] 769 queries | budget 1024 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[cache] hit bge-small-en-v1.5_414_082cac91ad8c3481.npy
+[cache] hit bge-small-en-v1.5_58460_c75bb769a62175e3.npy
+[cache] hit bge-small-en-v1.5_58460_79ea58c40afc72ed.npy
+[cache] hit bge-small-en-v1.5_7136_8da36e23de4fec08.npy
+[index] built in 1s
+[tokens] 58460 cells / 7136 rows counted in 5s
+  25/769
+  50/769
+  75/769
+  100/769
+  125/769
+  150/769
+  175/769
+  200/769
+  225/769
+  250/769
+  275/769
+  300/769
+  325/769
+  350/769
+  375/769
+  400/769
+  425/769
+  450/769
+  475/769
+  500/769
+  525/769
+  550/769
+  575/769
+  600/769
+  625/769
+  650/769
+  675/769
+  700/769
+  725/769
+  750/769
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+flat         0.694     0.694    0.876      0.005     1024   22.0    0.193
+cell         0.847     0.847    0.957      0.009     1023    9.6    0.456
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.731    0.893    0.925    0.955    0.968
+  by_cell_vote     0.746    0.880    0.909    0.936    0.971
+  osc:cell_vs_flat: 136:19 p=0.0
+  answer_em:cell_vs_flat: 245:42 p=0.0
+wrote -> results/test_mt2net_1024.json
+### OK results/test_mt2net_1024.json 02:12:05 ###
+### ALL DONE 02:12:05 ###
+### ROUND2 START 02:12:10 ###
+### START results/test_s3c_512.json 02:12:10 ###
+[corpus] 414 tables / 58460 cells | [pop] 769 queries | budget 512 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[cache] hit bge-small-en-v1.5_414_082cac91ad8c3481.npy
+[cache] hit bge-small-en-v1.5_58460_242671bfb9e2b75e.npy
+[cache] hit bge-small-en-v1.5_58460_79ea58c40afc72ed.npy
+[cache] hit bge-small-en-v1.5_7136_8da36e23de4fec08.npy
+[index] built in 1s
+[tokens] 58460 cells / 7136 rows counted in 7s
+[resume] 24 queries already on disk
+  25/769
+  50/769
+  75/769
+  100/769
+  125/769
+  150/769
+  175/769
+  200/769
+  225/769
+  250/769
+  275/769
+  300/769
+  325/769
+  350/769
+  375/769
+  400/769
+  425/769
+  450/769
+  475/769
+  500/769
+  525/769
+  550/769
+  575/769
+  600/769
+  625/769
+  650/769
+  675/769
+  700/769
+  725/769
+  750/769
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+flat         0.622     0.622    0.839      0.003      512   13.9    0.195
+cell         0.761     0.761    0.917      0.008      510    2.9    0.592
+dump         0.514     0.514    0.514      0.514      481    2.1    0.329
+row          0.704     0.704    0.794      0.066      510    5.3    0.330
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.731    0.893    0.925    0.955    0.968
+  by_cell_vote     0.824    0.926    0.944    0.968    0.981
+  osc:cell_vs_dump: 248:58 p=0.0
+  answer_em:cell_vs_dump: 260:58 p=0.0
+  osc:cell_vs_row: 106:62 p=0.0009
+  answer_em:cell_vs_row: 256:55 p=0.0
+  osc:cell_vs_flat: 143:36 p=0.0
+  answer_em:cell_vs_flat: 326:21 p=0.0
+  osc:row_vs_dump: 243:97 p=0.0
+  answer_em:row_vs_dump: 143:142 p=1.0
+wrote -> results/test_s3c_512.json
+### OK results/test_s3c_512.json 02:54:18 ###
+### SKIP results/test_mt2net_512.json (이미 완료) ###
+### SKIP results/test_s3c_1024.json (이미 완료) ###
+### SKIP results/test_mt2net_1024.json (이미 완료) ###
+### ALL DONE 02:54:18 ###
+### ROUND2 DONE 02:54:18 ###

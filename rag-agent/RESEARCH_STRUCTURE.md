@@ -127,7 +127,11 @@ HiTab 표 전체 토큰 중앙값이 2,995(단일)/5,991(이중)이다.
 즉 표를 통째로 넣는 편이 토큰도 적고 OSC는 1.0이다.
 `e5_recall_first.json`의 `E_whole_table` arm도 OSC 1.000.
 
-**test split은 미소진.** 최종 보고용으로 보존한다.
+**test split은 2026-08-24에 한 번 썼다.** 사전 등록(`PREREG-2026-08-24-hitab-test.md`,
+커밋 `f78f5ac`)한 확인 런 한 건이고, 예측 7개가 전부 맞았다(CLAUDE.md §HiTab test split).
+**이 split으로는 무엇도 고르지 않았고, 앞으로도 고르지 않는다** — 손잡이를 돌려 다시
+돌리는 순간 두 번째 dev가 된다. 논문의 HiTab 수치는 test로 보고하고 dev를 개발 세트로
+명시한다. 모집단 `populations/hitab_test_lookup_all.txt` n=769.
 
 ### 3.2 조작 변인
 

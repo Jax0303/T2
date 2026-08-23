@@ -1,0 +1,133 @@
+{
+ "experiment": "HiTab test-split confirmation (PREREG-2026-08-24-hitab-test.md)",
+ "prereg_commit": "f78f5ac",
+ "env": {
+  "seed": 42,
+  "device": "NVIDIA GeForce RTX 3060 Ti",
+  "torch": "2.12.1+cu130",
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "vector_backend": "faiss",
+  "run_started_utc": "2026-08-23T17:12:12+00:00"
+ },
+ "population": {
+  "name": "hitab_test_lookup_all",
+  "n": 769,
+  "frozen": "/home/user/T2-1/rag-agent/populations/hitab_test_lookup_all.txt"
+ },
+ "corpus": {
+  "dataset": "hitab",
+  "split": "test",
+  "tables": 414,
+  "cells": 58460
+ },
+ "reader_spec": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit&dtype=float16",
+ "sources": {
+  "test_s3c_512": "results/test_s3c_512.json",
+  "test_mt2net_512": "results/test_mt2net_512.json",
+  "test_s3c_1024": "results/test_s3c_1024.json",
+  "test_mt2net_1024": "results/test_mt2net_1024.json",
+  "paired_512": "results/test_s3c_vs_mt2net_512.json",
+  "paired_1024": "results/test_s3c_vs_mt2net_1024.json"
+ },
+ "holm_family_n5": {
+  "P1": {
+   "label": "ours(S3c) vs MT2Net @512",
+   "ours": 0.5917,
+   "theirs": 0.4915,
+   "diff": 0.1002,
+   "mismatch": "146:69",
+   "p": 1.6265467921323027e-07,
+   "p_holm": 1.6265467921323027e-07
+  },
+  "P2": {
+   "label": "ours(S3c) vs MT2Net @1024",
+   "ours": 0.5891,
+   "theirs": 0.4564,
+   "diff": 0.1327,
+   "mismatch": "170:68",
+   "p": 2.9369818978994714e-11,
+   "p_holm": 5.873963795798943e-11
+  },
+  "P4a": {
+   "label": "cell vs dump @512",
+   "ours": 0.5917,
+   "theirs": 0.329,
+   "diff": 0.2627,
+   "mismatch": "260:58",
+   "p": 1.1069003656284194e-31,
+   "p_holm": 3.3207010968852583e-31
+  },
+  "P4b": {
+   "label": "cell vs row @512",
+   "ours": 0.5917,
+   "theirs": 0.3303,
+   "diff": 0.2614,
+   "mismatch": "256:55",
+   "p": 3.7669987702428047e-32,
+   "p_holm": 1.5067995080971219e-31
+  },
+  "P4c": {
+   "label": "cell vs flat @512",
+   "ours": 0.5917,
+   "theirs": 0.1951,
+   "diff": 0.3966,
+   "mismatch": "326:21",
+   "p": 1.7488663166099743e-71,
+   "p_holm": 8.744331583049872e-71
+  }
+ },
+ "P3_absolute": {
+  "ours_512": 0.5917,
+  "mt2net_512": 0.4915,
+  "ours_1024": 0.5891,
+  "mt2net_1024": 0.4564,
+  "flat_512": 0.1951
+ },
+ "P5_budget_slope": {
+  "mt2net": -0.0351,
+  "ours": -0.0026
+ },
+ "P6_flat_control": {
+  "512": {
+   "a": 0.1951,
+   "b": 0.1951,
+   "only_first": 0,
+   "only_second": 0,
+   "exact_p": 1.0
+  },
+  "1024": {
+   "a": 0.1925,
+   "b": 0.1925,
+   "only_first": 0,
+   "only_second": 0,
+   "exact_p": 1.0
+  }
+ },
+ "P7_osc": {
+  "test_s3c_512": {
+   "cell_osc": 0.7607,
+   "cell_n_tables": 2.9298
+  },
+  "test_mt2net_512": {
+   "cell_osc": 0.8062,
+   "cell_n_tables": 6.1391
+  },
+  "test_s3c_1024": {
+   "cell_osc": 0.8309,
+   "cell_n_tables": 3.7672
+  },
+  "test_mt2net_1024": {
+   "cell_osc": 0.8466,
+   "cell_n_tables": 9.5904
+  }
+ },
+ "unregistered": {
+  "row_vs_dump_em_@512": {
+   "only_first": 143,
+   "only_second": 142,
+   "exact_p": 1.0
+  },
+  "row_em": 0.3303,
+  "dump_em": 0.329
+ }
+}
