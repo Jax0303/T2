@@ -13,7 +13,11 @@ claim:
 
 * :data:`STRUCTURAL` — this work's index unit. Byte-identical to what the old
   ``length="long"`` preset produced, so every result already on disk that was
-  produced under ``"long"`` stays reproducible from this code.
+  produced under ``"long"`` stays reproducible from this code — with ONE
+  exception, the case-fold fix in :func:`render`. Untitled-corpus results dated
+  2026-08-23 or earlier (RealHiTBench, MultiHiertt, AIT-QA) were produced from
+  case-folded sentences and reproduce only from the commit before that fix.
+  HiTab results are unaffected: its labels are lower-case already.
 
 PROVISIONAL — the MT2Net template is not confirmed.
 The paper publishes exactly one rendered example:
@@ -97,4 +101,11 @@ def render(template: str, title, row_path: Sequence[str], col_path: Sequence[str
     pred = f" is {val_s}" if has_val else ""
     if title_s:
         return f"In the table '{title_s}', {clause}{what}{pred}."
-    return f"{clause}{what}{pred}.".capitalize()
+    # str.capitalize() upper-cases the first character AND LOWER-CASES the rest,
+    # so an untitled corpus had every header label case-folded -- 86,373 of
+    # RealHiTBench's sentences, whose paths are 94.2% mixed-case. Only the
+    # leading capital was ever intended. HiTab is unaffected either way: its
+    # labels are already lower-case and 99.3% of its tables carry a title, so no
+    # number measured on it moves.
+    line = f"{clause}{what}{pred}."
+    return line[:1].upper() + line[1:]
