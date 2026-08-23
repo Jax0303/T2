@@ -70,7 +70,8 @@ from baseline_comparison_llm import Budget, markdown_table, row_chunks
 from manual_sentence_ceiling import mcnemar
 from point3_reconstruction_cost import build_table_paths, cell_text
 from rag_agent.serialization.caption import caption_sentence
-from rag_agent.serialization.templates import MT2NET, STRUCTURAL
+from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,
+                                              STRUCTURAL_COMPACT)
 
 ARMS = ("dump", "cell", "cascade", "cell2dump", "cellrow", "row", "flat",
         "group", "capped")
@@ -551,12 +552,15 @@ def main() -> int:
                          "--out/--records per mode: the two are not comparable")
     ap.add_argument("--codegen-max-tokens", type=int, default=512,
                     help="completion cap for the codegen line")
-    ap.add_argument("--cell-scheme", default="S2", choices=["S2", "S3", "mt2net"],
+    ap.add_argument("--cell-scheme", default="S2",
+                    choices=["S2", "S3", "S3c", "mt2net"],
                     help="what the CELL arm indexes. S2 is the bare header path "
                          "('a > b > c: v'); S3 is this work's deployed index unit "
                          "-- a sentence stating the table title and both paths "
-                         "(rag_agent/serialization/caption.py). Only the cell and "
-                         "cascade arms change; dump/row/flat do not read it")
+                         "(rag_agent/serialization/caption.py); S3c is S3 where a "
+                         "title exists and S2 where none does, since the frame is "
+                         "the title's seat and costs budget without one. Only the "
+                         "cell and cascade arms change; dump/row/flat do not read it")
     ap.add_argument("--cap", type=int, default=3,
                     help="`capped` arm: at most this many cells from any one "
                          "table. 18 of the 24 oracle-condition failures answered "
@@ -602,7 +606,7 @@ def main() -> int:
 
     tbl_chunks = [Chunk(table_id=tid, chunk_id=f"t::{tid}", text=C.table_text[tid],
                         scheme="table", kind="table") for tid in tids]
-    if args.cell_scheme in ("S3", "mt2net"):
+    if args.cell_scheme in ("S3", "S3c", "mt2net"):
         # re-render from the same paths the S2 text was built from, so the
         # schemes differ in rendering only and the cell SET stays identical.
         # mt2net renders the SAME cells and the SAME two paths under Zhao et al.
@@ -610,7 +614,8 @@ def main() -> int:
         # work's, so putting it here is what lets the two be scored in one table
         # off one corpus, one budget, one reader and one scorer. That template
         # never reads the title, so --no-title does not apply to it.
-        tmpl = MT2NET if args.cell_scheme == "mt2net" else STRUCTURAL
+        tmpl = {"mt2net": MT2NET, "S3c": STRUCTURAL_COMPACT}.get(
+            args.cell_scheme, STRUCTURAL)
         C.cell_text[:] = [
             caption_sentence("" if args.no_title else C.title.get(t, ""),
                              C.cell_paths[n][0],

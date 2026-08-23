@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""The two cell->sentence templates, and nothing else.
+"""The cell->sentence templates, and nothing else.
 
 Replaces the ``short``/``medium``/``long`` preset axis. Sentence length is no
 longer an experimental variable; what remains is the one contrast that carries a
@@ -18,6 +18,16 @@ claim:
   2026-08-23 or earlier (RealHiTBench, MultiHiertt, AIT-QA) were produced from
   case-folded sentences and reproduce only from the commit before that fix.
   HiTab results are unaffected: its labels are lower-case already.
+
+* :data:`STRUCTURAL_COMPACT` — :data:`STRUCTURAL` where a title exists, the bare
+  S2 path string where it does not. Not a length knob returning through the back
+  door: the frame is the title's grammatical seat, so with no title it asserts
+  nothing while still spending budget. Measured across three corpora, the sign of
+  STRUCTURAL's advantage over MT2Net tracks title coverage — HiTab 99.3% titled
+  gives +.082, RealHiTBench 38.2% gives +.004, AIT-QA 0% gives **-.062**
+  (Holm-corrected, results/h2h830_*.json and results/h2h_untitled_*.json). This
+  template is the mechanism's own prescription, pre-registered in
+  PREREG-2026-08-23-compact-untitled.md before it was run.
 
 PROVISIONAL — the MT2Net template is not confirmed.
 The paper publishes exactly one rendered example:
@@ -51,7 +61,8 @@ from .base import fmt_value, join_path
 
 MT2NET = "mt2net"
 STRUCTURAL = "structural"
-TEMPLATES = (MT2NET, STRUCTURAL)
+STRUCTURAL_COMPACT = "structural_compact"
+TEMPLATES = (MT2NET, STRUCTURAL, STRUCTURAL_COMPACT)
 
 # --- provisional readings of the single published MT2Net example ---
 MT2NET_ROW_SEP = " of "
@@ -79,6 +90,20 @@ def render(template: str, title, row_path: Sequence[str], col_path: Sequence[str
         raise ValueError(f"template must be one of {TEMPLATES}, got {template!r}")
     has_val = value is not None
     val_s = fmt_value(value) if has_val else ""
+    title_s = fmt_value(title) if title else ""
+
+    if template == STRUCTURAL_COMPACT and not title_s:
+        # The frame ("in the table X, among ..., the value of ... is ...") exists
+        # to seat a TITLE in a grammatical sentence. With no title it states
+        # nothing and still costs tokens, and the budget pays in cells that fit:
+        # on AIT-QA (0% titled) STRUCTURAL runs 24.3 tok/cell against MT2Net's
+        # 20.3, a 1.20x capacity deficit that lands as a 1.21x OSC deficit and
+        # -.062 answer EM (results/h2h_untitled_*.json). Fall back to the S2 path
+        # string, byte-identical to point3_reconstruction_cost.cell_text(...,"S2").
+        path = join_path([*row_path, *col_path])
+        if not has_val:
+            return path
+        return f"{path}: {val_s}" if path else val_s
 
     if template == MT2NET:
         row_s = _path(row_path, MT2NET_ROW_SEP, MT2NET_LEAF_FIRST)
@@ -95,7 +120,6 @@ def render(template: str, title, row_path: Sequence[str], col_path: Sequence[str
     # STRUCTURAL — byte-identical to the retired length="long" preset
     row_s = join_path(row_path)
     col_s = join_path(col_path)
-    title_s = fmt_value(title) if title else ""
     clause = f"among {row_s}, " if row_s else ""
     what = f"the value of {col_s}" if col_s else "the value"
     pred = f" is {val_s}" if has_val else ""

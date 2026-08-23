@@ -48,3 +48,38 @@ def test_untitled_keeps_label_capitals():
     got = render(STRUCTURAL, "", ["Married mothers"], ["Total, all activities"], "122")
     assert "Married mothers" in got and "Total, all activities" in got
     assert got[0].isupper()
+
+
+def test_structural_compact_falls_back_to_s2_when_untitled():
+    """No title -> no frame: the S2 string the cell arm indexes."""
+    from rag_agent.serialization.templates import STRUCTURAL_COMPACT
+
+    got = render(STRUCTURAL_COMPACT, "", ["Total"], ["Revenue", "2018"], 2894)
+    assert got == "Total > Revenue > 2018: 2894"
+
+
+def test_structural_compact_is_structural_when_titled():
+    """A title earns the frame back, so titled corpora are untouched."""
+    from rag_agent.serialization.templates import STRUCTURAL, STRUCTURAL_COMPACT
+
+    args = ("Table 3", ["Total"], ["Revenue", "2018"], 2894)
+    assert render(STRUCTURAL_COMPACT, *args) == render(STRUCTURAL, *args)
+
+
+def test_structural_compact_untitled_header_scope_drops_the_colon():
+    """value=None names a header scope; an S2 line with no value has no ': '."""
+    from rag_agent.serialization.templates import STRUCTURAL_COMPACT
+
+    assert render(STRUCTURAL_COMPACT, "", ["Total"], ["Revenue"]) == "Total > Revenue"
+
+
+def test_structural_compact_collapses_whitespace_like_every_other_template():
+    """fmt_value normalises label whitespace, so S3c is TOKEN-identical to the
+    legacy raw S2 renderer, not byte-identical: 267/5320 AIT-QA cells and
+    8652/148140 RealHiTBench cells differ by collapsed runs alone, and every one
+    of them tokenises identically under bge-small. Pinned so the distinction is
+    not rediscovered as a bug."""
+    from rag_agent.serialization.templates import STRUCTURAL_COMPACT
+
+    got = render(STRUCTURAL_COMPACT, "", [], ["Fuel Expense       (in millions)"], "$9,307")
+    assert got == "Fuel Expense (in millions): $9,307"
