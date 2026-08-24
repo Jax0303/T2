@@ -87,6 +87,25 @@ def hitab_test_lookup_all(data_dir: str) -> tuple[list[str], dict]:
         "used_by": ["corpus_dump_vs_cell (test-split confirmation)"]}
 
 
+def hitab_train_lookup_all(data_dir: str) -> tuple[list[str], dict]:
+    """The same derivation on train -- the only split an encoder may be fit on.
+
+    Fine-tuning the retriever needs supervision, and the only supervision that
+    cannot leak is train's. dev is where every design choice was made and stays
+    the evaluation set; test stays untouched. Freezing the train pool the same
+    way as the other two means the fitted encoder's training set is a file on
+    disk, so a later run can prove no dev or test query was ever in it.
+    """
+    from manual_sentence_ceiling import build_population
+    pop, _, _ = build_population(data_dir, "train", 10**9)
+    return [q.query_id for q in pop], {
+        "dataset": "hitab", "split": "train", "filter": "len(gold_operands)==1 and "
+        "build_table_paths is not None and operand in grid",
+        "order": "random.Random(0).shuffle", "n": len(pop),
+        "used_by": ["encoder fine-tuning (PREREG-2026-08-25-retrieval-max)"],
+        "note": "TRAINING ONLY -- never evaluate on this population"}
+
+
 def hitab_arith(data_dir: str, split: str, m_min: int) -> tuple[list[str], dict]:
     """The matched-control populations.
 
@@ -209,6 +228,7 @@ SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
     "hitab_test_lookup_all": lambda a: hitab_test_lookup_all(a.data_dir),
+    "hitab_train_lookup_all": lambda a: hitab_train_lookup_all(a.data_dir),
     "hitab_dev_arith": lambda a: hitab_arith(a.data_dir, "dev", 1),
     "hitab_dev_arith_m2": lambda a: hitab_arith(a.data_dir, "dev", 2),
     "hitab_train_arith": lambda a: hitab_arith(a.data_dir, "train", 1),
