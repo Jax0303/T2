@@ -533,6 +533,13 @@ def main() -> int:
     ap.add_argument("--population", default="hitab_dev_arith")
     ap.add_argument("--budget", type=int, default=1024, help="context tokens per arm")
     ap.add_argument("--retriever", default="bm25", choices=list(ALPHA))
+    ap.add_argument("--alpha", type=float, default=None,
+                    help="override the retriever's dense/BM25 mix. ALPHA "
+                         "names three points (0 / .5 / 1) and the measured "
+                         "optimum for cell retrieval is .6-.7 "
+                         "(results/alpha_sweep_prefix.json), so the value "
+                         "a run used is recorded rather than implied by "
+                         "the retriever name.")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-queries", type=int, default=0)
@@ -703,7 +710,7 @@ def main() -> int:
         cells_by_table.setdefault(tid, []).append(n)
         pos_of_cell[(tid, i_, j_)] = n
 
-    alpha = ALPHA[args.retriever]
+    alpha = ALPHA[args.retriever] if args.alpha is None else args.alpha
     tok_cache: dict[str, int] = {}
 
     def md_tokens(tid: str) -> int:
@@ -990,7 +997,8 @@ def main() -> int:
         "corpus": {"dataset": args.dataset, "split": args.split,
                    "tables": len(tids), "cells": len(cell_chunks)},
         "budget_tokens": args.budget, "budget_tokenizer": args.embed_model,
-        "retriever": args.retriever, "reader": llm.name if llm else None,
+        "retriever": args.retriever, "alpha": alpha,
+        "reader": llm.name if llm else None,
         # llm.name is only "local:<repo>" -- it drops the quantization and dtype
         # the spec carries, and those change the reader's output. Two runs paired
         # by query_id must share them, so record the spec verbatim rather than
