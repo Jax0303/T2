@@ -1,30 +1,0 @@
-[pop] 100 lookup queries | model=openai/gpt-oss-120b | top-8
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  51%|█████     | 101/199 [00:00<00:00, 991.45it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1183.56it/s]
-[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en-v1.5
-Key                     | Status     |  | 
-------------------------+------------+--+-
-embeddings.position_ids | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-  25/100  flat=8/25 S2=19/25
-  50/100  flat=15/50 S2=36/50
-  75/100  flat=20/75 S2=51/75
-  100/100  flat=25/100 S2=65/100
-{
-  "dataset": "hitab_lookup_llm_reader",
-  "model": "openai/gpt-oss-120b",
-  "topk": 8,
-  "table": "oracle (gate-1 solved: HiTab table recall@20=1.0)",
-  "scorer": "hitab_exact_match",
-  "n_complete_both_arms": 100,
-  "answer_EM": {
-    "flat": 0.25,
-    "S2": 0.65
-  },
-  "n_scored": {
-    "flat": 100,
-    "S2": 100
-  }
-}

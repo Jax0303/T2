@@ -1,82 +1,0 @@
-### capped budget 256 ### 02:29
-[corpus] 424 tables / 58759 cells | [pop] 100 queries | budget 256 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:03,  1.39it/s]Loading weights:   1%|          | 2/339 [00:01<03:18,  1.70it/s]Loading weights:   1%|          | 4/339 [00:01<01:32,  3.60it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:58,  5.73it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:15, 20.54it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:09, 34.20it/s]Loading weights:  10%|▉         | 33/339 [00:01<00:08, 34.81it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:06, 42.95it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 56.25it/s]Loading weights:  18%|█▊        | 60/339 [00:02<00:04, 61.07it/s]Loading weights:  20%|██        | 68/339 [00:02<00:04, 59.84it/s]Loading weights:  23%|██▎       | 77/339 [00:02<00:04, 62.73it/s]Loading weights:  26%|██▌       | 88/339 [00:02<00:03, 68.59it/s]Loading weights:  28%|██▊       | 96/339 [00:02<00:03, 61.69it/s]Loading weights:  30%|███       | 103/339 [00:03<00:04, 51.84it/s]Loading weights:  33%|███▎      | 112/339 [00:03<00:03, 59.22it/s]Loading weights:  35%|███▌      | 119/339 [00:03<00:03, 55.26it/s]Loading weights:  37%|███▋      | 125/339 [00:03<00:04, 47.69it/s]Loading weights:  40%|████      | 136/339 [00:03<00:03, 57.49it/s]Loading weights:  42%|████▏     | 143/339 [00:03<00:03, 58.14it/s]Loading weights:  44%|████▍     | 150/339 [00:03<00:03, 52.55it/s]Loading weights:  47%|████▋     | 161/339 [00:04<00:02, 59.69it/s]Loading weights:  51%|█████     | 172/339 [00:04<00:02, 61.28it/s]Loading weights:  53%|█████▎    | 179/339 [00:04<00:02, 59.62it/s]Loading weights:  55%|█████▍    | 186/339 [00:04<00:02, 52.60it/s]Loading weights:  57%|█████▋    | 192/339 [00:20<01:33,  1.58it/s]Loading weights:  58%|█████▊    | 197/339 [00:20<01:10,  2.00it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 49.97it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  74%|███████▍  | 148/199 [00:00<00:00, 1473.93it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1599.83it/s]
-[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
-[cache] hit bge-small-en-v1.5_58759_d5f6886b207f1155.npy
-[cache] hit bge-small-en-v1.5_58759_b0cc0f10e77b875e.npy
-[cache] hit bge-small-en-v1.5_7196_17f9b7791cd02006.npy
-[index] built in 1s
-[tokens] 58759 cells / 7196 rows counted in 7s
-  25/100
-  50/100
-  75/100
-  100/100
-
-arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
-cell         0.720     0.720    0.900      0.000      252    2.0    0.570
-capped       0.690     0.690    0.930      0.000      251    2.9    0.520
-
-table recall         @1       @3       @5      @10      @20
-  by_table_index    0.790    0.890    0.930    0.950    0.980
-  by_cell_vote     0.770    0.940    0.950    0.960    1.000
-  osc:capped_vs_cell: 1:4 p=0.375
-  answer_em:capped_vs_cell: 5:10 p=0.3018
-wrote -> results/corpus_dump_vs_cell_capped_dense_256.json
-### capped budget 512 ### 02:31
-[corpus] 424 tables / 58759 cells | [pop] 100 queries | budget 512 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:36,  1.56it/s]Loading weights:   1%|          | 2/339 [00:01<03:08,  1.79it/s]Loading weights:   1%|          | 4/339 [00:01<01:24,  3.99it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:54,  6.09it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:14, 21.55it/s]Loading weights:   6%|▌         | 20/339 [00:01<00:14, 22.50it/s]Loading weights:   9%|▊         | 29/339 [00:01<00:09, 33.04it/s]Loading weights:  11%|█         | 36/339 [00:01<00:07, 40.24it/s]Loading weights:  12%|█▏        | 42/339 [00:02<00:07, 40.30it/s]Loading weights:  16%|█▌        | 53/339 [00:02<00:05, 53.91it/s]Loading weights:  19%|█▉        | 64/339 [00:02<00:04, 61.89it/s]Loading weights:  21%|██        | 71/339 [00:02<00:04, 61.52it/s]Loading weights:  23%|██▎       | 78/339 [00:02<00:04, 52.88it/s]Loading weights:  26%|██▋       | 89/339 [00:18<02:17,  1.82it/s]Loading weights:  29%|██▉       | 100/339 [00:18<01:26,  2.76it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 50.29it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  57%|█████▋    | 114/199 [00:00<00:00, 1121.57it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1401.47it/s]
-[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
-[cache] hit bge-small-en-v1.5_58759_d5f6886b207f1155.npy
-[cache] hit bge-small-en-v1.5_58759_b0cc0f10e77b875e.npy
-[cache] hit bge-small-en-v1.5_7196_17f9b7791cd02006.npy
-[index] built in 1s
-[tokens] 58759 cells / 7196 rows counted in 6s
-  25/100
-  50/100
-  75/100
-  100/100
-
-arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
-cell         0.760     0.760    0.900      0.040      508    2.3    0.610
-capped       0.720     0.720    0.960      0.000      507    5.0    0.540
-
-table recall         @1       @3       @5      @10      @20
-  by_table_index    0.790    0.890    0.930    0.950    0.980
-  by_cell_vote     0.770    0.940    0.950    0.960    1.000
-  osc:capped_vs_cell: 3:7 p=0.3438
-  answer_em:capped_vs_cell: 7:14 p=0.1892
-wrote -> results/corpus_dump_vs_cell_capped_dense_512.json
-### capped budget 1024 ### 02:34
-[corpus] 424 tables / 58759 cells | [pop] 100 queries | budget 1024 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:13,  1.75it/s]Loading weights:   1%|          | 2/339 [00:01<03:03,  1.84it/s]Loading weights:   1%|          | 4/339 [00:01<01:20,  4.17it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:53,  6.17it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:14, 21.76it/s]Loading weights:   6%|▌         | 20/339 [00:01<00:13, 22.93it/s]Loading weights:   9%|▊         | 29/339 [00:01<00:09, 32.65it/s]Loading weights:  10%|█         | 34/339 [00:01<00:08, 35.46it/s]Loading weights:  12%|█▏        | 42/339 [00:02<00:07, 41.68it/s]Loading weights:  16%|█▌        | 53/339 [00:02<00:05, 55.77it/s]Loading weights:  19%|█▉        | 64/339 [00:02<00:04, 66.36it/s]Loading weights:  21%|██        | 72/339 [00:02<00:03, 68.21it/s]Loading weights:  24%|██▎       | 80/339 [00:02<00:04, 58.81it/s]Loading weights:  26%|██▋       | 89/339 [00:02<00:03, 63.35it/s]Loading weights:  29%|██▉       | 100/339 [00:02<00:03, 69.41it/s]Loading weights:  32%|███▏      | 108/339 [00:18<02:04,  1.86it/s]Loading weights:  33%|███▎      | 113/339 [00:18<01:39,  2.28it/s]Loading weights:  37%|███▋      | 124/339 [00:18<00:59,  3.59it/s]Loading weights:  39%|███▊      | 131/339 [00:18<00:43,  4.74it/s]Loading weights:  41%|████      | 138/339 [00:19<00:32,  6.23it/s]Loading weights:  44%|████▍     | 149/339 [00:19<00:19,  9.53it/s]Loading weights:  47%|████▋     | 160/339 [00:19<00:12, 13.85it/s]Loading weights:  50%|████▉     | 168/339 [00:19<00:09, 17.36it/s]Loading weights:  52%|█████▏    | 175/339 [00:19<00:08, 19.55it/s]Loading weights:  55%|█████▍    | 185/339 [00:19<00:05, 26.27it/s]Loading weights:  58%|█████▊    | 196/339 [00:19<00:04, 33.43it/s]Loading weights:  60%|█████▉    | 203/339 [00:20<00:03, 35.59it/s]Loading weights:  62%|██████▏   | 209/339 [00:20<00:03, 36.72it/s]Loading weights:  64%|██████▎   | 216/339 [00:20<00:02, 41.54it/s]Loading weights:  65%|██████▌   | 222/339 [00:20<00:02, 41.19it/s]Loading weights:  69%|██████▊   | 233/339 [00:20<00:02, 52.63it/s]Loading weights:  72%|███████▏  | 244/339 [00:20<00:01, 61.20it/s]Loading weights:  74%|███████▍  | 252/339 [00:20<00:01, 60.54it/s]Loading weights:  76%|███████▋  | 259/339 [00:21<00:01, 50.40it/s]Loading weights:  79%|███████▉  | 268/339 [00:21<00:01, 57.42it/s]Loading weights:  81%|████████  | 275/339 [00:21<00:01, 56.86it/s]Loading weights:  83%|████████▎ | 282/339 [00:21<00:01, 50.25it/s]Loading weights:  86%|████████▋ | 293/339 [00:21<00:00, 56.83it/s]Loading weights:  90%|████████▉ | 304/339 [00:21<00:00, 60.63it/s]Loading weights:  92%|█████████▏| 311/339 [00:21<00:00, 62.09it/s]Loading weights:  94%|█████████▍| 318/339 [00:22<00:00, 57.66it/s]Loading weights:  97%|█████████▋| 329/339 [00:22<00:00, 66.67it/s]Loading weights: 100%|██████████| 339/339 [00:22<00:00, 15.24it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  66%|██████▋   | 132/199 [00:00<00:00, 1262.86it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1516.47it/s]
-[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
-[cache] hit bge-small-en-v1.5_58759_d5f6886b207f1155.npy
-[cache] hit bge-small-en-v1.5_58759_b0cc0f10e77b875e.npy
-[cache] hit bge-small-en-v1.5_7196_17f9b7791cd02006.npy
-[index] built in 1s
-[tokens] 58759 cells / 7196 rows counted in -9s
-  25/100
-  50/100
-  75/100
-  100/100
-
-arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
-cell         0.820     0.820    0.930      0.070     1020    3.0    0.610
-capped       0.720     0.720    0.980      0.000     1020    9.1    0.540
-
-table recall         @1       @3       @5      @10      @20
-  by_table_index    0.790    0.890    0.930    0.950    0.980
-  by_cell_vote     0.770    0.940    0.950    0.960    1.000
-  osc:capped_vs_cell: 2:12 p=0.0129
-  answer_em:capped_vs_cell: 6:13 p=0.1671
-wrote -> results/corpus_dump_vs_cell_capped_dense_1024.json
-### CAPPED DONE ### 02:38

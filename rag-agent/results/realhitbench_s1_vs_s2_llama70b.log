@@ -1,44 +1,0 @@
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[pop] RealHiTBench agg (Calculation+Multi-hop NR): 97 (stratified sample of 334, seed=0)  k=10 solver=llama-3.3-70b-versatile  arms: base=S1(flat) vs treat=S2(mine)
-[device] embedder on cpu
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  30%|███       | 60/199 [00:00<00:00, 589.18it/s]Loading weights:  68%|██████▊   | 135/199 [00:00<00:00, 673.59it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 718.06it/s]
-[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en-v1.5
-Key                     | Status     |  | 
-------------------------+------------+--+-
-embeddings.position_ids | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-[solver] groq:llama-3.3-70b-versatile
-[prep] 94 queries prepared (3 skipped: table unusable)
-[resume] 23 qids already recorded -> skipped
-  27/94  acc_S1=0.407 acc_S2=0.481 (3s)
-  31/94  acc_S1=0.355 acc_S2=0.484 (113s)
-  35/94  acc_S1=0.314 acc_S2=0.429 (231s)
-  39/94  acc_S1=0.333 acc_S2=0.462 (285s)
-  43/94  acc_S1=0.326 acc_S2=0.442 (392s)
-Groq rate-limited, retrying in 1s (attempt 1)
-Groq rate-limited, retrying in 2s (attempt 2)
-Groq rate-limited, retrying in 4s (attempt 3)
-Groq rate-limited, retrying in 8s (attempt 4)
-Groq rate-limited, retrying in 16s (attempt 5)
-Groq rate-limited, retrying in 32s (attempt 6)
-Groq rate-limited, retrying in 64s (attempt 7)
-Groq rate-limited, retrying in 128s (attempt 8)
-Groq rate-limited, retrying in 256s (attempt 9)
-
-[cutoff] solver failed at 45/94: RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98238, Requested 3430. Please try again in 24m1.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
-
-=== RESULT (RealHiTBench, reconstructed trees; S1 baseline vs S2 mine) ===
-evaluated 44/94 (cutoff=RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98238, Requested 3430. Please try again in 24m1.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
-Accuracy strict-EM   S1(base) 0.2045  ->  S2(mine) 0.3409  (Δ +0.1364)   S2_only=7 S1_only=1  McNemar p=0.07031
-Accuracy lenient     S1 0.3182  ->  S2 0.4318  (Δ +0.1136)   [internal diagnostic]
-by CompStrucCata (strict):
-  BackgroundColor          n=  2  0.5 -> 0.0  (Δ -0.500)
-  ColumnHeaderMerge        n=  8  0.25 -> 0.5  (Δ +0.250)
-  ContentCompound          n= 12  0.1667 -> 0.25  (Δ +0.083)
-  ExternalSupply           n=  3  0.6667 -> 0.6667  (Δ +0.000)
-  MultiColumnClassified    n=  8  0.0 -> 0.25  (Δ +0.250)
-  SingleRowClassified      n=  8  0.25 -> 0.5  (Δ +0.250)
-  StructureCompound        n=  3  0.0 -> 0.0  (Δ +0.000)
-wrote -> results/realhitbench_s1_vs_s2.json

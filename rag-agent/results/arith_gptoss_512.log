@@ -1,23 +1,0 @@
-[corpus] 424 tables / 58759 cells | [pop] 175 queries | budget 512 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  39%|███▊      | 77/199 [00:00<00:00, 748.58it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1349.33it/s]
-[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
-[cache] hit bge-small-en-v1.5_58759_d5f6886b207f1155.npy
-[cache] hit bge-small-en-v1.5_58759_b0cc0f10e77b875e.npy
-[cache] hit bge-small-en-v1.5_7196_17f9b7791cd02006.npy
-[index] built in 2s
-[tokens] 58759 cells / 7196 rows counted in 7s
-Groq rate-limited, retrying in 1s (attempt 1)
-Groq rate-limited, retrying in 2s (attempt 2)
-Groq rate-limited, retrying in 4s (attempt 3)
-Groq rate-limited, retrying in 8s (attempt 4)
-Traceback (most recent call last):
-  File "/home/user/T2-1/rag-agent/scripts/corpus_dump_vs_cell.py", line 733, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "/home/user/T2-1/rag-agent/scripts/corpus_dump_vs_cell.py", line 639, in main
-    out_txt = llm.complete(system=_DIRECT_SYS, user=user,
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/T2-1/rag-agent/rag_agent/llm/groq_llm.py", line 68, in complete
-    raise RuntimeError(f"Groq retries exhausted: {last_err}")
-RuntimeError: Groq retries exhausted: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01krx6htwcfkxt84b3bdtd143p` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6833, Requested 1658. Please try again in 3.6825s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}

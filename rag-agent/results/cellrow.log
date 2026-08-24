@@ -1,88 +1,0 @@
-### hitab 256 ### 09:02
-[corpus] 424 tables / 58759 cells | [pop] 100 queries | budget 256 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:34,  1.23it/s]Loading weights:   1%|          | 2/339 [00:01<04:59,  1.12it/s]Loading weights:   1%|          | 4/339 [00:02<02:40,  2.09it/s]Loading weights:   1%|▏         | 5/339 [00:02<02:23,  2.33it/s]Loading weights:   2%|▏         | 6/339 [00:02<02:12,  2.50it/s]Loading weights:   4%|▎         | 12/339 [00:03<00:41,  7.80it/s]Loading weights:   5%|▍         | 16/339 [00:03<00:36,  8.83it/s]Loading weights:   5%|▌         | 18/339 [00:03<00:40,  7.93it/s]Loading weights:   8%|▊         | 28/339 [00:03<00:17, 17.36it/s]Loading weights:   9%|▉         | 31/339 [00:04<00:19, 16.04it/s]Loading weights:  11%|█         | 36/339 [00:04<00:14, 20.68it/s]Loading weights:  12%|█▏        | 40/339 [00:20<05:48,  1.17s/it]Loading weights:  12%|█▏        | 42/339 [00:20<04:52,  1.02it/s]Loading weights: 100%|██████████| 339/339 [00:08<00:00, 37.83it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  63%|██████▎   | 126/199 [00:00<00:00, 1248.92it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1587.07it/s]
-[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
-[cache] hit bge-small-en-v1.5_58759_d5f6886b207f1155.npy
-[cache] hit bge-small-en-v1.5_58759_b0cc0f10e77b875e.npy
-[cache] hit bge-small-en-v1.5_7196_17f9b7791cd02006.npy
-[index] built in 1s
-[tokens] 58759 cells / 7196 rows counted in 6s
-  25/100
-  50/100
-  75/100
-  100/100
-
-arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
-cell         0.720     0.720    0.900      0.000      252    2.0    0.570
-cellrow      0.750     0.750    0.890      0.080      255    2.5    0.310
-
-table recall         @1       @3       @5      @10      @20
-  by_table_index    0.790    0.890    0.930    0.950    0.980
-  by_cell_vote     0.770    0.940    0.950    0.960    1.000
-  osc:cellrow_vs_cell: 3:0 p=0.25
-  answer_em:cellrow_vs_cell: 4:30 p=0.0
-wrote -> results/corpus_dump_vs_cell_cellrow_hitab_256.json
-### aitqa 256 ### 09:05
-[corpus] 113 tables / 5320 cells | [pop] 451 queries | budget 256 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:  65%|██████▌   | 221/339 [00:04<00:02, 45.86it/s]Loading weights:  68%|██████▊   | 232/339 [00:04<00:02, 47.18it/s]Loading weights:  71%|███████   | 239/339 [00:05<00:02, 47.55it/s]Loading weights: 100%|██████████| 339/339 [-00:09<00:00, -34.65it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  62%|██████▏   | 123/199 [00:00<00:00, 1228.83it/s]Loading weights: 100%|██████████| 199/199 [-00:16<00:00, -12.32it/s]
-[cache] hit bge-small-en-v1.5_113_2271f8be55e3814a.npy
-[cache] hit bge-small-en-v1.5_5320_b6ff6e022dab839f.npy
-[cache] hit bge-small-en-v1.5_5320_809f10326b9391f2.npy
-[cache] hit bge-small-en-v1.5_1315_1af6a52336a42943.npy
-[index] built in 0s
-[tokens] 5320 cells / 1315 rows counted in 0s
-  25/451
-  50/451
-  75/451
-  100/451
-  125/451
-  150/451
-  175/451
-  200/451
-  225/451
-  250/451
-  275/451
-  300/451
-  325/451
-  350/451
-  375/451
-  400/451
-  425/451
-  450/451
-
-arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
-cell         0.470     0.470    0.667      0.002      256    7.2    0.244
-cellrow      0.501     0.501    0.594      0.009      253    5.1    0.273
-
-table recall         @1       @3       @5      @10      @20
-  by_table_index    0.146    0.286    0.379    0.552    0.727
-  by_cell_vote     0.324    0.488    0.590    0.741    0.869
-  osc:cellrow_vs_cell: 36:22 p=0.0869
-  answer_em:cellrow_vs_cell: 50:37 p=0.198
-wrote -> results/corpus_dump_vs_cell_cellrow_aitqa_256.json
-### mh 256 ### 09:14
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[corpus] 1310 tables / 56975 cells | [pop] 400 queries | budget 256 | dense
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:32,  1.59it/s]Loading weights:   1%|          | 2/339 [00:01<02:56,  1.91it/s]Loading weights:   1%|          | 4/339 [00:01<01:17,  4.31it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:50,  6.56it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:13, 23.24it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:08, 35.36it/s]Loading weights:  10%|▉         | 33/339 [00:01<00:08, 36.02it/s]Loading weights:  12%|█▏        | 41/339 [00:01<00:07, 41.03it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 53.32it/s]Loading weights:  17%|█▋        | 59/339 [00:02<00:05, 55.22it/s]Loading weights:  19%|█▉        | 66/339 [00:02<00:05, 51.55it/s]Loading weights:  23%|██▎       | 77/339 [00:18<02:35,  1.69it/s]Loading weights:  26%|██▌       | 88/339 [00:18<01:36,  2.60it/s]Loading weights:  28%|██▊       | 95/339 [00:18<01:11,  3.40it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 52.43it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  59%|█████▉    | 117/199 [00:00<00:00, 1154.17it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1580.49it/s]
-[cache] hit bge-small-en-v1.5_1310_ee3776c19a6d6b7e.npy
-[cache] hit bge-small-en-v1.5_56975_4712a914ef2c8089.npy
-[cache] hit bge-small-en-v1.5_56975_8ae94d1e8ef3e116.npy
-[cache] hit bge-small-en-v1.5_12596_4adce4a9150bc665.npy
-[index] built in 1s
-[tokens] 56975 cells / 12596 rows counted in 6s
-  25/400
-  50/400
-  75/400
-  100/400
-  125/400
-  150/400
-  175/400
-  200/400
