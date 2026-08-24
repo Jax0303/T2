@@ -74,7 +74,7 @@ from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,
                                               STRUCTURAL_COMPACT)
 
 ARMS = ("dump", "cell", "cascade", "cell2dump", "cellrow", "row", "flat",
-        "group", "capped")
+        "group", "capped", "goldcell")
 
 
 class _CachedEncoder:
@@ -678,8 +678,10 @@ def main() -> int:
     grp_line_tok = np.array([bud.count(x) for x in grp_line], dtype=np.int32)
 
     cells_by_table: dict[str, list[int]] = {}
-    for n, (tid, _, _) in enumerate(cell_owner):
+    pos_of_cell: dict[tuple, int] = {}
+    for n, (tid, i_, j_) in enumerate(cell_owner):
         cells_by_table.setdefault(tid, []).append(n)
+        pos_of_cell[(tid, i_, j_)] = n
 
     alpha = ALPHA[args.retriever]
     tok_cache: dict[str, int] = {}
@@ -848,6 +850,25 @@ def main() -> int:
                     in_ctx |= {(tid, i, j) for j in range(C.shape[tid][1])}
                     if tid not in seen_tables:
                         seen_tables.append(tid)
+            elif arm == "goldcell":
+                # A CEILING, not a method: the context is exactly the gold cells'
+                # own sentences and nothing else. Retrieval is perfect and there
+                # are no distractors, so whatever this misses is the reader
+                # failing on text it was handed. That is the number which says
+                # whether ANY indexing or context-construction change still has
+                # headroom -- if the ceiling sits at the OSC=1 conditional EM the
+                # real runs already reach, distractors cost nothing and the wall
+                # is the reader. Deliberately ignores --budget; the lookup
+                # population has one gold cell, tens of tokens.
+                for key in sorted(gold_cells):
+                    pos = pos_of_cell.get(key)
+                    if pos is None:
+                        continue
+                    used += int(cell_tok[pos])
+                    parts.append(C.cell_text[pos])
+                    in_ctx.add(key)
+                    if key[0] not in seen_tables:
+                        seen_tables.append(key[0])
             else:
                 order, tok, text = ((f_order, flat_tok, C.flat_text) if arm == "flat"
                                     else (c_order, cell_tok, C.cell_text))
