@@ -52,8 +52,15 @@ class LocalQwenLLM(BaseLLM):
     def complete(self, system: str, user: str, max_tokens: int = 256,
                  temperature: float = 0.0, top_p: float = 0.95) -> str:
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        # Qwen3 templates default to thinking mode: the model emits
+        # "<think>...</think>" before the answer, which both eats the
+        # max_new_tokens budget and lands inside the string the EM scorer reads.
+        # enable_thinking=False makes the template pre-close the block. Verified
+        # BYTE-IDENTICAL on Qwen2.5-7B-Instruct (its template ignores the flag),
+        # so every result already on disk stays reproducible from this code.
         prompt = self.tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
+            messages, tokenize=False, add_generation_prompt=True,
+            enable_thinking=False,
         )
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
         gen_kwargs = dict(max_new_tokens=max_tokens or self.default_max_tokens,
