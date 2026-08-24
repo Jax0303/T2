@@ -924,3 +924,61 @@ Test 성능 (EM / F1):
   - seed, 실행 횟수, 표준편차 미보고 (§5.2는 batch size 32만 명시)
   - 셀 좌표 수준 gold operand 주석 없음 (§3.2는 문장 단위 표시만 요구)
   - MultiHiertt 현재 SOTA 수치는 미검증 상태. 인용 금지
+
+## 2026년 인접 연구 — 원문 확인 (2026-08-25)
+
+**이 목록 외의 수치 생성 금지.** 위 MT2Net 절과 같은 규칙이다.
+
+### SMART (ACL Findings 2026, pp.29483-29499) — 이름이 가장 가깝다
+
+Zhang, Chen, Xu, Wei, Zou. *SMART: Semantic Header Flattening and Pseudo-Code-Style
+Reasoning for LLM-based Complex Table Question Answering.* HUST + Ping An.
+**PDF 원문 직접 확인.**
+
+구성 셋: **Semantic Header Flattening**(다단 헤더 → 단층 서술자) + Global
+Understanding + Pseudo-Code-Style Reasoning(외부 검증, 최대 3회 반복).
+
+| | 값 |
+|---|---|
+| 백본 | **Qwen2-72B-Instruct / LLaMA3.1-70B-Instruct** (온도 0.1, 출력 최대 4096) |
+| 데이터 | HiTab 538표 / 1,584 QA · AIT-QA 116표 / 515 QA · WikiTableQA |
+| EM (Qwen2-72B) | HiTab **73.78** · AIT-QA **89.13** |
+| EM (LLaMA3.1-70B) | HiTab **76.76** · AIT-QA **89.30** |
+| 비교 대상 | TableParser, E5, GraphOTTER (HiTab 73.74) — 전부 **표 추론** 방법 |
+
+🚫 **우리 수치와 같은 표에 올리지 말 것.** 세 가지가 다르다:
+① **표가 주어진다** — 검색이 없다. 우리는 424표 / 58,759셀에서 찾아온다.
+② **70B 대 7B 4-bit.**
+③ **다회 반복 추론 + 외부 검증 대 단일 패스 직답.**
+
+**갈라지는 지점 (논문에 이 문장으로 쓴다):** SMART의 헤더 평탄화는 **주어진 표 위에서
+추론을 돕는 장치**이고, 본 연구의 헤더 경로는 **코퍼스에서 셀을 찾아낼 주소**다.
+같은 재료(헤더 계층)를 쓰지만 단계가 다르고 실패 양식이 다르다 — SMART가 고치는 것은
+정렬 오류·환각이고, 우리가 고치는 것은 §충돌률의 **주소 중복**(HiTab flat 84.5% → 경로 13.1%)이다.
+SMART에는 코퍼스 규모 검색도, 색인 단위 ablation도, 이득 예측자도 없다.
+
+**쓸 수 있는 맥락 (비교 아님):** 표를 통째로 주고 70B로 다회 추론해도 HiTab EM은
+**73.8~76.8**이다. 검색까지 스스로 하는 7B 4-bit 단일 패스의 .60을 "낮다"고 쓰기 전에
+이 지점을 함께 적는다. **단 "우리가 근접했다"로 쓰지 말 것** — 조건이 다르다.
+
+### ASTRA (arXiv 2604.08999, 2026-04)
+
+Adaptive Semantic Tree Reasoning. 본체 **DeepSeek-V3 API**, 로컬 답변 선택기
+**Qwen3-8B**, 임베딩 Multilingual-E5-Large, 채점 **GPT-5 judge**.
+AIT-QA **91.6** / HiTab **90.1** / SSTQA 81.9.
+🚫 **표가 주어진다. 검색 없음. GPT-5 judge라 채점기도 다르다. 같은 표 금지.**
+
+### 그 밖 (초록만 확인, 본문 미확인 — 그렇게 표기할 것)
+
+* **FT-RAG** (arXiv 2605.01495, 2026-05) — 표를 의미 단위로 분해해 구조 그래프를
+  만들고 구조적 이웃 확장으로 검색. **자체 벤치마크 Multi-Table-RAG-Lib(9,870 QA)**.
+  리더 모델 초록에 없음. **우리와 무대가 가장 가까운 2026년 논문이므로 본문 확인 필요.**
+* **TABALIGN** (arXiv 2605.14465, 2026-05) — "From Table to Cell", 확산 언어모델 플래너.
+* **HD-RAG** (arXiv 2504.09554) — 계층표+텍스트 RAG. 로컬 리더 Qwen2.5-7B-Instruct,
+  Qwen2.5-32B, Llama-3.1-8B, Mistral-Nemo. HiTab·MultiHiertt를 **재료로** DocRAGLib 생성.
+* **RAG over Tables** (arXiv 2504.01346) — 로컬 리더 Qwen2.5-7B, Llama-3.1-8B/70B,
+  Llama-3.2-3B, Phi-3.5-mini. 인코더 Sentence-Transformer / Contriever.
+
+→ **우리 리더 선택(Qwen2.5-7B-Instruct)은 이 분야 표준이다.** 남들과 다른 유일한 점은
+**4-bit 양자화**이고(위 논문들은 A100 bf16), 8GB 제약 때문이며 **두 arm에 동일하게
+적용되므로 대비를 편향시키지 않는다** — 논문에 그렇게 명시한다.
