@@ -106,3 +106,35 @@ def test_s2r_reverses_each_axis_and_keeps_every_token():
     # segment multiset, not whitespace split -- ": 1" rides on the last segment
     seg = lambda t: sorted(t.rsplit(": ", 1)[0].split(" > "))
     assert seg(s2) == seg(s2r)
+
+
+def test_s2t_tags_by_table_and_changes_nothing_else():
+    """S2t is S2 plus a per-table tag: uniqueness with no matchable meaning.
+
+    The tag exists to separate two things the title does at once -- making an
+    address unique, and giving the query something to match. It must therefore
+    add identity and NOTHING else: the S2 body has to survive byte-for-byte, and
+    two cells that share an address must stop sharing it exactly when they sit in
+    different tables. If either property slips, the arm stops isolating
+    uniqueness and the contrast it was built for is no longer interpretable.
+    """
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    from point3_reconstruction_cost import cell_text
+
+    tids = ["tblA", "tblB"]
+    tag = {t: f"t{k}" for k, t in enumerate(tids)}
+    body = cell_text(["a"], ["b"], "1", "S2")
+    assert body == "a > b: 1"
+
+    same_addr_two_tables = [f"{tag[t]} | {body}" for t in tids]
+    assert same_addr_two_tables == ["t0 | a > b: 1", "t1 | a > b: 1"]
+    # the S2 body is untouched -- the tag is a prefix, never a rewrite
+    for s in same_addr_two_tables:
+        assert s.split(" | ", 1)[1] == body
+    # colliding addresses in different tables are separated; within one table
+    # they still collide, which is the residual the tag cannot reach
+    addr = lambda s: s.rsplit(": ", 1)[0]
+    assert addr(same_addr_two_tables[0]) != addr(same_addr_two_tables[1])
+    assert addr(f"{tag['tblA']} | {body}") == addr(f"{tag['tblA']} | a > b: 2")

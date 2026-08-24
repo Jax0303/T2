@@ -553,13 +553,16 @@ def main() -> int:
     ap.add_argument("--codegen-max-tokens", type=int, default=512,
                     help="completion cap for the codegen line")
     ap.add_argument("--cell-scheme", default="S2",
-                    choices=["S2", "S2r", "S3", "S3c", "mt2net"],
+                    choices=["S2", "S2r", "S2t", "S3", "S3c", "mt2net"],
                     help="what the CELL arm indexes. S2 is the bare header path "
                          "('a > b > c: v'); S3 is this work's deployed index unit "
                          "-- a sentence stating the table title and both paths "
                          "(rag_agent/serialization/caption.py); S3c is S3 where a "
                          "title exists and S2 where none does, since the frame is "
-                         "the title's seat and costs budget without one. S2r is S2 "
+                         "the title's seat and costs budget without one. S2t is S2 "
+                         "plus a per-table tag ('t47 | a > b: v') -- address "
+                         "uniqueness carrying no meaning a query could match, so "
+                         "it prices uniqueness apart from topical matching. S2r is S2 "
                          "with each axis reversed to leaf-first -- the SAME tokens "
                          "in a different order, which is the only way to price "
                          "MT2Net's leaf-first reading apart from its sentence "
@@ -619,6 +622,23 @@ def main() -> int:
         # here cannot be capacity, the way every other template contrast can.
         C.cell_text[:] = [cell_text(rp[::-1], cp[::-1], v, "S2")
                           for rp, cp, v in C.cell_paths]
+    if args.cell_scheme == "S2t":
+        # Uniqueness with no meaning. Every measured gain in this repo tracks a
+        # drop in ADDRESS COLLISION -- the share of cells whose sentence, minus
+        # its value, is not unique -- and `stuck` (cells that still collide after
+        # the path is added) gains exactly 0 on three datasets. That reads as
+        # "the index unit must be uniquely resolvable". A per-table tag tests it
+        # directly: it drives HiTab's S2 collision 13.12% -> 2.11% and the
+        # cross-table share to 0.00%, i.e. FURTHER than the title does (9.14% /
+        # 7.30%), while carrying no information a query could ever match. If
+        # uniqueness is the mechanism the tag beats the title; if it buys
+        # nothing, uniqueness alone is not the mechanism and the address has to
+        # be query-matchable as well. The tag is an ordinal over the corpus's own
+        # table order, so it is stable across runs and independent of any label.
+        tag = {t: f"t{k}" for k, t in enumerate(C.tids)}
+        C.cell_text[:] = [f"{tag[t]} | {cell_text(rp, cp, v, 'S2')}"
+                          for (rp, cp, v), (t, i, j)
+                          in zip(C.cell_paths, C.cell_owner)]
     if args.cell_scheme in ("S3", "S3c", "mt2net"):
         # re-render from the same paths the S2 text was built from, so the
         # schemes differ in rendering only and the cell SET stays identical.
