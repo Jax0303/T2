@@ -1,0 +1,71 @@
+{
+ "experiment": "word order (PREREG-2026-08-25-word-order.md)",
+ "prereg_commit": "54387ff",
+ "env": {
+  "seed": 42,
+  "device": "NVIDIA GeForce RTX 3060 Ti",
+  "torch": "2.12.1+cu130",
+  "embed_model": "BAAI/bge-small-en-v1.5",
+  "vector_backend": "faiss",
+  "run_started_utc": "2026-08-24T07:58:22+00:00"
+ },
+ "reader_spec": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit&dtype=float16",
+ "population": {
+  "hitab": "hitab_dev_lookup_all n=830",
+  "aitqa": "n=451"
+ },
+ "sources": {
+  "S2": "results/wo_hitab_s2_512.json",
+  "S2r": "results/wo_hitab_s2r_512.json",
+  "MT2Net": "results/wo_hitab_mt2net_512.json",
+  "S3c": "results/s3c_hitab_512.json",
+  "aitqa_S2": "results/wo_aitqa_s2_512.json",
+  "aitqa_S2r": "results/wo_aitqa_s2r_512.json"
+ },
+ "hitab_em": {
+  "S2": 0.5169,
+  "S2r": 0.5265,
+  "MT2Net": 0.5157,
+  "S3c": 0.6036
+ },
+ "holm_family_n2": {
+  "W1": {
+   "a": "S2r",
+   "b": "S2",
+   "diff": 0.0096,
+   "mismatch": "77:69",
+   "p": 0.5625209423048497,
+   "p_holm": 1.0
+  },
+  "W2": {
+   "a": "S2r",
+   "b": "MT2Net",
+   "diff": 0.0108,
+   "mismatch": "97:88",
+   "p": 0.5565347647566327,
+   "p_holm": 1.0
+  }
+ },
+ "W3_flat_control": "flat 0:0 in every pairing (results/wo_*_vs_*.json)",
+ "W4_aitqa": {
+  "S2": 0.2461,
+  "S2r": 0.255,
+  "mismatch": "34:30",
+  "p": 0.7079807541347641
+ },
+ "unregistered_S2_vs_MT2Net": {
+  "n830": {
+   "S2": 0.5169,
+   "MT2Net": 0.5157,
+   "mismatch": "93:92",
+   "p": 1.0
+  },
+  "same_runs_scored_on_the_old_n100": {
+   "S2": 0.44,
+   "MT2Net": 0.53,
+   "mismatch": "4:13",
+   "p": 0.049041748046875,
+   "note": "same runs, same reader -- only n differs"
+  }
+ }
+}
