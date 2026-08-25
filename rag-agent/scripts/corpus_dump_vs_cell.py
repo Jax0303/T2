@@ -414,7 +414,8 @@ def _rhb_split_title(grid):
 
 
 def realhitbench_corpus(data_dir: str = "data/realhitbench",
-                        subqtypes: tuple = ()) -> Corpus:
+                        subqtypes: tuple = (),
+                        population: str = "realhitbench_answer_matched") -> Corpus:
     """RealHiTBench (Zhang et al., ACL Findings 2025; arXiv:2506.13405).
 
     The fourth hierarchical benchmark and the first where the TITLE varies inside
@@ -511,11 +512,16 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
             continue                      # unresolved, or the match is ambiguous
         qs.append({"query_id": str(q["id"]), "question": q["Question"],
                    "answer": ans, "gold_table": tid, "gold_cells": found})
+    # AIT-QA와 같은 이유로 고정한다 -- 답 문자열 매칭이 정규화와 HTML 파싱에 함께
+    # 의존하므로, 어느 쪽이 바뀌어도 모집단이 조용히 움직인다.
+    if population and not subqtypes:
+        qs = pop_mod.pin(population, qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, titles, cpaths)
 
 
-def multihiertt_corpus(n_queries: int, seed: int) -> Corpus:
+def multihiertt_corpus(n_queries: int, seed: int,
+                       population: str = "multihiertt_400_seed42") -> Corpus:
     """Same shape from MultiHiertt, where a table is an HTML string in a document.
 
     MultiHiertt carries no global table id -- each row ships its own document's
@@ -570,6 +576,10 @@ def multihiertt_corpus(n_queries: int, seed: int) -> Corpus:
                 for t_idx, r, c in q["cells"] if t_idx in local}
         qs.append({"query_id": q["uid"], "question": q["question"],
                    "answer": q["answer"], "gold_table": next(iter(gold))[0], "gold_cells": gold})
+    # 표본은 (n_queries, seed)로 정해지지만 상류 필터가 바뀌면 같은 seed도 다른
+    # 질의를 준다. 기본 설정(400/42)만 고정한다.
+    if population and (n_queries, seed) == (400, 42):
+        qs = pop_mod.pin(population, qs)
     return Corpus(sorted(md), md, ttext, shape, ctext, owner, qs,
                   ftext, rtext, rowner, {t: '' for t in md}, cpaths)
 

@@ -260,6 +260,18 @@ def aitqa_answer_matched(data_dir: str) -> tuple[list[str], dict]:
         "used_by": ["corpus_dump_vs_cell (aitqa)"]}
 
 
+def _from_builder(build, meta: dict) -> tuple[list[str], dict]:
+    """모집단을 코퍼스 빌더에서 직접 받는다.
+
+    유도 규칙을 여기에 다시 구현하면 빌더와 갈라지고, 갈라진 사실을 아무도 모른다.
+    빌더를 pin 없이 한 번 돌려 나온 query_id 목록이 곧 모집단이다.
+    """
+    C = build()
+    ids = [q["query_id"] if isinstance(q, dict) else q.query_id for q in C.queries]
+    return ids, {**meta, "n": len(ids),
+                 "derivation": "corpus_dump_vs_cell 빌더를 pin 없이 실행한 결과"}
+
+
 SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
@@ -274,6 +286,14 @@ SPECS = {
     "hitab_dev_size_strata": lambda a: hitab_size_strata(a.data_dir, "dev", a.per_bucket),
     "hitab_train_size_strata": lambda a: hitab_size_strata(a.data_dir, "train", a.per_bucket),
     "aitqa_answer_matched": lambda a: aitqa_answer_matched(a.aitqa_dir),
+    "realhitbench_answer_matched": lambda a: _from_builder(
+        lambda: __import__("corpus_dump_vs_cell").realhitbench_corpus(population=""),
+        {"dataset": "realhitbench", "filter": "답 문자열이 셀 값과 맞고 개수가 일치",
+         "source": "https://huggingface.co/datasets/spzy/RealHiTBench (QA_final.json + html/)"}),
+    "multihiertt_400_seed42": lambda a: _from_builder(
+        lambda: __import__("corpus_dump_vs_cell").multihiertt_corpus(400, 42, population=""),
+        {"dataset": "multihiertt", "filter": "표만 쓰는 질의, gold 셀 좌표 보존, n=400 seed=42",
+         "source": "https://huggingface.co/datasets/bevaya/MultiHiertt"}),
 }
 
 
