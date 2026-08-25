@@ -45,7 +45,9 @@ def _split_spec(model: str) -> tuple[str, dict]:
         if not part:
             continue
         k, _, v = part.partition("=")
-        kw[k.strip()] = int(v) if v.strip().lstrip("-").isdigit() else v.strip()
+        v = v.strip()
+        kw[k.strip()] = (None if v == "none" else
+                         int(v) if v.lstrip("-").isdigit() else v)
     return name, kw
 
 
@@ -59,25 +61,14 @@ def build_llm(spec: str, **kwargs) -> BaseLLM:
       "openai:gpt-4.1-mini"
     """
     _load_dotenv()
-<<<<<<< Updated upstream
-    # Split off an optional "?k=v&k=v" query string (e.g.
-    # "local:Qwen/...?quantization=8bit&dtype=float16"). These become keyword
-    # arguments to the backend; "none" maps to Python None. Only applied to the
-    # local backend, whose LocalQwenLLM accepts quantization/dtype — a hosted
-    # backend would reject them. Without this the whole "Model?..." string was
-    # passed as the HF repo id and raised "Repo id must use alphanumeric chars".
-    base, _, query = spec.partition("?")
-    opts = {}
-    for kv in query.split("&"):
-        if "=" in kv:
-            k, v = kv.split("=", 1)
-            opts[k.strip()] = None if v.strip() == "none" else v.strip()
-    backend, _, model = base.partition(":")
-=======
+    # An optional "?k=v&k=v" suffix (e.g. "local:Qwen/...?quantization=8bit")
+    # becomes keyword arguments to the backend; "none" maps to None. Only the
+    # local backend takes them -- LocalQwenLLM accepts quantization/dtype, a
+    # hosted backend would reject them. Without this the whole "Model?..."
+    # string went to HuggingFace as the repo id and raised "Repo id must use
+    # alphanumeric chars".
     backend, _, model = spec.partition(":")
-    model, spec_kw = _split_spec(model)
-    kwargs = {**spec_kw, **kwargs}          # an explicit kwarg beats the spec
->>>>>>> Stashed changes
+    model, opts = _split_spec(model)
     if backend == "local":
         return LocalQwenLLM(model_name=model or "Qwen/Qwen2.5-7B-Instruct",
                             **{**opts, **kwargs})

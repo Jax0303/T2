@@ -104,8 +104,7 @@ class _CachedEncoder:
             print(f"[cache] hit {f.name}", flush=True)
             return np.load(f)
         emb = self.inner.encode(texts)
-        # the tag carries the embed model name, which has a "/" in it, so the
-        # key is nested one level below cache_dir -- make the file's own parent
+        # first write of the run creates the cache dir
         f.parent.mkdir(parents=True, exist_ok=True)
         np.save(f, emb)
         print(f"[cache] wrote {f.name}", flush=True)
@@ -199,11 +198,8 @@ def build_corpus(data_dir: str, split: str):
 
 
 def hitab_corpus(data_dir: str, split: str, population: str,
-<<<<<<< Updated upstream
-                 max_tables: int = 0, seed: int = 42) -> Corpus:
-=======
+                 max_tables: int = 0, seed: int = 42,
                  table_index: str = "full") -> Corpus:
->>>>>>> Stashed changes
     queries, tables, paths, raws = build_corpus(data_dir, split)
     pop = [q for q in queries if q.gold_table_id in paths and q.gold_operands]
     pop = pop_mod.pin(population, pop) if population else pop
@@ -552,7 +548,7 @@ def main() -> int:
                          "MATCH, not by the label: a question survives only if its "
                          "answer strings resolve to a unique set of data cells, "
                          "which is a cell lookup whatever the dataset called it. "
-                         "Filtering to Value-Matching first would cost 52% of the "
+                         "Filtering to Value-Matching first would cost 52%% of the "
                          "population (243 -> 116) and leave the title split at "
                          "n=45, too thin to test")
     ap.add_argument("--split", default="dev")
@@ -569,19 +565,16 @@ def main() -> int:
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-queries", type=int, default=0)
-<<<<<<< Updated upstream
     ap.add_argument("--max-tables", type=int, default=0,
                     help="HiTab only: sample this many tables (seeded) and keep "
                          "only the queries whose gold table survived. Varies "
                          "corpus scale with the task held fixed -- the control "
                          "HiTab-vs-AIT-QA never had, since 424 tables against "
                          "113 confounds every cross-dataset gap. 0 = whole corpus")
-=======
     ap.add_argument("--table-index", default="full",
                     choices=["full", "headers_only"],
                     help="what the table-level index holds. headers_only is the "
                          "control that matches MultiHiertt, whose tables have no title")
->>>>>>> Stashed changes
     ap.add_argument("--cache-dir", default=".cache/corpus_dump_vs_cell",
                     help="where corpus embeddings are memoized across budgets")
     ap.add_argument("--reader", default="",
@@ -640,11 +633,8 @@ def main() -> int:
 
     if args.dataset == "hitab":
         C = hitab_corpus(args.data_dir, args.split, args.population,
-<<<<<<< Updated upstream
-                         max_tables=args.max_tables, seed=args.seed)
-=======
-                         args.table_index)
->>>>>>> Stashed changes
+                         max_tables=args.max_tables, seed=args.seed,
+                         table_index=args.table_index)
     elif args.dataset == "aitqa":
         C = aitqa_corpus()
     elif args.dataset == "realhitbench":
@@ -1054,12 +1044,8 @@ def main() -> int:
         "reader_spec": args.reader or None,
         "answer_mode": args.answer_mode,
         "cell_scheme": args.cell_scheme, "arms_run": list(arms),
-<<<<<<< Updated upstream
         "max_tables": args.max_tables or None,
-        "cell_title": not args.no_title,
-=======
         "cell_title": not args.no_title, "table_index": args.table_index,
->>>>>>> Stashed changes
         "arms": {"dump": "table index -> whole tables in rank order while they fit",
                  "cell": "corpus-wide S2 cell index -> cells while they fit",
                  "cascade": "top-1 table by table index, then its cells only",
