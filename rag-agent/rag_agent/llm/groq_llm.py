@@ -59,10 +59,22 @@ class GroqLLM(BaseLLM):
         temperature: float = 0.0,
         request_timeout: float = 60.0,
         retry_on_429: int = 8,
+        reasoning_effort: str | None = None,
     ) -> None:
         from groq import Groq
 
-        self.name = f"groq:{model_name}"
+        # gpt-oss defaults to reasoning_effort="medium" and spends the completion
+        # budget on hidden reasoning first: content comes back "" at
+        # finish_reason="length" and the caller pays again for the wider retry.
+        # On the free tier's 200k tokens/day that bought ~30 of 175 queries
+        # before the daily quota ended the run. "low" still does the arithmetic.
+        self.reasoning_effort = reasoning_effort or (
+            "low" if "gpt-oss" in model_name else None)
+        # part of the name, so guard_resume refuses to join records written at a
+        # different effort -- it is a different reader
+        self.name = f"groq:{model_name}" + (
+            f"?reasoning_effort={self.reasoning_effort}"
+            if self.reasoning_effort else "")
         self.model_name = model_name
         self.temperature = temperature
         self.request_timeout = request_timeout
@@ -87,6 +99,8 @@ class GroqLLM(BaseLLM):
                         {"role": "system", "content": system},
                         {"role": "user", "content": user},
                     ],
+                    **({"reasoning_effort": self.reasoning_effort}
+                       if self.reasoning_effort else {}),
                 )
                 self.last_finish_reason = resp.choices[0].finish_reason
                 return (resp.choices[0].message.content or "").strip()

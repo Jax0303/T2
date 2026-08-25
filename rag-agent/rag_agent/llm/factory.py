@@ -30,6 +30,25 @@ def _load_dotenv() -> None:
                 os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 
 
+def _split_spec(model: str) -> tuple[str, dict]:
+    """``"Qwen/Qwen2.5-7B-Instruct?quantization=8bit"`` -> name plus kwargs.
+
+    The suffix has been in this docstring since the backends were written but
+    was never parsed, so ``--reader local:...?quantization=8bit`` silently ran
+    at the 4-bit default. That matters now: the arithmetic population is where
+    the local reader fails, and whether the cause is the quantization or the
+    model size is one run apart -- but only if the flag reaches the loader.
+    """
+    name, _, query = model.partition("?")
+    kw = {}
+    for part in query.split("&"):
+        if not part:
+            continue
+        k, _, v = part.partition("=")
+        kw[k.strip()] = int(v) if v.strip().lstrip("-").isdigit() else v.strip()
+    return name, kw
+
+
 def build_llm(spec: str, **kwargs) -> BaseLLM:
     """``spec`` examples:
 
@@ -40,6 +59,7 @@ def build_llm(spec: str, **kwargs) -> BaseLLM:
       "openai:gpt-4.1-mini"
     """
     _load_dotenv()
+<<<<<<< Updated upstream
     # Split off an optional "?k=v&k=v" query string (e.g.
     # "local:Qwen/...?quantization=8bit&dtype=float16"). These become keyword
     # arguments to the backend; "none" maps to Python None. Only applied to the
@@ -53,6 +73,11 @@ def build_llm(spec: str, **kwargs) -> BaseLLM:
             k, v = kv.split("=", 1)
             opts[k.strip()] = None if v.strip() == "none" else v.strip()
     backend, _, model = base.partition(":")
+=======
+    backend, _, model = spec.partition(":")
+    model, spec_kw = _split_spec(model)
+    kwargs = {**spec_kw, **kwargs}          # an explicit kwarg beats the spec
+>>>>>>> Stashed changes
     if backend == "local":
         return LocalQwenLLM(model_name=model or "Qwen/Qwen2.5-7B-Instruct",
                             **{**opts, **kwargs})

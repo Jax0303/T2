@@ -1,5 +1,5 @@
 """A 429 on the free tier is routine, not a fault -- it must not end a run."""
-from rag_agent.llm.groq_llm import retry_after
+from rag_agent.llm.groq_llm import GroqLLM, retry_after
 
 MSG = ("Error code: 429 - {'error': {'message': 'Rate limit reached for model "
        "`openai/gpt-oss-120b` ... on tokens per minute (TPM): Limit 8000, Used "
@@ -24,6 +24,20 @@ def test_waits_out_the_daily_window_not_just_the_minute_one():
     assert round(retry_after("Please try again in 4m0.191999999s", attempt=0), 3) == 241.192
 
 
+def test_gpt_oss_does_not_pay_for_medium_reasoning():
+    # medium is gpt-oss's default and it spends the completion budget on hidden
+    # reasoning, which on 200k tokens/day bought 30 of 175 queries
+    oss = GroqLLM("openai/gpt-oss-120b", api_key="x")
+    assert oss.reasoning_effort == "low"
+    # and it is part of the reader identity, so guard_resume will not join
+    # records written at a different effort
+    assert oss.name == "groq:openai/gpt-oss-120b?reasoning_effort=low"
+
+    plain = GroqLLM("llama-3.3-70b-versatile", api_key="x")
+    assert plain.reasoning_effort is None
+    assert plain.name == "groq:llama-3.3-70b-versatile"
+
+
 def test_capped():
     assert retry_after("try again in 9000s", attempt=0) == 900.0
     assert retry_after("429", attempt=20) == 900.0
@@ -35,4 +49,5 @@ if __name__ == "__main__":
     test_falls_back_to_exponential_without_a_hint()
     test_waits_out_the_daily_window_not_just_the_minute_one()
     test_capped()
+    test_gpt_oss_does_not_pay_for_medium_reasoning()
     print("ok")

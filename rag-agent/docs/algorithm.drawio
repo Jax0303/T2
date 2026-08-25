@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" agent="claude-code" version="24.0.0">
+  <diagram name="셀 문장 색인" id="cell-sentence-index">
+    <mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 입력: 두 갈래 -->
+        <mxCell id="I1" value="&lt;b&gt;HiTab&lt;/b&gt; · JSON&lt;br&gt;&lt;font color=&quot;#777777&quot;&gt;계층 트리 제공&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#888888;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="40" width="190" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="I2" value="&lt;b&gt;MultiHiertt · RealHiTBench&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#777777&quot;&gt;원시 HTML · 병합 셀뿐&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#888888;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="190" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="R1" value="헤더 트리 복원" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#888888;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="280" y="110" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="T1" value="&lt;b&gt;계층 헤더 트리&lt;/b&gt;&lt;br&gt;행 경로 · 열 경로" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#555555;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="75" width="170" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- 핵심 아이디어 -->
+        <mxCell id="CORE" value="핵심 아이디어 — 셀 하나 = 문장 하나" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontStyle=1;fontSize=13;fontColor=#8D6E00;" vertex="1" parent="1">
+          <mxGeometry x="50" y="195" width="810" height="195" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tcap" value="표 캡션 · 2023년 매출" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="85" y="238" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="tcol" value="1분기　　　│　　　2분기" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="155" y="264" width="180" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="trow" value="아시아&lt;br&gt;└ 한국" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontSize=10;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="85" y="290" width="70" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tdat" value="&lt;br&gt;&lt;b&gt;▣ 7&lt;/b&gt;　　│　　　9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#90A4AE;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="155" y="290" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="S1" value="&lt;b&gt;캡션 + 행 경로 + 열 경로 + 값 → 한 문장&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;i&gt;&quot;In the table '2023년 매출', among 아시아 &gt; 한국,&lt;br&gt;the value of 1분기 is 7.&quot;&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F9A825;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="390" y="250" width="440" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- 검색 흐름 -->
+        <mxCell id="Q1" value="질의 q" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#555555;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="410" width="150" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="F1" value="&lt;b&gt;문장 임베딩&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#777777&quot;&gt;표의 모든 셀&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#888888;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="488" width="155" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="F2" value="&lt;b&gt;벡터 색인&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#777777&quot;&gt;dense + BM25&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#888888;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="225" y="488" width="155" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="F3" value="&lt;b&gt;유사도 검색&lt;/b&gt;&lt;br&gt;top-k" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#555555;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="488" width="155" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="F4" value="&lt;b&gt;근거 셀 집합&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#888888;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="575" y="488" width="155" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="F5" value="솔버" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#888888;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="750" y="488" width="130" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="F6" value="답" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#555555;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="900" y="488" width="100" height="58" as="geometry" />
+        </mxCell>
+
+        <mxCell id="NOTE" value="&lt;b&gt;지표 OSC&lt;/b&gt; — gold 피연산자가 &lt;b&gt;전부&lt;/b&gt; top-k 안에 들어와야 1. 한 셀만 빠져도 합계는 확정적으로 틀린다&lt;br&gt;&lt;font color=&quot;#B71C1C&quot;&gt;구조 보완검색 · 완전성 게이트는 예산 맞춤 대조에서 이득이 없어 이 그림에서 제외 (한계 章)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BBBBBB;dashed=1;fontSize=10;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="580" width="950" height="56" as="geometry" />
+        </mxCell>
+
+        <!-- 간선 -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="I1" target="T1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;" edge="1" parent="1" source="I2" target="R1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="R1" target="T1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="T1" target="tcap"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" value="셀마다" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#F9A825;strokeWidth=2;fontSize=10;fontColor=#8D6E00;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tdat" target="S1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="S1" target="F1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;" edge="1" parent="1" source="F1" target="F2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;" edge="1" parent="1" source="F2" target="F3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;" edge="1" parent="1" source="Q1" target="F3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;" edge="1" parent="1" source="F3" target="F4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;" edge="1" parent="1" source="F4" target="F5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#555555;" edge="1" parent="1" source="F5" target="F6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

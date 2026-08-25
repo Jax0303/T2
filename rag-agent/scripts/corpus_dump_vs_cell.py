@@ -87,7 +87,9 @@ class _CachedEncoder:
     """
 
     def __init__(self, inner, cache_dir: str, tag: str):
-        self.inner, self.dir, self.tag = inner, Path(cache_dir), tag
+        # the tag carries a model name, and those hold slashes
+        self.inner, self.dir = inner, Path(cache_dir)
+        self.tag = tag.replace("/", "_")
 
     def encode(self, texts):
         from hashlib import md5
@@ -127,16 +129,24 @@ class _NoDense:
 ALPHA = {"bm25": 0.0, "dense": 1.0, "hybrid": 0.5}
 
 
-def table_index_text(raw, pt, bt) -> str:
+def table_index_text(raw, pt, bt, mode: str = "full") -> str:
     """What a TABLE-level retriever indexes: title/caption plus the header labels.
 
     Deliberately not the whole table body. A table-level index that contained
     every cell would be the cell index with extra steps, and no table retriever
     in the wild embeds a 3,000-token body into one vector.
+
+    ``mode="headers_only"`` drops the title and caption. That is not a variant
+    anyone would deploy -- it is the control for reading the two datasets against
+    each other, because MultiHiertt's parsed HTML carries no title and its dump
+    arm is therefore already running header-only. Without this the cross-dataset
+    gap cannot be told apart from the handicap.
     """
-    title = " ".join(str(x) for x in (raw.get("title"), raw.get("caption")) if x)
     heads = {lab for d in ("gold_rp", "gold_cp") for p in pt[d].values()
              for lab in p if lab}
+    if mode == "headers_only":
+        return " ".join(sorted(heads))
+    title = " ".join(str(x) for x in (raw.get("title"), raw.get("caption")) if x)
     return " | ".join([title, " ".join(sorted(heads))]).strip()
 
 
@@ -189,7 +199,11 @@ def build_corpus(data_dir: str, split: str):
 
 
 def hitab_corpus(data_dir: str, split: str, population: str,
+<<<<<<< Updated upstream
                  max_tables: int = 0, seed: int = 42) -> Corpus:
+=======
+                 table_index: str = "full") -> Corpus:
+>>>>>>> Stashed changes
     queries, tables, paths, raws = build_corpus(data_dir, split)
     pop = [q for q in queries if q.gold_table_id in paths and q.gold_operands]
     pop = pop_mod.pin(population, pop) if population else pop
@@ -211,7 +225,7 @@ def hitab_corpus(data_dir: str, split: str, population: str,
         titles[tid] = " ".join(str(x) for x in
                                (raw.get("title"), raw.get("caption")) if x)
         md[tid] = markdown_table(raw, max(1, len(raw["texts"]) - pt["n_r"]))
-        ttext[tid] = table_index_text(raw, pt, bt)
+        ttext[tid] = table_index_text(raw, pt, bt, table_index)
         shape[tid] = (pt["n_r"], pt["n_c"])
         for i in range(pt["n_r"]):
             for j in range(pt["n_c"]):
@@ -555,12 +569,19 @@ def main() -> int:
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-queries", type=int, default=0)
+<<<<<<< Updated upstream
     ap.add_argument("--max-tables", type=int, default=0,
                     help="HiTab only: sample this many tables (seeded) and keep "
                          "only the queries whose gold table survived. Varies "
                          "corpus scale with the task held fixed -- the control "
                          "HiTab-vs-AIT-QA never had, since 424 tables against "
                          "113 confounds every cross-dataset gap. 0 = whole corpus")
+=======
+    ap.add_argument("--table-index", default="full",
+                    choices=["full", "headers_only"],
+                    help="what the table-level index holds. headers_only is the "
+                         "control that matches MultiHiertt, whose tables have no title")
+>>>>>>> Stashed changes
     ap.add_argument("--cache-dir", default=".cache/corpus_dump_vs_cell",
                     help="where corpus embeddings are memoized across budgets")
     ap.add_argument("--reader", default="",
@@ -614,11 +635,16 @@ def main() -> int:
     if bad:
         ap.error(f'unknown arms {sorted(bad)}; pick from {ARMS}')
     env = run_env(args.seed, args.embed_model)
-    out_path = args.out or f"results/corpus_dump_vs_cell_{args.dataset}_{args.retriever}_{args.budget}.json"
+    out_path = args.out or (f"results/corpus_dump_vs_cell_{args.dataset}_{args.retriever}_{args.budget}"
+      + ("" if args.table_index == "full" else "_headonly") + ".json")
 
     if args.dataset == "hitab":
         C = hitab_corpus(args.data_dir, args.split, args.population,
+<<<<<<< Updated upstream
                          max_tables=args.max_tables, seed=args.seed)
+=======
+                         args.table_index)
+>>>>>>> Stashed changes
     elif args.dataset == "aitqa":
         C = aitqa_corpus()
     elif args.dataset == "realhitbench":
@@ -1028,8 +1054,12 @@ def main() -> int:
         "reader_spec": args.reader or None,
         "answer_mode": args.answer_mode,
         "cell_scheme": args.cell_scheme, "arms_run": list(arms),
+<<<<<<< Updated upstream
         "max_tables": args.max_tables or None,
         "cell_title": not args.no_title,
+=======
+        "cell_title": not args.no_title, "table_index": args.table_index,
+>>>>>>> Stashed changes
         "arms": {"dump": "table index -> whole tables in rank order while they fit",
                  "cell": "corpus-wide S2 cell index -> cells while they fit",
                  "cascade": "top-1 table by table index, then its cells only",
