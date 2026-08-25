@@ -580,6 +580,19 @@ def _numeric_data_col(grid: Grid, c: int, n_header_rows: int) -> bool:
     return bool(n_nonblank) and n_num / n_nonblank >= 0.5
 
 
+def _col_unlabeled(grid: Grid, c: int, n_header_rows: int) -> bool:
+    """Is column ``c`` blank across every header row?
+
+    With ``parse_html_table_with_merges`` resolving colspans before this runs, a
+    real data column carries a label somewhere in the header band ("2013"). A
+    column that is blank all the way down the band is one the stub's group label
+    spans over -- part of the row-header region, not the data.
+    """
+    cells = [grid[r][c] for r in range(min(n_header_rows, len(grid)))
+             if c < len(grid[r])]
+    return bool(cells) and not any(str(x).strip() for x in cells)
+
+
 def guess_n_header_cols(grid: Grid, n_header_rows: int = 1,
                         max_header_cols: int = 4) -> int:
     """Guess how many left columns are row headers — the column-axis mirror of
@@ -633,7 +646,37 @@ def guess_n_header_cols(grid: Grid, n_header_rows: int = 1,
     # column, it caps the tail; where it found none (the text-valued sports and
     # election tables the tail exists for) the tail stands alone.
     if tail >= 1:
-        return min(tail, scan) if scan is not None else tail
-    if scan is not None:
-        return scan
-    return max(limit, 1)
+        nhc = min(tail, scan) if scan is not None else tail
+    elif scan is not None:
+        nhc = scan
+    else:
+        nhc = max(limit, 1)
+
+    # Both signals above stop at the FIRST data-like column, and a numeric column
+    # inside the stub region ends them one or two columns early. RealHiTBench's
+    # `biology-table03` is the shape: a group label spanning col 0, a numeric
+    # country CODE in col 1, the country NAME in col 2, years from col 3. The
+    # scan stops at the code, so the name -- the label every query actually
+    # says -- lands in the data and every row of the table gets the same address.
+    # An unlabeled column cannot be data, so the region extends across it --
+    # but ONLY while a labeled column still lies to the right. Without that
+    # guard a spreadsheet export whose header band is blank (RealHiTBench ships
+    # these: `education-table03` has two empty header rows) reads as all stub
+    # and swallows the table, which is worse than the miss it fixes.
+    # A row-header region has to contain at least one column of LABELS. When
+    # every column the signals accepted is itself data-like, the scan stopped on
+    # an index or code column: BLS tables lead with "Indent Level" (0, 1, 2, 3)
+    # and put the row's name in the NEXT column, so the address ends up carrying
+    # a line number where the query says "Cereals and bakery products".
+    if nhc and all(_numeric_data_col(grid, c, n_header_rows) for c in range(nhc)):
+        for c in range(nhc, limit):
+            if not _numeric_data_col(grid, c, n_header_rows):
+                nhc = c + 1
+                break
+
+    width = max((len(r) for r in grid[:max(1, n_header_rows)]), default=0)
+    labeled = [c for c in range(width) if not _col_unlabeled(grid, c, n_header_rows)]
+    last_labeled = max(labeled) if labeled else -1
+    while nhc < limit and nhc < last_labeled and _col_unlabeled(grid, nhc, n_header_rows):
+        nhc += 1
+    return nhc

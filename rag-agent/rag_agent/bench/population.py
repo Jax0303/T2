@@ -73,7 +73,9 @@ def pin(name: str, queries: Iterable, strict: bool = True) -> list:
     if frozen is None:
         return queries
     ids, _ = frozen
-    have = {q.query_id: q for q in queries}
+    # AIT-QA / RealHiTBench build their queries as dicts, HiTab as objects
+    have = {(q["query_id"] if isinstance(q, dict) else q.query_id): q
+            for q in queries}
     missing = [i for i in ids if i not in have]
     if missing and strict:
         raise RuntimeError(

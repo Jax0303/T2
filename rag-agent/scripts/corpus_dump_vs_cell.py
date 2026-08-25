@@ -47,6 +47,7 @@ import json
 import random
 import sys
 import time
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -150,6 +151,14 @@ def table_index_text(raw, pt, bt, mode: str = "full") -> str:
     return " | ".join([title, " ".join(sorted(heads))]).strip()
 
 
+# The corpora whose population is a FUNCTION OF THE CODE and so has to be
+# frozen: AIT-QA and RealHiTBench annotate no gold cells, so membership is
+# whatever the answer-string match resolves today -- and for RealHiTBench
+# that runs through the header reconstructor. HiTab passes its population
+# by name on the command line; these two have exactly one.
+FROZEN_POP = {"aitqa": "aitqa_lookup_all", "realhitbench": "rhb_lookup_all"}
+
+
 @dataclass
 class Corpus:
     """What both datasets have to hand main(): tables, their cells, the queries.
@@ -247,7 +256,7 @@ def hitab_corpus(data_dir: str, split: str, population: str,
                   rowner, titles, cpaths)
 
 
-def aitqa_corpus(data_dir: str = "data/aitqa") -> Corpus:
+def aitqa_corpus(data_dir: str = "data/aitqa", pin: bool = True) -> Corpus:
     """AIT-QA (Katsis et al., NAACL 2022 industry): airline tables, 113 of them.
 
     The third hierarchical benchmark, and the one that needs no reconstruction:
@@ -312,6 +321,8 @@ def aitqa_corpus(data_dir: str = "data/aitqa") -> Corpus:
         qs.append({"query_id": q["id"], "question": q["question"],
                    "answer": q["answers"][0], "gold_table": q["table_id"],
                    "gold_cells": found})
+    if pin:                              # freeze_populations derives it unpinned
+        qs = pop_mod.pin(FROZEN_POP["aitqa"], qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, {t: '' for t in tids}, cpaths)
 
@@ -355,7 +366,7 @@ def _rhb_split_title(grid):
 
 
 def realhitbench_corpus(data_dir: str = "data/realhitbench",
-                        subqtypes: tuple = ()) -> Corpus:
+                        subqtypes: tuple = (), pin: bool = True) -> Corpus:
     """RealHiTBench (Zhang et al., ACL Findings 2025; arXiv:2506.13405).
 
     The fourth hierarchical benchmark and the first where the TITLE varies inside
@@ -402,7 +413,12 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
         if not grid or len(grid) < 3 or len(grid[0]) < 2:
             continue
         title, grid = _rhb_split_title(grid)
+        # Each guess is the other's input, and the default n_header_rows=1 made
+        # `guess_n_header_cols` judge "is this column data?" over a region that
+        # still held 4 header rows. One extra pass settles it.
         nhc = guess_n_header_cols(grid)
+        nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=nhc), len(grid) - 1))
+        nhc = guess_n_header_cols(grid, n_header_rows=nhr)
         nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=nhc), len(grid) - 1))
         cols = reconstruct_col_paths(grid, nhr, n_header_cols=nhc)
         rows = reconstruct_row_paths(grid, nhr, n_header_cols=nhc)
@@ -452,6 +468,8 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
             continue                      # unresolved, or the match is ambiguous
         qs.append({"query_id": str(q["id"]), "question": q["Question"],
                    "answer": ans, "gold_table": tid, "gold_cells": found})
+    if pin and not subqtypes:            # the freeze is over the whole QA file
+        qs = pop_mod.pin(FROZEN_POP["realhitbench"], qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, titles, cpaths)
 
@@ -537,6 +555,67 @@ def rank_of(index: HybridIndex, question: str, alpha: float) -> list[int]:
     return list(np.argsort(-(alpha * _minmax(dn) + (1 - alpha) * _minmax(bm))))
 
 
+def _table_roots(C) -> dict:
+    """tid -> the top-level labels of that table's header forest, first seen first.
+
+    The header tree's top level is the only table-level term all four corpora
+    have. Three of them ship no title (`results/corpus_discriminability.json`),
+    and AIT-QA ships no header STUB either -- its tables are
+    ``column_header``/``row_header`` ancestor lists with no grid -- so the axis
+    NAME that PREREG-2026-08-25-structural-discriminator.md §3 writes in its
+    example ("[Province | Census year]") cannot be read off the annotation on the
+    corpus that document's primary test (T1) runs on. Roots can.
+    """
+    roots = defaultdict(dict)                    # dict, not set: insertion order
+    for (rp, cp, _v), (t, _i, _j) in zip(C.cell_paths, C.cell_owner):
+        for path in (rp, cp):
+            if path and str(path[0]).strip():
+                roots[t][str(path[0]).strip()] = None
+    return {t: list(v) for t, v in roots.items()}
+
+
+def s2h_prefixes(C, variant: str = "S2h") -> list:
+    """Per cell, the table-level discriminator its S2 sentence gets prefixed with.
+
+    Two readings of §3, because they differ on the one share the scheme exists to
+    buy -- NARROWING, i.e. fewer tables in the context:
+
+    S2h   §3 as written: every top-level label of the table's header forest that
+          is not already in this cell's own path. The exclusion rule is §3's core
+          ("repeating a token already in the sentence is zero new information"),
+          and it is what makes the term PER-CELL rather than per-table: in a
+          table whose row axis has many roots, the cell under one root is
+          prefixed with all the others. A term that differs cell to cell cannot
+          pull a table's cells up together.
+    S2hr  the table's rarest root -- lowest table-frequency across the corpus --
+          on EVERY cell of the table, no exclusion. Constant per table, so it can
+          narrow; one label, so it cannot blow the +25% token cap of T5.
+
+    T0 decides between them before any EM is read; whichever is registered, the
+    other is its control.
+    """
+    roots = _table_roots(C)
+    if variant == "S2hr":
+        df = Counter(r for rs in roots.values() for r in {x.lower() for x in rs})
+        pick = {t: min(rs, key=lambda r: (df[r.lower()], r)) if rs else ""
+                for t, rs in roots.items()}
+        return [pick.get(t, "") for _t, (t, _i, _j)
+                in zip(C.cell_paths, C.cell_owner)]
+    out = []
+    for (rp, cp, _v), (t, _i, _j) in zip(C.cell_paths, C.cell_owner):
+        in_path = {str(x).strip().lower() for x in list(rp) + list(cp)}
+        out.append(" | ".join(r for r in roots.get(t, ())
+                              if r.lower() not in in_path))
+    return out
+
+
+def s2h_cell_text(C, variant: str = "S2h") -> list:
+    """S2, prefixed with :func:`s2h_prefixes`."""
+    return [f"[{pre}] {cell_text(list(rp), list(cp), v, 'S2')}" if pre
+            else cell_text(list(rp), list(cp), v, "S2")
+            for pre, (rp, cp, v) in zip(s2h_prefixes(C, variant), C.cell_paths)]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -599,7 +678,7 @@ def main() -> int:
     ap.add_argument("--codegen-max-tokens", type=int, default=512,
                     help="completion cap for the codegen line")
     ap.add_argument("--cell-scheme", default="S2",
-                    choices=["S2", "S2r", "S2t", "S3", "S3c", "mt2net"],
+                    choices=["S2", "S2r", "S2t", "S2h", "S2hr", "S3", "S3c", "mt2net"],
                     help="what the CELL arm indexes. S2 is the bare header path "
                          "('a > b > c: v'); S3 is this work's deployed index unit "
                          "-- a sentence stating the table title and both paths "
@@ -627,6 +706,13 @@ def main() -> int:
                     help="comma-separated subset of arms to run, e.g. 'flat,cell'. "
                          "The arms that ignore --cell-scheme need not be paid for "
                          "twice. Default: all")
+    ap.add_argument("--max-context-tables", type=int, default=0,
+                    help="cell arm only: admit cells from at most this many "
+                         "distinct tables, then keep filling the budget from "
+                         "those. 0 = no cap. The conditional-EM curve falls "
+                         "with tables in context (.803 at 2.6 tables, .332 at "
+                         "16.2, across three corpora), and this is the knob "
+                         "that moves that quantity directly")
     ap.add_argument("--force-resume", action="store_true")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
@@ -691,6 +777,11 @@ def main() -> int:
         C.cell_text[:] = [f"{tag[t]} | {cell_text(rp, cp, v, 'S2')}"
                           for (rp, cp, v), (t, i, j)
                           in zip(C.cell_paths, C.cell_owner)]
+    if args.cell_scheme in ("S2h", "S2hr"):
+        # a table-level term taken from the header tree instead of from a
+        # title field the other three corpora do not have -- see
+        # s2h_cell_text and PREREG-2026-08-25-structural-discriminator.md
+        C.cell_text[:] = s2h_cell_text(C, args.cell_scheme)
     if args.cell_scheme in ("S3", "S3c", "mt2net"):
         # re-render from the same paths the S2 text was built from, so the
         # schemes differ in rendering only and the cell SET stays identical.
@@ -775,6 +866,7 @@ def main() -> int:
                  cell_scheme=args.cell_scheme, cell_title=not args.no_title,
                  budget=args.budget, retriever=args.retriever, alpha=alpha,
                  max_tables=args.max_tables or None,
+                 max_context_tables=args.max_context_tables or None,
                  force=args.force_resume)
     # Pick up where a killed run stopped. guard_resume has already refused the
     # case where the configuration changed underneath, so whatever is on disk
@@ -951,6 +1043,19 @@ def main() -> int:
                         else sorted(cells_by_table.get(tids[t_order[0]], []),
                                     key=lambda x: c_pos[x]))
                 for pos in pool:
+                    tid, i, j = cell_owner[pos]
+                    # Bound the number of TABLES the context may draw from, and
+                    # spend the rest of the budget inside the ones already
+                    # admitted. The `capped` arm bounded cells PER TABLE and made
+                    # this worse -- the budget it freed was filled by new tables,
+                    # 3.0 -> 9.1 of them. This bounds the quantity that the
+                    # conditional-EM curve actually tracks. Only the `cell` arm
+                    # takes it, so `flat` stays byte-identical to every other run
+                    # and remains usable as the join control.
+                    if (args.max_context_tables and arm == "cell"
+                            and tid not in seen_tables
+                            and len(seen_tables) >= args.max_context_tables):
+                        continue
                     n = int(tok[pos])
                     if used + n > args.budget:
                         if used + int(tok.min()) > args.budget:
@@ -958,7 +1063,6 @@ def main() -> int:
                         continue
                     used += n
                     parts.append(text[pos])
-                    tid, i, j = cell_owner[pos]
                     in_ctx.add((tid, i, j))
                     if tid not in seen_tables:
                         seen_tables.append(tid)
@@ -1041,10 +1145,16 @@ def main() -> int:
                        f"multihiertt table-only, seed {args.seed}, n={args.mh_queries}",
                        "n": len(recs),
                        "frozen": (str(pop_mod.path(args.population))
-                                  if args.dataset == "hitab" else None)},
+                                  if args.dataset == "hitab" else
+                                  str(pop_mod.path(FROZEN_POP[args.dataset]))
+                                  if args.dataset in FROZEN_POP
+                                  and not (args.dataset == "realhitbench"
+                                           and args.rhb_subqtypes)
+                                  else None)},
         "corpus": {"dataset": args.dataset, "split": args.split,
                    "tables": len(tids), "cells": len(cell_chunks)},
         "budget_tokens": args.budget, "budget_tokenizer": args.embed_model,
+        "max_context_tables": args.max_context_tables or None,
         "retriever": args.retriever, "alpha": alpha,
         "reader": llm.name if llm else None,
         # llm.name is only "local:<repo>" -- it drops the quantization and dtype

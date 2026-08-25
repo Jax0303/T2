@@ -185,13 +185,31 @@ def _wtq_normalize(x: str) -> str:
 
 
 def _hmt_str_to_float(s: str):
+    """HiTab's own normaliser, plus the currency mark it never had to handle.
+
+    The published function strips a leading ``(``, a trailing ``%`` or ``)``, and
+    every ``,``. It does NOT strip ``$``, because HiTab's answers never carry one
+    -- 0 of 830 dev and 0 of 769 test. AIT-QA's do, on 88 of 451, and there the
+    omission is not strictness but a type error: ``"$2.25"`` fails ``float()``,
+    falls through to the text path, and is then compared as a STRING against the
+    float ``2.25`` a model answered. It loses on ``type`` before a single digit
+    is looked at, so a correct answer is scored wrong.
+
+    ``$`` is formatting in exactly the sense ``,`` and ``%`` already are, and it
+    is stripped from both sides, so no arm can gain from it over another.
+    Blast radius measured over every committed records file: HiTab dev and test
+    move on ZERO queries (the guarantee that these numbers stay comparable with
+    published HiTab accuracies is intact), AIT-QA moves on 44 (file, arm) pairs
+    and RealHitBench on 14 -- one query each, from a prediction that carried a
+    ``$`` the gold did not.
+    """
     sanitized = s
     try:
         if sanitized and sanitized[0] == "(":
             sanitized = sanitized[1:]
         if sanitized and (sanitized[-1] == "%" or sanitized[-1] == ")"):
             sanitized = sanitized[:-1]
-        return float(sanitized.replace(",", ""))
+        return float(sanitized.replace(",", "").replace("$", ""))
     except (ValueError, IndexError):
         return _wtq_normalize(s)
 

@@ -1,0 +1,89 @@
+{
+  "prereg": "PREREG-2026-08-25-rhb-budget.md",
+  "corpus": "realhitbench",
+  "scheme": "S2",
+  "retriever": "dense",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit&dtype=float16",
+  "ladder": {
+    "512": {
+      "osc": 0.3992,
+      "em": 0.1934,
+      "flat_em": 0.1111,
+      "tables_in_context": 6.9342,
+      "em_given_osc1": 0.4433,
+      "n_osc1": 97,
+      "corpus_tables": 536,
+      "corpus_cells": 148140,
+      "n": 243
+    },
+    "1024": {
+      "osc": 0.4444,
+      "em": 0.2222,
+      "flat_em": 0.107,
+      "tables_in_context": 9.5062,
+      "em_given_osc1": 0.4444,
+      "n_osc1": 108,
+      "corpus_tables": 536,
+      "corpus_cells": 148140,
+      "n": 243
+    },
+    "2048": {
+      "osc": 0.5226,
+      "em": 0.2058,
+      "flat_em": 0.1111,
+      "tables_in_context": 13.7613,
+      "em_given_osc1": 0.3307,
+      "n_osc1": 127,
+      "corpus_tables": 536,
+      "corpus_cells": 148140,
+      "n": 243
+    }
+  },
+  "predictions": {
+    "B1": {
+      "stated": "EM(2048) > .222 and EM(4096) >= EM(2048) - .01",
+      "measured": "EM(2048) = .2058 < .222",
+      "verdict": "FAIL -- the curve turns down at 2048, as HiTab's does",
+      "note": "the 4096 leg was NOT run: at budget 2048 the 8GB card was at 8001/8192 MiB and the host had 0 free RAM, so 4096 would have spilled to shared memory. Recorded as NOT EVALUATED, not as passed or failed."
+    },
+    "B2": {
+      "stated": "OSC(2048) >= .48",
+      "measured": 0.5226,
+      "verdict": "PASS"
+    },
+    "B3": {
+      "stated": "EM|OSC=1 stays within .40-.50 across the ladder",
+      "measured": ".443 -> .444 -> .331",
+      "verdict": "FAIL -- flat to 1024, then falls .113"
+    },
+    "B4": {
+      "stated": "corpus 536 tables / 148,140 cells, n=243",
+      "measured": "536 / 148140 / 243",
+      "verdict": "PASS -- today's reconstruction work stayed out of the run"
+    },
+    "B5": {
+      "stated": "cell - flat stays positive",
+      "measured": {
+        "512": 0.0823,
+        "1024": 0.1152,
+        "2048": 0.0947
+      },
+      "verdict": "PASS"
+    }
+  },
+  "verdict": "RealHitBench has a context optimum too, at 1024. The regime is NOT different from HiTab's -- it is the same shape shifted by at most one step.",
+  "what_this_kills": [
+    "The hypothesis this prereg was built on -- 'HiTab is distractor-bound and RealHitBench is recall-bound' -- is wrong. The 512->1024 rise that suggested it (+.029) is real, and it stops there.",
+    "B3 is the decisive one. Conditional EM was flat over 512->1024 and then falls .113 at 2048 while OSC keeps climbing (.444 -> .523). More material, worse reading: exactly the mechanism CLAUDE.md records for HiTab.",
+    "So the budget lever is worth +.029 on RealHitBench and is now exhausted. It does not close a .41 gap to HiTab."
+  ],
+  "what_survives": [
+    "CLAUDE.md's context-optimum section generalizes past HiTab rather than being scoped to it -- the opposite of what this prereg predicted, and a stronger statement than the one it set out to test.",
+    "The optima differ in TABLES IN CONTEXT, not in budget: RealHitBench is still gaining at 9.51 tables and has collapsed by 13.76, while HiTab's per-table analysis put its break above 4. Whether one threshold in tables predicts both optima is a separate question and is NOT registered here."
+  ],
+  "sources": [
+    "results/rhb_dense_512_s2.json",
+    "results/rhb_dense_1024_s2.json",
+    "results/rhb_dense_2048_s2.json"
+  ]
+}

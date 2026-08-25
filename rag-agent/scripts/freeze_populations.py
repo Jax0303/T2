@@ -224,6 +224,43 @@ def hitab_corpus_arith(data_dir: str, split: str) -> tuple[list[str], dict]:
                  "used_by": ["corpus_dump_vs_cell"]}
 
 
+def aitqa_lookup_all(_data_dir: str) -> tuple[list[str], dict]:
+    """Every AIT-QA question whose answer strings resolve to a unique cell set.
+
+    AIT-QA annotates no gold cells, so the population is whatever
+    :func:`corpus_dump_vs_cell.aitqa_corpus` recovers by matching answer strings
+    against cell values -- i.e. a function of the code, which is the thing
+    ``rag_agent/bench/population.py`` exists to freeze. Cross-dataset claims are
+    read off this corpus, so it has to stop moving before they are made
+    (PREREG-2026-08-25-structural-discriminator.md §9).
+    """
+    from corpus_dump_vs_cell import aitqa_corpus
+    C = aitqa_corpus(pin=False)
+    return [q["query_id"] for q in C.queries], {
+        "dataset": "aitqa", "split": "all",
+        "filter": "answer strings resolve to a unique cell set; ambiguous dropped",
+        "order": "aitqa_questions.jsonl file order", "n": len(C.queries),
+        "used_by": ["corpus_dump_vs_cell"]}
+
+
+def rhb_lookup_all(_data_dir: str) -> tuple[list[str], dict]:
+    """The same for RealHiTBench, where membership also runs through the parser.
+
+    Here the answer match happens on a grid the header reconstructor produced, so
+    a reconstruction change moves membership as well as the metric -- one more
+    reason than AIT-QA has to freeze it. All SubQTypes; a subtype-filtered run
+    does not pin.
+    """
+    from corpus_dump_vs_cell import realhitbench_corpus
+    C = realhitbench_corpus(pin=False)
+    return [q["query_id"] for q in C.queries], {
+        "dataset": "realhitbench", "split": "all", "subqtypes": "all",
+        "filter": "table parses, >=3 rows; answer strings resolve to a unique "
+                  "cell set; ambiguous dropped",
+        "order": "QA_final.json order", "n": len(C.queries),
+        "used_by": ["corpus_dump_vs_cell"]}
+
+
 SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
@@ -237,6 +274,8 @@ SPECS = {
     "hitab_train_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "train"),
     "hitab_dev_size_strata": lambda a: hitab_size_strata(a.data_dir, "dev", a.per_bucket),
     "hitab_train_size_strata": lambda a: hitab_size_strata(a.data_dir, "train", a.per_bucket),
+    "aitqa_lookup_all": lambda a: aitqa_lookup_all(a.data_dir),
+    "rhb_lookup_all": lambda a: rhb_lookup_all(a.data_dir),
 }
 
 

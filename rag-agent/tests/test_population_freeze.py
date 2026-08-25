@@ -36,6 +36,12 @@ class TestPin(unittest.TestCase):
         got = pop_mod.pin("p", [Q("c"), Q("a"), Q("b")])
         self.assertEqual([q.query_id for q in got], ["a", "b", "c"])
 
+    def test_pin_takes_dict_queries_too(self):
+        """AIT-QA and RealHiTBench build queries as dicts, HiTab as objects."""
+        got = pop_mod.pin("p", [{"query_id": "c"}, {"query_id": "a"},
+                                {"query_id": "b"}])
+        self.assertEqual([q["query_id"] for q in got], ["a", "b", "c"])
+
     def test_pin_drops_queries_the_freeze_does_not_list(self):
         got = pop_mod.pin("p", [Q("a"), Q("b"), Q("c"), Q("z")])
         self.assertEqual([q.query_id for q in got], ["a", "b", "c"])
@@ -96,3 +102,26 @@ class TestGuardResume(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestContextTableCap(unittest.TestCase):
+    """A different context-table cap must not resume off another run's records."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.rec = Path(self.tmp.name) / "r.jsonl"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_a_different_cap_is_refused(self):
+        env = {"seed": 42, "embed_model": "e"}
+        guard_resume(self.rec, env, reader="x", population="p", max_context_tables=3)
+        with self.assertRaises(RuntimeError):
+            guard_resume(self.rec, env, reader="x", population="p",
+                         max_context_tables=4)
+
+    def test_the_same_cap_resumes(self):
+        env = {"seed": 42, "embed_model": "e"}
+        guard_resume(self.rec, env, reader="x", population="p", max_context_tables=3)
+        guard_resume(self.rec, env, reader="x", population="p", max_context_tables=3)

@@ -1,0 +1,95 @@
+{
+  "metric": "EM and OSC by gold-address ambiguity, S2, budget 512",
+  "arm": "cell",
+  "groups": {
+    "hitab": {
+      "total": 830,
+      "by_group": {
+        "clean": {
+          "n": 755,
+          "em": 0.5417,
+          "osc": 0.8477
+        },
+        "twin DIFF value": {
+          "n": 63,
+          "em": 0.2698,
+          "osc": 0.5079
+        },
+        "in-table": {
+          "n": 10,
+          "em": 0.2,
+          "osc": 0.7
+        },
+        "twin same value": {
+          "n": 2,
+          "em": 0.5,
+          "osc": 1.0
+        }
+      },
+      "observed_em": 0.5168,
+      "em_under_hitab_mix": 0.5168,
+      "mix_worth": 0.0
+    },
+    "aitqa": {
+      "total": 451,
+      "by_group": {
+        "in-table": {
+          "n": 83,
+          "em": 0.0602,
+          "osc": 0.1446
+        },
+        "clean": {
+          "n": 264,
+          "em": 0.3182,
+          "osc": 0.6439
+        },
+        "twin same value": {
+          "n": 58,
+          "em": 0.2586,
+          "osc": 0.7414
+        },
+        "twin DIFF value": {
+          "n": 46,
+          "em": 0.1522,
+          "osc": 0.5
+        }
+      },
+      "observed_em": 0.2461,
+      "em_under_hitab_mix": 0.3023,
+      "mix_worth": 0.0562
+    },
+    "realhitbench": {
+      "total": 243,
+      "by_group": {
+        "clean": {
+          "n": 101,
+          "em": 0.3168,
+          "osc": 0.4455
+        },
+        "in-table": {
+          "n": 105,
+          "em": 0.0762,
+          "osc": 0.3143
+        },
+        "twin DIFF value": {
+          "n": 31,
+          "em": 0.1935,
+          "osc": 0.4516
+        },
+        "twin same value": {
+          "n": 6,
+          "em": 0.1667,
+          "osc": 0.8333
+        }
+      },
+      "observed_em": 0.1934,
+      "em_under_hitab_mix": 0.3042,
+      "mix_worth": 0.1108
+    }
+  },
+  "runs": {
+    "hitab": "results/wo_hitab_s2_512_records.jsonl",
+    "aitqa": "results/wo_aitqa_s2_512_records.jsonl",
+    "realhitbench": "results/rhb_dense_512_s2_records.jsonl"
+  }
+}
