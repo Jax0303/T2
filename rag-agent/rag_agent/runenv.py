@@ -53,7 +53,7 @@ def run_env(seed: int, embed_model: str) -> dict:
 
 
 def guard_resume(records_path, env: dict, reader: str | None = None,
-                 population: str | None = None, force: bool = False) -> None:
+                 population: str | None = None, force: bool = False, **extra) -> None:
     """Refuse to append to a records file another run configuration produced.
 
     ``--resume`` appends to whatever is already on disk. That is right when the
@@ -65,9 +65,14 @@ def guard_resume(records_path, env: dict, reader: str | None = None,
     Stores a sidecar next to the records file on first write and compares on
     every later one. ``force`` overrides, for the case where the mismatch is
     understood and wanted.
+
+    ``**extra`` is for whatever else decides the numbers, the cell scheme above
+    all: ``embed_model`` names the encoder but not what it was asked to embed,
+    so two runs over different cell sentences wrote the same sidecar and one
+    resumed off the other's records.
     """
     keys = {"reader": reader, "seed": env.get("seed"),
-            "embed_model": env.get("embed_model"), "population": population}
+            "embed_model": env.get("embed_model"), "population": population, **extra}
     side = Path(str(records_path) + ".run.json")
     if not side.exists():
         side.parent.mkdir(parents=True, exist_ok=True)

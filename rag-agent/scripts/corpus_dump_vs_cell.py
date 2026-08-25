@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import sys
 import time
 from dataclasses import dataclass
@@ -187,11 +188,22 @@ def build_corpus(data_dir: str, split: str):
     return queries, tables, paths, raws
 
 
-def hitab_corpus(data_dir: str, split: str, population: str) -> Corpus:
+def hitab_corpus(data_dir: str, split: str, population: str,
+                 max_tables: int = 0, seed: int = 42) -> Corpus:
     queries, tables, paths, raws = build_corpus(data_dir, split)
     pop = [q for q in queries if q.gold_table_id in paths and q.gold_operands]
     pop = pop_mod.pin(population, pop) if population else pop
     tids = sorted(paths)
+    # Shrink the CORPUS, not the question set: cell retrieval's edge over the
+    # whole-table baselines grows with the pool it searches, so HiTab's 424
+    # tables against AIT-QA's 113 is a difference the datasets never agreed to
+    # control. Sampling tables and keeping the queries whose gold survives holds
+    # the task fixed and moves only the haystack. Applied AFTER pin, so the
+    # freeze is still checked in full before this subsets it.
+    if max_tables and max_tables < len(tids):
+        keep = set(random.Random(seed).sample(tids, max_tables))
+        pop = [q for q in pop if q.gold_table_id in keep]
+        tids = [t for t in tids if t in keep]
     md, ttext, shape, ctext, owner = {}, {}, {}, [], []
     ftext, rtext, rowner, titles, cpaths = [], [], [], {}, []
     for tid in tids:
@@ -543,6 +555,12 @@ def main() -> int:
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-queries", type=int, default=0)
+    ap.add_argument("--max-tables", type=int, default=0,
+                    help="HiTab only: sample this many tables (seeded) and keep "
+                         "only the queries whose gold table survived. Varies "
+                         "corpus scale with the task held fixed -- the control "
+                         "HiTab-vs-AIT-QA never had, since 424 tables against "
+                         "113 confounds every cross-dataset gap. 0 = whole corpus")
     ap.add_argument("--cache-dir", default=".cache/corpus_dump_vs_cell",
                     help="where corpus embeddings are memoized across budgets")
     ap.add_argument("--reader", default="",
@@ -599,7 +617,8 @@ def main() -> int:
     out_path = args.out or f"results/corpus_dump_vs_cell_{args.dataset}_{args.retriever}_{args.budget}.json"
 
     if args.dataset == "hitab":
-        C = hitab_corpus(args.data_dir, args.split, args.population)
+        C = hitab_corpus(args.data_dir, args.split, args.population,
+                         max_tables=args.max_tables, seed=args.seed)
     elif args.dataset == "aitqa":
         C = aitqa_corpus()
     elif args.dataset == "realhitbench":
@@ -727,6 +746,9 @@ def main() -> int:
                              else f"rhb_{'_'.join(args.rhb_subqtypes)}"
                              if args.dataset == "realhitbench"
                              else f"multihiertt_{args.mh_queries}_{args.seed}"),
+                 cell_scheme=args.cell_scheme, cell_title=not args.no_title,
+                 budget=args.budget, retriever=args.retriever, alpha=alpha,
+                 max_tables=args.max_tables or None,
                  force=args.force_resume)
     # Pick up where a killed run stopped. guard_resume has already refused the
     # case where the configuration changed underneath, so whatever is on disk
@@ -1006,6 +1028,7 @@ def main() -> int:
         "reader_spec": args.reader or None,
         "answer_mode": args.answer_mode,
         "cell_scheme": args.cell_scheme, "arms_run": list(arms),
+        "max_tables": args.max_tables or None,
         "cell_title": not args.no_title,
         "arms": {"dump": "table index -> whole tables in rank order while they fit",
                  "cell": "corpus-wide S2 cell index -> cells while they fit",

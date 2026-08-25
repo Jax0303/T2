@@ -82,6 +82,12 @@ class TestGuardResume(unittest.TestCase):
         guard_resume(self.recs, self.env, reader="local:Qwen")
         guard_resume(self.recs, self.env, reader="groq:llama", force=True)
 
+    def test_a_different_cell_scheme_is_refused(self):
+        """One embed_model, two cell sentences: the sidecar used to call these equal."""
+        guard_resume(self.recs, self.env, reader="local:Qwen", cell_scheme="S3c")
+        with self.assertRaises(RuntimeError):
+            guard_resume(self.recs, self.env, reader="local:Qwen", cell_scheme="mt2net")
+
     def test_unknown_field_does_not_fabricate_a_mismatch(self):
         """A run that cannot report its population must not look like a conflict."""
         guard_resume(self.recs, self.env, reader="local:Qwen", population=None)
