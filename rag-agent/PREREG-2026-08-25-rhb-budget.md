@@ -96,3 +96,50 @@ HiTab은 같은 축에서 .803 → .744 → .667로 떨어졌다.
 * `results/rhb_dense_{2048,4096}_s2.json` (+ records)
 * 짝지음 `results/rhb_budget_ladder_paired.json`
 * 판정 `results/rhb_budget_prereg_verdict.json`
+
+---
+
+## 5. 확장 — AIT-QA도 같은 시험 (RHB 런 전에 추가 등록)
+
+**AIT-QA에는 예산 점이 512 하나뿐이다.** 위 표를 보고 추가한 것이 아니라,
+`results/` 전수를 세어서 사다리가 아예 없다는 것을 확인하고 적는다
+(`wo_aitqa_s2_512` / `s2r` / `s2t` / `s3` / `s3c` / `mt2net`, 전부 512).
+
+AIT-QA도 같은 진단을 받는다 — `scripts/address_ambiguity.py`,
+`results/address_ambiguity.json` (LLM 없음 · 인코더 없음):
+
+| 코퍼스 | 주소 유일 질의 | 그 그룹의 OSC | 그 그룹의 EM |
+|---|---|---|---|
+| HiTab | 91.0% | **.848** | **.542** |
+| AIT-QA | 58.5% | .644 | .318 |
+| RealHitBench | 41.6% | **.446** | .317 |
+
+⚠️ 이 분해도 사후이고 사전 등록되지 않았다. **예측의 근거로만 쓴다.**
+
+**주소가 유일한 질의에서조차 OSC가 HiTab .848 대 AIT-QA .644 / RHB .446이다.**
+애매함을 다 걷어내도 재료가 덜 들어온다는 뜻이고, 그게 사실이면 예산이 듣는다.
+
+### 예측 (A1~A3)
+
+* **A1 (주)** — AIT-QA `S2` EM이 **1024에서 .246보다 크고, 2048에서 1024보다 작지 않다**
+  (± .01). RHB의 B1과 같은 형태다.
+* **A2** — OSC가 단조 상승: **1024 ≥ .60, 2048 ≥ .65** (512 .550에서 이어서).
+* **A3 (기전)** — OSC=1 조건부 EM이 사다리 전체에서 **±.05 안에서 평평**하다.
+  떨어지면 AIT-QA는 HiTab 쪽 구간이고, A1이 맞아도 해석이 다르다.
+
+### 판정
+
+**A1과 B1이 둘 다 성립하면**, `CLAUDE.md` §문맥 크기 최적점은
+**"HiTab에서 측정된 곡선"**으로 범위가 좁혀지고, 비HiTab 코퍼스의 다음 레버는
+색인 단위가 아니라 **회수(recall)**로 확정된다.
+**하나만 성립하면** 코퍼스마다 구간이 다르다는 것이고, 어느 구간인지를
+`address_ambiguity`의 OSC로 실행 전에 예측할 수 있는지 따로 등록해서 시험한다.
+**둘 다 실패하면** 예산 축은 세 코퍼스 전부에서 닫힌 것이고, 남은 것은
+방해 제거뿐이다.
+
+### 실행 조건
+
+`results/wo_aitqa_s2_512.json`과 동일하게 고정하고 예산만 1024 / 2048로 움직인다.
+코퍼스 113표 / 5,320셀, n=451, dense, `--cell-scheme S2`, arms `flat,cell`,
+리더 `local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit&dtype=float16`.
+산출 `results/aitqa_dense_{1024,2048}_s2.json`.
