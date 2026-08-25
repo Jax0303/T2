@@ -301,7 +301,8 @@ def hitab_corpus(data_dir: str, split: str, population: str,
                   rowner, titles, cpaths)
 
 
-def aitqa_corpus(data_dir: str = "data/aitqa") -> Corpus:
+def aitqa_corpus(data_dir: str = "data/aitqa",
+                 population: str = "aitqa_answer_matched") -> Corpus:
     """AIT-QA (Katsis et al., NAACL 2022 industry): airline tables, 113 of them.
 
     The third hierarchical benchmark, and the one that needs no reconstruction:
@@ -366,6 +367,10 @@ def aitqa_corpus(data_dir: str = "data/aitqa") -> Corpus:
         qs.append({"query_id": q["id"], "question": q["question"],
                    "answer": q["answers"][0], "gold_table": q["table_id"],
                    "gold_cells": found})
+    # 답 문자열 매칭은 정규화 규칙에 의존하므로 모집단이 코드와 함께 움직인다.
+    # 고정된 목록에 pin 해서, 정규화가 바뀌면 수치가 아니라 실행이 실패하게 한다.
+    if population:
+        qs = pop_mod.pin(population, qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, {t: '' for t in tids}, cpaths)
 
