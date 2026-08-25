@@ -46,7 +46,7 @@ import numpy as np
 
 from corpus_dump_vs_cell import (
     aitqa_corpus, hitab_corpus, label_doc_freq, multihiertt_corpus,
-    realhitbench_corpus, s2h_prefixes, table_top_labels,
+    realhitbench_corpus, s2h_prefixes, table_labels,
 )
 
 
@@ -75,9 +75,9 @@ def addresses(C, scheme: str = "S2", k: int = 1) -> list:
     if scheme == "S2":
         return base
     if scheme == "S2h_all":
-        # 사전등록 §3의 문자 그대로: 겹치지 않는 최상위 축 레이블 전부. 충돌은 가장
-        # 많이 줄지만 토큰이 3.6배가 되어 T5(+25%)를 깬다. 대조로만 남긴다.
-        tops = table_top_labels(C)
+        # 겹치지 않는 표 헤더 라벨 전부. 충돌은 가장 많이 줄지만 토큰이 3배를 넘어
+        # T5(+25%)를 깬다. 대조로만 남긴다.
+        tops = table_labels(C)
         return [f"[{' | '.join(sorted(tops[t] - set(rp) - set(cp)))}] {a}"
                 if (tops[t] - set(rp) - set(cp)) else a
                 for (rp, cp, _v), (t, _i, _j), a

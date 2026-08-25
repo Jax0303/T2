@@ -180,29 +180,25 @@ class Corpus:
 
 
 
-def table_top_labels(C) -> dict:
-    """표마다 {행축 depth-0} ∪ {열축 depth-0} 라벨 집합.
+def table_labels(C) -> dict:
+    """표마다 그 표의 헤더 라벨 전체(깊이 무관).
 
-    표 헤더 트리의 최상위 축 레이블이다. 데이터셋이 준 제목 필드가 아니라 표 자신의
-    구조에서 나오므로 네 코퍼스 모두에 존재한다 -- 제목이 못 하는 그것이 요점이다.
+    S2h가 고르는 후보집합이다. 최상위 축 레이블로 좁히면 AIT-QA에서 무너진다 --
+    그 코퍼스는 행 헤더가 빈 표가 많고 depth-0 열 라벨이 'Year' 같은 흔한 것뿐이라
+    표를 특정하지 못한다 (T0 실측: 표 넘는 충돌 26.9% -> 16.4%, 관문 13.5% 미달).
+    깊이를 열면 같은 k에서 8.35%까지 내려간다.
     """
-    tops = defaultdict(set)
+    labs = defaultdict(set)
     for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
-        if rp:
-            tops[tid].add(rp[0])
-        if cp:
-            tops[tid].add(cp[0])
-    return tops
+        labs[tid].update(rp)
+        labs[tid].update(cp)
+    return labs
 
 
 def label_doc_freq(C) -> Counter:
     """라벨 -> 그 라벨을 헤더에 가진 표의 수. 어느 라벨이 표를 특정하는지의 기준."""
-    per_table = defaultdict(set)
-    for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
-        per_table[tid].update(rp)
-        per_table[tid].update(cp)
     df = Counter()
-    for labs in per_table.values():
+    for labs in table_labels(C).values():
         df.update(labs)
     return df
 
@@ -210,30 +206,31 @@ def label_doc_freq(C) -> Counter:
 def s2h_prefixes(C, k: int = 1) -> list:
     """셀별 S2h 접두사. 구조에서 뽑은 표 단위 구별자.
 
-    그 표의 최상위 축 레이블 중 (1) 이 셀의 경로에 없고 -- 이미 문장에 있는 토큰을
-    반복하면 새 정보가 0이다 -- (2) 코퍼스에서 가장 드문 순, 동률이면 가장 짧은 것
-    ``k``개. 드문 것부터 고르는 이유가 이 스킴의 전부다: 표를 넘는 충돌을 줄이는 것은
-    그 표를 코퍼스에서 특정하는 라벨이지 아무 라벨이나가 아니다.
+    그 표의 헤더 라벨 중 (1) 이 셀의 경로에 없고 -- 이미 문장에 있는 토큰을 반복하면
+    새 정보가 0이다 -- (2) 코퍼스 문서빈도가 가장 낮은, 동률이면 가장 짧은 것 ``k``개.
 
-    T0 실측 (HiTab dev 424표/58,759셀, scripts/corpus_discriminability.py):
+    드문 것부터 고르는 이유가 이 스킴의 전부다: 표를 넘는 충돌을 줄이는 것은 그 표를
+    코퍼스에서 특정하는 라벨이지 아무 라벨이나가 아니다. 제목이 하던 일을 표 자신의
+    헤더에서 뽑아내는 것이고, 제목과 마찬가지로 이 셀의 경로 바깥에서 온다.
 
-        스킴            표 넘는 주소 충돌   토큰/셀 배수
-        S2 (기준)            11.29%           1.000
-        S2h k=1               3.78%           1.153   <- 배선된 값
-        S2h k=2               3.05%           1.446
-        S2h 라벨 전부         2.78%           3.647
+    T0 실측 (LLM 없음 · 인코더 없음, scripts/corpus_discriminability.py):
 
-    사전등록(PREREG-2026-08-25-structural-discriminator.md §3)은 "겹치지 않는 최상위
-    축 레이블"이라고만 적었고, 그것을 문자 그대로 전부 붙이면 충돌 관문(T0)은
-    통과하지만 용량 관문(T5, +25%)을 3.6배로 깬다. k=1이 두 관문을 동시에 통과하는
-    유일한 지점이라서 고른 것이지 EM을 보고 고른 것이 아니다 -- T0은 리더를 돌리기
-    전에 닫힌다.
+        표를 넘는 주소 충돌      HiTab      AIT-QA     토큰/셀
+        S2 (기준)               11.29%     26.94%     x1.000
+        S2h k=1                  2.24%      8.35%     x1.13 / x1.18   <- 배선된 값
+        S2h k=2                  2.24%      8.05%     x1.36 / x1.48   (용량 관문 초과)
+
+    k=1이 두 코퍼스에서 충돌 관문(절반 이하)과 용량 관문(+25% 이내)을 동시에 통과하는
+    유일한 지점이라 고른 것이지 EM을 보고 고른 것이 아니다 -- T0은 리더 전에 닫힌다.
+
+    주의: 문서빈도는 코퍼스 통계다. BM25의 IDF와 같은 의미에서 색인 시점 통계이며,
+    표가 추가되면 접두사가 바뀌므로 재색인이 필요하다. 외부 지식은 0이다.
     """
-    tops = table_top_labels(C)
+    labs = table_labels(C)
     df = label_doc_freq(C)
     out = []
     for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
-        extra = tops[tid] - set(rp) - set(cp)
+        extra = labs[tid] - set(rp) - set(cp)
         pick = sorted(sorted(extra, key=lambda l: (df[l], len(l.split()), l))[:k])
         out.append(f"[{' | '.join(pick)}] " if pick else "")
     return out
