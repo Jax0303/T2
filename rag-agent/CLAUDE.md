@@ -1,5 +1,116 @@
 작업 전 RESEARCH_STRUCTURE.md를 읽을 것. 연구 구조 확정본. NEXT.md와 충돌 시 이 문서 우선.
 
+## ⚠️ 2026-08-26 정정 — AIT-QA의 모든 EM이 바뀌었다. RealHitBench 모집단도 바뀌었다
+
+**이 문서에서 2026-08-26 이전에 적힌 AIT-QA EM은 전부 낮게 적혀 있다.** 아래 표로
+읽을 것. 출처 `results/currency_rescore.json` (`scripts/rescore_currency.py`).
+
+### 무엇이 틀렸나
+
+채점기(`_hmt_str_to_float`)가 `,`와 `%`는 벗기는데 **`$`는 안 벗겼다.**
+`"$2.25"`는 `float()`에 실패해 텍스트 경로로 떨어지고, 모델이 답한 `2.25`(float)와
+**타입부터 달라서** 숫자 한 자리도 보기 전에 오답이 된다.
+HiTab 정답에는 통화 기호가 없어서(dev 830건 중 0, test 769건 중 0) 드러나지 않았고,
+AIT-QA는 451건 중 **88건**이 갖고 있다.
+
+**영향 범위는 손대기 전에 전수로 쟀다**: HiTab dev·test **0건 이동**(공식 채점기와의
+비교 가능성 유지), AIT-QA 44개 (파일, arm) 쌍, RealHitBench 14개(각 1질의),
+MultiHiertt 5개(각 1~6질의).
+
+`answer_em`은 저장된 `pred`에서 파생된 값이므로 **같은 예측을 고친 규칙으로 다시 읽었을
+뿐이다.** records·summary·파일 안의 짝지은 검정까지 전부 재계산했다.
+
+### 결론은 하나도 안 바뀐다
+
+* AIT-QA에서 S3c 대 MT2Net: **여전히 무승부** (.3082 대 .3060, +.0022)
+* 의미 없는 태그(S2t): **여전히 진다** (−.0111)
+* **행 청크가 여전히 우리를 이긴다** (.3525 대 .3038) — §깨지는 곳 둘의 ①은 유효하다
+* `cell` − `flat`은 오히려 커진다 (+.0665 → **+.0909**)
+
+### AIT-QA 정정표
+
+| 런 | arm | 옛 EM | **정정 EM** | n |
+|---|---|---|---|---|
+| `ceil_aitqa_512` | goldcell | 0.8036 | **0.8839** | 112 |
+| `corpus_dump_vs_cell_hyb_aitqa_512` | row | 0.2882 | **0.3659** | 451 |
+| `ceil_aitqa_512` | cell | 0.2321 | **0.3036** | 112 |
+| `corpus_dump_vs_cell_hyb_aitqa_512` | cell | 0.2506 | **0.3215** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_256` | cell | 0.2638 | **0.3313** | 163 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_512` | row | 0.2860 | **0.3525** | 451 |
+| `h2h_untitled_aitqa_mt2net_512` | cell | 0.2395 | **0.3060** | 451 |
+| `wo_aitqa_s2_512` | cell | 0.2461 | **0.3104** | 451 |
+| `s3c_aitqa_512` | cell | 0.2439 | **0.3082** | 451 |
+| `aitqa_dense_1024_s2` | cell | 0.2195 | **0.2816** | 451 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_256` | row | 0.2949 | **0.3570** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_256` | flat | 0.1718 | **0.2331** | 163 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_512` | cell | 0.2439 | **0.3038** | 451 |
+| `h2h_untitled_aitqa_S3_512` | cell | 0.1774 | **0.2373** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_512` | flat | 0.1641 | **0.2217** | 451 |
+| `corpus_dump_vs_cell_cellrow_aitqa_256` | cellrow | 0.2727 | **0.3282** | 451 |
+| `corpus_dump_vs_cell_s3_aitqa_dense_256` | cell | 0.1907 | **0.2461** | 451 |
+| `tag_aitqa_s2t_512` | cell | 0.2439 | **0.2993** | 451 |
+| `wo_aitqa_s2r_512` | cell | 0.2550 | **0.3082** | 451 |
+| `corpus_dump_vs_cell_s3_aitqa_dense_512` | cell | 0.1929 | **0.2439** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_256` | row | 0.3190 | **0.3681** | 163 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_256` | flat | 0.1840 | **0.2306** | 451 |
+| `aitqa_dense_1024_s2` | flat | 0.1818 | **0.2262** | 451 |
+| `corpus_dump_vs_cell_cellrow_aitqa_256` | cell | 0.2439 | **0.2860** | 451 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_256` | cell | 0.2439 | **0.2860** | 451 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_512` | flat | 0.1885 | **0.2284** | 451 |
+| `h2h_untitled_aitqa_S3_512` | flat | 0.1796 | **0.2195** | 451 |
+| `h2h_untitled_aitqa_mt2net_512` | flat | 0.1796 | **0.2195** | 451 |
+| `s3c_aitqa_512` | flat | 0.1796 | **0.2195** | 451 |
+| `tag_aitqa_s2t_512` | flat | 0.1796 | **0.2195** | 451 |
+| `wo_aitqa_s2_512` | flat | 0.1796 | **0.2195** | 451 |
+| `wo_aitqa_s2r_512` | flat | 0.1796 | **0.2195** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_256` | cascade | 0.1902 | **0.2270** | 163 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_512` | cell2dump | 0.0909 | **0.1220** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_512` | cascade | 0.1663 | **0.1929** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_512` | cell2dump | 0.1153 | **0.1397** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_512` | dump | 0.0820 | **0.1020** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_256` | cell2dump | 0.1166 | **0.1350** | 163 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_256` | cascade | 0.0998 | **0.1131** | 451 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_512` | cascade | 0.0998 | **0.1131** | 451 |
+| `corpus_dump_vs_cell_hyb_aitqa_256` | dump | 0.0982 | **0.1104** | 163 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_256` | dump | 0.0665 | **0.0776** | 451 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_512` | dump | 0.0687 | **0.0798** | 451 |
+| `corpus_dump_vs_cell_h2h_aitqa_dense_256` | cell2dump | 0.0931 | **0.0998** | 451 |
+
+### RealHitBench 모집단이 243 → 231로 바뀌었다
+
+`guess_n_header_cols`가 행 헤더 영역 **안**에 있는 숫자 열에서 멈춰서(국가 코드,
+BLS "Indent Level") 정작 질의가 부르는 **이름 열이 데이터로 색인**되고 있었다.
+그 표의 모든 행이 같은 주소를 갖게 된다. 고쳤고 HiTab의 gold 채점 경계 정확도는
+`.9481`/`.9175`로 **불변**이다.
+
+잃은 28건은 전수 확인했다 — **전부 답이 헤더 영역에 있다.** 질문이
+"Housing 아래 카테고리를 나열하라 → Shelter" 같은 **행 라벨을 묻는 질문**이지 셀 조회가
+아니다. 파서가 라벨 열을 데이터라고 불러서 모집단에 들어와 있었을 뿐이다.
+
+### 그리고 이 수정은 EM으로 거의 전환되지 않는다 — 그렇게 적을 것
+
+`results/header_col_fix_effect.json`. 같은 215질의 위에서 짝지음:
+
+| arm | 수정 전 | 수정 후 | Δ | 불일치 | p |
+|---|---|---|---|---|---|
+| cell | .2186 | .2279 | **+.0093** | 7:5 | .774 |
+| flat | .1256 | .1349 | +.0093 | 5:3 | .727 |
+
+코퍼스는 확실히 깨끗해졌다 — 쓰레기 셀 **4,763개** 제거(148,140 → 143,377),
+문맥의 표 수 6.93 → 5.77, 주소가 유일한 질의 41.6% → **45.0%**,
+표 안 충돌 43.2% → **36.4%**.
+**그런데 EM은 +.009이고 유의하지 않다.** 두 arm이 같은 폭으로 움직이는 것도
+코퍼스가 바뀐 효과이지 방법의 효과가 아니라는 신호다.
+→ **"헤더 복원을 고쳐서 정확도를 올렸다"고 쓰지 말 것.** 고친 것은 버그이고,
+정확도로는 아직 값을 못 했다. 남은 표 안 충돌 36.4%는 세 가지 다른 파서 실패
+모양("both non-empty" 40% / "row depth 1" 39% / "col EMPTY" 17%)이고 각각 별개 수정이다.
+
+→ **2026-08-26 이전의 RealHitBench 수치는 243건 모집단 위의 값이고, 이후 것과
+짝지을 수 없다.** 예산 사다리(`results/rhb_budget_prereg_verdict.json`)는 세 점이
+전부 옛 모집단이라 사다리 안에서는 유효하다.
+
+---
+
 ## 이 논문이 무슨 논문인가 (반복 이탈 방지)
 
 **주제는 계층 헤더 표에서 셀을 어떻게 표현하느냐다.** `"122"`가 아니라
