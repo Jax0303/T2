@@ -1,0 +1,116 @@
+{
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "env": {
+    "seed": 42,
+    "device": "cpu",
+    "torch": "2.10.0+cu128",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "numpy",
+    "run_started_utc": "2026-08-25T06:50:14+00:00"
+  },
+  "population": {
+    "name": "hitab_dev_lookup_all",
+    "n": 830,
+    "frozen": "/home/ugh/T2/rag-agent/populations/hitab_dev_lookup_all.txt"
+  },
+  "corpus": {
+    "dataset": "hitab",
+    "split": "dev",
+    "tables": 424,
+    "cells": 58759
+  },
+  "budget_tokens": 512,
+  "budget_tokenizer": "BAAI/bge-small-en-v1.5",
+  "retriever": "dense",
+  "alpha": 1.0,
+  "reader": null,
+  "reader_spec": null,
+  "answer_mode": "direct",
+  "cell_scheme": "S2h",
+  "arms_run": [
+    "flat",
+    "cell"
+  ],
+  "max_tables": null,
+  "cell_title": true,
+  "table_index": "full",
+  "arms": {
+    "dump": "table index -> whole tables in rank order while they fit",
+    "cell": "corpus-wide S2 cell index -> cells while they fit",
+    "cascade": "top-1 table by table index, then its cells only",
+    "cell2dump": "tables ranked by their best cell, dumped whole",
+    "cellrow": "rows ranked by their best cell, emitted as rows",
+    "row": "corpus-wide row-chunk index -> whole data rows",
+    "flat": "corpus-wide cell index, LEAF labels only (ablation)",
+    "capped": "like `cell` but at most 3 cells per table",
+    "group": "same cells and same ranking as `cell`, but rendered grouped by table with the title stated ONCE -- the title is 29% of every S3 sentence and is what the gain comes from, so paying for it per table instead of per cell buys back budget at no information loss"
+  },
+  "summary": {
+    "flat": {
+      "osc": 0.6024,
+      "per_cell": 0.6024,
+      "gold_table_any": 0.8108,
+      "gold_table_whole": 0.012,
+      "tokens": 511.747,
+      "n_tables": 15.047
+    },
+    "cell": {
+      "osc": 0.7807,
+      "per_cell": 0.7807,
+      "gold_table_any": 0.8904,
+      "gold_table_whole": 0.0265,
+      "tokens": 510.2952,
+      "n_tables": 4.0867
+    }
+  },
+  "paired_tests": {
+    "osc:cell_vs_flat": {
+      "only_first": 187,
+      "only_second": 39,
+      "exact_p": 0.0
+    }
+  },
+  "table_recall": {
+    "by_table_index": {
+      "@1": 0.7313,
+      "@3": 0.8783,
+      "@5": 0.9133,
+      "@10": 0.9482,
+      "@20": 0.9759
+    },
+    "by_cell_vote": {
+      "@1": 0.712,
+      "@3": 0.8554,
+      "@5": 0.894,
+      "@10": 0.9386,
+      "@20": 0.9675
+    }
+  },
+  "table_recall_paired": {
+    "@1": {
+      "only_first": 106,
+      "only_second": 122,
+      "exact_p": 0.3205
+    },
+    "@3": {
+      "only_first": 56,
+      "only_second": 75,
+      "exact_p": 0.1155
+    },
+    "@5": {
+      "only_first": 39,
+      "only_second": 55,
+      "exact_p": 0.1214
+    },
+    "@10": {
+      "only_first": 25,
+      "only_second": 33,
+      "exact_p": 0.3581
+    },
+    "@20": {
+      "only_first": 15,
+      "only_second": 22,
+      "exact_p": 0.324
+    }
+  }
+}
