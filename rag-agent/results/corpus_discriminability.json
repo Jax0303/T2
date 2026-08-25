@@ -15,7 +15,25 @@
       "addr_collision_cross_table": 0.1129,
       "row_depth_mean": 2.174,
       "col_depth_mean": 2.007,
-      "path_depth_mean": 4.182
+      "path_depth_mean": 4.182,
+      "s2h": {
+        "S2h": {
+          "changed_frac": 0.9824,
+          "addr_collision_frac": 0.0574,
+          "addr_collision_same_table": 0.0196,
+          "addr_collision_cross_table": 0.0378,
+          "tokens_per_cell": 12.49,
+          "tokens_per_cell_ratio": 1.1678
+        },
+        "S2h_all": {
+          "changed_frac": 0.9824,
+          "addr_collision_frac": 0.0473,
+          "addr_collision_same_table": 0.0196,
+          "addr_collision_cross_table": 0.0278,
+          "tokens_per_cell": 41.66,
+          "tokens_per_cell_ratio": 3.8947
+        }
+      }
     },
     "aitqa": {
       "tables": 113,
@@ -65,5 +83,6 @@
       "col_depth_mean": 1.592,
       "path_depth_mean": 3.246
     }
-  }
+  },
+  "s2h_note": "T0 게이트(PREREG-2026-08-25-structural-discriminator.md §5). S2h = 그 표의 최상위 축 레이블 중 셀 경로에 없고 코퍼스에서 가장 드문 1개. S2h_all = 사전등록 문자 그대로 겹치지 않는 라벨 전부(대조). aitqa/realhitbench/multihiertt는 data/가 이 기계에 없어 미측정 -- 그 파일이 있는 기계에서 --corpora 로 채운다."
 }

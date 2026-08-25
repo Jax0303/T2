@@ -54,6 +54,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
+from collections import Counter, defaultdict
 
 from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
@@ -176,6 +177,66 @@ class Corpus:
     # has no title field, so there S3 differs from S2 by phrasing alone.
     title: dict
     cell_paths: list               # per corpus cell, (row_path, col_path)
+
+
+
+def table_top_labels(C) -> dict:
+    """표마다 {행축 depth-0} ∪ {열축 depth-0} 라벨 집합.
+
+    표 헤더 트리의 최상위 축 레이블이다. 데이터셋이 준 제목 필드가 아니라 표 자신의
+    구조에서 나오므로 네 코퍼스 모두에 존재한다 -- 제목이 못 하는 그것이 요점이다.
+    """
+    tops = defaultdict(set)
+    for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
+        if rp:
+            tops[tid].add(rp[0])
+        if cp:
+            tops[tid].add(cp[0])
+    return tops
+
+
+def label_doc_freq(C) -> Counter:
+    """라벨 -> 그 라벨을 헤더에 가진 표의 수. 어느 라벨이 표를 특정하는지의 기준."""
+    per_table = defaultdict(set)
+    for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
+        per_table[tid].update(rp)
+        per_table[tid].update(cp)
+    df = Counter()
+    for labs in per_table.values():
+        df.update(labs)
+    return df
+
+
+def s2h_prefixes(C, k: int = 1) -> list:
+    """셀별 S2h 접두사. 구조에서 뽑은 표 단위 구별자.
+
+    그 표의 최상위 축 레이블 중 (1) 이 셀의 경로에 없고 -- 이미 문장에 있는 토큰을
+    반복하면 새 정보가 0이다 -- (2) 코퍼스에서 가장 드문 순, 동률이면 가장 짧은 것
+    ``k``개. 드문 것부터 고르는 이유가 이 스킴의 전부다: 표를 넘는 충돌을 줄이는 것은
+    그 표를 코퍼스에서 특정하는 라벨이지 아무 라벨이나가 아니다.
+
+    T0 실측 (HiTab dev 424표/58,759셀, scripts/corpus_discriminability.py):
+
+        스킴            표 넘는 주소 충돌   토큰/셀 배수
+        S2 (기준)            11.29%           1.000
+        S2h k=1               3.78%           1.153   <- 배선된 값
+        S2h k=2               3.05%           1.446
+        S2h 라벨 전부         2.78%           3.647
+
+    사전등록(PREREG-2026-08-25-structural-discriminator.md §3)은 "겹치지 않는 최상위
+    축 레이블"이라고만 적었고, 그것을 문자 그대로 전부 붙이면 충돌 관문(T0)은
+    통과하지만 용량 관문(T5, +25%)을 3.6배로 깬다. k=1이 두 관문을 동시에 통과하는
+    유일한 지점이라서 고른 것이지 EM을 보고 고른 것이 아니다 -- T0은 리더를 돌리기
+    전에 닫힌다.
+    """
+    tops = table_top_labels(C)
+    df = label_doc_freq(C)
+    out = []
+    for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
+        extra = tops[tid] - set(rp) - set(cp)
+        pick = sorted(sorted(extra, key=lambda l: (df[l], len(l.split()), l))[:k])
+        out.append(f"[{' | '.join(pick)}] " if pick else "")
+    return out
 
 
 def build_corpus(data_dir: str, split: str):
@@ -592,7 +653,7 @@ def main() -> int:
     ap.add_argument("--codegen-max-tokens", type=int, default=512,
                     help="completion cap for the codegen line")
     ap.add_argument("--cell-scheme", default="S2",
-                    choices=["S2", "S2r", "S2t", "S3", "S3c", "mt2net"],
+                    choices=["S2", "S2r", "S2t", "S2h", "S3", "S3c", "mt2net"],
                     help="what the CELL arm indexes. S2 is the bare header path "
                          "('a > b > c: v'); S3 is this work's deployed index unit "
                          "-- a sentence stating the table title and both paths "
@@ -681,6 +742,13 @@ def main() -> int:
         C.cell_text[:] = [f"{tag[t]} | {cell_text(rp, cp, v, 'S2')}"
                           for (rp, cp, v), (t, i, j)
                           in zip(C.cell_paths, C.cell_owner)]
+    if args.cell_scheme == "S2h":
+        # 구조에서 뽑은 표 단위 구별자. S2t(무의미한 서수 태그)는 표를 넘는 충돌을
+        # 0.00%까지 없애고도 AIT-QA에서 -.032로 졌다 -- 질의가 `t47`을 칠 수 없어
+        # 검색을 좁히지 못했기 때문이다. S2h가 붙이는 것은 실제 헤더 단어라 좁힐
+        # 자격이 있고, 그 하나가 이 스킴과 S2t의 유일한 차이다.
+        C.cell_text[:] = [pre + txt for pre, txt
+                          in zip(s2h_prefixes(C), C.cell_text)]
     if args.cell_scheme in ("S3", "S3c", "mt2net"):
         # re-render from the same paths the S2 text was built from, so the
         # schemes differ in rendering only and the cell SET stays identical.

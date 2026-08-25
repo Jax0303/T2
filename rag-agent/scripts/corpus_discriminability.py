@@ -45,7 +45,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
 
 from corpus_dump_vs_cell import (
-    aitqa_corpus, hitab_corpus, multihiertt_corpus, realhitbench_corpus,
+    aitqa_corpus, hitab_corpus, label_doc_freq, multihiertt_corpus,
+    realhitbench_corpus, s2h_prefixes, table_top_labels,
 )
 
 
@@ -67,11 +68,41 @@ def _collide(keys, owner) -> tuple[int, int]:
     return same, cross
 
 
+
+def addresses(C, scheme: str = "S2", k: int = 1) -> list:
+    """셀별 주소 문자열(값 제외). 사전등록이 인용하는 충돌률이 이 주소 기준이다."""
+    base = [" > ".join(rp) + " | " + " > ".join(cp) for rp, cp, _v in C.cell_paths]
+    if scheme == "S2":
+        return base
+    if scheme == "S2h_all":
+        # 사전등록 §3의 문자 그대로: 겹치지 않는 최상위 축 레이블 전부. 충돌은 가장
+        # 많이 줄지만 토큰이 3.6배가 되어 T5(+25%)를 깬다. 대조로만 남긴다.
+        tops = table_top_labels(C)
+        return [f"[{' | '.join(sorted(tops[t] - set(rp) - set(cp)))}] {a}"
+                if (tops[t] - set(rp) - set(cp)) else a
+                for (rp, cp, _v), (t, _i, _j), a
+                in zip(C.cell_paths, C.cell_owner, base)]
+    return [pre + a for pre, a in zip(s2h_prefixes(C, k), base)]
+
 def measure(C) -> dict:
     n = len(C.cell_text)
     same, cross = _collide(C.cell_text, C.cell_owner)
-    addr = [" > ".join(rp) + " | " + " > ".join(cp) for rp, cp, _v in C.cell_paths]
+    addr = addresses(C, "S2")
     a_same, a_cross = _collide(addr, C.cell_owner)
+    schemes = {}
+    for sch in ("S2h", "S2h_all"):
+        alt = addresses(C, sch)
+        s_same, s_cross = _collide(alt, C.cell_owner)
+        changed = sum(1 for a, b in zip(addr, alt) if a != b)
+        tok = lambda L: sum(len(x.split()) for x in L) / len(L)
+        schemes[sch] = {
+            "changed_frac": round(changed / n, 4),
+            "addr_collision_frac": round((s_same + s_cross) / n, 4),
+            "addr_collision_same_table": round(s_same / n, 4),
+            "addr_collision_cross_table": round(s_cross / n, 4),
+            "tokens_per_cell": round(tok(alt), 2),
+            "tokens_per_cell_ratio": round(tok(alt) / tok(addr), 4),
+        }
     rd = np.array([len(rp) for rp, _cp, _v in C.cell_paths])
     cd = np.array([len(cp) for _rp, cp, _v in C.cell_paths])
     titled = sum(1 for t in C.tids if C.title.get(t))
@@ -87,6 +118,7 @@ def measure(C) -> dict:
         "row_depth_mean": round(float(rd.mean()), 3),
         "col_depth_mean": round(float(cd.mean()), 3),
         "path_depth_mean": round(float((rd + cd).mean()), 3),
+        "s2h": schemes,
     }
 
 
@@ -97,6 +129,9 @@ def main() -> int:
     ap.add_argument("--population", default="hitab_dev_lookup_all")
     ap.add_argument("--mh-queries", type=int, default=400)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--corpora", default="",
+                    help="쉼표로 고른 코퍼스만 잰다. 비우면 전부 -- 다만 hitab 외에는 "
+                         "data/ 가 gitignore라 그 파일이 있는 기계에서만 돈다")
     ap.add_argument("--out", default="results/corpus_discriminability.json")
     args = ap.parse_args()
 
@@ -106,6 +141,9 @@ def main() -> int:
         "realhitbench": realhitbench_corpus,
         "multihiertt": lambda: multihiertt_corpus(args.mh_queries, args.seed),
     }
+    if args.corpora:
+        want = {x.strip() for x in args.corpora.split(",")}
+        corpora = {k: v for k, v in corpora.items() if k in want}
     out = {"metric": "S2 cell-sentence uniqueness and title coverage, no reader",
            "corpora": {}}
     hdr = (f"{'corpus':14}{'tables':>7}{'cells':>8}{'titled':>9}"
