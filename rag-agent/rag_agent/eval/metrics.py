@@ -276,10 +276,34 @@ def hitab_exact_match_text(pred_text, gold) -> bool:
         return False
     if hitab_exact_match(pred_text, gold):
         return True
+    if _multi_string_match(pred_text, gold):
+        return True
     if not (isinstance(gold, list) and len(gold) > 1 and isinstance(pred_text, str)):
         return False
     parts = [p for p in _MULTI_SPLIT.split(pred_text.strip()) if p]
     return len(parts) > 1 and hitab_exact_match(parts, gold)
+
+
+def _multi_string_match(pred_text, gold) -> bool:
+    """Both sides are multi-value STRINGS -- split both and compare value by value.
+
+    RealHitBench stores a multi-value answer as one comma-separated string
+    ("128154, 21538"), not as a list, so the branch above never fires: it needs
+    ``isinstance(gold, list)``. The whole string is then compared, and a model
+    that answered "128154,21538" -- every digit right, one space short -- loses
+    on type, because the prediction parses as a float and the gold does not.
+    Same family as the currency bug: the scorer meeting an answer format HiTab
+    never had. Worth +.004 on the RealHitBench cell arm and +.017 on its
+    ceiling, so it changes no conclusion; it is fixed because it is wrong.
+    """
+    if not isinstance(gold, str) or not isinstance(pred_text, str):
+        return False
+    g = [x for x in _MULTI_SPLIT.split(gold.strip()) if x]
+    if len(g) < 2:
+        return False
+    p = [x for x in _MULTI_SPLIT.split(pred_text.strip()) if x]
+    return len(p) == len(g) and all(
+        _hmt_equal(_hmt_process(a), _hmt_process(b)) for a, b in zip(p, g))
 
 
 # --- retrieval-side metrics ------------------------------------------------

@@ -31,3 +31,22 @@ class TestCurrency(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMultiValueStringGold(unittest.TestCase):
+    """RealHitBench stores multi-value answers as one comma-separated STRING."""
+
+    def test_a_missing_space_is_not_a_wrong_answer(self):
+        self.assertTrue(hitab_exact_match_text("128154,21538", "128154, 21538"))
+        self.assertTrue(hitab_exact_match_text("24492, 24062", "24492, 24062"))
+
+    def test_wrong_values_still_fail(self):
+        self.assertFalse(hitab_exact_match_text("128154,21539", "128154, 21538"))
+        self.assertFalse(hitab_exact_match_text("128154", "128154, 21538"))
+
+    def test_order_still_matters(self):
+        self.assertFalse(hitab_exact_match_text("21538, 128154", "128154, 21538"))
+
+    def test_single_value_gold_is_untouched(self):
+        self.assertTrue(hitab_exact_match_text("5813", "5813"))
+        self.assertFalse(hitab_exact_match_text("5813", "9307"))

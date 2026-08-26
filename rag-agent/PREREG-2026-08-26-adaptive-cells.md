@@ -9,7 +9,7 @@
 | | 실측 | 천장(`goldcell`) | 격차 |
 |---|---|---|---|
 | AIT-QA | .304 | **.884** | **.580** |
-| RealHitBench | .237 | .707 | .470 |
+| RealHitBench | .210 | .671 | .461 |
 | HiTab | .604 | .888 | .284 |
 
 **AIT-QA의 리더가 HiTab과 동급이다(.884 대 .888)** — 코퍼스가 어려운 게 아니다.
@@ -68,3 +68,19 @@
 
 `results/orc_{aitqa_s2,hitab_s3c}_512.json` (+ records),
 판정 `results/adaptive_cells_ceiling_verdict.json`.
+
+---
+
+## ⚠️ 2026-08-26 정정 — 위 표의 RealHitBench 행
+
+`scripts/rescore_currency.py`가 summary를 **records 전체가 아니라 현재 코퍼스와
+겹치는 것만으로** 재계산하는 버그가 있었다. RealHitBench는 헤더 열 수정으로 모집단이
+243 → 231로 바뀌어서, records 243건짜리 파일에 **215건으로 계산한 summary**가 박혔다.
+
+빠진 28건은 하필 **답이 헤더 영역에 있는** 질의들(= 셀 검색이 원리상 못 맞히는 것)이라
+정답률이 낮았고, 그래서 summary가 실제보다 높게 나왔다.
+
+**고쳤고 13개 파일을 records 기준으로 다시 계산했다.** RealHitBench 실측은
+`.2372 → .2099`, 천장은 `.7070 → .6708`이다. **HiTab·AIT-QA는 영향 없다**
+(두 코퍼스는 모집단이 안 바뀌었다). 이 문서의 §0 표는 정정본으로 고쳤고,
+오라클 판정(§실행 기록)의 AIT-QA·HiTab 수치는 그대로 유효하다.

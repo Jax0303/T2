@@ -118,7 +118,12 @@ def main() -> int:
             d = json.loads(sj.read_text())
             for arm, v in d.get("summary", {}).items():
                 if "answer_em" in v:
-                    hits = [r for r in recs if arm in r and r["query_id"] in gold]
+                    # over EVERY record the file carries, not just the ones the
+                    # CURRENT corpus still derives. RealHitBench's population moved
+                    # 243 -> 231 with the header-column fix, and filtering by the
+                    # new gold map wrote a summary over 215 of 243 records -- a
+                    # file disagreeing with its own contents.
+                    hits = [r for r in recs if arm in r]
                     if hits:
                         v["answer_em"] = round(
                             sum(r[arm]["answer_em"] for r in hits) / len(hits), 4)
