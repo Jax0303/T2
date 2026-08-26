@@ -71,3 +71,17 @@ recall로 퇴화한다.** 두 다리가 만난 적이 없다. 리뷰어가 정�
   기존 `corpus_dump_vs_cell_reader_dense_*`(로컬 7B)와 절대 같은 표에 올리지 않는다.
 - 중단된 옛 부분 실행 `corpus_dump_vs_cell_arith_gptoss_{256,512}_records.jsonl`
   (각 1행 / 25행)은 이 실험의 입력이 아니다. 이어붙이지 않는다.
+
+---
+
+## 실행 기록 (예측 확정 후 추가, 예측은 손대지 않음)
+
+**2026-08-26 12:52 UTC — arm 축소 + 천장 arm 추가.**
+전체 10 arm으로 걸었더니 질의당 ~129초, 3예산 합계 18시간이 나왔다.
+`--arms dump,cell,cascade,cell2dump,goldcell`로 줄인다. 빠진 것은
+`row / flat / group / capped / cellrow` — **P1~P4 어느 예측에도 등장하지 않는다.**
+
+`goldcell`은 예측에 없지만 넣는다. 3질의 스모크에서 정답 셀을 그대로 준
+`goldcell`이 EM **.333**이었다 — 리더가 arith에서 천장이 낮을 수 있다는 뜻이다.
+천장 arm이 없으면 P3이 깨졌을 때 **"완전성이 답과 무관"인지 "리더가 못 푸는
+것"인지 구분할 수 없다.** 진단용이며 dump vs cell 비교에는 관여하지 않는다.
