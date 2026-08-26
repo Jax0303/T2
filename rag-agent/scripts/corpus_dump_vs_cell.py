@@ -64,7 +64,7 @@ from rag_agent.generate.answerer import (
 )
 from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
-from rag_agent.retrieve.hybrid_index import HybridIndex, _minmax
+from rag_agent.retrieve.hybrid_index import HybridIndex, _minmax, _tokenize
 from rag_agent.runenv import guard_resume, run_env
 from rag_agent.serialization.base import Chunk
 
@@ -713,12 +713,24 @@ def main() -> int:
                          "with tables in context (.803 at 2.6 tables, .332 at "
                          "16.2, across three corpora), and this is the knob "
                          "that moves that quantity directly")
-    ap.add_argument("--adaptive-cells", default="", choices=["", "oracle"],
+    ap.add_argument("--budget-model", default="results/cell_budget_model.pkl",
+                    help="--adaptive-cells predict: the pickle from "
+                         "scripts/cell_budget_predictor.py, carrying the fitted "
+                         "model, its feature order and the margin chosen on TRAIN")
+    ap.add_argument("--budget-margin", type=float, default=0.0,
+                    help="override the margin stored in --budget-model. The stored "
+                         "one is chosen on TRAIN for a retention target, which is "
+                         "not the same objective as EM: cutting harder loses "
+                         "completeness but removes more distractors, and only a "
+                         "reader run can price that trade")
+    ap.add_argument("--adaptive-cells", default="", choices=["", "oracle", "predict"],
                     help="cell arm only. 'oracle' truncates the context at the "
                          "rank of the last gold cell -- the shortest complete "
                          "prefix. Uses gold, so it is a CEILING for a per-query "
                          "budget policy, not a method: it says how much of the "
-                         "goldcell gap is reachable by stopping early at all")
+                         "goldcell gap is reachable by stopping early at all. "
+                         "'predict' is the METHOD: the same truncation with k "
+                         "estimated from retrieval signal, never from gold")
     ap.add_argument("--group-context", action="store_true",
                     help="cell arm only: render the SAME cells at the SAME "
                          "budget, ordered so cells of one table sit together. "
@@ -835,6 +847,18 @@ def main() -> int:
         enc = _CachedEncoder(enc, args.cache_dir,
                              f"{args.dataset}_{args.split}_{args.embed_model}")
 
+    budget_model = None
+    if args.adaptive_cells == "predict":
+        import pickle
+        budget_model = pickle.loads(Path(args.budget_model).read_bytes())
+        if args.budget_margin:
+            budget_model["margin"] = args.budget_margin
+        if (ALPHA[args.retriever] if args.alpha is None else args.alpha) != 1.0:
+            raise SystemExit("--adaptive-cells predict needs dense scores "
+                             "(--retriever dense); the features are read off them")
+        print(f"[budget] {args.budget_model} margin={budget_model['margin']} "
+              f"fit_on={budget_model['fit_on']}", flush=True)
+
     t0 = time.time()
     tbl_ix = HybridIndex(tbl_chunks, encoder=enc, alpha=0.5)
     cell_ix = HybridIndex(cell_chunks, encoder=enc, alpha=0.5)
@@ -889,6 +913,7 @@ def main() -> int:
                  max_context_tables=args.max_context_tables or None,
                  group_context=args.group_context or None,
                  adaptive_cells=args.adaptive_cells or None,
+                 budget_margin=(budget_model["margin"] if budget_model else None),
                  force=args.force_resume)
     # Pick up where a killed run stopped. guard_resume has already refused the
     # case where the configuration changed underneath, so whatever is on disk
@@ -922,7 +947,14 @@ def main() -> int:
                "gold_table_tokens": md_tokens(gold_t)}
 
         t_order = rank_of(tbl_ix, q["question"], alpha)
-        c_order = rank_of(cell_ix, q["question"], alpha)
+        if budget_model is None:
+            c_order = rank_of(cell_ix, q["question"], alpha)
+            c_scores = None
+        else:
+            # same ranking rank_of gives at alpha=1, but the SCORES are what the
+            # budget features read, and rank_of throws them away
+            c_scores = cell_ix._dense_scores(q["question"])
+            c_order = list(np.argsort(-c_scores))
         f_order = rank_of(flat_ix, q["question"], alpha)
         r_order = rank_of(row_ix, q["question"], alpha)
         c_pos = positions(c_order)
@@ -1073,6 +1105,20 @@ def main() -> int:
                 # ceiling of "predict how many cells this query needs", and it is
                 # worth measuring before any predictor is built.
                 stop_at = None
+                if args.adaptive_cells == "predict" and arm == "cell":
+                    ss = c_scores[c_order]
+                    s1 = float(ss[0]) or 1e-9
+                    owners10 = {cell_owner[p_][0] for p_ in c_order[:10]}
+                    owners50 = {cell_owner[p_][0] for p_ in c_order[:50]}
+                    feat = {"gap12": float(ss[0] - ss[1]) / s1,
+                            "gap1_10": float(ss[0] - ss[min(9, len(ss) - 1)]) / s1,
+                            "gap1_50": float(ss[0] - ss[min(49, len(ss) - 1)]) / s1,
+                            "cv50": float(np.std(ss[:50]) / (abs(np.mean(ss[:50])) + 1e-9)),
+                            "tab10": len(owners10), "tab50": len(owners50),
+                            "qlen": len(_tokenize(q["question"]))}
+                    x = np.array([[feat[f] for f in budget_model["features"]]])
+                    khat = float(np.expm1(budget_model["model"].predict(x))[0])
+                    stop_at = max(1, int(np.ceil(khat * budget_model["margin"])))
                 if args.adaptive_cells == "oracle" and arm == "cell":
                     ranks = [int(c_pos[pos_of_cell[g]]) for g in gold_cells
                              if g in pos_of_cell]
@@ -1208,6 +1254,7 @@ def main() -> int:
         "max_context_tables": args.max_context_tables or None,
         "group_context": args.group_context or None,
         "adaptive_cells": args.adaptive_cells or None,
+        "budget_margin": (budget_model["margin"] if budget_model else None),
         "retriever": args.retriever, "alpha": alpha,
         "reader": llm.name if llm else None,
         # llm.name is only "local:<repo>" -- it drops the quantization and dtype
