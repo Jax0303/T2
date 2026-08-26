@@ -713,6 +713,12 @@ def main() -> int:
                          "with tables in context (.803 at 2.6 tables, .332 at "
                          "16.2, across three corpora), and this is the knob "
                          "that moves that quantity directly")
+    ap.add_argument("--adaptive-cells", default="", choices=["", "oracle"],
+                    help="cell arm only. 'oracle' truncates the context at the "
+                         "rank of the last gold cell -- the shortest complete "
+                         "prefix. Uses gold, so it is a CEILING for a per-query "
+                         "budget policy, not a method: it says how much of the "
+                         "goldcell gap is reachable by stopping early at all")
     ap.add_argument("--group-context", action="store_true",
                     help="cell arm only: render the SAME cells at the SAME "
                          "budget, ordered so cells of one table sit together. "
@@ -882,6 +888,7 @@ def main() -> int:
                  max_tables=args.max_tables or None,
                  max_context_tables=args.max_context_tables or None,
                  group_context=args.group_context or None,
+                 adaptive_cells=args.adaptive_cells or None,
                  force=args.force_resume)
     # Pick up where a killed run stopped. guard_resume has already refused the
     # case where the configuration changed underneath, so whatever is on disk
@@ -1058,7 +1065,21 @@ def main() -> int:
                 pool = (order if arm in ("cell", "flat")
                         else sorted(cells_by_table.get(tids[t_order[0]], []),
                                     key=lambda x: c_pos[x]))
-                for pos in pool:
+                # An ORACLE, not a method: stop the cell arm at the rank of the
+                # LAST gold cell, so the context is the shortest prefix that is
+                # still complete. goldcell (48 tokens, .888 on HiTab) deletes the
+                # distractors that OUTRANK gold, which no policy can do; this
+                # keeps them and drops only the tail. It is therefore the real
+                # ceiling of "predict how many cells this query needs", and it is
+                # worth measuring before any predictor is built.
+                stop_at = None
+                if args.adaptive_cells == "oracle" and arm == "cell":
+                    ranks = [int(c_pos[pos_of_cell[g]]) for g in gold_cells
+                             if g in pos_of_cell]
+                    stop_at = (max(ranks) + 1) if ranks else None
+                for rank_, pos in enumerate(pool):
+                    if stop_at is not None and rank_ >= stop_at:
+                        break
                     tid, i, j = cell_owner[pos]
                     # Bound the number of TABLES the context may draw from, and
                     # spend the rest of the budget inside the ones already
@@ -1186,6 +1207,7 @@ def main() -> int:
         "budget_tokens": args.budget, "budget_tokenizer": args.embed_model,
         "max_context_tables": args.max_context_tables or None,
         "group_context": args.group_context or None,
+        "adaptive_cells": args.adaptive_cells or None,
         "retriever": args.retriever, "alpha": alpha,
         "reader": llm.name if llm else None,
         # llm.name is only "local:<repo>" -- it drops the quantization and dtype
