@@ -723,14 +723,18 @@ def main() -> int:
                          "not the same objective as EM: cutting harder loses "
                          "completeness but removes more distractors, and only a "
                          "reader run can price that trade")
-    ap.add_argument("--adaptive-cells", default="", choices=["", "oracle", "predict"],
+    ap.add_argument("--adaptive-cells", default="",
+                    choices=["", "oracle", "predict", "fixed"],
                     help="cell arm only. 'oracle' truncates the context at the "
                          "rank of the last gold cell -- the shortest complete "
                          "prefix. Uses gold, so it is a CEILING for a per-query "
                          "budget policy, not a method: it says how much of the "
                          "goldcell gap is reachable by stopping early at all. "
                          "'predict' is the METHOD: the same truncation with k "
-                         "estimated from retrieval signal, never from gold")
+                         "estimated from retrieval signal, never from gold. "
+                         "'fixed' is its control -- the same truncation at a "
+                         "CONSTANT k (--budget-margin), which is the thing a "
+                         "learned predictor has to beat to be worth its weight")
     ap.add_argument("--group-context", action="store_true",
                     help="cell arm only: render the SAME cells at the SAME "
                          "budget, ordered so cells of one table sit together. "
@@ -1105,6 +1109,8 @@ def main() -> int:
                 # ceiling of "predict how many cells this query needs", and it is
                 # worth measuring before any predictor is built.
                 stop_at = None
+                if args.adaptive_cells == "fixed" and arm == "cell":
+                    stop_at = max(1, int(args.budget_margin))
                 if args.adaptive_cells == "predict" and arm == "cell":
                     ss = c_scores[c_order]
                     s1 = float(ss[0]) or 1e-9
