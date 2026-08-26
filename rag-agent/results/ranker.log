@@ -20,3 +20,16 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
 Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2344.90it/s]
 [cache] wrote bge-small-en-v1.5_S2_143377_890ca9a8bac86c68.npy
 [corpus] 537 tables / 143377 cells / 231 queries | scheme S2
+
+ranker              @1      @2      @3      @4      @5     @10
+first            0.506   0.658   0.745   0.796   0.827   0.909  <- 현행
+sum_top3         0.472   0.645   0.714   0.779   0.823   0.900
+mean_top3        0.472   0.645   0.714   0.779   0.823   0.900
+sum_top5         0.463   0.615   0.710   0.788   0.818   0.887
+mean_top5        0.463   0.615   0.710   0.788   0.818   0.887
+sum_top10        0.446   0.589   0.684   0.749   0.801   0.887
+mean_top10       0.446   0.589   0.684   0.749   0.801   0.887
+count_top50      0.411   0.584   0.680   0.749   0.775   0.849
+count_top200     0.333   0.459   0.606   0.675   0.745   0.866
+wrote -> results/table_ranker_sweep_realhitbench_S2.json
+DONE 2026-08-26T15:30:29+09:00
