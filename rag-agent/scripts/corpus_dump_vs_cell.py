@@ -713,6 +713,14 @@ def main() -> int:
                          "with tables in context (.803 at 2.6 tables, .332 at "
                          "16.2, across three corpora), and this is the knob "
                          "that moves that quantity directly")
+    ap.add_argument("--group-context", action="store_true",
+                    help="cell arm only: render the SAME cells at the SAME "
+                         "budget, ordered so cells of one table sit together. "
+                         "Nothing about retrieval changes -- OSC must come out "
+                         "bit-identical -- so this isolates whether the reader "
+                         "is hurt by tables being INTERLEAVED, which is what "
+                         "the tables-in-context curve cannot tell apart from "
+                         "their number")
     ap.add_argument("--force-resume", action="store_true")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
@@ -867,6 +875,7 @@ def main() -> int:
                  budget=args.budget, retriever=args.retriever, alpha=alpha,
                  max_tables=args.max_tables or None,
                  max_context_tables=args.max_context_tables or None,
+                 group_context=args.group_context or None,
                  force=args.force_resume)
     # Pick up where a killed run stopped. guard_resume has already refused the
     # case where the configuration changed underneath, so whatever is on disk
@@ -918,6 +927,7 @@ def main() -> int:
 
         for arm in arms:
             used, in_ctx, seen_tables, parts = 0, set(), [], []
+            part_tid = []          # parallel to parts, cell/flat pool only
             if arm in ("dump", "cell2dump"):
                 if arm == "dump":
                     t_rank = [tids[p] for p in t_order]
@@ -1063,9 +1073,23 @@ def main() -> int:
                         continue
                     used += n
                     parts.append(text[pos])
+                    part_tid.append(tid)
                     in_ctx.add((tid, i, j))
                     if tid not in seen_tables:
                         seen_tables.append(tid)
+            # Same cells, same budget, same tokens -- only the ORDER changes, so
+            # OSC is identical by construction and any EM difference is reading
+            # alone. The rejected `group` arm also regrouped, but it recharged
+            # the budget (title once per table instead of once per cell), bought
+            # back space, and pulled in MORE tables -- so it never isolated the
+            # ordering. This does. Stable sort by first-appearance table order
+            # keeps the within-table rank order untouched.
+            if args.group_context and arm == "cell" and len(part_tid) == len(parts):
+                pos_of_tid = {t: k for k, t in enumerate(seen_tables)}
+                parts = [x for _k, x in sorted(
+                    zip((pos_of_tid[t] for t in part_tid), parts),
+                    key=lambda kv: kv[0])]
+
             hit = gold_cells & in_ctx
             n_r, n_c = C.shape[gold_t]
             gold_all = {(gold_t, i, j) for i in range(n_r) for j in range(n_c)}
@@ -1155,6 +1179,7 @@ def main() -> int:
                    "tables": len(tids), "cells": len(cell_chunks)},
         "budget_tokens": args.budget, "budget_tokenizer": args.embed_model,
         "max_context_tables": args.max_context_tables or None,
+        "group_context": args.group_context or None,
         "retriever": args.retriever, "alpha": alpha,
         "reader": llm.name if llm else None,
         # llm.name is only "local:<repo>" -- it drops the quantization and dtype
