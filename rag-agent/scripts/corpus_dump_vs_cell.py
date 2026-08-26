@@ -631,7 +631,7 @@ def main() -> int:
                          "MATCH, not by the label: a question survives only if its "
                          "answer strings resolve to a unique set of data cells, "
                          "which is a cell lookup whatever the dataset called it. "
-                         "Filtering to Value-Matching first would cost 52% of the "
+                         "Filtering to Value-Matching first would cost 52%% of the "
                          "population (243 -> 116) and leave the title split at "
                          "n=45, too thin to test")
     ap.add_argument("--split", default="dev")
