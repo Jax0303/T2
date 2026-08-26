@@ -754,8 +754,14 @@ def main() -> int:
     llm = build_llm(args.reader) if args.reader else None
 
     bud = Budget(args.embed_model)
+    # --alpha overrides the retriever's default weight, so the DENSE half can be
+    # switched on for a retriever whose default is 0. Choosing the encoder off
+    # ALPHA[retriever] instead of the effective alpha handed `bm25 --alpha 0.5` a
+    # zero matrix to score against, which _minmax turns into a constant rather
+    # than an error -- a wrong number, silently. No committed run uses that pair.
+    eff_alpha = ALPHA[args.retriever] if args.alpha is None else args.alpha
     enc = (default_encoder(model_name=args.embed_model)
-           if ALPHA[args.retriever] > 0 else _NoDense())
+           if eff_alpha > 0 else _NoDense())
 
     tbl_chunks = [Chunk(table_id=tid, chunk_id=f"t::{tid}", text=C.table_text[tid],
                         scheme="table", kind="table") for tid in tids]
@@ -817,7 +823,7 @@ def main() -> int:
                       for txt, (t, i) in zip(C.row_text, C.row_owner)]
     cell_owner = C.cell_owner
 
-    if ALPHA[args.retriever] > 0:
+    if eff_alpha > 0:
         # the budget sweep runs the same corpus at six budgets; without this the
         # 58k-cell encoding is paid six times for vectors that cannot differ
         enc = _CachedEncoder(enc, args.cache_dir,
@@ -854,7 +860,7 @@ def main() -> int:
         cells_by_table.setdefault(tid, []).append(n)
         pos_of_cell[(tid, i_, j_)] = n
 
-    alpha = ALPHA[args.retriever] if args.alpha is None else args.alpha
+    alpha = eff_alpha
     tok_cache: dict[str, int] = {}
 
     def md_tokens(tid: str) -> int:

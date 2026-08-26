@@ -606,8 +606,10 @@ def guess_n_header_cols(grid: Grid, n_header_rows: int = 1,
         club     season   league                 <- header row 0
         (blank)  (blank)  division  apps  goals  <- last header row -> 2 stubs
 
-    Measured on 2,043 HiTab tables against gold: 91.3% exact, versus 76.0% for
-    the content-type scan below. The gap is entirely text-valued tables (sports
+    Measured against gold with ``scripts/diag_boundary.py`` on 2026-08-26:
+    92.4% exact on train (2,043 tables), 91.8% on dev (424), 91.8% on test (414),
+    versus 76.0% for the content-type scan below. (The 91.3% this line used to
+    quote was the TEST split before that day's column-boundary fix, not train.) The gap is entirely text-valued tables (sports
     and election tables whose data cells are team names and dates), where no
     numeric-vs-text rule can find the first data column at all.
 

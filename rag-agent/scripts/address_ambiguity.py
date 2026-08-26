@@ -95,7 +95,10 @@ CORPORA = {
                   a.data_dir, "dev", "hitab_dev_lookup_all")),
     "aitqa": ("results/wo_aitqa_s2_512_records.jsonl",
               lambda a: __import__("corpus_dump_vs_cell").aitqa_corpus()),
-    "realhitbench": ("results/rhb_dense_512_s2_records.jsonl",
+    # the header-column fix re-froze rhb_lookup_all at 231, so the run this reads
+    # has to be the one produced on that population -- pairing the 243-query run
+    # against 231 labels silently drops 28 queries and keeps 16 unlabelled
+    "realhitbench": ("results/rhb_hdrfix_512_s2_records.jsonl",
                      lambda a: __import__("corpus_dump_vs_cell").realhitbench_corpus()),
 }
 
