@@ -234,7 +234,7 @@ def main() -> int:
                     if not raw and llm.last_finish_reason == "length":
                         raw = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=1024)
                     rec["correct"] = bool(hitab_exact_match(raw, q.answer))
-                    rec["pred"] = raw[:120]
+                    rec["pred"] = raw
                 done[(q.query_id, arm)] = rec
                 rec_fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
                 rec_fh.flush()

@@ -1,0 +1,220 @@
+{
+  "fix": "strip '$' in _hmt_str_to_float, both sides",
+  "applied": true,
+  "runs": {
+    "ceil_rhb_512_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/ceil_rhb_512_records.jsonl",
+      "queries_flipped": 5,
+      "arms": {
+        "cell": {
+          "n": 215,
+          "before": 0.2372,
+          "after": 0.2419,
+          "delta": 0.0047
+        },
+        "goldcell": {
+          "n": 215,
+          "before": 0.707,
+          "after": 0.7256,
+          "delta": 0.0186
+        }
+      },
+      "summary_json": "results/ceil_rhb_512.json"
+    },
+    "h2h_untitled_rhb_mt2net_512_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/h2h_untitled_rhb_mt2net_512_records.jsonl",
+      "queries_flipped": 3,
+      "arms": {
+        "cell": {
+          "n": 215,
+          "before": 0.2326,
+          "after": 0.2419,
+          "delta": 0.0093
+        },
+        "flat": {
+          "n": 215,
+          "before": 0.1256,
+          "after": 0.1302,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/h2h_untitled_rhb_mt2net_512.json"
+    },
+    "rhb_dense_1024_s2_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_dense_1024_s2_records.jsonl",
+      "queries_flipped": 1,
+      "arms": {
+        "flat": {
+          "n": 215,
+          "before": 0.1209,
+          "after": 0.1256,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/rhb_dense_1024_s2.json"
+    },
+    "rhb_dense_1024_s3_casefix_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_dense_1024_s3_casefix_records.jsonl",
+      "queries_flipped": 2,
+      "arms": {
+        "cell": {
+          "n": 215,
+          "before": 0.2279,
+          "after": 0.2326,
+          "delta": 0.0047
+        },
+        "flat": {
+          "n": 215,
+          "before": 0.1209,
+          "after": 0.1256,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/rhb_dense_1024_s3_casefix.json"
+    },
+    "rhb_dense_1024_s3_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_dense_1024_s3_records.jsonl",
+      "queries_flipped": 1,
+      "arms": {
+        "flat": {
+          "n": 215,
+          "before": 0.1209,
+          "after": 0.1256,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/rhb_dense_1024_s3.json"
+    },
+    "rhb_dense_2048_s2_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_dense_2048_s2_records.jsonl",
+      "queries_flipped": 1,
+      "arms": {
+        "flat": {
+          "n": 215,
+          "before": 0.1256,
+          "after": 0.1302,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/rhb_dense_2048_s2.json"
+    },
+    "rhb_dense_512_s2_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_dense_512_s2_records.jsonl",
+      "queries_flipped": 3,
+      "arms": {
+        "cell": {
+          "n": 215,
+          "before": 0.2186,
+          "after": 0.2233,
+          "delta": 0.0047
+        },
+        "flat": {
+          "n": 215,
+          "before": 0.1256,
+          "after": 0.1302,
+          "delta": 0.0047
+        },
+        "row": {
+          "n": 215,
+          "before": 0.1953,
+          "after": 0.2,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/rhb_dense_512_s2.json"
+    },
+    "rhb_dense_512_s3_casefix_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_dense_512_s3_casefix_records.jsonl",
+      "queries_flipped": 2,
+      "arms": {
+        "flat": {
+          "n": 215,
+          "before": 0.1256,
+          "after": 0.1302,
+          "delta": 0.0047
+        },
+        "row": {
+          "n": 215,
+          "before": 0.1953,
+          "after": 0.2,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/rhb_dense_512_s3_casefix.json"
+    },
+    "rhb_dense_512_s3_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_dense_512_s3_records.jsonl",
+      "queries_flipped": 4,
+      "arms": {
+        "cell": {
+          "n": 215,
+          "before": 0.2419,
+          "after": 0.2512,
+          "delta": 0.0093
+        },
+        "flat": {
+          "n": 215,
+          "before": 0.1256,
+          "after": 0.1302,
+          "delta": 0.0047
+        },
+        "row": {
+          "n": 215,
+          "before": 0.1953,
+          "after": 0.2,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/rhb_dense_512_s3.json"
+    },
+    "rhb_hdrfix_512_s2_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/rhb_hdrfix_512_s2_records.jsonl",
+      "queries_flipped": 2,
+      "arms": {
+        "cell": {
+          "n": 231,
+          "before": 0.2251,
+          "after": 0.2294,
+          "delta": 0.0043
+        },
+        "flat": {
+          "n": 231,
+          "before": 0.1299,
+          "after": 0.1342,
+          "delta": 0.0043
+        }
+      },
+      "summary_json": "results/rhb_hdrfix_512_s2.json"
+    },
+    "s3c_rhb_512_records.jsonl": {
+      "corpus": "realhitbench",
+      "records": "results/s3c_rhb_512_records.jsonl",
+      "queries_flipped": 2,
+      "arms": {
+        "cell": {
+          "n": 215,
+          "before": 0.2372,
+          "after": 0.2419,
+          "delta": 0.0047
+        },
+        "flat": {
+          "n": 215,
+          "before": 0.1256,
+          "after": 0.1302,
+          "delta": 0.0047
+        }
+      },
+      "summary_json": "results/s3c_rhb_512.json"
+    }
+  }
+}

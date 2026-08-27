@@ -254,7 +254,7 @@ def main() -> int:
             out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
             if not out_txt and llm.last_finish_reason == "length":
                 out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=1024)
-            return int(bool(hitab_exact_match_text(out_txt, gold_answer))), out_txt[:120]
+            return int(bool(hitab_exact_match_text(out_txt, gold_answer))), out_txt
 
     per_query, records, ans = {}, [], []
     for qi, q in enumerate(ev_pop):

@@ -1,0 +1,34 @@
+START 2026-08-26T04:43:15+09:00 rhb s2 512 (fixed parser, n=231)
+[corpus] 537 tables / 143377 cells | [pop] 231 queries | budget 512 | dense
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:01,  1.40it/s]Loading weights:   1%|          | 2/339 [00:01<02:54,  1.93it/s]Loading weights:   1%|          | 4/339 [00:01<01:22,  4.08it/s]Loading weights:   1%|▏         | 5/339 [00:01<01:08,  4.85it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:58,  5.71it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:15, 20.82it/s]Loading weights:   6%|▌         | 19/339 [00:01<00:17, 18.48it/s]Loading weights:   8%|▊         | 28/339 [00:02<00:10, 30.04it/s]Loading weights:   9%|▉         | 32/339 [00:02<00:11, 27.17it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:08, 36.03it/s]Loading weights:  13%|█▎        | 45/339 [00:02<00:08, 33.24it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:07, 39.44it/s]Loading weights:  17%|█▋        | 57/339 [00:02<00:08, 35.08it/s]Loading weights:  19%|█▉        | 64/339 [00:02<00:06, 40.35it/s]Loading weights:  20%|██        | 69/339 [00:03<00:07, 35.60it/s]Loading weights:  22%|██▏       | 76/339 [00:03<00:06, 41.20it/s]Loading weights:  24%|██▍       | 81/339 [00:03<00:07, 35.81it/s]Loading weights:  26%|██▌       | 88/339 [00:03<00:05, 42.58it/s]Loading weights:  27%|██▋       | 93/339 [00:03<00:06, 36.73it/s]Loading weights:  29%|██▉       | 100/339 [00:03<00:05, 41.70it/s]Loading weights:  31%|███       | 105/339 [00:04<00:06, 33.72it/s]Loading weights:  33%|███▎      | 112/339 [00:04<00:06, 37.53it/s]Loading weights:  35%|███▍      | 117/339 [00:04<00:06, 34.96it/s]Loading weights:  37%|███▋      | 124/339 [00:04<00:05, 40.38it/s]Loading weights:  38%|███▊      | 129/339 [00:04<00:05, 38.02it/s]Loading weights:  40%|████      | 136/339 [00:04<00:04, 43.80it/s]Loading weights:  42%|████▏     | 141/339 [00:04<00:05, 39.22it/s]Loading weights:  44%|████▎     | 148/339 [00:05<00:04, 45.74it/s]Loading weights:  45%|████▌     | 153/339 [00:05<00:04, 39.86it/s]Loading weights:  47%|████▋     | 160/339 [00:05<00:04, 44.37it/s]Loading weights:  49%|████▊     | 165/339 [00:05<00:04, 37.85it/s]Loading weights:  51%|█████     | 172/339 [00:05<00:03, 42.94it/s]Loading weights:  52%|█████▏    | 177/339 [00:05<00:04, 37.62it/s]Loading weights:  54%|█████▍    | 184/339 [00:05<00:03, 43.39it/s]Loading weights:  56%|█████▌    | 189/339 [00:06<00:04, 35.56it/s]Loading weights:  57%|█████▋    | 193/339 [00:11<00:45,  3.22it/s]Loading weights:  58%|█████▊    | 196/339 [00:11<00:36,  3.89it/s]Loading weights: 100%|██████████| 339/339 [00:09<00:00, 34.46it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  66%|██████▋   | 132/199 [00:00<00:00, 1240.11it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1494.02it/s]
+[cache] wrote bge-small-en-v1.5_537_ce65a2dd5ddc1f3b.npy
+[cache] wrote bge-small-en-v1.5_143377_890ca9a8bac86c68.npy
+[cache] wrote bge-small-en-v1.5_143377_3e9123c632687872.npy
+[cache] wrote bge-small-en-v1.5_28949_39ae047e92b0785a.npy
+[index] built in 121s
+[tokens] 143377 cells / 28949 rows counted in 14s
+  25/231
+  50/231
+  75/231
+  100/231
+  125/231
+  150/231
+  175/231
+  200/231
+  225/231
+
+arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
+flat         0.346     0.355    0.814      0.000      511    8.6    0.130
+cell         0.398     0.408    0.840      0.000      511    5.8    0.225
+
+table recall         @1       @3       @5      @10      @20
+  by_table_index    0.437    0.628    0.753    0.840    0.896
+  by_cell_vote     0.506    0.745    0.827    0.909    0.939
+  osc:cell_vs_flat: 22:10 p=0.0501
+  answer_em:cell_vs_flat: 28:6 p=0.0002
+wrote -> results/rhb_hdrfix_512_s2.json
+OK 2026-08-26T04:54:13+09:00
+DONE 2026-08-26T04:54:13+09:00

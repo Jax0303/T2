@@ -1,0 +1,119 @@
+{
+  "prereg": "PREREG-2026-08-26-group-context.md",
+  "intervention": "same cells, same budget, same tokens -- one table's cells rendered adjacent instead of interleaved",
+  "runs": {
+    "aitqa_s2": {
+      "tables_in_context": 10.51,
+      "n": 451,
+      "control_identical": {
+        "osc": true,
+        "tokens": true,
+        "n_tables": true,
+        "gold_table_any": true
+      },
+      "flat_delta": 0.0,
+      "em": {
+        "base": 0.3104,
+        "grouped": 0.3126,
+        "delta": 0.0022,
+        "only_first": 28,
+        "only_second": 27,
+        "exact_p": 1.0
+      },
+      "em_given_osc1": {
+        "n": 248,
+        "base": 0.5161,
+        "grouped": 0.496,
+        "delta": -0.0202,
+        "only_first": 22,
+        "only_second": 27,
+        "exact_p": 0.5682
+      }
+    },
+    "hitab_s2": {
+      "tables_in_context": 5.86,
+      "n": 830,
+      "control_identical": {
+        "osc": true,
+        "tokens": true,
+        "n_tables": true,
+        "gold_table_any": true
+      },
+      "flat_delta": 0.0,
+      "em": {
+        "base": 0.5169,
+        "grouped": 0.5373,
+        "delta": 0.0205,
+        "only_first": 54,
+        "only_second": 37,
+        "exact_p": 0.0929
+      },
+      "em_given_osc1": {
+        "n": 681,
+        "base": 0.6211,
+        "grouped": 0.649,
+        "delta": 0.0279,
+        "only_first": 54,
+        "only_second": 35,
+        "exact_p": 0.0558
+      }
+    },
+    "hitab_s3c": {
+      "tables_in_context": 2.56,
+      "n": 830,
+      "control_identical": {
+        "osc": true,
+        "tokens": true,
+        "n_tables": true,
+        "gold_table_any": true
+      },
+      "flat_delta": 0.0,
+      "em": {
+        "base": 0.6036,
+        "grouped": 0.6012,
+        "delta": -0.0024,
+        "only_first": 9,
+        "only_second": 11,
+        "exact_p": 0.8238
+      },
+      "em_given_osc1": {
+        "n": 655,
+        "base": 0.7557,
+        "grouped": 0.7527,
+        "delta": -0.0031,
+        "only_first": 8,
+        "only_second": 10,
+        "exact_p": 0.8145
+      }
+    }
+  },
+  "predictions": {
+    "G0": {
+      "stated": "OSC/tokens/n_tables/gold_table_any identical, flat 0:0",
+      "measured": "identical to 4 decimals on all three pairs; flat delta 0.0",
+      "verdict": "PASS -- retrieval is provably untouched, so every EM move below is reading and nothing else"
+    },
+    "G1": {
+      "stated": "AIT-QA delta in +.00 .. +.05",
+      "measured": "+0.0022 (p=1.0), and -0.0202 given OSC=1",
+      "verdict": "PASS on the band, NULL in substance -- p=1.0, and the sign flips negative on the cleaner conditional metric"
+    },
+    "G2": {
+      "stated": "delta(AIT-QA) > delta(HiTab S2) > delta(HiTab S3c)",
+      "measured": "+0.0022 / +0.0205 / -0.0024",
+      "verdict": "FAIL -- the gain peaks at 5.86 tables, not at 10.51. It does not track the table count"
+    },
+    "G3": {
+      "stated": "HiTab S3c |delta| <= .02",
+      "measured": "-0.0024",
+      "verdict": "PASS"
+    }
+  },
+  "verdict": "Second row of the decision table, and only barely. One of the three runs moves: HiTab S2 +.0205 (54:37, p=.093), +.0279 given OSC=1 (54:35, p=.056). AIT-QA is flat and turns NEGATIVE conditionally, HiTab S3c is zero. Not established.",
+  "what_matters_practically": "The one positive is on S2, which is not the deployed index unit. On S3c -- the method -- the effect is -.0024. Whatever grouping buys, it does not apply to the configuration the thesis reports.",
+  "what_this_closes": [
+    "The gain does not track tables in context, so the curve's penalty is about the NUMBER of tables and not their arrangement. The free axis yields at most +.02 on one corpus/scheme and nothing on the method.",
+    "With the aggregation ranker already closed (results/table_ranker_verdict.json), both halves of the cap verdict's next step are now measured. Reducing the reading penalty costs recall; the cheapest real gain remains the cap's +.0192 on HiTab, also not significant.",
+    "CLAUDE.md's +.104 from removing distractors stands as an ORACLE ceiling. No implementable intervention has reached more than a fifth of it."
+  ]
+}

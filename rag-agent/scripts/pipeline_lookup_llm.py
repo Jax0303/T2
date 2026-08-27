@@ -136,7 +136,7 @@ def main() -> int:
                 ok = bool(hitab_exact_match(raw, q.answer))
                 done[(q.query_id, s)] = ok
                 rec_fh.write(json.dumps({"query_id": q.query_id, "arm": s,
-                                         "correct": ok, "pred": raw[:120]}) + "\n")
+                                         "correct": ok, "pred": raw}) + "\n")
                 rec_fh.flush()
             n_done += 1
             if n_done % 25 == 0:

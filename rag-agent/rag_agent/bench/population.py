@@ -73,9 +73,9 @@ def pin(name: str, queries: Iterable, strict: bool = True) -> list:
     if frozen is None:
         return queries
     ids, _ = frozen
-    # 질의는 데이터셋마다 표현이 다르다 -- HiTab은 객체, AIT-QA는 dict. 한쪽만
-    # 받으면 freeze 를 쓸 수 있는 코퍼스가 한쪽으로 제한된다.
-    have = {(q["query_id"] if isinstance(q, dict) else q.query_id): q for q in queries}
+    # AIT-QA / RealHiTBench build their queries as dicts, HiTab as objects
+    have = {(q["query_id"] if isinstance(q, dict) else q.query_id): q
+            for q in queries}
     missing = [i for i in ids if i not in have]
     if missing and strict:
         raise RuntimeError(

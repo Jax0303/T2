@@ -1,0 +1,123 @@
+{
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-25T18:23:52+00:00"
+  },
+  "population": {
+    "name": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+    "n": 451,
+    "frozen": "/home/user/T2-1/rag-agent/populations/aitqa_lookup_all.txt"
+  },
+  "corpus": {
+    "dataset": "aitqa",
+    "split": "dev",
+    "tables": 113,
+    "cells": 5320
+  },
+  "budget_tokens": 512,
+  "budget_tokenizer": "BAAI/bge-small-en-v1.5",
+  "max_context_tables": 2,
+  "retriever": "dense",
+  "alpha": 1.0,
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "reader_spec": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit&dtype=float16",
+  "answer_mode": "direct",
+  "cell_scheme": "S2",
+  "arms_run": [
+    "flat",
+    "cell"
+  ],
+  "max_tables": null,
+  "cell_title": true,
+  "arms": {
+    "dump": "table index -> whole tables in rank order while they fit",
+    "cell": "corpus-wide S2 cell index -> cells while they fit",
+    "cascade": "top-1 table by table index, then its cells only",
+    "cell2dump": "tables ranked by their best cell, dumped whole",
+    "cellrow": "rows ranked by their best cell, emitted as rows",
+    "row": "corpus-wide row-chunk index -> whole data rows",
+    "flat": "corpus-wide cell index, LEAF labels only (ablation)",
+    "capped": "like `cell` but at most 3 cells per table",
+    "group": "same cells and same ranking as `cell`, but rendered grouped by table with the title stated ONCE -- the title is 29% of every S3 sentence and is what the gain comes from, so paying for it per table instead of per cell buys back budget at no information loss"
+  },
+  "summary": {
+    "flat": {
+      "osc": 0.6009,
+      "per_cell": 0.6009,
+      "gold_table_any": 0.8071,
+      "gold_table_whole": 0.0022,
+      "tokens": 511.7406,
+      "n_tables": 15.8049,
+      "answer_em": 0.2195
+    },
+    "cell": {
+      "osc": 0.4191,
+      "per_cell": 0.4191,
+      "gold_table_any": 0.4412,
+      "gold_table_whole": 0.0576,
+      "tokens": 499.1729,
+      "n_tables": 2.0,
+      "answer_em": 0.2949
+    }
+  },
+  "paired_tests": {
+    "osc:cell_vs_flat": {
+      "only_first": 34,
+      "only_second": 116,
+      "exact_p": 0.0
+    },
+    "answer_em:cell_vs_flat": {
+      "only_first": 78,
+      "only_second": 44,
+      "exact_p": 0.0027
+    }
+  },
+  "table_recall": {
+    "by_table_index": {
+      "@1": 0.1463,
+      "@3": 0.286,
+      "@5": 0.3792,
+      "@10": 0.5521,
+      "@20": 0.7273
+    },
+    "by_cell_vote": {
+      "@1": 0.3237,
+      "@3": 0.4878,
+      "@5": 0.5898,
+      "@10": 0.7406,
+      "@20": 0.8692
+    }
+  },
+  "table_recall_paired": {
+    "@1": {
+      "only_first": 100,
+      "only_second": 20,
+      "exact_p": 0.0
+    },
+    "@3": {
+      "only_first": 126,
+      "only_second": 35,
+      "exact_p": 0.0
+    },
+    "@5": {
+      "only_first": 131,
+      "only_second": 36,
+      "exact_p": 0.0
+    },
+    "@10": {
+      "only_first": 122,
+      "only_second": 37,
+      "exact_p": 0.0
+    },
+    "@20": {
+      "only_first": 86,
+      "only_second": 22,
+      "exact_p": 0.0
+    }
+  }
+}

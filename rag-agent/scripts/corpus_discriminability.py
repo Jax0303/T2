@@ -45,8 +45,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
 
 from corpus_dump_vs_cell import (
-    aitqa_corpus, hitab_corpus, label_doc_freq, multihiertt_corpus,
-    realhitbench_corpus, s2h_prefixes, table_labels,
+    aitqa_corpus, hitab_corpus, multihiertt_corpus, realhitbench_corpus,
+    s2h_prefixes,
 )
 
 
@@ -68,47 +68,33 @@ def _collide(keys, owner) -> tuple[int, int]:
     return same, cross
 
 
+def measure(C, scheme: str = "S2") -> dict:
+    """The T0 numbers for one corpus under one cell scheme.
 
-def addresses(C, scheme: str = "S2", k: int = 1) -> list:
-    """셀별 주소 문자열(값 제외). 사전등록이 인용하는 충돌률이 이 주소 기준이다."""
-    base = [" > ".join(rp) + " | " + " > ".join(cp) for rp, cp, _v in C.cell_paths]
-    if scheme == "S2":
-        return base
-    if scheme == "S2h_all":
-        # 겹치지 않는 표 헤더 라벨 전부. 충돌은 가장 많이 줄지만 토큰이 3배를 넘어
-        # T5(+25%)를 깬다. 대조로만 남긴다.
-        tops = table_labels(C)
-        return [f"[{' | '.join(sorted(tops[t] - set(rp) - set(cp)))}] {a}"
-                if (tops[t] - set(rp) - set(cp)) else a
-                for (rp, cp, _v), (t, _i, _j), a
-                in zip(C.cell_paths, C.cell_owner, base)]
-    return [pre + a for pre, a in zip(s2h_prefixes(C, k), base)]
-
-def measure(C) -> dict:
+    ``scheme`` other than S2 prefixes every cell with the table-level
+    discriminator of PREREG-2026-08-25-structural-discriminator.md §3. The
+    prefix goes on the ADDRESS as well as the sentence: it is part of what the
+    encoder sees, and the address (value stripped) is what a query can match.
+    """
     n = len(C.cell_text)
-    same, cross = _collide(C.cell_text, C.cell_owner)
-    addr = addresses(C, "S2")
+    pre = [""] * n if scheme == "S2" else s2h_prefixes(C, scheme)
+    text = [f"[{x}] {t}" if x else t for x, t in zip(pre, C.cell_text)]
+    addr = [(f"[{x}] " if x else "") + " > ".join(rp) + " | " + " > ".join(cp)
+            for x, (rp, cp, _v) in zip(pre, C.cell_paths)]
+    same, cross = _collide(text, C.cell_owner)
     a_same, a_cross = _collide(addr, C.cell_owner)
-    schemes = {}
-    for sch in ("S2h", "S2h_all"):
-        alt = addresses(C, sch)
-        s_same, s_cross = _collide(alt, C.cell_owner)
-        changed = sum(1 for a, b in zip(addr, alt) if a != b)
-        tok = lambda L: sum(len(x.split()) for x in L) / len(L)
-        schemes[sch] = {
-            "changed_frac": round(changed / n, 4),
-            "addr_collision_frac": round((s_same + s_cross) / n, 4),
-            "addr_collision_same_table": round(s_same / n, 4),
-            "addr_collision_cross_table": round(s_cross / n, 4),
-            "tokens_per_cell": round(tok(alt), 2),
-            "tokens_per_cell_ratio": round(tok(alt) / tok(addr), 4),
-        }
     rd = np.array([len(rp) for rp, _cp, _v in C.cell_paths])
     cd = np.array([len(cp) for _rp, cp, _v in C.cell_paths])
     titled = sum(1 for t in C.tids if C.title.get(t))
     return {
+        "scheme": scheme,
         "tables": len(C.tids), "cells": n, "queries": len(C.queries),
         "titled": titled, "titled_frac": round(titled / len(C.tids), 4),
+        # T0: does the scheme actually change the sentence, and what does the
+        # change cost? A scheme that is S2 on most cells cannot buy anything,
+        # and one that doubles the cell blows T5's +25% token cap.
+        "differs_frac": round(sum(1 for x in pre if x) / n, 4),
+        "tokens_per_cell": round(float(np.mean([len(t.split()) for t in text])), 3),
         "collision_frac": round((same + cross) / n, 4),
         "collision_same_table": round(same / n, 4),
         "collision_cross_table": round(cross / n, 4),
@@ -118,7 +104,6 @@ def measure(C) -> dict:
         "row_depth_mean": round(float(rd.mean()), 3),
         "col_depth_mean": round(float(cd.mean()), 3),
         "path_depth_mean": round(float((rd + cd).mean()), 3),
-        "s2h": schemes,
     }
 
 
@@ -129,11 +114,19 @@ def main() -> int:
     ap.add_argument("--population", default="hitab_dev_lookup_all")
     ap.add_argument("--mh-queries", type=int, default=400)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--cell-scheme", default="S2",
+                    help="comma-separated schemes to measure on the same corpus, "
+                         "e.g. 'S2,S2h,S2hr'. S2 first is what the others are "
+                         "read against (T0 of the structural-discriminator "
+                         "prereg: does the scheme change the sentence at all, "
+                         "does it cut cross-table collision, what does it cost)")
     ap.add_argument("--corpora", default="",
-                    help="쉼표로 고른 코퍼스만 잰다. 비우면 전부 -- 다만 hitab 외에는 "
-                         "data/ 가 gitignore라 그 파일이 있는 기계에서만 돈다")
+                    help="comma-separated subset to measure; empty means all. "
+                         "data/ is gitignored, so a machine that only has some "
+                         "of the four corpora needs this to run at all")
     ap.add_argument("--out", default="results/corpus_discriminability.json")
     args = ap.parse_args()
+    schemes = [x.strip() for x in args.cell_scheme.split(",") if x.strip()]
 
     corpora = {
         "hitab": lambda: hitab_corpus(args.data_dir, args.split, args.population),
@@ -144,19 +137,22 @@ def main() -> int:
     if args.corpora:
         want = {x.strip() for x in args.corpora.split(",")}
         corpora = {k: v for k, v in corpora.items() if k in want}
-    out = {"metric": "S2 cell-sentence uniqueness and title coverage, no reader",
-           "corpora": {}}
-    hdr = (f"{'corpus':14}{'tables':>7}{'cells':>8}{'titled':>9}"
+    out = {"metric": "cell-sentence uniqueness and title coverage, no reader",
+           "schemes": schemes, "corpora": {}}
+    hdr = (f"{'corpus':14}{'scheme':7}{'tables':>7}{'cells':>8}{'titled':>9}"
            f"{'collide':>9}{'in-table':>10}{'x-table':>9}{'depth':>7}"
-           f"{'addr':>8}{'addr-x':>8}")
+           f"{'addr':>8}{'addr-x':>8}{'differs':>9}{'tok/cell':>9}")
     print(hdr)
     for name, build in corpora.items():
-        m = measure(build())
-        out["corpora"][name] = m
-        print(f"{name:14}{m['tables']:7}{m['cells']:8}{m['titled_frac']:9.1%}"
-              f"{m['collision_frac']:9.1%}{m['collision_same_table']:10.1%}"
-              f"{m['collision_cross_table']:9.1%}{m['path_depth_mean']:7.2f}"
-              f"{m['addr_collision_frac']:8.1%}{m['addr_collision_cross_table']:8.1%}")
+        C = build()
+        for sch in schemes:
+            m = measure(C, sch)
+            out["corpora"].setdefault(name, {})[sch] = m
+            print(f"{name:14}{sch:7}{m['tables']:7}{m['cells']:8}{m['titled_frac']:9.1%}"
+                  f"{m['collision_frac']:9.1%}{m['collision_same_table']:10.1%}"
+                  f"{m['collision_cross_table']:9.1%}{m['path_depth_mean']:7.2f}"
+                  f"{m['addr_collision_frac']:8.1%}{m['addr_collision_cross_table']:8.1%}"
+                  f"{m['differs_frac']:9.1%}{m['tokens_per_cell']:9.2f}", flush=True)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n")
     print(f"wrote -> {args.out}")

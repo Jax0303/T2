@@ -1,0 +1,129 @@
+{
+  "prereg": "PREREG-2026-08-26-cell-budget-policy.md §6",
+  "question": "does a constant top-k match the learned predictor, and does either reach the oracle?",
+  "arms": {
+    "hitab": {
+      "fixed_k10": {
+        "osc": 0.7313,
+        "tokens": 175.5398,
+        "tables": 2.5795,
+        "em": 0.5145,
+        "delta": -0.0024,
+        "only_first": 73,
+        "only_second": 75,
+        "exact_p": 0.9345
+      },
+      "fixed_k20": {
+        "osc": 0.7855,
+        "tokens": 347.8771,
+        "tables": 3.9193,
+        "em": 0.5217,
+        "delta": 0.0048,
+        "only_first": 52,
+        "only_second": 48,
+        "exact_p": 0.7644
+      },
+      "predictor": {
+        "osc": 0.7723,
+        "tokens": 288.8482,
+        "tables": 3.9614,
+        "em": 0.5169,
+        "delta": 0.0,
+        "only_first": 53,
+        "only_second": 53,
+        "exact_p": 1.0
+      },
+      "oracle": {
+        "osc": 0.8205,
+        "tokens": 151.8783,
+        "tables": 2.841,
+        "em": 0.6325,
+        "delta": 0.1157,
+        "only_first": 129,
+        "only_second": 33,
+        "exact_p": 0.0
+      }
+    },
+    "aitqa": {
+      "fixed_k10": {
+        "osc": 0.4346,
+        "tokens": 191.3348,
+        "tables": 5.0554,
+        "em": 0.2993,
+        "delta": -0.0111,
+        "only_first": 28,
+        "only_second": 33,
+        "exact_p": 0.6089
+      },
+      "fixed_k23": {
+        "osc": 0.5299,
+        "tokens": 431.9224,
+        "tables": 8.6275,
+        "em": 0.3038,
+        "delta": -0.0067,
+        "only_first": 12,
+        "only_second": 15,
+        "exact_p": 0.7011
+      },
+      "predictor": {
+        "osc": 0.5233,
+        "tokens": 417.8492,
+        "tables": 8.6341,
+        "em": 0.3215,
+        "delta": 0.0111,
+        "only_first": 11,
+        "only_second": 6,
+        "exact_p": 0.3323
+      },
+      "oracle": {
+        "osc": 0.5499,
+        "tokens": 290.5455,
+        "tables": 6.4922,
+        "em": 0.4013,
+        "delta": 0.0909,
+        "only_first": 53,
+        "only_second": 12,
+        "exact_p": 0.0
+      }
+    }
+  },
+  "predictions": {
+    "F1": {
+      "stated": "fixed K=10 beats the predictor (+.0000) on HiTab",
+      "measured": "fixed K=10 is -.0024; the predictor is +.0000",
+      "verdict": "FAIL -- and so is everything else implementable. Both are null."
+    },
+    "F2": {
+      "stated": "deliberately no prediction between K=10 and K=20",
+      "measured": "K=20 +.0048 (p=.76), K=10 -.0024 (p=.93)",
+      "verdict": "both null; the larger K is nominally better, which fits the exchange rate -- cutting less loses less completeness"
+    },
+    "F3": {
+      "stated": "no fixed cut reaches the oracle",
+      "measured": "best fixed +.0048 against the oracle's +.1157",
+      "verdict": "PASS"
+    }
+  },
+  "verdict": "Second row of the decision table: the constant and the learned policy are indistinguishable, and both are zero. The adaptive axis is closed; the oracle stays as a ceiling only.",
+  "the_clean_demonstration": {
+    "claim": "at MATCHED context size the only thing that decides EM is whether the gold cell survived the cut",
+    "oracle": {
+      "tokens": 151.8783,
+      "tables": 2.841,
+      "osc": 0.8205,
+      "em": 0.6325
+    },
+    "fixed_k10": {
+      "tokens": 175.5398,
+      "tables": 2.5795,
+      "osc": 0.7313,
+      "em": 0.5145
+    },
+    "reading": "152 tokens over 2.84 tables against 176 over 2.58 -- the same context by any measure -- and EM .6325 against .5145. The whole 11.8-point difference sits in OSC, .8205 against .7313."
+  },
+  "what_this_closes": [
+    "The oracle's +.1157 is NOT 'a smaller context reads better'. It is 'a smaller context that still contains the answer reads better'. Cutting per se buys nothing -- fixed K=10 cuts as hard and loses.",
+    "Knowing which cells to keep requires knowing where the answer is, which is the thing retrieval is trying to determine. The gain is not implementable by any policy that does not already have the answer.",
+    "With reranking already rejected for breaking OSC, the precision axis is closed the same way the reading axis was: every implementable version pays completeness, and completeness is worth more than what the cut returns."
+  ]
+}

@@ -61,17 +61,12 @@ def build_llm(spec: str, **kwargs) -> BaseLLM:
       "openai:gpt-4.1-mini"
     """
     _load_dotenv()
-    # An optional "?k=v&k=v" suffix (e.g. "local:Qwen/...?quantization=8bit")
-    # becomes keyword arguments to the backend; "none" maps to None. Only the
-    # local backend takes them -- LocalQwenLLM accepts quantization/dtype, a
-    # hosted backend would reject them. Without this the whole "Model?..."
-    # string went to HuggingFace as the repo id and raised "Repo id must use
-    # alphanumeric chars".
     backend, _, model = spec.partition(":")
-    model, opts = _split_spec(model)
+    model, spec_kw = _split_spec(model)
+    kwargs = {**spec_kw, **kwargs}          # an explicit kwarg beats the spec
     if backend == "local":
         return LocalQwenLLM(model_name=model or "Qwen/Qwen2.5-7B-Instruct",
-                            **{**opts, **kwargs})
+                            **kwargs)
     if backend == "groq":
         return GroqLLM(model_name=model or "llama-3.3-70b-versatile", **kwargs)
     if backend == "openai":

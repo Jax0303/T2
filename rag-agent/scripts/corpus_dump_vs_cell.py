@@ -47,6 +47,7 @@ import json
 import random
 import sys
 import time
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -54,7 +55,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
-from collections import Counter, defaultdict
 
 from rag_agent.bench import population as pop_mod
 from rag_agent.bench.hitab import load_queries
@@ -64,7 +64,7 @@ from rag_agent.generate.answerer import (
 )
 from rag_agent.llm.factory import build_llm
 from rag_agent.retrieve.encoders import default_encoder
-from rag_agent.retrieve.hybrid_index import HybridIndex, _minmax
+from rag_agent.retrieve.hybrid_index import HybridIndex, _minmax, _tokenize
 from rag_agent.runenv import guard_resume, run_env
 from rag_agent.serialization.base import Chunk
 
@@ -105,7 +105,8 @@ class _CachedEncoder:
             print(f"[cache] hit {f.name}", flush=True)
             return np.load(f)
         emb = self.inner.encode(texts)
-        # first write of the run creates the cache dir
+        # the tag carries the embed model name, which has a "/" in it, so the
+        # key is nested one level below cache_dir -- make the file's own parent
         f.parent.mkdir(parents=True, exist_ok=True)
         np.save(f, emb)
         print(f"[cache] wrote {f.name}", flush=True)
@@ -150,6 +151,14 @@ def table_index_text(raw, pt, bt, mode: str = "full") -> str:
     return " | ".join([title, " ".join(sorted(heads))]).strip()
 
 
+# The corpora whose population is a FUNCTION OF THE CODE and so has to be
+# frozen: AIT-QA and RealHiTBench annotate no gold cells, so membership is
+# whatever the answer-string match resolves today -- and for RealHiTBench
+# that runs through the header reconstructor. HiTab passes its population
+# by name on the command line; these two have exactly one.
+FROZEN_POP = {"aitqa": "aitqa_lookup_all", "realhitbench": "rhb_lookup_all"}
+
+
 @dataclass
 class Corpus:
     """What both datasets have to hand main(): tables, their cells, the queries.
@@ -177,63 +186,6 @@ class Corpus:
     # has no title field, so there S3 differs from S2 by phrasing alone.
     title: dict
     cell_paths: list               # per corpus cell, (row_path, col_path)
-
-
-
-def table_labels(C) -> dict:
-    """표마다 그 표의 헤더 라벨 전체(깊이 무관).
-
-    S2h가 고르는 후보집합이다. 최상위 축 레이블로 좁히면 AIT-QA에서 무너진다 --
-    그 코퍼스는 행 헤더가 빈 표가 많고 depth-0 열 라벨이 'Year' 같은 흔한 것뿐이라
-    표를 특정하지 못한다 (T0 실측: 표 넘는 충돌 26.9% -> 16.4%, 관문 13.5% 미달).
-    깊이를 열면 같은 k에서 8.35%까지 내려간다.
-    """
-    labs = defaultdict(set)
-    for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
-        labs[tid].update(rp)
-        labs[tid].update(cp)
-    return labs
-
-
-def label_doc_freq(C) -> Counter:
-    """라벨 -> 그 라벨을 헤더에 가진 표의 수. 어느 라벨이 표를 특정하는지의 기준."""
-    df = Counter()
-    for labs in table_labels(C).values():
-        df.update(labs)
-    return df
-
-
-def s2h_prefixes(C, k: int = 1) -> list:
-    """셀별 S2h 접두사. 구조에서 뽑은 표 단위 구별자.
-
-    그 표의 헤더 라벨 중 (1) 이 셀의 경로에 없고 -- 이미 문장에 있는 토큰을 반복하면
-    새 정보가 0이다 -- (2) 코퍼스 문서빈도가 가장 낮은, 동률이면 가장 짧은 것 ``k``개.
-
-    드문 것부터 고르는 이유가 이 스킴의 전부다: 표를 넘는 충돌을 줄이는 것은 그 표를
-    코퍼스에서 특정하는 라벨이지 아무 라벨이나가 아니다. 제목이 하던 일을 표 자신의
-    헤더에서 뽑아내는 것이고, 제목과 마찬가지로 이 셀의 경로 바깥에서 온다.
-
-    T0 실측 (LLM 없음 · 인코더 없음, scripts/corpus_discriminability.py):
-
-        표를 넘는 주소 충돌      HiTab      AIT-QA     토큰/셀
-        S2 (기준)               11.29%     26.94%     x1.000
-        S2h k=1                  2.24%      8.35%     x1.13 / x1.18   <- 배선된 값
-        S2h k=2                  2.24%      8.05%     x1.36 / x1.48   (용량 관문 초과)
-
-    k=1이 두 코퍼스에서 충돌 관문(절반 이하)과 용량 관문(+25% 이내)을 동시에 통과하는
-    유일한 지점이라 고른 것이지 EM을 보고 고른 것이 아니다 -- T0은 리더 전에 닫힌다.
-
-    주의: 문서빈도는 코퍼스 통계다. BM25의 IDF와 같은 의미에서 색인 시점 통계이며,
-    표가 추가되면 접두사가 바뀌므로 재색인이 필요하다. 외부 지식은 0이다.
-    """
-    labs = table_labels(C)
-    df = label_doc_freq(C)
-    out = []
-    for (rp, cp, _v), (tid, _i, _j) in zip(C.cell_paths, C.cell_owner):
-        extra = labs[tid] - set(rp) - set(cp)
-        pick = sorted(sorted(extra, key=lambda l: (df[l], len(l.split()), l))[:k])
-        out.append(f"[{' | '.join(pick)}] " if pick else "")
-    return out
 
 
 def build_corpus(data_dir: str, split: str):
@@ -301,8 +253,7 @@ def hitab_corpus(data_dir: str, split: str, population: str,
                   rowner, titles, cpaths)
 
 
-def aitqa_corpus(data_dir: str = "data/aitqa",
-                 population: str = "aitqa_answer_matched") -> Corpus:
+def aitqa_corpus(data_dir: str = "data/aitqa", pin: bool = True) -> Corpus:
     """AIT-QA (Katsis et al., NAACL 2022 industry): airline tables, 113 of them.
 
     The third hierarchical benchmark, and the one that needs no reconstruction:
@@ -367,10 +318,8 @@ def aitqa_corpus(data_dir: str = "data/aitqa",
         qs.append({"query_id": q["id"], "question": q["question"],
                    "answer": q["answers"][0], "gold_table": q["table_id"],
                    "gold_cells": found})
-    # 답 문자열 매칭은 정규화 규칙에 의존하므로 모집단이 코드와 함께 움직인다.
-    # 고정된 목록에 pin 해서, 정규화가 바뀌면 수치가 아니라 실행이 실패하게 한다.
-    if population:
-        qs = pop_mod.pin(population, qs)
+    if pin:                              # freeze_populations derives it unpinned
+        qs = pop_mod.pin(FROZEN_POP["aitqa"], qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, {t: '' for t in tids}, cpaths)
 
@@ -414,8 +363,7 @@ def _rhb_split_title(grid):
 
 
 def realhitbench_corpus(data_dir: str = "data/realhitbench",
-                        subqtypes: tuple = (),
-                        population: str = "realhitbench_answer_matched") -> Corpus:
+                        subqtypes: tuple = (), pin: bool = True) -> Corpus:
     """RealHiTBench (Zhang et al., ACL Findings 2025; arXiv:2506.13405).
 
     The fourth hierarchical benchmark and the first where the TITLE varies inside
@@ -462,7 +410,12 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
         if not grid or len(grid) < 3 or len(grid[0]) < 2:
             continue
         title, grid = _rhb_split_title(grid)
+        # Each guess is the other's input, and the default n_header_rows=1 made
+        # `guess_n_header_cols` judge "is this column data?" over a region that
+        # still held 4 header rows. One extra pass settles it.
         nhc = guess_n_header_cols(grid)
+        nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=nhc), len(grid) - 1))
+        nhc = guess_n_header_cols(grid, n_header_rows=nhr)
         nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=nhc), len(grid) - 1))
         cols = reconstruct_col_paths(grid, nhr, n_header_cols=nhc)
         rows = reconstruct_row_paths(grid, nhr, n_header_cols=nhc)
@@ -512,16 +465,13 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
             continue                      # unresolved, or the match is ambiguous
         qs.append({"query_id": str(q["id"]), "question": q["Question"],
                    "answer": ans, "gold_table": tid, "gold_cells": found})
-    # AIT-QA와 같은 이유로 고정한다 -- 답 문자열 매칭이 정규화와 HTML 파싱에 함께
-    # 의존하므로, 어느 쪽이 바뀌어도 모집단이 조용히 움직인다.
-    if population and not subqtypes:
-        qs = pop_mod.pin(population, qs)
+    if pin and not subqtypes:            # the freeze is over the whole QA file
+        qs = pop_mod.pin(FROZEN_POP["realhitbench"], qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, titles, cpaths)
 
 
-def multihiertt_corpus(n_queries: int, seed: int,
-                       population: str = "multihiertt_400_seed42") -> Corpus:
+def multihiertt_corpus(n_queries: int, seed: int) -> Corpus:
     """Same shape from MultiHiertt, where a table is an HTML string in a document.
 
     MultiHiertt carries no global table id -- each row ships its own document's
@@ -576,10 +526,6 @@ def multihiertt_corpus(n_queries: int, seed: int,
                 for t_idx, r, c in q["cells"] if t_idx in local}
         qs.append({"query_id": q["uid"], "question": q["question"],
                    "answer": q["answer"], "gold_table": next(iter(gold))[0], "gold_cells": gold})
-    # 표본은 (n_queries, seed)로 정해지지만 상류 필터가 바뀌면 같은 seed도 다른
-    # 질의를 준다. 기본 설정(400/42)만 고정한다.
-    if population and (n_queries, seed) == (400, 42):
-        qs = pop_mod.pin(population, qs)
     return Corpus(sorted(md), md, ttext, shape, ctext, owner, qs,
                   ftext, rtext, rowner, {t: '' for t in md}, cpaths)
 
@@ -604,6 +550,67 @@ def rank_of(index: HybridIndex, question: str, alpha: float) -> list[int]:
     if alpha == 1.0:
         return list(np.argsort(-dn))
     return list(np.argsort(-(alpha * _minmax(dn) + (1 - alpha) * _minmax(bm))))
+
+
+def _table_roots(C) -> dict:
+    """tid -> the top-level labels of that table's header forest, first seen first.
+
+    The header tree's top level is the only table-level term all four corpora
+    have. Three of them ship no title (`results/corpus_discriminability.json`),
+    and AIT-QA ships no header STUB either -- its tables are
+    ``column_header``/``row_header`` ancestor lists with no grid -- so the axis
+    NAME that PREREG-2026-08-25-structural-discriminator.md §3 writes in its
+    example ("[Province | Census year]") cannot be read off the annotation on the
+    corpus that document's primary test (T1) runs on. Roots can.
+    """
+    roots = defaultdict(dict)                    # dict, not set: insertion order
+    for (rp, cp, _v), (t, _i, _j) in zip(C.cell_paths, C.cell_owner):
+        for path in (rp, cp):
+            if path and str(path[0]).strip():
+                roots[t][str(path[0]).strip()] = None
+    return {t: list(v) for t, v in roots.items()}
+
+
+def s2h_prefixes(C, variant: str = "S2h") -> list:
+    """Per cell, the table-level discriminator its S2 sentence gets prefixed with.
+
+    Two readings of §3, because they differ on the one share the scheme exists to
+    buy -- NARROWING, i.e. fewer tables in the context:
+
+    S2h   §3 as written: every top-level label of the table's header forest that
+          is not already in this cell's own path. The exclusion rule is §3's core
+          ("repeating a token already in the sentence is zero new information"),
+          and it is what makes the term PER-CELL rather than per-table: in a
+          table whose row axis has many roots, the cell under one root is
+          prefixed with all the others. A term that differs cell to cell cannot
+          pull a table's cells up together.
+    S2hr  the table's rarest root -- lowest table-frequency across the corpus --
+          on EVERY cell of the table, no exclusion. Constant per table, so it can
+          narrow; one label, so it cannot blow the +25% token cap of T5.
+
+    T0 decides between them before any EM is read; whichever is registered, the
+    other is its control.
+    """
+    roots = _table_roots(C)
+    if variant == "S2hr":
+        df = Counter(r for rs in roots.values() for r in {x.lower() for x in rs})
+        pick = {t: min(rs, key=lambda r: (df[r.lower()], r)) if rs else ""
+                for t, rs in roots.items()}
+        return [pick.get(t, "") for _t, (t, _i, _j)
+                in zip(C.cell_paths, C.cell_owner)]
+    out = []
+    for (rp, cp, _v), (t, _i, _j) in zip(C.cell_paths, C.cell_owner):
+        in_path = {str(x).strip().lower() for x in list(rp) + list(cp)}
+        out.append(" | ".join(r for r in roots.get(t, ())
+                              if r.lower() not in in_path))
+    return out
+
+
+def s2h_cell_text(C, variant: str = "S2h") -> list:
+    """S2, prefixed with :func:`s2h_prefixes`."""
+    return [f"[{pre}] {cell_text(list(rp), list(cp), v, 'S2')}" if pre
+            else cell_text(list(rp), list(cp), v, "S2")
+            for pre, (rp, cp, v) in zip(s2h_prefixes(C, variant), C.cell_paths)]
 
 
 def main() -> int:
@@ -635,6 +642,9 @@ def main() -> int:
                          "(results/alpha_sweep_prefix.json), so the value "
                          "a run used is recorded rather than implied by "
                          "the retriever name.")
+    ap.add_argument("--titles", default=None,
+                    help="JSON of tid -> generated title, injected into the "
+                         "cell sentence at index time (untitled corpora only)")
     ap.add_argument("--embed-model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-queries", type=int, default=0)
@@ -665,7 +675,7 @@ def main() -> int:
     ap.add_argument("--codegen-max-tokens", type=int, default=512,
                     help="completion cap for the codegen line")
     ap.add_argument("--cell-scheme", default="S2",
-                    choices=["S2", "S2r", "S2t", "S2h", "S3", "S3c", "mt2net"],
+                    choices=["S2", "S2r", "S2t", "S2h", "S2hr", "S3", "S3c", "mt2net"],
                     help="what the CELL arm indexes. S2 is the bare header path "
                          "('a > b > c: v'); S3 is this work's deployed index unit "
                          "-- a sentence stating the table title and both paths "
@@ -693,6 +703,43 @@ def main() -> int:
                     help="comma-separated subset of arms to run, e.g. 'flat,cell'. "
                          "The arms that ignore --cell-scheme need not be paid for "
                          "twice. Default: all")
+    ap.add_argument("--max-context-tables", type=int, default=0,
+                    help="cell arm only: admit cells from at most this many "
+                         "distinct tables, then keep filling the budget from "
+                         "those. 0 = no cap. The conditional-EM curve falls "
+                         "with tables in context (.803 at 2.6 tables, .332 at "
+                         "16.2, across three corpora), and this is the knob "
+                         "that moves that quantity directly")
+    ap.add_argument("--budget-model", default="results/cell_budget_model.pkl",
+                    help="--adaptive-cells predict: the pickle from "
+                         "scripts/cell_budget_predictor.py, carrying the fitted "
+                         "model, its feature order and the margin chosen on TRAIN")
+    ap.add_argument("--budget-margin", type=float, default=0.0,
+                    help="override the margin stored in --budget-model. The stored "
+                         "one is chosen on TRAIN for a retention target, which is "
+                         "not the same objective as EM: cutting harder loses "
+                         "completeness but removes more distractors, and only a "
+                         "reader run can price that trade")
+    ap.add_argument("--adaptive-cells", default="",
+                    choices=["", "oracle", "predict", "fixed"],
+                    help="cell arm only. 'oracle' truncates the context at the "
+                         "rank of the last gold cell -- the shortest complete "
+                         "prefix. Uses gold, so it is a CEILING for a per-query "
+                         "budget policy, not a method: it says how much of the "
+                         "goldcell gap is reachable by stopping early at all. "
+                         "'predict' is the METHOD: the same truncation with k "
+                         "estimated from retrieval signal, never from gold. "
+                         "'fixed' is its control -- the same truncation at a "
+                         "CONSTANT k (--budget-margin), which is the thing a "
+                         "learned predictor has to beat to be worth its weight")
+    ap.add_argument("--group-context", action="store_true",
+                    help="cell arm only: render the SAME cells at the SAME "
+                         "budget, ordered so cells of one table sit together. "
+                         "Nothing about retrieval changes -- OSC must come out "
+                         "bit-identical -- so this isolates whether the reader "
+                         "is hurt by tables being INTERLEAVED, which is what "
+                         "the tables-in-context curve cannot tell apart from "
+                         "their number")
     ap.add_argument("--force-resume", action="store_true")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
@@ -714,6 +761,18 @@ def main() -> int:
         C = realhitbench_corpus(subqtypes=tuple(args.rhb_subqtypes))
     else:
         C = multihiertt_corpus(args.mh_queries, args.seed)
+    if args.titles:
+        # A corpus that ships no title becomes one that has titles, and nothing
+        # else moves: the table-level index text is left alone, so dump/row stay
+        # byte-identical and only the cell sentence changes.
+        # PREREG-2026-08-27-generated-title.md
+        gen = json.loads(Path(args.titles).read_text())
+        missing = [t for t in C.tids if not gen.get(t)]
+        if missing:
+            raise SystemExit(f"--titles is missing {len(missing)} of {len(C.tids)} "
+                             f"tables (first: {missing[:3]}); a partial override "
+                             f"would make the arms incomparable")
+        C.title.update({t: gen[t] for t in C.tids})
     pop = C.queries[: args.max_queries] if args.max_queries else C.queries
     tids = C.tids
     print(f"[corpus] {len(tids)} tables / {len(C.cell_text)} cells | "
@@ -723,8 +782,14 @@ def main() -> int:
     llm = build_llm(args.reader) if args.reader else None
 
     bud = Budget(args.embed_model)
+    # --alpha overrides the retriever's default weight, so the DENSE half can be
+    # switched on for a retriever whose default is 0. Choosing the encoder off
+    # ALPHA[retriever] instead of the effective alpha handed `bm25 --alpha 0.5` a
+    # zero matrix to score against, which _minmax turns into a constant rather
+    # than an error -- a wrong number, silently. No committed run uses that pair.
+    eff_alpha = ALPHA[args.retriever] if args.alpha is None else args.alpha
     enc = (default_encoder(model_name=args.embed_model)
-           if ALPHA[args.retriever] > 0 else _NoDense())
+           if eff_alpha > 0 else _NoDense())
 
     tbl_chunks = [Chunk(table_id=tid, chunk_id=f"t::{tid}", text=C.table_text[tid],
                         scheme="table", kind="table") for tid in tids]
@@ -754,13 +819,11 @@ def main() -> int:
         C.cell_text[:] = [f"{tag[t]} | {cell_text(rp, cp, v, 'S2')}"
                           for (rp, cp, v), (t, i, j)
                           in zip(C.cell_paths, C.cell_owner)]
-    if args.cell_scheme == "S2h":
-        # 구조에서 뽑은 표 단위 구별자. S2t(무의미한 서수 태그)는 표를 넘는 충돌을
-        # 0.00%까지 없애고도 AIT-QA에서 -.032로 졌다 -- 질의가 `t47`을 칠 수 없어
-        # 검색을 좁히지 못했기 때문이다. S2h가 붙이는 것은 실제 헤더 단어라 좁힐
-        # 자격이 있고, 그 하나가 이 스킴과 S2t의 유일한 차이다.
-        C.cell_text[:] = [pre + txt for pre, txt
-                          in zip(s2h_prefixes(C), C.cell_text)]
+    if args.cell_scheme in ("S2h", "S2hr"):
+        # a table-level term taken from the header tree instead of from a
+        # title field the other three corpora do not have -- see
+        # s2h_cell_text and PREREG-2026-08-25-structural-discriminator.md
+        C.cell_text[:] = s2h_cell_text(C, args.cell_scheme)
     if args.cell_scheme in ("S3", "S3c", "mt2net"):
         # re-render from the same paths the S2 text was built from, so the
         # schemes differ in rendering only and the cell SET stays identical.
@@ -788,11 +851,23 @@ def main() -> int:
                       for txt, (t, i) in zip(C.row_text, C.row_owner)]
     cell_owner = C.cell_owner
 
-    if ALPHA[args.retriever] > 0:
+    if eff_alpha > 0:
         # the budget sweep runs the same corpus at six budgets; without this the
         # 58k-cell encoding is paid six times for vectors that cannot differ
         enc = _CachedEncoder(enc, args.cache_dir,
                              f"{args.dataset}_{args.split}_{args.embed_model}")
+
+    budget_model = None
+    if args.adaptive_cells == "predict":
+        import pickle
+        budget_model = pickle.loads(Path(args.budget_model).read_bytes())
+        if args.budget_margin:
+            budget_model["margin"] = args.budget_margin
+        if (ALPHA[args.retriever] if args.alpha is None else args.alpha) != 1.0:
+            raise SystemExit("--adaptive-cells predict needs dense scores "
+                             "(--retriever dense); the features are read off them")
+        print(f"[budget] {args.budget_model} margin={budget_model['margin']} "
+              f"fit_on={budget_model['fit_on']}", flush=True)
 
     t0 = time.time()
     tbl_ix = HybridIndex(tbl_chunks, encoder=enc, alpha=0.5)
@@ -825,7 +900,7 @@ def main() -> int:
         cells_by_table.setdefault(tid, []).append(n)
         pos_of_cell[(tid, i_, j_)] = n
 
-    alpha = ALPHA[args.retriever] if args.alpha is None else args.alpha
+    alpha = eff_alpha
     tok_cache: dict[str, int] = {}
 
     def md_tokens(tid: str) -> int:
@@ -838,13 +913,18 @@ def main() -> int:
     guard_resume(rec_path, env,
                  reader=(f"{llm.name}#{args.answer_mode}" if llm else None),
                  population=(args.population if args.dataset == "hitab"
-                             else "aitqa_answer_matched" if args.dataset == "aitqa"
+                             else FROZEN_POP["aitqa"] if args.dataset == "aitqa"
                              else f"rhb_{'_'.join(args.rhb_subqtypes)}"
                              if args.dataset == "realhitbench"
                              else f"multihiertt_{args.mh_queries}_{args.seed}"),
                  cell_scheme=args.cell_scheme, cell_title=not args.no_title,
+                 titles=args.titles,
                  budget=args.budget, retriever=args.retriever, alpha=alpha,
                  max_tables=args.max_tables or None,
+                 max_context_tables=args.max_context_tables or None,
+                 group_context=args.group_context or None,
+                 adaptive_cells=args.adaptive_cells or None,
+                 budget_margin=(budget_model["margin"] if budget_model else None),
                  force=args.force_resume)
     # Pick up where a killed run stopped. guard_resume has already refused the
     # case where the configuration changed underneath, so whatever is on disk
@@ -878,7 +958,14 @@ def main() -> int:
                "gold_table_tokens": md_tokens(gold_t)}
 
         t_order = rank_of(tbl_ix, q["question"], alpha)
-        c_order = rank_of(cell_ix, q["question"], alpha)
+        if budget_model is None:
+            c_order = rank_of(cell_ix, q["question"], alpha)
+            c_scores = None
+        else:
+            # same ranking rank_of gives at alpha=1, but the SCORES are what the
+            # budget features read, and rank_of throws them away
+            c_scores = cell_ix._dense_scores(q["question"])
+            c_order = list(np.argsort(-c_scores))
         f_order = rank_of(flat_ix, q["question"], alpha)
         r_order = rank_of(row_ix, q["question"], alpha)
         c_pos = positions(c_order)
@@ -896,6 +983,7 @@ def main() -> int:
 
         for arm in arms:
             used, in_ctx, seen_tables, parts = 0, set(), [], []
+            part_tid = []          # parallel to parts, cell/flat pool only
             if arm in ("dump", "cell2dump"):
                 if arm == "dump":
                     t_rank = [tids[p] for p in t_order]
@@ -1020,7 +1108,50 @@ def main() -> int:
                 pool = (order if arm in ("cell", "flat")
                         else sorted(cells_by_table.get(tids[t_order[0]], []),
                                     key=lambda x: c_pos[x]))
-                for pos in pool:
+                # An ORACLE, not a method: stop the cell arm at the rank of the
+                # LAST gold cell, so the context is the shortest prefix that is
+                # still complete. goldcell (48 tokens, .888 on HiTab) deletes the
+                # distractors that OUTRANK gold, which no policy can do; this
+                # keeps them and drops only the tail. It is therefore the real
+                # ceiling of "predict how many cells this query needs", and it is
+                # worth measuring before any predictor is built.
+                stop_at = None
+                if args.adaptive_cells == "fixed" and arm == "cell":
+                    stop_at = max(1, int(args.budget_margin))
+                if args.adaptive_cells == "predict" and arm == "cell":
+                    ss = c_scores[c_order]
+                    s1 = float(ss[0]) or 1e-9
+                    owners10 = {cell_owner[p_][0] for p_ in c_order[:10]}
+                    owners50 = {cell_owner[p_][0] for p_ in c_order[:50]}
+                    feat = {"gap12": float(ss[0] - ss[1]) / s1,
+                            "gap1_10": float(ss[0] - ss[min(9, len(ss) - 1)]) / s1,
+                            "gap1_50": float(ss[0] - ss[min(49, len(ss) - 1)]) / s1,
+                            "cv50": float(np.std(ss[:50]) / (abs(np.mean(ss[:50])) + 1e-9)),
+                            "tab10": len(owners10), "tab50": len(owners50),
+                            "qlen": len(_tokenize(q["question"]))}
+                    x = np.array([[feat[f] for f in budget_model["features"]]])
+                    khat = float(np.expm1(budget_model["model"].predict(x))[0])
+                    stop_at = max(1, int(np.ceil(khat * budget_model["margin"])))
+                if args.adaptive_cells == "oracle" and arm == "cell":
+                    ranks = [int(c_pos[pos_of_cell[g]]) for g in gold_cells
+                             if g in pos_of_cell]
+                    stop_at = (max(ranks) + 1) if ranks else None
+                for rank_, pos in enumerate(pool):
+                    if stop_at is not None and rank_ >= stop_at:
+                        break
+                    tid, i, j = cell_owner[pos]
+                    # Bound the number of TABLES the context may draw from, and
+                    # spend the rest of the budget inside the ones already
+                    # admitted. The `capped` arm bounded cells PER TABLE and made
+                    # this worse -- the budget it freed was filled by new tables,
+                    # 3.0 -> 9.1 of them. This bounds the quantity that the
+                    # conditional-EM curve actually tracks. Only the `cell` arm
+                    # takes it, so `flat` stays byte-identical to every other run
+                    # and remains usable as the join control.
+                    if (args.max_context_tables and arm == "cell"
+                            and tid not in seen_tables
+                            and len(seen_tables) >= args.max_context_tables):
+                        continue
                     n = int(tok[pos])
                     if used + n > args.budget:
                         if used + int(tok.min()) > args.budget:
@@ -1028,10 +1159,23 @@ def main() -> int:
                         continue
                     used += n
                     parts.append(text[pos])
-                    tid, i, j = cell_owner[pos]
+                    part_tid.append(tid)
                     in_ctx.add((tid, i, j))
                     if tid not in seen_tables:
                         seen_tables.append(tid)
+            # Same cells, same budget, same tokens -- only the ORDER changes, so
+            # OSC is identical by construction and any EM difference is reading
+            # alone. The rejected `group` arm also regrouped, but it recharged
+            # the budget (title once per table instead of once per cell), bought
+            # back space, and pulled in MORE tables -- so it never isolated the
+            # ordering. This does. Stable sort by first-appearance table order
+            # keeps the within-table rank order untouched.
+            if args.group_context and arm == "cell" and len(part_tid) == len(parts):
+                pos_of_tid = {t: k for k, t in enumerate(seen_tables)}
+                parts = [x for _k, x in sorted(
+                    zip((pos_of_tid[t] for t in part_tid), parts),
+                    key=lambda kv: kv[0])]
+
             hit = gold_cells & in_ctx
             n_r, n_c = C.shape[gold_t]
             gold_all = {(gold_t, i, j) for i in range(n_r) for j in range(n_c)}
@@ -1071,7 +1215,7 @@ def main() -> int:
                                                max_tokens=1024)
                 rec[arm]["answer_em"] = int(bool(
                     hitab_exact_match_text(out_txt, q["answer"])))
-                rec[arm]["pred"] = out_txt[:120]
+                rec[arm]["pred"] = out_txt
         recs.append(rec)
         rec_fh.write(json.dumps(rec, ensure_ascii=False, default=str) + "\n")
         rec_fh.flush()
@@ -1111,10 +1255,19 @@ def main() -> int:
                        f"multihiertt table-only, seed {args.seed}, n={args.mh_queries}",
                        "n": len(recs),
                        "frozen": (str(pop_mod.path(args.population))
-                                  if args.dataset == "hitab" else None)},
+                                  if args.dataset == "hitab" else
+                                  str(pop_mod.path(FROZEN_POP[args.dataset]))
+                                  if args.dataset in FROZEN_POP
+                                  and not (args.dataset == "realhitbench"
+                                           and args.rhb_subqtypes)
+                                  else None)},
         "corpus": {"dataset": args.dataset, "split": args.split,
                    "tables": len(tids), "cells": len(cell_chunks)},
         "budget_tokens": args.budget, "budget_tokenizer": args.embed_model,
+        "max_context_tables": args.max_context_tables or None,
+        "group_context": args.group_context or None,
+        "adaptive_cells": args.adaptive_cells or None,
+        "budget_margin": (budget_model["margin"] if budget_model else None),
         "retriever": args.retriever, "alpha": alpha,
         "reader": llm.name if llm else None,
         # llm.name is only "local:<repo>" -- it drops the quantization and dtype

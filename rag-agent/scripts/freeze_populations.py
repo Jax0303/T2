@@ -224,52 +224,41 @@ def hitab_corpus_arith(data_dir: str, split: str) -> tuple[list[str], dict]:
                  "used_by": ["corpus_dump_vs_cell"]}
 
 
-def aitqa_answer_matched(data_dir: str) -> tuple[list[str], dict]:
-    """AIT-QA 질의 중 답 문자열이 셀 집합으로 유일하게 풀리는 것.
+def aitqa_lookup_all(_data_dir: str) -> tuple[list[str], dict]:
+    """Every AIT-QA question whose answer strings resolve to a unique cell set.
 
-    AIT-QA는 정답 셀을 주석하지 않으므로 답 문자열을 셀 값에 맞춰 회수한다. 맞은
-    개수가 답 개수와 다르면 gold 집합이 과잉이므로 채점하지 않고 버린다 --
-    corpus_dump_vs_cell.aitqa_corpus 의 조건과 바이트 단위로 같은 규칙이다.
-
-    freeze 하는 이유: 이 유도는 정규화 규칙(공백·쉼표·통화·백분율 제거)에 의존하고,
-    정규화가 한 글자만 바뀌어도 모집단 크기가 움직인다. 고정하지 않으면 이후 모든
-    AIT-QA 수치가 서로 다른 모집단 위에서 비교된다.
+    AIT-QA annotates no gold cells, so the population is whatever
+    :func:`corpus_dump_vs_cell.aitqa_corpus` recovers by matching answer strings
+    against cell values -- i.e. a function of the code, which is the thing
+    ``rag_agent/bench/population.py`` exists to freeze. Cross-dataset claims are
+    read off this corpus, so it has to stop moving before they are made
+    (PREREG-2026-08-25-structural-discriminator.md §9).
     """
-    import re
-
-    def norm(s):
-        return re.sub(r"[\s,$%]", "", str(s)).strip().lower()
-
-    tabs = {d["id"]: d for d in
-            (json.loads(l) for l in open(f"{data_dir}/aitqa_tables.jsonl"))}
-    ids = []
-    for q in (json.loads(l) for l in open(f"{data_dir}/aitqa_questions.jsonl")):
-        t = tabs.get(q["table_id"])
-        if t is None:
-            continue
-        want = {norm(a) for a in q["answers"] if norm(a)}
-        found = {(i, j) for i, row in enumerate(t["data"])
-                 for j, v in enumerate(row) if norm(v) in want}
-        if found and len(found) == len(want):
-            ids.append(q["id"])
-    return ids, {
-        "dataset": "aitqa", "split": "all (단일 split)",
-        "filter": "답 문자열이 셀 값과 맞고, 맞은 셀 수 == 서로 다른 답 수",
-        "order": "aitqa_questions.jsonl 파일 순서", "n": len(ids),
-        "source": "https://github.com/IBM/AITQA raw_data/",
-        "used_by": ["corpus_dump_vs_cell (aitqa)"]}
+    from corpus_dump_vs_cell import aitqa_corpus
+    C = aitqa_corpus(pin=False)
+    return [q["query_id"] for q in C.queries], {
+        "dataset": "aitqa", "split": "all",
+        "filter": "answer strings resolve to a unique cell set; ambiguous dropped",
+        "order": "aitqa_questions.jsonl file order", "n": len(C.queries),
+        "used_by": ["corpus_dump_vs_cell"]}
 
 
-def _from_builder(build, meta: dict) -> tuple[list[str], dict]:
-    """모집단을 코퍼스 빌더에서 직접 받는다.
+def rhb_lookup_all(_data_dir: str) -> tuple[list[str], dict]:
+    """The same for RealHiTBench, where membership also runs through the parser.
 
-    유도 규칙을 여기에 다시 구현하면 빌더와 갈라지고, 갈라진 사실을 아무도 모른다.
-    빌더를 pin 없이 한 번 돌려 나온 query_id 목록이 곧 모집단이다.
+    Here the answer match happens on a grid the header reconstructor produced, so
+    a reconstruction change moves membership as well as the metric -- one more
+    reason than AIT-QA has to freeze it. All SubQTypes; a subtype-filtered run
+    does not pin.
     """
-    C = build()
-    ids = [q["query_id"] if isinstance(q, dict) else q.query_id for q in C.queries]
-    return ids, {**meta, "n": len(ids),
-                 "derivation": "corpus_dump_vs_cell 빌더를 pin 없이 실행한 결과"}
+    from corpus_dump_vs_cell import realhitbench_corpus
+    C = realhitbench_corpus(pin=False)
+    return [q["query_id"] for q in C.queries], {
+        "dataset": "realhitbench", "split": "all", "subqtypes": "all",
+        "filter": "table parses, >=3 rows; answer strings resolve to a unique "
+                  "cell set; ambiguous dropped",
+        "order": "QA_final.json order", "n": len(C.queries),
+        "used_by": ["corpus_dump_vs_cell"]}
 
 
 SPECS = {
@@ -285,15 +274,8 @@ SPECS = {
     "hitab_train_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "train"),
     "hitab_dev_size_strata": lambda a: hitab_size_strata(a.data_dir, "dev", a.per_bucket),
     "hitab_train_size_strata": lambda a: hitab_size_strata(a.data_dir, "train", a.per_bucket),
-    "aitqa_answer_matched": lambda a: aitqa_answer_matched(a.aitqa_dir),
-    "realhitbench_answer_matched": lambda a: _from_builder(
-        lambda: __import__("corpus_dump_vs_cell").realhitbench_corpus(population=""),
-        {"dataset": "realhitbench", "filter": "답 문자열이 셀 값과 맞고 개수가 일치",
-         "source": "https://huggingface.co/datasets/spzy/RealHiTBench (QA_final.json + html/)"}),
-    "multihiertt_400_seed42": lambda a: _from_builder(
-        lambda: __import__("corpus_dump_vs_cell").multihiertt_corpus(400, 42, population=""),
-        {"dataset": "multihiertt", "filter": "표만 쓰는 질의, gold 셀 좌표 보존, n=400 seed=42",
-         "source": "https://huggingface.co/datasets/bevaya/MultiHiertt"}),
+    "aitqa_lookup_all": lambda a: aitqa_lookup_all(a.data_dir),
+    "rhb_lookup_all": lambda a: rhb_lookup_all(a.data_dir),
 }
 
 
@@ -301,7 +283,6 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data-dir", default="data/hitab")
-    ap.add_argument("--aitqa-dir", default="data/aitqa")
     ap.add_argument("--per-bucket", type=int, default=100,
                     help="queries per table-size stratum (size-strata populations)")
     ap.add_argument("--only", default="", help="comma-separated population names")

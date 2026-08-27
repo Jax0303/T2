@@ -269,7 +269,7 @@ def main() -> int:
                 done[(q["uid"], arm)] = ok
                 rec_fh.write(json.dumps({
                     "uid": q["uid"], "arm": arm, "kind": q["kind"], "correct": ok,
-                    "pred": pred[:120], "gold": q["answer"],
+                    "pred": pred, "gold": q["answer"],
                     "ctx_tokens": bud.count(ctx[arm]),
                     "n_tables": n_tab, "md_truncated": tr}) + "\n")
                 rec_fh.flush()
