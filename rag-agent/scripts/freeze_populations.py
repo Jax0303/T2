@@ -261,6 +261,32 @@ def rhb_lookup_all(_data_dir: str) -> tuple[list[str], dict]:
         "used_by": ["corpus_dump_vs_cell"]}
 
 
+def rhb_nr_all(_data_dir: str) -> tuple[list[str], dict]:
+    """Every RealHiTBench Numerical Reasoning question, gold-cell filter LIFTED.
+
+    The NR answer is usually a COMPUTED value that is written in no cell, so the
+    answer-string match that defines `rhb_lookup_all` keeps 54 of 771 (7.0%) --
+    and the 54 are the easy instances, the ones whose answer happens to already
+    be in the table. That filter exists to make OSC measurable;
+    PREREG-2026-08-27-rhb-nr-large-tables.md §2 gives OSC up for this population
+    and reads EM instead, so the filter comes off.
+
+    Membership still runs through the HTML parser and the header reconstructor
+    -- 7 of the 771 tables do not parse -- which is why it is frozen: a
+    reconstruction change would move the population under the numbers.
+    """
+    from corpus_dump_vs_cell import RHB_POPS, realhitbench_corpus
+    C = realhitbench_corpus(pin=False, **RHB_POPS["rhb_nr_all"])
+    return [q["query_id"] for q in C.queries], {
+        "dataset": "realhitbench", "split": "all",
+        "qtypes": "Numerical Reasoning",
+        "filter": "table parses, >=3 rows. NO answer-match filter: the answer is "
+                  "computed and need not appear in any cell, so gold_cells may be "
+                  "empty and OSC is undefined -- EM only",
+        "order": "QA_final.json order", "n": len(C.queries),
+        "used_by": ["corpus_dump_vs_cell"]}
+
+
 SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
@@ -276,6 +302,7 @@ SPECS = {
     "hitab_train_size_strata": lambda a: hitab_size_strata(a.data_dir, "train", a.per_bucket),
     "aitqa_lookup_all": lambda a: aitqa_lookup_all(a.data_dir),
     "rhb_lookup_all": lambda a: rhb_lookup_all(a.data_dir),
+    "rhb_nr_all": lambda a: rhb_nr_all(a.data_dir),
 }
 
 

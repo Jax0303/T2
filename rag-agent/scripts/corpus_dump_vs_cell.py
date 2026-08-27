@@ -76,7 +76,7 @@ from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,
                                               STRUCTURAL_COMPACT)
 
 ARMS = ("dump", "cell", "cascade", "cell2dump", "cellrow", "row", "flat",
-        "group", "capped", "goldcell")
+        "group", "capped", "goldcell", "goldtable")
 
 
 class _CachedEncoder:
@@ -157,6 +157,15 @@ def table_index_text(raw, pt, bt, mode: str = "full") -> str:
 # that runs through the header reconstructor. HiTab passes its population
 # by name on the command line; these two have exactly one.
 FROZEN_POP = {"aitqa": "aitqa_lookup_all", "realhitbench": "rhb_lookup_all"}
+
+# What each frozen RealHiTBench population is derived FROM. The name is the whole
+# contract: it selects the filter as well as the id list, so a run cannot pin one
+# population while building another. PREREG-2026-08-27-rhb-nr-large-tables.
+RHB_POPS = {
+    "rhb_lookup_all": {},
+    "rhb_nr_all": {"qtypes": ("Numerical Reasoning",),
+                   "require_gold_cells": False},
+}
 
 
 @dataclass
@@ -363,7 +372,9 @@ def _rhb_split_title(grid):
 
 
 def realhitbench_corpus(data_dir: str = "data/realhitbench",
-                        subqtypes: tuple = (), pin: bool = True) -> Corpus:
+                        subqtypes: tuple = (), pin=True,
+                        qtypes: tuple = (),
+                        require_gold_cells: bool = True) -> Corpus:
     """RealHiTBench (Zhang et al., ACL Findings 2025; arXiv:2506.13405).
 
     The fourth hierarchical benchmark and the first where the TITLE varies inside
@@ -377,6 +388,16 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
     over-inclusive gold set. ``subqtypes`` defaults to every type, because the
     answer match is what defines the population: whatever the dataset called a
     question, it survives only if its answer resolves to a unique set of cells.
+
+    ``require_gold_cells=False`` lifts exactly that filter, and it has to be
+    lifted for Numerical Reasoning: the answer there is usually a COMPUTED value
+    that appears in no cell, so the match keeps 54 of 771 (7.0%) -- and keeps the
+    easy instances, the ones whose answer happens to be written in the table. The
+    surviving queries then carry an empty ``gold_cells``, OSC is undefined for
+    them, and the run reports EM only. ``qtypes`` filters on ``QuestionType`` and
+    is NOT interchangeable with ``subqtypes`` -- 4 Fact Checking questions carry
+    an NR SubQType. ``pin`` may be a population NAME instead of True, because
+    which id list to pin against follows from which filter was applied.
 
     Cells with an EMPTY value are not indexed. An Excel -> HTML export ships the
     sheet's whole used range, so 55.9% of the grid cells here hold nothing, while
@@ -393,8 +414,10 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
         return re.sub(r"[\s,$%]", "", str(s)).strip().lower()
 
     qa = json.load(open(f"{data_dir}/QA_final.json"))["queries"]
-    want = set(subqtypes)
-    qs_raw = [q for q in qa if not want or q.get("SubQType") in want]
+    want, want_q = set(subqtypes), set(qtypes)
+    qs_raw = [q for q in qa
+              if (not want or q.get("SubQType") in want)
+              and (not want_q or q.get("QuestionType") in want_q)]
 
     md, ttext, shape, ctext, owner = {}, {}, {}, [], []
     ftext, rtext, rowner, titles, cpaths = [], [], [], {}, []
@@ -462,11 +485,14 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
         found = {(tid, i, j) for i, row in enumerate(data_of[tid])
                  for j, v in enumerate(row) if norm(v) in set(want_v)}
         if not found or len(found) != len(set(want_v)):
-            continue                      # unresolved, or the match is ambiguous
+            if require_gold_cells:
+                continue                  # unresolved, or the match is ambiguous
+            found = set()                 # EM-only query; see the docstring
         qs.append({"query_id": str(q["id"]), "question": q["Question"],
                    "answer": ans, "gold_table": tid, "gold_cells": found})
     if pin and not subqtypes:            # the freeze is over the whole QA file
-        qs = pop_mod.pin(FROZEN_POP["realhitbench"], qs)
+        qs = pop_mod.pin(pin if isinstance(pin, str)
+                         else FROZEN_POP["realhitbench"], qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, titles, cpaths)
 
@@ -569,6 +595,20 @@ def _table_roots(C) -> dict:
             if path and str(path[0]).strip():
                 roots[t][str(path[0]).strip()] = None
     return {t: list(v) for t, v in roots.items()}
+
+
+def osc_share(hit: set, gold: set):
+    """Operand-set completeness and its per-cell share, or ``(None, None)``.
+
+    None, not 1.0, when the query has no gold cells. RealHiTBench Numerical
+    Reasoning answers are COMPUTED and sit in no cell, so there is no operand set
+    to be complete about -- and ``len(hit) == len(gold)`` would hand every arm a
+    perfect OSC on all 764 of them. PREREG-2026-08-27-rhb-nr-large-tables §2
+    gives OSC up for that population and reads EM instead.
+    """
+    if not gold:
+        return None, None
+    return int(len(hit) == len(gold)), len(hit) / len(gold)
 
 
 def s2h_prefixes(C, variant: str = "S2h") -> list:
@@ -751,6 +791,7 @@ def main() -> int:
     out_path = args.out or (f"results/corpus_dump_vs_cell_{args.dataset}_{args.retriever}_{args.budget}"
       + ("" if args.table_index == "full" else "_headonly") + ".json")
 
+    rhb_pop = ""
     if args.dataset == "hitab":
         C = hitab_corpus(args.data_dir, args.split, args.population,
                          max_tables=args.max_tables, seed=args.seed,
@@ -758,7 +799,19 @@ def main() -> int:
     elif args.dataset == "aitqa":
         C = aitqa_corpus()
     elif args.dataset == "realhitbench":
-        C = realhitbench_corpus(subqtypes=tuple(args.rhb_subqtypes))
+        # A subtype slice is exploratory and does not pin. Otherwise --population
+        # picks BOTH the filter and the frozen id list out of RHB_POPS, so the
+        # two cannot disagree; an unknown name is an error rather than a silent
+        # fallback, because the wrong population is a wrong paper number.
+        rhb_pop = (FROZEN_POP["realhitbench"]
+                   if args.population == ap.get_default("population")
+                   else args.population)
+        if not args.rhb_subqtypes and rhb_pop not in RHB_POPS:
+            ap.error(f"--population {rhb_pop!r} is not a RealHiTBench population; "
+                     f"pick from {sorted(RHB_POPS)}")
+        C = realhitbench_corpus(subqtypes=tuple(args.rhb_subqtypes),
+                                pin=(False if args.rhb_subqtypes else rhb_pop),
+                                **({} if args.rhb_subqtypes else RHB_POPS[rhb_pop]))
     else:
         C = multihiertt_corpus(args.mh_queries, args.seed)
     if args.titles:
@@ -912,9 +965,17 @@ def main() -> int:
     rec_path.parent.mkdir(parents=True, exist_ok=True)
     guard_resume(rec_path, env,
                  reader=(f"{llm.name}#{args.answer_mode}" if llm else None),
+                 # llm.name carries the quantization but NOT the dtype, and a T4
+                 # cannot do bfloat16 while an Ampere card defaults to it -- so
+                 # the same reader on two machines writes the same name and
+                 # resumes off the other's records. The raw spec has the dtype.
+                 # Old sidecars lack the field, which guard_resume reads as
+                 # "unknown", so this does not invalidate anything on disk.
+                 reader_spec=args.reader or None,
                  population=(args.population if args.dataset == "hitab"
                              else FROZEN_POP["aitqa"] if args.dataset == "aitqa"
-                             else f"rhb_{'_'.join(args.rhb_subqtypes)}"
+                             else (f"rhb_{'_'.join(args.rhb_subqtypes)}"
+                                   if args.rhb_subqtypes else rhb_pop)
                              if args.dataset == "realhitbench"
                              else f"multihiertt_{args.mh_queries}_{args.seed}"),
                  cell_scheme=args.cell_scheme, cell_title=not args.no_title,
@@ -1083,6 +1144,20 @@ def main() -> int:
                     in_ctx |= {(tid, i, j) for j in range(C.shape[tid][1])}
                     if tid not in seen_tables:
                         seen_tables.append(tid)
+            elif arm == "goldtable":
+                # The CONDITION every published RealHiTBench number was measured
+                # under: the gold table handed over whole, no retrieval step.
+                # Deliberately ignores --budget -- that is the point. `dump`
+                # cannot stand in for it because dump SKIPS a table that does not
+                # fit, and 82% of the NR gold tables do not fit 512, so dump's
+                # number there is mostly empty contexts. Against this arm the
+                # only difference left from `cell` is retrieval-vs-table-given,
+                # which is what PREREG-2026-08-27-rhb-nr-large-tables asks.
+                used += md_tokens(gold_t)
+                parts.append("\n".join(C.md_lines[gold_t]))
+                seen_tables.append(gold_t)
+                n_r_, n_c_ = C.shape[gold_t]
+                in_ctx |= {(gold_t, i, j) for i in range(n_r_) for j in range(n_c_)}
             elif arm == "goldcell":
                 # A CEILING, not a method: the context is exactly the gold cells'
                 # own sentences and nothing else. Retrieval is perfect and there
@@ -1179,8 +1254,8 @@ def main() -> int:
             hit = gold_cells & in_ctx
             n_r, n_c = C.shape[gold_t]
             gold_all = {(gold_t, i, j) for i in range(n_r) for j in range(n_c)}
-            rec[arm] = {"osc": int(len(hit) == len(gold_cells)),
-                        "per_cell": len(hit) / len(gold_cells),
+            osc_v, per_cell_v = osc_share(hit, gold_cells)
+            rec[arm] = {"osc": osc_v, "per_cell": per_cell_v,
                         # two different things the old single field conflated:
                         # a cell arm "has the gold table" with one cell of it
                         "gold_table_any": int(gold_t in seen_tables),
@@ -1223,7 +1298,8 @@ def main() -> int:
             print(f"  {n_done}/{len(pop)}", flush=True)
 
     def agg(arm, key):
-        return round(float(np.mean([r[arm][key] for r in recs])), 4)
+        v = [r[arm][key] for r in recs if r[arm][key] is not None]
+        return round(float(np.mean(v)), 4) if v else None
 
     keys = ("osc", "per_cell", "gold_table_any", "gold_table_whole",
             "tokens", "n_tables") + (("answer_em",) if llm else ())
@@ -1240,6 +1316,8 @@ def main() -> int:
         if a not in arms or b not in arms:
             continue
         for metric in ("osc",) + (("answer_em",) if llm else ()):
+            if summary[a].get(metric) is None or summary[b].get(metric) is None:
+                continue                  # unmeasurable on this population
             paired[f"{metric}:{a}_vs_{b}"] = mcnemar(
                 [r[a][metric] for r in recs], [r[b][metric] for r in recs])
 
@@ -1249,8 +1327,9 @@ def main() -> int:
         "population": {"name": args.population if args.dataset == "hitab" else
                        "aitqa, gold cells recovered by answer match, ambiguous dropped"
                        if args.dataset == "aitqa" else
-                       f"realhitbench {'/'.join(args.rhb_subqtypes)}, gold cells "
-                       "recovered by answer match, ambiguous dropped"
+                       (f"realhitbench {'/'.join(args.rhb_subqtypes)}, gold cells "
+                        "recovered by answer match, ambiguous dropped"
+                        if args.rhb_subqtypes else rhb_pop)
                        if args.dataset == "realhitbench" else
                        f"multihiertt table-only, seed {args.seed}, n={args.mh_queries}",
                        "n": len(recs),
@@ -1313,9 +1392,11 @@ def main() -> int:
           f"{'tokens':>9}{'#tbl':>7}{em_h}")
     for a in arms:
         s = summary[a]
-        print(f"{a:10}{s['osc']:>8.3f}{s['per_cell']:>10.3f}{s['gold_table_any']:>9.3f}"
-              f"{s['gold_table_whole']:>11.3f}{s['tokens']:>9.0f}{s['n_tables']:>7.1f}"
-              + (f"{s['answer_em']:>9.3f}" if llm else ""))
+        def f(key, w, p=3):
+            return "-".rjust(w) if s[key] is None else f"{s[key]:>{w}.{p}f}"
+        print(f"{a:10}" + f('osc', 8) + f('per_cell', 10) + f('gold_table_any', 9)
+              + f('gold_table_whole', 11) + f('tokens', 9, 0) + f('n_tables', 7, 1)
+              + (f('answer_em', 9) if llm else ""))
     print("\ntable recall  " + "".join(f"{f'@{k}':>9}" for k in (1, 3, 5, 10, 20)))
     for name in ("by_table_index", "by_cell_vote"):
         r = out["table_recall"][name]
