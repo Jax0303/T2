@@ -315,7 +315,7 @@ def main() -> int:
                 done[(q.query_id, arm)] = ok
                 rec_fh.write(json.dumps({
                     "query_id": q.query_id, "arm": arm, "kind": q.kind,
-                    "correct": ok, "pred": raw_out[:120],
+                    "correct": ok, "pred": raw_out,
                     # what the arm actually spent, so "equal budget" is a
                     # reported fact rather than a claim about the cap
                     "ctx_tokens": bud.count(ctx[arm]),

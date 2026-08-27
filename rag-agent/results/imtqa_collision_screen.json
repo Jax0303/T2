@@ -1,0 +1,85 @@
+{
+  "experiment": "IM-TQA collision screen (no LLM, no encoder)",
+  "env": {
+    "seed": 0,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "none — no encoder in this diagnostic",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-26T15:34:09+00:00"
+  },
+  "tables": 215,
+  "cells": 4067,
+  "titled": 0.0,
+  "by_table_type": {
+    "complex": {
+      "cells": 1560,
+      "tables": 37,
+      "flat": 0.7929,
+      "S2": 0.6532,
+      "repairs_points": 14.0
+    },
+    "hierarchical": {
+      "cells": 1275,
+      "tables": 64,
+      "flat": 0.8557,
+      "S2": 0.5278,
+      "repairs_points": 32.8
+    },
+    "horizontal": {
+      "cells": 527,
+      "tables": 47,
+      "flat": 0.3719,
+      "S2": 0.2827,
+      "repairs_points": 8.9
+    },
+    "vertical": {
+      "cells": 705,
+      "tables": 67,
+      "flat": 0.2255,
+      "S2": 0.1489,
+      "repairs_points": 7.7
+    }
+  },
+  "flat": {
+    "address": {
+      "n_cells": 4067,
+      "distinct": 2030,
+      "dup_cell_rate": 0.6602,
+      "cross_table_cell_rate": 0.2778,
+      "cross_table_classes": 268,
+      "max_class": 61,
+      "max_class_tables": 12
+    },
+    "sentence": {
+      "n_cells": 4067,
+      "distinct": 3383,
+      "dup_cell_rate": 0.2567,
+      "cross_table_cell_rate": 0.0735,
+      "cross_table_classes": 99,
+      "max_class": 10,
+      "max_class_tables": 8
+    }
+  },
+  "S2": {
+    "address": {
+      "n_cells": 4067,
+      "distinct": 2666,
+      "dup_cell_rate": 0.4785,
+      "cross_table_cell_rate": 0.222,
+      "cross_table_classes": 297,
+      "max_class": 61,
+      "max_class_tables": 9
+    },
+    "sentence": {
+      "n_cells": 4067,
+      "distinct": 3606,
+      "dup_cell_rate": 0.1738,
+      "cross_table_cell_rate": 0.0529,
+      "cross_table_classes": 64,
+      "max_class": 8,
+      "max_class_tables": 8
+    }
+  },
+  "path_repairs_points": 18.2
+}

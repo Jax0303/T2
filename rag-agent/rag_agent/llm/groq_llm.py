@@ -21,6 +21,8 @@ _RETRY_HINT = re.compile(r"try again in\s+([0-9hms.]+)", re.I)
 # ms before m before s: "500ms" is half a second, not 500 minutes
 _DURATION = re.compile(r"(\d+(?:\.\d+)?)(ms|h|m|s)")
 _UNIT_S = {"ms": 0.001, "s": 1.0, "m": 60.0, "h": 3600.0}
+# never sleep longer than this in one hop -- see GroqLLM.complete
+_POLL_S = 60.0
 
 
 def retry_after(msg: str, attempt: int, cap: float = 900.0) -> float:
@@ -39,6 +41,10 @@ def retry_after(msg: str, attempt: int, cap: float = 900.0) -> float:
     ten-minute wait and the run died anyway. A wait longer than the cap is a
     quota that will not clear inside this run, and should surface as the error
     it is rather than as an hours-long silent sleep.
+
+    This returns the honest hint. ``complete`` sleeps it in <=60s hops under a
+    wall-clock deadline, so a short poll no longer costs patience -- the 2026-08
+    reason for the 15-minute cap is kept without sleeping through capacity.
     """
     hint = _RETRY_HINT.search(msg)
     if hint:
@@ -88,8 +94,22 @@ class GroqLLM(BaseLLM):
         self.last_finish_reason: str | None = None  # see BaseLLM
 
     def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
+        # Patience is wall-clock, not attempts. Groq's hint is sized for the
+        # tokens this one request asked for. On the free tier the binding limit
+        # is tokens-per-DAY (200k), which appears only in the 429 body and never
+        # in the x-ratelimit headers, and it refills at ~139 tok/min -- so a
+        # 1k-token request really does need the minutes it is told to wait. Do
+        # not "fix" the hint down: probes that seem to pass during the wait are
+        # small enough to slip through the trickle, which is what fooled a
+        # 2026-08-26 session into shortening the patience budget.
+        #
+        # So: keep the old total patience (retry_on_429 x the 15-minute cap),
+        # but spend it in <=60s hops instead of one long sleep, so capacity is
+        # taken as soon as it exists rather than at the end of a stale hint.
         last_err: Exception | None = None
-        for attempt in range(1 + self.retry_on_429):
+        deadline = time.monotonic() + 900.0 * self.retry_on_429
+        attempt = 0
+        while True:
             try:
                 resp = self.client.chat.completions.create(
                     model=self.model_name,
@@ -107,11 +127,15 @@ class GroqLLM(BaseLLM):
             except Exception as e:  # broad — Groq SDK error hierarchy varies by version
                 msg = str(e)
                 last_err = e
-                if "429" in msg or "rate" in msg.lower():
-                    wait = retry_after(msg, attempt)
-                    logger.warning("Groq rate-limited, retrying in %.1fs (attempt %d)",
-                                   wait, attempt + 1)
-                    time.sleep(wait)
-                    continue
-                raise
+                if "429" not in msg and "rate" not in msg.lower():
+                    raise
+                left = deadline - time.monotonic()
+                if left <= 0:
+                    break
+                wait = min(retry_after(msg, attempt), _POLL_S, left)
+                logger.warning("Groq rate-limited, sleeping %.1fs "
+                               "(attempt %d, %.0fs patience left)",
+                               wait, attempt + 1, left)
+                time.sleep(wait)
+                attempt += 1
         raise RuntimeError(f"Groq retries exhausted: {last_err}")

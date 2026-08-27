@@ -1,0 +1,55 @@
+{
+ "prereg": "PREREG-2026-08-27-generated-title.md",
+ "corpus": "AIT-QA",
+ "n": 451,
+ "budget": 512,
+ "arms": {
+  "S2_baseline": "results/s3c_aitqa_512.json",
+  "S3g": "results/gt_aitqa_s3g_512.json"
+ },
+ "predictions": {
+  "G5": {
+   "stated": "주소 중복 30.1% -> <=15% (>20% 실패)",
+   "measured": "19.62% (표 넘김 26.94% -> 13.76%)",
+   "verdict": "PARTIAL -- 구간 미달, 실패선 미도달. 원인: 생성 이름이 113표에 71종뿐"
+  },
+  "G1": {
+   "stated": "S3g - S2 = +.00 ~ +.05",
+   "measured": "-0.0843 (33:71, p=0.0002)",
+   "verdict": "FAIL -- 예측 구간 밖, 부호 반대, 유의하게 악화"
+  },
+  "G2": {
+   "stated": "문맥의 표 수 10.51 -> <=8.5",
+   "measured": "6.19",
+   "verdict": "PASS"
+  },
+  "G3": {
+   "stated": "OSC -2 ~ -8점",
+   "measured": "-19.07점",
+   "verdict": "FAIL -- 예측의 2배 이상 손실"
+  },
+  "G4": {
+   "stated": "flat 불일치 <=5, 유의하지 않음",
+   "measured": "0:0, p=1.0",
+   "verdict": "PASS -- 셀 문장만 바뀜이 확인됨"
+  }
+ },
+ "mechanism": {
+  "osc": {
+   "S2": 0.5499,
+   "S3g": 0.3592
+  },
+  "tables_in_context": {
+   "S2": 10.51,
+   "S3g": 6.19
+  },
+  "em_given_both_osc1": {
+   "n": 148,
+   "S2": 0.5676,
+   "S3g": 0.5405,
+   "delta": -0.027
+  }
+ },
+ "verdict": "판정표 세 번째 칸: G1 < 0. 태그와 같은 실패 모양이고 G3가 원인을 지목한다 -- 생성 제목의 토큰 비용이 읽기 이득을 압도한다. AIT-QA에서 제목 생성은 기각.",
+ "scope": "AIT-QA 단일 코퍼스, 예산 512. MultiHiertt 확장은 판정 규칙상 중단."
+}
