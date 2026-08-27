@@ -1831,6 +1831,31 @@ AIT-QA **91.6** / HiTab **90.1** / SSTQA 81.9.
 | Qwen2.5-72B-Instruct | 51.93 | 26.98 | 54.55 |
 | Llama3.3-70B-Instruct | 53.08 | **36.58** | 55.81 |
 
+**Numerical Reasoning EM 전수 (Table 2, 표를 통째로 제공):**
+
+| 모델 | NR EM | | 모델 | NR EM |
+|---|---|---|---|---|
+| DeepSeek-R1 | **70.31** | | Qwen2.5-72B-Instruct | 26.98 |
+| GPT-4o (TreeThinker, 논문 제안) | 55.60 | | **TableLLM-Qwen2-7B** | **22.05** |
+| GPT-4o | 38.65 | | Llama3.1-8B-Instruct | 14.53 |
+| Llama3.3-70B-Instruct | 36.58 | | TableLLM-Llama3.1-8B | 13.36 |
+| Gemini1.5-pro | 35.54 | | TableLlama | 7.26 |
+| **TableGPT2-7B** | **29.31** | | **Qwen2.5-7B-Instruct** | **5.32** |
+| Llama3.2-90B-Vision | 28.15 | | Mistral-7B-Instruct-v0.3 | 3.37 |
+
+🚫 **"7B는 표 산술을 못 한다"고 쓰지 말 것.** 못 하는 것은 **범용** 7B다 —
+**TableGPT2-7B가 같은 파라미터 수로 29.31**, TableLLM-Qwen2-7B가 22.05다. 우리 리더의
+5.32는 7B의 한계가 아니라 **표 특화 사후학습을 안 한 모델의 값**이다.
+심사에서 "왜 TableGPT2-7B를 안 썼나"가 나온다 —
+`PREREG-2026-08-27-rhb-nr-large-tables.md`가 리더 2종으로 그 질문을 실행 전에 받는다.
+
+⚠️ **RAG 논문 중 이 데이터셋을 쓴 것은 확인되지 않는다** (2026-08-27 검색). RealHiTBench는
+ACL Findings 2025이고 평가가 전부 표-제공이다. **이 무대에 검색을 붙인 선행 보고가 없다** —
+공백이자, 이길 발표 수치도 없다는 뜻이다. 비교는 우리가 돌린 `goldtable` arm과 한다.
+
+⚠️ **로컬 사본 ≠ 공식 배포.** 공식은 708표 / 3,752 QA, 로컬 `QA_final.json`은 3,071 QA /
+HTML 보유 540표. 논문에 어느 쪽인지 명시한다.
+
 **우리와 같은 모델(Qwen2.5-7B-Instruct)이 표를 손에 쥔 조건에서 산술 EM 5.32다.**
 우리 HiTab 산술 레그는 로컬 4-bit 7B로 **.0514**(codegen .0857) — 검색까지 얹고 나온
 값인데 사실상 같다. 그리고 같은 모델이 Fact Checking 18.65 / Structure 23.48이므로

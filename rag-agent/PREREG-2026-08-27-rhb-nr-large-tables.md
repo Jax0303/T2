@@ -14,6 +14,11 @@ arm을 가르지 못한다(`RESULTS.md` §산술 모집단에는 로컬 7B를 �
 같은 모델의 Fact Checking 18.65 / Structure 23.48과 대조하면, 못 하는 것은 계층 표 독해가
 아니라 **산술**이다.
 
+⚠️ **단, 그 벽은 "7B의 벽"이 아니라 "범용 7B의 벽"이다.** 같은 표에서 **TableGPT2-7B가
+NR EM 29.31**, TableLLM-Qwen2-7B가 **22.05**를 낸다 — 파라미터 수가 같은데 표 특화
+사후학습만으로 5.5배다. 그래서 이 사전등록은 리더를 **둘** 건다(§1). 약한 리더에서만
+성립하는 주장은 "리더가 나빠서 그렇다"로 반박당하기 때문이다.
+
 그러면 질문이 바뀐다. "리더가 산술을 못 하니 조회형만 한다"가 아니라,
 **"리더가 산술을 못 하는 조건에서, 표를 통째로 주는 것과 검색해서 셀만 주는 것 중
 무엇이 나은가"**이다. 그리고 RealHiTBench는 그 질문에 이상적인 무대다 —
@@ -40,7 +45,8 @@ gold 표 중앙값이 **1,561토큰**이고 **86%가 512 예산을 넘는다**(�
 |---|---|
 | 데이터셋 | RealHiTBench, `QuestionType == "Numerical Reasoning"` **771건 전수** |
 | 모집단 | `rhb_nr_all` (새로 동결). **EM 전용** — gold 셀 주석 불필요 |
-| 리더 | `local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit&dtype=float16` |
+| 리더 A (약함) | `local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit&dtype=float16` — 발표 NR **5.32** |
+| 리더 B (표 특화) | `local:tablegpt/TableGPT2-7B?quantization=4bit&dtype=float16` — 발표 NR **29.31** |
 | 검색기 | **dense**, 셀 스킴 `S3c` |
 
 ⚠️ 저장소 기본 검색기는 2026-08-27에 `hybrid α=0.7`로 바뀌었다(`CLAUDE.md`). **이 실험은
@@ -89,6 +95,18 @@ RealHiTBench 수치추론의 답은 대개 **계산 결과**라 표의 어느 �
 | **P5** | `cell` > `flat` | ≥ +.03 |
 | **P6 (통제)** | `flat` arm이 `cell`/`goldtable` 두 런에서 불일치 ≤5, p 유의하지 않음 | — |
 
+| **P8 (범위)** | P1이 **두 리더 모두에서** 성립한다 | 부호만 |
+
+### P8이 이 실험의 진짜 시험이다
+
+약한 리더(A)에서만 P1이 서면, 주장은 **"약한 리더에서는 검색이 낫다"**로 좁아지고
+"더 좋은 리더를 쓰면 될 일"이라는 반박에 그대로 노출된다. 표 특화 리더(B)는 같은 7B로
+NR 29.31을 내므로 **표를 통째로 읽는 능력 자체가 A보다 훨씬 낫다** — 그런데도 큰 표에서
+검색이 이기면, 주장은 리더 품질이 아니라 **문맥 길이의 성질**에 관한 것이 된다.
+
+**B에서 P1이 깨지면 그렇게 적는다** — "이 이득은 리더가 표를 다 못 읽을 때만 존재한다"가
+결론이고, 그것도 보고할 값이 있는 범위 조건이다.
+
 ### P7 — 발표 수치(5.32)와의 대조는 **불확실하다고 미리 적는다**
 
 P4의 구간 .03~.08이 5.32를 **가로지른다.** 넘을 수도 못 넘을 수도 있다고 실행 전에
@@ -103,6 +121,10 @@ P4의 구간 .03~.08이 5.32를 **가로지른다.** 넘을 수도 못 넘을 �
 - P1만 서고 P2가 안 서면 → 교차점 주장은 버리고 "큰 표에서 검색이 낫다"만 쓴다
 - P1이 안 서면 → **프레임 폐기.** RealHiTBench 수치추론은 이 방법의 무대가 아니라고 적는다
 - P6이 깨지면 → 다른 예측을 해석하지 않는다. 리더·환경 교란이므로 재실행
+- **P8이 서면 → 주장은 리더 품질이 아니라 문맥 길이에 관한 것이다.** 이게 최선의 결과
+- **P8이 깨지면 → "약한 리더 한정"으로 범위를 좁혀 적는다.** 숨기지 않는다
+- 리더 B가 8GB에 안 올라가면(4-bit 실패) → A만으로 돌리고 **P8은 미측정으로 남긴다.**
+  나중에 채운다고 적고, A 결과를 P8이 선 것처럼 서술하지 않는다
 
 ## 5. 이 실험이 답하지 않는 것
 
@@ -121,4 +143,17 @@ PYTHONPATH=. .venv/bin/python scripts/corpus_dump_vs_cell.py \
     --arms cell,goldtable,flat --cell-scheme S3c --retriever dense \
     --budget 512 --reader local:Qwen/Qwen2.5-7B-Instruct \
     --out results/rhbnr_s3c_512.json
+# 3) 리더 B (표 특화) — 같은 모집단, 같은 arm, 리더만 교체
+PYTHONPATH=. .venv/bin/python scripts/corpus_dump_vs_cell.py \
+    --dataset realhitbench --population rhb_nr_all \
+    --arms cell,goldtable,flat --cell-scheme S3c --retriever dense \
+    --budget 512 --reader local:tablegpt/TableGPT2-7B \
+    --out results/rhbnr_tgpt_512.json
 ```
+
+## 7. 실행 전 확인 사항
+
+- **로컬 사본이 공식 배포와 다르다.** 공식 RealHiTBench는 708표 / 3,752 QA인데
+  `data/realhitbench/QA_final.json`은 **3,071 QA**이고 HTML이 있는 표가 **540개**다.
+  어느 쪽을 썼는지 논문에 명시하고, 저쪽 수치와 나란히 놓을 때 단서를 단다.
+- TableGPT2-7B가 8GB에 4-bit로 올라가는지 먼저 확인한다. 안 되면 위 판정 규칙대로.
