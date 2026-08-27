@@ -1817,6 +1817,106 @@ Adaptive Semantic Tree Reasoning. 본체 **DeepSeek-V3 API**, 로컬 답변 선�
 AIT-QA **91.6** / HiTab **90.1** / SSTQA 81.9.
 🚫 **표가 주어진다. 검색 없음. GPT-5 judge라 채점기도 다르다. 같은 표 금지.**
 
+### 계층 표 × 산술 × LLM — 선행 수치 전수 (2026-08-27, 전부 원문 확인)
+
+**밴드를 섞지 말 것.** 아래 A는 **표가 주어진다**(검색 없음), B는 **코퍼스 검색을 한다**.
+우리 주장이 사는 자리는 B이고, **B에 들어 있는 논문은 하나뿐이다.**
+
+#### A. 표-제공 밴드 — 검색 없음. 우리 수치와 같은 표에 올리지 말 것
+
+**A-1. MultiHiertt dev** (출처: MoCA-Agent, arXiv:2606.11537, Table B.4 — Cao et al. 2025 재수록)
+
+| 방법 | 백본 | EM |
+|---|---|---|
+| NAPG (파인튜닝) | RoBERTa-large | 44.19 |
+| 제로샷 · 텍스트 추론 | GPT-4o-mini | 22.41 |
+| 〃 | GPT-4o | 36.11 |
+| 〃 | o1 | 38.31 |
+| 제로샷 · 기호(수식) 추론 | GPT-4o-mini | 28.26 |
+| 〃 | GPT-4o | 38.41 |
+| 〃 | o1 | **48.95** |
+| Fortune (RL) | Qwen2.5-Coder-7B | 40.85 |
+| RL w/ CS (Text) | Llama-3.1-8B | 49.34 |
+| RL w/ CS (Formula) | Llama-3.1-8B | 54.55 |
+| RL w/ CS (Text) | Qwen2.5-Coder-7B | 54.25 |
+| RL w/ CS (Formula) | Qwen2.5-Coder-7B | **56.78** |
+| Fortune++ | Qwen2.5-Coder-7B | 51.73 |
+| TradingAgents | Qwen3.6-27B | 63.70 |
+| FINCON | Qwen3.6-27B | 62.00 |
+| SheetBrain | Qwen3.6-27B | 62.60 |
+| MoCA-Agent | Qwen-3.5 9B | 65.87 |
+| MoCA-Agent | Gemma-4 31B | 67.15 |
+| MoCA-Agent | Qwen3.6-27B | **71.17** |
+
+**수식을 쓰게 하면 오른다는 것이 이 표의 일관된 패턴이다** — 같은 모델에서 텍스트 추론 대
+기호 추론이 o1 38.31→48.95, GPT-4o 36.11→38.41. 우리 codegen 레그(.0514→.0857)와 방향이 같다.
+
+**A-2. HiTab test** (같은 출처, Table B.3)
+
+| 방법 | 백본 | EM |
+|---|---|---|
+| TAPEX-Large | BART-Large | 45.60 |
+| TableLLM | Qwen2-7B | 43.88 |
+| TableLlama | Llama-2-7B | 60.48 |
+| TAMO+SFT | Llama-2-7B | 63.89 |
+| TableGPT2 | Qwen2.5-7B | 70.27 |
+| TabAF | Qwen2.5-Coder-7B | 78.41 |
+| API-Assisted | Codex | 69.30 |
+| GraphOTTER | Gemini-1.5-Flash | 67.76 |
+| GraphOTTER | Qwen2-72B-Instruct | 73.74 |
+| SS-CoT | Llama-3.1-70B | **79.10** |
+| MoCA-Agent | Qwen-3.5 9B | 73.14 |
+| MoCA-Agent | Qwen3.6-27B | 77.27 |
+| MoCA-Agent | Gemma-4 31B | 77.34 |
+
+⚠️ **HiTab 전체(1,584 QA)이고 조회형만이 아니다.** 우리 830/769는 조회형 슬라이스이므로
+숫자를 나란히 놓을 수 없다. 맥락으로만 쓴다.
+
+**A-3. RealHiTBench Numerical Reasoning** — §리더 능력의 외부 기준선 참조 (25개 모델 전수).
+요점: Qwen2.5-7B **5.32** / TableGPT2-7B **29.31** / Llama3.3-70B 36.58 / DeepSeek-R1 70.31.
+
+#### B. 코퍼스 검색 밴드 — 계층 표 위에서 실제로 검색하는 유일한 선행연구
+
+**MixRAG / HD-RAG** (Zhang, Chen, Zhang. KDD 2026, arXiv:2504.09554). **본문 직접 확인.**
+
+이종 문서(텍스트 + **계층 표**) 2,178건 코퍼스에서 검색한다. 데이터셋 DocRAGLib
+(4,468 QA: train 2,990 / dev 502 / test 976). 검색은 BM25(n=40) + 임베딩(m=60) 앙상블 →
+LLM 리랭크. 표 표현은 H-RCL(행·열 수준 요약). RECAP은 수식을 쓰게 하고 외부 계산기로 검증한다.
+
+**Table 2 — Document-QA EM(%), 리더 8종 × 방법 5종** (전수 전사):
+
+| 방법 | GPT-4o | GPT-4o mini | Gemini-2.0 | Qwen-Plus | Qwen2.5-32B | **Qwen2.5-7B** | Mistral-Nemo | Llama3.1-7B |
+|---|---|---|---|---|---|---|---|---|
+| Direct | 35.34 | 23.55 | 26.64 | 34.83 | 21.80 | **8.02** | 10.03 | 15.79 |
+| CoT | 46.87 | 36.84 | 38.01 | 50.20 | 48.37 | **31.58** | 25.06 | 25.31 |
+| EEDP | 47.37 | 37.59 | 40.37 | 51.23 | 48.62 | **28.57** | 27.57 | 20.80 |
+| PoT | 61.90 | 55.64 | 51.84 | 60.45 | 55.89 | **37.84** | 34.09 | 29.32 |
+| RECAP | **64.66** | 58.15 | 60.25 | 64.45 | 64.16 | **45.36** | 44.11 | 40.60 |
+
+리랭커 비교도 있다(HiT@1): GPT-4o .73 / GPT-4o-mini .63 / bge-reranker-v2-m3 .58 /
+MiniLM-L-12-v2 .56 / bge-large-en-v1.5 .49.
+
+**이 표가 우리에게 중요한 이유 셋:**
+1. **Qwen2.5-7B가 검색 조건에서 Direct 8.02다.** 우리 HiTab 산술 direct .0514와 같은 자리다 —
+   범용 7B의 직답 산술이 한 자릿수라는 것이 **남의 논문에서도 재현된다.**
+2. **같은 7B가 PoT 37.84 / RECAP 45.36까지 간다.** 병목이 검색이 아니라 **직답 산술**이라는
+   우리 진단과 일치하고, codegen 레그를 계속할 근거다.
+3. **그런데 DocRAGLib은 자체 데이터셋이다.** MultiHiertt·RealHiTBench·HiTab 어느 것에도
+   RAG 수치를 내지 않았다 → **공개 계층-산술 벤치마크 위의 코퍼스 검색 수치는 여전히 없다.**
+
+⚠️ **B에 다른 후보들이 왜 안 들어왔나** (확인하고 뺀 것):
+- **T-RAG** (arXiv:2504.01346) — 코퍼스 검색 맞고 백본도 넓다(GPT-4o / Claude-3.5-Sonnet /
+  Llama-3.1-8B·70B / Qwen-2.5-7B / Phi-3.5-mini). 그러나 데이터셋이 HybridQA·SQA·TabFact·
+  WikiTables로 **계층 헤더도 산술도 아니다.**
+- **T2-RAGBench** (arXiv:2604.01733) — 재무 text+table 23,088질의에 검색 전략 10종.
+  그러나 **검색 지표(R@5·MRR·nDCG)만 보고**하고 EM이 없으며 표가 계층이 아니다.
+  리더는 GPT-4.1-mini / GPT-5.4.
+- **MT2Net** (MultiHiertt 원논문) — 문서 **안**에서만 후보를 고르는 재정렬기다. 코퍼스 검색이 아니다.
+
+→ **논문에 이렇게 쓴다:** 계층 표 산술에서 표를 주고 푸는 선행연구는 두껍고(A), 코퍼스에서
+찾아와서 푸는 것은 자체 데이터셋 한 편(B)뿐이다. **공개 계층-산술 벤치마크에 검색을 붙인
+보고가 없다는 것이 이 연구의 자리다.**
+
 ### 표 RAG 논문들이 실제로 쓰는 리더 — 7B 로컬 선례가 없다 (2026-08-27, 원문 확인)
 
 **"다른 표 RAG 논문과 같은 리더를 쓰자"는 그대로는 실행 불가능하다.** 확인한 네 편 중
