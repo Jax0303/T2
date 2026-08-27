@@ -1817,6 +1817,34 @@ Adaptive Semantic Tree Reasoning. 본체 **DeepSeek-V3 API**, 로컬 답변 선�
 AIT-QA **91.6** / HiTab **90.1** / SSTQA 81.9.
 🚫 **표가 주어진다. 검색 없음. GPT-5 judge라 채점기도 다르다. 같은 표 금지.**
 
+### 표 RAG 논문들이 실제로 쓰는 리더 — 7B 로컬 선례가 없다 (2026-08-27, 원문 확인)
+
+**"다른 표 RAG 논문과 같은 리더를 쓰자"는 그대로는 실행 불가능하다.** 확인한 네 편 중
+7B급 로컬 모델을 **주** 리더로 쓴 것이 하나도 없다.
+
+| 논문 | 리더(백본) | 오픈웨이트? | 검색 인코더 |
+|---|---|---|---|
+| **TableRAG** (NeurIPS 2024, arXiv:2410.04739) | GPT-3.5-turbo · Gemini-1.0-Pro · **Mistral-Nemo-Instruct-2407 (12B)** | 셋 중 하나만 | OpenAI `text-embedding-3-large` |
+| **TARGET** (arXiv:2505.11545) | `gpt-4o-mini-2024-07-18` | 없음 | BM25 · TF-IDF · `text-embedding-ada-002` · `text-embedding-3-small` · **`stella_en_400M_v5`** · `multilingual-e5-large-instruct` |
+| **TableRAG** (이종 문서, arXiv:2506.10380) | Claude-3.5-Sonnet · DeepSeek-V3 · DeepSeek-R1 · **Qwen2.5-72B** · TableGPT2-7B(기준선) | 일부 | **BGE-M3** |
+| **MT2Net** (ACL 2022) | BERT/RoBERTa base·large (생성 LLM 아님) | 로컬 | — |
+
+**가장 가까운 로컬 선례는 TableRAG(NeurIPS)의 Mistral-Nemo-Instruct-2407(12B)** 하나이고,
+그것도 세 백본 중 하나다. 나머지는 전부 API 모델이거나 70B급이다.
+
+→ **그래서 우리 리더는 표 RAG 관행이 아니라 무대가 정한다.** RealHiTBench 레그의 대조군
+`goldtable`은 RHB 원논문 Table 2의 조건을 재현하는 것이므로, 리더도 그 표에 발표 수치가
+있는 모델이어야 비교에 변수가 하나만 남는다 — Qwen2.5-7B-Instruct(5.32)와
+TableGPT2-7B(29.31). `PREREG-2026-08-27-rhb-nr-large-tables.md` §1이 그 둘을 건다.
+
+⚠️ **검색 인코더는 별개로 취약한 자리다.** 우리는 `bge-small-en-v1.5`(33M · 384차원)를
+쓰는데, 위 네 편이 쓰는 것은 `text-embedding-3-large` · BGE-M3 · `stella_en_400M_v5` ·
+`multilingual-e5-large-instruct`로 **전부 그보다 크다.** "검색이 약한 것은 인코더가 작아서"는
+심사에서 나올 수 있는 반박이고, 아직 우리 쪽에 인코더 크기 ablation이 없다. 다만 본 연구의
+주장은 **같은 인코더 위에서 색인 단위를 바꾼 효과**이므로 인코더를 키우면 모든 arm이 함께
+오른다 — 반박이 성립하려면 인코더 크기와 색인 단위가 상호작용해야 하고, 그건 미측정이다.
+**그렇게 적는다.**
+
 ### 리더 능력의 외부 기준선 — 산술은 우리 문제가 아니다 (2026-08-27, 본문 확인)
 
 **우리 리더가 산술을 못 하는 것은 파이프라인 결함이 아니라 발표된 사실이다.**
