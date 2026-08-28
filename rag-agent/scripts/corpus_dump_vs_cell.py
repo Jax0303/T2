@@ -780,6 +780,10 @@ def main() -> int:
                          "is hurt by tables being INTERLEAVED, which is what "
                          "the tables-in-context curve cannot tell apart from "
                          "their number")
+    ap.add_argument("--max-reader-tokens", type=int, default=0,
+                    help="truncate the reader prompt to this many tokens. "
+                         "Prevents T4 OOM on goldtable arm's 12k-token tables. "
+                         "0 = no limit (default)")
     ap.add_argument("--force-resume", action="store_true")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
@@ -833,6 +837,7 @@ def main() -> int:
           flush=True)
 
     llm = build_llm(args.reader) if args.reader else None
+    max_reader_tok = args.max_reader_tokens or 0
 
     bud = Budget(args.embed_model)
     # --alpha overrides the retriever's default weight, so the DENSE half can be
@@ -1262,11 +1267,22 @@ def main() -> int:
                         "gold_table_whole": int(gold_all <= in_ctx),
                         "tokens": used, "n_tables": len(seen_tables)}
             if llm is not None:
+                # T4 (14.6 GB) OOMs on goldtable arm when table context exceeds
+                # ~8k tokens.  Free the KV cache before each call, and truncate
+                # the prompt to --max-reader-tokens so the run survives.
+                import torch as _t
+                if _t.cuda.is_available():
+                    _t.cuda.empty_cache()
+                ctx_text = "\n".join(parts)
+                if max_reader_tok and used > max_reader_tok:
+                    ctx_text = llm.tokenizer.decode(
+                        llm.tokenizer(ctx_text).input_ids[:max_reader_tok])
+                    rec[arm]["truncated"] = True
                 if args.answer_mode == "codegen":
                     # The reader only names the cells and writes the arithmetic;
                     # Python evaluates it. Offloads the mental math a local 7B
                     # fails (osc=1 yet wrong answer) to an exact evaluator.
-                    user = (f"ROWS:\n" + "\n".join(parts)
+                    user = (f"ROWS:\n" + ctx_text
                             + f"\n\nQUESTION: {q['question']}\n\nOne line: answer = ...")
                     raw = llm.complete(system=_CODEGEN_SYS, user=user,
                                        max_tokens=args.codegen_max_tokens)
@@ -1282,7 +1298,7 @@ def main() -> int:
                         out_txt = raw  # fell through; score whatever text came back
                     rec[arm]["used_codegen"] = int(val is not None)
                 else:
-                    user = (f"CONTEXT:\n" + "\n".join(parts)
+                    user = (f"CONTEXT:\n" + ctx_text
                             + f"\n\nQUESTION: {q['question']}\n\nAnswer:")
                     out_txt = llm.complete(system=_DIRECT_SYS, user=user, max_tokens=512)
                     if not out_txt and llm.last_finish_reason == "length":
