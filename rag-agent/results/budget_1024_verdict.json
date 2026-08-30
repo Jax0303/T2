@@ -1,0 +1,176 @@
+{
+ "prereg": "PREREG-2026-08-30-budget-1024.md",
+ "commit_of_predictions": "bf9484b",
+ "leg": "budget 512 -> 1024 at the standing config (hybrid a=0.7, S3c), LLM-free",
+ "arms": {
+  "hitab": {
+   "512": {
+    "file": "hyb_hitab_s3c_512.json",
+    "n": 830,
+    "osc": 0.8458,
+    "gold_table_any": 0.9253,
+    "n_tables": 2.32,
+    "goldcell_tokens": null
+   },
+   "1024": {
+    "file": "hyb_hitab_s3c_1024_a7.json",
+    "n": 830,
+    "osc": 0.8819,
+    "gold_table_any": 0.9458,
+    "n_tables": 2.88,
+    "goldcell_tokens": 48.02
+   }
+  },
+  "multihiertt": {
+   "512": {
+    "file": "hyb_multihiertt_s3c_512_a7.json",
+    "n": 399,
+    "osc": 0.6115,
+    "gold_table_any": 0.8622,
+    "n_tables": 12.11,
+    "goldcell_tokens": 34.81
+   },
+   "1024": {
+    "file": "hyb_multihiertt_s3c_1024_a7.json",
+    "n": 399,
+    "osc": 0.7118,
+    "gold_table_any": 0.9023,
+    "n_tables": 19.1,
+    "goldcell_tokens": 34.81
+   }
+  },
+  "aitqa": {
+   "512": {
+    "file": "hyb_aitqa_s3c_512_a7.json",
+    "n": 451,
+    "osc": 0.6519,
+    "gold_table_any": 0.7938,
+    "n_tables": 9.7,
+    "goldcell_tokens": 17.23
+   },
+   "1024": {
+    "file": "hyb_aitqa_s3c_1024_a7.json",
+    "n": 451,
+    "osc": 0.7317,
+    "gold_table_any": 0.8537,
+    "n_tables": 14.1,
+    "goldcell_tokens": 17.23
+   }
+  },
+  "realhitbench": {
+   "512": {
+    "file": "hyb_realhitbench_s3c_512_a7.json",
+    "n": 231,
+    "osc": 0.4026,
+    "gold_table_any": 0.8225,
+    "n_tables": 4.29,
+    "goldcell_tokens": 34.39
+   },
+   "1024": {
+    "file": "hyb_realhitbench_s3c_1024_a7.json",
+    "n": 231,
+    "osc": 0.4632,
+    "gold_table_any": 0.8745,
+    "n_tables": 5.6,
+    "goldcell_tokens": 34.39
+   }
+  }
+ },
+ "paired_osc_512_to_1024": {
+  "hitab": {
+   "a": 0.846,
+   "b": 0.882,
+   "b_only": 32,
+   "a_only": 2,
+   "p": 0.0
+  },
+  "multihiertt": {
+   "a": 0.612,
+   "b": 0.712,
+   "b_only": 40,
+   "a_only": 0,
+   "p": 0.0
+  },
+  "aitqa": {
+   "a": 0.652,
+   "b": 0.732,
+   "b_only": 36,
+   "a_only": 0,
+   "p": 0.0
+  },
+  "realhitbench": {
+   "a": 0.403,
+   "b": 0.463,
+   "b_only": 14,
+   "a_only": 0,
+   "p": 0.0001
+  }
+ },
+ "paired_gold_table_any_512_to_1024": {
+  "hitab": {
+   "a": 0.925,
+   "b": 0.946,
+   "b_only": 20,
+   "a_only": 3,
+   "p": 0.0005
+  },
+  "multihiertt": {
+   "a": 0.862,
+   "b": 0.902,
+   "b_only": 19,
+   "a_only": 3,
+   "p": 0.0009
+  },
+  "aitqa": {
+   "a": 0.794,
+   "b": 0.854,
+   "b_only": 28,
+   "a_only": 1,
+   "p": 0.0
+  },
+  "realhitbench": {
+   "a": 0.823,
+   "b": 0.874,
+   "b_only": 12,
+   "a_only": 0,
+   "p": 0.0005
+  }
+ },
+ "verdict": {
+  "B1": {
+   "claim": "no corpus reaches OSC .9 at 1024; HiTab lands in .87-.90",
+   "observed": "HiTab .8819; MH .7118, AIT .7317, RHB .4632",
+   "result": "PASS"
+  },
+  "B2": {
+   "claim": "OSC gain +.03 to +.08 everywhere; HiTab .87-.90 / MH .65-.70 / AIT .68-.73 / RHB .44-.50",
+   "observed": "HiTab +.0361 (.8819 in range); MH +.1003 (.7118, OVER both the gain cap and the range); AIT +.0798 (.7317, over the range by .0017); RHB +.0606 (.4632 in range)",
+   "result": "FAIL - MultiHiertt clearly over, AIT-QA marginally over"
+  },
+  "B3": {
+   "claim": "table-hit .9 reached by HiTab and MultiHiertt only; HiTab .93-.95 / MH .88-.91 / AIT .81-.85 / RHB .84-.88",
+   "observed": "HiTab .9458 and MH .9023 are the only two >= .9 - the named pair is exactly right; AIT .8537 overshoots its range by .0037, RHB .8745 in range",
+   "result": "PASS on the claim, one range narrowly missed"
+  },
+  "B4": {
+   "claim": "tables in context roughly double; HiTab 3.5-4.5 / MH 19-24 / AIT 16-20 / RHB 7-10",
+   "observed": "HiTab 2.88 (x1.24), AIT 14.10 (x1.45), RHB 5.60 (x1.31) - all three BELOW range; MH 19.10 (x1.58) in range",
+   "result": "FAIL - 1 of 4. The budget went into cells per table, not more tables"
+  },
+  "B5": {
+   "claim": "goldcell arm identical at both budgets",
+   "observed": "MH 34.81 = 34.81, AIT 17.23 = 17.23, RHB 34.39 = 34.39 - identical; HiTab 512 run predates the arm so that cell is undecidable",
+   "result": "PASS on 3 of 4, undecidable on HiTab"
+  }
+ },
+ "decision_rules_fired": [
+  "B1 PASS -> the budget axis does not reach .9 either, at 512->1024",
+  "B2 FAIL with gain over +.08 (MultiHiertt +.1003) -> the prereg says to re-examine whether 512 is the right operating budget for these corpora",
+  "B4 FAIL below range -> the prereg says to re-read the reading-ceiling table-count curve; HiTab stays at 2.88 tables, under the 4-table cliff"
+ ],
+ "unpreregistered_observations": [
+  "Every 512->1024 OSC gain is significant and near-monotone: a_only is 0 on three corpora and 2 on HiTab, so almost no query got worse",
+  "Table-hit now clears .9 on 2 of 4 corpora (HiTab .9458, MultiHiertt .9023), up from 1 of 4 at budget 512",
+  "Out of 100 queries at 1024: full-set retrieval succeeds 88 (HiTab) / 73 (AIT-QA) / 71 (MultiHiertt) / 46 (RealHiTBench)"
+ ]
+}
