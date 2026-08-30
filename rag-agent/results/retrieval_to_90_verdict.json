@@ -1,0 +1,185 @@
+{
+ "prereg": "PREREG-2026-08-30-retrieval-to-90.md",
+ "commit_of_predictions": "5c9bec4",
+ "leg": "hybrid alpha sweep at the standing config (S3c, budget 512), LLM-free",
+ "arms": {
+  "hitab": {
+   "0.7": {
+    "file": "hyb_hitab_s3c_512.json",
+    "n": 830,
+    "osc": 0.8458,
+    "gold_table_any": 0.9253,
+    "n_tables": 2.32
+   },
+   "1.0": {
+    "file": "s3c_hitab_512.json",
+    "n": 830,
+    "osc": 0.7892,
+    "gold_table_any": 0.9181,
+    "n_tables": 2.56
+   }
+  },
+  "multihiertt": {
+   "0.5": {
+    "file": "hyb_multihiertt_s3c_512_a5.json",
+    "n": 399,
+    "osc": 0.6366,
+    "gold_table_any": 0.8521,
+    "n_tables": 10.78
+   },
+   "0.7": {
+    "file": "hyb_multihiertt_s3c_512_a7.json",
+    "n": 399,
+    "osc": 0.6115,
+    "gold_table_any": 0.8622,
+    "n_tables": 12.11
+   },
+   "1.0": {
+    "file": "hyb_multihiertt_s3c_512_1.0.json",
+    "n": 399,
+    "osc": 0.4962,
+    "gold_table_any": 0.7995,
+    "n_tables": 15.24
+   }
+  },
+  "aitqa": {
+   "0.5": {
+    "file": "hyb_aitqa_s3c_512_a50.json",
+    "n": 451,
+    "osc": 0.6497,
+    "gold_table_any": 0.7827,
+    "n_tables": 9.4
+   },
+   "0.7": {
+    "file": "hyb_aitqa_s3c_512_a7.json",
+    "n": 451,
+    "osc": 0.6519,
+    "gold_table_any": 0.7938,
+    "n_tables": 9.7
+   }
+  },
+  "realhitbench": {
+   "0.5": {
+    "file": "hyb_realhitbench_s3c_512_a5.json",
+    "n": 231,
+    "osc": 0.4026,
+    "gold_table_any": 0.8009,
+    "n_tables": 4.14
+   },
+   "0.7": {
+    "file": "hyb_realhitbench_s3c_512_a7.json",
+    "n": 231,
+    "osc": 0.4026,
+    "gold_table_any": 0.8225,
+    "n_tables": 4.29
+   },
+   "1.0": {
+    "file": "hyb_realhitbench_s3c_512_1.0.json",
+    "n": 231,
+    "osc": 0.355,
+    "gold_table_any": 0.7879,
+    "n_tables": 4.62
+   }
+  }
+ },
+ "paired_cell_osc": {
+  "realhitbench dense->a0.7": {
+   "a": 0.355,
+   "b": 0.4026,
+   "b_only": 14,
+   "a_only": 3,
+   "p": 0.0127
+  },
+  "realhitbench a0.5->a0.7": {
+   "a": 0.4026,
+   "b": 0.4026,
+   "b_only": 4,
+   "a_only": 4,
+   "p": 1.0
+  },
+  "multihiertt dense->a0.7": {
+   "a": 0.4962,
+   "b": 0.6115,
+   "b_only": 54,
+   "a_only": 8,
+   "p": 0.0
+  },
+  "multihiertt a0.5->a0.7": {
+   "a": 0.6366,
+   "b": 0.6115,
+   "b_only": 8,
+   "a_only": 18,
+   "p": 0.0755
+  },
+  "aitqa a0.5->a0.7": {
+   "a": 0.6497,
+   "b": 0.6519,
+   "b_only": 10,
+   "a_only": 9,
+   "p": 1.0
+  }
+ },
+ "paired_cell_gold_table_any": {
+  "realhitbench dense->a0.7": {
+   "a": 0.788,
+   "b": 0.823,
+   "b_only": 16,
+   "a_only": 8,
+   "p": 0.1516
+  },
+  "multihiertt dense->a0.7": {
+   "a": 0.799,
+   "b": 0.862,
+   "b_only": 38,
+   "a_only": 13,
+   "p": 0.0006
+  },
+  "multihiertt a0.5->a0.7": {
+   "a": 0.852,
+   "b": 0.862,
+   "b_only": 13,
+   "a_only": 9,
+   "p": 0.5235
+  },
+  "aitqa a0.5->a0.7": {
+   "a": 0.783,
+   "b": 0.794,
+   "b_only": 14,
+   "a_only": 9,
+   "p": 0.4049
+  }
+ },
+ "verdict": {
+  "R1": {
+   "claim": "no corpus reaches OSC .9; max does not exceed HiTab .8458",
+   "observed": "max OSC .8458 (hitab a=0.7); MH .6366, AIT .6519, RHB .4026",
+   "result": "PASS"
+  },
+  "R2": {
+   "claim": "alpha 0.5 > alpha 0.7 on OSC in all three corpora",
+   "observed": "AIT .6497 vs .6519 (10:9 p=1.00); RHB .4026 vs .4026 (4:4 p=1.00); MH .6366 vs .6115 (18:8 p=.0755)",
+   "result": "FAIL - two ties and one borderline; the alternative branch (a=0.7 wins all three) also does NOT hold"
+  },
+  "R3": {
+   "claim": "only HiTab reaches table-hit .9; MH .85-.88 / AIT .76-.80 / RHB .80-.86",
+   "observed": "HiTab .9253 (only one >= .9); MH .8622, AIT .7938, RHB .8225 - all three inside the stated ranges",
+   "result": "PASS"
+  },
+  "R4": {
+   "claim": "RHB OSC < .50 at every alpha",
+   "observed": "max .4026",
+   "result": "PASS"
+  },
+  "R5": {
+   "claim": "flat arm matches the committed run",
+   "observed": "aitqa a=0.5 flat osc .6807 / tbl .8182 EXACT match to corpus_dump_vs_cell_hyb_aitqa_512.json; MH population came out n=399 vs the committed n=400 so exact match is not decidable there; RHB has no pairable committed baseline (population 243->231)",
+   "result": "PASS where decidable, UNDECIDABLE on MH and RHB"
+  }
+ },
+ "unpreregistered_observations": [
+  "hybrid beats dense on the cell arm in 4/4 corpora - RHB +.048 (p=.0127), MH +.115 (p<1e-4), AIT +.102, HiTab +.057",
+  "alpha 0.5 and 0.7 are not distinguishable; the lever is hybrid-vs-dense, not the alpha value",
+  "RHB capped arm reaches gold_table_any .9004 with OSC .329 - it spreads over 10.1 tables",
+  "RHB cellrow OSC .4719 > cell .4026; cellrow is a rejected arm and is not claimed here"
+ ]
+}
