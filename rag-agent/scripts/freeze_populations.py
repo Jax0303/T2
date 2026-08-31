@@ -189,6 +189,56 @@ def hitab_size_strata(data_dir: str, split: str, per_bucket: int,
                  "used_by": ["baseline_comparison_llm"]}
 
 
+def hitab_dev_multicell_lookup(data_dir: str) -> tuple[list[str], dict]:
+    """Lookup queries that need SEVERAL gold cells -- the multi-cell counterpart
+    of ``hitab_dev_lookup_all``.
+
+    Same filters as that population except the cell count: the header tree must
+    build and every operand must land inside the grid, so the corpus can hold
+    the query. The aggregation must NOT be arithmetic -- those are already
+    ``hitab_dev_corpus_arith`` -- which leaves reading questions whose answer
+    happens to be pinned by more than one cell.
+
+    Two shapes live here and the analysis has to keep them apart (60 / 34 of the
+    94 at the freeze): the answer is a single value that other cells only
+    identify ("how many games did barnsley play in the season it scored eight
+    goals" links the 8 and the 212), or the answer is a list as long as the cell
+    set. `results/lookup_gap/multicell_pop.md` counts both.
+    """
+    from point3_reconstruction_cost import build_table_paths
+
+    queries, tables = load_queries(data_dir, "dev")
+    raw_dir = Path(data_dir) / "data/tables/raw"
+    paths = {}
+    for tid, bt in tables.items():
+        f = raw_dir / f"{tid}.json"
+        if not f.exists():
+            continue
+        try:
+            raw = json.load(open(f))
+        except Exception:
+            continue
+        pt = build_table_paths(raw, bt)
+        if pt is not None:
+            paths[tid] = pt
+    ids = []
+    for q in queries:
+        ops = [(op.row, op.col) for op in q.gold_operands]
+        pt = paths.get(q.gold_table_id)
+        if len(ops) < 2 or (q.aggregation or "none") in ARITH or pt is None:
+            continue
+        if all(0 <= r < pt["n_r"] and 0 <= c < pt["n_c"] for r, c in ops):
+            ids.append(q.query_id)
+    return ids, {"dataset": "hitab", "split": "dev",
+                 "filter": "len(gold_operands)>=2 and aggregation not in ARITH "
+                           "and build_table_paths is not None and every operand "
+                           "in grid",
+                 "order": "dataset order", "n": len(ids),
+                 "disjoint_from": ["hitab_dev_lookup_all",
+                                   "hitab_dev_corpus_arith"],
+                 "counted_by": "analysis/multicell_lookup_pop.py"}
+
+
 def hitab_corpus_arith(data_dir: str, split: str) -> tuple[list[str], dict]:
     """``corpus_dump_vs_cell``'s population: arithmetic queries the corpus can hold.
 
@@ -293,6 +343,7 @@ SPECS = {
     "hitab_dev_arith_m2": lambda a: hitab_arith(a.data_dir, "dev", 2),
     "hitab_train_arith": lambda a: hitab_arith(a.data_dir, "train", 1),
     "hitab_train_arith_m2": lambda a: hitab_arith(a.data_dir, "train", 2),
+    "hitab_dev_multicell_lookup": lambda a: hitab_dev_multicell_lookup(a.data_dir),
     "hitab_dev_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "dev"),
     "hitab_train_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "train"),
     "hitab_dev_size_strata": lambda a: hitab_size_strata(a.data_dir, "dev", a.per_bucket),

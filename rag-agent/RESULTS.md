@@ -186,6 +186,32 @@ gold_rank는 2위 안 113건, 10위 안 267건, 200위 밖 41건이다.
 | `retrieval_830` | 402 | 830건 전체에서 gold가 1위가 아닌 쿼리, 관계별 셀 수 |
 | `above_gold_830` | 3,285 | 각 쿼리의 gold 위 상위 20셀 (행·열 경로, 값, 관계) |
 
+### 2.6 다중 셀 조회 — 모집단 동결과 검색 정확도
+
+모집단 `populations/hitab_dev_multicell_lookup.txt` **n=94**, 2026-09-01 동결
+(`scripts/freeze_populations.py: hitab_dev_multicell_lookup`).
+필터: `len(gold_operands)>=2 and aggregation not in ARITH and 헤더 트리 빌드 and 전 피연산자 격자 안`.
+`hitab_dev_lookup_all`(830, m=1) 및 `hitab_dev_corpus_arith`(175, 산술)와 서로소.
+
+두 유형은 `results/lookup_gap/multicell_pop.md` 참조 (A: 답 원소 1개 60건 /
+B: 답이 목록 34건). 검색만 측정했고 리더는 태우지 않았다
+(`results/lookup_gap/multicell_retrieval.md`, `rank_multicell/`).
+setEM@k = gold 셀 **전부**가 상위 k 안. setEM@1은 정의상 0이다.
+
+| 층 | n | setEM@5 | setEM@10 | setEM@50 | setEM@200 | Recall@10 | 표 R@1 | MRR |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| A. 답 원소 1개 | 60 | .2000 | .2667 | .5000 | .7167 | .4451 | .5667 | .4836 |
+| B. 답이 목록 | 34 | .6176 | .6176 | .8235 | .9412 | .6838 | .7647 | .6306 |
+| 다중 셀 전체 | 94 | .3511 | .3936 | .6170 | .7979 | .5315 | .6383 | .5368 |
+| (대조) m=1, 830건 | 830 | — | .8373 | .9120 | — | .8373 | .8458 | .6299 |
+
+오라클 표 게이팅(gold 표 안에서만 랭킹, 94건) setEM: @5 .4681 / @10 .6277 / @20 .7234 / @50 .8830.
+setEM@10 실패 57건에서 gold를 앞지른 셀 중 같은 표 출신은 4.1%,
+gold 위 서로 다른 표 수 중앙값 11.
+
+`MEASURED: NO` — 다중 셀 조회의 리더 EM(어느 정책으로도 미실행), 유형 A의 조건 셀만
+따로 본 순위.
+
 ## 3. Recall 분모 — 셀 단위와 쿼리 단위
 
 출처 `results/audit/recall_denominators.json`. 보고된 Recall은 전부 **셀 단위**다.
@@ -361,6 +387,7 @@ B2 **FAIL** — MultiHiertt 이득 +.1003이 사전등록 상한 +.08을 넘었�
   RealHiTBench/MultiHiertt는 원본 헤더 트리가 없어 자동 검증 불가.
 - AIT-QA 재구성판 (§4 각주 1).
 - hitab_arith의 P1-guessed 외 나머지 재구성 조합, 정렬 실패 115건.
+- 다중 셀 조회 94건의 리더 EM (§2.6).
 
 ## 12. 참조
 
