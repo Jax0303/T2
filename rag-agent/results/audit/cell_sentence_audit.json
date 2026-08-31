@@ -1,0 +1,555 @@
+[
+  {
+    "dataset": "hitab",
+    "population": "hitab_dev_lookup_all",
+    "n_cells_indexed": 58759,
+    "n_tables": 424,
+    "A_markdown": {
+      "n_compared": 58759,
+      "n_mismatch": 19653,
+      "rate": 0.334468,
+      "classes": {
+        "equal": 39106,
+        "numeric_equal_text_differs": 16333,
+        "source_blank": 1020,
+        "other": 1012,
+        "thousands_separator": 927,
+        "sentence_blank": 317,
+        "currency_or_percent_sign": 44
+      }
+    },
+    "A_source": {
+      "n_compared": 58759,
+      "n_mismatch": 18411,
+      "n_skipped": 0,
+      "rate": 0.313331,
+      "classes": {
+        "equal": 40348,
+        "numeric_equal_text_differs": 16493,
+        "thousands_separator": 927,
+        "source_blank": 755,
+        "sentence_blank": 192,
+        "currency_or_percent_sign": 44
+      }
+    },
+    "B_header_tree": {
+      "n_compared": 58759,
+      "n_mismatch": 1336,
+      "rate": 0.022737,
+      "classes": {
+        "equal": 57423,
+        "col": 1336
+      }
+    },
+    "examples_value_markdown": [
+      {
+        "where": "markdown",
+        "class": "thousands_separator",
+        "table": "1012",
+        "row": 0,
+        "col": 0,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of current dollars > total expenditures > thousands of dollars is 3771205.",
+        "source_value": "3,771,205",
+        "sentence_value": "3771205"
+      },
+      {
+        "where": "markdown",
+        "class": "sentence_blank",
+        "table": "1012",
+        "row": 0,
+        "col": 1,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of current dollars > percentage change from previous year > percent is .",
+        "source_value": "..",
+        "sentence_value": ""
+      },
+      {
+        "where": "markdown",
+        "class": "sentence_blank",
+        "table": "1012",
+        "row": 0,
+        "col": 3,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of current dollars > percentage change from previous year > percent is .",
+        "source_value": "..",
+        "sentence_value": ""
+      },
+      {
+        "where": "markdown",
+        "class": "thousands_separator",
+        "table": "1012",
+        "row": 0,
+        "col": 4,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of constant (2002) dollars > total expenditures > thousands of dollars is 5748789.",
+        "source_value": "5,748,789",
+        "sentence_value": "5748789"
+      },
+      {
+        "where": "markdown",
+        "class": "other",
+        "table": "1026",
+        "row": 1,
+        "col": 0,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among percent > age at landing > 20 to 24, the value of men > all is 10.3.",
+        "source_value": "24.6",
+        "sentence_value": "10.3"
+      },
+      {
+        "where": "markdown",
+        "class": "other",
+        "table": "1026",
+        "row": 1,
+        "col": 1,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among percent > age at landing > 20 to 24, the value of men > low-paying firm is 13.3.",
+        "source_value": "22.1",
+        "sentence_value": "13.3"
+      },
+      {
+        "where": "markdown",
+        "class": "source_blank",
+        "table": "1026",
+        "row": 6,
+        "col": 0,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among percent > age at landing > 45 to 49, the value of men > all is 6.7.",
+        "source_value": "",
+        "sentence_value": "6.7"
+      },
+      {
+        "where": "markdown",
+        "class": "source_blank",
+        "table": "1026",
+        "row": 6,
+        "col": 1,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among percent > age at landing > 45 to 49, the value of men > low-paying firm is 8.7.",
+        "source_value": "",
+        "sentence_value": "8.7"
+      },
+      {
+        "where": "markdown",
+        "class": "numeric_equal_text_differs",
+        "table": "1026",
+        "row": 34,
+        "col": 0,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among number > observations, the value of men > all is 211541.0.",
+        "source_value": "211,541",
+        "sentence_value": "211541.0"
+      },
+      {
+        "where": "markdown",
+        "class": "numeric_equal_text_differs",
+        "table": "1026",
+        "row": 34,
+        "col": 1,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among number > observations, the value of men > low-paying firm is 36188.0.",
+        "source_value": "36,188",
+        "sentence_value": "36188.0"
+      }
+    ],
+    "examples_value_source": [
+      {
+        "where": "hitab_raw",
+        "class": "thousands_separator",
+        "table": "1012",
+        "row": 0,
+        "col": 0,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of current dollars > total expenditures > thousands of dollars is 3771205.",
+        "source_value": "3,771,205",
+        "sentence_value": "3771205"
+      },
+      {
+        "where": "hitab_raw",
+        "class": "sentence_blank",
+        "table": "1012",
+        "row": 0,
+        "col": 1,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of current dollars > percentage change from previous year > percent is .",
+        "source_value": "..",
+        "sentence_value": ""
+      },
+      {
+        "where": "hitab_raw",
+        "class": "sentence_blank",
+        "table": "1012",
+        "row": 0,
+        "col": 3,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of current dollars > percentage change from previous year > percent is .",
+        "source_value": "..",
+        "sentence_value": ""
+      },
+      {
+        "where": "hitab_raw",
+        "class": "thousands_separator",
+        "table": "1012",
+        "row": 0,
+        "col": 4,
+        "sentence": "In the table 'current and constant (2002) dollar operating expenditures on policing, canada, 1986/1987 to 2017/2018', among 1986/1987, the value of constant (2002) dollars > total expenditures > thousands of dollars is 5748789.",
+        "source_value": "5,748,789",
+        "sentence_value": "5748789"
+      },
+      {
+        "where": "hitab_raw",
+        "class": "numeric_equal_text_differs",
+        "table": "1026",
+        "row": 34,
+        "col": 0,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among number > observations, the value of men > all is 211541.0.",
+        "source_value": "211,541",
+        "sentence_value": "211541.0"
+      },
+      {
+        "where": "hitab_raw",
+        "class": "numeric_equal_text_differs",
+        "table": "1026",
+        "row": 34,
+        "col": 1,
+        "sentence": "In the table 'this table displays the results of summary statistics of characteristics of immigrant men and women by initial firm-level payments men , women, all, low-paying firm, medium-low-paying firm and high-paying firm, calculated using percent and number units of measure (appearing as column headers)', among number > observations, the value of men > low-paying firm is 36188.0.",
+        "source_value": "36,188",
+        "sentence_value": "36188.0"
+      },
+      {
+        "where": "hitab_raw",
+        "class": "source_blank",
+        "table": "105_totto12493-3",
+        "row": 2,
+        "col": 3,
+        "sentence": "In the table 'career statistics', among fitzroy united alexander > victorian state league > 1975, the value of cup > goals is ?.",
+        "source_value": "",
+        "sentence_value": "?"
+      },
+      {
+        "where": "hitab_raw",
+        "class": "source_blank",
+        "table": "105_totto12493-3",
+        "row": 3,
+        "col": 3,
+        "sentence": "In the table 'career statistics', among fitzroy united alexander > victorian state league > 1976, the value of cup > goals is ?.",
+        "source_value": "",
+        "sentence_value": "?"
+      },
+      {
+        "where": "hitab_raw",
+        "class": "currency_or_percent_sign",
+        "table": "288_totto33063-2",
+        "row": 0,
+        "col": 2,
+        "sentence": "In the table 'statistics', among 2011 > old dominion, the value of passing > pct is 68.7.",
+        "source_value": "68.7%",
+        "sentence_value": "68.7"
+      },
+      {
+        "where": "hitab_raw",
+        "class": "currency_or_percent_sign",
+        "table": "288_totto33063-2",
+        "row": 1,
+        "col": 2,
+        "sentence": "In the table 'statistics', among 2012 > old dominion, the value of passing > pct is 68.7.",
+        "source_value": "68.7%",
+        "sentence_value": "68.7"
+      }
+    ],
+    "examples_header": [
+      {
+        "table": "1017",
+        "row": 0,
+        "col": 2,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among newfoundland and labrador, the value of hirings > recruit > percent is 32.",
+        "sentence_row_path": [
+          "newfoundland and labrador"
+        ],
+        "sentence_col_path": [
+          "hirings",
+          "recruit",
+          "percent"
+        ],
+        "tree_row_path": [
+          "newfoundland and labrador"
+        ],
+        "tree_col_path": [
+          "hirings",
+          "recruit"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 0,
+        "col": 5,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among newfoundland and labrador, the value of departures > other > percent is 36.",
+        "sentence_row_path": [
+          "newfoundland and labrador"
+        ],
+        "sentence_col_path": [
+          "departures",
+          "other",
+          "percent"
+        ],
+        "tree_row_path": [
+          "newfoundland and labrador"
+        ],
+        "tree_col_path": [
+          "departures",
+          "other"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 1,
+        "col": 2,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among prince edward island, the value of hirings > recruit > percent is 0.",
+        "sentence_row_path": [
+          "prince edward island"
+        ],
+        "sentence_col_path": [
+          "hirings",
+          "recruit",
+          "percent"
+        ],
+        "tree_row_path": [
+          "prince edward island"
+        ],
+        "tree_col_path": [
+          "hirings",
+          "recruit"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 1,
+        "col": 5,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among prince edward island, the value of departures > other > percent is 35.",
+        "sentence_row_path": [
+          "prince edward island"
+        ],
+        "sentence_col_path": [
+          "departures",
+          "other",
+          "percent"
+        ],
+        "tree_row_path": [
+          "prince edward island"
+        ],
+        "tree_col_path": [
+          "departures",
+          "other"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 2,
+        "col": 2,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among nova scotia, the value of hirings > recruit > percent is 0.",
+        "sentence_row_path": [
+          "nova scotia"
+        ],
+        "sentence_col_path": [
+          "hirings",
+          "recruit",
+          "percent"
+        ],
+        "tree_row_path": [
+          "nova scotia"
+        ],
+        "tree_col_path": [
+          "hirings",
+          "recruit"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 2,
+        "col": 5,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among nova scotia, the value of departures > other > percent is 39.",
+        "sentence_row_path": [
+          "nova scotia"
+        ],
+        "sentence_col_path": [
+          "departures",
+          "other",
+          "percent"
+        ],
+        "tree_row_path": [
+          "nova scotia"
+        ],
+        "tree_col_path": [
+          "departures",
+          "other"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 3,
+        "col": 2,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among new brunswick, the value of hirings > recruit > percent is 0.",
+        "sentence_row_path": [
+          "new brunswick"
+        ],
+        "sentence_col_path": [
+          "hirings",
+          "recruit",
+          "percent"
+        ],
+        "tree_row_path": [
+          "new brunswick"
+        ],
+        "tree_col_path": [
+          "hirings",
+          "recruit"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 3,
+        "col": 5,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among new brunswick, the value of departures > other > percent is 49.",
+        "sentence_row_path": [
+          "new brunswick"
+        ],
+        "sentence_col_path": [
+          "departures",
+          "other",
+          "percent"
+        ],
+        "tree_row_path": [
+          "new brunswick"
+        ],
+        "tree_col_path": [
+          "departures",
+          "other"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 4,
+        "col": 2,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among quebec, the value of hirings > recruit > percent is 24.",
+        "sentence_row_path": [
+          "quebec"
+        ],
+        "sentence_col_path": [
+          "hirings",
+          "recruit",
+          "percent"
+        ],
+        "tree_row_path": [
+          "quebec"
+        ],
+        "tree_col_path": [
+          "hirings",
+          "recruit"
+        ]
+      },
+      {
+        "table": "1017",
+        "row": 4,
+        "col": 5,
+        "sentence": "In the table 'hirings and departures of police officers, by province and territory, canada, 2017/2018', among quebec, the value of departures > other > percent is 34.",
+        "sentence_row_path": [
+          "quebec"
+        ],
+        "sentence_col_path": [
+          "departures",
+          "other",
+          "percent"
+        ],
+        "tree_row_path": [
+          "quebec"
+        ],
+        "tree_col_path": [
+          "departures",
+          "other"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "aitqa",
+    "population": "aitqa",
+    "n_cells_indexed": 5320,
+    "n_tables": 113,
+    "A_markdown": {
+      "n_compared": 5320,
+      "n_mismatch": 0,
+      "rate": 0.0,
+      "classes": {
+        "equal": 5320
+      }
+    },
+    "A_source": {
+      "n_compared": 5320,
+      "n_mismatch": 0,
+      "n_skipped": 0,
+      "rate": 0.0,
+      "classes": {
+        "equal": 5320
+      }
+    },
+    "B_header_tree": {
+      "n_compared": 5320,
+      "n_mismatch": 0,
+      "rate": 0.0,
+      "classes": {
+        "equal": 5320
+      }
+    },
+    "examples_value_markdown": [],
+    "examples_value_source": [],
+    "examples_header": []
+  },
+  {
+    "dataset": "realhitbench",
+    "population": "rhb_lookup_all",
+    "n_cells_indexed": 143377,
+    "n_tables": 537,
+    "A_markdown": {
+      "n_compared": 143377,
+      "n_mismatch": 0,
+      "rate": 0.0,
+      "classes": {
+        "equal": 143377
+      }
+    },
+    "A_source": {
+      "n_compared": 0,
+      "n_mismatch": 0,
+      "n_skipped": 0,
+      "rate": null,
+      "classes": {}
+    },
+    "B_header_tree": {
+      "n_compared": 0,
+      "n_mismatch": 0,
+      "rate": null,
+      "classes": {}
+    },
+    "examples_value_markdown": [],
+    "examples_value_source": [],
+    "examples_header": []
+  },
+  {
+    "dataset": "multihiertt",
+    "population": "",
+    "n_cells_indexed": 56745,
+    "n_tables": 1307,
+    "A_markdown": {
+      "n_compared": 56745,
+      "n_mismatch": 0,
+      "rate": 0.0,
+      "classes": {
+        "equal": 56745
+      }
+    },
+    "A_source": {
+      "n_compared": 0,
+      "n_mismatch": 0,
+      "n_skipped": 0,
+      "rate": null,
+      "classes": {}
+    },
+    "B_header_tree": {
+      "n_compared": 0,
+      "n_mismatch": 0,
+      "rate": null,
+      "classes": {}
+    },
+    "examples_value_markdown": [],
+    "examples_value_source": [],
+    "examples_header": []
+  }
+]

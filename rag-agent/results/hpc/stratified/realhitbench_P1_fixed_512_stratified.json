@@ -1,0 +1,45 @@
+{
+  "dataset": "realhitbench",
+  "policy": "P1_fixed_512",
+  "n_chunks": 2287,
+  "n_rows": 287,
+  "groups": {
+    "full": {
+      "n": 213,
+      "recall@10": 0.8403755868544601,
+      "recall@50": 0.9014084507042254
+    },
+    "partial": {
+      "n": 70,
+      "recall@10": 0.2571428571428571,
+      "recall@50": 0.4714285714285714
+    },
+    "NOT_IN_ANY_CHUNK": {
+      "n": 4,
+      "recall@10": 0.0,
+      "recall@50": 0.0
+    }
+  },
+  "diff@10": {
+    "delta": 0.583232729711603,
+    "ci95_lo": 0.4644533869885982,
+    "ci95_hi": 0.6926224010731054,
+    "p_uncorrected": 4.886793731703381e-19,
+    "n_full": 213,
+    "n_partial": 70
+  },
+  "diff@50": {
+    "delta": 0.42997987927565395,
+    "ci95_lo": 0.30630449362843726,
+    "ci95_hi": 0.5534540576794098,
+    "p_uncorrected": 4.837373604659187e-13,
+    "n_full": 213,
+    "n_partial": 70
+  },
+  "retriever": "hybrid",
+  "alpha": 0.7,
+  "cell_scheme": "S3c",
+  "population": "realhitbench",
+  "dropped_queries": 0,
+  "hpc_crosscheck": "287/287 대조, 불일치 0"
+}

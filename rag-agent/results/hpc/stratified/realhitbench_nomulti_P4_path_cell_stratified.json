@@ -1,0 +1,45 @@
+{
+  "dataset": "realhitbench",
+  "policy": "P4_path_cell",
+  "n_chunks": 143377,
+  "n_rows": 198,
+  "groups": {
+    "full": {
+      "n": 198,
+      "recall@10": 0.3787878787878788,
+      "recall@50": 0.5050505050505051
+    },
+    "partial": {
+      "n": 0,
+      "recall@10": null,
+      "recall@50": null
+    },
+    "NOT_IN_ANY_CHUNK": {
+      "n": 0,
+      "recall@10": null,
+      "recall@50": null
+    }
+  },
+  "diff@10": {
+    "delta": null,
+    "ci95_lo": null,
+    "ci95_hi": null,
+    "p_uncorrected": null,
+    "n_full": 198,
+    "n_partial": 0
+  },
+  "diff@50": {
+    "delta": null,
+    "ci95_lo": null,
+    "ci95_hi": null,
+    "p_uncorrected": null,
+    "n_full": 198,
+    "n_partial": 0
+  },
+  "retriever": "hybrid",
+  "alpha": 0.7,
+  "cell_scheme": "S3c",
+  "population": "realhitbench",
+  "dropped_queries": 33,
+  "hpc_crosscheck": "생략 (multimatch 제외 조건)"
+}

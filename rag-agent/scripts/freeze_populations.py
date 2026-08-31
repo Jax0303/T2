@@ -261,6 +261,29 @@ def rhb_lookup_all(_data_dir: str) -> tuple[list[str], dict]:
         "used_by": ["corpus_dump_vs_cell"]}
 
 
+def rhb_nr_all(_data_dir: str) -> tuple[list[str], dict]:
+    """Every RealHiTBench Numerical Reasoning query -- EM only, no gold cells.
+
+    ``rhb_lookup_all`` requires the answer string to resolve to a unique cell
+    set, which is what OSC needs. An NR answer is usually a COMPUTED value that
+    no cell holds, so that requirement keeps 55 of 771 and, within each subtype,
+    the instances whose answer was already printed in the table. This population
+    drops the requirement so the run sits on the same queries the published
+    table reports on (arXiv:2506.13405 Table 2, NR EM), and pays for it by not
+    being able to report OSC.
+    """
+    from corpus_dump_vs_cell import realhitbench_corpus
+    C = realhitbench_corpus(pin=False, question_types=("Numerical Reasoning",),
+                            require_gold_cells=False)
+    return [q["query_id"] for q in C.queries], {
+        "dataset": "realhitbench", "split": "all",
+        "question_types": ["Numerical Reasoning"],
+        "filter": "table parses, >=3 rows; answer is non-empty. Gold cells NOT "
+                  "required -- OSC is null where the answer resolves to no cell",
+        "order": "QA_final.json order", "n": len(C.queries),
+        "used_by": ["corpus_dump_vs_cell", "PREREG-2026-08-27-rhb-nr-large-tables"]}
+
+
 SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
@@ -276,6 +299,7 @@ SPECS = {
     "hitab_train_size_strata": lambda a: hitab_size_strata(a.data_dir, "train", a.per_bucket),
     "aitqa_lookup_all": lambda a: aitqa_lookup_all(a.data_dir),
     "rhb_lookup_all": lambda a: rhb_lookup_all(a.data_dir),
+    "rhb_nr_all": lambda a: rhb_nr_all(a.data_dir),
 }
 
 

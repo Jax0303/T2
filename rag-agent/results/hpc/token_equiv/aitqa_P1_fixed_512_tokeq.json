@@ -1,0 +1,31 @@
+{
+  "dataset": "aitqa",
+  "policy": "P1_fixed_512",
+  "population": "aitqa",
+  "retriever": "hybrid",
+  "alpha": 0.7,
+  "cell_scheme": "S3c",
+  "n_chunks": 138,
+  "mean_chunk_tokens": 298.57971014492756,
+  "median_chunk_tokens": 266.5,
+  "total_chunk_tokens": 41204,
+  "n_gold_cells": 451,
+  "n_not_in_any_chunk": 0,
+  "budgets": {
+    "2560": {
+      "k": 8,
+      "cost_tokens": 2388.6376811594205,
+      "recall": 0.647450110864745
+    },
+    "5120": {
+      "k": 17,
+      "cost_tokens": 5075.855072463769,
+      "recall": 0.8203991130820399
+    },
+    "10240": {
+      "k": 34,
+      "cost_tokens": 10151.710144927538,
+      "recall": 0.917960088691796
+    }
+  }
+}

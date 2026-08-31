@@ -1,0 +1,45 @@
+{
+  "dataset": "hitab",
+  "policy": "P2_row",
+  "n_chunks": 7196,
+  "n_rows": 830,
+  "groups": {
+    "full": {
+      "n": 186,
+      "recall@10": 0.8010752688172043,
+      "recall@50": 0.8763440860215054
+    },
+    "partial": {
+      "n": 644,
+      "recall@10": 0.7717391304347826,
+      "recall@50": 0.8959627329192547
+    },
+    "NOT_IN_ANY_CHUNK": {
+      "n": 0,
+      "recall@10": null,
+      "recall@50": null
+    }
+  },
+  "diff@10": {
+    "delta": 0.02933613838242166,
+    "ci95_lo": -0.03696653977158881,
+    "ci95_hi": 0.09385226741467978,
+    "p_uncorrected": 0.4241025008568241,
+    "n_full": 186,
+    "n_partial": 644
+  },
+  "diff@50": {
+    "delta": -0.01961864689774928,
+    "ci95_lo": -0.07361584184866088,
+    "ci95_hi": 0.031272957991050565,
+    "p_uncorrected": 0.4255717910490512,
+    "n_full": 186,
+    "n_partial": 644
+  },
+  "retriever": "hybrid",
+  "alpha": 0.7,
+  "cell_scheme": "S3c",
+  "population": "hitab_dev_lookup_all",
+  "dropped_queries": 0,
+  "hpc_crosscheck": "830/830 대조, 불일치 0"
+}
