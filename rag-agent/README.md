@@ -1,5 +1,11 @@
 # rag-agent — retrieval completeness for hierarchical-table QA
 
+> ⚠️ **2026-08-31 정리.** `results/`에서 2026-08-30 이전에 추가된 799개 파일을
+> 커밋 `54ed06e`로 리포지토리에서 제거했다. 아래 인용 중 그 파일들을 가리키는 것은
+> 경로가 더 이상 존재하지 않는다. 수치 자체는 여기 적힌 그대로가 당시 측정값이고,
+> 파일은 히스토리에 있다: `git checkout 753fa2e -- rag-agent/results/<경로>`.
+> 지금 리포에 남아 있는 것만으로 다시 쓴 현행 수치표는 [`RESULTS.md`](RESULTS.md).
+
 Research code for a masters thesis on RAG over **hierarchical tables** (HiTab,
 MultiHiertt, RealHiTBench, FinQA, WikiSQL, AIT-QA, IM-TQA).
 
