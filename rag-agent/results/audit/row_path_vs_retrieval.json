@@ -1,0 +1,89 @@
+{
+  "policy": "P4_path_cell",
+  "pool": "hitab_lookup",
+  "n_queries": 189,
+  "n_stratified": 189,
+  "n_unclassifiable": 0,
+  "note": "The deployed P4 corpus indexes the GOLD row\npath (corpus_dump_vs_cell.py: cpaths.append((pt[\"gold_rp\"][i], ...))), not the\nreconstructed one, so a row's reconstruction class does not change the sentence\nthat was indexed. It is used here as a property OF THE ROW -- would the\nreconstructor have recovered this row's ancestors -- not as a description of\nthe text that was retrieved.",
+  "strata": {
+    "match": {
+      "n": 137,
+      "recall": 0.912409,
+      "n_recall_hit": 125,
+      "EM": 0.627737,
+      "n_em_correct": 86
+    },
+    "a_missing_ancestor": {
+      "n": 37,
+      "recall": 1.0,
+      "n_recall_hit": 37,
+      "EM": 0.810811,
+      "n_em_correct": 30
+    },
+    "other_mismatch": {
+      "n": 15,
+      "recall": 0.933333,
+      "n_recall_hit": 14,
+      "EM": 0.733333,
+      "n_em_correct": 11
+    }
+  },
+  "match_minus_missing_recall": {
+    "delta": -0.087591,
+    "ci_low": -0.138686,
+    "ci_high": -0.043796,
+    "n_match": 137,
+    "n_missing": 37,
+    "method": "two-sample percentile bootstrap, B=10000, seed=42, groups resampled independently"
+  },
+  "match_minus_missing_EM": {
+    "delta": -0.183074,
+    "ci_low": -0.327678,
+    "ci_high": -0.028211,
+    "n_match": 137,
+    "n_missing": 37,
+    "method": "two-sample percentile bootstrap, B=10000, seed=42, groups resampled independently"
+  },
+  "crosstab_merged_x_depth": {
+    "merged=False|depth=1": {
+      "n_row_paths": 155,
+      "n_mismatch": 0,
+      "rate": 0.0
+    },
+    "merged=False|depth=2": {
+      "n_row_paths": 131,
+      "n_mismatch": 84,
+      "rate": 0.641221
+    },
+    "merged=False|depth=3": {
+      "n_row_paths": 72,
+      "n_mismatch": 69,
+      "rate": 0.958333
+    },
+    "merged=True|depth=1": {
+      "n_row_paths": 589,
+      "n_mismatch": 22,
+      "rate": 0.037351
+    },
+    "merged=True|depth=2": {
+      "n_row_paths": 3684,
+      "n_mismatch": 336,
+      "rate": 0.091205
+    },
+    "merged=True|depth=3": {
+      "n_row_paths": 2041,
+      "n_mismatch": 573,
+      "rate": 0.280745
+    },
+    "merged=True|depth=4": {
+      "n_row_paths": 524,
+      "n_mismatch": 210,
+      "rate": 0.400763
+    }
+  },
+  "stratum_counts_all_rows": {
+    "match": 5902,
+    "a_missing_ancestor": 1201,
+    "other_mismatch": 93
+  }
+}

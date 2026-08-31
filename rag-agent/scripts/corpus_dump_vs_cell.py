@@ -76,7 +76,7 @@ from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,
                                               STRUCTURAL_COMPACT)
 
 ARMS = ("dump", "cell", "cascade", "cell2dump", "cellrow", "row", "flat",
-        "group", "capped", "goldcell", "goldtable")
+        "group", "capped", "gridpack", "goldcell", "goldtable")
 
 
 class _CachedEncoder:
@@ -163,7 +163,7 @@ FROZEN_POP = {"aitqa": "aitqa_lookup_all", "realhitbench": "rhb_lookup_all"}
 # population while building another. PREREG-2026-08-27-rhb-nr-large-tables.
 RHB_POPS = {
     "rhb_lookup_all": {},
-    "rhb_nr_all": {"qtypes": ("Numerical Reasoning",),
+    "rhb_nr_all": {"question_types": ("Numerical Reasoning",),
                    "require_gold_cells": False},
 }
 
@@ -295,9 +295,16 @@ def aitqa_corpus(data_dir: str = "data/aitqa", pin: bool = True) -> Corpus:
         def rp_of(i):
             return [str(x).strip() for x in (rh[i] if i < len(rh) else []) if str(x).strip()]
 
-        head = [" / ".join(cp_of(j)) for j in range(n_c)]
-        md[tid] = (["| " + " | ".join(head) + " |", "|" + "---|" * n_c]
-                   + ["| " + " | ".join(str(x) for x in r) + " |" for r in data])
+        # the row header is a LEADING COLUMN of the table as shipped, so the
+        # whole-table markdown has to carry it -- writing only `column_header`
+        # hands the reader bare values whose row-direction ancestors are gone,
+        # which no downstream arm can recover (measured: HPC_full 0.2040).
+        n_h = max((len(rp_of(i)) for i in range(n_r)), default=0)
+        head = [""] * n_h + [" / ".join(cp_of(j)) for j in range(n_c)]
+        md[tid] = (["| " + " | ".join(head) + " |", "|" + "---|" * (n_h + n_c)]
+                   + ["| " + " | ".join(((rp_of(i) + [""] * n_h)[:n_h]
+                                         + [str(x) for x in r])) + " |"
+                      for i, r in enumerate(data)])
         ttext[tid] = " | ".join(sorted({lab for j in range(n_c) for lab in cp_of(j)}
                                        | {lab for i in range(n_r) for lab in rp_of(i)}))
         shape[tid] = (n_r, n_c)
@@ -373,8 +380,9 @@ def _rhb_split_title(grid):
 
 def realhitbench_corpus(data_dir: str = "data/realhitbench",
                         subqtypes: tuple = (), pin=True,
-                        qtypes: tuple = (),
-                        require_gold_cells: bool = True) -> Corpus:
+                        question_types: tuple = (),
+                        require_gold_cells: bool = True,
+                        population: str = "") -> Corpus:
     """RealHiTBench (Zhang et al., ACL Findings 2025; arXiv:2506.13405).
 
     The fourth hierarchical benchmark and the first where the TITLE varies inside
@@ -394,7 +402,7 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
     that appears in no cell, so the match keeps 54 of 771 (7.0%) -- and keeps the
     easy instances, the ones whose answer happens to be written in the table. The
     surviving queries then carry an empty ``gold_cells``, OSC is undefined for
-    them, and the run reports EM only. ``qtypes`` filters on ``QuestionType`` and
+    them, and the run reports EM only. ``question_types`` filters on ``QuestionType`` and
     is NOT interchangeable with ``subqtypes`` -- 4 Fact Checking questions carry
     an NR SubQType. ``pin`` may be a population NAME instead of True, because
     which id list to pin against follows from which filter was applied.
@@ -414,15 +422,24 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
         return re.sub(r"[\s,$%]", "", str(s)).strip().lower()
 
     qa = json.load(open(f"{data_dir}/QA_final.json"))["queries"]
-    want, want_q = set(subqtypes), set(qtypes)
-    qs_raw = [q for q in qa
-              if (not want or q.get("SubQType") in want)
-              and (not want_q or q.get("QuestionType") in want_q)]
+    want = set(subqtypes)
+    qs_raw = [q for q in qa if not want or q.get("SubQType") in want]
+    # QuestionType is the axis the published table reports on (FC / NR / SC /
+    # DA / Vis), so a run that wants to sit beside those numbers filters here
+    # rather than on SubQType.
+    if question_types:
+        qs_raw = [q for q in qs_raw if q.get("QuestionType") in set(question_types)]
 
     md, ttext, shape, ctext, owner = {}, {}, {}, [], []
     ftext, rtext, rowner, titles, cpaths = [], [], [], {}, []
     data_of, tids = {}, []
-    for tid in sorted({q["FileName"] for q in qs_raw}):
+    # The HAYSTACK is every table the QA file names, never just the tables the
+    # filtered questions happen to touch. Filtering questions to Numerical
+    # Reasoning shrank the corpus 540 -> 419 tables, which makes retrieval
+    # easier and is not the stage the other RealHiTBench runs stood on.
+    # With no filter this is identical to the old expression, so no committed
+    # run moves.
+    for tid in sorted({q["FileName"] for q in qa}):
         f = Path(data_dir) / "html" / f"{tid}.html"
         if not f.exists():
             continue
@@ -487,12 +504,17 @@ def realhitbench_corpus(data_dir: str = "data/realhitbench",
         if not found or len(found) != len(set(want_v)):
             if require_gold_cells:
                 continue                  # unresolved, or the match is ambiguous
-            found = set()                 # EM-only query; see the docstring
+            # An EM-only population. A Numerical Reasoning answer is usually a
+            # COMPUTED value that no cell holds, so requiring the match keeps
+            # only the instances whose answer was already printed in the table.
+            # Dropping it costs OSC (no gold operand set) and costs nothing else.
+            found = set()
         qs.append({"query_id": str(q["id"]), "question": q["Question"],
-                   "answer": ans, "gold_table": tid, "gold_cells": found})
+                   "answer": ans, "gold_table": tid, "gold_cells": found,
+                   "qtype": q.get("QuestionType"), "subqtype": q.get("SubQType")})
     if pin and not subqtypes:            # the freeze is over the whole QA file
-        qs = pop_mod.pin(pin if isinstance(pin, str)
-                         else FROZEN_POP["realhitbench"], qs)
+        qs = pop_mod.pin(population or (pin if isinstance(pin, str)
+                                        else FROZEN_POP["realhitbench"]), qs)
     return Corpus(tids, md, ttext, shape, ctext, owner, qs, ftext, rtext,
                   rowner, titles, cpaths)
 
@@ -952,6 +974,47 @@ def main() -> int:
     grp_head_tok = {t: bud.count(x) + 1 for t, x in grp_head.items()}
     grp_line_tok = np.array([bud.count(x) for x in grp_line], dtype=np.int32)
 
+    # gridpack charges a cell only for the lines its admission ADDS, so the three
+    # line kinds are counted once here instead of per query. The column tag is
+    # counted as "C1": a two-digit tag can cost one token more, which under-
+    # charges a table that contributes 10+ distinct columns. Every other term
+    # over-charges (a newline per line, a separator on the first value of a row),
+    # so the arm stays inside its budget -- asserted per query below.
+    if "gridpack" in arms:
+        t0 = time.time()
+        gp_val_tok = np.array([bud.count(f" ; C1={v}") for _, _, v in C.cell_paths],
+                              dtype=np.int32)
+        gp_row_tok = np.array([bud.count(f"{' > '.join(rp)} ::") + 1
+                               for rp, _, _ in C.cell_paths], dtype=np.int32)
+        gp_col_tok = np.array([bud.count(f"[C1] {' > '.join(cp)}") + 1
+                               for _, cp, _ in C.cell_paths], dtype=np.int32)
+        print(f"[tokens] gridpack lines counted in {time.time() - t0:.0f}s", flush=True)
+
+    def gp_render(sel):
+        """The admitted cells as one block per table: title, then each distinct
+        column path once as [Ck], then one line per distinct row."""
+        tabs, order_t = {}, []
+        for pos in sel:
+            tid, i, j = cell_owner[pos]
+            st = tabs.get(tid)
+            if st is None:
+                st = tabs[tid] = {"cols": {}, "rows": {}, "vals": {}}
+                order_t.append(tid)
+            rp, cp, v = C.cell_paths[pos]
+            k = st["cols"].setdefault(j, (len(st["cols"]) + 1,
+                                          " > ".join(cp)))[0]
+            st["rows"].setdefault(i, " > ".join(rp))
+            st["vals"].setdefault(i, []).append((k, v))
+        out = []
+        for tid in order_t:
+            st = tabs[tid]
+            out.append(grp_head[tid])
+            out += [f"[C{k}] {txt}" for _j, (k, txt)
+                    in sorted(st["cols"].items(), key=lambda kv: kv[1][0])]
+            out += [f"{rp} :: " + " ; ".join(f"C{k}={v}" for k, v in st["vals"][i])
+                    for i, rp in st["rows"].items()]
+        return out, order_t
+
     cells_by_table: dict[str, list[int]] = {}
     pos_of_cell: dict[tuple, int] = {}
     for n, (tid, i_, j_) in enumerate(cell_owner):
@@ -1111,6 +1174,52 @@ def main() -> int:
                 for tid in seen_tables:
                     parts.append(grp_head[tid])
                     parts.extend(grp_line[p_] for p_ in bucket[tid])
+            elif arm == "gridpack":
+                # Same index, same ranking, same admitted-cell accounting as
+                # `cell`. Only the RENDERING is shared: the title once per table
+                # (which `group` already does), and on top of that the ROW path
+                # once per row and the COLUMN path once per table. That is where
+                # the rest of the duplication sits -- at 512 tokens the cell arm
+                # buys a median of 29 cells while the ranker has already placed
+                # every gold cell inside the top 200 for 55% of the queries it
+                # fails (results/osc_rank_mechanism.json), so what binds is the
+                # price of a cell, not its rank. No path is dropped, which is the
+                # repair `cellrow` needed: change the context unit but keep the
+                # address. PREREG-2026-08-30-gridpack.md
+                sel, cols_seen, rows_seen = [], set(), set()
+                for pos in c_order:
+                    tid, i, j = cell_owner[pos]
+                    inc = int(gp_val_tok[pos])
+                    if tid not in seen_tables:
+                        inc += grp_head_tok[tid]
+                    if (tid, j) not in cols_seen:
+                        inc += int(gp_col_tok[pos])
+                    if (tid, i) not in rows_seen:
+                        inc += int(gp_row_tok[pos])
+                    if used + inc > args.budget:
+                        # the cheapest admission is one value into a row and a
+                        # column already on the page
+                        if used + int(gp_val_tok.min()) > args.budget:
+                            break
+                        continue
+                    used += inc
+                    sel.append(pos)
+                    cols_seen.add((tid, j))
+                    rows_seen.add((tid, i))
+                    if tid not in seen_tables:
+                        seen_tables.append(tid)
+                # The charge above sums precomputed fragments, and the rendering
+                # is not their concatenation -- a two-digit column tag costs more
+                # than the "C1" the count assumed. Drop from the end until the
+                # real text fits: an arm may never spend more than the budget it
+                # is compared at.
+                parts, seen_tables = gp_render(sel)
+                used = bud.count("\n".join(parts))
+                while sel and used > args.budget:
+                    sel.pop()
+                    parts, seen_tables = gp_render(sel)
+                    used = bud.count("\n".join(parts))
+                in_ctx = {cell_owner[p_] for p_ in sel}
             elif arm == "cellrow":
                 # the cell index chooses, the row unit delivers. `row` ranks
                 # rows by the row's own text, which reads as a bag of numbers;
@@ -1152,12 +1261,15 @@ def main() -> int:
             elif arm == "goldtable":
                 # The CONDITION every published RealHiTBench number was measured
                 # under: the gold table handed over whole, no retrieval step.
+                # That is how RealHiTBench (arXiv:2506.13405) and every table-QA
+                # paper evaluates, so comparing `cell` against a number they
+                # printed would differ in population, scorer and quantization at
+                # once; against this arm it differs in exactly one thing.
                 # Deliberately ignores --budget -- that is the point. `dump`
                 # cannot stand in for it because dump SKIPS a table that does not
                 # fit, and 82% of the NR gold tables do not fit 512, so dump's
-                # number there is mostly empty contexts. Against this arm the
-                # only difference left from `cell` is retrieval-vs-table-given,
-                # which is what PREREG-2026-08-27-rhb-nr-large-tables asks.
+                # number there is mostly empty contexts. OOM is handled at the
+                # reader by --max-reader-tokens, which records the truncation.
                 used += md_tokens(gold_t)
                 parts.append("\n".join(C.md_lines[gold_t]))
                 seen_tables.append(gold_t)
@@ -1314,8 +1426,8 @@ def main() -> int:
             print(f"  {n_done}/{len(pop)}", flush=True)
 
     def agg(arm, key):
-        v = [r[arm][key] for r in recs if r[arm][key] is not None]
-        return round(float(np.mean(v)), 4) if v else None
+        vals = [r[arm][key] for r in recs if r[arm].get(key) is not None]
+        return round(float(np.mean(vals)), 4) if vals else None
 
     keys = ("osc", "per_cell", "gold_table_any", "gold_table_whole",
             "tokens", "n_tables") + (("answer_em",) if llm else ())
@@ -1326,6 +1438,7 @@ def main() -> int:
                  # the head-to-head the paper needs: ours against the two units
                  # published table-RAG actually uses, all paying to find the table
                  ("cell", "row"), ("cell", "flat"), ("row", "dump"),
+                 ("cell", "goldtable"), ("goldtable", "dump"),
                  ("cellrow", "cell"), ("cellrow", "row"), ("cellrow", "dump"),
                  ("group", "cell"), ("group", "dump"), ("group", "row"),
                  ("capped", "cell"), ("capped", "group")):
@@ -1406,13 +1519,13 @@ def main() -> int:
     em_h = f"{'answer':>9}" if llm else ""
     print(f"\n{'arm':10}{'OSC':>8}{'per_cell':>10}{'tbl_any':>9}{'tbl_whole':>11}"
           f"{'tokens':>9}{'#tbl':>7}{em_h}")
+    def _f(v, w, p=3):                 # OSC is null on an EM-only population
+        return f"{v:>{w}.{p}f}" if isinstance(v, (int, float)) else f"{'-':>{w}}"
     for a in arms:
         s = summary[a]
-        def f(key, w, p=3):
-            return "-".rjust(w) if s[key] is None else f"{s[key]:>{w}.{p}f}"
-        print(f"{a:10}" + f('osc', 8) + f('per_cell', 10) + f('gold_table_any', 9)
-              + f('gold_table_whole', 11) + f('tokens', 9, 0) + f('n_tables', 7, 1)
-              + (f('answer_em', 9) if llm else ""))
+        print(f"{a:10}{_f(s['osc'],8)}{_f(s['per_cell'],10)}{_f(s['gold_table_any'],9)}"
+              f"{_f(s['gold_table_whole'],11)}{_f(s['tokens'],9,0)}{_f(s['n_tables'],7,1)}"
+              + (_f(s['answer_em'], 9) if llm else ""))
     print("\ntable recall  " + "".join(f"{f'@{k}':>9}" for k in (1, 3, 5, 10, 20)))
     for name in ("by_table_index", "by_cell_vote"):
         r = out["table_recall"][name]

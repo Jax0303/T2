@@ -1,0 +1,286 @@
+{
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "env": {
+    "seed": 42,
+    "device": "NVIDIA GeForce RTX 3060 Ti",
+    "torch": "2.12.1+cu130",
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "vector_backend": "faiss",
+    "run_started_utc": "2026-08-30T06:41:57+00:00"
+  },
+  "population": {
+    "name": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+    "n": 231,
+    "frozen": "/home/user/T2-1/rag-agent/populations/rhb_lookup_all.txt"
+  },
+  "corpus": {
+    "dataset": "realhitbench",
+    "split": "dev",
+    "tables": 537,
+    "cells": 143377
+  },
+  "budget_tokens": 1024,
+  "budget_tokenizer": "BAAI/bge-small-en-v1.5",
+  "max_context_tables": null,
+  "group_context": null,
+  "adaptive_cells": null,
+  "budget_margin": null,
+  "retriever": "hybrid",
+  "alpha": 0.7,
+  "reader": null,
+  "reader_spec": null,
+  "answer_mode": "direct",
+  "cell_scheme": "S3c",
+  "arms_run": [
+    "dump",
+    "cell",
+    "cascade",
+    "cell2dump",
+    "cellrow",
+    "row",
+    "flat",
+    "group",
+    "capped",
+    "goldcell",
+    "goldtable"
+  ],
+  "max_tables": null,
+  "cell_title": true,
+  "table_index": "full",
+  "arms": {
+    "dump": "table index -> whole tables in rank order while they fit",
+    "cell": "corpus-wide S2 cell index -> cells while they fit",
+    "cascade": "top-1 table by table index, then its cells only",
+    "cell2dump": "tables ranked by their best cell, dumped whole",
+    "cellrow": "rows ranked by their best cell, emitted as rows",
+    "row": "corpus-wide row-chunk index -> whole data rows",
+    "flat": "corpus-wide cell index, LEAF labels only (ablation)",
+    "capped": "like `cell` but at most 3 cells per table",
+    "group": "same cells and same ranking as `cell`, but rendered grouped by table with the title stated ONCE -- the title is 29% of every S3 sentence and is what the gain comes from, so paying for it per table instead of per cell buys back budget at no information loss"
+  },
+  "summary": {
+    "dump": {
+      "osc": 0.2251,
+      "per_cell": 0.2251,
+      "gold_table_any": 0.2251,
+      "gold_table_whole": 0.2251,
+      "tokens": 971.4719,
+      "n_tables": 1.9264
+    },
+    "cell": {
+      "osc": 0.4632,
+      "per_cell": 0.4762,
+      "gold_table_any": 0.8745,
+      "gold_table_whole": 0.0,
+      "tokens": 1023.4329,
+      "n_tables": 5.6017
+    },
+    "cascade": {
+      "osc": 0.3896,
+      "per_cell": 0.3972,
+      "gold_table_any": 0.5671,
+      "gold_table_whole": 0.013,
+      "tokens": 964.619,
+      "n_tables": 0.9957
+    },
+    "cell2dump": {
+      "osc": 0.2078,
+      "per_cell": 0.2078,
+      "gold_table_any": 0.2078,
+      "gold_table_whole": 0.2078,
+      "tokens": 859.5931,
+      "n_tables": 1.6537
+    },
+    "cellrow": {
+      "osc": 0.5368,
+      "per_cell": 0.5424,
+      "gold_table_any": 0.8095,
+      "gold_table_whole": 0.0216,
+      "tokens": 1022.2771,
+      "n_tables": 4.6061
+    },
+    "row": {
+      "osc": 0.4632,
+      "per_cell": 0.4675,
+      "gold_table_any": 0.8139,
+      "gold_table_whole": 0.0303,
+      "tokens": 1022.6494,
+      "n_tables": 5.0649
+    },
+    "flat": {
+      "osc": 0.4459,
+      "per_cell": 0.4583,
+      "gold_table_any": 0.8745,
+      "gold_table_whole": 0.0,
+      "tokens": 1023.4199,
+      "n_tables": 10.2857
+    },
+    "group": {
+      "osc": 0.4978,
+      "per_cell": 0.5108,
+      "gold_table_any": 0.8701,
+      "gold_table_whole": 0.0,
+      "tokens": 1022.2294,
+      "n_tables": 5.4589
+    },
+    "capped": {
+      "osc": 0.3377,
+      "per_cell": 0.3564,
+      "gold_table_any": 0.9437,
+      "gold_table_whole": 0.0,
+      "tokens": 1023.4156,
+      "n_tables": 17.9957
+    },
+    "goldcell": {
+      "osc": 1.0,
+      "per_cell": 1.0,
+      "gold_table_any": 1.0,
+      "gold_table_whole": 0.0,
+      "tokens": 34.3853,
+      "n_tables": 1.0
+    },
+    "goldtable": {
+      "osc": 1.0,
+      "per_cell": 1.0,
+      "gold_table_any": 1.0,
+      "gold_table_whole": 1.0,
+      "tokens": 2200.3939,
+      "n_tables": 1.0
+    }
+  },
+  "paired_tests": {
+    "osc:cell_vs_dump": {
+      "only_first": 78,
+      "only_second": 23,
+      "exact_p": 0.0
+    },
+    "osc:cascade_vs_dump": {
+      "only_first": 54,
+      "only_second": 16,
+      "exact_p": 0.0
+    },
+    "osc:cell_vs_cascade": {
+      "only_first": 34,
+      "only_second": 17,
+      "exact_p": 0.0241
+    },
+    "osc:cell2dump_vs_dump": {
+      "only_first": 3,
+      "only_second": 7,
+      "exact_p": 0.3438
+    },
+    "osc:cell2dump_vs_cell": {
+      "only_first": 20,
+      "only_second": 79,
+      "exact_p": 0.0
+    },
+    "osc:cell_vs_row": {
+      "only_first": 33,
+      "only_second": 33,
+      "exact_p": 1.0
+    },
+    "osc:cell_vs_flat": {
+      "only_first": 21,
+      "only_second": 17,
+      "exact_p": 0.6271
+    },
+    "osc:row_vs_dump": {
+      "only_first": 77,
+      "only_second": 22,
+      "exact_p": 0.0
+    },
+    "osc:cell_vs_goldtable": {
+      "only_first": 0,
+      "only_second": 124,
+      "exact_p": 0.0
+    },
+    "osc:goldtable_vs_dump": {
+      "only_first": 179,
+      "only_second": 0,
+      "exact_p": 0.0
+    },
+    "osc:cellrow_vs_cell": {
+      "only_first": 33,
+      "only_second": 16,
+      "exact_p": 0.0213
+    },
+    "osc:cellrow_vs_row": {
+      "only_first": 30,
+      "only_second": 13,
+      "exact_p": 0.0137
+    },
+    "osc:cellrow_vs_dump": {
+      "only_first": 88,
+      "only_second": 16,
+      "exact_p": 0.0
+    },
+    "osc:group_vs_cell": {
+      "only_first": 9,
+      "only_second": 1,
+      "exact_p": 0.0215
+    },
+    "osc:group_vs_dump": {
+      "only_first": 83,
+      "only_second": 20,
+      "exact_p": 0.0
+    },
+    "osc:group_vs_row": {
+      "only_first": 37,
+      "only_second": 29,
+      "exact_p": 0.3891
+    },
+    "osc:capped_vs_cell": {
+      "only_first": 5,
+      "only_second": 34,
+      "exact_p": 0.0
+    },
+    "osc:capped_vs_group": {
+      "only_first": 3,
+      "only_second": 40,
+      "exact_p": 0.0
+    }
+  },
+  "table_recall": {
+    "by_table_index": {
+      "@1": 0.5671,
+      "@3": 0.8009,
+      "@5": 0.8745,
+      "@10": 0.9221,
+      "@20": 0.9351
+    },
+    "by_cell_vote": {
+      "@1": 0.5671,
+      "@3": 0.7792,
+      "@5": 0.8701,
+      "@10": 0.9091,
+      "@20": 0.9481
+    }
+  },
+  "table_recall_paired": {
+    "@1": {
+      "only_first": 28,
+      "only_second": 28,
+      "exact_p": 1.0
+    },
+    "@3": {
+      "only_first": 20,
+      "only_second": 25,
+      "exact_p": 0.5515
+    },
+    "@5": {
+      "only_first": 17,
+      "only_second": 18,
+      "exact_p": 1.0
+    },
+    "@10": {
+      "only_first": 11,
+      "only_second": 14,
+      "exact_p": 0.69
+    },
+    "@20": {
+      "only_first": 10,
+      "only_second": 7,
+      "exact_p": 0.6291
+    }
+  }
+}

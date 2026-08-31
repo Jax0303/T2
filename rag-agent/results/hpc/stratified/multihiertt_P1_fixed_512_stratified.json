@@ -1,0 +1,45 @@
+{
+  "dataset": "multihiertt",
+  "policy": "P1_fixed_512",
+  "n_chunks": 1490,
+  "n_rows": 737,
+  "groups": {
+    "full": {
+      "n": 715,
+      "recall@10": 0.7258741258741259,
+      "recall@50": 0.8951048951048951
+    },
+    "partial": {
+      "n": 22,
+      "recall@10": 0.36363636363636365,
+      "recall@50": 0.5454545454545454
+    },
+    "NOT_IN_ANY_CHUNK": {
+      "n": 0,
+      "recall@10": null,
+      "recall@50": null
+    }
+  },
+  "diff@10": {
+    "delta": 0.3622377622377623,
+    "ci95_lo": 0.1517307692307692,
+    "ci95_hi": 0.5566433566433566,
+    "p_uncorrected": 0.0005260258896378652,
+    "n_full": 715,
+    "n_partial": 22
+  },
+  "diff@50": {
+    "delta": 0.3496503496503497,
+    "ci95_lo": 0.13776223776223773,
+    "ci95_hi": 0.5643356643356643,
+    "p_uncorrected": 5.053625892103069e-05,
+    "n_full": 715,
+    "n_partial": 22
+  },
+  "retriever": "hybrid",
+  "alpha": 0.7,
+  "cell_scheme": "S3c",
+  "population": "multihiertt",
+  "dropped_queries": 0,
+  "hpc_crosscheck": "737/737 대조, 불일치 0"
+}

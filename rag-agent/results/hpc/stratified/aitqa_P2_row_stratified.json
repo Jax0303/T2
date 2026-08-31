@@ -1,0 +1,45 @@
+{
+  "dataset": "aitqa",
+  "policy": "P2_row",
+  "n_chunks": 1315,
+  "n_rows": 451,
+  "groups": {
+    "full": {
+      "n": 189,
+      "recall@10": 0.7671957671957672,
+      "recall@50": 0.9047619047619048
+    },
+    "partial": {
+      "n": 262,
+      "recall@10": 0.5114503816793893,
+      "recall@50": 0.767175572519084
+    },
+    "NOT_IN_ANY_CHUNK": {
+      "n": 0,
+      "recall@10": null,
+      "recall@50": null
+    }
+  },
+  "diff@10": {
+    "delta": 0.25574538551637793,
+    "ci95_lo": 0.16934599539561374,
+    "ci95_hi": 0.34153237206672316,
+    "p_uncorrected": 3.072431550648008e-08,
+    "n_full": 189,
+    "n_partial": 262
+  },
+  "diff@50": {
+    "delta": 0.1375863322428208,
+    "ci95_lo": 0.07174512298558094,
+    "ci95_hi": 0.20368350902702048,
+    "p_uncorrected": 0.0001437207548817226,
+    "n_full": 189,
+    "n_partial": 262
+  },
+  "retriever": "hybrid",
+  "alpha": 0.7,
+  "cell_scheme": "S3c",
+  "population": "aitqa",
+  "dropped_queries": 0,
+  "hpc_crosscheck": "451/451 대조, 불일치 0"
+}

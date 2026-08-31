@@ -269,7 +269,8 @@ def rhb_nr_all(_data_dir: str) -> tuple[list[str], dict]:
     and the 54 are the easy instances, the ones whose answer happens to already
     be in the table. That filter exists to make OSC measurable;
     PREREG-2026-08-27-rhb-nr-large-tables.md §2 gives OSC up for this population
-    and reads EM instead, so the filter comes off.
+    and reads EM instead, so the filter comes off. The run then sits on the same
+    queries the published table reports on (arXiv:2506.13405 Table 2, NR EM).
 
     Membership still runs through the HTML parser and the header reconstructor
     -- 7 of the 771 tables do not parse -- which is why it is frozen: a
@@ -279,12 +280,12 @@ def rhb_nr_all(_data_dir: str) -> tuple[list[str], dict]:
     C = realhitbench_corpus(pin=False, **RHB_POPS["rhb_nr_all"])
     return [q["query_id"] for q in C.queries], {
         "dataset": "realhitbench", "split": "all",
-        "qtypes": "Numerical Reasoning",
+        "question_types": ["Numerical Reasoning"],
         "filter": "table parses, >=3 rows. NO answer-match filter: the answer is "
                   "computed and need not appear in any cell, so gold_cells may be "
                   "empty and OSC is undefined -- EM only",
         "order": "QA_final.json order", "n": len(C.queries),
-        "used_by": ["corpus_dump_vs_cell"]}
+        "used_by": ["corpus_dump_vs_cell", "PREREG-2026-08-27-rhb-nr-large-tables"]}
 
 
 SPECS = {

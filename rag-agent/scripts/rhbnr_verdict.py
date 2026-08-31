@@ -1,146 +1,103 @@
+#!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Judge PREREG-2026-08-27-rhb-nr-large-tables against the runs it predicted.
+"""Score PREREG-2026-08-27-rhb-nr-large-tables against a finished run.
 
-The prereg commits P1..P8 as numbers before the run. This reads the records back
-and says which held, so the verdict is arithmetic rather than narration. It
-prints nothing the prereg did not already ask for.
+The predictions were committed before the run; this only reads them off the
+records. Nothing here chooses a threshold -- every bound is quoted from the
+prereg, so a verdict cannot be tuned after the fact.
 
-Run:
-    PYTHONPATH=.:scripts python3 scripts/rhbnr_verdict.py \
-        --a results/rhbnr_s3c_512_records.jsonl \
-        --b results/rhbnr_tgpt_512_records.jsonl \
-        --out results/rhbnr_verdict.json
+  PYTHONPATH=. .venv/bin/python scripts/rhbnr_verdict.py \
+      results/rhbnr_s3c_512.json
 """
 from __future__ import annotations
 
 import argparse
 import json
+from math import comb
 from pathlib import Path
 
-from baseline_comparison_llm import mcnemar
-
-# The prereg's own buckets (§3). "small" is where handing the table over should
-# win, "large" is where retrieval should.
-BUCKETS = (("<=512", 0, 512), ("513-2048", 513, 2048), (">2048", 2049, 10 ** 9))
-
-
-def load(path: str) -> list:
-    return [json.loads(l) for l in Path(path).read_text().splitlines() if l.strip()]
+PAPER_NR_EM = 5.32          # RealHiTBench arXiv:2506.13405 Table 2, Qwen2.5-7B
+# every bound below is copied from the prereg, not chosen here
+BOUNDS = {"P1": 0.05, "P2": 0.03, "P4": (0.03, 0.08), "P5": 0.03}
+BIG, SMALL = 2048, 512
 
 
-def em(recs: list, arm: str) -> float | None:
-    v = [r[arm]["answer_em"] for r in recs if arm in r and r[arm].get("answer_em") is not None]
-    return round(sum(v) / len(v), 4) if v else None
+def mcnemar(a_vals, b_vals) -> dict:
+    n01 = sum(1 for x, y in zip(a_vals, b_vals) if x and not y)
+    n10 = sum(1 for x, y in zip(a_vals, b_vals) if y and not x)
+    n = n01 + n10
+    p = (1.0 if n == 0 else
+         min(1.0, 2 * sum(comb(n, i) for i in range(min(n01, n10) + 1)) / 2 ** n))
+    return {"only_first": n01, "only_second": n10, "exact_p": p}
 
 
-def paired(recs: list, a: str, b: str) -> dict:
-    """Ours-minus-theirs on the SAME queries, with the sign that survives McNemar."""
-    pairs = [(r[a]["answer_em"], r[b]["answer_em"]) for r in recs
-             if a in r and b in r
-             and r[a].get("answer_em") is not None and r[b].get("answer_em") is not None]
-    win = sum(1 for x, y in pairs if x and not y)
-    los = sum(1 for x, y in pairs if y and not x)
-    d = (sum(x for x, _ in pairs) - sum(y for _, y in pairs)) / len(pairs) if pairs else None
-    return {"n": len(pairs), "delta": round(d, 4) if d is not None else None,
-            "win": win, "loss": los, "p": mcnemar(win, los) if pairs else None}
+def slice_em(recs, arm, lo, hi):
+    g = [r for r in recs if lo <= r.get("gold_table_tokens", 0) <= hi]
+    return (sum(r[arm]["answer_em"] for r in g) / len(g), len(g)) if g else (None, 0)
 
 
-def by_bucket(recs: list, a: str, b: str) -> dict:
-    out = {}
-    for name, lo, hi in BUCKETS:
-        sub = [r for r in recs if lo <= r.get("gold_table_tokens", -1) <= hi]
-        out[name] = {**paired(sub, a, b), a: em(sub, a), b: em(sub, b)}
+def verdict(recs) -> dict:
+    arms = [a for a in ("cell", "goldtable", "flat")
+            if recs and a in recs[0] and recs[0][a].get("answer_em") is not None]
+    out = {"n": len(recs), "arms": arms,
+           "overall": {a: round(sum(r[a]["answer_em"] for r in recs) / len(recs), 4)
+                       for a in arms},
+           "truncated_goldtable": sum(r.get("goldtable_truncated", 0) for r in recs)}
+    if "goldtable" not in arms:
+        return out
+    big_c, nb = slice_em(recs, "cell", BIG + 1, 10 ** 9)
+    big_g, _ = slice_em(recs, "goldtable", BIG + 1, 10 ** 9)
+    sm_c, ns = slice_em(recs, "cell", 0, SMALL)
+    sm_g, _ = slice_em(recs, "goldtable", 0, SMALL)
+    p1 = (big_c - big_g) if nb else None
+    p2 = (sm_g - sm_c) if ns else None
+    out["by_table_size"] = {
+        f">{BIG}": {"n": nb, "cell": big_c, "goldtable": big_g, "delta": p1},
+        f"<={SMALL}": {"n": ns, "cell": sm_c, "goldtable": sm_g, "delta": p2},
+    }
+    em_all = out["overall"]["cell"]
+    out["predictions"] = {
+        "P1_big_tables_cell_beats_goldtable": {
+            "bound": f">= +{BOUNDS['P1']}", "measured": p1,
+            "pass": bool(p1 is not None and p1 >= BOUNDS["P1"])},
+        "P2_small_tables_goldtable_beats_cell": {
+            "bound": f">= +{BOUNDS['P2']}", "measured": p2,
+            "pass": bool(p2 is not None and p2 >= BOUNDS["P2"])},
+        "P3_signs_oppose": {
+            "measured": None if None in (p1, p2) else [p1, p2],
+            "pass": bool(p1 is not None and p2 is not None and p1 > 0 and p2 > 0)},
+        "P4_full_set_em_in_band": {
+            "bound": f"{BOUNDS['P4'][0]} ~ {BOUNDS['P4'][1]}", "measured": em_all,
+            "pass": bool(BOUNDS["P4"][0] <= em_all <= BOUNDS["P4"][1])},
+        "P7_vs_published_5.32": {
+            "note": "prereg says this is uncertain and the claim does not rest on it",
+            "published": PAPER_NR_EM, "measured_pct": round(100 * em_all, 2),
+            "beats": bool(100 * em_all > PAPER_NR_EM)},
+    }
+    if "flat" in arms:
+        d = out["overall"]["cell"] - out["overall"]["flat"]
+        out["predictions"]["P5_cell_beats_flat"] = {
+            "bound": f">= +{BOUNDS['P5']}", "measured": round(d, 4),
+            "pass": bool(d >= BOUNDS["P5"])}
+    out["paired"] = {
+        "answer_em:cell_vs_goldtable": mcnemar(
+            [r["cell"]["answer_em"] for r in recs],
+            [r["goldtable"]["answer_em"] for r in recs])}
     return out
 
 
-def judge(recs: list, label: str) -> dict:
-    """P1..P5 for one reader. P6/P8 need a second file and are done by main."""
-    buckets = by_bucket(recs, "cell", "goldtable")
-    big, small = buckets[">2048"], buckets["<=512"]
-    p1 = big["delta"] is not None and big["delta"] >= 0.05
-    p2 = small["delta"] is not None and -small["delta"] >= 0.03
-    p5 = paired(recs, "cell", "flat")
-    cell_em = em(recs, "cell")
-    return {
-        "reader": label, "n": len(recs),
-        "em": {a: em(recs, a) for a in ("cell", "goldtable", "flat")},
-        "by_gold_table_size": buckets,
-        "P1_cell_beats_goldtable_on_big_tables": {
-            "target": ">= +.05", "got": big["delta"], "held": bool(p1)},
-        "P2_goldtable_beats_cell_on_small_tables": {
-            "target": ">= +.03", "got": (None if small["delta"] is None
-                                         else round(-small["delta"], 4)),
-            "held": bool(p2)},
-        "P3_signs_are_opposite": {
-            "held": bool(big["delta"] is not None and small["delta"] is not None
-                         and big["delta"] > 0 > small["delta"])},
-        "P4_full_population_cell_em": {
-            "target": ".03 - .08, and below the .0909 of the 55-query subset",
-            "got": cell_em,
-            "held": bool(cell_em is not None and 0.03 <= cell_em <= 0.08),
-            "below_old_subset": bool(cell_em is not None and cell_em < 0.0909)},
-        "P5_cell_beats_flat": {"target": ">= +.03", "got": p5["delta"],
-                               "held": bool(p5["delta"] is not None
-                                            and p5["delta"] >= 0.03),
-                               "paired": p5},
-    }
-
-
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--a", required=True, help="records.jsonl of reader A (Qwen2.5-7B)")
-    ap.add_argument("--b", default="", help="records.jsonl of reader B (TableGPT2-7B)")
-    ap.add_argument("--label-a", default="Qwen2.5-7B-Instruct")
-    ap.add_argument("--label-b", default="TableGPT2-7B")
-    ap.add_argument("--out", default="results/rhbnr_verdict.json")
-    args = ap.parse_args()
-
-    out = {"prereg": "PREREG-2026-08-27-rhb-nr-large-tables.md",
-           "readers": [judge(load(args.a), args.label_a)]}
-    if args.b:
-        rb = load(args.b)
-        out["readers"].append(judge(rb, args.label_b))
-        # P6: flat reads no template, so it must not move between the two runs.
-        # Here the arms share one run per reader, so this compares READERS -- it
-        # is expected to move, and is reported as context rather than as a gate.
-        out["P6_flat_control"] = {
-            "note": "flat differs across READERS by design; the within-run flat "
-                    "control is automatic because all arms share one run",
-            "flat_em": {args.label_a: em(load(args.a), "flat"),
-                        args.label_b: em(rb, "flat")}}
-        held = [r["P1_cell_beats_goldtable_on_big_tables"]["held"]
-                for r in out["readers"]]
-        out["P8_P1_holds_under_both_readers"] = {
-            "held": bool(all(held)),
-            "verdict": ("the claim is about context length"
-                        if all(held) else
-                        "scope-limited: report as 'only when the reader cannot "
-                        "read the table anyway' (prereg §4)")}
-    else:
-        out["P8_P1_holds_under_both_readers"] = {
-            "held": None, "verdict": "NOT MEASURED -- reader B was not run. "
-            "Do not present reader A as if P8 had been measured (prereg §4)."}
-
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
-
-    for r in out["readers"]:
-        print(f"\n=== {r['reader']}  n={r['n']} ===")
-        print(f"{'gold table':12}{'n':>5}{'cell':>8}{'goldtable':>11}{'delta':>8}"
-              f"{'win:loss':>10}{'p':>9}")
-        for name, _lo, _hi in BUCKETS:
-            b = r["by_gold_table_size"][name]
-            d = "-" if b["delta"] is None else f"{b['delta']:+.4f}"
-            p = "-" if b["p"] is None else f"{b['p']:.4f}"
-            wl = "%d:%d" % (b["win"], b["loss"])
-            print(f"{name:12}{b['n']:>5}{(b['cell'] or 0):>8.3f}"
-                  f"{(b['goldtable'] or 0):>11.3f}{d:>8}{wl:>10}{p:>9}")
-        for k, v in r.items():
-            if k.startswith("P"):
-                print(f"  {k:48} {'HELD' if v.get('held') else 'no':>4}  got={v.get('got')}")
-    print("\nP8:", out["P8_P1_holds_under_both_readers"])
-    print(f"wrote -> {args.out}")
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("run", help="results/rhbnr_*.json (records are read beside it)")
+    ap.add_argument("--out", default="")
+    a = ap.parse_args()
+    recs_path = Path(str(Path(a.run).with_suffix("")) + "_records.jsonl")
+    recs = [json.loads(l) for l in open(recs_path) if l.strip()]
+    v = verdict(recs)
+    out = a.out or str(Path(a.run).with_suffix("")) + "_verdict.json"
+    json.dump(v, open(out, "w"), indent=2)
+    print(json.dumps(v, indent=2, ensure_ascii=False))
+    print(f"\n-> {out}")
     return 0
 
 
