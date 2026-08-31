@@ -27,7 +27,11 @@ from rag_agent.serialization.caption import caption_sentence         # noqa: E40
 from rag_agent.serialization.templates import STRUCTURAL_COMPACT     # noqa: E402
 
 KS = (1, 2, 3, 5, 10, 20, 50)
-BUDGETS = (512, 1024, 2048, 4096)          # reader budgets, same ruler for all units
+# Cost axis: how many corpus cells the retrieval hands over. Tokens were the
+# obvious ruler and are the wrong one -- a token budget is a property of
+# whichever reader is bolted on, so a comparison normalised by it stops being a
+# statement about the index. Cells delivered is a property of the retrieval.
+CELL_BUDGETS = (10, 50, 100, 500)
 ALPHA = 0.7
 POP = "hitab_dev_multicell_lookup"
 
@@ -63,16 +67,13 @@ units = {
               [C.md_lines[t] if isinstance(C.md_lines[t], str) else "\n".join(C.md_lines[t]) for t in C.tids]),
 }
 
-from baseline_comparison_llm import Budget                          # noqa: E402
-bud = Budget("BAAI/bge-small-en-v1.5")
-
 out = {}
 for name, (chunks, covers, cost_text) in units.items():
     ix = HybridIndex(chunks, encoder=enc, alpha=0.5)
-    mean_tok = sum(bud.count(x) for x in cost_text) / len(cost_text)
-    # a chunk of another size is not the same purchase: at a fixed budget the
-    # index that wins per-k can still lose per-token
-    eq = {B: max(1, int(B // mean_tok)) for B in BUDGETS}
+    mean_cells = sum(len(c) for c in covers) / len(covers)
+    # a chunk of another size is not the same purchase: the index that wins
+    # per-k can still lose per cell handed over
+    eq = {B: max(1, int(B // mean_cells)) for B in CELL_BUDGETS}
     hits = {k: [] for k in tuple(KS) + tuple(eq.values())}
     for q in C.queries:
         bm, dn = ix._bm25_scores(q["question"]), ix._dense_scores(q["question"])
@@ -85,7 +86,7 @@ for name, (chunks, covers, cost_text) in units.items():
                 kept += 1
             hits[k].append(int(gold <= got))
     out[name] = {"n_chunks": len(chunks),
-                 "mean_context_tokens": round(mean_tok, 2),
+                 "mean_cells_per_chunk": round(mean_cells, 2),
                  "equivalent_k": eq,
                  **{f"setEM@{k}": round(sum(v) / len(v), 4) for k, v in hits.items()}}
     print(name, out[name], flush=True)
@@ -95,25 +96,24 @@ pop = {q["query_id"]: q for q in
 md = ["# 다중 셀 조회 — 색인 단위별 setEM (리더 없음)", "",
       f"모집단 `populations/{POP}.txt` (n={len(C.queries)}). 계측기 `analysis/multicell_unit_bench.py`.",
       "hybrid α=0.7, `BAAI/bge-small-en-v1.5`. 상위 k개 청크가 **합쳐서** gold 셀 전부를",
-      "덮으면 1. 토큰 예산 없음 — 청크 크기가 다르므로 같은 k가 같은 비용이 아니다.", "",
+      "덮으면 1. 토큰 예산 없음 — 예산은 리더의 성질이라 색인 비교의 축으로 쓰지 않는다.", "",
       "| 단위 | 청크 수 | " + " | ".join(f"setEM@{k}" for k in KS) + " |",
       "|---|---:|" + "---:|" * len(KS)]
 for name in ("cell", "row", "table"):
     r = out[name]
     md.append(f"| {name} | {r['n_chunks']} | " +
               " | ".join(f"{r[f'setEM@{k}']:.4f}" for k in KS) + " |")
-md += ["", "## 토큰 등가 (같은 예산에서)", "",
-       "청크 크기가 다르므로 같은 k는 같은 비용이 아니다. 등가 k = floor(예산 / 평균 컨텍스트 토큰),",
-       "토큰은 `Budget(BAAI/bge-small-en-v1.5)`로 실제로 센 값이다.",
-       "**표는 색인 텍스트(제목·헤더 라벨, 평균 81.72토큰)로 랭킹하지만 리더에는 격자 전체가",
-       "들어간다.** 그래서 비용은 markdown 격자로 매겼다. 셀·행은 랭킹 텍스트가 곧 컨텍스트다.", "",
-       "| 단위 | 리더가 받는 평균 토큰 | " + " | ".join(f"{B} 예산 (k)" for B in BUDGETS) + " |",
-       "|---|---:|" + "---:|" * len(BUDGETS)]
+md += ["", "## 같은 양을 넘길 때 (셀 개수 기준)", "",
+       "청크마다 담는 셀 수가 다르므로 같은 k는 같은 양이 아니다. 등가 k = floor(셀 예산 /",
+       "청크당 평균 셀 수). **토큰이 아니라 셀 개수로 맞춘다** — 토큰 예산은 붙이는 리더의",
+       "성질이라 그것으로 정규화하면 색인에 대한 진술이 아니게 된다.", "",
+       "| 단위 | 청크당 평균 셀 | " + " | ".join(f"셀 {B}개" for B in CELL_BUDGETS) + " |",
+       "|---|---:|" + "---:|" * len(CELL_BUDGETS)]
 for name in ("cell", "row", "table"):
     r = out[name]
-    md.append(f"| {name} | {r['mean_context_tokens']} | " + " | ".join(
+    md.append(f"| {name} | {r['mean_cells_per_chunk']} | " + " | ".join(
         f"{r[f'setEM@{r['equivalent_k'][B]}']:.4f} (k={r['equivalent_k'][B]})"
-        for B in BUDGETS) + " |")
+        for B in CELL_BUDGETS) + " |")
 
 md += ["", "gold 셀의 위치: 94/94가 한 표 안, 68/94가 한 행 안, 20/94가 한 열 안 "
        "(행 수 중앙값 1, 열 수 중앙값 2).",
