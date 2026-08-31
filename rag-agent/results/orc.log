@@ -1,94 +1,0 @@
-START 2026-08-26T17:11:16+09:00 aitqa_s2
-[corpus] 113 tables / 5320 cells | [pop] 451 queries | budget 512 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:36,  1.56it/s]Loading weights:   1%|          | 2/339 [00:01<03:29,  1.61it/s]Loading weights:   1%|          | 4/339 [00:01<01:35,  3.51it/s]Loading weights:   2%|▏         | 6/339 [00:01<01:02,  5.35it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:16, 19.02it/s]Loading weights:   6%|▌         | 20/339 [00:01<00:15, 20.30it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:10, 29.51it/s]Loading weights:  10%|▉         | 33/339 [00:02<00:10, 29.39it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:08, 33.73it/s]Loading weights:  13%|█▎        | 44/339 [00:02<00:09, 30.92it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:07, 40.67it/s]Loading weights:  17%|█▋        | 57/339 [00:02<00:07, 37.72it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:06, 39.72it/s]Loading weights:  21%|██        | 72/339 [00:03<00:05, 44.70it/s]Loading weights:  23%|██▎       | 77/339 [00:03<00:06, 39.32it/s]Loading weights:  24%|██▍       | 82/339 [00:03<00:06, 41.01it/s]Loading weights:  26%|██▋       | 89/339 [00:03<00:06, 39.70it/s]Loading weights:  28%|██▊       | 94/339 [00:03<00:05, 41.00it/s]Loading weights:  29%|██▉       | 100/339 [00:03<00:05, 45.31it/s]Loading weights:  31%|███       | 105/339 [00:03<00:06, 37.54it/s]Loading weights:  33%|███▎      | 112/339 [00:04<00:05, 40.65it/s]Loading weights:  35%|███▍      | 117/339 [00:04<00:05, 37.56it/s]Loading weights:  37%|███▋      | 124/339 [00:04<00:05, 42.67it/s]Loading weights:  38%|███▊      | 129/339 [00:04<00:05, 38.16it/s]Loading weights:  40%|████      | 136/339 [00:04<00:05, 38.77it/s]Loading weights:  42%|████▏     | 141/339 [00:04<00:05, 35.18it/s]Loading weights:  44%|████▎     | 148/339 [00:04<00:04, 40.85it/s]Loading weights:  45%|████▌     | 153/339 [00:11<01:04,  2.89it/s]Loading weights:  47%|████▋     | 160/339 [00:11<00:41,  4.28it/s]Loading weights: 100%|██████████| 339/339 [00:09<00:00, 36.57it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2425.02it/s]
-[cache] hit bge-small-en-v1.5_113_2271f8be55e3814a.npy
-[cache] hit bge-small-en-v1.5_5320_b6ff6e022dab839f.npy
-[cache] hit bge-small-en-v1.5_5320_809f10326b9391f2.npy
-[cache] hit bge-small-en-v1.5_1315_1af6a52336a42943.npy
-[index] built in 0s
-[tokens] 5320 cells / 1315 rows counted in 1s
-  25/451
-  50/451
-  75/451
-  100/451
-  125/451
-  150/451
-  175/451
-  200/451
-  225/451
-  250/451
-  275/451
-  300/451
-  325/451
-  350/451
-  375/451
-  400/451
-  425/451
-  450/451
-
-arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
-cell         0.550     0.550    0.743      0.000      291    6.5    0.401
-
-table recall         @1       @3       @5      @10      @20
-  by_table_index    0.146    0.286    0.379    0.552    0.727
-  by_cell_vote     0.324    0.488    0.590    0.741    0.869
-wrote -> results/orc_aitqa_s2_512.json
-OK 2026-08-26T17:16:21+09:00 aitqa_s2
-START 2026-08-26T17:16:21+09:00 hitab_s3c
-[corpus] 424 tables / 58759 cells | [pop] 830 queries | budget 512 | dense
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:34,  1.58it/s]Loading weights:   1%|          | 2/339 [00:01<03:20,  1.68it/s]Loading weights:   1%|          | 4/339 [00:01<01:30,  3.68it/s]Loading weights:   2%|▏         | 6/339 [00:01<01:01,  5.44it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:16, 19.28it/s]Loading weights:   6%|▌         | 20/339 [00:01<00:15, 20.38it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:10, 29.94it/s]Loading weights:  10%|▉         | 33/339 [00:02<00:11, 27.33it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:08, 33.71it/s]Loading weights:  13%|█▎        | 45/339 [00:02<00:09, 31.73it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:07, 38.74it/s]Loading weights:  17%|█▋        | 57/339 [00:02<00:07, 35.57it/s]Loading weights:  19%|█▉        | 64/339 [00:02<00:06, 42.02it/s]Loading weights:  20%|██        | 69/339 [00:03<00:07, 37.14it/s]Loading weights:  22%|██▏       | 76/339 [00:09<01:25,  3.07it/s]Loading weights:  23%|██▎       | 79/339 [00:09<01:12,  3.58it/s]Loading weights:  86%|████████▌ | 292/339 [00:14<00:01, 27.46it/s]Loading weights:  87%|████████▋ | 296/339 [00:14<00:01, 27.29it/s]Loading weights: 100%|██████████| 339/339 [00:08<00:00, 38.00it/s]
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2443.75it/s]
-[cache] hit bge-small-en-v1.5_424_b46d2e7bce315c7d.npy
-[cache] hit bge-small-en-v1.5_58759_f3d4ebe830828512.npy
-[cache] hit bge-small-en-v1.5_58759_b0cc0f10e77b875e.npy
-[cache] hit bge-small-en-v1.5_7196_17f9b7791cd02006.npy
-[index] built in 1s
-[tokens] 58759 cells / 7196 rows counted in 6s
-  25/830
-  50/830
-  75/830
-  100/830
-  125/830
-  150/830
-  175/830
-  200/830
-  225/830
-  250/830
-  275/830
-  300/830
-  325/830
-  350/830
-  375/830
-  400/830
-  425/830
-  450/830
-  475/830
-  500/830
-  525/830
-  550/830
-  575/830
-  600/830
-  625/830
-  650/830
-  675/830
-  700/830
-  725/830
-  750/830
-  775/830
-  800/830
-  825/830
-
-arm            OSC  per_cell  tbl_any  tbl_whole   tokens   #tbl   answer
-cell         0.789     0.789    0.918      0.000      187    1.6    0.629
-
-table recall         @1       @3       @5      @10      @20
-  by_table_index    0.731    0.878    0.913    0.948    0.976
-  by_cell_vote     0.819    0.930    0.946    0.970    0.987
-wrote -> results/orc_hitab_s3c_512.json
-OK 2026-08-26T17:27:39+09:00 hitab_s3c
-DONE 2026-08-26T17:27:39+09:00

@@ -1,35 +1,0 @@
-### --dataset hitab --cell-scheme S3c
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2518.90it/s]
-[cache] wrote bge-small-en-v1.5_S3c_58759_f3d4ebe830828512.npy
-[corpus] 424 tables / 58759 cells / 830 queries | scheme S3c
-
-ranker              @1      @2      @3      @4      @5     @10
-first            0.819   0.907   0.930   0.943   0.946   0.970  <- 현행
-sum_top3         0.823   0.904   0.932   0.942   0.949   0.970
-mean_top3        0.823   0.904   0.932   0.942   0.949   0.970
-sum_top5         0.817   0.905   0.934   0.945   0.949   0.968
-mean_top5        0.817   0.905   0.934   0.945   0.949   0.968
-sum_top10        0.789   0.884   0.910   0.917   0.923   0.946
-mean_top10       0.808   0.905   0.931   0.939   0.945   0.968
-count_top50      0.713   0.876   0.920   0.926   0.930   0.947
-count_top200     0.536   0.734   0.812   0.868   0.907   0.966
-wrote -> results/table_ranker_sweep_hitab_S3c.json
-### --dataset realhitbench
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2344.90it/s]
-[cache] wrote bge-small-en-v1.5_S2_143377_890ca9a8bac86c68.npy
-[corpus] 537 tables / 143377 cells / 231 queries | scheme S2
-
-ranker              @1      @2      @3      @4      @5     @10
-first            0.506   0.658   0.745   0.796   0.827   0.909  <- 현행
-sum_top3         0.472   0.645   0.714   0.779   0.823   0.900
-mean_top3        0.472   0.645   0.714   0.779   0.823   0.900
-sum_top5         0.463   0.615   0.710   0.788   0.818   0.887
-mean_top5        0.463   0.615   0.710   0.788   0.818   0.887
-sum_top10        0.446   0.589   0.684   0.749   0.801   0.887
-mean_top10       0.446   0.589   0.684   0.749   0.801   0.887
-count_top50      0.411   0.584   0.680   0.749   0.775   0.849
-count_top200     0.333   0.459   0.606   0.675   0.745   0.866
-wrote -> results/table_ranker_sweep_realhitbench_S2.json
-DONE 2026-08-26T15:30:29+09:00

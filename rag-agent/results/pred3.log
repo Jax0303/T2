@@ -1,41 +1,0 @@
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2298.77it/s]
-[cache] hit bge-small-en-v1.5_S2_291403_69d91a804a95c00a.npy
-[hitab:train] 800 queries, k* mean 1902.9
-
-  [fit hitab:train]
-     margin  retention  mean cells  median   (oracle mean 1902.9, median 8)
-        1.0      63.0%       534.6      13
-        1.5      71.2%       801.6      19
-        2.0      75.6%      1068.7      25
-        3.0      81.8%      1602.7      37
-        5.0      88.1%      2670.9      62
-        8.0      93.1%      4273.1      98
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2421.26it/s]
-[cache] hit bge-small-en-v1.5_S2_58759_b6c60bb8588560e0.npy
-[hitab:dev] 830 queries, k* mean 419.0
-
-  [eval hitab:dev]
-     margin  retention  mean cells  median   (oracle mean 419.0, median 2)
-        1.0      74.6%        46.3       7
-        1.5      78.7%        69.3      11
-        2.0      81.4%        92.2      14
-        3.0      84.8%       138.1      21
-        5.0      87.3%       229.8      35
-        8.0      90.0%       367.4      56
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2436.84it/s]
-[cache] hit bge-small-en-v1.5_S2_5320_b6ff6e022dab839f.npy
-[aitqa:all] 451 queries, k* mean 199.4
-
-  [eval aitqa:all]
-     margin  retention  mean cells  median   (oracle mean 199.4, median 18)
-        1.0      62.5%       160.5      25
-        1.5      65.9%       240.6      38
-        2.0      69.6%       320.6      50
-        3.0      73.4%       480.7      75
-        5.0      78.3%       800.8     125
-        8.0      82.7%      1281.0     200
-
-  margin chosen on hitab:train: 2.0 (target retention 95%, servable 522/800)
-
-wrote -> results/cell_budget_predictor.json

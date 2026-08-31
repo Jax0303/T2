@@ -1,41 +1,0 @@
-DONE 2026-08-26T18:06:54+09:00
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2553.43it/s]
-[cache] hit bge-small-en-v1.5_S2_291403_69d91a804a95c00a.npy
-[hitab:train] 800 queries, k* mean 1902.9
-
-  [fit hitab:train]
-     margin  retention  mean cells  median   (oracle mean 1902.9, median 8)
-        1.0      62.5%       524.1      13
-        1.5      71.5%       785.9      19
-        2.0      76.4%      1047.7      25
-        3.0      81.6%      1571.3      37
-        5.0      88.5%      2618.5      61
-        8.0      92.8%      4189.3      98
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  78%|███████▊  | 156/199 [00:06<00:01, 24.92it/s]Loading weights: 100%|██████████| 199/199 [00:06<00:00, 31.74it/s]
-[cache] hit bge-small-en-v1.5_S2_58759_b6c60bb8588560e0.npy
-[hitab:dev] 830 queries, k* mean 419.0
-
-  [eval hitab:dev]
-     margin  retention  mean cells  median   (oracle mean 419.0, median 2)
-        1.0      74.6%        43.9       7
-        1.5      79.8%        65.6      10
-        2.0      82.2%        87.2      13
-        3.0      84.9%       130.7      19
-        5.0      88.0%       217.4      32
-        8.0      90.7%       347.6      51
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2437.96it/s]
-[cache] wrote bge-small-en-v1.5_S2_5320_b6ff6e022dab839f.npy
-[aitqa:all] 451 queries, k* mean 199.4
-
-  [eval aitqa:all]
-     margin  retention  mean cells  median   (oracle mean 199.4, median 18)
-        1.0      61.9%       107.6      24
-        1.5      66.5%       161.1      36
-        2.0      69.0%       214.6      48
-        3.0      71.8%       321.8      72
-        5.0      79.6%       535.9     119
-        8.0      84.9%       857.1     190
-
-wrote -> results/cell_budget_predictor.json
-DONE 2026-08-26T18:16:54+09:00

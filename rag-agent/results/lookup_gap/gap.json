@@ -1,0 +1,380 @@
+{
+  "n_queries": 189,
+  "single_gold_cell": 189,
+  "per_policy": [
+    {
+      "policy": "P1_fixed_512",
+      "n": 189,
+      "em": 0.4444,
+      "recall_all_gold_in_context": 0.7989,
+      "n_wrong": 105,
+      "A_retrieval_miss": 37,
+      "B_distractor": 58,
+      "C_reader_limit": 10
+    },
+    {
+      "policy": "P4_path_cell",
+      "n": 189,
+      "em": 0.672,
+      "recall_all_gold_in_context": 0.9312,
+      "n_wrong": 62,
+      "A_retrieval_miss": 12,
+      "B_distractor": 38,
+      "C_reader_limit": 12
+    },
+    {
+      "policy": "gold_cell",
+      "n": 189,
+      "em": 0.9206,
+      "recall_all_gold_in_context": 1.0,
+      "n_wrong": 15,
+      "A_retrieval_miss": 0,
+      "B_distractor": 0,
+      "C_reader_limit": 15
+    }
+  ],
+  "B_distractor_P4_queries": [
+    {
+      "query_id": "01ca3e3f73380048e87e834a387a4d47",
+      "query": "what is the percentage of male refugees who knew english or french to the total population of privately sponsored syrian refugees?",
+      "gold": "[67.2]",
+      "pred_P4": "46.6",
+      "pred_gold_cell": "67.2%",
+      "gold_rank": 2,
+      "n_chunks_used": 52
+    },
+    {
+      "query_id": "1477d2450da6aa104666af351a9194da",
+      "query": "how many thousand dollars did the nation's 41 federally funded research and development centers (ffrdcs) spend on r&d in fy 2014?",
+      "gold": "[17718556.0]",
+      "pred_P4": "17718.556",
+      "pred_gold_cell": "17718556.0",
+      "gold_rank": 1,
+      "n_chunks_used": 68
+    },
+    {
+      "query_id": "1714d7b0fe79f6e52f4d93c2951d7d6c",
+      "query": "what was the proportion of homelessness support sector workers in large urban centres?",
+      "gold": "[64.7]",
+      "pred_P4": "59.8",
+      "pred_gold_cell": "64.7%",
+      "gold_rank": 1,
+      "n_chunks_used": 80
+    },
+    {
+      "query_id": "180430ab9d69287876277342e1932782",
+      "query": "within women of core working age of a visible minority, what was the percentag points were arab women likely to be employed?",
+      "gold": "[51.5]",
+      "pred_P4": "32.7",
+      "pred_gold_cell": "51.5",
+      "gold_rank": 0,
+      "n_chunks_used": 53
+    },
+    {
+      "query_id": "1a86be5219a9b6050daa879a3cf7a5cc",
+      "query": "what percentage of boys have child care in their own home?",
+      "gold": "[12.3]",
+      "pred_P4": "30.1",
+      "pred_gold_cell": "12.3",
+      "gold_rank": 2,
+      "n_chunks_used": 62
+    },
+    {
+      "query_id": "212abc6b824172c27a50da1ef0dc6863",
+      "query": "what was the percentage-point difference between women aged 55 and older facing a high risk of job transformation as a result of automation and their male counterparts.?",
+      "gold": "[20.5]",
+      "pred_P4": "24.7",
+      "pred_gold_cell": "20.5",
+      "gold_rank": 1,
+      "n_chunks_used": 100
+    },
+    {
+      "query_id": "37c38d64bac1d2105610ab38f2ec3cff",
+      "query": "in contrast, what is the percentage of sherbrooke reported relatively large declines of motor vehicle theft in 2015?",
+      "gold": "[41]",
+      "pred_P4": "-41.0",
+      "pred_gold_cell": "41.0",
+      "gold_rank": 0,
+      "n_chunks_used": 80
+    },
+    {
+      "query_id": "396c85c26f691530b03841a23f9e13ce",
+      "query": "at the city level, how many incidents per 100,000 population in the cmas with the highest average annual rates of police-reported sexual assault over a six-year period in saskatoon?",
+      "gold": "[80.7]",
+      "pred_P4": "85.5",
+      "pred_gold_cell": "80.7",
+      "gold_rank": 0,
+      "n_chunks_used": 70
+    },
+    {
+      "query_id": "460624dde30218e9471b8a3c8e49142f",
+      "query": "over the period 2000 to 2016, how many percentage points of capital goods exports to the united states has declined?",
+      "gold": "[2.8]",
+      "pred_P4": "16.3",
+      "pred_gold_cell": "2.8",
+      "gold_rank": 0,
+      "n_chunks_used": 98
+    },
+    {
+      "query_id": "4c21d01db20a0f17c81ce34a4c7ab317",
+      "query": "according to the proposed 2018-base mbm, what is the poverty rate in 2015?",
+      "gold": "[14.5]",
+      "pred_P4": "14.0",
+      "pred_gold_cell": "14.5%",
+      "gold_rank": 5,
+      "n_chunks_used": 53
+    },
+    {
+      "query_id": "4d5c2edc2d3e3af3518e2a367498f9a8",
+      "query": "how many league appearances did charlie parke make in his time at sunderland from 1920 to 1929, and moved to carlisle united?",
+      "gold": "[245.0]",
+      "pred_P4": "19",
+      "pred_gold_cell": "245",
+      "gold_rank": 71,
+      "n_chunks_used": 130
+    },
+    {
+      "query_id": "4ea3c1908ca49ceab34fd92206ed73cb",
+      "query": "what percentage of girls have child care in their own home?",
+      "gold": "[11.9]",
+      "pred_P4": "12.9",
+      "pred_gold_cell": "11.9%",
+      "gold_rank": 0,
+      "n_chunks_used": 60
+    },
+    {
+      "query_id": "57d7d667a721de4ac68cc418812f68e9",
+      "query": "what percentage of men experienced unwanted sexual behaviours in public places in the past 12 months of 2018 are?",
+      "gold": "[13.4]",
+      "pred_P4": "17.5",
+      "pred_gold_cell": "13.4",
+      "gold_rank": 0,
+      "n_chunks_used": 65
+    },
+    {
+      "query_id": "5898bf447a1216111860fc90694d9677",
+      "query": "what is the missed rate of immigrants who settled in 2011?",
+      "gold": "[35.6]",
+      "pred_P4": "7.4",
+      "pred_gold_cell": "35.6",
+      "gold_rank": 1,
+      "n_chunks_used": 87
+    },
+    {
+      "query_id": "68a72730058d6e72e35d989254915b7a",
+      "query": "what is the median age of syrian privately sponsored refugees at the time of admission?",
+      "gold": "[26.0]",
+      "pred_P4": "18.0",
+      "pred_gold_cell": "26.0",
+      "gold_rank": 0,
+      "n_chunks_used": 57
+    },
+    {
+      "query_id": "6c5c0108bcb5e8e8daf64ccb47e4418a",
+      "query": "what is the percentage of men who stated that a woman was responsible for the most serious incident in the past 12 months of 2018?",
+      "gold": "[27.3]",
+      "pred_P4": "74.3",
+      "pred_gold_cell": "27.3",
+      "gold_rank": 11,
+      "n_chunks_used": 66
+    },
+    {
+      "query_id": "6f60b8ad7f6eca2ef40ff16b8483d0c3",
+      "query": "how many million dollars did r&d plant funding increase substantially to?",
+      "gold": "[2825.0]",
+      "pred_P4": "128573",
+      "pred_gold_cell": "2825",
+      "gold_rank": 0,
+      "n_chunks_used": 55
+    },
+    {
+      "query_id": "70e4bf6cca907f08aacb28d8ada7a63d",
+      "query": "how many percent did inflation-adjusted growth in u.s. gross domestic product (gdp) average annually over the 5-year period 2008-13?",
+      "gold": "[1.2]",
+      "pred_P4": "2.6",
+      "pred_gold_cell": "1.2",
+      "gold_rank": 4,
+      "n_chunks_used": 65
+    },
+    {
+      "query_id": "7881d82dc708ae9370f1a06d421c2d70",
+      "query": "how many percentage points have donations been collected through canvassing in a shopping centre or on the street?",
+      "gold": "[1.4]",
+      "pred_P4": "34.0",
+      "pred_gold_cell": "1.4",
+      "gold_rank": 7,
+      "n_chunks_used": 80
+    },
+    {
+      "query_id": "78ce8c9b3c72c553a225642de85c58a9",
+      "query": "much of the increase in the rate of breaking and entering at the national level between 2014 and 2015 can be accounted for somewhat mitigated by a drop in the rate of break-ins in montreal, what is the percentage of this drop?",
+      "gold": "[7]",
+      "pred_P4": "2.5%",
+      "pred_gold_cell": "7.0%",
+      "gold_rank": 0,
+      "n_chunks_used": 77
+    },
+    {
+      "query_id": "8862f59db99997904734a0a59b30c1e7",
+      "query": "how many copies did the single\"fui ni\" sale?",
+      "gold": "[90103.0]",
+      "pred_P4": "115497.0",
+      "pred_gold_cell": "90103.0",
+      "gold_rank": 1,
+      "n_chunks_used": 81
+    },
+    {
+      "query_id": "89226522b85d59368bdf596836f5243f",
+      "query": "what is the percentage of persons who do not receive enough help with getting to appointments/running errands?",
+      "gold": "[13.5]",
+      "pred_P4": "46.1",
+      "pred_gold_cell": "13.5",
+      "gold_rank": 0,
+      "n_chunks_used": 56
+    },
+    {
+      "query_id": "afa6b80c82c8d3b2da22409e9132d1f4",
+      "query": "how many percentage points of other donors have been given after being canvassed by mail?",
+      "gold": "[25.0]",
+      "pred_P4": "3.0",
+      "pred_gold_cell": "25.0",
+      "gold_rank": 0,
+      "n_chunks_used": 82
+    },
+    {
+      "query_id": "bbe63aa742a7dc8f63e9b4f84612659d",
+      "query": "how many touchdown passes did meyer get in 2013?",
+      "gold": "[112.0]",
+      "pred_P4": "6",
+      "pred_gold_cell": "112.0",
+      "gold_rank": 36,
+      "n_chunks_used": 133
+    },
+    {
+      "query_id": "bd6bbb2e53059ce03e90a870277ce445",
+      "query": "what is the average expenditure for shoppers who purchased digital goods and services?",
+      "gold": "[346]",
+      "pred_P4": "66.6",
+      "pred_gold_cell": "346.0",
+      "gold_rank": 2,
+      "n_chunks_used": 74
+    },
+    {
+      "query_id": "c74278f68b8355e96293df10b71b7232",
+      "query": "how many years are the estimates of the expected discard age taken from the ex ante expected discard length of life for buildings?",
+      "gold": "[25.1]",
+      "pred_P4": "27.0",
+      "pred_gold_cell": "25.1",
+      "gold_rank": 2,
+      "n_chunks_used": 68
+    },
+    {
+      "query_id": "df4d10cd832d0640617227cfdf344d75",
+      "query": "for the largest of companies (25,000 or more employees), what was the r&d intensity?",
+      "gold": "[3.4]",
+      "pred_P4": "3.3",
+      "pred_gold_cell": "3.4",
+      "gold_rank": 7,
+      "n_chunks_used": 59
+    },
+    {
+      "query_id": "dfa1f9b5d64d57549ff633f247ac53a5",
+      "query": "how many percentage points of donation have been colleceted through door-to-door canvassing?",
+      "gold": "[1.7]",
+      "pred_P4": "24.0",
+      "pred_gold_cell": "1.7",
+      "gold_rank": 8,
+      "n_chunks_used": 81
+    },
+    {
+      "query_id": "e34c049089fabd33194a94db16954444",
+      "query": "how many hours did volunteers aged 35 to 44 spend on volunteering?",
+      "gold": "[122.0]",
+      "pred_P4": "136",
+      "pred_gold_cell": "122",
+      "gold_rank": 2,
+      "n_chunks_used": 84
+    },
+    {
+      "query_id": "e787c9de756ff0da1df55eba5381fa19",
+      "query": "how many percent of police officers in canada were eligible to retire as of the 2017 calendar year?",
+      "gold": "[11]",
+      "pred_P4": "10",
+      "pred_gold_cell": "11",
+      "gold_rank": 0,
+      "n_chunks_used": 77
+    },
+    {
+      "query_id": "ece49429b4fab7098c0ec5523c66bfb6",
+      "query": "how many minutes of average daily sedentary time are accumulated?",
+      "gold": "[595.0]",
+      "pred_P4": "83.2",
+      "pred_gold_cell": "595.0",
+      "gold_rank": 8,
+      "n_chunks_used": 47
+    },
+    {
+      "query_id": "edcc5c352fa8d7bd0a7eb31000f80448",
+      "query": "what was the number of appearances made by ken thomson for stoke totally?",
+      "gold": "[278.0]",
+      "pred_P4": "29",
+      "pred_gold_cell": "278",
+      "gold_rank": 22,
+      "n_chunks_used": 131
+    },
+    {
+      "query_id": "efb84464dea96b1f03942b719a66fb26",
+      "query": "how many percentage points of donation have been colleceted collected at a church, synagogue, mosque or other place of worship?",
+      "gold": "[31.7]",
+      "pred_P4": "34.0",
+      "pred_gold_cell": "31.7",
+      "gold_rank": 5,
+      "n_chunks_used": 78
+    },
+    {
+      "query_id": "f7c39d933af7df7429851768bd782b8a",
+      "query": "how many percentage points did officers depart for retirement?",
+      "gold": "[70.0]",
+      "pred_P4": "33",
+      "pred_gold_cell": "70.0",
+      "gold_rank": 41,
+      "n_chunks_used": 77
+    },
+    {
+      "query_id": "f9742a7d5cbcf1a85ec20a93dc22e902",
+      "query": "how many million dollars did total federal funding for research increase to in fy 2015?",
+      "gold": "[63645.0]",
+      "pred_P4": "119525",
+      "pred_gold_cell": "63645",
+      "gold_rank": 0,
+      "n_chunks_used": 61
+    },
+    {
+      "query_id": "fb9d1aab0af9cb6d1bcbbe3869dd64f0",
+      "query": "in 2018, how many million dollars of total u.s. r&d expenditures did basic research activities account for?",
+      "gold": "[101123.0]",
+      "pred_P4": "96500",
+      "pred_gold_cell": "101123",
+      "gold_rank": 0,
+      "n_chunks_used": 70
+    },
+    {
+      "query_id": "fbb807972f0199e65a625f2164567177",
+      "query": "how many people is the electricity consumption in 2017?",
+      "gold": "[12632.0]",
+      "pred_P4": "325.719",
+      "pred_gold_cell": "12632.0",
+      "gold_rank": 0,
+      "n_chunks_used": 107
+    },
+    {
+      "query_id": "ffa1048c4fd19fdf169221a74c63c58b",
+      "query": "how many million dollars were constantdollar obligations estimated to increase to in fy 2016?",
+      "gold": "[127692.0]",
+      "pred_P4": "125466.0",
+      "pred_gold_cell": "127692",
+      "gold_rank": 49,
+      "n_chunks_used": 59
+    }
+  ]
+}
