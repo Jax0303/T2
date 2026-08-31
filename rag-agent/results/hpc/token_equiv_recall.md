@@ -1,5 +1,8 @@
 # Phase 3b — 토큰 등가 Recall
 
+> ⚠️ **폐기 (2026-09-01).** 토큰 예산을 조작 변인으로 쓴 레그다. 다시 인용하지 말고
+> 이 축으로 새 실험을 설계하지 말 것. 사유는 `results/DEPRECATED.md`. 수치는 기록으로만 남긴다.
+
 생성 2026-08-31. 계측기 `analysis/token_equiv_recall.py`. 리더 호출 없음.
 검색기 `hybrid` α=0.7, 인코더 `BAAI/bge-small-en-v1.5`, 셀 스킴 `S3c`.
 

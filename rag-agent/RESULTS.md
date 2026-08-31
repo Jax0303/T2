@@ -343,7 +343,7 @@ P4의 1.0은 측정 결과가 아니라 구현 정합성 확인이다 (설계상
 수정 전 값은 `results/hpc/pre_rowheader_fix/`에 보존.
 
 - Phase 3 층화 Recall@10/@50: `results/hpc/stratified_recall.md` (40개 검정, 다중비교 보정 없음).
-- Phase 3b 토큰 등가 Recall: `results/hpc/token_equiv_recall.md`.
+- Phase 3b 토큰 등가 Recall: **폐기** (`results/DEPRECATED.md`). 파일은 `results/hpc/token_equiv_recall.md`에 남아 있다.
 
 ## 7. 1단계 보드 — 예산 없는 셀 검색
 
@@ -382,24 +382,15 @@ RealHiTBench gold 셀 231건 중 61건(26.4%), AIT-QA 451건 중 34건(7.5%)이 
 R3 PASS, R4 PASS. 사전등록 밖 관측: hybrid가 dense를 4/4 코퍼스에서 이긴다
 (RHB +.048 p=.0127, MH +.115 p<1e-4).
 
-## 9. 예산 사다리 (사전등록)
+## 9. 예산 사다리 — 폐기 (2026-09-01)
 
-출처 `results/budget_1024_verdict.json` (예측 `bf9484b`),
-`results/budget_ladder_verdict.json` (예측 `43825e0`). hybrid α=0.7, S3c, LLM 없음.
-값은 OSC / gold_table_any / 컨텍스트 표 수.
+토큰 예산을 조작 변인으로 쓴 레그를 전부 폐기했다. 예산은 붙이는 리더의 성질이라
+그것으로 정규화한 비교는 색인·검색에 대한 진술이 아니다. 사유와 대상 목록은
+`results/DEPRECATED.md`. 파일과 수치는 지우지 않았고 히스토리에도 있다 —
+폐기는 다시 인용하지 말고 이 축으로 새 실험을 설계하지 말라는 뜻이다.
 
-| dataset | 512 | 1024 | 2048 | 4096 |
-|---|---|---|---|---|
-| hitab | .8458 / .9253 / 2.32 | .8819 / .9458 / 2.88 | .9133 / .9590 / 4.00 | .9313 / .9711 / 5.80 |
-| aitqa | .6519 / .7938 / 9.7 | .7317 / .8537 / 14.1 | .8137 / .9246 / 21.66 | .8825 / .9645 / 33.56 |
-| multihiertt | .6115 / .8622 / 12.11 | .7118 / .9023 / 19.1 | .7669 / .9248 / 30.96 | .8371 / .9599 / 51.5 |
-| realhitbench | .4026 / .8225 / 4.29 | .4632 / .8745 / 5.60 | .5152 / .8874 / 7.42 | .5844 / .9048 / 10.48 |
-
-512→1024 paired OSC (McNemar): hitab .846→.882 (32:2, p<1e-4),
-multihiertt .612→.712 (40:0), aitqa .652→.732 (36:0), realhitbench .403→.463 (14:0, p=1e-4).
-B2 **FAIL** — MultiHiertt 이득 +.1003이 사전등록 상한 +.08을 넘었다.
-사다리 판정 L1~L5 전부 PASS (HiTab만 2048에서 .9133으로 .9를 넘고, 4096에서도 .9를 넘는
-코퍼스는 HiTab뿐, RealHiTBench는 4096에서도 .5844).
+폐기 전 값은 커밋 `9d14bf3` 이전의 이 파일과 `results/budget_ladder_verdict.json`,
+`budget_1024_verdict.json`에 그대로 있다.
 
 ## 10. Phase 5 — 산술 리더 교체
 
