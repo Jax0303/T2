@@ -150,6 +150,42 @@ gold 셀이 1위가 아니었던 P4 64건, gold 위의 셀 1067개 (그중 878�
 
 P1은 청크가 512토큰 블록이라 헤더 관계를 정의할 수 없다 (관계 표 없음).
 
+### 2.4 830건 전체 — gold 셀을 앞지른 셀
+
+출처 `results/lookup_gap/above830.md`, `rank830/*_above.jsonl`.
+`analysis/cell_rank_dump.py --dump-above 20`으로 재랭킹했고, 같이 나온 ranks 파일은
+`results/rank/`의 커밋본과 **바이트 동일**하다 (재현 확인).
+예산 없음, 코퍼스 전체 랭킹, S3c, hybrid α=0.7.
+
+gold 셀이 1위가 아닌 쿼리 **402 / 830**. gold 위 셀 총 54,418개
+(쿼리당 중앙값 4, rank 2000에서 절단된 쿼리 15건).
+
+| 관계 | 셀 수 | 비율 | 1위 셀이 이 관계인 쿼리 수 | 비율 |
+|---|---:|---:|---:|---:|
+| other_table | 50,748 | 0.9326 | 128 | 0.3184 |
+| sibling_elsewhere | 1,246 | 0.0229 | 25 | 0.0622 |
+| same_table_far | 1,012 | 0.0186 | 11 | 0.0274 |
+| same_col | 995 | 0.0183 | 123 | 0.3060 |
+| same_row | 408 | 0.0075 | 112 | 0.2786 |
+| same_address | 9 | 0.0002 | 3 | 0.0075 |
+
+셀 단위로 세면 93.3%가 다른 표지만(§7 STAGE1_BOARD §B와 같은 방향), **gold 대신 1위에 온
+셀만 보면 68.2%가 gold와 같은 표**다 (같은 열 경로 30.6 + 같은 행 경로 27.9 + 형제 6.2
++ 그 외 3.5). gold 표 안의 셀이 하나라도 gold를 앞지른 쿼리는 362/402 (0.9005).
+gold_rank는 2위 안 113건, 10위 안 267건, 200위 밖 41건이다.
+
+### 2.5 실패 케이스 원장 (수동 확인용)
+
+`results/lookup_gap/failures.xlsx`. 계측기 `analysis/lookup_failures_xlsx.py`.
+
+| 시트 | 행 | 내용 |
+|---|---:|---|
+| `reader_failures` | 182 | 리더가 틀린 전 건 (P1 105 / P4 62 / gold_cell 15). 버킷, 값 출처, 틀린 헤더 축, gold 셀 문장, 값을 가져온 청크 |
+| `retrieval_189` | 74 | Phase 4 189건 중 gold가 1위가 아닌 쿼리 (top-200 후보 기준) |
+| `above_gold_189` | 3,067 | 위 74건에서 gold보다 위에 있던 청크 전부, 컨텍스트 진입 여부 포함 |
+| `retrieval_830` | 402 | 830건 전체에서 gold가 1위가 아닌 쿼리, 관계별 셀 수 |
+| `above_gold_830` | 3,285 | 각 쿼리의 gold 위 상위 20셀 (행·열 경로, 값, 관계) |
+
 ## 3. Recall 분모 — 셀 단위와 쿼리 단위
 
 출처 `results/audit/recall_denominators.json`. 보고된 Recall은 전부 **셀 단위**다.

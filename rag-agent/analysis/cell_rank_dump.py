@@ -24,7 +24,7 @@ import argparse
 import json
 import sys
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -85,6 +85,46 @@ def report(recs, title):
           f"@10={sum(1 for r in tr if r <= 10) / n:.4f}")
 
 
+def above_detail(C, q, order, ranks, above, pos_of, n_dump):
+    """For one query whose gold cell is not rank 0: how each cell ranked above
+    it relates to the gold cell, and the first n_dump of them in full."""
+    at = {p_: r_ for r_, p_ in enumerate(order)}
+    gold_pos = min((pos_of[g] for g in sorted(q["gold_cells"]) if g in pos_of),
+                   key=lambda p_: at[p_])          # the best-ranked gold cell
+    gt, gi, gj = C.cell_owner[gold_pos]
+    grp, gcp, gv = C.cell_paths[gold_pos]
+    rel = []
+    for p_ in above:
+        t_, _i, _j = C.cell_owner[p_]
+        rp, cp, _v = C.cell_paths[p_]
+        if t_ != gt:
+            rel.append("other_table")
+        elif rp == grp and cp == gcp:
+            rel.append("same_address")
+        elif rp == grp:
+            rel.append("same_row")
+        elif cp == gcp:
+            rel.append("same_col")
+        elif list(rp)[:-1] == list(grp)[:-1] or list(cp)[:-1] == list(gcp)[:-1]:
+            rel.append("sibling_elsewhere")
+        else:
+            rel.append("same_table_far")
+    top = []
+    for r_, p_ in enumerate(above[:n_dump]):
+        t_, i_, j_ = C.cell_owner[p_]
+        rp, cp, v_ = C.cell_paths[p_]
+        top.append({"rank": r_, "table_id": t_, "row": i_, "col": j_,
+                    "row_path": list(rp), "col_path": list(cp), "value": v_,
+                    "relation": rel[r_]})
+    return {"query_id": q["query_id"], "question": q["question"],
+            "gold_table": gt, "gold_row": gi, "gold_col": gj,
+            "gold_row_path": list(grp), "gold_col_path": list(gcp),
+            "gold_value": gv, "gold_answer": q.get("answer"),
+            "gold_rank": min(ranks), "n_above": len(above),
+            "above_capped": int(max(ranks) > 2000),
+            "relations": dict(Counter(rel)), "top_above": top}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -115,6 +155,11 @@ def main() -> int:
                          "CELL VOTE (a table's rank is its best cell's). 0 means "
                          "no restriction and reproduces the plain ranking. T=1 is "
                          "the `cascade` arm. PREREG-2026-08-30-table-shortlist.md")
+    ap.add_argument("--dump-above", type=int, default=0, metavar="N",
+                    help="also write <tag>_above.jsonl: for every query whose "
+                         "gold cell is not rank 0, the header relation of each "
+                         "cell ranked above it, plus the first N of those cells "
+                         "with their text. The ranks file is unchanged.")
     ap.add_argument("--out-dir", default="results/rank")
     a = ap.parse_args()
 
@@ -167,6 +212,7 @@ def main() -> int:
     if a.table_shortlist:
         a.table_prior = [float(t) for t in a.table_shortlist]
     all_recs = {lam: [] for lam in a.table_prior}
+    above_recs = []
     t0 = time.time()
     for k, q in enumerate(pop, 1):
         cs = scores(ix, q["question"])
@@ -231,6 +277,9 @@ def main() -> int:
                 in_tab.append(own_at[g[0]][pos_of[g]])
             worst = max(ranks)
             above = order[:min(worst, 2000)]
+            if a.dump_above and lam == a.table_prior[0] and worst > 0:
+                above_recs.append(above_detail(C, q, order, ranks, above,
+                                               pos_of, a.dump_above))
             same = sum(1 for p_ in above if C.cell_owner[p_][0] == q["gold_table"])
             r = {"query_id": q["query_id"], "m": len(ranks),
                  "above": len(above), "above_same_table": same,
@@ -245,6 +294,13 @@ def main() -> int:
             recs.append(r)
         if k % 100 == 0:
             print(f"  {k}/{len(pop)}  {time.time() - t0:.0f}s", flush=True)
+
+    if a.dump_above:
+        f = out.with_name(out.name.replace("_ranks.jsonl", "_above.jsonl"))
+        with open(f, "w") as fh:
+            for r in above_recs:
+                fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+        print(f"wrote -> {f}  ({len(above_recs)} queries whose gold is not rank 0)")
 
     for lam in a.table_prior:
         recs = all_recs[lam]
