@@ -189,6 +189,71 @@ def hitab_size_strata(data_dir: str, split: str, per_bucket: int,
                  "used_by": ["baseline_comparison_llm"]}
 
 
+def hitab_lookup_multi(data_dir: str, split: str) -> tuple[list[str], dict]:
+    """Lookup queries whose ANSWER spans more than one cell -- the multi-cell task.
+
+    Every lookup population above is single-answer (``build_population`` filters
+    ``len(ops) != 1``), so the multi-cell reading case has never had a population.
+    It is not the arithmetic pool either: ``aggregation == "none"`` means nothing
+    is computed -- the answer is simply several cells read out. That is the axis
+    this isolates: reading N cells, not combining them.
+
+    ``gold_operands`` is NOT the answer. ``_coords_of`` pools every bucket of
+    ``quantity_link``, which carries the numbers the source sentence cites as
+    well as the answer, so 47 of the 81 queries with >=2 operands answer with a
+    single cell. Membership therefore counts the ``[ANSWER]`` bucket of the raw
+    annotation, and only the grid check uses the resolved operands.
+
+    The pool is small and that is a property of HiTab, not a choice made here:
+    44 dev / 37 test / 194 train out of 1,195 / 1,133 / 5,208 lookup queries,
+    before the reconstructor drops any. n=44 cannot separate .85 from .90; the
+    dev leg is a ceiling probe and a claim, if made, is made on dev+test.
+
+    Membership runs through the same reconstructor as the single-cell pools -- a
+    table whose header tree will not build is dropped -- so the 21.5% alignment
+    exclusion applies identically and the two legs stay comparable.
+    """
+    from manual_sentence_ceiling import build_population
+    # n=0 runs the reconstructor pass and returns no queries; paths is the point
+    _, _, paths = build_population(data_dir, split, 0)
+    raw = {}
+    with open(Path(data_dir) / f"data/{split}_samples.jsonl") as fh:
+        for line in fh:
+            d = json.loads(line)
+            raw[str(d["id"])] = d
+    queries, _ = load_queries(data_dir, split)
+    pop, n_ans = [], {}
+    for q in queries:
+        pt = paths.get(q.gold_table_id)
+        if pt is None:
+            continue
+        if (q.aggregation or "none") != "none":
+            continue                      # computed answer -> that is the arith pool
+        d = raw.get(str(q.query_id))
+        if d is None:
+            continue
+        ans = ((d["linked_cells"].get("quantity_link") or {}).get("[ANSWER]") or {})
+        if len(ans) < 2:
+            continue                      # single cell -> hitab_{split}_lookup_all
+        ops = {(op.row, op.col) for op in q.gold_operands}
+        if not ops or not all(0 <= r < pt["n_r"] and 0 <= c < pt["n_c"]
+                              for r, c in ops):
+            continue                      # operand outside the reconstructed grid
+        pop.append(q)
+        n_ans[q.query_id] = len(ans)
+    random.Random(0).shuffle(pop)         # same seed-0 order as every lookup pool
+    return [q.query_id for q in pop], {
+        "dataset": "hitab", "split": split,
+        "filter": "aggregation == 'none' and len(linked_cells.quantity_link"
+                  "['[ANSWER]']) >= 2 and build_table_paths is not None and "
+                  "every resolved operand in grid",
+        "order": "random.Random(0).shuffle", "n": len(pop),
+        "answer_cells_hist": {str(k): sum(1 for q in pop if n_ans[q.query_id] == k)
+                              for k in sorted({n_ans[q.query_id] for q in pop})},
+        "note": "answer cells != gold_operands; OSC is defined over operands",
+        "used_by": ["multi-cell lookup leg -- retrieval + gold_cell ceiling"]}
+
+
 def hitab_corpus_arith(data_dir: str, split: str) -> tuple[list[str], dict]:
     """``corpus_dump_vs_cell``'s population: arithmetic queries the corpus can hold.
 
@@ -297,6 +362,9 @@ SPECS = {
     "hitab_dev_arith_m2": lambda a: hitab_arith(a.data_dir, "dev", 2),
     "hitab_train_arith": lambda a: hitab_arith(a.data_dir, "train", 1),
     "hitab_train_arith_m2": lambda a: hitab_arith(a.data_dir, "train", 2),
+    "hitab_dev_lookup_multi": lambda a: hitab_lookup_multi(a.data_dir, "dev"),
+    "hitab_test_lookup_multi": lambda a: hitab_lookup_multi(a.data_dir, "test"),
+    "hitab_train_lookup_multi": lambda a: hitab_lookup_multi(a.data_dir, "train"),
     "hitab_dev_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "dev"),
     "hitab_train_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "train"),
     "hitab_dev_size_strata": lambda a: hitab_size_strata(a.data_dir, "dev", a.per_bucket),
