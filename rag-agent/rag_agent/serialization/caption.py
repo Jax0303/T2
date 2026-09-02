@@ -155,3 +155,73 @@ def serialize(
             metadata={"template": template},
         )
     ]
+
+
+# --- title collision: the frame's title slot, when the title does not identify
+# the table. STRUCTURAL_COMPACT already drops the frame for an EMPTY title
+# ("with no title it asserts nothing while still spending budget"). A title 61
+# HiTab dev tables share ('career statistics') asserts nothing about WHICH table
+# either, and is worse than empty: it makes those 61 tables' cells read alike.
+# Measured on hitab_dev_lookup_all (results/tableconf/VERDICT.md): 179 of 424
+# tables share a title, and their queries lose the whole table 45.3% of the time
+# against 9.8% for uniquely titled ones (Fisher p=2.1e-13).
+TITLE_MODES = ("raw", "drop", "sig", "page")
+SIG_TOKENS = 3
+
+
+def effective_titles(tids, title, cell_owner, cell_paths, mode="raw",
+                     k=SIG_TOKENS, page_titles=None):
+    """``{table_id: the string to hand caption_sentence as the title}``.
+
+    ``raw``  the title as given -- byte-identical to not calling this at all.
+    ``drop`` a non-unique title becomes ``""``, taking the empty-title path.
+    ``sig``  a non-unique title gains the table's most table-specific header
+             tokens, so every cell of the table carries the table's identity.
+             35.3% of the cells in shared-title tables hold no token of their
+             own that is rare across tables, so ``drop`` leaves those cells with
+             nothing pointing at their table; ``sig`` is what covers them.
+
+    Token specificity is document frequency over TABLES: the rarest tokens of
+    this table's header paths win, ties broken alphabetically so the signature
+    is deterministic.
+    """
+    if mode not in TITLE_MODES:
+        raise ValueError(f"mode must be one of {TITLE_MODES}, got {mode!r}")
+    out = {t: title.get(t, "") for t in tids}
+    if mode == "raw":
+        return out
+
+    if mode == "page":
+        # HiTab's `title` is ToTTo's SECTION title ('career statistics'); the
+        # PAGE title -- the entity the question names ('Ian Miller (footballer,
+        # born 1955)') -- was dropped when HiTab took the tables. This mode puts
+        # it back. Unlike drop/sig it adds information the corpus did not hold,
+        # which is why those two failed (results/titlemode/VERDICT.md).
+        # Recovery and its verification: results/tableconf/TOTTO_RECOVERY.md.
+        if not page_titles:
+            raise ValueError("mode 'page' needs page_titles")
+        for t in tids:
+            pg = (page_titles.get(t) or {}).get("page_title", "").strip()
+            if pg:
+                out[t] = f"{pg}: {out[t]}" if out[t] else pg
+        return out
+
+    shared = {}
+    for t in tids:
+        shared.setdefault(out[t].strip().lower(), []).append(t)
+    dup = {t for ts in shared.values() if len(ts) > 1 for t in ts}
+    if mode == "drop":
+        return {t: ("" if t in dup else out[t]) for t in tids}
+
+    df, toks = {}, {}
+    for n, (t, _i, _j) in enumerate(cell_owner):
+        rp, cp, _v = cell_paths[n]
+        for w in " ".join([*rp, *cp]).lower().split():
+            toks.setdefault(t, set()).add(w)
+    for t, ws in toks.items():
+        for w in ws:
+            df[w] = df.get(w, 0) + 1
+    for t in dup:
+        best = sorted(toks.get(t, ()), key=lambda w: (df[w], w))[:k]
+        out[t] = f"{out[t]}: {', '.join(best)}" if best else out[t]
+    return out
