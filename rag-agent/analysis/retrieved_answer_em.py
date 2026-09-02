@@ -53,9 +53,16 @@ from rag_agent.serialization.base import Chunk                       # noqa: E40
 SEED, MAXNEW = 42, 32
 
 
+def load_reranker(name):
+    """기성품 크로스인코더. 리더보다 먼저 쓰고 먼저 놓아준다 (8GB 카드)."""
+    from sentence_transformers import CrossEncoder
+    return CrossEncoder(name, max_length=512)
+
+
 def build_jobs(a, C, chunks, ix, ks):
     """(query, cond) 별 주입 문맥. 검색 점수는 질의당 한 번만 계산한다."""
     pos_of = {c: n for n, c in enumerate(C.cell_owner)}
+    ce = load_reranker(a.rerank_model) if a.rerank_ks else None
     jobs = []
     t0 = time.time()
     for n, q in enumerate(C.queries, 1):
@@ -80,6 +87,19 @@ def build_jobs(a, C, chunks, ix, ks):
         # 재정렬기는 검색이 못 찾은 셀을 만들어낼 수 없다는 뜻이다.
         conds += [(f"orc{k}", gold if ranks[-1] < k else [int(order[0])])
                   for k in (a.oracle_ks or [])]
+        # rrK = 검색 top-K 를 크로스인코더로 다시 정렬하고 상위 n 개만 주입한다.
+        # 풀이 고정이므로 hit@K 는 재정렬 전과 **정확히 같아야** 한다 (산술 통제).
+        for K in (a.rerank_ks or []):
+            pool = [int(p) for p in order[:K]]
+            sc = ce.predict([(q["question"], chunks[p].text) for p in pool])
+            rr = [p for _, p in sorted(zip(-np.asarray(sc), pool),
+                                       key=lambda t: (t[0], t[1]))]
+            at = {p: r for r, p in enumerate(rr)}
+            # gold 는 이미 코퍼스 위치다 (pos_of 를 한 번 통과했다)
+            common[f"rr{K}_gold_rank"] = min((at[g] for g in gold if g in at),
+                                             default=10 ** 9)
+            conds += [(f"rr{K}" if n == 1 else f"rr{K}_{n}", rr[:n])
+                      for n in a.rerank_inject]
         for cond, cells in conds:
             jobs.append(common | {
                 "cond": cond, "n_injected": len(cells),
@@ -127,6 +147,15 @@ def main() -> int:
     ap.add_argument("--oracle-ks", type=int, nargs="*", default=[],
                     help="orcK 조건: top-K 안에 gold 가 전부 있으면 gold 만 주입. "
                          "완벽한 재정렬의 상한이다.")
+    ap.add_argument("--rerank-model", default="BAAI/bge-reranker-large",
+                    help="rrK 조건이 쓰는 기성품 크로스인코더.")
+    ap.add_argument("--rerank-ks", type=int, nargs="*", default=[],
+                    help="rrK 조건: 검색 top-K 를 크로스인코더로 다시 정렬한다. "
+                         "top-K 밖의 셀은 만들어낼 수 없으므로 hit@K 가 상한이다. "
+                         "PREREG-2026-09-03-ce-rerank-r1.md")
+    ap.add_argument("--rerank-inject", type=int, nargs="*", default=[1, 3],
+                    help="재정렬 후 상위 몇 개를 주입하는가. 1 은 `rrK`, "
+                         "n>1 은 `rrK_n` 이라는 조건이 된다.")
     ap.add_argument("--title-mode", default="raw", choices=["raw", "page"],
                     help="색인·주입 문장의 제목 슬롯. 인코더 학습 때와 같아야 한다.")
     ap.add_argument("--gold", type=int, default=1, help="gold 조건도 돌린다")
@@ -166,6 +195,9 @@ def main() -> int:
                 # gold 가 top-K 안이면 gold 전부, 아니면 1개(1위)만 들어간다
                 assert (j["gold_in_ctx"] == j["m"]) == (max(j["gold_ranks"]) < k), \
                     (j["query_id"], j["cond"])
+            elif j["cond"].startswith("rr"):
+                n = int(j["cond"].split("_")[1]) if "_" in j["cond"] else 1
+                assert j["n_injected"] == n, (j["query_id"], j["cond"])
             else:
                 k = int(j["cond"][3:])
                 assert j["n_injected"] == k, (j["query_id"], j["cond"])
@@ -174,10 +206,17 @@ def main() -> int:
         n = sum(1 for j in jobs if j["cond"] == "top1")
         print(f"[dry] {len(jobs)} jobs, self-check OK. "
               f"top1 gold hit {r1}/{n} = {r1/n:.4f} (= hit@1)")
+        for K in (a.rerank_ks or []):
+            rk = list({j["query_id"]: j[f"rr{K}_gold_rank"] for j in jobs}.values())
+            print(f"[dry] rr{K} 재정렬 후 " + " ".join(
+                f"hit@{k}={sum(1 for r in rk if r < k) / len(rk):.4f}"
+                for k in (1, 2, 3, 5, K)))
         return 0
 
     import torch
     from rag_agent.llm.local_qwen import LocalQwenLLM
+    # 재정렬기는 build_jobs 안에서 이미 다 썼다. 8GB 카드에 리더와 같이 두지 않는다.
+    torch.cuda.empty_cache()
     torch.manual_seed(SEED)
     out.parent.mkdir(parents=True, exist_ok=True)
     done = set()
@@ -202,7 +241,9 @@ def main() -> int:
         parsed = raw.strip().splitlines()[0].strip() if raw.strip() else ""
         fh.write(json.dumps({k: j[k] for k in
                              ("query_id", "cond", "question", "gold_answer", "m",
-                              "gold_ranks", "n_injected", "gold_in_ctx")} | {
+                              "gold_ranks", "n_injected", "gold_in_ctx")}
+                            | {k: v for k, v in j.items()
+                               if k.endswith("_gold_rank")} | {
             "pred_answer_raw": raw, "pred_parsed": parsed,
             "hit_token_cap": len(tok(raw, add_special_tokens=False)["input_ids"]) >= MAXNEW,
             "prompt_tokens": ptok, "latency_sec": round(time.time() - t, 3)},
