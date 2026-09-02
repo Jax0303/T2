@@ -6,13 +6,13 @@
 
 ## 무엇을 했나
 
-`analysis/phase4_summary.em`은 **한 글자도 안 건드렸다.** 옆에 `em_norm`을 추가했다.
+`analysis/phase4_summary.em`은 **한 글자도 안 건드렸다.** 옆에 `em_lenient`을 추가했다.
 
 PREREGISTER rev5가 부호·배율 탈출구(R2/R4)를 의도적으로 거부했고 `em()`은 그 판정
 그대로다. 이 저장소의 모든 과거 답변 수치가 `em()`으로 매겨져 있으므로 교체하면
 짝지을 수 없게 된다. 그래서 상위집합을 하나 더 두고 두 열을 같이 찍는다.
 
-`em_norm`이 추가로 통과시키는 것은 **두 갈래뿐**이다:
+`em_lenient`이 추가로 통과시키는 것은 **두 갈래뿐**이다:
 
 | 갈래 | 예 | 근거 |
 |---|---|---|
@@ -28,7 +28,7 @@ PREREGISTER rev5가 부호·배율 탈출구(R2/R4)를 의도적으로 거부했
 
 ### `hitab_dev_lookup_all` (n=830, 단일 셀, 인코더 a0 α=1.0)
 
-| 조건 | EM | **EMnorm** | 차 |
+| 조건 | EM | **EMlenient** | 차 |
 |---|---:|---:|---:|
 | gold (천장) | 0.9036 | **0.9313** | **+0.0277** |
 | top1 | 0.6434 | 0.6627 | +0.0193 |
@@ -41,7 +41,7 @@ PREREGISTER rev5가 부호·배율 탈출구(R2/R4)를 의도적으로 거부했
 
 ### 다중 셀 — 변화 0
 
-| 모집단 | 조건 | EM | EMnorm |
+| 모집단 | 조건 | EM | EMlenient |
 |---|---|---:|---:|
 | dev multi (33) | gold / top10 | .7879 / .3333 | .7879 / .3333 |
 | test multi (31) | gold / top10 | .9032 / .3871 | .9032 / .3871 |
@@ -51,7 +51,7 @@ PREREGISTER rev5가 부호·배율 탈출구(R2/R4)를 의도적으로 거부했
 
 ## §3의 두 결론에 미치는 영향 — 하나는 강해지고 하나는 그대로다
 
-| 결론 | EM 기준 | EMnorm 기준 |
+| 결론 | EM 기준 | EMlenient 기준 |
 |---|---:|---:|
 | (1) K 고정, 검색 개선 (base→a0 @top1) | +0.1494 | **+0.1651** |
 | (2) K 확대 (top1→top10) | +0.0470 | +0.0518 |
@@ -70,8 +70,8 @@ PREREGISTER rev5가 부호·배율 탈출구(R2/R4)를 의도적으로 거부했
 
 ## 산출물
 
-- `analysis/phase4_summary.py`: `_SCALES`, `_scale_free`, `em_norm` 추가. `em` 불변.
-- `analysis/retrieved_answer_em.py`: `EMnorm` 열 + `is_correct_norm` 필드.
-- `tests/test_em_norm.py`: 실제 실패 기록에서 가져온 표기 9건 통과 / 값 오독 5건 거부
-  / `em`이 맞다 한 830건 전부 `em_norm`도 맞다(상위집합) — 3건 통과.
+- `analysis/phase4_summary.py`: `_SCALES`, `_scale_free`, `em_lenient` 추가. `em` 불변.
+- `analysis/retrieved_answer_em.py`: `EMlenient` 열 + `is_correct_norm` 필드.
+- `tests/test_em_lenient.py`: 실제 실패 기록에서 가져온 표기 9건 통과 / 값 오독 5건 거부
+  / `em`이 맞다 한 830건 전부 `em_lenient`도 맞다(상위집합) — 3건 통과.
 - 나머지 16개 `em` 호출부는 **안 건드렸다.** 필요해지는 계측기에서 열을 추가할 것.

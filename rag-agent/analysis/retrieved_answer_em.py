@@ -44,7 +44,7 @@ import numpy as np                                                   # noqa: E40
 import corpus_dump_vs_cell as cdv                                    # noqa: E402
 from cell_rank_dump import cell_texts                                # noqa: E402
 from header_path_coverage import load_corpus                         # noqa: E402
-from phase4_summary import em, em_norm                               # noqa: E402
+from phase4_summary import em, em_lenient                             # noqa: E402
 from qwen_equiv_k import MODEL, SYS                                  # noqa: E402
 from rag_agent.retrieve.encoders import default_encoder              # noqa: E402
 from rag_agent.retrieve.hybrid_index import HybridIndex, _minmax     # noqa: E402
@@ -90,12 +90,12 @@ def summarize(path):
     recs = [json.loads(l) for l in open(path)]
     for r in recs:
         r["is_correct"] = em(r["pred_parsed"], r["gold_answer"])
-        # F: em_norm 은 진단 전용 상위집합이다. 주지표는 여전히 is_correct.
-        r["is_correct_norm"] = em_norm(r["pred_parsed"], r["gold_answer"])
+        # F: em_lenient 은 진단 전용 상위집합이다. 주지표는 여전히 is_correct.
+        r["is_correct_lenient"] = em_lenient(r["pred_parsed"], r["gold_answer"])
     by = defaultdict(list)
     for r in recs:
         by[r["cond"]].append(r)
-    print(f"\n{'cond':>8}{'n':>6}{'EM':>9}{'EMnorm':>9}{'gold전부주입':>13}"
+    print(f"\n{'cond':>8}{'n':>6}{'EM':>9}{'EMlenient':>9}{'gold전부주입':>13}"
           f"{'EM|주입됨':>11}{'EM|안됨':>10}{'ptok중앙':>10}")
     for cond in sorted(by, key=lambda c: (c != "gold", len(by[c][0]["cond"]), c)):
         rs = by[cond]
@@ -104,7 +104,7 @@ def summarize(path):
         miss = [r for r in rs if r["gold_in_ctx"] < r["m"]]
         f = lambda s, k="is_correct": (sum(r[k] for r in s) / len(s)) if s else float("nan")
         pt = sorted(r["prompt_tokens"] for r in rs)[n // 2]
-        print(f"{cond:>8}{n:>6}{f(rs):>9.4f}{f(rs, 'is_correct_norm'):>9.4f}"
+        print(f"{cond:>8}{n:>6}{f(rs):>9.4f}{f(rs, 'is_correct_lenient'):>9.4f}"
               f"{len(full)/n:>13.4f}{f(full):>11.4f}{f(miss):>10.4f}{pt:>10}")
     return recs
 

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 import ast
+import math
 import re
 
 import numpy as np
@@ -85,6 +86,45 @@ def em(pred, gold, rel=True):
             return 0
         left.remove(hit)
     return int(not left)
+
+# --- F: 진단 전용 채점기. em() 은 건드리지 않는다.
+# 이름 주의: 이 파일에는 이미 norm_em()(문자열 정규화)이 있고,
+# scripts/realhitbench_answer_accuracy.py 에는 별개의 em_norm()(RealHiTBench
+# 자릿수 맞춤 비교)이 있다. 셋 다 다른 것이라 이것은 em_lenient 로 부른다.
+# PREREGISTER rev5 는 부호와 배율 탈출구(R2/R4)를 의도적으로 거부했고 em() 은 그
+# 판정 그대로다. 이 저장소의 모든 과거 답변 수치가 em() 으로 매겨져 있으므로
+# em() 을 고치면 짝지을 수 없게 된다. 그래서 옆에 하나 더 둔다.
+#
+# em_lenient 이 추가로 통과시키는 것은 값을 제대로 읽고 표기만 다른 두 갈래뿐이다:
+#   부호   gold 1.2      pred -1.2
+#   배율   gold 55269.5  pred 55.2695   (퍼센트 표기와 단위 환산이 같은 갈래다)
+# 여집합(80.9 -> 19.1)이나 계산(145408 -> 147934)은 통과시키지 않는다. 값을 잘못
+# 읽은 것이지 표기 차이가 아니다.
+# 실제 표기 관행에 해당하는 배율만. 2 = 퍼센트<->비율, 3/6/9 = 천/백만/십억.
+# 10^1 과 10^5 는 관행이 아니라 자릿수 오독이므로 뺀다 (gold 0.16 / pred "1.6%").
+_SCALES = {2, 3, 6, 9}
+
+
+def _scale_free(p, g):
+    """부호를 떼고, 표기 관행에 해당하는 배율 차이만 허용하고 비교한다."""
+    pv, gv = _one_num(p), _one_num(g)
+    if pv is None or gv is None or pv == 0 or gv == 0:
+        return False
+    if abs(abs(pv) - abs(gv)) < 1e-9:
+        return True                       # 부호만 다름
+    k = math.log10(abs(pv) / abs(gv))
+    return abs(k - round(k)) < 1e-9 and abs(round(k)) in _SCALES
+
+
+def em_lenient(pred, gold, rel=True):
+    """em() 에 부호·배율 탈출구를 더한 진단 전용 점수. 주지표가 아니다."""
+    if em(pred, gold, rel):
+        return 1
+    gs = gold_parts(gold)
+    # ponytail: 단일 gold 만 탈출구를 준다. 다중 gold 는 조합 폭발이고 실패
+    # 80건에 한 건도 없었다. 필요해지면 em() 의 greedy 짝짓기에 _scale_free 를 끼울 것.
+    return int(len(gs) == 1 and _scale_free(pred, gs[0]))
+
 
 SRC = Path("results/phase4/reader_records.jsonl")
 XLS = Path("results/phase4/reader_records.xlsx")
