@@ -1,0 +1,129 @@
+{
+ "source": "results/multicell/ceiling_records.jsonl",
+ "n_records": 64,
+ "scorer": "analysis/phase4_summary.em (R1, multi-gold set rule)",
+ "condition": "gold_cell, answer cells injected, no retrieval",
+ "cited_single_cell_ceiling": {
+  "em": 0.9206,
+  "n": 189,
+  "source": "results/phase4/FINAL.md"
+ },
+ "splits": {
+  "dev": {
+   "n": 33,
+   "em": 0.7879,
+   "correct": 26
+  },
+  "test": {
+   "n": 31,
+   "em": 0.9032,
+   "correct": 28
+  }
+ },
+ "by_cell_count": {
+  "2": {
+   "n": 48,
+   "em": 0.8333,
+   "correct": 40
+  },
+  "3": {
+   "n": 11,
+   "em": 0.8182,
+   "correct": 9
+  },
+  "4": {
+   "n": 4,
+   "em": 1.0,
+   "correct": 4
+  },
+  "5": {
+   "n": 1,
+   "em": 1.0,
+   "correct": 1
+  }
+ },
+ "pooled": {
+  "n": 64,
+  "em": 0.8438,
+  "correct": 54
+ },
+ "hit_token_cap": 2,
+ "gold_answer_parts_hist": {
+  "2": 48,
+  "3": 11,
+  "4": 4,
+  "5": 1
+ },
+ "wrong": [
+  {
+   "split": "dev",
+   "query_id": "7d898005115e0f45006244cf16245697",
+   "n_answer_cells": 2,
+   "gold_answer": "[105000.0, 135900.0]",
+   "pred_parsed": "30900"
+  },
+  {
+   "split": "dev",
+   "query_id": "dac7b8c0dee3afb6a63584b2ddc905fd",
+   "n_answer_cells": 2,
+   "gold_answer": "['-5.8', '-0.9']",
+   "pred_parsed": "-4.9"
+  },
+  {
+   "split": "dev",
+   "query_id": "9a81da89603bcb2691db64fb922b4223",
+   "n_answer_cells": 3,
+   "gold_answer": "[6.3, 5.9, 5.5]",
+   "pred_parsed": "27.7"
+  },
+  {
+   "split": "dev",
+   "query_id": "4fc3bd250083aaaaab65303907e12230",
+   "n_answer_cells": 2,
+   "gold_answer": "[135900.0, 270900.0]",
+   "pred_parsed": "135900 - 270900 = -135000"
+  },
+  {
+   "split": "dev",
+   "query_id": "21b6027f10e037695b6805dc7d59fdbc",
+   "n_answer_cells": 2,
+   "gold_answer": "[67.3, 35.8]",
+   "pred_parsed": "35.8"
+  },
+  {
+   "split": "dev",
+   "query_id": "f33440121d84731aa21564536848e12f",
+   "n_answer_cells": 3,
+   "gold_answer": "[53.5, 21.1, 25.5]",
+   "pred_parsed": "53.5%"
+  },
+  {
+   "split": "dev",
+   "query_id": "8f09ffc6e21fda91ebd95cad70d8dd8b",
+   "n_answer_cells": 2,
+   "gold_answer": "[-48.1, 151.8]",
+   "pred_parsed": "-48.1 to 151.8"
+  },
+  {
+   "split": "test",
+   "query_id": "2c63ae2e1fe28ecc5758ee967fd2f9ab",
+   "n_answer_cells": 2,
+   "gold_answer": "[68.0, 53.9]",
+   "pred_parsed": "121.9%"
+  },
+  {
+   "split": "test",
+   "query_id": "2809357ef5421ab9531d6728a91cdebc",
+   "n_answer_cells": 2,
+   "gold_answer": "[69.0, 67.9]",
+   "pred_parsed": "69.0%"
+  },
+  {
+   "split": "test",
+   "query_id": "8e977e8fefe3d85b185dba51ccff2ea7",
+   "n_answer_cells": 2,
+   "gold_answer": "[0.7, 1.4]",
+   "pred_parsed": "0.7 to 1.4"
+  }
+ ]
+}

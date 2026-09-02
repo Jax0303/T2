@@ -1,0 +1,376 @@
+########## TRAIN neg-cross=0
+/home/user/T2-1/rag-agent/scripts/finetune_cell_encoder.py:120: DeprecationWarning: Importing from 'sentence_transformers.losses' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.losses' instead.
+  from sentence_transformers.losses import CachedMultipleNegativesRankingLoss
+[cfg] base=BAAI/bge-small-en-v1.5 qpre='' neg=4 (sib=4 cross=0)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[data] 3659 triplets from 3667 queries (3667 usable, 2043 tables); dropped 8 for too few negatives
+The `warmup_ratio` argument is deprecated in Transformers v5+, and will also be removed from Sentence Transformers once support for Transformers v4 is dropped. Since you're using Transformers v5+, please use `warmup_steps` (as a float) to specify the warmup ratio instead.
+{'loss': '1.051', 'grad_norm': '5.239', 'learning_rate': '1.749e-05', 'epoch': '0.4348'}
+{'loss': '0.5572', 'grad_norm': '6.325', 'learning_rate': '1.266e-05', 'epoch': '0.8696'}
+{'loss': '0.4626', 'grad_norm': '6.422', 'learning_rate': '7.826e-06', 'epoch': '1.304'}
+{'loss': '0.3746', 'grad_norm': '5.108', 'learning_rate': '2.995e-06', 'epoch': '1.739'}
+{'train_runtime': '164.3', 'train_samples_per_second': '44.54', 'train_steps_per_second': '1.4', 'train_loss': '0.5852', 'epoch': '2'}
+[saved] models/bge-cell-ft-x0
+===== x0 hitab_dev_lookup_all
+[corpus] 424 tables / 58759 cells | [pop] 830 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  85%|████████▍ | 169/199 [00:00<00:00, 1689.71it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1966.20it/s]
+[cache] wrote hitab_dev_models_bge-cell-ft-x0_58759_f3d4ebe830828512.npy
+[index] built in 33s
+  100/830  14s
+  200/830  29s
+  300/830  43s
+  400/830  58s
+  500/830  72s
+  600/830  87s
+  700/830  101s
+  800/830  115s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6699    0.6699  0.6699
+     5    0.8699    0.8699  0.8699
+    10    0.9072    0.9072  0.9072
+    20    0.9301    0.9301  0.9301
+    50    0.9554    0.9554  0.9554
+   100    0.9687    0.9687  0.9687
+   200    0.9807    0.9807  0.9807
+   500    0.9880    0.9880  0.9880
+  setEM@10 miss n=77: of the cells outranking gold, 0.044 sit in the gold table itself (distinct tables above gold: median 8)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7193 @5=0.9289 @10=0.9578 @20=0.9759 @50=0.9928   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7577   table recall@1=0.8759 @10=0.9819
+
+  split m=1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6699    0.6699  0.6699
+     5    0.8699    0.8699  0.8699
+    10    0.9072    0.9072  0.9072
+    20    0.9301    0.9301  0.9301
+    50    0.9554    0.9554  0.9554
+   100    0.9687    0.9687  0.9687
+   200    0.9807    0.9807  0.9807
+   500    0.9880    0.9880  0.9880
+  setEM@10 miss n=77: of the cells outranking gold, 0.044 sit in the gold table itself (distinct tables above gold: median 8)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7193 @5=0.9289 @10=0.9578 @20=0.9759 @50=0.9928   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7577   table recall@1=0.8759 @10=0.9819
+wrote -> results/rank_ft/x0/hitab_dev_lookup_all_S3c_hybrid0.7_tp0.0_ranks.jsonl
+===== x0 hitab_dev_lookup_multi
+[corpus] 424 tables / 58759 cells | [pop] 33 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  86%|████████▌ | 171/199 [00:00<00:00, 1708.65it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1874.71it/s]
+[cache] hit hitab_dev_models_bge-cell-ft-x0_58759_f3d4ebe830828512.npy
+[index] built in -5s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2611    0.0000  0.6061
+     5    0.7667    0.6667  0.8485
+    10    0.8485    0.8182  0.8788
+    20    0.9495    0.9394  0.9697
+    50    0.9924    0.9697  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=6: of the cells outranking gold, 0.644 sit in the gold table itself (distinct tables above gold: median 2)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.7273 @10=0.8182 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7178   table recall@1=0.9394 @10=1.0000
+
+  split m>=2  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2611    0.0000  0.6061
+     5    0.7667    0.6667  0.8485
+    10    0.8485    0.8182  0.8788
+    20    0.9495    0.9394  0.9697
+    50    0.9924    0.9697  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=6: of the cells outranking gold, 0.644 sit in the gold table itself (distinct tables above gold: median 2)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.7273 @10=0.8182 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7178   table recall@1=0.9394 @10=1.0000
+wrote -> results/rank_ft/x0/hitab_dev_lookup_multi_S3c_hybrid0.7_tp0.0_ranks.jsonl
+########## TRAIN neg-cross=1
+/home/user/T2-1/rag-agent/scripts/finetune_cell_encoder.py:120: DeprecationWarning: Importing from 'sentence_transformers.losses' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.losses' instead.
+  from sentence_transformers.losses import CachedMultipleNegativesRankingLoss
+[cfg] base=BAAI/bge-small-en-v1.5 qpre='' neg=4 (sib=3 cross=1)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[mine] encoding 291403 cells
+[data] 3667 triplets from 3667 queries (3667 usable, 2043 tables); dropped 0 for too few negatives
+The `warmup_ratio` argument is deprecated in Transformers v5+, and will also be removed from Sentence Transformers once support for Transformers v4 is dropped. Since you're using Transformers v5+, please use `warmup_steps` (as a float) to specify the warmup ratio instead.
+{'loss': '1.325', 'grad_norm': '5.688', 'learning_rate': '1.749e-05', 'epoch': '0.4348'}
+{'loss': '0.8155', 'grad_norm': '6.653', 'learning_rate': '1.266e-05', 'epoch': '0.8696'}
+{'loss': '0.692', 'grad_norm': '5.569', 'learning_rate': '7.826e-06', 'epoch': '1.304'}
+{'loss': '0.6413', 'grad_norm': '7.929', 'learning_rate': '2.995e-06', 'epoch': '1.739'}
+{'train_runtime': '178.2', 'train_samples_per_second': '41.15', 'train_steps_per_second': '1.291', 'train_loss': '0.8369', 'epoch': '2'}
+[saved] models/bge-cell-ft-x1
+===== x1 hitab_dev_lookup_all
+[corpus] 424 tables / 58759 cells | [pop] 830 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2256.58it/s]
+[cache] wrote hitab_dev_models_bge-cell-ft-x1_58759_f3d4ebe830828512.npy
+[index] built in 36s
+  100/830  16s
+  200/830  32s
+  300/830  48s
+  400/830  64s
+  500/830  81s
+  600/830  102s
+  700/830  111s
+  800/830  128s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6554    0.6554  0.6554
+     5    0.8627    0.8627  0.8627
+    10    0.9024    0.9024  0.9024
+    20    0.9349    0.9349  0.9349
+    50    0.9530    0.9530  0.9530
+   100    0.9687    0.9687  0.9687
+   200    0.9783    0.9783  0.9783
+   500    0.9867    0.9867  0.9867
+  setEM@10 miss n=81: of the cells outranking gold, 0.045 sit in the gold table itself (distinct tables above gold: median 7)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7060 @5=0.9253 @10=0.9542 @20=0.9759 @50=0.9928   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7483   table recall@1=0.8783 @10=0.9783
+
+  split m=1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6554    0.6554  0.6554
+     5    0.8627    0.8627  0.8627
+    10    0.9024    0.9024  0.9024
+    20    0.9349    0.9349  0.9349
+    50    0.9530    0.9530  0.9530
+   100    0.9687    0.9687  0.9687
+   200    0.9783    0.9783  0.9783
+   500    0.9867    0.9867  0.9867
+  setEM@10 miss n=81: of the cells outranking gold, 0.045 sit in the gold table itself (distinct tables above gold: median 7)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7060 @5=0.9253 @10=0.9542 @20=0.9759 @50=0.9928   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7483   table recall@1=0.8783 @10=0.9783
+wrote -> results/rank_ft/x1/hitab_dev_lookup_all_S3c_hybrid0.7_tp0.0_ranks.jsonl
+===== x1 hitab_dev_lookup_multi
+[corpus] 424 tables / 58759 cells | [pop] 33 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2289.50it/s]
+[cache] hit hitab_dev_models_bge-cell-ft-x1_58759_f3d4ebe830828512.npy
+[index] built in 1s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2611    0.0000  0.6061
+     5    0.7793    0.6364  0.8788
+    10    0.8636    0.8182  0.9091
+    20    0.9571    0.9394  1.0000
+    50    1.0000    1.0000  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=6: of the cells outranking gold, 0.748 sit in the gold table itself (distinct tables above gold: median 2)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.6970 @10=0.8788 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7191   table recall@1=0.9394 @10=1.0000
+
+  split m>=2  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2611    0.0000  0.6061
+     5    0.7793    0.6364  0.8788
+    10    0.8636    0.8182  0.9091
+    20    0.9571    0.9394  1.0000
+    50    1.0000    1.0000  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=6: of the cells outranking gold, 0.748 sit in the gold table itself (distinct tables above gold: median 2)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.6970 @10=0.8788 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7191   table recall@1=0.9394 @10=1.0000
+wrote -> results/rank_ft/x1/hitab_dev_lookup_multi_S3c_hybrid0.7_tp0.0_ranks.jsonl
+########## TRAIN neg-cross=3
+/home/user/T2-1/rag-agent/scripts/finetune_cell_encoder.py:120: DeprecationWarning: Importing from 'sentence_transformers.losses' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.losses' instead.
+  from sentence_transformers.losses import CachedMultipleNegativesRankingLoss
+[cfg] base=BAAI/bge-small-en-v1.5 qpre='' neg=4 (sib=1 cross=3)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[mine] encoding 291403 cells
+[data] 3667 triplets from 3667 queries (3667 usable, 2043 tables); dropped 0 for too few negatives
+The `warmup_ratio` argument is deprecated in Transformers v5+, and will also be removed from Sentence Transformers once support for Transformers v4 is dropped. Since you're using Transformers v5+, please use `warmup_steps` (as a float) to specify the warmup ratio instead.
+{'loss': '1.54', 'grad_norm': '5.805', 'learning_rate': '1.749e-05', 'epoch': '0.4348'}
+{'loss': '0.9906', 'grad_norm': '6.462', 'learning_rate': '1.266e-05', 'epoch': '0.8696'}
+{'loss': '0.8049', 'grad_norm': '6.196', 'learning_rate': '7.826e-06', 'epoch': '1.304'}
+{'loss': '0.7593', 'grad_norm': '6.992', 'learning_rate': '2.995e-06', 'epoch': '1.739'}
+{'train_runtime': '173.7', 'train_samples_per_second': '42.22', 'train_steps_per_second': '1.324', 'train_loss': '0.9913', 'epoch': '2'}
+[saved] models/bge-cell-ft-x3
+===== x3 hitab_dev_lookup_all
+[corpus] 424 tables / 58759 cells | [pop] 830 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2362.67it/s]
+[cache] wrote hitab_dev_models_bge-cell-ft-x3_58759_f3d4ebe830828512.npy
+[index] built in 29s
+  100/830  17s
+  200/830  33s
+  300/830  49s
+  400/830  64s
+  500/830  80s
+  600/830  101s
+  700/830  110s
+  800/830  132s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6482    0.6482  0.6482
+     5    0.8590    0.8590  0.8590
+    10    0.9036    0.9036  0.9036
+    20    0.9349    0.9349  0.9349
+    50    0.9530    0.9530  0.9530
+   100    0.9663    0.9663  0.9663
+   200    0.9747    0.9747  0.9747
+   500    0.9855    0.9855  0.9855
+  setEM@10 miss n=80: of the cells outranking gold, 0.043 sit in the gold table itself (distinct tables above gold: median 9)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7000 @5=0.9157 @10=0.9542 @20=0.9771 @50=0.9916   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7435   table recall@1=0.8855 @10=0.9795
+
+  split m=1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6482    0.6482  0.6482
+     5    0.8590    0.8590  0.8590
+    10    0.9036    0.9036  0.9036
+    20    0.9349    0.9349  0.9349
+    50    0.9530    0.9530  0.9530
+   100    0.9663    0.9663  0.9663
+   200    0.9747    0.9747  0.9747
+   500    0.9855    0.9855  0.9855
+  setEM@10 miss n=80: of the cells outranking gold, 0.043 sit in the gold table itself (distinct tables above gold: median 9)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7000 @5=0.9157 @10=0.9542 @20=0.9771 @50=0.9916   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7435   table recall@1=0.8855 @10=0.9795
+wrote -> results/rank_ft/x3/hitab_dev_lookup_all_S3c_hybrid0.7_tp0.0_ranks.jsonl
+===== x3 hitab_dev_lookup_multi
+[corpus] 424 tables / 58759 cells | [pop] 33 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2270.24it/s]
+[cache] hit hitab_dev_models_bge-cell-ft-x3_58759_f3d4ebe830828512.npy
+[index] built in 1s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2460    0.0000  0.5758
+     5    0.7793    0.6364  0.8788
+    10    0.8788    0.8485  0.9091
+    20    0.9571    0.9394  1.0000
+    50    1.0000    1.0000  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=5: of the cells outranking gold, 0.755 sit in the gold table itself (distinct tables above gold: median 1)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.6970 @10=0.8788 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7072   table recall@1=0.9091 @10=1.0000
+
+  split m>=2  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2460    0.0000  0.5758
+     5    0.7793    0.6364  0.8788
+    10    0.8788    0.8485  0.9091
+    20    0.9571    0.9394  1.0000
+    50    1.0000    1.0000  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=5: of the cells outranking gold, 0.755 sit in the gold table itself (distinct tables above gold: median 1)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.6970 @10=0.8788 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7072   table recall@1=0.9091 @10=1.0000
+wrote -> results/rank_ft/x3/hitab_dev_lookup_multi_S3c_hybrid0.7_tp0.0_ranks.jsonl
+########## TRAIN neg-cross=4
+/home/user/T2-1/rag-agent/scripts/finetune_cell_encoder.py:120: DeprecationWarning: Importing from 'sentence_transformers.losses' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.losses' instead.
+  from sentence_transformers.losses import CachedMultipleNegativesRankingLoss
+[cfg] base=BAAI/bge-small-en-v1.5 qpre='' neg=4 (sib=0 cross=4)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[mine] encoding 291403 cells
+[data] 3667 triplets from 3667 queries (3667 usable, 2043 tables); dropped 0 for too few negatives
+The `warmup_ratio` argument is deprecated in Transformers v5+, and will also be removed from Sentence Transformers once support for Transformers v4 is dropped. Since you're using Transformers v5+, please use `warmup_steps` (as a float) to specify the warmup ratio instead.
+{'loss': '1.594', 'grad_norm': '5.51', 'learning_rate': '1.749e-05', 'epoch': '0.4348'}
+{'loss': '1.007', 'grad_norm': '6.909', 'learning_rate': '1.266e-05', 'epoch': '0.8696'}
+{'loss': '0.8214', 'grad_norm': '5.494', 'learning_rate': '7.826e-06', 'epoch': '1.304'}
+{'loss': '0.7771', 'grad_norm': '7.658', 'learning_rate': '2.995e-06', 'epoch': '1.739'}
+{'train_runtime': '165.1', 'train_samples_per_second': '44.42', 'train_steps_per_second': '1.393', 'train_loss': '1.013', 'epoch': '2'}
+[saved] models/bge-cell-ft-x4
+===== x4 hitab_dev_lookup_all
+[corpus] 424 tables / 58759 cells | [pop] 830 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2304.11it/s]
+[cache] wrote hitab_dev_models_bge-cell-ft-x4_58759_f3d4ebe830828512.npy
+[index] built in 35s
+  100/830  14s
+  200/830  28s
+  300/830  43s
+  400/830  56s
+  500/830  70s
+  600/830  85s
+  700/830  99s
+  800/830  113s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6602    0.6602  0.6602
+     5    0.8566    0.8566  0.8566
+    10    0.8964    0.8964  0.8964
+    20    0.9313    0.9313  0.9313
+    50    0.9554    0.9554  0.9554
+   100    0.9675    0.9675  0.9675
+   200    0.9759    0.9759  0.9759
+   500    0.9843    0.9843  0.9843
+  setEM@10 miss n=86: of the cells outranking gold, 0.044 sit in the gold table itself (distinct tables above gold: median 7)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7096 @5=0.9120 @10=0.9554 @20=0.9783 @50=0.9916   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7490   table recall@1=0.8855 @10=0.9783
+
+  split m=1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6602    0.6602  0.6602
+     5    0.8566    0.8566  0.8566
+    10    0.8964    0.8964  0.8964
+    20    0.9313    0.9313  0.9313
+    50    0.9554    0.9554  0.9554
+   100    0.9675    0.9675  0.9675
+   200    0.9759    0.9759  0.9759
+   500    0.9843    0.9843  0.9843
+  setEM@10 miss n=86: of the cells outranking gold, 0.044 sit in the gold table itself (distinct tables above gold: median 7)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7096 @5=0.9120 @10=0.9554 @20=0.9783 @50=0.9916   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7490   table recall@1=0.8855 @10=0.9783
+wrote -> results/rank_ft/x4/hitab_dev_lookup_all_S3c_hybrid0.7_tp0.0_ranks.jsonl
+===== x4 hitab_dev_lookup_multi
+[corpus] 424 tables / 58759 cells | [pop] 33 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2131.44it/s]
+[cache] hit hitab_dev_models_bge-cell-ft-x4_58759_f3d4ebe830828512.npy
+[index] built in 1s
+
+hitab / S3c / hybrid a=0.7 / table_prior=0.0  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2611    0.0000  0.6061
+     5    0.8096    0.6970  0.8788
+    10    0.8864    0.8485  0.9394
+    20    0.9571    0.9394  1.0000
+    50    1.0000    1.0000  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=5: of the cells outranking gold, 0.655 sit in the gold table itself (distinct tables above gold: median 1)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.7273 @10=0.8485 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7308   table recall@1=0.9394 @10=1.0000
+
+  split m>=2  n=33
+     k  Recall@k   setEM@k   hit@k
+     1    0.2611    0.0000  0.6061
+     5    0.8096    0.6970  0.8788
+    10    0.8864    0.8485  0.9394
+    20    0.9571    0.9394  1.0000
+    50    1.0000    1.0000  1.0000
+   100    1.0000    1.0000  1.0000
+   200    1.0000    1.0000  1.0000
+   500    1.0000    1.0000  1.0000
+  setEM@10 miss n=5: of the cells outranking gold, 0.655 sit in the gold table itself (distinct tables above gold: median 1)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.0000 @5=0.7273 @10=0.8485 @20=0.9697 @50=1.0000   (gold table holds median 90 cells)
+  MRR(first gold cell)=0.7308   table recall@1=0.9394 @10=1.0000
+wrote -> results/rank_ft/x4/hitab_dev_lookup_multi_S3c_hybrid0.7_tp0.0_ranks.jsonl
+ALLDONE

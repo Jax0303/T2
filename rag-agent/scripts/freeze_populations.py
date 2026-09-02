@@ -239,6 +239,147 @@ def hitab_dev_multicell_lookup(data_dir: str) -> tuple[list[str], dict]:
                  "counted_by": "analysis/multicell_lookup_pop.py"}
 
 
+def hitab_lookup_multi(data_dir: str, split: str) -> tuple[list[str], dict]:
+    """Lookup queries whose ANSWER is more than one cell -- the multi-cell
+    counterpart of ``hitab_{split}_lookup_all``.
+
+    Answer cells are counted from the ``[ANSWER]`` bucket of ``quantity_link``
+    ALONE. ``gold_operands`` is not the answer: `hitab.py: _coords_of` pools
+    every bucket, so a figure the *question* quotes resolves to an operand too.
+    Selecting on ``len(gold_operands)>=2`` therefore admits queries whose answer
+    is a single cell -- 47 of 81 at the 2026-09-01 measurement, which is what
+    ``hitab_dev_multicell_lookup`` (n=94) did and why this population replaces it.
+
+    The rest of the filter matches the single-cell lookup pool so the two are
+    comparable: non-arithmetic, header tree builds, every resolved operand lands
+    inside the grid, same seed-0 shuffle.
+
+    CAVEAT for anyone reporting this leg: membership is chosen by ANSWER cells,
+    but OSC is still defined over the OPERAND set. State the mismatch.
+    """
+    from point3_reconstruction_cost import build_table_paths
+    from rag_agent.bench.hitab import load_samples
+
+    samples = {s["id"]: s for s in load_samples(data_dir, split)}
+    queries, tables = load_queries(data_dir, split)
+    raw_dir = Path(data_dir) / "data/tables/raw"
+    paths = {}
+    for tid, bt in tables.items():
+        f = raw_dir / f"{tid}.json"
+        if not f.exists():
+            continue
+        try:
+            raw = json.load(open(f))
+        except Exception:
+            continue
+        pt = build_table_paths(raw, bt)
+        if pt is not None:
+            paths[tid] = pt
+    ids = []
+    for q in queries:
+        lc = (samples.get(q.query_id) or {}).get("linked_cells") or {}
+        answer_cells = (lc.get("quantity_link") or {}).get("[ANSWER]") or {}
+        pt = paths.get(q.gold_table_id)
+        if (q.aggregation or "none") != "none" or len(answer_cells) < 2 or pt is None:
+            continue
+        ops = [(op.row, op.col) for op in q.gold_operands]
+        if ops and all(0 <= r < pt["n_r"] and 0 <= c < pt["n_c"] for r, c in ops):
+            ids.append(q.query_id)
+    random.Random(0).shuffle(ids)
+    return ids, {"dataset": "hitab", "split": split,
+                 "filter": "aggregation == 'none' and "
+                           "len(quantity_link['[ANSWER]'])>=2 and "
+                           "build_table_paths is not None and every resolved "
+                           "operand in grid",
+                 "order": "random.Random(0).shuffle", "n": len(ids),
+                 "answer_cells_from": "quantity_link['[ANSWER]'] only -- NOT "
+                                      "gold_operands, which pools all buckets",
+                 "metric_caveat": "membership by answer cells, OSC by operands",
+                 "disjoint_from": [f"hitab_{split}_lookup_all"],
+                 "supersedes": "hitab_dev_multicell_lookup (len(gold_operands)>=2, n=94)"}
+
+
+def hitab_train_lookup_expanded(data_dir: str) -> tuple[list[str], dict]:
+    """`hitab_train_lookup_all` 위에 gold 셀이 2개 이상인 질문을 얹은 학습 풀.
+
+    검색기를 맞추는 데는 "이 질문에 이 셀이 가깝다"만 있으면 되고, 그것은 답이 몇
+    칸이든 유효하다. 단일 gold만 쓰면 코퍼스가 담는 train 질문의 23%, (질문, gold셀)
+    쌍의 48%가 버려진다 (2026-09-02 실측: 4,774 질문 / 7,019 쌍).
+
+    필터는 `hitab_train_lookup_all`에서 개수 조건만 뺀 것이다: 헤더 트리가 서고
+    해결된 gold 피연산자가 격자 안에 있는 train 질문 전부. 순서도 같은 seed-0 shuffle.
+
+    **학습 전용.** dev/test와 표를 하나도 공유하지 않는다 (교집합 0, 실측).
+    `hitab_train_lookup_multi`(150)와는 겹친다 -- 그 모집단도 학습 전용이라 누출이
+    아니지만, 다중 셀 레그를 보고할 때 train에 들어갔다는 사실을 밝힐 것.
+
+    PREREG-2026-09-02-train-expand.md
+    """
+    import corpus_dump_vs_cell as cdv
+    C = cdv.hitab_corpus(data_dir, "train", "")      # 동결 미적용 = 전체 풀
+    have = set(C.cell_owner)
+    ids = [q["query_id"] for q in C.queries
+           if any(k in have for k in q["gold_cells"])]
+    random.Random(0).shuffle(ids)
+    return ids, {"dataset": "hitab", "split": "train",
+                 "filter": "build_table_paths is not None and at least one "
+                           "resolved gold operand is in the indexed grid "
+                           "(no cap on the number of gold cells)",
+                 "order": "random.Random(0).shuffle", "n": len(ids),
+                 "note": "TRAINING ONLY -- never evaluate on this population",
+                 "superset_of": "hitab_train_lookup_all",
+                 "used_by": ["PREREG-2026-09-02-train-expand.md"]}
+
+
+def hitab_train_table_split(data_dir: str, part: str,
+                            frac: float = 0.2) -> tuple[list[str], dict]:
+    """Split ``hitab_train_lookup_all`` BY TABLE into a fit pool and a selection pool.
+
+    Every arm in this repo was chosen on dev, three layers deep (encoder arm ->
+    alpha -> data expansion), and dev flipped against test all three times. dev is
+    no longer a selection instrument and no longer a clean evaluation set either.
+    This gives selection its own split so dev can go back to being an evaluation
+    set that nothing was chosen on.
+
+    Split BY TABLE, not by query. Fine-tuning draws its hard negatives from the
+    gold cell's own table, so a table split across the two pools would put the
+    selection queries' sibling cells into training. HiTab's own train/dev/test
+    share zero tables for the same reason.
+
+    The corpus is unaffected: ``hitab_corpus`` indexes every table of the split it
+    is given, so a selection query is searched against the WHOLE train corpus --
+    fit tables included. Cells of fit tables were seen in training (as siblings of
+    other queries' gold), cells of selection tables never were. State that when
+    reporting: selection numbers are not comparable in absolute value to dev, whose
+    corpus is entirely unseen.
+
+    Order is inherited from the parent freeze (seed-0 shuffle); the table sample is
+    ``random.Random(0)`` over the sorted table ids.
+    """
+    parent = pop_mod.read("hitab_train_lookup_all")
+    if parent is None:
+        raise SystemExit("freeze hitab_train_lookup_all first")
+    ids = parent[0]
+    queries, _ = load_queries(data_dir, "train")
+    gt = {q.query_id: q.gold_table_id for q in queries}
+    tables = sorted({gt[i] for i in ids})
+    sel_t = set(random.Random(0).sample(tables, round(len(tables) * frac)))
+    keep = [i for i in ids if (gt[i] in sel_t) == (part == "sel")]
+    return keep, {
+        "dataset": "hitab", "split": "train",
+        "filter": f"hitab_train_lookup_all, {part} side of a by-TABLE split",
+        "order": "inherited from hitab_train_lookup_all (random.Random(0).shuffle)",
+        "n": len(keep), "n_tables": len(sel_t) if part == "sel"
+        else len(tables) - len(sel_t), "table_split": f"random.Random(0).sample "
+        f"of {len(tables)} tables, frac={frac} to sel",
+        "subset_of": "hitab_train_lookup_all",
+        "disjoint_from": [f"hitab_train_{'fit' if part == 'sel' else 'sel'}_lookup_all"],
+        "note": ("SELECTION ONLY -- never train on this population, never report it "
+                 "as an evaluation result" if part == "sel" else
+                 "TRAINING ONLY -- never evaluate on this population"),
+        "used_by": ["PREREG-2026-09-02-devbias.md"]}
+
+
 def hitab_corpus_arith(data_dir: str, split: str) -> tuple[list[str], dict]:
     """``corpus_dump_vs_cell``'s population: arithmetic queries the corpus can hold.
 
@@ -339,11 +480,17 @@ SPECS = {
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
     "hitab_test_lookup_all": lambda a: hitab_test_lookup_all(a.data_dir),
     "hitab_train_lookup_all": lambda a: hitab_train_lookup_all(a.data_dir),
+    "hitab_train_lookup_expanded": lambda a: hitab_train_lookup_expanded(a.data_dir),
+    "hitab_train_fit_lookup_all": lambda a: hitab_train_table_split(a.data_dir, "fit"),
+    "hitab_train_sel_lookup_all": lambda a: hitab_train_table_split(a.data_dir, "sel"),
     "hitab_dev_arith": lambda a: hitab_arith(a.data_dir, "dev", 1),
     "hitab_dev_arith_m2": lambda a: hitab_arith(a.data_dir, "dev", 2),
     "hitab_train_arith": lambda a: hitab_arith(a.data_dir, "train", 1),
     "hitab_train_arith_m2": lambda a: hitab_arith(a.data_dir, "train", 2),
     "hitab_dev_multicell_lookup": lambda a: hitab_dev_multicell_lookup(a.data_dir),
+    "hitab_dev_lookup_multi": lambda a, s="dev": hitab_lookup_multi(a.data_dir, s),
+    "hitab_test_lookup_multi": lambda a, s="test": hitab_lookup_multi(a.data_dir, s),
+    "hitab_train_lookup_multi": lambda a, s="train": hitab_lookup_multi(a.data_dir, s),
     "hitab_dev_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "dev"),
     "hitab_train_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "train"),
     "hitab_dev_size_strata": lambda a: hitab_size_strata(a.data_dir, "dev", a.per_bucket),
