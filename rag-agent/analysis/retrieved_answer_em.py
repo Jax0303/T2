@@ -75,6 +75,11 @@ def build_jobs(a, C, chunks, ix, ks):
                   "gold_ranks": ranks}
         conds = [("gold", gold)] if a.gold else []
         conds += [(f"top{k}", [int(p) for p in order[:k]]) for k in ks]
+        # orcK = 완벽한 재정렬의 상한. 검색 top-K 안에 gold 가 **전부** 들어왔으면
+        # 그것만 주입하고, 아니면 재정렬기가 할 수 있는 게 없으므로 1위를 준다.
+        # 재정렬기는 검색이 못 찾은 셀을 만들어낼 수 없다는 뜻이다.
+        conds += [(f"orc{k}", gold if ranks[-1] < k else [int(order[0])])
+                  for k in (a.oracle_ks or [])]
         for cond, cells in conds:
             jobs.append(common | {
                 "cond": cond, "n_injected": len(cells),
@@ -97,7 +102,7 @@ def summarize(path):
         by[r["cond"]].append(r)
     print(f"\n{'cond':>8}{'n':>6}{'EM':>9}{'EMlenient':>9}{'gold전부주입':>13}"
           f"{'EM|주입됨':>11}{'EM|안됨':>10}{'ptok중앙':>10}")
-    for cond in sorted(by, key=lambda c: (c != "gold", len(by[c][0]["cond"]), c)):
+    for cond in sorted(by, key=lambda c: (c != "gold", c[:3], len(c), c)):
         rs = by[cond]
         n = len(rs)
         full = [r for r in rs if r["gold_in_ctx"] == r["m"]]
@@ -119,6 +124,11 @@ def main() -> int:
     ap.add_argument("--data-dir", default="data/hitab")
     ap.add_argument("--cache-dir", default=".cache/corpus_dump_vs_cell")
     ap.add_argument("--ks", type=int, nargs="*", default=[1, 5, 10])
+    ap.add_argument("--oracle-ks", type=int, nargs="*", default=[],
+                    help="orcK 조건: top-K 안에 gold 가 전부 있으면 gold 만 주입. "
+                         "완벽한 재정렬의 상한이다.")
+    ap.add_argument("--title-mode", default="raw", choices=["raw", "page"],
+                    help="색인·주입 문장의 제목 슬롯. 인코더 학습 때와 같아야 한다.")
     ap.add_argument("--gold", type=int, default=1, help="gold 조건도 돌린다")
     ap.add_argument("--out", default="results/answer_ret/run.jsonl")
     ap.add_argument("--dry-run", action="store_true",
@@ -137,7 +147,8 @@ def main() -> int:
           f"[pop] {len(C.queries)} queries", flush=True)
     chunks = [Chunk(table_id=t, chunk_id=f"c::{t}::{i}:{j}", text=x,
                     scheme=a.cell_scheme, kind="cell")
-              for x, (t, i, j) in zip(cell_texts(C, a.cell_scheme), C.cell_owner)]
+              for x, (t, i, j) in zip(cell_texts(C, a.cell_scheme, a.title_mode),
+                                      C.cell_owner)]
     enc = cdv._CachedEncoder(default_encoder(model_name=a.embed_model), a.cache_dir,
                              f"hitab_{a.split}_{a.embed_model}")
     t0 = time.time()
@@ -150,6 +161,11 @@ def main() -> int:
         for j in jobs:
             if j["cond"] == "gold":
                 assert j["gold_in_ctx"] == j["m"], j["query_id"]
+            elif j["cond"].startswith("orc"):
+                k = int(j["cond"][3:])
+                # gold 가 top-K 안이면 gold 전부, 아니면 1개(1위)만 들어간다
+                assert (j["gold_in_ctx"] == j["m"]) == (max(j["gold_ranks"]) < k), \
+                    (j["query_id"], j["cond"])
             else:
                 k = int(j["cond"][3:])
                 assert j["n_injected"] == k, (j["query_id"], j["cond"])
