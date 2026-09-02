@@ -38,7 +38,7 @@ page:  In the table 'Ian Gibson (Scottish footballer): career statistics',
 ```
 
 `page_title`이 있는 표(dev 424개 중 **210개**)에만 붙는다. 나머지는 글자 그대로 불변.
-출처 `data/table_meta/totto_page_titles.json` (이 저장소에 커밋된 복원본).
+출처 `results/tableconf/totto_page_titles.json` (이 저장소에 커밋된 복원본).
 
 ## 인코더 — 기성품만 쓴다
 

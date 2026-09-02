@@ -83,7 +83,7 @@ totto 표는 그보다도 나쁘다 — 선수 기록표는 연도×지표 격�
 
 ## 산출물
 
-- `data/table_meta/totto_page_titles.json` (1,851개 복원본, 커밋 대상)
+- `results/tableconf/totto_page_titles.json` (1,851개 복원본, 커밋 대상)
 - `rag_agent/serialization/caption.py`: `effective_titles` 에 `page` 모드
 - `analysis/cell_rank_dump.py`: `--title-mode page`
 - `analysis/page_title_verdict.py`

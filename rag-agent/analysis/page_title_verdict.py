@@ -16,7 +16,7 @@ from pathlib import Path
 from scipy.stats import binomtest
 
 D = Path("results/titlemode")
-MAP = Path("data/table_meta/totto_page_titles.json")
+MAP = Path("results/tableconf/totto_page_titles.json")
 MODES = ("raw", "page")
 
 

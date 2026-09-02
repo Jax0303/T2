@@ -48,7 +48,7 @@ TEMPLATE = {"S3": STRUCTURAL, "S3c": STRUCTURAL_COMPACT, "mt2net": MT2NET}
 KS = (1, 5, 10, 20, 50, 100, 200, 500)
 
 
-PAGE_TITLES = Path("data/table_meta/totto_page_titles.json")
+PAGE_TITLES = Path("results/tableconf/totto_page_titles.json")
 
 
 def cell_texts(C, scheme, title_mode="raw"):

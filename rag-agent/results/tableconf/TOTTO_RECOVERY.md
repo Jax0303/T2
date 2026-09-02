@@ -29,7 +29,7 @@ HiTab의 totto 표 **1,851개 전부**에 대해 ToTTo 줄의 셀 값 집합과 
 
 ## 복원되는 정보
 
-`data/table_meta/totto_page_titles.json` (1,851개, 이 확인에서 생성).
+`results/tableconf/totto_page_titles.json` (1,851개, 이 확인에서 생성).
 표당 `page_title`, `section_title`.
 
 HiTab이 `title`로 쓰는 것은 ToTTo의 **section_title**이다 (`career statistics`).
@@ -76,4 +76,4 @@ Q: in 1984-85, how many goals did o'callaghan make for stoke ...
   대조가 먼저 필요하다.
 - **test 셋의 totto 비율 미측정.** dev의 10.4%가 test에서도 같은지 모른다.
 - ToTTo 원본 2.3GB는 저장소에 넣지 않았다. 재현하려면 다시 받아야 한다.
-  복원된 제목만 `data/table_meta/totto_page_titles.json`으로 남겼다.
+  복원된 제목만 `results/tableconf/totto_page_titles.json`으로 남겼다.
