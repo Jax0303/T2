@@ -114,6 +114,11 @@ def main() -> int:
                          "PREREG-2026-09-02-train-expand.md")
     ap.add_argument("--dry-run", action="store_true",
                     help="mine and count triplets, then stop before training")
+    ap.add_argument("--title-mode", default="raw",
+                    help="셀 문장의 제목 슬롯. raw = 지금까지와 동일(비트 동일). "
+                         "page = ToTTo 페이지 제목(개체명)을 되돌린다. 인덱스와 "
+                         "반드시 같은 값을 써야 한다 -- 다르면 학습/추론 불일치다. "
+                         "PREREG-2026-09-02-totto-page-title.md 2단계.")
     ap.add_argument("--query-prefix", default="none",
                     help="'none' = 접두어 없음 (기본, 평가기와 일치), "
                          "'auto' = default_prefixes(base)의 쿼리 접두어")
@@ -128,7 +133,8 @@ def main() -> int:
 
     from corpus_dump_vs_cell import hitab_corpus
     from rag_agent.retrieve.encoders import default_prefixes
-    from rag_agent.serialization.caption import caption_sentence
+    from rag_agent.serialization.caption import (caption_sentence,
+                                                 effective_titles)
     from rag_agent.serialization.templates import STRUCTURAL_COMPACT
 
     random.seed(args.seed)
@@ -140,7 +146,15 @@ def main() -> int:
           f"(sib={n_sib} cross={n_cross})", flush=True)
 
     C = hitab_corpus(args.data_dir, "train", args.population)
-    C.cell_text[:] = [caption_sentence(C.title.get(t, ""), *C.cell_paths[n],
+    # 인덱스(analysis/cell_rank_dump.cell_texts)와 같은 함수를 통과시킨다.
+    pt = (json.load(open("results/tableconf/totto_page_titles.json"))
+          if args.title_mode == "page" else None)
+    ti = effective_titles(C.tids, C.title, C.cell_owner, C.cell_paths,
+                          args.title_mode, page_titles=pt)
+    n_ch = sum(1 for t in C.tids if ti[t] != C.title.get(t, ""))
+    print(f"[title] mode={args.title_mode} 제목이 바뀐 표 {n_ch}/{len(C.tids)}",
+          flush=True)
+    C.cell_text[:] = [caption_sentence(ti[t], *C.cell_paths[n],
                                        template=STRUCTURAL_COMPACT)
                       for n, (t, i, j) in enumerate(C.cell_owner)]
     pos_of = {k: n for n, k in enumerate(C.cell_owner)}
