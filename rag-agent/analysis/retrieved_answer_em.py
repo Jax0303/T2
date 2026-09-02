@@ -107,6 +107,16 @@ def build_jobs(a, C, chunks, ix, ks):
                 "ctx": "\n".join(chunks[p].text for p in cells)})
         if n % 100 == 0:
             print(f"  [rank] {n}/{len(C.queries)}  {time.time()-t0:.0f}s", flush=True)
+    if ce is not None:
+        # 8GB 카드에 리랭커(fp32 560M)와 리더(4-bit 7B)를 같이 둘 수 없다.
+        # empty_cache 만으로는 안 빠진다 -- 참조를 먼저 끊어야 한다.
+        import gc
+        import torch
+        del ce
+        gc.collect()
+        torch.cuda.empty_cache()
+        print(f"[rerank] 리랭커 해제, GPU {torch.cuda.memory_allocated()/2**30:.2f}GiB",
+              flush=True)
     return jobs
 
 
