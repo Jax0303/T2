@@ -1,59 +1,75 @@
 # SPDX-License-Identifier: MIT
-"""The multi-cell pool must count ANSWER cells, not quantity_link operands.
+"""``hitab_{split}_lookup_multi`` is selected by ANSWER cells, not operands.
 
-gold_operands pools every bucket of quantity_link, so it carries the numbers the
-source sentence cites as well as the answer. Defining the pool on it put 47
-single-answer queries into an 81-query "multi-cell" population.
+The first freeze of this population used ``len(gold_operands)>=2`` and 47 of its
+81 queries had a one-cell answer -- ``_coords_of`` pools every ``quantity_link``
+bucket, so a figure the question quotes becomes an operand. These four checks
+pin the corrected definition so that mistake cannot come back silently.
 """
 import json
-import sys
+import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "scripts"))
+from rag_agent.bench import population as pop_mod
+from rag_agent.bench.hitab import load_queries, load_samples
 
-POPS = {s: ROOT / f"populations/hitab_{s}_lookup_multi.txt"
-        for s in ("dev", "test", "train")}
-
-
-def _ids(p):
-    return [l.strip() for l in open(p) if l.strip() and not l.startswith("#")]
+DATA = "data/hitab"
+SPLITS = ("dev", "test", "train")
+EXPECTED_N = {"dev": 33, "test": 31, "train": 150}
+ARITH = {"sum", "diff", "div", "average", "range", "opposite", "count", "counta"}
 
 
-def _raw(split):
-    f = ROOT / f"data/hitab/data/{split}_samples.jsonl"
-    return {str(json.loads(l)["id"]): json.loads(l) for l in open(f)}
+def _frozen(split):
+    got = pop_mod.read(f"hitab_{split}_lookup_multi")
+    if got is None:
+        raise unittest.SkipTest(f"hitab_{split}_lookup_multi is not frozen")
+    return got
 
 
-def _n_answer(d):
-    return len(((d["linked_cells"].get("quantity_link") or {}).get("[ANSWER]") or {}))
+def _samples(split):
+    return {s["id"]: s for s in load_samples(DATA, split)}
 
 
-def test_every_member_answers_with_at_least_two_cells():
-    for split, p in POPS.items():
-        raw = _raw(split)
-        for qid in _ids(p):
-            assert _n_answer(raw[qid]) >= 2, f"{split}/{qid} answers with one cell"
+class TestLookupMultiPopulation(unittest.TestCase):
+    def test_every_query_has_at_least_two_answer_cells(self):
+        for split in SPLITS:
+            ids, _ = _frozen(split)
+            samples = _samples(split)
+            for qid in ids:
+                lc = (samples[qid].get("linked_cells") or {})
+                ans = (lc.get("quantity_link") or {}).get("[ANSWER]") or {}
+                self.assertGreaterEqual(
+                    len(ans), 2, f"{split}/{qid} answer is {len(ans)} cell(s)")
+
+    def test_no_arithmetic_queries(self):
+        for split in SPLITS:
+            ids, _ = _frozen(split)
+            samples = _samples(split)
+            for qid in ids:
+                agg = samples[qid].get("aggregation")
+                agg = agg[0] if isinstance(agg, list) and agg else agg
+                self.assertEqual((agg or "none"), "none", f"{split}/{qid} agg={agg}")
+                self.assertNotIn((agg or "none"), ARITH)
+
+    def test_disjoint_from_single_cell_lookup_pool(self):
+        for split in SPLITS:
+            ids, _ = _frozen(split)
+            single = pop_mod.read(f"hitab_{split}_lookup_all")
+            if single is None:
+                continue
+            overlap = set(ids) & set(single[0])
+            self.assertEqual(overlap, set(), f"{split} overlaps lookup_all: {overlap}")
+
+    def test_header_declares_the_same_n_as_the_body(self):
+        for split in SPLITS:
+            ids, meta = _frozen(split)
+            text = pop_mod.path(f"hitab_{split}_lookup_multi").read_text()
+            declared = [l for l in text.splitlines() if l.startswith("# n=")]
+            self.assertEqual(declared, [f"# n={len(ids)}"], split)
+            self.assertEqual(meta.get("n"), len(ids), split)
+            self.assertEqual(len(ids), EXPECTED_N[split], split)
+            self.assertEqual(len(set(ids)), len(ids), f"{split} has duplicates")
 
 
-def test_no_member_computes_its_answer():
-    """aggregation != none is the arithmetic pool, not this one."""
-    for split, p in POPS.items():
-        raw = _raw(split)
-        for qid in _ids(p):
-            assert raw[qid]["aggregation"] == ["none"], f"{split}/{qid} aggregates"
-
-
-def test_disjoint_from_the_single_cell_pool():
-    single = set(_ids(ROOT / "populations/hitab_dev_lookup_all.txt"))
-    assert not (set(_ids(POPS["dev"])) & single)
-
-
-def test_header_records_the_answer_cell_histogram():
-    """The pool's whole point is the >=2 spread; a header without it hides it."""
-    for p in POPS.values():
-        meta = json.loads(next(l for l in open(p) if l.startswith("# {"))[2:])
-        hist = meta["answer_cells_hist"]
-        assert hist and min(int(k) for k in hist) >= 2
-        assert sum(hist.values()) == meta["n"] == len(_ids(p))
+if __name__ == "__main__":
+    unittest.main()

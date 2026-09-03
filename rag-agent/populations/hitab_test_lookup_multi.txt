@@ -1,5 +1,5 @@
 # hitab_test_lookup_multi
-# {"answer_cells_hist": {"2": 25, "3": 6}, "dataset": "hitab", "filter": "aggregation == 'none' and len(linked_cells.quantity_link['[ANSWER]']) >= 2 and build_table_paths is not None and every resolved operand in grid", "n": 31, "note": "answer cells != gold_operands; OSC is defined over operands", "order": "random.Random(0).shuffle", "split": "test", "used_by": ["multi-cell lookup leg -- retrieval + gold_cell ceiling"]}
+# {"answer_cells_from": "quantity_link['[ANSWER]'] only -- NOT gold_operands, which pools all buckets", "dataset": "hitab", "disjoint_from": ["hitab_test_lookup_all"], "filter": "aggregation == 'none' and len(quantity_link['[ANSWER]'])>=2 and build_table_paths is not None and every resolved operand in grid", "metric_caveat": "membership by answer cells, OSC by operands", "n": 31, "order": "random.Random(0).shuffle", "split": "test", "supersedes": "hitab_dev_multicell_lookup (len(gold_operands)>=2, n=94)"}
 # n=31
 b11fb8492cd51a77c496425ec7c2620a
 b114c75fea9a90194b3a43c412ce78f2

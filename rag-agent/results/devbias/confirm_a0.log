@@ -1,0 +1,39 @@
+[corpus] 414 tables / 58460 cells | [pop] 769 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2108.56it/s]
+[cache] wrote hitab_test_models_bge-base-cell-ft-a0_58460_242671bfb9e2b75e.npy
+[index] built in 86s
+  100/769  15s
+  200/769  30s
+  300/769  44s
+  400/769  58s
+  500/769  72s
+  600/769  87s
+  700/769  103s
+  α=1.0  setEM@10=0.8869  R@1=0.6437  MRR=0.7345  표R@1=0.8661
+-> results/devbias/hitab_test_lookup_all_S3c_bge-base-cell-ft-a0_summary.json
+[corpus] 414 tables / 58460 cells | [pop] 31 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2233.48it/s]
+[cache] hit hitab_test_models_bge-base-cell-ft-a0_58460_242671bfb9e2b75e.npy
+[index] built in 1s
+  α=1.0  setEM@10=0.7097  R@1=0.3602  MRR=0.8279  표R@1=0.9355
+-> results/devbias/hitab_test_lookup_multi_S3c_bge-base-cell-ft-a0_summary.json
+[corpus] 424 tables / 58759 cells | [pop] 830 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2273.94it/s]
+[cache] wrote hitab_dev_models_bge-base-cell-ft-a0_58759_f3d4ebe830828512.npy
+[index] built in 77s
+  100/830  15s
+  200/830  31s
+  300/830  46s
+  400/830  61s
+  500/830  77s
+  600/830  93s
+  700/830  108s
+  800/830  123s
+  α=1.0  setEM@10=0.9145  R@1=0.6819  MRR=0.7684  표R@1=0.8699
+-> results/devbias/hitab_dev_lookup_all_S3c_bge-base-cell-ft-a0_summary.json
+[corpus] 424 tables / 58759 cells | [pop] 33 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2269.15it/s]
+[cache] hit hitab_dev_models_bge-base-cell-ft-a0_58759_f3d4ebe830828512.npy
+[index] built in 1s
+  α=1.0  setEM@10=0.6667  R@1=0.2005  MRR=0.6282  표R@1=0.8788
+-> results/devbias/hitab_dev_lookup_multi_S3c_bge-base-cell-ft-a0_summary.json

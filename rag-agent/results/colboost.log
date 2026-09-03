@@ -1,0 +1,106 @@
+[corpus] 424 tables / 58759 cells | [pop] 830 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2435.66it/s]
+[cache] hit hitab_dev_models_bge-base-cell-ft-a0_58759_f3d4ebe830828512.npy
+[index] built in 1s
+[cache] hit hitab_dev_models_bge-base-cell-ft-a0_58759_be20accda3154579.npy
+  100/830  23s
+  200/830  47s
+  300/830  71s
+  400/830  93s
+  500/830  116s
+  600/830  140s
+  700/830  162s
+  800/830  185s
+
+hitab / S3c / hybrid a=1.0 / col_boost=0.0  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6819    0.6819  0.6819
+     5    0.8867    0.8867  0.8867
+    10    0.9145    0.9145  0.9145
+    20    0.9386    0.9386  0.9386
+    50    0.9602    0.9602  0.9602
+   100    0.9723    0.9723  0.9723
+   200    0.9783    0.9783  0.9783
+   500    0.9892    0.9892  0.9892
+  setEM@10 miss n=71: of the cells outranking gold, 0.046 sit in the gold table itself (distinct tables above gold: median 10)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7482 @5=0.9434 @10=0.9651 @20=0.9831 @50=0.9964   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7684   table recall@1=0.8699 @10=0.9807
+
+  split m=1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6819    0.6819  0.6819
+     5    0.8867    0.8867  0.8867
+    10    0.9145    0.9145  0.9145
+    20    0.9386    0.9386  0.9386
+    50    0.9602    0.9602  0.9602
+   100    0.9723    0.9723  0.9723
+   200    0.9783    0.9783  0.9783
+   500    0.9892    0.9892  0.9892
+  setEM@10 miss n=71: of the cells outranking gold, 0.046 sit in the gold table itself (distinct tables above gold: median 10)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7482 @5=0.9434 @10=0.9651 @20=0.9831 @50=0.9964   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7684   table recall@1=0.8699 @10=0.9807
+wrote -> results/colboost/hitab_dev_lookup_all_S3c_hybrid1.0_cb0.0_ranks.jsonl
+
+hitab / S3c / hybrid a=1.0 / col_boost=0.1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6687    0.6687  0.6687
+     5    0.8747    0.8747  0.8747
+    10    0.9145    0.9145  0.9145
+    20    0.9386    0.9386  0.9386
+    50    0.9602    0.9602  0.9602
+   100    0.9723    0.9723  0.9723
+   200    0.9783    0.9783  0.9783
+   500    0.9892    0.9892  0.9892
+  setEM@10 miss n=71: of the cells outranking gold, 0.046 sit in the gold table itself (distinct tables above gold: median 10)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7542 @5=0.9398 @10=0.9651 @20=0.9831 @50=0.9964   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7612   table recall@1=0.8566 @10=0.9807
+
+  split m=1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6687    0.6687  0.6687
+     5    0.8747    0.8747  0.8747
+    10    0.9145    0.9145  0.9145
+    20    0.9386    0.9386  0.9386
+    50    0.9602    0.9602  0.9602
+   100    0.9723    0.9723  0.9723
+   200    0.9783    0.9783  0.9783
+   500    0.9892    0.9892  0.9892
+  setEM@10 miss n=71: of the cells outranking gold, 0.046 sit in the gold table itself (distinct tables above gold: median 10)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7542 @5=0.9398 @10=0.9651 @20=0.9831 @50=0.9964   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7612   table recall@1=0.8566 @10=0.9807
+wrote -> results/colboost/hitab_dev_lookup_all_S3c_hybrid1.0_cb0.1_ranks.jsonl
+
+hitab / S3c / hybrid a=1.0 / col_boost=0.3  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6241    0.6241  0.6241
+     5    0.8554    0.8554  0.8554
+    10    0.9145    0.9145  0.9145
+    20    0.9386    0.9386  0.9386
+    50    0.9602    0.9602  0.9602
+   100    0.9723    0.9723  0.9723
+   200    0.9783    0.9783  0.9783
+   500    0.9892    0.9892  0.9892
+  setEM@10 miss n=71: of the cells outranking gold, 0.046 sit in the gold table itself (distinct tables above gold: median 10)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7349 @5=0.9361 @10=0.9651 @20=0.9831 @50=0.9964   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7267   table recall@1=0.8193 @10=0.9807
+
+  split m=1  n=830
+     k  Recall@k   setEM@k   hit@k
+     1    0.6241    0.6241  0.6241
+     5    0.8554    0.8554  0.8554
+    10    0.9145    0.9145  0.9145
+    20    0.9386    0.9386  0.9386
+    50    0.9602    0.9602  0.9602
+   100    0.9723    0.9723  0.9723
+   200    0.9783    0.9783  0.9783
+   500    0.9892    0.9892  0.9892
+  setEM@10 miss n=71: of the cells outranking gold, 0.046 sit in the gold table itself (distinct tables above gold: median 10)
+  ORACLE table gating (rank inside the gold table only):
+   @1=0.7349 @5=0.9361 @10=0.9651 @20=0.9831 @50=0.9964   (gold table holds median 120 cells)
+  MRR(first gold cell)=0.7267   table recall@1=0.8193 @10=0.9807
+wrote -> results/colboost/hitab_dev_lookup_all_S3c_hybrid1.0_cb0.3_ranks.jsonl

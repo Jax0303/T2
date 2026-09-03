@@ -24,7 +24,7 @@ import argparse
 import json
 import sys
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -36,7 +36,10 @@ import corpus_dump_vs_cell as cdv                                    # noqa: E40
 from header_path_coverage import load_corpus                         # noqa: E402
 from rag_agent.retrieve.encoders import default_encoder              # noqa: E402
 from rag_agent.retrieve.hybrid_index import HybridIndex, _minmax     # noqa: E402
-from rag_agent.serialization.base import Chunk                       # noqa: E402
+from rag_agent.serialization.base import Chunk, join_path
+from rag_agent.serialization.caption import (TITLE_MODES,   # noqa: E402
+                                             effective_titles)
+                       # noqa: E402
 from rag_agent.serialization.caption import caption_sentence         # noqa: E402
 from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,   # noqa: E402
                                                STRUCTURAL_COMPACT)
@@ -45,10 +48,16 @@ TEMPLATE = {"S3": STRUCTURAL, "S3c": STRUCTURAL_COMPACT, "mt2net": MT2NET}
 KS = (1, 5, 10, 20, 50, 100, 200, 500)
 
 
-def cell_texts(C, scheme):
+PAGE_TITLES = Path("results/tableconf/totto_page_titles.json")
+
+
+def cell_texts(C, scheme, title_mode="raw"):
     if scheme == "S2":
         return [cdv.cell_text(rp, cp, v, "S2") for rp, cp, v in C.cell_paths]
-    return [caption_sentence(C.title.get(t, ""), *C.cell_paths[n],
+    pt = json.load(open(PAGE_TITLES)) if title_mode == "page" else None
+    ti = effective_titles(C.tids, C.title, C.cell_owner, C.cell_paths, title_mode,
+                          page_titles=pt)
+    return [caption_sentence(ti[t], *C.cell_paths[n],
                              template=TEMPLATE[scheme])
             for n, (t, _i, _j) in enumerate(C.cell_owner)]
 
@@ -85,6 +94,46 @@ def report(recs, title):
           f"@10={sum(1 for r in tr if r <= 10) / n:.4f}")
 
 
+def above_detail(C, q, order, ranks, above, pos_of, n_dump):
+    """For one query whose gold cell is not rank 0: how each cell ranked above
+    it relates to the gold cell, and the first n_dump of them in full."""
+    at = {p_: r_ for r_, p_ in enumerate(order)}
+    gold_pos = min((pos_of[g] for g in sorted(q["gold_cells"]) if g in pos_of),
+                   key=lambda p_: at[p_])          # the best-ranked gold cell
+    gt, gi, gj = C.cell_owner[gold_pos]
+    grp, gcp, gv = C.cell_paths[gold_pos]
+    rel = []
+    for p_ in above:
+        t_, _i, _j = C.cell_owner[p_]
+        rp, cp, _v = C.cell_paths[p_]
+        if t_ != gt:
+            rel.append("other_table")
+        elif rp == grp and cp == gcp:
+            rel.append("same_address")
+        elif rp == grp:
+            rel.append("same_row")
+        elif cp == gcp:
+            rel.append("same_col")
+        elif list(rp)[:-1] == list(grp)[:-1] or list(cp)[:-1] == list(gcp)[:-1]:
+            rel.append("sibling_elsewhere")
+        else:
+            rel.append("same_table_far")
+    top = []
+    for r_, p_ in enumerate(above[:n_dump]):
+        t_, i_, j_ = C.cell_owner[p_]
+        rp, cp, v_ = C.cell_paths[p_]
+        top.append({"rank": r_, "table_id": t_, "row": i_, "col": j_,
+                    "row_path": list(rp), "col_path": list(cp), "value": v_,
+                    "relation": rel[r_]})
+    return {"query_id": q["query_id"], "question": q["question"],
+            "gold_table": gt, "gold_row": gi, "gold_col": gj,
+            "gold_row_path": list(grp), "gold_col_path": list(gcp),
+            "gold_value": gv, "gold_answer": q.get("answer"),
+            "gold_rank": min(ranks), "n_above": len(above),
+            "above_capped": int(max(ranks) > 2000),
+            "relations": dict(Counter(rel)), "top_above": top}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -115,6 +164,37 @@ def main() -> int:
                          "CELL VOTE (a table's rank is its best cell's). 0 means "
                          "no restriction and reproduces the plain ranking. T=1 is "
                          "the `cascade` arm. PREREG-2026-08-30-table-shortlist.md")
+    ap.add_argument("--col-boost", type=float, nargs="*", default=[0.0],
+                    help="add beta * (BM25 of the question against the cell's "
+                         "COLUMN header path alone) to every cell score before "
+                         "ranking. 0 reproduces the plain ranking bit for bit. "
+                         "Several values run in one pass. Targets the failure "
+                         "measured in results/sibling/VERDICT.md: the same_row "
+                         "confusion (row path exact, column path wrong) is "
+                         "enriched 6.46x, so the column path is the axis the "
+                         "encoder is not separating. "
+                         "PREREG-2026-09-02-col-boost.md")
+    ap.add_argument("--title-mode", default="raw", choices=list(TITLE_MODES),
+                    help="what goes in the sentence's title slot. raw = the "
+                         "title as given (bit-identical to before). drop = a "
+                         "title shared by more than one table becomes empty. "
+                         "sig = such a title gains the table's rarest header "
+                         "tokens so every one of its cells names its table. "
+                         "PREREG-2026-09-02-title-collision.md")
+    ap.add_argument("--rerank-topk", type=int, default=0, metavar="K",
+                    help="apply --col-boost as a RERANK of the first K cells "
+                         "only; the tail keeps its order. A global additive "
+                         "term is the wrong shape -- the column path is generic "
+                         "across tables, so adding it corpus-wide promotes "
+                         "cells of unrelated tables (measured: R@1 .633 -> .508 "
+                         "at beta=.4). Reranking cannot pull in a cell that was "
+                         "not already in the top K, so it is bounded above by "
+                         "setEM@K. 0 = no restriction (the global form).")
+    ap.add_argument("--dump-above", type=int, default=0, metavar="N",
+                    help="also write <tag>_above.jsonl: for every query whose "
+                         "gold cell is not rank 0, the header relation of each "
+                         "cell ranked above it, plus the first N of those cells "
+                         "with their text. The ranks file is unchanged.")
     ap.add_argument("--out-dir", default="results/rank")
     a = ap.parse_args()
 
@@ -126,7 +206,8 @@ def main() -> int:
 
     chunks = [Chunk(table_id=t, chunk_id=f"c::{t}::{i}:{j}", text=x,
                     scheme=a.cell_scheme, kind="cell")
-              for x, (t, i, j) in zip(cell_texts(C, a.cell_scheme), C.cell_owner)]
+              for x, (t, i, j) in zip(cell_texts(C, a.cell_scheme, a.title_mode),
+                                      C.cell_owner)]
     enc = cdv._CachedEncoder(default_encoder(model_name=a.embed_model), a.cache_dir,
                              f"{a.dataset}_{a.split}_{a.embed_model}")
     t0 = time.time()
@@ -145,6 +226,17 @@ def main() -> int:
         cell_tid = np.array([of_tid[t] for t, _i, _j in C.cell_owner],
                             dtype=np.int64)
 
+    # the column-path-only index the boost reads: no title, no row path, no
+    # value -- only what the encoder is failing to separate
+    c_ix = None
+    if any(b > 0 for b in a.col_boost):
+        c_ix = HybridIndex([Chunk(table_id=t, chunk_id=f"cp::{n}",
+                                  text=join_path(cp), scheme="colpath",
+                                  kind="cell")
+                            for n, ((t, _i, _j), (_rp, cp, _v))
+                            in enumerate(zip(C.cell_owner, C.cell_paths))],
+                           encoder=enc, alpha=0.5)
+
     def scores(ix, question):
         bm = ix._bm25_scores(question)
         dn = ix._dense_scores(question) if a.alpha > 0 else np.zeros_like(bm)
@@ -161,20 +253,51 @@ def main() -> int:
     # the population is part of the identity: HiTab ships several, and one
     # overwriting another is how two runs silently become one file
     tag = a.population if a.dataset == "hitab" else a.dataset
-    out = Path(a.out_dir) / (f"{tag}_{a.cell_scheme}_"
+    tm = "" if a.title_mode == "raw" else f"_{a.title_mode}"
+    out = Path(a.out_dir) / (f"{tag}_{a.cell_scheme}{tm}_"
                              f"{a.retriever}{a.alpha}_ranks.jsonl")
     out.parent.mkdir(parents=True, exist_ok=True)
     if a.table_shortlist:
         a.table_prior = [float(t) for t in a.table_shortlist]
-    all_recs = {lam: [] for lam in a.table_prior}
+    # col-boost and the table knobs are separate sweep axes; running both in
+    # one pass would cross them and neither prereg asks for that
+    if c_ix is not None and (a.table_shortlist or a.table_prior != [0.0]):
+        raise SystemExit("--col-boost cannot be combined with --table-prior "
+                         "or --table-shortlist")
+    sweep = a.col_boost if c_ix is not None else a.table_prior
+    all_recs = {v: [] for v in sweep}
+    above_recs = []
     t0 = time.time()
     for k, q in enumerate(pop, 1):
         cs = scores(ix, q["question"])
         ts = scores(t_ix, q["question"]) if t_ix is not None else None
+        if c_ix is not None:
+            # per-TABLE min-max, not global. The column path is what separates
+            # cells INSIDE one table (same_row enrichment 6.46x, see
+            # results/sibling/VERDICT.md); across tables it is generic text
+            # ("2016", "percent") and a global boost just rewards every table
+            # holding such a column. Measured: global normalisation costs
+            # R@1 .617 -> .517 on a 60-query smoke.
+            raw = c_ix._bm25_scores(q["question"])
+            cb = np.zeros_like(raw)
+            for _t, idx in by_table.items():
+                cb[idx] = _minmax(raw[idx])
+            all_cs = {b: (cs if b == 0 else cs + b * cb) for b in a.col_boost}
+        else:
+            all_cs = {0.0: cs}
         base = list(np.argsort(-cs))
-        for lam in a.table_prior:
+        for lam in sweep:
             recs = all_recs[lam]
-            if a.table_shortlist:
+            if c_ix is not None:
+                if lam == 0:
+                    order = base
+                elif a.rerank_topk:
+                    sc = all_cs[lam]
+                    K = a.rerank_topk
+                    order = sorted(base[:K], key=lambda p_: -sc[p_]) + base[K:]
+                else:
+                    order = list(np.argsort(-all_cs[lam]))
+            elif a.table_shortlist:
                 # lam is a table count here; the cell order inside the kept
                 # tables is untouched, only other tables' cells are dropped
                 T = int(lam)
@@ -231,6 +354,9 @@ def main() -> int:
                 in_tab.append(own_at[g[0]][pos_of[g]])
             worst = max(ranks)
             above = order[:min(worst, 2000)]
+            if a.dump_above and lam == sweep[0] and worst > 0:
+                above_recs.append(above_detail(C, q, order, ranks, above,
+                                               pos_of, a.dump_above))
             same = sum(1 for p_ in above if C.cell_owner[p_][0] == q["gold_table"])
             r = {"query_id": q["query_id"], "m": len(ranks),
                  "above": len(above), "above_same_table": same,
@@ -246,15 +372,25 @@ def main() -> int:
         if k % 100 == 0:
             print(f"  {k}/{len(pop)}  {time.time() - t0:.0f}s", flush=True)
 
-    for lam in a.table_prior:
+    if a.dump_above:
+        f = out.with_name(out.name.replace("_ranks.jsonl", "_above.jsonl"))
+        with open(f, "w") as fh:
+            for r in above_recs:
+                fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+        print(f"wrote -> {f}  ({len(above_recs)} queries whose gold is not rank 0)")
+
+    for lam in sweep:
         recs = all_recs[lam]
-        knob = f"T{int(lam)}" if a.table_shortlist else f"tp{lam}"
+        knob = (f"cb{lam}" if c_ix is not None else
+                f"T{int(lam)}" if a.table_shortlist else f"tp{lam}")
         f = out.with_name(out.name.replace("_ranks.jsonl", f"_{knob}_ranks.jsonl"))
         with open(f, "w") as fh:
             for r in recs:
                 fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+        lab = ("col_boost=" if c_ix is not None else
+               "shortlist T=" if a.table_shortlist else "table_prior=")
         report(recs, f"{a.dataset} / {a.cell_scheme} / {a.retriever} "
-                     f"a={a.alpha} / {'shortlist T=' if a.table_shortlist else 'table_prior='}"
+                     f"a={a.alpha} / {lab}"
                      f"{int(lam) if a.table_shortlist else lam}")
         for m_lab, sel in (("m=1", [r for r in recs if r["m"] == 1]),
                            ("m>=2", [r for r in recs if r["m"] >= 2])):

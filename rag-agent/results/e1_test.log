@@ -1,0 +1,22 @@
+===== e1 hitab_test_lookup_all
+[corpus] 414 tables / 58460 cells | [pop] 769 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2187.55it/s]
+[cache] wrote hitab_test_models_bge-cell-ft-e1_58460_242671bfb9e2b75e.npy
+[index] built in 33s
+  100/769  15s
+  200/769  30s
+  300/769  43s
+  400/769  57s
+  500/769  71s
+  600/769  85s
+  700/769  100s
+  α=0.9  setEM@10=0.8739  R@1=0.6034  MRR=0.7067  표R@1=0.8635
+-> results/alpha_ft/hitab_test_lookup_all_S3c_bge-cell-ft-e1_summary.json
+===== e1 hitab_test_lookup_multi
+[corpus] 414 tables / 58460 cells | [pop] 31 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2065.10it/s]
+[cache] hit hitab_test_models_bge-cell-ft-e1_58460_242671bfb9e2b75e.npy
+[index] built in 1s
+  α=0.9  setEM@10=0.8387  R@1=0.3602  MRR=0.8210  표R@1=0.9677
+-> results/alpha_ft/hitab_test_lookup_multi_S3c_bge-cell-ft-e1_summary.json
+E1DONE

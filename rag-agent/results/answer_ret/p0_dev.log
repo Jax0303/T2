@@ -1,0 +1,66 @@
+[corpus] 424 tables / 58759 cells | [pop] 830 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2347.37it/s]
+[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
+[index] built in 1s
+  [rank] 100/830  15s
+  [rank] 200/830  30s
+  [rank] 300/830  46s
+  [rank] 400/830  61s
+  [rank] 500/830  77s
+  [rank] 600/830  101s
+  [rank] 700/830  108s
+  [rank] 800/830  130s
+[jobs] 4150 total, 0 done, 4150 to run
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:01<09:03,  1.61s/it]Loading weights:   1%|          | 2/339 [00:03<08:23,  1.49s/it]Loading weights:   1%|          | 4/339 [00:03<03:41,  1.51it/s]Loading weights:   1%|▏         | 5/339 [00:03<03:10,  1.75it/s]Loading weights:   2%|▏         | 6/339 [00:03<02:26,  2.27it/s]Loading weights:   5%|▍         | 16/339 [00:04<00:29, 10.78it/s]Loading weights:   6%|▌         | 19/339 [00:04<00:27, 11.58it/s]Loading weights:   8%|▊         | 28/339 [00:04<00:14, 20.96it/s]Loading weights:  10%|▉         | 33/339 [00:04<00:12, 24.05it/s]Loading weights:  12%|█▏        | 40/339 [00:04<00:10, 29.72it/s]Loading weights:  13%|█▎        | 45/339 [00:04<00:09, 30.90it/s]Loading weights:  16%|█▌        | 53/339 [00:04<00:07, 36.06it/s]Loading weights:  17%|█▋        | 58/339 [00:05<00:07, 37.93it/s]Loading weights:  19%|█▉        | 65/339 [00:05<00:06, 41.10it/s]Loading weights:  22%|██▏       | 74/339 [00:05<00:05, 51.68it/s]Loading weights:  24%|██▎       | 80/339 [00:05<00:06, 43.11it/s]Loading weights:  26%|██▋       | 89/339 [00:05<00:05, 47.42it/s]Loading weights:  29%|██▉       | 100/339 [00:05<00:04, 55.91it/s]Loading weights:  31%|███▏      | 106/339 [00:05<00:04, 51.79it/s]Loading weights:  33%|███▎      | 113/339 [00:06<00:04, 49.45it/s]Loading weights:  35%|███▌      | 120/339 [00:06<00:04, 53.33it/s]Loading weights:  37%|███▋      | 126/339 [00:06<00:05, 39.95it/s]Loading weights:  40%|████      | 137/339 [00:06<00:04, 48.49it/s]Loading weights:  42%|████▏     | 144/339 [00:06<00:03, 51.57it/s]Loading weights:  44%|████▍     | 150/339 [00:06<00:04, 46.18it/s]Loading weights:  47%|████▋     | 161/339 [00:07<00:03, 54.62it/s]Loading weights:  51%|█████     | 172/339 [00:07<00:02, 57.18it/s]Loading weights:  53%|█████▎    | 178/339 [00:14<00:45,  3.51it/s]Loading weights:  55%|█████▍    | 185/339 [00:14<00:32,  4.67it/s]Loading weights: 100%|██████████| 339/339 [00:09<00:00, 34.14it/s]
+  100/4150  0.7min
+  200/4150  1.4min
+  300/4150  2.2min
+  400/4150  2.8min
+  500/4150  3.5min
+  600/4150  4.2min
+  700/4150  4.8min
+  800/4150  5.4min
+  900/4150  6.1min
+  1000/4150  6.9min
+  1100/4150  7.6min
+  1200/4150  8.4min
+  1300/4150  9.2min
+  1400/4150  10.1min
+  1500/4150  10.8min
+  1600/4150  11.6min
+  1700/4150  12.2min
+  1800/4150  12.9min
+  1900/4150  13.7min
+  2000/4150  14.4min
+  2100/4150  15.1min
+  2200/4150  15.7min
+  2300/4150  16.4min
+  2400/4150  17.1min
+  2500/4150  17.9min
+  2600/4150  18.7min
+  2700/4150  19.4min
+  2800/4150  20.0min
+  2900/4150  20.6min
+  3000/4150  21.4min
+  3100/4150  22.0min
+  3200/4150  22.7min
+  3300/4150  23.4min
+  3400/4150  24.1min
+  3500/4150  24.6min
+  3600/4150  25.3min
+  3700/4150  26.0min
+  3800/4150  26.6min
+  3900/4150  27.3min
+  4000/4150  27.9min
+  4100/4150  28.8min
+
+    cond     n       EMEMlenient     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
+    gold   830   0.9024   0.9301       1.0000     0.9024       nan       107
+   orc10   830   0.8699   0.8940       0.9446     0.9158    0.0870       108
+   orc50   830   0.8904   0.9157       0.9771     0.9075    0.1579       108
+    top1   830   0.6807   0.6988       0.7193     0.9196    0.0687       107
+   top10   830   0.7205   0.7458       0.9446     0.7564    0.1087       631
+-> results/answer_ret/p0_dev_all.jsonl
+READER_DONE
