@@ -25,6 +25,7 @@ import re
 from pathlib import Path
 
 KS = (1, 3, 5, 10, 20, 50)
+CS = (1, 3, 5, 10)
 POP = re.compile(r"^(hitab_(?:dev|test|train(?:_sel|_fit)?)_[a-z_]+?)_S3c(?:_page|_sig|_drop)?(_clean)?_")
 
 
@@ -42,8 +43,22 @@ def row(name, R):
     m = sorted(r["m"] for r in R)
     miss = [r for r in R if max(r["ranks"]) >= 10]
     tw = sum(r["table_rank_cellvote"] != 1 for r in miss)
+    # 요구 셀당 같은 여유: 예산 = c·m 셀. c=10 은 m=1 인 조회에서 @10 과 정의상 같다.
+    budget = {c: sum(max(r["ranks"]) < c * r["m"] for r in R) / n for c in CS}
+    # 논거가 걸린 불변식: m=1 뿐인 모집단에서 c=10 은 @10 과 같은 값이어야 한다.
+    assert m[-1] > 1 or budget[10] == full[10], (name, budget[10], full[10])
+    # m 층화 (조회 m=1 과 산술 m>=2 를 같은 k 로 비교하지 않기 위해)
+    bucket = lambda x: "1" if x == 1 else ("2" if x == 2 else "3+")
+    by_m = {}
+    for b in ("1", "2", "3+"):
+        sub = [r for r in R if bucket(r["m"]) == b]
+        by_m[b] = {"n": len(sub),
+                   "full10": (sum(max(r["ranks"]) < 10 for r in sub) / len(sub)) if sub else None}
+    # m>k 라 어떤 검색기로도 0 인 건수
+    impossible = {k: sum(r["m"] > k for r in R) for k in KS}
     return {"pop": name, "n": n, "m_median": m[n // 2], "m_max": m[-1],
             "table": tab, "cell_given_table": cell, "full": full, "cascade": casc,
+            "budget_cm": budget, "by_m": by_m, "impossible": impossible,
             "miss10": len(miss), "miss10_table_wrong": tw,
             "miss10_table_right": len(miss) - tw}
 
@@ -75,6 +90,35 @@ def main() -> int:
     for r in rows:
         L.append(f"| `{r['pop']}` | {r['miss10']} | {r['miss10_table_wrong']} | "
                  f"{r['miss10_table_right']} |")
+    L += ["", "## 질의 종류 간 비교 — 요구 셀당 같은 여유 `all-covered@(c·m)`", "",
+          "**사후 지표** (사전등록 주지표는 전체@10 그대로). k 를 셀 수로 고정하면 정답 셀이 1개인 조회와 "
+          "최대 12개인 산술이 같은 시험을 보지 않는다. 예산을 요구량 m 에 비례시켜 정답 셀 1개당 c 칸을 준다. "
+          "c=10 은 m=1 인 조회에서 @10 과 **정의상 동일**하므로(아래 표에서 확인) 사전등록 조회 숫자를 바꾸지 "
+          "않는 유일한 c 다 — 결과를 보고 고른 상수가 아니다. c≥1 에서는 m>k 로 불가능한 질의가 없다.", "",
+          "| 모집단 | n | m 최대 | c=1 | c=3 | c=5 | c=10 | (참고) 전체@10 |",
+          "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    for r in rows:
+        b = r["budget_cm"]
+        L.append(f"| `{r['pop']}` | {r['n']} | {r['m_max']} | " +
+                 " | ".join(f"{b[c]:.4f}" for c in CS) + f" | {r['full'][10]:.4f} |")
+    L += ["", "## 전체@10 을 m 으로 층화", "",
+          "같은 지표를 요구 셀 수로 쪼갠 것. 새 지표가 아니다.", "",
+          "| 모집단 | m=1 (n) | m=2 (n) | m≥3 (n) |", "|---|---:|---:|---:|"]
+    for r in rows:
+        cells = []
+        for b in ("1", "2", "3+"):
+            d = r["by_m"][b]
+            cells.append("—" if d["full10"] is None else f"{d['full10']:.4f} ({d['n']})")
+        L.append(f"| `{r['pop']}` | " + " | ".join(cells) + " |")
+    L += ["", "## 각 k 에서 `m>k` 라 정의상 0 인 건수", "",
+          "분모는 옮기지 않는다 (모집단은 감사에서 고정). 세어서 밝히기만 한다. "
+          "이 수가 큰 칸의 @k 는 검색기가 아니라 정의를 재고 있다.", "",
+          "| 모집단 | " + " | ".join(f"@{k}" for k in KS) + " |",
+          "|---|" + "---:|" * len(KS)]
+    for r in rows:
+        i = r["impossible"]
+        L.append(f"| `{r['pop']}` | " +
+                 " | ".join(f"**{i[k]}**" if i[k] > r["n"] // 2 else str(i[k]) for k in KS) + " |")
     L += ["", "## 출처", ""] + [f"- `{r['pop']}` ← `{r['file']}`" for r in rows]
     L += ["", "셀|표@k 는 **오라클** 표 게이팅이다 — 표를 맞힌다고 가정하고 그 표 안에서만 "
           "정렬한 값. 표@1×셀|표@k 는 실제 2단계 캐스케이드가 내는 값이고, 전체@k 는 "
