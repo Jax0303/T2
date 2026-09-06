@@ -68,7 +68,7 @@
 **Recall@10 76%가 "괜찮다"로 읽히지만 집계 질의 대부분이 피연산자를 빠뜨린 상태일 수 있다.**
 
 > **OSC(q) = 1 iff gold_operands(q) ⊆ retrieved(q), else 0** — 전부 아니면 0, 질의 단위
-> (`rag_agent/eval/operand_set.py`)
+> (구현 `rag_agent/eval/operand_set.py`는 2026-09-05 정리에서 삭제 — 정의는 `analysis/cell_rank_dump.py`의 `setEM@k`(= `max(ranks) < k`)와 같다)
 
 ⚠️ **`setEM`이라 부르면 안 된다.** HotpotQA의 Sup EM은 집합이 **같아야** 하는데 우리 건
 **부분집합**이라 여분 셀에 감점이 없다. 논문 표기는 **`all-covered@k`**, 한 줄 각주로
@@ -423,6 +423,12 @@ null이었고, **새 정보를 넣은 것만**(페이지 제목 복구) 팔렸�
 
 ## 17장 — 그래서 기여는 무엇인가
 
+⚠️ **2026-09-05 점검 — 이 장의 "쓸 수 있는 문장"은 루트 `README.md`의 2026-08 OSC 프레이밍을
+그대로 옮긴 것이고, `CLAUDE.md` §1(2026-08-30: 무대 = 계층 헤더 표 RAG, 축 = 표·셀 검색 정확도)
+및 §2(차별점 = 질의당 비용)와 **일치하지 않는다.** 세 문서가 기여를 세 가지로 말한다
+(README = OSC 지표+진단 / RESEARCH_STRUCTURE §3.3.1 = A~D / CLAUDE.md §1~2 = 검색 정확도+비용).
+발표 전에 하나로 고를 것 — 이 결정은 사람 몫이라 여기서 고치지 않았다.**
+
 **쓰면 안 되는 문장** "셀을 문장으로 만들어 검색한다"(2022) · "64% 오류를 고친다"(오독) ·
 "재검색으로 회수한다"(예산 변경) · "계층 순서가 이득이다"(셔플에 죽음) ·
 "R@1을 .90으로"(상한 .83).
@@ -471,7 +477,7 @@ null이었고, **새 정보를 넣은 것만**(페이지 제목 복구) 팔렸�
 | 1~3 | `CLAUDE.md` §1·§2·§4.5, `README.md` |
 | 4 | `RESULTS.md` §1·§6, `results/hpc/summary_table.md`, `results/phase4/FINAL.md` |
 | 5 | `RESULTS.md` §8, `results/retrieval_to_90_verdict.json` |
-| 6~8 | `README.md`, `results/realhitbench_s1_vs_s2*`, `results/shuf_spread_s{1..5}.json`, `CLAUDE.md` §5 |
+| 6~8 | `README.md`(보관 절), `RESULTS_ARCHIVE-2026-08-30.md` §D·§I, `CLAUDE.md` §5 — 출처 파일 `results/realhitbench_s1_vs_s2*`, `results/shuf_spread_s{1..5}.json`은 `54ed06e`에서 제거됨(`753fa2e`로 복원) |
 | 9 | `results/tableconf/VERDICT.md`, `results/p0_confirm/VERDICT.md`, `RESULTS.md` §13 |
 | 10 | `results/answer_ret/VERDICT_ORC.md` |
 | 11 | `RESULTS.md` §12, `results/rerank/VERDICT.md` |

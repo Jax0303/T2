@@ -195,12 +195,21 @@ def main() -> int:
                          "gold cell is not rank 0, the header relation of each "
                          "cell ranked above it, plus the first N of those cells "
                          "with their text. The ranks file is unchanged.")
+    ap.add_argument("--gold-file", default="",
+                    help="results/audit2/<pop>_gold.json: {query_id: [[tid,i,j],...]}. "
+                         "Restricts the population to the ids in the file (the audited "
+                         "subset) and replaces each query's gold cells with the "
+                         "formula-derived set. Output tag gains '_clean'.")
     ap.add_argument("--out-dir", default="results/rank")
     a = ap.parse_args()
 
     t0 = time.time()
     C = load_corpus(a)
     pop = C.queries[:a.max_queries] if a.max_queries else C.queries
+    if a.gold_file:
+        G = json.load(open(a.gold_file))
+        pop = [q | {"gold_cells": {tuple(x) for x in G[q["query_id"]]}}
+               for q in pop if q["query_id"] in G]
     print(f"[corpus] {len(C.tids)} tables / {len(C.cell_owner)} cells | "
           f"[pop] {len(pop)} queries | {time.time() - t0:.0f}s", flush=True)
 
@@ -253,7 +262,7 @@ def main() -> int:
     # the population is part of the identity: HiTab ships several, and one
     # overwriting another is how two runs silently become one file
     tag = a.population if a.dataset == "hitab" else a.dataset
-    tm = "" if a.title_mode == "raw" else f"_{a.title_mode}"
+    tm = ("" if a.title_mode == "raw" else f"_{a.title_mode}") + ("_clean" if a.gold_file else "")
     out = Path(a.out_dir) / (f"{tag}_{a.cell_scheme}{tm}_"
                              f"{a.retriever}{a.alpha}_ranks.jsonl")
     out.parent.mkdir(parents=True, exist_ok=True)
