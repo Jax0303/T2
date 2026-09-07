@@ -173,7 +173,12 @@ class HybridIndex:
     def _dense_scores(self, query: str) -> np.ndarray:
         if self._emb.shape[0] == 0:
             return np.zeros(0, dtype=np.float32)
-        q = self.encoder.encode([query])[0].astype(np.float32)
+        # encode_query, not encode: BGE/E5 mark the QUERY side with the
+        # instruction they were trained with, and encoding a question as if it
+        # were a passage quietly gives up the asymmetry the model learned.
+        # Encoders without the distinction fall back to the plain path.
+        enc_q = getattr(self.encoder, "encode_query", self.encoder.encode)
+        q = enc_q([query])[0].astype(np.float32)
         # cosine == dot product since rows are L2-normalized
         if self._index is None:
             return self._emb @ q

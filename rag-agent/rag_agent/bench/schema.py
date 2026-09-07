@@ -81,6 +81,10 @@ class BenchQuery:
     aggregation: Optional[str] = None
     split: str = ""
     source: str = ""
+    # why this query has no gold operands, when it has none. A loader that
+    # silently omits such a query makes the population a function of the
+    # resolver; naming the reason keeps the count visible.
+    exclusion_reason: Optional[str] = None
 
 
 @dataclass

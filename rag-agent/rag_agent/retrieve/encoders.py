@@ -43,6 +43,8 @@ class Encoder(Protocol):
 
     def encode(self, texts: List[str]) -> np.ndarray: ...
 
+    def encode_query(self, texts: List[str]) -> np.ndarray: ...
+
 
 def _l2_normalize(mat: np.ndarray) -> np.ndarray:
     norms = np.linalg.norm(mat, axis=1, keepdims=True)
@@ -84,6 +86,7 @@ class SentenceTransformerEncoder:
         model_name: str = "BAAI/bge-base-en-v1.5",
         device: Optional[str] = None,
         batch_size: int = 64,
+        prefixes: Optional[tuple] = None,
     ) -> None:
         from sentence_transformers import SentenceTransformer  # lazy
         import torch
@@ -92,16 +95,26 @@ class SentenceTransformerEncoder:
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.model = SentenceTransformer(model_name, device=self.device, trust_remote_code=True)
         self.batch_size = batch_size
+        # The asymmetry the model was trained with. Resolved here, from the
+        # model's own name, so no caller can forget it -- see _QUERY_PREFIXES.
+        self.query_prefix, self.passage_prefix = (
+            prefixes if prefixes is not None else default_prefixes(model_name))
 
-    def encode(self, texts: List[str]) -> np.ndarray:
+    def _encode(self, texts: List[str], prefix: str) -> np.ndarray:
         vecs = self.model.encode(
-            texts,
+            [prefix + t for t in texts] if prefix else texts,
             batch_size=self.batch_size,
             convert_to_numpy=True,
             normalize_embeddings=True,
             show_progress_bar=False,
         )
         return vecs.astype(np.float32)
+
+    def encode(self, texts: List[str]) -> np.ndarray:
+        return self._encode(texts, self.passage_prefix)
+
+    def encode_query(self, texts: List[str]) -> np.ndarray:
+        return self._encode(texts, self.query_prefix)
 
 
 # Instruction prefixes the embedder families were TRAINED with. Retrieval is
