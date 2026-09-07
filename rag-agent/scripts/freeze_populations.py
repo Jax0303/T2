@@ -475,6 +475,34 @@ def rhb_nr_all(_data_dir: str) -> tuple[list[str], dict]:
         "used_by": ["corpus_dump_vs_cell", "PREREG-2026-08-27-rhb-nr-large-tables"]}
 
 
+def hitab_train_alltypes(data_dir: str, part: str) -> tuple[list[str], dict]:
+    """모든 질의 종류(단일·다중 조회 + 산술)를 한 학습 풀로 — 표 기준 fit/sel 분할을 그대로 따른다.
+
+    `hitab_train_fit_lookup_all` 은 단일 셀 조회만 담아, 그것으로 학습한 인코더(p0)는 산술
+    질의(피연산자 여러 개)를 본 적이 없다. 이 풀은 `hitab_train_lookup_expanded`(gold 셀 수 제한
+    없음) ∪ `hitab_train_corpus_arith` 를 합치고, sel 표(`hitab_train_sel_lookup_all` 의 표)에
+    속한 질의를 `sel` 쪽으로, 나머지를 `fit` 쪽으로 보낸다. 표 단위 분할이므로 sel 질의의 형제
+    셀이 학습에 들어가지 않는다.
+    """
+    exp = pop_mod.read("hitab_train_lookup_expanded")
+    ar = pop_mod.read("hitab_train_corpus_arith")
+    sel = pop_mod.read("hitab_train_sel_lookup_all")
+    if not (exp and ar and sel):
+        raise SystemExit("freeze hitab_train_lookup_expanded / corpus_arith / sel_lookup_all first")
+    queries, _ = load_queries(data_dir, "train")
+    gt = {q.query_id: q.gold_table_id for q in queries}
+    sel_t = {gt[i] for i in sel[0]}
+    ids = sorted(set(exp[0]) | set(ar[0]), key=lambda i: (exp[0] + ar[0]).index(i))
+    keep = [i for i in ids if (gt[i] in sel_t) == (part == "sel")]
+    return keep, {"dataset": "hitab", "split": "train",
+                  "filter": f"(hitab_train_lookup_expanded ∪ hitab_train_corpus_arith), {part} side "
+                            "of the by-TABLE split defined by hitab_train_sel_lookup_all's tables",
+                  "order": "expanded order then corpus_arith order", "n": len(keep),
+                  "n_tables": len({gt[i] for i in keep}),
+                  "note": ("SELECTION ONLY -- never train on this population" if part == "sel"
+                           else "TRAINING ONLY -- never evaluate on this population")}
+
+
 SPECS = {
     "hitab_dev_lookup_single": lambda a: hitab_dev_lookup_single(a.data_dir),
     "hitab_dev_lookup_all": lambda a: hitab_dev_lookup_all(a.data_dir),
@@ -483,6 +511,8 @@ SPECS = {
     "hitab_train_lookup_expanded": lambda a: hitab_train_lookup_expanded(a.data_dir),
     "hitab_train_fit_lookup_all": lambda a: hitab_train_table_split(a.data_dir, "fit"),
     "hitab_train_sel_lookup_all": lambda a: hitab_train_table_split(a.data_dir, "sel"),
+    "hitab_train_fit_alltypes": lambda a: hitab_train_alltypes(a.data_dir, "fit"),
+    "hitab_train_sel_alltypes": lambda a: hitab_train_alltypes(a.data_dir, "sel"),
     "hitab_dev_arith": lambda a: hitab_arith(a.data_dir, "dev", 1),
     "hitab_dev_arith_m2": lambda a: hitab_arith(a.data_dir, "dev", 2),
     "hitab_train_arith": lambda a: hitab_arith(a.data_dir, "train", 1),
@@ -492,6 +522,7 @@ SPECS = {
     "hitab_test_lookup_multi": lambda a, s="test": hitab_lookup_multi(a.data_dir, s),
     "hitab_train_lookup_multi": lambda a, s="train": hitab_lookup_multi(a.data_dir, s),
     "hitab_dev_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "dev"),
+    "hitab_test_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "test"),
     "hitab_train_corpus_arith": lambda a: hitab_corpus_arith(a.data_dir, "train"),
     "hitab_dev_size_strata": lambda a: hitab_size_strata(a.data_dir, "dev", a.per_bucket),
     "hitab_train_size_strata": lambda a: hitab_size_strata(a.data_dir, "train", a.per_bucket),

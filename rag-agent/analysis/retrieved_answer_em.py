@@ -59,7 +59,7 @@ def load_reranker(name):
     return CrossEncoder(name, max_length=512)
 
 
-def build_jobs(a, C, chunks, ix, ks):
+def build_jobs(a, C, chunks, ix, ks, scope=None):
     """(query, cond) 별 주입 문맥. 검색 점수는 질의당 한 번만 계산한다."""
     pos_of = {c: n for n, c in enumerate(C.cell_owner)}
     ce = load_reranker(a.rerank_model) if a.rerank_ks else None
@@ -100,11 +100,30 @@ def build_jobs(a, C, chunks, ix, ks):
                                              default=10 ** 9)
             conds += [(f"rr{K}" if n == 1 else f"rr{K}_{n}", rr[:n])
                       for n in a.rerank_inject]
+        extra = []
+        if scope is not None:
+            U, uix, by_tab = scope
+            so = np.argsort(-(uix._dense_scores(q["question"]) if a.alpha == 1.0 else
+                              a.alpha * _minmax(uix._dense_scores(q["question"])) + (1 - a.alpha) * _minmax(uix._bm25_scores(q["question"]))))
+            picked, used, cov = [], 0, set()
+            for p in so[:5000]:
+                if used + len(U[p][3]) > a.scope_budget and picked:
+                    continue
+                picked.append(int(p)); used += len(U[p][3]); cov |= U[p][3]
+                if used >= a.scope_budget:
+                    break
+            gold_o = {C.cell_owner[g] for g in gold}
+            extra.append((f"scope{a.scope_budget}", [U[p][2] for p in picked], len(gold_o & cov), len(picked)))
+            t1 = C.cell_owner[int(order[0])][0]
+            tab_cells = by_tab[t1][:300]
+            extra.append(("table1", [chunks[p].text for p in tab_cells], sum(1 for g in gold if g in set(tab_cells)), len(tab_cells)))
         for cond, cells in conds:
             jobs.append(common | {
                 "cond": cond, "n_injected": len(cells),
                 "gold_in_ctx": sum(1 for g in gold if g in set(cells)),
                 "ctx": "\n".join(chunks[p].text for p in cells)})
+        for cond, texts, gic, ninj in extra:
+            jobs.append(common | {"cond": cond, "n_injected": ninj, "gold_in_ctx": gic, "ctx": "\n".join(texts)})
         if n % 100 == 0:
             print(f"  [rank] {n}/{len(C.queries)}  {time.time()-t0:.0f}s", flush=True)
     if ce is not None:
@@ -169,6 +188,19 @@ def main() -> int:
     ap.add_argument("--title-mode", default="raw", choices=["raw", "page"],
                     help="색인·주입 문장의 제목 슬롯. 인코더 학습 때와 같아야 한다.")
     ap.add_argument("--gold", type=int, default=1, help="gold 조건도 돌린다")
+    ap.add_argument("--answer-mode", default="value", choices=["value", "cot"],
+                    help="value = 값만, 32토큰 (2026-08-31 이후 모든 답변 레그). cot = CONTEXT 만 "
+                         "써서 단계별로 계산한 뒤 마지막 줄 'Answer: <값>', 256토큰; 그 값을 채점. "
+                         "PREREG-2026-09-06-cell90.md E4")
+    ap.add_argument("--gold-file", default="",
+                    help="results/audit2/<pop>_gold.json — 감사를 통과한 질의로 제한하고 gold 를 "
+                         "수식 기준 셀 집합으로 바꾼다 (cell_rank_dump 와 같은 규약).")
+    ap.add_argument("--max-queries", type=int, default=0, help="앞에서 n 개만 (통제 표본)")
+    ap.add_argument("--context-mode", default="cells", choices=["cells", "scope"],
+                    help="scope = 추가 조건 두 개: `scope<B>` (셀+헤더 범위 혼합 색인을 정렬해 셀 B개 예산까지 "
+                         "단위 문장 주입, analysis/scope_bench.build_units) 와 `table1` (셀 순위 1등의 표 전체를 "
+                         "셀 문장으로 주입, 표 통째 투입 대조). PREREG-2026-09-07-scope-index.md 3단계")
+    ap.add_argument("--scope-budget", type=int, default=20)
     ap.add_argument("--out", default="results/answer_ret/run.jsonl")
     ap.add_argument("--dry-run", action="store_true",
                     help="문맥만 만들고 리더를 부르지 않는다 (자체 점검 포함)")
@@ -182,6 +214,12 @@ def main() -> int:
         return 0
 
     C = load_corpus(a)
+    if a.gold_file:
+        G = json.load(open(a.gold_file))
+        C.queries[:] = [q | {"gold_cells": {tuple(x) for x in G[q["query_id"]]}}
+                        for q in C.queries if q["query_id"] in G]
+    if a.max_queries:
+        C.queries[:] = C.queries[:a.max_queries]
     print(f"[corpus] {len(C.tids)} tables / {len(C.cell_owner)} cells | "
           f"[pop] {len(C.queries)} queries", flush=True)
     chunks = [Chunk(table_id=t, chunk_id=f"c::{t}::{i}:{j}", text=x,
@@ -194,7 +232,18 @@ def main() -> int:
     ix = HybridIndex(chunks, encoder=enc, alpha=0.5)
     print(f"[index] built in {time.time()-t0:.0f}s", flush=True)
 
-    jobs = build_jobs(a, C, chunks, ix, a.ks)
+    scope = None
+    if a.context_mode == "scope":
+        from scope_bench import build_units
+        U = build_units(C, a.title_mode)
+        uix = HybridIndex([Chunk(table_id="", chunk_id=str(n), text=u[2], scheme="u", kind="x") for n, u in enumerate(U)],
+                          encoder=enc, alpha=0.5)
+        by_tab = defaultdict(list)
+        for n, (t, _i, _j) in enumerate(C.cell_owner):
+            by_tab[t].append(n)
+        scope = (U, uix, by_tab)
+        print(f"[scope] {len(U)} units", flush=True)
+    jobs = build_jobs(a, C, chunks, ix, a.ks, scope)
     if a.dry_run:
         # 자체 점검: gold 조건은 gold 셀을 전부 담고, topK는 정확히 K줄이다
         for j in jobs:
@@ -205,6 +254,8 @@ def main() -> int:
                 # gold 가 top-K 안이면 gold 전부, 아니면 1개(1위)만 들어간다
                 assert (j["gold_in_ctx"] == j["m"]) == (max(j["gold_ranks"]) < k), \
                     (j["query_id"], j["cond"])
+            elif j["cond"].startswith(("scope", "table")):
+                assert j["n_injected"] >= 1, (j["query_id"], j["cond"])
             elif j["cond"].startswith("rr"):
                 n = int(j["cond"].split("_")[1]) if "_" in j["cond"] else 1
                 assert j["n_injected"] == n, (j["query_id"], j["cond"])
@@ -215,7 +266,11 @@ def main() -> int:
         r1 = sum(1 for j in jobs if j["cond"] == "top1" and j["gold_in_ctx"])
         n = sum(1 for j in jobs if j["cond"] == "top1")
         print(f"[dry] {len(jobs)} jobs, self-check OK. "
-              f"top1 gold hit {r1}/{n} = {r1/n:.4f} (= hit@1)")
+              + (f"top1 gold hit {r1}/{n} = {r1/n:.4f} (= hit@1)" if n else ""))
+        for c in sorted({j["cond"] for j in jobs}):
+            js = [j for j in jobs if j["cond"] == c]
+            print(f"[dry] {c:<8} n={len(js)} gold_all_in={sum(j['gold_in_ctx'] == j['m'] for j in js)/len(js):.3f} "
+                  f"injected_median={sorted(j['n_injected'] for j in js)[len(js)//2]}")
         for K in (a.rerank_ks or []):
             rk = list({j["query_id"]: j[f"rr{K}_gold_rank"] for j in jobs}.values())
             print(f"[dry] rr{K} 재정렬 후 " + " ".join(
@@ -238,24 +293,34 @@ def main() -> int:
 
     llm = LocalQwenLLM(model_name=MODEL, quantization="4bit")
     tok = llm.tokenizer
+    sys_prompt, maxnew = SYS, MAXNEW
+    if a.answer_mode == "cot":
+        sys_prompt = ("Use only the CONTEXT. Work out the answer step by step, then finish "
+                      "with one final line of the form 'Answer: <value>' containing the value only.")
+        maxnew = 256
     fh = open(out, "a")
     t0 = time.time()
     for n, j in enumerate(todo, 1):
         user = f"CONTEXT:\n{j['ctx']}\n\nQUESTION: {j['question']}\n\nAnswer:"
         ptok = len(tok(tok.apply_chat_template(
-            [{"role": "system", "content": SYS}, {"role": "user", "content": user}],
+            [{"role": "system", "content": sys_prompt}, {"role": "user", "content": user}],
             tokenize=False, add_generation_prompt=True, enable_thinking=False),
             add_special_tokens=False)["input_ids"])
         t = time.time()
-        raw = llm.complete(system=SYS, user=user, max_tokens=MAXNEW, temperature=0.0)
-        parsed = raw.strip().splitlines()[0].strip() if raw.strip() else ""
+        raw = llm.complete(system=sys_prompt, user=user, max_tokens=maxnew, temperature=0.0)
+        if a.answer_mode == "cot":
+            tail = raw.rsplit("Answer:", 1)
+            parsed = (tail[1].strip().splitlines() or [""])[0].strip() if len(tail) == 2 else ""
+        else:
+            parsed = raw.strip().splitlines()[0].strip() if raw.strip() else ""
         fh.write(json.dumps({k: j[k] for k in
                              ("query_id", "cond", "question", "gold_answer", "m",
                               "gold_ranks", "n_injected", "gold_in_ctx")}
                             | {k: v for k, v in j.items()
                                if k.endswith("_gold_rank")} | {
             "pred_answer_raw": raw, "pred_parsed": parsed,
-            "hit_token_cap": len(tok(raw, add_special_tokens=False)["input_ids"]) >= MAXNEW,
+            "hit_token_cap": len(tok(raw, add_special_tokens=False)["input_ids"]) >= maxnew,
+            "answer_mode": a.answer_mode,
             "prompt_tokens": ptok, "latency_sec": round(time.time() - t, 3)},
             ensure_ascii=False) + "\n")
         fh.flush()

@@ -1,0 +1,168 @@
+=== --split dev --population hitab_dev_lookup_multi --ks 1 3 10 --oracle-ks 10 --out results/stage3/multi_dev.jsonl ===
+[corpus] 424 tables / 58759 cells | [pop] 33 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2574.50it/s]
+[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
+[index] built in -13s
+[jobs] 165 total, 0 done, 165 to run
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:03<21:57,  3.90s/it]Loading weights:   1%|          | 2/339 [00:08<24:09,  4.30s/it]Loading weights:   1%|          | 4/339 [00:09<10:02,  1.80s/it]Loading weights:   1%|▏         | 5/339 [00:09<08:11,  1.47s/it]Loading weights:   2%|▏         | 6/339 [00:10<06:02,  1.09s/it]Loading weights:   5%|▍         | 16/339 [00:10<01:08,  4.75it/s]Loading weights:   6%|▌         | 20/339 [00:24<06:47,  1.28s/it]Loading weights:   8%|▊         | 28/339 [00:24<03:30,  1.48it/s]Loading weights:  80%|███████▉  | 270/339 [00:29<00:03, 19.88it/s]Loading weights:  83%|████████▎ | 281/339 [00:29<00:02, 20.79it/s]Loading weights: 100%|██████████| 339/339 [00:16<00:00, 20.59it/s]
+  100/165  1.5min
+
+    cond     n       EMEMlenient     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
+    gold    33   0.7879   0.7879       1.0000     0.7879       nan       191
+   orc10    33   0.6667   0.6667       0.8182     0.8148    0.0000       178
+    top1    33   0.0303   0.0303       0.0000        nan    0.0303       121
+    top3    33   0.3636   0.3636       0.4242     0.7857    0.0526       246
+   top10    33   0.4545   0.4545       0.8182     0.5556    0.0000       663
+-> results/stage3/multi_dev.jsonl
+EXIT 0 0
+=== --split test --population hitab_test_lookup_multi --ks 1 3 10 --oracle-ks 10 --out results/stage3/multi_test.jsonl ===
+[corpus] 414 tables / 58460 cells | [pop] 31 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2088.61it/s]
+[cache] hit hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
+[index] built in 15s
+[jobs] 155 total, 0 done, 155 to run
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:01<09:43,  1.73s/it]Loading weights:   1%|          | 2/339 [00:02<07:37,  1.36s/it]Loading weights:   1%|          | 4/339 [00:02<03:01,  1.85it/s]Loading weights:   2%|▏         | 6/339 [00:03<01:46,  3.12it/s]Loading weights:   5%|▌         | 17/339 [00:03<00:25, 12.50it/s]Loading weights:   7%|▋         | 24/339 [00:03<00:16, 18.94it/s]Loading weights:   9%|▊         | 29/339 [00:03<00:13, 22.51it/s]Loading weights:  11%|█         | 36/339 [00:03<00:10, 30.00it/s]Loading weights:  12%|█▏        | 42/339 [00:03<00:09, 31.23it/s]Loading weights:  16%|█▌        | 53/339 [00:03<00:06, 43.57it/s]Loading weights:  19%|█▉        | 64/339 [00:04<00:05, 52.15it/s]Loading weights:  21%|██        | 71/339 [00:04<00:05, 51.77it/s]Loading weights:  23%|██▎       | 77/339 [00:04<00:05, 49.44it/s]Loading weights:  26%|██▌       | 88/339 [00:04<00:04, 57.21it/s]Loading weights:  28%|██▊       | 95/339 [00:04<00:04, 57.68it/s]Loading weights:  30%|███       | 102/339 [00:04<00:04, 52.75it/s]Loading weights:  33%|███▎      | 113/339 [00:04<00:03, 62.29it/s]Loading weights:  37%|███▋      | 124/339 [00:05<00:03, 64.19it/s]Loading weights:  39%|███▊      | 131/339 [00:05<00:03, 61.73it/s]Loading weights:  41%|████      | 138/339 [00:05<00:03, 53.94it/s]Loading weights:  44%|████▍     | 149/339 [00:05<00:03, 63.04it/s]Loading weights:  47%|████▋     | 160/339 [00:05<00:02, 70.47it/s]Loading weights:  50%|████▉     | 168/339 [00:05<00:02, 68.67it/s]Loading weights:  52%|█████▏    | 176/339 [00:05<00:02, 60.26it/s]Loading weights:  55%|█████▍    | 185/339 [00:06<00:02, 60.25it/s]Loading weights:  58%|█████▊    | 196/339 [00:06<00:02, 66.35it/s]Loading weights:  60%|█████▉    | 203/339 [00:20<01:07,  2.00it/s]Loading weights:  62%|██████▏   | 209/339 [00:20<00:50,  2.56it/s]Loading weights: 100%|██████████| 339/339 [00:08<00:00, 40.24it/s]
+  100/155  1.4min
+
+    cond     n       EMEMlenient     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
+    gold    31   0.9032   0.9032       1.0000     0.9032       nan       176
+   orc10    31   0.7742   0.7742       0.8387     0.9231    0.0000       159
+    top1    31   0.0000   0.0000       0.0000        nan    0.0000       105
+    top3    31   0.3548   0.3548       0.4839     0.7333    0.0000       211
+   top10    31   0.5806   0.5806       0.8387     0.6923    0.0000       573
+-> results/stage3/multi_test.jsonl
+EXIT 0 0
+=== --split dev --population hitab_dev_corpus_arith --ks 1 3 10 20 --oracle-ks 10 20 --out results/stage3/arith_dev.jsonl ===
+[corpus] 424 tables / 58759 cells | [pop] 175 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2509.60it/s]
+[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
+[index] built in 2s
+  [rank] 100/175  17s
+[jobs] 1225 total, 0 done, 1225 to run
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:55,  1.44it/s]Loading weights:   1%|          | 2/339 [00:01<03:44,  1.50it/s]Loading weights:   1%|          | 4/339 [00:01<01:34,  3.56it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:59,  5.60it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:15, 21.42it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:08, 35.61it/s]Loading weights:  10%|█         | 34/339 [00:01<00:07, 38.58it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:06, 43.35it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 52.71it/s]Loading weights:  17%|█▋        | 59/339 [00:02<00:05, 53.91it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:05, 48.85it/s]Loading weights:  22%|██▏       | 76/339 [00:02<00:04, 57.82it/s]Loading weights:  24%|██▍       | 83/339 [00:02<00:04, 59.41it/s]Loading weights:  27%|██▋       | 90/339 [00:02<00:04, 53.82it/s]Loading weights:  30%|██▉       | 101/339 [00:03<00:03, 61.58it/s]Loading weights:  33%|███▎      | 112/339 [00:03<00:03, 66.71it/s]Loading weights:  35%|███▌      | 119/339 [00:03<00:03, 63.95it/s]Loading weights:  37%|███▋      | 126/339 [00:03<00:04, 49.97it/s]Loading weights:  40%|████      | 137/339 [00:03<00:03, 58.69it/s]Loading weights:  44%|████▎     | 148/339 [00:03<00:03, 62.46it/s]Loading weights:  46%|████▌     | 155/339 [00:03<00:03, 61.04it/s]Loading weights:  48%|████▊     | 162/339 [00:04<00:03, 53.70it/s]Loading weights:  51%|█████     | 173/339 [00:04<00:02, 62.23it/s]Loading weights:  54%|█████▍    | 184/339 [00:04<00:02, 66.04it/s]Loading weights:  56%|█████▋    | 191/339 [00:04<00:02, 58.06it/s]Loading weights:  58%|█████▊    | 198/339 [00:18<01:14,  1.89it/s]Loading weights:  62%|██████▏   | 209/339 [00:19<00:44,  2.91it/s]Loading weights: 100%|██████████| 339/339 [00:07<00:00, 47.14it/s]
+  100/1225  1.1min
+  200/1225  2.0min
+  300/1225  3.1min
+  400/1225  4.0min
+  500/1225  5.1min
+  600/1225  6.2min
+  700/1225  7.3min
+  800/1225  8.4min
+  900/1225  9.2min
+  1000/1225  10.1min
+  1100/1225  11.2min
+  1200/1225  12.3min
+
+    cond     n       EMEMlenient     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
+    gold   175   0.3714   0.4514       1.0000     0.3714       nan       158
+   orc10   175   0.3257   0.3943       0.5314     0.6022    0.0122       121
+   orc20   175   0.3543   0.4229       0.6286     0.5636    0.0000       128
+    top1   175   0.1086   0.1657       0.1543     0.5556    0.0270       115
+    top3   175   0.1543   0.2286       0.3029     0.4151    0.0410       222
+   top10   175   0.1429   0.2286       0.5314     0.2581    0.0122       622
+   top20   175   0.1257   0.2171       0.6286     0.2000    0.0000      1184
+-> results/stage3/arith_dev.jsonl
+EXIT 0 0
+=== --split test --population hitab_test_corpus_arith --ks 1 3 10 20 --oracle-ks 10 20 --out results/stage3/arith_test.jsonl ===
+[corpus] 414 tables / 58460 cells | [pop] 183 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2508.07it/s]
+[cache] hit hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
+[index] built in 1s
+  [rank] 100/183  15s
+[jobs] 1281 total, 0 done, 1281 to run
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:54,  1.44it/s]Loading weights:   1%|          | 2/339 [00:01<03:36,  1.56it/s]Loading weights:   1%|          | 4/339 [00:01<01:31,  3.64it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:59,  5.63it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:15, 20.79it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:08, 35.28it/s]Loading weights:  10%|█         | 34/339 [00:01<00:07, 39.09it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:06, 43.46it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 52.81it/s]Loading weights:  17%|█▋        | 59/339 [00:02<00:05, 51.75it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:05, 49.73it/s]Loading weights:  22%|██▏       | 76/339 [00:02<00:04, 56.82it/s]Loading weights:  24%|██▍       | 82/339 [00:02<00:04, 54.47it/s]Loading weights:  26%|██▋       | 89/339 [00:02<00:04, 57.66it/s]Loading weights:  29%|██▉       | 100/339 [00:02<00:03, 66.56it/s]Loading weights:  32%|███▏      | 107/339 [00:03<00:03, 62.47it/s]Loading weights:  34%|███▎      | 114/339 [00:03<00:04, 53.34it/s]Loading weights:  37%|███▋      | 125/339 [00:03<00:03, 59.85it/s]Loading weights:  39%|███▉      | 132/339 [00:03<00:03, 59.29it/s]Loading weights:  41%|████      | 139/339 [00:03<00:03, 52.45it/s]Loading weights:  44%|████▎     | 148/339 [00:17<01:41,  1.88it/s]Loading weights:  44%|████▍     | 150/339 [00:18<01:32,  2.05it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 48.80it/s]
+  100/1281  0.9min
+  200/1281  1.8min
+  300/1281  2.7min
+  400/1281  3.5min
+  500/1281  4.6min
+  600/1281  5.4min
+  700/1281  6.1min
+  800/1281  7.0min
+  900/1281  7.9min
+  1000/1281  8.9min
+  1100/1281  9.9min
+  1200/1281  11.0min
+
+    cond     n       EMEMlenient     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
+    gold   183   0.5464   0.6831       1.0000     0.5464       nan       168
+   orc10   183   0.4536   0.5792       0.7213     0.6212    0.0196       144
+   orc20   183   0.5191   0.6448       0.8579     0.5987    0.0385       160
+    top1   183   0.1093   0.2022       0.1803     0.5152    0.0200       121
+    top3   183   0.2131   0.3279       0.5191     0.4000    0.0114       243
+   top10   183   0.2077   0.3443       0.7213     0.2879    0.0000       670
+   top20   183   0.2350   0.3716       0.8579     0.2675    0.0385      1272
+-> results/stage3/arith_test.jsonl
+EXIT 0 0
+=== --split test --population hitab_test_lookup_all --ks 1 3 10 --oracle-ks 10 --out results/stage3/single_test.jsonl ===
+[corpus] 414 tables / 58460 cells | [pop] 769 queries
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  93%|█████████▎| 186/199 [00:00<00:00, 1858.08it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1972.65it/s]
+[cache] hit hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
+[index] built in 2s
+  [rank] 100/769  17s
+  [rank] 200/769  32s
+  [rank] 300/769  46s
+  [rank] 400/769  60s
+  [rank] 500/769  74s
+  [rank] 600/769  88s
+  [rank] 700/769  103s
+[jobs] 3845 total, 0 done, 3845 to run
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:06<38:08,  6.77s/it]Loading weights:   1%|          | 2/339 [00:11<31:38,  5.63s/it]Loading weights:   1%|          | 4/339 [00:12<12:29,  2.24s/it]Loading weights:   2%|▏         | 6/339 [00:12<06:43,  1.21s/it]Loading weights:   5%|▌         | 17/339 [00:12<01:26,  3.72it/s]Loading weights:   8%|▊         | 28/339 [00:12<00:41,  7.45it/s]Loading weights:  10%|▉         | 33/339 [00:12<00:32,  9.34it/s]Loading weights:  12%|█▏        | 41/339 [00:12<00:22, 13.49it/s]Loading weights:  15%|█▍        | 50/339 [00:12<00:14, 19.68it/s]Loading weights:  17%|█▋        | 56/339 [00:13<00:12, 21.92it/s]Loading weights:  19%|█▉        | 64/339 [00:13<00:09, 27.70it/s]Loading weights:  21%|██        | 70/339 [00:13<00:08, 30.91it/s]Loading weights:  22%|██▏       | 76/339 [00:13<00:08, 31.27it/s]Loading weights:  24%|██▍       | 81/339 [00:13<00:07, 33.38it/s]Loading weights:  26%|██▋       | 89/339 [00:13<00:06, 38.64it/s]Loading weights:  29%|██▉       | 100/339 [00:13<00:04, 48.59it/s]Loading weights:  31%|███▏      | 106/339 [00:14<00:05, 45.84it/s]Loading weights:  33%|███▎      | 112/339 [00:28<02:22,  1.59it/s]Loading weights:  34%|███▎      | 114/339 [00:28<02:07,  1.77it/s]Loading weights: 100%|██████████| 339/339 [00:18<00:00, 18.26it/s]
+  100/3845  0.7min
+  200/3845  1.4min
+  300/3845  2.1min
+  400/3845  3.0min
+  500/3845  3.7min
+  600/3845  4.5min
+  700/3845  5.3min
+  800/3845  6.0min
+  900/3845  6.8min
+  1000/3845  7.6min
+  1100/3845  8.3min
+  1200/3845  9.1min
+  1300/3845  10.0min
+  1400/3845  10.8min
+  1500/3845  11.6min
+  1600/3845  12.3min
+  1700/3845  13.2min
+  1800/3845  14.0min
+  1900/3845  14.8min
+  2000/3845  15.7min
+  2100/3845  16.6min
+  2200/3845  17.4min
+  2300/3845  18.2min
+  2400/3845  19.0min
+  2500/3845  19.7min
+  2600/3845  20.5min
+  2700/3845  21.2min
+  2800/3845  22.0min
+  2900/3845  22.9min
+  3000/3845  23.7min
+  3100/3845  24.7min
+  3200/3845  25.4min
+  3300/3845  26.2min
+  3400/3845  26.9min
+  3500/3845  27.7min
+  3600/3845  28.4min
+  3700/3845  29.2min
+  3800/3845  30.0min
+
+    cond     n       EMEMlenient     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
+    gold   769   0.8895   0.9324       1.0000     0.8895       nan       110
+   orc10   769   0.8505   0.8895       0.9246     0.9072    0.1552       110
+    top1   769   0.6424   0.6736       0.6710     0.9264    0.0632       110
+    top3   769   0.6996   0.7308       0.8531     0.7957    0.1416       226
+   top10   769   0.6970   0.7321       0.9246     0.7384    0.1897       627
+-> results/stage3/single_test.jsonl
+EXIT 0 0
+LADDER_DONE
