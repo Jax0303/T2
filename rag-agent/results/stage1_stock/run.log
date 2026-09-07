@@ -1,0 +1,10 @@
+=== stock test lookup_all ===
+[corpus] 414 tables / 58460 cells | [pop] 728 queries | 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 71/199 [00:00<00:00, 701.28it/s]Loading weights:  71%|███████▏  | 142/199 [00:00<00:00, 662.99it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 923.19it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-base-en-v1.5
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.

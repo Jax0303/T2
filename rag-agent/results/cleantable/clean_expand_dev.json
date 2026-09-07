@@ -1,0 +1,1261 @@
+{
+ "무엇": "빈칸 없는 표 코퍼스 + 쿼리 확장(1차 top-1 셀 문장 이어붙이기)",
+ "주의": [
+  "사전등록 없는 탐색. 이 결과로 arm 을 고르지 않았다.",
+  "인코더는 기성품 BAAI/bge-base-en-v1.5 이다. models/bge-base-cell-ft-p0 는 이 머신에 없다. 저장소의 p0 수치와 절대값을 짝지어 인용하지 말 것.",
+  "alpha=0.8 를 재조정하지 않았다 (p0 확정값을 그대로 썼다).",
+  "EM 은 재지 않았다 — 리더가 GPU 를 요구하고 이 머신에는 없다.",
+  "clean 코퍼스는 셀 수가 훨씬 적어 방해 셀이 적다. clean 대 full 비교는 그만큼 유리하게 나온다 — 구조 효과가 아니다."
+ ],
+ "설정": {
+  "split": "dev",
+  "alpha": 0.8,
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "cell_scheme": "S3c",
+  "title_mode": "page",
+  "표_전체": 424,
+  "표_빈칸0": 16,
+  "질의_전체": 830,
+  "질의_모집단": 32,
+  "셀_전체": 58759,
+  "셀_clean": 1455
+ },
+ "빈칸0_표": [
+  "0_1_nsf21326-tab001",
+  "109_55_fs17-ib-19314-tab004",
+  "110_55_fs17-ib-19314-tab005",
+  "14_117_tab1",
+  "153_72_tab5",
+  "156_77_tab2",
+  "15_117_tab2",
+  "164_81_tab3",
+  "169_84_tab1",
+  "190_89_tab3",
+  "1927",
+  "1966",
+  "2368",
+  "2564",
+  "40_159_tab1",
+  "602"
+ ],
+ "보드": [
+  {
+   "arm": "clean/plain",
+   "n": 32,
+   "R@1": 0.3125,
+   "setEM@10": 0.6562
+  },
+  {
+   "arm": "clean/expand",
+   "n": 32,
+   "R@1": 0.3125,
+   "setEM@10": 0.5
+  },
+  {
+   "arm": "full/plain",
+   "n": 32,
+   "R@1": 0.2812,
+   "setEM@10": 0.5625
+  },
+  {
+   "arm": "full/expand",
+   "n": 32,
+   "R@1": 0.2812,
+   "setEM@10": 0.4375
+  }
+ ],
+ "페어드검정": {
+  "clean r@1 expand vs plain": {
+   "확장만 맞음": 0,
+   "평소만 맞음": 0,
+   "p": 1.0
+  },
+  "clean setEM@10 expand vs plain": {
+   "확장만 맞음": 1,
+   "평소만 맞음": 6,
+   "p": 0.125
+  },
+  "full r@1 expand vs plain": {
+   "확장만 맞음": 0,
+   "평소만 맞음": 0,
+   "p": 1.0
+  },
+  "full setEM@10 expand vs plain": {
+   "확장만 맞음": 0,
+   "평소만 맞음": 4,
+   "p": 0.125
+  },
+  "r@1 clean vs full (plain)": {
+   "clean만 맞음": 1,
+   "full만 맞음": 0,
+   "p": 1.0
+  },
+  "setEM@10 clean vs full (plain)": {
+   "clean만 맞음": 3,
+   "full만 맞음": 0,
+   "p": 0.25
+  }
+ },
+ "records": {
+  "clean/plain": [
+   {
+    "query_id": "45981f2b4ba3af7ae0f22afb36e4c06d",
+    "m": 1,
+    "ranks": [
+     1
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "e60a43b8ed314479f6f52c3639b54237",
+    "m": 1,
+    "ranks": [
+     109
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "aebee6af6e7f7edb4c672f7483723597",
+    "m": 1,
+    "ranks": [
+     18
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "d656a55289776967ab5e9111dec6c5fe",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "583a12f2bdb921caf400cb1b8492bf73",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "710e244baf6b09d03a4a855886f8aff1",
+    "m": 1,
+    "ranks": [
+     14
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "1477d2450da6aa104666af351a9194da",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5f426200925bf3a1b9720eddc9a666e5",
+    "m": 1,
+    "ranks": [
+     12
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "8edee42912d1e74110878e742609d29c",
+    "m": 1,
+    "ranks": [
+     3
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "c2de00da3f77ddf7947b243564dc191c",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "75f9ee64e4f6eb07f0562c354e3b6db9",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "03ca7cfbe6e623fa607477d9f5c062a1",
+    "m": 1,
+    "ranks": [
+     436
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "835fca9de8c0aa60b2c4fc1800d6985f",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "8b1eca6d2de547f3870f0c790124397c",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "1da17bbdb4440ad5770b76546f3d9113",
+    "m": 1,
+    "ranks": [
+     10
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "3db68abb42b0703bf0ed1b4a47b51c15",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "085ff0067147af44246f321a7094e761",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "650409df04f8e5d79851f9543f1c2c0c",
+    "m": 1,
+    "ranks": [
+     164
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "600192d981b13d53be3051860948e0fb",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "c4102c7090129c97722791152c99c789",
+    "m": 1,
+    "ranks": [
+     70
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "bd6bbb2e53059ce03e90a870277ce445",
+    "m": 1,
+    "ranks": [
+     9
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "fdbdff6f0462088fc2fb100d71b3079a",
+    "m": 1,
+    "ranks": [
+     12
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "21f2c9623ed0d2cc99ef5ef99a1b22ec",
+    "m": 1,
+    "ranks": [
+     9
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "7167039eb69d7c35c16e250aa12a54d8",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "b975e479916282443367d706164c18e6",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5abb8c2d4b97ca320c22154aff64b579",
+    "m": 1,
+    "ranks": [
+     11
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "a1ad3a93eab60d530f73f3ab35c4af19",
+    "m": 1,
+    "ranks": [
+     1
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "453d77b75a0db6d004a75dc4c8753199",
+    "m": 1,
+    "ranks": [
+     6
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "1f03a9470a74837a486f877ef0108b38",
+    "m": 1,
+    "ranks": [
+     1
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "382c4b262dc6b17f5d314fab73e8c018",
+    "m": 1,
+    "ranks": [
+     32
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "3fc7f1673b7a01b11a308db08e130a69",
+    "m": 1,
+    "ranks": [
+     1
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "eef1a754da9302422a8ae635e89452e2",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   }
+  ],
+  "clean/expand": [
+   {
+    "query_id": "45981f2b4ba3af7ae0f22afb36e4c06d",
+    "m": 1,
+    "ranks": [
+     4
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "e60a43b8ed314479f6f52c3639b54237",
+    "m": 1,
+    "ranks": [
+     104
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "aebee6af6e7f7edb4c672f7483723597",
+    "m": 1,
+    "ranks": [
+     40
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "d656a55289776967ab5e9111dec6c5fe",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "583a12f2bdb921caf400cb1b8492bf73",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "710e244baf6b09d03a4a855886f8aff1",
+    "m": 1,
+    "ranks": [
+     11
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "1477d2450da6aa104666af351a9194da",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5f426200925bf3a1b9720eddc9a666e5",
+    "m": 1,
+    "ranks": [
+     145
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "8edee42912d1e74110878e742609d29c",
+    "m": 1,
+    "ranks": [
+     19
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "c2de00da3f77ddf7947b243564dc191c",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "75f9ee64e4f6eb07f0562c354e3b6db9",
+    "m": 1,
+    "ranks": [
+     5
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "03ca7cfbe6e623fa607477d9f5c062a1",
+    "m": 1,
+    "ranks": [
+     443
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "835fca9de8c0aa60b2c4fc1800d6985f",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "8b1eca6d2de547f3870f0c790124397c",
+    "m": 1,
+    "ranks": [
+     15
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "1da17bbdb4440ad5770b76546f3d9113",
+    "m": 1,
+    "ranks": [
+     5
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "3db68abb42b0703bf0ed1b4a47b51c15",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "085ff0067147af44246f321a7094e761",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "650409df04f8e5d79851f9543f1c2c0c",
+    "m": 1,
+    "ranks": [
+     797
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "600192d981b13d53be3051860948e0fb",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "c4102c7090129c97722791152c99c789",
+    "m": 1,
+    "ranks": [
+     23
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "bd6bbb2e53059ce03e90a870277ce445",
+    "m": 1,
+    "ranks": [
+     10
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "fdbdff6f0462088fc2fb100d71b3079a",
+    "m": 1,
+    "ranks": [
+     13
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "21f2c9623ed0d2cc99ef5ef99a1b22ec",
+    "m": 1,
+    "ranks": [
+     10
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "7167039eb69d7c35c16e250aa12a54d8",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "b975e479916282443367d706164c18e6",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5abb8c2d4b97ca320c22154aff64b579",
+    "m": 1,
+    "ranks": [
+     11
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "a1ad3a93eab60d530f73f3ab35c4af19",
+    "m": 1,
+    "ranks": [
+     22
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "453d77b75a0db6d004a75dc4c8753199",
+    "m": 1,
+    "ranks": [
+     60
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "1f03a9470a74837a486f877ef0108b38",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "382c4b262dc6b17f5d314fab73e8c018",
+    "m": 1,
+    "ranks": [
+     93
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "3fc7f1673b7a01b11a308db08e130a69",
+    "m": 1,
+    "ranks": [
+     3
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "eef1a754da9302422a8ae635e89452e2",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   }
+  ],
+  "full/plain": [
+   {
+    "query_id": "45981f2b4ba3af7ae0f22afb36e4c06d",
+    "m": 1,
+    "ranks": [
+     3
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "e60a43b8ed314479f6f52c3639b54237",
+    "m": 1,
+    "ranks": [
+     104
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "aebee6af6e7f7edb4c672f7483723597",
+    "m": 1,
+    "ranks": [
+     17
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "d656a55289776967ab5e9111dec6c5fe",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "583a12f2bdb921caf400cb1b8492bf73",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "710e244baf6b09d03a4a855886f8aff1",
+    "m": 1,
+    "ranks": [
+     19
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "1477d2450da6aa104666af351a9194da",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5f426200925bf3a1b9720eddc9a666e5",
+    "m": 1,
+    "ranks": [
+     14
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "8edee42912d1e74110878e742609d29c",
+    "m": 1,
+    "ranks": [
+     14
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "c2de00da3f77ddf7947b243564dc191c",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "75f9ee64e4f6eb07f0562c354e3b6db9",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "03ca7cfbe6e623fa607477d9f5c062a1",
+    "m": 1,
+    "ranks": [
+     1822
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "835fca9de8c0aa60b2c4fc1800d6985f",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "8b1eca6d2de547f3870f0c790124397c",
+    "m": 1,
+    "ranks": [
+     3
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "1da17bbdb4440ad5770b76546f3d9113",
+    "m": 1,
+    "ranks": [
+     14
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "3db68abb42b0703bf0ed1b4a47b51c15",
+    "m": 1,
+    "ranks": [
+     19
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "085ff0067147af44246f321a7094e761",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "650409df04f8e5d79851f9543f1c2c0c",
+    "m": 1,
+    "ranks": [
+     1680
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "600192d981b13d53be3051860948e0fb",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "c4102c7090129c97722791152c99c789",
+    "m": 1,
+    "ranks": [
+     58
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "bd6bbb2e53059ce03e90a870277ce445",
+    "m": 1,
+    "ranks": [
+     9
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "fdbdff6f0462088fc2fb100d71b3079a",
+    "m": 1,
+    "ranks": [
+     14
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "21f2c9623ed0d2cc99ef5ef99a1b22ec",
+    "m": 1,
+    "ranks": [
+     9
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "7167039eb69d7c35c16e250aa12a54d8",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "b975e479916282443367d706164c18e6",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5abb8c2d4b97ca320c22154aff64b579",
+    "m": 1,
+    "ranks": [
+     11
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "a1ad3a93eab60d530f73f3ab35c4af19",
+    "m": 1,
+    "ranks": [
+     1
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "453d77b75a0db6d004a75dc4c8753199",
+    "m": 1,
+    "ranks": [
+     6
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "1f03a9470a74837a486f877ef0108b38",
+    "m": 1,
+    "ranks": [
+     74
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "382c4b262dc6b17f5d314fab73e8c018",
+    "m": 1,
+    "ranks": [
+     44
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "3fc7f1673b7a01b11a308db08e130a69",
+    "m": 1,
+    "ranks": [
+     4
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "eef1a754da9302422a8ae635e89452e2",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   }
+  ],
+  "full/expand": [
+   {
+    "query_id": "45981f2b4ba3af7ae0f22afb36e4c06d",
+    "m": 1,
+    "ranks": [
+     4
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "e60a43b8ed314479f6f52c3639b54237",
+    "m": 1,
+    "ranks": [
+     94
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "aebee6af6e7f7edb4c672f7483723597",
+    "m": 1,
+    "ranks": [
+     38
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "d656a55289776967ab5e9111dec6c5fe",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "583a12f2bdb921caf400cb1b8492bf73",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "710e244baf6b09d03a4a855886f8aff1",
+    "m": 1,
+    "ranks": [
+     195
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "1477d2450da6aa104666af351a9194da",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5f426200925bf3a1b9720eddc9a666e5",
+    "m": 1,
+    "ranks": [
+     57
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "8edee42912d1e74110878e742609d29c",
+    "m": 1,
+    "ranks": [
+     18
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "c2de00da3f77ddf7947b243564dc191c",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "75f9ee64e4f6eb07f0562c354e3b6db9",
+    "m": 1,
+    "ranks": [
+     5
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "03ca7cfbe6e623fa607477d9f5c062a1",
+    "m": 1,
+    "ranks": [
+     1630
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "835fca9de8c0aa60b2c4fc1800d6985f",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "8b1eca6d2de547f3870f0c790124397c",
+    "m": 1,
+    "ranks": [
+     16
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "1da17bbdb4440ad5770b76546f3d9113",
+    "m": 1,
+    "ranks": [
+     202
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "3db68abb42b0703bf0ed1b4a47b51c15",
+    "m": 1,
+    "ranks": [
+     439
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "085ff0067147af44246f321a7094e761",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "650409df04f8e5d79851f9543f1c2c0c",
+    "m": 1,
+    "ranks": [
+     4518
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "600192d981b13d53be3051860948e0fb",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "c4102c7090129c97722791152c99c789",
+    "m": 1,
+    "ranks": [
+     15
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "bd6bbb2e53059ce03e90a870277ce445",
+    "m": 1,
+    "ranks": [
+     14
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "fdbdff6f0462088fc2fb100d71b3079a",
+    "m": 1,
+    "ranks": [
+     13
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "21f2c9623ed0d2cc99ef5ef99a1b22ec",
+    "m": 1,
+    "ranks": [
+     10
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "7167039eb69d7c35c16e250aa12a54d8",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "b975e479916282443367d706164c18e6",
+    "m": 1,
+    "ranks": [
+     0
+    ],
+    "r@1": 1,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "5abb8c2d4b97ca320c22154aff64b579",
+    "m": 1,
+    "ranks": [
+     11
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "a1ad3a93eab60d530f73f3ab35c4af19",
+    "m": 1,
+    "ranks": [
+     22
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "453d77b75a0db6d004a75dc4c8753199",
+    "m": 1,
+    "ranks": [
+     4
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "1f03a9470a74837a486f877ef0108b38",
+    "m": 1,
+    "ranks": [
+     273
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "382c4b262dc6b17f5d314fab73e8c018",
+    "m": 1,
+    "ranks": [
+     1289
+    ],
+    "r@1": 0,
+    "setEM@10": 0
+   },
+   {
+    "query_id": "3fc7f1673b7a01b11a308db08e130a69",
+    "m": 1,
+    "ranks": [
+     3
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   },
+   {
+    "query_id": "eef1a754da9302422a8ae635e89452e2",
+    "m": 1,
+    "ranks": [
+     2
+    ],
+    "r@1": 0,
+    "setEM@10": 1
+   }
+  ]
+ }
+}
