@@ -41,8 +41,10 @@ test 하나로 한다 (`CLAUDE.md` §7). ⚠️ 대신 **test로 무엇도 고�
 dev가 된다. α·K·스킴은 고정값이다.
 
 **학습 없는 arm의 test 1단계 보드**: `results/stage1_stock/BOARD.md` (원본 `*_ranks.jsonl`,
-계측기 `analysis/stage1_board.py`). 집계값은 `results/baselines/BOARD.md` 의 `hybrid_cell` 행과
-같아야 하고 실제로 같다 (@10 조회 .8709 / 다중 .7586 / 산술 .7222).
+실행 `results/stage1_stock/run.sh`, 계측기 `analysis/stage1_board.py`). 2026-09-07 측정.
+전체@20 조회 **.9188** / 다중 **.9310** / 산술 **.8436**, 전체@10 .8707 / .7586 / .7207.
+**대조 검증 통과** — 같은 조건을 따로 잰 `results/baselines/BOARD.md` 의 `hybrid_cell` 행
+(@10 .8709 / .7586 / .7222) 과 셋째 자리까지 맞는다. 차이는 n 이다 (727/29/179 대 728/29/180).
 
 **값은 지불했다** — 같은 test에서 p1(파인튜닝) 대비 all-covered@10 조회 .9409→.8709,
 다중 .8966→.7586, 산술 .8268→.7222 (§17). MT2Net 대조도 학습 bi-encoder(-3.4%p, §21)가 아니라
