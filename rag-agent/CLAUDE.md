@@ -1,6 +1,16 @@
 # 0. 2026-09-08 지정사항 — 이 절이 아래 전부를 이긴다
 
 > **새 세션은 `START-HERE-2026-09-08.md` 부터 읽는다.**
+> `results/stage1/` 은 2026-09-08 에 **사용자 지시로 삭제**했다. 계측기
+> `analysis/stage1_board.py` 는 이미 지웠는데 그 산출물이 남아 있어, 폐기된
+> `all-covered@k` 값(예: 산술 183건의 0.8907)이 현행 수치로 인용되는 사고가 실제로
+> 났다. §0.1 이 경고한 그대로다. 아래 §7 의 `results/stage1/BOARD.md` 참조는
+> 기록으로 읽는다. 같은 계열인 `results/stage1_clean/` 은 아직 남아 있다.
+>
+> `RESULTS_ARCHIVE-2026-08-30.md` 는 2026-09-08 에 **사용자 지시로 삭제**했다. 아래
+> §7 의 색인과 §4·§6 의 인용은 그 파일을 가리키는데, 복원은 커밋에서 꺼낸다:
+> `git show 6e8302a:rag-agent/RESULTS_ARCHIVE-2026-08-30.md`
+>
 > 아래 §1~§9 가 이름을 대는 문서 중 `RESEARCH_STRUCTURE.md`,
 > `PREREG-2026-09-03-ce-rerank-r1.md`, `PREREG-2026-09-05-reader-ladder.md`,
 > `PREREG-2026-08-27-generated-title.md`, `NEXT.md` 는 리포에 **없다**(폐기 노선과 함께
