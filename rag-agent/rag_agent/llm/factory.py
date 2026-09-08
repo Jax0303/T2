@@ -45,9 +45,7 @@ def _split_spec(model: str) -> tuple[str, dict]:
         if not part:
             continue
         k, _, v = part.partition("=")
-        v = v.strip()
-        kw[k.strip()] = (None if v == "none" else
-                         int(v) if v.lstrip("-").isdigit() else v)
+        kw[k.strip()] = int(v) if v.strip().lstrip("-").isdigit() else v.strip()
     return name, kw
 
 
