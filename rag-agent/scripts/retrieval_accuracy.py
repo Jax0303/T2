@@ -47,6 +47,7 @@ from rag_agent.retrieve.encoders import default_encoder               # noqa: E4
 from rag_agent.retrieve.hybrid_index import _minmax, _tokenize        # noqa: E402
 from rag_agent.retrieve.sparse_bm25 import SparseBM25                 # noqa: E402
 from rag_agent.serialization.caption import caption_sentence          # noqa: E402
+from rag_agent.serialization import tablerag_unit as trag             # noqa: E402
 from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,    # noqa: E402
                                                STRUCTURAL_COMPACT)
 
@@ -56,7 +57,12 @@ TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "mt2net": MT2NET}
 # at a time. Byte-identical to point3_reconstruction_cost.cell_text(..., "flat")
 # and (..., "S2"), so they stay comparable with the older numbers on disk.
 ABLATIONS = ("flat", "s2")
-UNITS = ("cell", "row", "table")
+# cell/row/table are index-unit sizes of OUR sentence. chunk and tablerag are
+# outside methods and ignore --template: `chunk` is what a general-purpose RAG
+# stack does to a table (render markdown, split on a character budget) and
+# `tablerag` is TableRAG's own corpus (Chen et al., NeurIPS 2024). They are
+# baselines, not ablations -- see build_corpus.
+UNITS = ("cell", "row", "table", "chunk", "tablerag", "trag_hetero", "rowcol")
 PAGE_TITLES = ROOT / "results/tableconf/totto_page_titles.json"
 
 
@@ -78,9 +84,154 @@ def cell_unit(title, row_path, col_path, value, template: str) -> str:
                             template=TEMPLATES[template])
 
 
-def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dict):
-    """(texts, cell_sets) — one index unit per entry, and the cells it delivers."""
-    texts, covers = [], []
+def markdown_chunks(tab, t, title, chunk_chars: int):
+    """A general-purpose RAG stack's view of a table: markdown, split by size.
+
+    What LangChain / LlamaIndex do to a table by default — render it, then cut
+    it on a character budget. The header line is repeated in every chunk, which
+    is the *charitable* version: without it the second chunk of a table has no
+    column labels at all. The hierarchy is still gone, because a markdown
+    render of a hierarchical table keeps only the leaf labels — that loss is
+    the thing being measured, not a handicap we added.
+    """
+    hdr = "| " + " | ".join(
+        [""] + [(t.col_path(j)[-1] if t.col_path(j) else f"col{j}")
+                for j in range(t.n_cols)]) + " |"
+    head = f"# {title}\n{hdr}\n|" + "---|" * (t.n_cols + 1)
+    out, buf, cells, size = [], [], [], 0
+    for i in range(t.n_rows):
+        live = [j for j in range(t.n_cols) if str(t.data[i][j]).strip()]
+        if not live:
+            continue
+        line = "| " + " | ".join(
+            [t.row_path(i)[-1] if t.row_path(i) else ""] +
+            [str(t.data[i][j]) for j in range(t.n_cols)]) + " |"
+        if buf and size + len(line) > chunk_chars:
+            out.append(("\n".join([head, *buf]), cells))
+            buf, cells, size = [], [], 0
+        buf.append(line)
+        cells += [(i, j) for j in live]
+        size += len(line)
+    if buf:
+        out.append(("\n".join([head, *buf]), cells))
+    return out
+
+
+def _recursive_split(text: str, size: int, overlap: int):
+    """LangChain ``RecursiveCharacterTextSplitter(size, overlap)`` on line text.
+
+    Reproduces ``_merge_splits``: split on the first separator present, then
+    greedily merge pieces up to ``size`` and carry ``overlap`` characters of
+    tail into the next chunk. Our markdown has no blank line, so the recursion
+    never goes past ``"\n"`` and this is the whole algorithm for this input.
+    """
+    parts, sep = text.split("\n"), "\n"
+    out, buf, total = [], [], 0
+    for d in parts:
+        if buf and total + len(d) + len(sep) > size:
+            out.append(sep.join(buf))
+            while total > overlap or (buf and total + len(d) + len(sep) > size):
+                total -= len(buf[0]) + (len(sep) if len(buf) > 1 else 0)
+                buf.pop(0)
+                if not buf:
+                    break
+        buf.append(d)
+        total += len(d) + (len(sep) if len(buf) > 1 else 0)
+    if buf:
+        out.append(sep.join(buf))
+    return out
+
+
+def trag_hetero_chunks(tab, t, name: str, chunk_chars: int, overlap: int):
+    """Huawei TableRAG's retrieval leg (arXiv 2506.10380, github.com/yxh-y/TableRAG).
+
+    Their index is NOT the schema JSON. ``online_inference/tools/retriever.py``
+    renders each workbook to markdown (``utils/tool_utils.py: excel_to_markdown``
+    -- ``"Table name: {name}"`` then one pipe row per sheet row), splits it with
+    ``RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)``, and
+    prepends ``"File name: {key}"`` to every chunk. That is the whole unit.
+
+    The ``{"table_name", "column_list"}`` schema (``src/data_persistent.py:
+    generate_schema_info``) is written to a separate directory and reaches the
+    model only through ``NL2SQL_USER_PROMPT`` -- it feeds SQL generation against
+    the MySQL copy, never the embedding index. The SQL leg has no counterpart
+    here (our reader gets retrieved text and no database), so what this arm
+    reproduces is their text-retrieval leg and nothing else.
+
+    Note the table name rides in the FIRST chunk only, because it is prepended
+    before the split -- unlike ``markdown_chunks``, which repeats the header in
+    every chunk. That difference is theirs, not a handicap we added.
+
+    ``name`` is the table's TITLE, not its ``table_id``. Their ``table_name``
+    and ``File name:`` both come from the workbook's file name, which in their
+    corpus carries meaning; HiTab's ``table_id`` (``0_1_nsf21326-tab001``) does
+    not, and feeding them an opaque string would be a handicap we invented. The
+    title is the honest counterpart, and it is the same string every other arm
+    gets.
+    """
+    hdr = "| " + " | ".join(
+        [(t.col_path(j)[-1] if t.col_path(j) else f"col{j}")
+         for j in range(t.n_cols)]) + " |"
+    lines = [f"Table name: {name}", hdr, "|" + "---|" * t.n_cols]
+    rows = []                                  # (line index in `lines`, cells)
+    for i in range(t.n_rows):
+        live = [j for j in range(t.n_cols) if str(t.data[i][j]).strip()]
+        if not live:
+            continue
+        lines.append("| " + " | ".join(
+            [t.row_path(i)[-1] if t.row_path(i) else ""] +
+            [str(t.data[i][j]) for j in range(t.n_cols)]) + " |")
+        rows.append((lines[-1], [(i, j) for j in live]))
+    out = []
+    for ch in _recursive_split("\n".join(lines), chunk_chars, overlap):
+        cells = [c for line, cs in rows if line in ch for c in cs]
+        out.append((f"File name: {name}\n" + ch, cells))
+    return out
+
+
+def tablerag_units(tab, t, mode: str):
+    """TableRAG's corpus for one table, with the cells each doc delivers.
+
+    Text comes from the port (``rag_agent/serialization/tablerag_unit.py``) so
+    it stays byte-identical to the published recipe. The cell mapping is ours
+    and it is the charitable one: a numeric column's summary carries that
+    column's min and max, so it delivers those two cells; a deduplicated
+    categorical doc names a (column, value) pair, so it delivers every cell in
+    the column holding that value. TableRAG itself keeps no row identity — the
+    reader is handed the *value*, not the address — so this is the most
+    evidence any honest reading can credit it with.
+    """
+    out = []
+    numeric = [c for c in range(t.n_cols) if trag._is_numeric_column(t, c)]
+    for c in numeric:
+        vals = {}
+        for r in range(t.n_rows):
+            v = trag.fmt_value(t.cell(r, c))
+            if v:
+                try:
+                    vals[float(v.replace(",", ""))] = r
+                except ValueError:
+                    pass
+        rows = {vals[min(vals)], vals[max(vals)]} if vals else set()
+        out.append((trag.schema_doc(t, c, mode),
+                    [(r, c) for r in sorted(rows)]))
+    seen: dict = {}
+    for c in range(t.n_cols):
+        if c in numeric:
+            continue
+        for r in range(t.n_rows):
+            if not trag.fmt_value(t.cell(r, c)):
+                continue
+            seen.setdefault(trag.cell_doc(t, r, c, mode), []).append((r, c))
+    out += sorted(seen.items(), key=lambda kv: -len(kv[1]))
+    return out
+
+
+def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dict,
+                 chunk_chars: int = 1000, trag_mode: str = "leaf"):
+    """(texts, cell_sets, is_row) — one index unit per entry, the cells it delivers,
+    and (``rowcol`` only) whether the entry is a row unit or a column unit."""
+    texts, covers, is_row = [], [], []
     for tid in tids:
         tab = hg.load_table(tid, data_dir)
         if tab is None:
@@ -107,13 +258,81 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
                               t.col_path(j), t.data[i][j], template)
                     for k, (i_, j) in enumerate(cs)))
                 covers.append(frozenset((tid, i, j) for _i, j in cs))
+        elif unit == "chunk":
+            for txt, cs in markdown_chunks(tab, t, title, chunk_chars):
+                texts.append(txt)
+                covers.append(frozenset((tid, i, j) for i, j in cs))
+        elif unit == "trag_hetero":
+            for txt, cs in trag_hetero_chunks(tab, t, title, chunk_chars, 200):
+                texts.append(txt)
+                covers.append(frozenset((tid, i, j) for i, j in cs))
+        elif unit == "tablerag":
+            for txt, cs in tablerag_units(tab, t, trag_mode):
+                texts.append(txt)
+                covers.append(frozenset((tid, i, j) for i, j in cs))
+        elif unit == "rowcol":
+            # RowColRetrieval (TableRAG, Chen et al. NeurIPS 2024, §4.2; methodology
+            # from Sui et al., TAP4LM). Rows AND columns are encoded separately; the
+            # context is the SUB-TABLE their top-K lists intersect, which the official
+            # `Retriever.sample_rows_and_columns` writes as `df.iloc[row_ids, col_ids]`.
+            # Cell text mirrors `build_row_corpus` / `build_column_corpus`: the line's
+            # values joined, no header path -- that absence is the baseline, not a
+            # handicap. The title rides on the first cell so the unit is findable at
+            # corpus scale, the same courtesy every other arm gets.
+            for i in range(t.n_rows):
+                cs = [(i, j) for (a, j) in live if a == i]
+                if not cs:
+                    continue
+                texts.append(" | ".join(
+                    cell_unit(title if k == 0 else "", t.row_path(i), t.col_path(j),
+                              t.data[i][j], template)
+                    for k, (_i, j) in enumerate(cs)))
+                covers.append(frozenset((tid, i, j) for _i, j in cs))
+                is_row.append(True)
+            for j in range(t.n_cols):
+                cs = [(i, j) for (i, b) in live if b == j]
+                if not cs:
+                    continue
+                texts.append(" | ".join(
+                    cell_unit(title if k == 0 else "", t.row_path(i), t.col_path(j),
+                              t.data[i][j], template)
+                    for k, (i, _j) in enumerate(cs)))
+                covers.append(frozenset((tid, i, j) for i, _j in cs))
+                is_row.append(False)
         else:                                     # whole table as one unit
             texts.append(" | ".join(
                 cell_unit(title if k == 0 else "", t.row_path(i),
                           t.col_path(j), t.data[i][j], template)
                 for k, (i, j) in enumerate(live)))
             covers.append(frozenset((tid, i, j) for i, j in live))
-    return texts, covers
+    return texts, covers, is_row
+
+
+def rowcol_select(order, covers, texts, is_row, budget: int, dump: int, cap: int = 200):
+    """RowColRetrieval's sub-table: top-K rows INTERSECT top-K columns.
+
+    ``sample_rows_and_columns`` returns ``df.iloc[row_ids, col_ids]``, so a cell
+    is delivered only when BOTH its row unit and its column unit were retrieved.
+    K is one number for both lists in the paper, so it grows on both together
+    here, and the cell budget decides where it stops -- the same rule every other
+    arm gets, since a fixed K would hand this arm a different amount of context.
+    Intersecting across a corpus is safe because ``covers`` carries the table id:
+    a row of one table and a column of another share no cell.
+    """
+    rows = [p for p in order if is_row[p]]
+    cols = [p for p in order if not is_row[p]]
+    R, C, got, k = set(), set(), set(), 0
+    while k < min(cap, max(len(rows), len(cols))):
+        if k < len(rows):
+            R |= covers[rows[k]]
+        if k < len(cols):
+            C |= covers[cols[k]]
+        k += 1
+        got = R & C
+        if len(got) >= budget:
+            break
+    ctx = (rows[:k] + cols[:k])[:dump] if dump else []
+    return got, len(got), [texts[p] for p in ctx]
 
 
 def load_queries(data_dir: str, split: str, tabs):
@@ -148,6 +367,13 @@ def main() -> int:
     ap.add_argument("--template", default="s3c",
                     choices=list(TEMPLATES) + list(ABLATIONS))
     ap.add_argument("--unit", default="cell", choices=UNITS)
+    ap.add_argument("--chunk-chars", type=int, default=1000,
+                    help="--unit chunk: character budget per chunk "
+                         "(1000 = LangChain's default chunk_size)")
+    ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"],
+                    help="--unit tablerag: 'leaf' is what a plain read of a "
+                         "hierarchical table yields, 'path' hands TableRAG the "
+                         "joined header path. Report both.")
     ap.add_argument("--embed-model", default="BAAI/bge-base-en-v1.5")
     ap.add_argument("--alpha", type=float, default=0.7,
                     help="dense weight. 0 = BM25 only, 1 = dense only. The "
@@ -175,7 +401,8 @@ def main() -> int:
     queries = load_queries(a.data_dir, a.split, tabs)
     tids = (hg.table_ids(a.data_dir) if a.corpus == "all"
             else sorted({q["table_id"] for q in queries}))
-    texts, covers = build_corpus(a.data_dir, tids, a.template, a.unit, page_titles)
+    texts, covers, is_row = build_corpus(a.data_dir, tids, a.template, a.unit,
+                                         page_titles, a.chunk_chars, a.tablerag_colmode)
     print(f"[corpus] {len(tids)} tables / {len(texts)} {a.unit} units "
           f"({time.time() - t0:.0f}s)", flush=True)
 
@@ -213,14 +440,18 @@ def main() -> int:
             d = emb @ enc.encode_query([q["question"]])[0].astype(np.float32)
             s = a.alpha * _minmax(d) + (1 - a.alpha) * _minmax(s) if a.alpha < 1 else d
         order = np.argsort(-s)
-        got, n_cells, ctx = set(), 0, []
-        for p in order:
-            if n_cells >= a.budget:
-                break
-            got |= covers[p]
-            n_cells += len(covers[p])
-            if a.dump_context and len(ctx) < a.dump_context:
-                ctx.append(texts[p])
+        if a.unit == "rowcol":
+            got, n_cells, ctx = rowcol_select(order, covers, texts, is_row,
+                                              a.budget, a.dump_context)
+        else:
+            got, n_cells, ctx = set(), 0, []
+            for p in order:
+                if n_cells >= a.budget:
+                    break
+                got |= covers[p]
+                n_cells += len(covers[p])
+                if a.dump_context and len(ctx) < a.dump_context:
+                    ctx.append(texts[p])
         gold = q["gold"]
         hit = (gold <= got) if q["mode"] == "all" else bool(gold & got)
         r = {"query_id": q["query_id"], "table_id": q["table_id"],
