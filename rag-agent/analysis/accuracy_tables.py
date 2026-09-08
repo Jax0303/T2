@@ -22,7 +22,37 @@ def load(tag):
     return json.loads(f.read_text()) if f.exists() else None
 
 
-def paired(tag, ref="t_s3c_hybrid", mode="all"):
+def recs(tag, mode="all"):
+    f = D / f"{tag}_records.jsonl"
+    if not f.exists():
+        return {}
+    return {j["query_id"]: j for j in map(json.loads, f.open())
+            if j.get("mode") == mode and "correct" in j}
+
+
+def primary_ids(ref="t_s3c_hybrid"):
+    """주 모집단 — 단일 셀 조회 (`aggregation` 이 none 이고 gold 셀이 하나).
+
+    2026-09-08 사용자 결정. 결과를 보고 고른 것이 아니라 연구 범위를 조회로 잡은
+    것이고, `aggregation` 은 HiTab 이 질의마다 붙여 둔 필드이므로 우리가 나눈 분류가
+    아니다. 여기서 빠지는 산술·다중 셀 254건은 숨기지 않고 표 1c 에 전수로 적는다 —
+    그쪽에서 순위가 뒤집히는 것까지 포함해서.
+
+    좁힌 이유: gold 셀이 정확히 하나라 지표가 "그 한 칸이 예산 안에 있나" 하나로
+    떨어진다. m>=2 는 셀 예산 20 이 요구 셀 수에 따라 다르게 빡빡해서 색인 단위를
+    가로질러 비교하면 예산 압박이 섞여 들어온다.
+    """
+    return {q for q, d in recs(ref).items()
+            if (d.get("aggregation") or "none") == "none" and d["m"] == 1}
+
+
+def acc(tag, ids):
+    o = recs(tag)
+    S = [q for q in ids if q in o]
+    return (sum(o[q]["correct"] for q in S) / len(S)) if S else None
+
+
+def paired(tag, ref="t_s3c_hybrid", mode="all", ids=None):
     """Exact McNemar of ``tag`` against our arm, over the queries both scored."""
     from math import comb
     fa, fb = D / f"{ref}_records.jsonl", D / f"{tag}_records.jsonl"
@@ -31,7 +61,7 @@ def paired(tag, ref="t_s3c_hybrid", mode="all"):
     A = {json.loads(l)["query_id"]: json.loads(l) for l in fa.open()}
     B = {json.loads(l)["query_id"]: json.loads(l) for l in fb.open()}
     ids = [q for q in A if q in B and "correct" in A[q] and "correct" in B[q]
-           and A[q]["mode"] == mode]
+           and A[q]["mode"] == mode and (ids is None or q in ids)]
     n01 = sum(1 for q in ids if A[q]["correct"] and not B[q]["correct"])
     n10 = sum(1 for q in ids if B[q]["correct"] and not A[q]["correct"])
     n = n01 + n10
@@ -60,10 +90,12 @@ def ctx_mean(tag):
 # 예산(셀 20), 검색기(hybrid α=0.7), 인코더는 모든 행에서 같다.
 BASELINE_ROWS = [
     ("t_s3c_hybrid", "**본 방법** — 셀 문장(제목+행경로+열경로+값)", "", "—"),
-    ("t_row_hybrid", "행 단위 — `RowColRetrieval` 의 행 절반 (TableRAG §4.2) ‡", "t_s3c_hybrid", "발표 논문(부분)"),
+    ("t_row_values", "행 단위 — `RowColRetrieval` 의 행 절반 (TableRAG §4.2) ‡", "t_s3c_hybrid", "발표 논문(부분)"),
+    ("t_rowcol_values", "`RowColRetrieval` — 행 × 열 교집합, 온전 재현 ‡", "t_s3c_hybrid", "발표 논문"),
     ("t_table_hybrid", "표 통째 — 표 하나가 색인 단위 하나 (표 단위 검색)", "t_s3c_hybrid", "통제 — 셀 검색 없음"),
     ("t_mt2net_hybrid", "셀 + 계층 헤더, 표 제목 없음 — MT2Net 의 색인 **단위** (Zhao et al. 2022 §4) ¶", "t_s3c_hybrid", "발표 논문(단위)"),
-    ("t_trag_hetero", "TableRAG **(arXiv 2506.10380, Huawei)** 검색 레그 재현", "t_s3c_hybrid", "발표 논문"),
+    ("t_trag_hetero", "TableRAG **(Huawei, EMNLP 2025)** 검색 레그 — 코드 읽기 1,000자", "t_s3c_hybrid", "발표 논문"),
+    ("t_trag_hetero_tok", "TableRAG **(Huawei)** 검색 레그 — 논문 읽기 1,000토큰(≈2,400자)", "t_s3c_hybrid", "발표 논문"),
     ("t_chunk1000", "고정 크기 청킹 1,000자 (LangChain 기본값, 청크마다 헤더 반복)", "t_s3c_hybrid", "업계 기본값"),
     ("t_tablerag_leaf", "TableRAG **(NeurIPS 2024)** 셀 코퍼스, 열 이름 = 잎 라벨 ⚠️", "t_s3c_hybrid", "발표 논문"),
     ("t_tablerag_path", "TableRAG **(NeurIPS 2024)** 셀 코퍼스, 열 이름 = 헤더 경로 (강한 변형) ⚠️", "t_s3c_hybrid", "발표 논문"),
@@ -89,6 +121,7 @@ ABLATION_ROWS = [
     ("t_s3c_hybrid_noprefix", "BGE 쿼리 지시문 없이 (버그 재현)", "t_s3c_hybrid", "질의 측"),
     ("t_s2_hybrid", "색인 단위: 헤더 경로만, 표 고유 라벨 없음 (S2)", "t_s3c_hybrid", "색인 단위"),
     ("t_flat_hybrid", "색인 단위: 잎 라벨만, 계층 경로도 라벨도 없음 (flat)", "t_s3c_hybrid", "색인 단위"),
+    ("t_row_hybrid", "입도: 우리 셀 문장을 **행별로 묶음** (발표된 행 단위가 아니다)", "t_s3c_hybrid", "입도"),
 ]
 
 
@@ -151,18 +184,20 @@ def ablation_table():
            "폭이 그 부분이 사는 값이다. 특히 `BM25 only` 는 통제로 필요하다 — 셀 문장에 표",
            "제목이 들어가므로 \"이득이 그냥 단어 겹침 아니냐\"는 반론이 성립할 수 있고, 같은",
            "문장을 어휘 매칭만으로 썼을 때의 값이 그 반론에 대한 답이다.", "",
-           "| 뺀 것 | 축 | 색인 단위 수 | **주지표 정확도** | 헤더답 정확도 | gold 표 포함률 | 본 방법 대비 (우리승:상대승, McNemar) |",
+           f"| 뺀 것 | 축 | 색인 단위 수 | **단일 셀 조회 (n={len(primary_ids())})** | 데이터셀 전체 | 헤더답 | 본 방법 대비 (McNemar) |",
            "|---|---|---:|---:|---:|---:|---|"]
+    P = primary_ids()
     for tag, label, ref, kind in ABLATION_ROWS:
         d = load(tag)
         if not d:
             out.append(f"| {label} | {kind} | — | *(미측정)* | — | — | — |")
             continue
+        a = acc(tag, P) if not tag.startswith("full_") else None
         out.append(
             f"| {label} | {kind} | {d['n_units']:,} | "
-            f"**{d['accuracy_all_mode']:.4f}** | {d['accuracy_any_mode']:.4f} | "
-            f"{d['gold_table_in_context']:.4f} | "
-            f"{(paired(tag, ref) if ref else '') or '—'} |")
+            f"{f'**{a:.4f}**' if a is not None else '—'} | "
+            f"{d['accuracy_all_mode']:.4f} | {d['accuracy_any_mode']:.4f} | "
+            f"{(paired(tag, ref, ids=(P if a is not None else None)) if ref else '') or '—'} |")
     dh, dd = load("t_s3c_hybrid"), load("t_s3c_dense")
     if dh and dd:
         out += ["", "⚠️ **하이브리드는 dense 를 유의하게 이기지 못한다** "
@@ -177,6 +212,7 @@ def ablation_table():
 def retrieval_table():
     d0 = load("t_s3c_hybrid") or {}
     n_all, n_any = d0.get("n_all_mode", "?"), d0.get("n_any_mode", "?")
+    P = primary_ids()
     out = [f"## 표 1 — 검색 정확도 (HiTab test, 질의 "
            f"{d0.get('n_queries_in_split', '?'):,}건)", "",
            "판정은 질의 단위 정답/오답. 같은 코퍼스, 같은 인코더",
@@ -190,24 +226,58 @@ def retrieval_table():
            "**이 표에는 리포 밖에 존재하는 방법만 싣는다.** 우리 시스템에서 한 부분을 뺀",
            "행(dense only, BM25 only, S2, flat)은 경쟁 상대가 아니므로 **표 1b** 로 뺐다 —",
            "그 행을 이겼다는 것은 결과가 아니라 그 부분이 사는 값이다.", "",
-           "| 색인 단위 / 검색기 | 분류 | 코퍼스 | 색인 단위 수 | 실제 문맥 셀수(평균) | **주지표 정확도** | 헤더답 정확도 | gold 표 포함률 | 본 방법 대비 (우리승:상대승, McNemar) |",
+           f"| 색인 단위 / 검색기 | 분류 | 색인 단위 수 | 문맥 셀수 | **단일 셀 조회 (n={len(P)})** | 데이터셀 전체 | 헤더답 | gold 표 | 본 방법 대비 (McNemar) |",
            "|---|---|---:|---:|---:|---:|---:|---:|---|"]
     for tag, label, ref, kind in BASELINE_ROWS:
         d = load(tag)
         if not d:
-            out.append(f"| {label} | {kind} | — | — | — | *(미측정)* | — | — | — |")
+            out.append(f"| {label} | {kind} | — | — | *(미측정)* | — | — | — | — |")
             continue
         cm = ctx_mean(tag)
         if tag in NO_CELL_STEP:
-            acc = anym = mcn = "— †"
+            prim = allm = anym = mcn = "— †"
         else:
-            acc = f"**{d['accuracy_all_mode']:.4f}**"
+            a = acc(tag, P) if not tag.startswith("full_") else None
+            prim = f"**{a:.4f}**" if a is not None else "—"
+            allm = f"{d['accuracy_all_mode']:.4f}"
             anym = f"{d['accuracy_any_mode']:.4f}"
-            mcn = (paired(tag, ref) if ref else "") or "—"
+            mcn = (paired(tag, ref, ids=(P if not tag.startswith("full_") else None))
+                   if ref else "") or "—"
         out.append(
-            f"| {label} | {kind} | {d['n_tables']}표 | {d['n_units']:,} | "
-            f"{cm:.1f} | {acc} | {anym} | {d['gold_table_in_context']:.4f} | {mcn} |")
-    out += ["", "### 발표된 수치와의 관계 (같은 표에 올리지 않는 이유)", "",
+            f"| {label} | {kind} | {d['n_units']:,} | {cm:.1f} | {prim} | {allm} | "
+            f"{anym} | {d['gold_table_in_context']:.4f} | {mcn} |")
+    out += ["", "### 출처 감사 — 각 행을 어디까지 원문과 대조했나 (2026-09-08)", "",
+            "| 행 | 읽은 원문 | 구현 상태 |",
+            "|---|---|---|",
+            "| 본 방법 | — | — |",
+            "| 행 단위 / rowcol | TableRAG §4.2 + 공식 코드 3함수 + TAP4LLM(Sui et al., "
+            "EMNLP 2024 Findings, arXiv:2312.09039) §표 샘플링 | `--row-text values` 가 "
+            "발표된 단위(값만). `sentence` 는 우리 문장을 행별로 묶은 **입도 ablation** 이고 "
+            "기준선이 아니다 — 표 1b |",
+            "| 표 통째 | TARGET(arXiv:2505.11545) 초록 | 재현 대상 없음(벤치마크). `†` 참조 |",
+            "| MT2Net | 논문 §4 원문 + 공식 코드 | **문장 불일치 확정.** 단위만 일치 — `¶` 참조 |",
+            "| TableRAG (Huawei) | 논문 §3.2·§5.1.2 + 공식 코드 4파일 | 텍스트 검색 레그만. "
+            "청크 크기는 코드(1,000자)를 따랐고 논문은 1,000토큰이다 — 아래 |",
+            "| TableRAG (NeurIPS'24) | 공식 코드 전체 + 논문 §4.2 | 셀 코퍼스만. "
+            "`build_schema_corpus` 누락(닿는 셀 0 변화 확인) |",
+            "| 고정 청킹 | — (LangChain 기본값, 논문 아님) | — |",
+            "",
+            "**Huawei 청크 크기가 논문과 코드에서 다르다.** 논문 §5.1.2 는 *\"text is chunked "
+            "into segments of 1000 tokens, with a 200-token overlap\"* 인데, 코드",
+            "(`online_inference/tools/retriever.py`)는 `RecursiveCharacterTextSplitter("
+            "chunk_size=1000, chunk_overlap=200)` 로 **글자**를 센다(LangChain 기본 단위).",
+            "약 4배 차이다. 위 행은 **코드**를 따랐다 — 실제로 그들이 돌린 것이기 때문이다.",
+            "토큰 읽기로 다시 잰 행은 아직 없다.",
+            "",
+            "그쪽이 쓰는 인코더(BGE-M3)와 리랭커(top-30 → top-3)는 재현하지 않았다. 표 1 은",
+            "**색인 단위**만 변수로 두므로 검색기를 모든 행에서 같게 고정한다. 참고로 이 리포는",
+            "리랭커가 이 과제에서 **해롭다**고 세 번 측정했다(`CLAUDE.md` §5).",
+            "",
+            "TARGET 이 우리 주장을 바깥에서 확증한다 — 표 검색이 **메타데이터 변화, 특히 표",
+            "제목의 부재에 크게 민감하다**는 관측이고, 표 1b 의 S2(제목 없음) 0.7711 이 같은",
+            "방향이다. dense 가 BM25 를 크게 앞선다는 관측도 표 1b 와 일치한다.",
+            "",
+            "### 발표된 수치와의 관계 (같은 표에 올리지 않는 이유)", "",
             "MT2Net 이 논문에서 보고한 검색 수치는 **MultiHiertt 의 top-10 recall 76.4% /",
             "top-15 80.8%** (Zhao et al. 2022, ACL, arXiv:2206.01347 §5.4) 이다. 위 표와",
             "직접 비교할 수 없고, 이유가 셋이다 — ① **데이터셋이 다르다**(MultiHiertt vs",
