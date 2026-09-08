@@ -84,109 +84,105 @@ def cell_unit(title, row_path, col_path, value, template: str) -> str:
                             template=TEMPLATES[template])
 
 
-def markdown_chunks(tab, t, title, chunk_chars: int):
-    """A general-purpose RAG stack's view of a table: markdown, split by size.
+def raw_lines(tab, t):
+    """The sheet as a reader of the .xlsx sees it — every raw row, headers included.
 
-    What LangChain / LlamaIndex do to a table by default — render it, then cut
-    it on a character budget. The header line is repeated in every chunk, which
-    is the *charitable* version: without it the second chunk of a table has no
-    column labels at all. The hierarchy is still gone, because a markdown
-    render of a hierarchical table keeps only the leaf labels — that loss is
-    the thing being measured, not a handicap we added.
+    ``excel_to_markdown`` walks openpyxl rows, so a hierarchical table's whole
+    multi-level header block arrives as ordinary text at the top of the render.
+    Rendering only the parsed leaf labels would delete header levels the baseline
+    actually receives, and the header is the axis this table measures — the cut
+    has to be theirs, not ours.
+
+    Returns ``[(markdown line, [(i, j) …])]``; header lines carry no data cell.
+    ``row_map`` / ``col_map`` are the raw→parsed index maps the grid already
+    carries, so a line's cells are exact rather than matched by text.
     """
-    hdr = "| " + " | ".join(
-        [""] + [(t.col_path(j)[-1] if t.col_path(j) else f"col{j}")
-                for j in range(t.n_cols)]) + " |"
-    head = f"# {title}\n{hdr}\n|" + "---|" * (t.n_cols + 1)
-    out, buf, cells, size = [], [], [], 0
-    for i in range(t.n_rows):
-        live = [j for j in range(t.n_cols) if str(t.data[i][j]).strip()]
-        if not live:
+    out = []
+    for r, row in enumerate(tab.raw.get("texts") or []):
+        cells = [str(v) for v in row]
+        if not any(c.strip() for c in cells):
             continue
-        line = "| " + " | ".join(
-            [t.row_path(i)[-1] if t.row_path(i) else ""] +
-            [str(t.data[i][j]) for j in range(t.n_cols)]) + " |"
-        if buf and size + len(line) > chunk_chars:
-            out.append(("\n".join([head, *buf]), cells))
-            buf, cells, size = [], [], 0
-        buf.append(line)
-        cells += [(i, j) for j in live]
-        size += len(line)
-    if buf:
-        out.append(("\n".join([head, *buf]), cells))
+        i = tab.row_map.get(r)
+        got = []
+        if i is not None:
+            for c in range(len(cells)):
+                j = tab.col_map.get(c)
+                if j is not None and str(t.data[i][j]).strip():
+                    got.append((i, j))
+        out.append(("| " + " | ".join(cells) + " |", got))
     return out
 
 
-def _recursive_split(text: str, size: int, overlap: int):
-    """LangChain ``RecursiveCharacterTextSplitter(size, overlap)`` on line text.
+def _pack(lines, head, size, overlap, per_chunk_head):
+    """Greedy merge of rendered lines into chunks, carrying `overlap` chars.
 
-    Reproduces ``_merge_splits``: split on the first separator present, then
-    greedily merge pieces up to ``size`` and carry ``overlap`` characters of
-    tail into the next chunk. Our markdown has no blank line, so the recursion
-    never goes past ``"\n"`` and this is the whole algorithm for this input.
+    Mirrors LangChain's ``_merge_splits``. ``per_chunk_head`` repeats the header
+    block in every chunk (our charitable generic-chunking arm); the published
+    Huawei arm prepends its table name BEFORE splitting, so its header rides in
+    the first chunk only and this flag is False there.
     """
-    parts, sep = text.split("\n"), "\n"
-    out, buf, total = [], [], 0
-    for d in parts:
-        if buf and total + len(d) + len(sep) > size:
-            out.append(sep.join(buf))
-            while total > overlap or (buf and total + len(d) + len(sep) > size):
-                total -= len(buf[0]) + (len(sep) if len(buf) > 1 else 0)
-                buf.pop(0)
-                if not buf:
+    out, buf, cells, size_now = [], [], [], 0
+    for line, cs in lines:
+        if buf and size_now + len(line) + 1 > size:
+            out.append(("\n".join([head, *[b for b, _ in buf]]) if per_chunk_head
+                        else "\n".join(b for b, _ in buf), cells))
+            keep, tot = [], 0
+            for b in reversed(buf):
+                if tot >= overlap:
                     break
-        buf.append(d)
-        total += len(d) + (len(sep) if len(buf) > 1 else 0)
+                keep.insert(0, b)
+                tot += len(b[0]) + 1
+            buf, cells, size_now = keep, [c for _b, cs2 in keep for c in cs2], tot
+        buf.append((line, cs))
+        cells = cells + cs
+        size_now += len(line) + 1
     if buf:
-        out.append(sep.join(buf))
+        out.append(("\n".join([head, *[b for b, _ in buf]]) if per_chunk_head
+                    else "\n".join(b for b, _ in buf), cells))
     return out
+
+
+def markdown_chunks(tab, t, title, chunk_chars: int):
+    """A general-purpose RAG stack's view: markdown, split on a character budget.
+
+    What LangChain / LlamaIndex do to a table by default. The header block is
+    repeated in every chunk, which is the *charitable* version — without it the
+    second chunk of a table has no column labels at all.
+    """
+    lines = raw_lines(tab, t)
+    head_n = sum(1 for _l, cs in lines if not cs)
+    head = "\n".join([f"# {title}"] + [l for l, _cs in lines[:head_n]])
+    return _pack(lines[head_n:], head, chunk_chars, 0, True)
 
 
 def trag_hetero_chunks(tab, t, name: str, chunk_chars: int, overlap: int):
-    """Huawei TableRAG's retrieval leg (arXiv 2506.10380, github.com/yxh-y/TableRAG).
+    """Huawei TableRAG's retrieval leg (arXiv 2506.10380, EMNLP 2025).
 
-    Their index is NOT the schema JSON. ``online_inference/tools/retriever.py``
-    renders each workbook to markdown (``utils/tool_utils.py: excel_to_markdown``
-    -- ``"Table name: {name}"`` then one pipe row per sheet row), splits it with
-    ``RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)``, and
-    prepends ``"File name: {key}"`` to every chunk. That is the whole unit.
+    ``online_inference/tools/retriever.py`` renders each workbook to markdown
+    (``utils/tool_utils.py: excel_to_markdown`` — ``"Table name: {name}"`` then
+    one pipe row per sheet row), splits it with ``RecursiveCharacterTextSplitter(
+    chunk_size=1000, chunk_overlap=200)``, and prepends ``"File name: {key}"`` to
+    every chunk. That is the whole unit.
 
     The ``{"table_name", "column_list"}`` schema (``src/data_persistent.py:
-    generate_schema_info``) is written to a separate directory and reaches the
-    model only through ``NL2SQL_USER_PROMPT`` -- it feeds SQL generation against
-    the MySQL copy, never the embedding index. The SQL leg has no counterpart
-    here (our reader gets retrieved text and no database), so what this arm
-    reproduces is their text-retrieval leg and nothing else.
+    generate_schema_info``) never reaches the embedding index — it goes to
+    ``NL2SQL_USER_PROMPT`` and feeds SQL against their MySQL copy. The SQL leg
+    has no counterpart here (our reader gets retrieved text and no database), so
+    this arm reproduces their text-retrieval leg and nothing else.
 
-    Note the table name rides in the FIRST chunk only, because it is prepended
-    before the split -- unlike ``markdown_chunks``, which repeats the header in
-    every chunk. That difference is theirs, not a handicap we added.
+    The table name rides in the FIRST chunk only, because it is prepended before
+    the split. That is theirs, not a handicap we added. ``name`` is the table's
+    TITLE rather than its ``table_id``: their ``table_name`` comes from the
+    workbook's file name, which carries meaning in their corpus while
+    ``0_1_nsf21326-tab001`` carries none.
 
-    ``name`` is the table's TITLE, not its ``table_id``. Their ``table_name``
-    and ``File name:`` both come from the workbook's file name, which in their
-    corpus carries meaning; HiTab's ``table_id`` (``0_1_nsf21326-tab001``) does
-    not, and feeding them an opaque string would be a handicap we invented. The
-    title is the honest counterpart, and it is the same string every other arm
-    gets.
+    NOTE the paper and the code disagree on the size. Section 5.1.2 says "1000
+    tokens, with a 200-token overlap"; the code counts CHARACTERS, which is
+    LangChain's default unit. Both readings are measured; see TABLES.md.
     """
-    hdr = "| " + " | ".join(
-        [(t.col_path(j)[-1] if t.col_path(j) else f"col{j}")
-         for j in range(t.n_cols)]) + " |"
-    lines = [f"Table name: {name}", hdr, "|" + "---|" * t.n_cols]
-    rows = []                                  # (line index in `lines`, cells)
-    for i in range(t.n_rows):
-        live = [j for j in range(t.n_cols) if str(t.data[i][j]).strip()]
-        if not live:
-            continue
-        lines.append("| " + " | ".join(
-            [t.row_path(i)[-1] if t.row_path(i) else ""] +
-            [str(t.data[i][j]) for j in range(t.n_cols)]) + " |")
-        rows.append((lines[-1], [(i, j) for j in live]))
-    out = []
-    for ch in _recursive_split("\n".join(lines), chunk_chars, overlap):
-        cells = [c for line, cs in rows if line in ch for c in cs]
-        out.append((f"File name: {name}\n" + ch, cells))
-    return out
+    lines = [(f"Table name: {name}", [])] + raw_lines(tab, t)
+    return [(f"File name: {name}\n" + txt, cs)
+            for txt, cs in _pack(lines, "", chunk_chars, overlap, False)]
 
 
 def tablerag_units(tab, t, mode: str):
@@ -223,12 +219,68 @@ def tablerag_units(tab, t, mode: str):
             if not trag.fmt_value(t.cell(r, c)):
                 continue
             seen.setdefault(trag.cell_doc(t, r, c, mode), []).append((r, c))
+    # The stub column. `build_cell_corpus` walks a FLAT read, where the row
+    # labels are an ordinary categorical column and therefore get their own
+    # `{"column_name", "cell_value"}` docs. Our parse keeps headers out of
+    # `t.data`, so omitting them would be a handicap we invented -- and not a
+    # small one: such a doc carries no data cell, so it costs zero of the cell
+    # budget while still letting the retriever find the table by a row label.
+    stub = ""
+    for row in (tab.raw.get("texts") or []):
+        if row and str(row[0]).strip():
+            stub = str(row[0]).strip()
+            break
+    for r in range(t.n_rows):
+        lab = trag.fmt_value(t.row_path(r)[-1]) if t.row_path(r) else ""
+        if lab:
+            seen.setdefault(f'{{"column_name": "{stub}", "cell_value": "{lab}"}}',
+                            [])
     out += sorted(seen.items(), key=lambda kv: -len(kv[1]))
     return out
 
 
+def line_text(t, cells, title: str, template: str, row_text: str) -> str:
+    """One row's / one column's index unit text.
+
+    ``sentence`` joins this repo's own cell sentences -- every cell carries the
+    table title and both header paths. That is NOT the published row unit; it is
+    an ablation of OUR unit's granularity, kept because the results already on
+    disk were produced with it.
+
+    ``values`` is the published one. TableRAG's ``build_row_corpus`` /
+    ``build_column_corpus`` (Chen et al., NeurIPS 2024) write
+    ``'|'.join(str(cell) for cell in row)`` -- bare values, no header PATH. That
+    absence is the baseline's defining property; putting our header path back in
+    erases the axis the table is measuring.
+
+    A row DOES carry its own label, because ``df.iterrows()`` walks a flat read
+    where the stub column is an ordinary column: the row's leaf label is cell 0
+    of ``row`` and lands in the joined string. A column does not carry its name,
+    because ``df.items()`` joins only the Series values. That asymmetry is
+    theirs. The label column itself would be one more column unit delivering no
+    data cell; it is omitted, which spends one fewer slot than they would.
+
+    The title is prefixed once even in ``values`` mode. Their retriever is built
+    per table (``init_retriever(table_id, df)``) so it never has to identify one;
+    ours searches 538 tables at once and a bare ``"52.1|60.6"`` addresses none of
+    them. Every other arm gets the same courtesy, and without it this arm would
+    be measuring our corpus scale instead of their index unit.
+    """
+    if row_text == "values":
+        rows = {i for i, _j in cells}
+        lead = ([t.row_path(next(iter(rows)))[-1]]
+                if len(rows) == 1 and t.row_path(next(iter(rows))) else [])
+        vals = "|".join(lead + [str(t.data[i][j]) for i, j in cells])
+        return f"{title} | {vals}" if title else vals
+    return " | ".join(
+        cell_unit(title if k == 0 else "", t.row_path(i), t.col_path(j),
+                  t.data[i][j], template)
+        for k, (i, j) in enumerate(cells))
+
+
 def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dict,
-                 chunk_chars: int = 1000, trag_mode: str = "leaf"):
+                 chunk_chars: int = 1000, trag_mode: str = "leaf",
+                 row_text: str = "sentence"):
     """(texts, cell_sets, is_row) — one index unit per entry, the cells it delivers,
     and (``rowcol`` only) whether the entry is a row unit or a column unit."""
     texts, covers, is_row = [], [], []
@@ -253,10 +305,7 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
                 cs = [(i, j) for (a, j) in live if a == i]
                 if not cs:
                     continue
-                texts.append(" | ".join(
-                    cell_unit(title if k == 0 else "", t.row_path(i),
-                              t.col_path(j), t.data[i][j], template)
-                    for k, (i_, j) in enumerate(cs)))
+                texts.append(line_text(t, cs, title, template, row_text))
                 covers.append(frozenset((tid, i, j) for _i, j in cs))
         elif unit == "chunk":
             for txt, cs in markdown_chunks(tab, t, title, chunk_chars):
@@ -283,20 +332,14 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
                 cs = [(i, j) for (a, j) in live if a == i]
                 if not cs:
                     continue
-                texts.append(" | ".join(
-                    cell_unit(title if k == 0 else "", t.row_path(i), t.col_path(j),
-                              t.data[i][j], template)
-                    for k, (_i, j) in enumerate(cs)))
+                texts.append(line_text(t, cs, title, template, row_text))
                 covers.append(frozenset((tid, i, j) for _i, j in cs))
                 is_row.append(True)
             for j in range(t.n_cols):
                 cs = [(i, j) for (i, b) in live if b == j]
                 if not cs:
                     continue
-                texts.append(" | ".join(
-                    cell_unit(title if k == 0 else "", t.row_path(i), t.col_path(j),
-                              t.data[i][j], template)
-                    for k, (i, _j) in enumerate(cs)))
+                texts.append(line_text(t, cs, title, template, row_text))
                 covers.append(frozenset((tid, i, j) for i, _j in cs))
                 is_row.append(False)
         else:                                     # whole table as one unit
@@ -370,6 +413,11 @@ def main() -> int:
     ap.add_argument("--chunk-chars", type=int, default=1000,
                     help="--unit chunk: character budget per chunk "
                          "(1000 = LangChain's default chunk_size)")
+    ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"],
+                    help="--unit row/rowcol: 'values' is the published unit "
+                         "(TableRAG build_row_corpus: bare values, no header "
+                         "path); 'sentence' joins OUR cell sentences and is an "
+                         "ablation of our own granularity, not a baseline.")
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"],
                     help="--unit tablerag: 'leaf' is what a plain read of a "
                          "hierarchical table yields, 'path' hands TableRAG the "
@@ -402,7 +450,8 @@ def main() -> int:
     tids = (hg.table_ids(a.data_dir) if a.corpus == "all"
             else sorted({q["table_id"] for q in queries}))
     texts, covers, is_row = build_corpus(a.data_dir, tids, a.template, a.unit,
-                                         page_titles, a.chunk_chars, a.tablerag_colmode)
+                                         page_titles, a.chunk_chars, a.tablerag_colmode,
+                                         a.row_text)
     print(f"[corpus] {len(tids)} tables / {len(texts)} {a.unit} units "
           f"({time.time() - t0:.0f}s)", flush=True)
 
