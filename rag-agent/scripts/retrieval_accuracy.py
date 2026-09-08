@@ -150,7 +150,12 @@ def markdown_chunks(tab, t, title, chunk_chars: int):
     second chunk of a table has no column labels at all.
     """
     lines = raw_lines(tab, t)
-    head_n = sum(1 for _l, cs in lines if not cs)
+    # 헤더 블록은 셀을 배달하지 않는 줄의 **선두 연속**이다. 전체 개수를 세면
+    # 표 중간의 섹션 구분 행(빈 줄)까지 더해져 head_n 이 부풀고, 그만큼 진짜
+    # 데이터 줄이 잘려 나간다 -- 40표 표본에서 셀 153개가 사라졌다.
+    head_n = 0
+    while head_n < len(lines) and not lines[head_n][1]:
+        head_n += 1
     head = "\n".join([f"# {title}"] + [l for l, _cs in lines[:head_n]])
     return _pack(lines[head_n:], head, chunk_chars, 0, True)
 

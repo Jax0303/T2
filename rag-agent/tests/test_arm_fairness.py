@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: MIT
+"""표 1 의 공정성 — arm 을 추가할 때 자동으로 걸리게 해 두는 검사.
+
+2026-09-08 에 색인 단위를 넷 얹으면서 라벨 다섯 건과 구현 다섯 건이 틀렸다. 그중
+마지막(청킹이 셀 2.9% 를 잃던 것)은 사람이 "마지막으로 한 번 더 확인하라"고 해서
+나왔다. 사람의 마지막 질문에 기대는 대신 여기에 못을 박는다.
+
+검사하는 것은 표 1 이 비교로 성립하기 위한 조건들이다:
+  - 모든 arm 이 같은 질의·같은 gold·같은 제외를 채점했는가
+  - covers 가 없는 셀을 주장하지 않는가 (점수 부풀림)
+  - covers 가 셀을 잃지 않는가 (baseline handicap) — tablerag 만 설계상 예외
+  - 채점 코드가 arm 마다 갈라지지 않는가
+"""
+import importlib.util
+import json
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data/hitab"
+RES = ROOT / "results/retrieval_accuracy"
+_s = importlib.util.spec_from_file_location("ra", ROOT / "scripts/retrieval_accuracy.py")
+ra = importlib.util.module_from_spec(_s)
+_s.loader.exec_module(ra)
+
+needs_data = pytest.mark.skipif(not DATA.exists(), reason="data/hitab 없음")
+
+#: (unit, build_corpus kwargs, 셀을 전부 배달해야 하는가)
+UNITS = [("cell", {}, True), ("row", {"row_text": "values"}, True),
+         ("rowcol", {"row_text": "values"}, True), ("chunk", {}, True),
+         ("trag_hetero", {}, True), ("table", {}, True),
+         ("tablerag", {}, False)]     # 숫자 열을 min/max 로 접으므로 부분집합
+
+
+@needs_data
+@pytest.mark.parametrize("unit,kw,complete", UNITS)
+def test_covers_are_valid_and_lossless(unit, kw, complete):
+    from rag_agent.bench import hitab_grid as hg
+    tids = hg.table_ids(str(DATA))[:25]
+    live = set()
+    for tid in tids:
+        tb = hg.load_table(tid, str(DATA))
+        if tb is None:
+            continue
+        t = tb.table
+        live |= {(tid, i, j) for i in range(t.n_rows) for j in range(t.n_cols)
+                 if str(t.data[i][j]).strip()}
+    texts, covers, _ = ra.build_corpus(str(DATA), tids, "s3c", unit, {}, **kw)
+    assert len(texts) == len(covers)
+    got = set().union(*covers) if covers else set()
+    assert got <= live, f"{unit}: 없는 셀 {len(got - live)}개를 주장한다"
+    if complete:
+        assert got == live, f"{unit}: 셀 {len(live - got)}개를 잃는다 (baseline handicap)"
+
+
+@needs_data
+def test_scoring_has_no_per_arm_branch():
+    src = (ROOT / "scripts/retrieval_accuracy.py").read_text()
+    seg = src[src.index('gold = q["gold"]'):src.index("recs.append(r)")]
+    assert "a.unit" not in seg and "unit ==" not in seg, "채점이 arm 마다 갈라진다"
+    assert seg.count("hit =") == 1, "판정 식이 하나가 아니다"
+
+
+@pytest.mark.skipif(not (RES / "t_s3c_hybrid_records.jsonl").exists(),
+                    reason="결과 파일 없음")
+def test_every_arm_scored_the_same_queries():
+    def recs(p):
+        return {j["query_id"]: j for j in map(json.loads, p.open())}
+    ref = recs(RES / "t_s3c_hybrid_records.jsonl")
+    others = sorted(RES.glob("t_*_records.jsonl"))
+    assert len(others) > 1
+    for f in others:
+        if "answer" in f.name:
+            continue
+        o = recs(f)
+        assert set(o) == set(ref), f"{f.name}: 질의 집합이 다르다"
+        for q in ref:
+            assert o[q].get("m") == ref[q].get("m"), f"{f.name}/{q}: gold 셀 수가 다르다"
+            assert o[q].get("excluded") == ref[q].get("excluded"), \
+                f"{f.name}/{q}: 제외 사유가 다르다"

@@ -109,3 +109,19 @@ def test_published_row_unit_is_values_not_our_sentence():
     assert v == "T | r0|10|1.5|kept", v        # 행 라벨 + 값, 헤더 경로 없음
     sent = ra.line_text(t, cells, "T", "s3c", "sentence")
     assert "side" in sent and "top" in sent, "sentence 모드는 우리 헤더 경로를 담는다"
+
+
+def test_chunk_does_not_drop_rows_after_a_blank_section_row():
+    """표 중간의 빈 섹션 행이 헤더로 오인돼 데이터 줄을 잘라먹지 않는다."""
+    class Tab2(Tab):
+        raw = {"texts": [["stub", "a", "b", "label"],
+                         ["r0", "10", "1.5", "kept"],
+                         ["", "", "", ""],            # 섹션 구분 행 (건너뜀)
+                         ["r1", "30", "2.5", "kept"],
+                         ["r2", "20", "3.5", "other"]]}
+        row_map = {1: 0, 3: 1, 4: 2}
+        col_map = {1: 0, 2: 1, 3: 2}
+
+    out = ra.markdown_chunks(Tab2(), T(), "T", chunk_chars=10_000)
+    seen = {c for _t, cs in out for c in cs}
+    assert seen == {(i, j) for i in range(3) for j in range(3)}, sorted(seen)
