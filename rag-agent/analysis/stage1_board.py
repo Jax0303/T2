@@ -34,6 +34,12 @@ def load(path):
     return [json.loads(l) for l in open(path)]
 
 
+def split_total(split):
+    """스플릿에 있는 질의 총수 — 모집단이 아니라 데이터셋 전부. 없으면 None."""
+    p = Path(f"data/hitab/data/{split}_samples.jsonl")
+    return sum(1 for _ in open(p)) if p.exists() else None
+
+
 def row(name, R):
     n = len(R)
     t1 = [r for r in R if r["table_rank_cellvote"] == 1]
@@ -75,11 +81,14 @@ def main() -> int:
     ap.add_argument("files", nargs="+")
     ap.add_argument("--out", default="results/stage1/BOARD.md")
     a = ap.parse_args()
-    rows = []
+    rows, seen = [], {}
     for f in a.files:
         m = POP.match(Path(f).name)
         name = (m.group(1) + (m.group(2) or "")) if m else Path(f).stem
-        rows.append(row(name, load(f)) | {"file": f})
+        recs = load(f)
+        rows.append(row(name, recs) | {"file": f})
+        s_ = "test" if "_test_" in name else "dev" if "_dev_" in name else name
+        seen.setdefault(s_, {}).update({d["query_id"]: d for d in recs})
 
     L = ["# 1단계 보드 — 쿼리 종류 × (표 검색, 표 조건부 셀 검색)", "",
          "계측기 `analysis/stage1_board.py`. 리더 없음. 각 행의 출처 파일은 맨 아래.", "",
@@ -148,6 +157,28 @@ def main() -> int:
         i = r["impossible"]
         L.append(f"| `{r['pop']}` | " +
                  " | ".join(f"**{i[k]}**" if i[k] > r["n"] // 2 else str(i[k]) for k in KS) + " |")
+    L += ["", "## 스플릿 전체를 분모로 — \"전체 질의 중 몇 개를 검색했나\"", "",
+          "위의 모든 표는 분모가 **모집단**(조회 / 다중조회 / 산술)이다. 스플릿에 있으면서 그 셋 어디에도 "
+          "안 들어가는 질의는 어느 칸에서도 채점되지 않는다. 두 가지 이유로 빠진다:", "",
+          "- **gold 표의 헤더 트리가 안 선다** → 그 표의 셀은 코퍼스에 색인조차 안 된다. "
+          "검색은 정의상 실패다 — 아래 `하한` 은 이것을 실패로 센다.",
+          "- **정답 셀이 격자 좌표로 안 풀린다** (`argmax`/`pair-argmax` 계열이 대부분) → 맞았는지 틀렸는지를 "
+          "**채점할 수가 없다**. 실패로도 성공으로도 셀 수 없어서 하한/상한을 갈라 적는다.", "",
+          "**논문에 \"검색 성공률\"을 한 숫자로 쓸 거면 `하한` 을 쓸 것.** 위 표 값은 채점 가능한 "
+          "질의만 본 값이고, 그 선별은 우리가 했다.", "",
+          "| 스플릿 | 스플릿 전체 | 채점됨 | 안 채점 | 전체@20 성공 | **하한@20** | 채점분@20 | 하한@10 | 채점분@10 |",
+          "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for sp in sorted(seen):
+        R = list(seen[sp].values())
+        N, n = split_total(sp), len(R)
+        ok = {k: sum(max(r["ranks"]) < k for r in R) for k in (10, 20)}
+        tot = f"{N}" if N else "—"
+        lo = (lambda k: f"**{ok[k] / N:.4f}**" if N else "—")
+        L.append(f"| `{sp}` | {tot} | {n} | {N - n if N else '—'} | {ok[20]} | {lo(20)} | "
+                 f"{ok[20] / n:.4f} | {(f'{ok[10] / N:.4f}' if N else '—')} | {ok[10] / n:.4f} |")
+    L += ["", "`하한` = 성공 / 스플릿 전체 질의. `채점분` = 성공 / 채점된 질의 (위 표들과 같은 분모). "
+          "참값은 둘 사이에 있고, 그 폭이 곧 채점 불가 질의의 몫이다. 스플릿 전체 수는 "
+          "`data/hitab/data/<split>_samples.jsonl` 줄 수 — 데이터가 없으면 `—`.", ""]
     L += ["", "## 출처", ""] + [f"- `{r['pop']}` ← `{r['file']}`" for r in rows]
     L += ["", "셀|표@k 는 **오라클** 표 게이팅이다 — 표를 맞힌다고 가정하고 그 표 안에서만 "
           "정렬한 값. 표@1×셀|표@k 는 실제 2단계 캐스케이드가 내는 값이고, 전체@k 는 "
