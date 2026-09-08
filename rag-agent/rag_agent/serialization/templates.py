@@ -29,8 +29,35 @@ claim:
   template is the mechanism's own prescription, pre-registered in
   PREREG-2026-08-23-compact-untitled.md before it was run.
 
-PROVISIONAL — the MT2Net template is not confirmed.
-The paper publishes exactly one rendered example:
+PROVISIONAL — CONFIRMED NOT TO MATCH (checked against the paper 2026-09-08).
+The knobs below were reverse-engineered from the paper's rendered example, and
+rendering that example's own cell with them does not reproduce it:
+
+    ours  For Product of Innovation Systems of Segment, Sales, 2018, Year Ended December 31 is 2,894
+    paper For Innovation Systems of Segment, sales of product in 2018, Year Ended December 31 is 2,894
+
+The paper puts the ROW's leaf inside the COLUMN clause ("sales of product in
+2018") and joins the year with " in "; these knobs concatenate the two axes with
+fixed separators. The rendering is semantic, not a separator join.
+
+Worse, the paper shows a SECOND rendered fact in Figure 1's "Retrieved top-n
+Facts" -- "The funded Aerospace Systems in 2017 was 9560" -- whose shape ("The
+... was X") disagrees with the first ("For ... is X"). Two examples, two shapes,
+no stated rule.
+
+What the paper DOES state (Section 4, verbatim) is the principle, not the form:
+
+    "we turn each cell into a sentence, along with its hierarchical row and
+     column headers"
+
+So this template reproduces MT2Net's INDEX UNIT (one cell, with both header
+paths, no table title) and NOT its sentence rendering. Report it that way. That
+distinction is affordable because this repo already measured that the sentence's
+FORM does not carry the gain -- S2 .517 / S2r .527 / MT2Net .516 are
+indistinguishable (CLAUDE.md section 5) -- what carries it is the table's own
+label, which MT2Net's unit does not have.
+
+The paper's rendered example, for the record:
 
     "For Innovation Systems of Segment, sales of product in 2018,
      Year Ended December 31 is 2,894"
