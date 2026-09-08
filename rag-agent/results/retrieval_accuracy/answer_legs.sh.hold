@@ -10,7 +10,11 @@ cd "$(dirname "$0")/../.."
 export PYTHONPATH=.
 R=results/retrieval_accuracy
 
-for tag in t_chunk1000 t_tablerag_leaf t_tablerag_path t_row_hybrid t_table_hybrid t_mt2net_hybrid; do
+# ⚠️ 표 1 의 주 모집단은 2026-09-08 에 단일 셀 조회 n=991 로 바뀌었는데(CLAUDE.md §0.1)
+# 표 2 는 아직 n=1,245 다. 두 표를 나란히 읽으려면 여기서도 같은 모집단으로 집계해야
+# 한다 -- `analysis/accuracy_tables.py: primary_ids()` 가 그 질의 집합을 준다.
+for tag in t_chunk1000 t_trag_hetero t_trag_hetero_tok t_tablerag_leaf t_tablerag_path \
+           t_row_values t_rowcol_values t_row_hybrid t_table_hybrid t_mt2net_hybrid; do
   .venv/bin/python scripts/answer_accuracy.py \
       --records $R/${tag}_records.jsonl \
       --condition retrieved \
