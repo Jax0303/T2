@@ -1,0 +1,90 @@
+{
+  "split": "test",
+  "prereg_sha256": "e5ffea84631038d80157910e8d86db2149d0f8a95442bd3452de5c8a2816ae2c",
+  "sources": [
+    "results/retrieval_accuracy/t_s3c_hybrid_records.jsonl",
+    "results/retrieval_accuracy/t_s3c_hybrid_answer_retrieved.jsonl"
+  ],
+  "source_sha256": [
+    "e6e8101db4b6d11e2db22ee235ddb87ccd15a640054b2530e6e302f7997c96cd",
+    "3dbe80978564e17f79468c21e46b9b895d2063bfc1dc7706edcca1ca5049fc6a"
+  ],
+  "n": 1581,
+  "n_primary": 991,
+  "rules": {
+    "S2": {
+      "snap_audit": {
+        "no_snap:already_a_cell_value": 1026,
+        "no_snap:no_unique_transform": 288,
+        "no_snap:no_number": 249,
+        "numeric": 18
+      },
+      "primary": {
+        "n": 991,
+        "before": 710,
+        "after": 713,
+        "em_before": 0.7164,
+        "em_after": 0.7195,
+        "delta": 0.003,
+        "recovered": 3,
+        "broken": 0,
+        "net": 3,
+        "mcnemar_p": 0.25,
+        "ci95": [
+          0.0,
+          0.0071
+        ]
+      },
+      "data": {
+        "n": 1245,
+        "before": 755,
+        "after": 747,
+        "em_before": 0.6064,
+        "em_after": 0.6,
+        "delta": -0.0064,
+        "recovered": 3,
+        "broken": 11,
+        "net": -8,
+        "mcnemar_p": 0.057373046875,
+        "ci95": [
+          -0.0129,
+          -0.0008
+        ]
+      },
+      "header": {
+        "n": 336,
+        "before": 142,
+        "after": 142,
+        "em_before": 0.4226,
+        "em_after": 0.4226,
+        "delta": 0.0,
+        "recovered": 0,
+        "broken": 0,
+        "net": 0,
+        "mcnemar_p": 1.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "all": {
+        "n": 1581,
+        "before": 897,
+        "after": 889,
+        "em_before": 0.5674,
+        "em_after": 0.5623,
+        "delta": -0.0051,
+        "recovered": 3,
+        "broken": 11,
+        "net": -8,
+        "mcnemar_p": 0.057373046875,
+        "ci95": [
+          -0.0101,
+          -0.0006
+        ]
+      },
+      "n_snapped": 18,
+      "snap_rate": 0.0114
+    }
+  }
+}

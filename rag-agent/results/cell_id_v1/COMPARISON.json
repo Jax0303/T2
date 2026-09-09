@@ -1,0 +1,54 @@
+{
+  "s3c_cellid": {
+    "complete": true,
+    "baseline_source": "/home/user/T2-1/rag-agent/results/retrieval_accuracy/t_s3c_hybrid_answer_retrieved.jsonl",
+    "source": "/home/user/T2-1/rag-agent/results/cell_id_v1/s3c_cellid.jsonl",
+    "n_primary": 991,
+    "base_correct": 710,
+    "new_correct": 589,
+    "base_em": 0.7164480322906155,
+    "new_em": 0.5943491422805247,
+    "delta": -0.12209889001009082,
+    "gain": 43,
+    "loss": 164,
+    "mcnemar_p": 7.64894230014999e-18,
+    "delta_ci95": [
+      -0.14934409687184663,
+      -0.09485368314833502
+    ],
+    "target_0_8_reached": false,
+    "improvement_rule_met_unadjusted": false,
+    "groups": {
+      "lookup_single": {
+        "n": 991,
+        "base_correct": 710,
+        "new_correct": 589
+      },
+      "lookup_multi": {
+        "n": 38,
+        "base_correct": 19,
+        "new_correct": 7
+      },
+      "arithmetic": {
+        "n": 216,
+        "base_correct": 26,
+        "new_correct": 7
+      },
+      "header_answer": {
+        "n": 336,
+        "base_correct": 142,
+        "new_correct": 1
+      },
+      "all_data": {
+        "n": 1245,
+        "base_correct": 755,
+        "new_correct": 603
+      },
+      "all_scored": {
+        "n": 1581,
+        "base_correct": 897,
+        "new_correct": 604
+      }
+    }
+  }
+}

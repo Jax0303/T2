@@ -1,0 +1,22 @@
+{
+  "split": "dev",
+  "arm": "p2",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "records": "results/cell_id_v2/d_s3c_hybrid_records.jsonl",
+  "records_sha256": "abc53bbc3097b289d443450bf0c49a4a5933c1fff138f78ddb87cd3d43c16925",
+  "module_sha256": "e5a271d6f0378cea9f5daaf34a9ee5b9543fa0c8a73bf4ca198d0786b1f7746c",
+  "runner_sha256": "de6864d107b55bf5b19e884ec43e588af4c4dbd1da4a201cfd18ad14b87381bc",
+  "reader_backend_sha256": "6d1b8158d540cadff95d0684b9c8dbf03b0e908dff7914238161d18d44e3de05",
+  "scorer_sha256": "b55363de5c52b438854201b772908f8825719452c8f2f60cbc91428bfe39da68",
+  "prereg_sha256": "f8c4dae529f04aa37edad4a73fc966a97aea48a43ffdc2b55211e015d8c7d3d9",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "temperature": 0,
+  "batch_size": 1,
+  "prompt": "You answer questions about a table. The context lines are cells of the table, each written as its headers and its value, and each numbered [#n]. Use only the context. Answer with the number of the cell that holds the answer, written as [#n] and nothing else — do not write the value itself. If the question asks for several values, give several numbers separated by commas. For example, if the cell numbered [#7] holds the answer, the whole reply is: [#7]",
+  "n_expected": 700,
+  "torch": "2.12.1+cu130",
+  "transformers": "5.12.1",
+  "bitsandbytes": "0.50.1",
+  "cuda": "13.0"
+}

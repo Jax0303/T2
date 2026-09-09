@@ -46,7 +46,7 @@ def test_covers_are_valid_and_lossless(unit, kw, complete):
         t = tb.table
         live |= {(tid, i, j) for i in range(t.n_rows) for j in range(t.n_cols)
                  if str(t.data[i][j]).strip()}
-    texts, covers, _ = ra.build_corpus(str(DATA), tids, "s3c", unit, {}, **kw)
+    texts, covers, _, _ = ra.build_corpus(str(DATA), tids, "s3c", unit, {}, **kw)
     assert len(texts) == len(covers)
     got = set().union(*covers) if covers else set()
     assert got <= live, f"{unit}: 없는 셀 {len(got - live)}개를 주장한다"

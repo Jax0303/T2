@@ -241,6 +241,21 @@ def tablerag_units(tab, t, mode: str):
         if lab:
             seen.setdefault(f'{{"column_name": "{stub}", "cell_value": "{lab}"}}',
                             [])
+    # `build_schema_corpus`, the half the earlier port left out. One doc per
+    # column: numeric columns already have theirs above, categorical columns get
+    # `cell_examples` (TableRAG's top-3 by frequency). They deliver no cell of
+    # their own, so they cost nothing of the budget -- including them can only
+    # help TableRAG find the table, never hurt it.
+    for c in range(t.n_cols):
+        if c in numeric:
+            continue
+        vals = Counter(trag.fmt_value(t.cell(r, c)) for r in range(t.n_rows)
+                       if trag.fmt_value(t.cell(r, c)))
+        if not vals:
+            continue
+        ex = ", ".join(f'"{v}"' for v, _ in vals.most_common(3))
+        seen.setdefault(f'{{"column_name": "{trag._col_name(t, c, mode)}", '
+                        f'"dtype": "object", "cell_examples": [{ex}]}}', [])
     out += sorted(seen.items(), key=lambda kv: -len(kv[1]))
     return out
 
@@ -287,13 +302,16 @@ def line_text(t, cells, title: str, template: str, row_text: str) -> str:
 def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dict,
                  chunk_chars: int = 1000, trag_mode: str = "leaf",
                  row_text: str = "sentence"):
-    """(texts, cell_sets, is_row) — one index unit per entry, the cells it delivers,
-    and (``rowcol`` only) whether the entry is a row unit or a column unit."""
-    texts, covers, is_row = [], [], []
+    """(texts, cell_sets, is_row, unit_tids) — one index unit per entry, the cells
+    it delivers, (``rowcol`` only) whether it is a row unit or a column unit, and
+    the table it came from. ``unit_tids`` is what ``--corpus gold`` masks on: a
+    unit carrying no cell (TableRAG's stub docs) still belongs to one table."""
+    texts, covers, is_row, unit_tids = [], [], [], []
     for tid in tids:
         tab = hg.load_table(tid, data_dir)
         if tab is None:
             continue
+        before = len(texts)
         t = tab.table
         title = with_page_title(tab.title, page_titles.get(tid))
         live = [(i, j) for i in range(t.n_rows) for j in range(t.n_cols)
@@ -351,10 +369,11 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
                           t.col_path(j), t.data[i][j], template)
                 for k, (i, j) in enumerate(live)))
             covers.append(frozenset((tid, i, j) for i, j in live))
-    return texts, covers, is_row
+        unit_tids.extend([tid] * (len(texts) - before))
+    return texts, covers, is_row, unit_tids
 
 
-def budget_select(order, covers, texts, budget: int, dump: int):
+def budget_select(order, covers, texts, budget: int, dump: int, max_units: int = 0):
     """Top units until the context holds ``budget`` DISTINCT cells.
 
     The budget is what the reader receives, so a unit that repeats a cell an
@@ -366,8 +385,8 @@ def budget_select(order, covers, texts, budget: int, dump: int):
     case. ``rowcol_select`` counts the distinct set already; this is that rule.
     """
     got, ctx = set(), []
-    for p in order:
-        if len(got) >= budget:
+    for n, p in enumerate(order):
+        if len(got) >= budget or (max_units and n >= max_units):
             break
         got |= covers[p]
         if dump and len(ctx) < dump:
@@ -428,9 +447,11 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--split", default="test")
     ap.add_argument("--data-dir", default="data/hitab")
-    ap.add_argument("--corpus", default="all", choices=["all", "split"],
+    ap.add_argument("--corpus", default="all", choices=["all", "split", "gold"],
                     help="all = every table in the store (the real haystack); "
-                         "split = only tables this split's questions touch")
+                         "split = only tables this split's questions touch, "
+                         "gold = build over the split but search ONLY inside each "
+                         "query's own table (TableRAG's per-table setting)")
     ap.add_argument("--template", default="s3c",
                     choices=list(TEMPLATES) + list(ABLATIONS))
     ap.add_argument("--unit", default="cell", choices=UNITS)
@@ -459,6 +480,9 @@ def main() -> int:
                     help="encode the question with no instruction prefix — what "
                          "the pipeline did before the fix, kept so the cost of "
                          "that bug is a measured number rather than a claim")
+    ap.add_argument("--max-units", type=int, default=0,
+                    help="also stop after N index units (TableRAG's native "
+                         "top_k=5 counts documents, not cells). 0 = no unit cap")
     ap.add_argument("--cache-dir", default=".cache/retrieval_accuracy")
     ap.add_argument("--dump-context", type=int, default=0,
                     help="also write the top-N context sentences per query, "
@@ -473,9 +497,11 @@ def main() -> int:
     queries = load_queries(a.data_dir, a.split, tabs)
     tids = (hg.table_ids(a.data_dir) if a.corpus == "all"
             else sorted({q["table_id"] for q in queries}))
-    texts, covers, is_row = build_corpus(a.data_dir, tids, a.template, a.unit,
+    texts, covers, is_row, unit_tids = build_corpus(a.data_dir, tids, a.template, a.unit,
                                          page_titles, a.chunk_chars, a.tablerag_colmode,
                                          a.row_text)
+    unit_tid_arr = np.array(unit_tids)
+    assert len(unit_tid_arr) == len(texts), "unit->table map lost a unit"
     print(f"[corpus] {len(tids)} tables / {len(texts)} {a.unit} units "
           f"({time.time() - t0:.0f}s)", flush=True)
 
@@ -508,17 +534,28 @@ def main() -> int:
             recs.append({"query_id": q["query_id"], "excluded": q["excluded"],
                          "table_id": q["table_id"], "mode": q["mode"]})
             continue
+        # `--corpus gold` reproduces TableRAG's setting: `init_retriever(table_id,
+        # df)` builds one index per table and searches only inside it. Masking the
+        # candidate set is that, for the dense leg exactly (cosine is per-document);
+        # the sparse leg keeps corpus-wide IDF, which alpha=1.0 removes entirely.
+        sel = np.flatnonzero(unit_tid_arr == q["table_id"]) if a.corpus == "gold" else None
         s = bm.get_scores(_tokenize(q["question"]))
         if emb is not None:
             d = emb @ enc.encode_query([q["question"]])[0].astype(np.float32)
+            if sel is not None:
+                s, d = s[sel], d[sel]
             s = a.alpha * _minmax(d) + (1 - a.alpha) * _minmax(s) if a.alpha < 1 else d
+        elif sel is not None:
+            s = s[sel]
         order = np.argsort(-s)
+        if sel is not None:
+            order = sel[order]
         if a.unit == "rowcol":
             got, n_cells, ctx = rowcol_select(order, covers, texts, is_row,
                                               a.budget, a.dump_context)
         else:
             got, n_cells, ctx = budget_select(order, covers, texts,
-                                              a.budget, a.dump_context)
+                                              a.budget, a.dump_context, a.max_units)
         gold = q["gold"]
         hit = (gold <= got) if q["mode"] == "all" else bool(gold & got)
         # gold 를 처음 배달한 단위가 순위 몇 번째인가. 판정에는 쓰지 않는다 --
@@ -557,6 +594,7 @@ def main() -> int:
         # 구별할 수 없고, 어떤 명령이 이 파일을 만들었는지 복원되지 않는다.
         "chunk_chars": a.chunk_chars, "row_text": a.row_text,
         "tablerag_colmode": a.tablerag_colmode,
+        "max_units": a.max_units,
         "encoder": enc.name if enc else "none (bm25 only)", "alpha": a.alpha,
         "query_prefix": (enc.query_prefix if enc else ""), "budget_cells": a.budget,
         "n_queries_in_split": len(queries), "n_scored": len(scored),

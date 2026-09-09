@@ -172,6 +172,12 @@ def main() -> int:
         + f"_answer_{a.condition}"
         + ("" if a.prompt == "base" else f"_{a.prompt}")
         + ("_nodefect" if a.exclude_unit_defect else "") + ".jsonl"))
+    # The per-query rows and the summary are written to `out` and to
+    # `out.replace(".jsonl", ".json")`. An --out that does not end in .jsonl makes
+    # those the same path and the summary silently destroys the predictions.
+    if out.suffix != ".jsonl":
+        raise SystemExit(f"--out must end in .jsonl (got {out.name}); the summary "
+                         f"is written alongside it as .json")
     if out.exists():
         raise SystemExit(f"{out} exists — answer legs never overwrite; pass a new --out")
 
