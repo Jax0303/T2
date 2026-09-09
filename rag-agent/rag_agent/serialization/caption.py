@@ -165,6 +165,21 @@ def serialize(
 # Measured on hitab_dev_lookup_all (results/tableconf/VERDICT.md): 179 of 424
 # tables share a title, and their queries lose the whole table 45.3% of the time
 # against 9.8% for uniquely titled ones (Fisher p=2.1e-13).
+def with_page_title(title: str, entry) -> str:
+    """Prefix ToTTo's PAGE title to HiTab's SECTION title.
+
+    HiTab's ``title`` is ToTTo's *section* title ('career statistics'); the page
+    title names the entity the question is about ('Hristo Yanev'). The deployed
+    index carries the prefix, so anything that rebuilds a cell sentence outside
+    the index — the reader's gold/oracle conditions, ablations — has to apply
+    the same rule here or it hands the reader a title the corpus never held.
+    """
+    pg = (entry or {}).get("page_title", "").strip()
+    if not pg:
+        return title
+    return f"{pg}: {title}" if title else pg
+
+
 TITLE_MODES = ("raw", "drop", "sig", "page")
 SIG_TOKENS = 3
 
@@ -201,9 +216,7 @@ def effective_titles(tids, title, cell_owner, cell_paths, mode="raw",
         if not page_titles:
             raise ValueError("mode 'page' needs page_titles")
         for t in tids:
-            pg = (page_titles.get(t) or {}).get("page_title", "").strip()
-            if pg:
-                out[t] = f"{pg}: {out[t]}" if out[t] else pg
+            out[t] = with_page_title(out[t], page_titles.get(t))
         return out
 
     shared = {}

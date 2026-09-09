@@ -1,0 +1,162 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<05:29,  1.03it/s]Loading weights:   1%|          | 2/339 [00:02<07:00,  1.25s/it]Loading weights:   1%|          | 4/339 [00:03<03:43,  1.50it/s]Loading weights:   1%|▏         | 5/339 [00:03<04:04,  1.37it/s]Loading weights:   2%|▏         | 6/339 [00:04<03:25,  1.62it/s]Loading weights:   4%|▎         | 12/339 [00:04<01:03,  5.19it/s]Loading weights:   5%|▍         | 16/339 [00:04<00:46,  6.98it/s]Loading weights:   5%|▌         | 18/339 [00:05<00:48,  6.67it/s]Loading weights:   8%|▊         | 28/339 [00:05<00:21, 14.72it/s]Loading weights:   9%|▉         | 31/339 [00:05<00:25, 12.30it/s]Loading weights:  12%|█▏        | 40/339 [00:05<00:15, 18.80it/s]Loading weights:  13%|█▎        | 43/339 [00:05<00:14, 19.98it/s]Loading weights:  16%|█▌        | 53/339 [00:06<00:09, 29.94it/s]Loading weights:  19%|█▉        | 64/339 [00:06<00:06, 40.82it/s]Loading weights:  21%|██        | 70/339 [00:06<00:06, 41.34it/s]Loading weights:  23%|██▎       | 77/339 [00:06<00:06, 43.45it/s]Loading weights:  24%|██▍       | 82/339 [00:06<00:05, 44.25it/s]Loading weights:  26%|██▋       | 89/339 [00:06<00:05, 47.76it/s]Loading weights:  29%|██▉       | 100/339 [00:06<00:04, 57.06it/s]Loading weights:  31%|███▏      | 106/339 [00:07<00:04, 53.92it/s]Loading weights:  33%|███▎      | 113/339 [00:07<00:04, 54.16it/s]Loading weights:  37%|███▋      | 124/339 [00:07<00:03, 61.59it/s]Loading weights:  39%|███▊      | 131/339 [00:07<00:03, 58.28it/s]Loading weights:  40%|████      | 137/339 [00:07<00:03, 55.59it/s]Loading weights:  44%|████▎     | 148/339 [00:07<00:03, 62.03it/s]Loading weights:  46%|████▌     | 155/339 [00:07<00:03, 60.73it/s]Loading weights:  48%|████▊     | 162/339 [00:08<00:03, 51.18it/s]Loading weights:  51%|█████     | 173/339 [00:08<00:02, 57.92it/s]Loading weights:  54%|█████▍    | 184/339 [00:08<00:02, 63.64it/s]Loading weights:  56%|█████▋    | 191/339 [00:08<00:02, 60.69it/s]Loading weights:  58%|█████▊    | 198/339 [00:08<00:02, 51.90it/s]Loading weights:  62%|██████▏   | 209/339 [00:08<00:02, 57.26it/s]Loading weights:  65%|██████▍   | 220/339 [00:08<00:02, 58.08it/s]Loading weights:  67%|██████▋   | 226/339 [00:09<00:02, 51.66it/s]Loading weights:  69%|██████▊   | 233/339 [00:09<00:01, 53.26it/s]Loading weights:  72%|███████▏  | 244/339 [00:09<00:01, 60.22it/s]Loading weights:  74%|███████▍  | 251/339 [00:09<00:01, 59.44it/s]Loading weights:  76%|███████▌  | 257/339 [00:09<00:01, 57.18it/s]Loading weights:  79%|███████▉  | 268/339 [00:09<00:01, 60.67it/s]Loading weights:  81%|████████  | 275/339 [00:09<00:01, 57.42it/s]Loading weights:  83%|████████▎ | 281/339 [00:10<00:01, 55.66it/s]Loading weights:  86%|████████▌ | 292/339 [00:10<00:00, 60.90it/s]Loading weights:  88%|████████▊ | 299/339 [00:10<00:00, 60.07it/s]Loading weights:  90%|████████▉ | 305/339 [00:10<00:00, 56.19it/s]Loading weights:  93%|█████████▎| 316/339 [00:10<00:00, 61.69it/s]Loading weights:  95%|█████████▌| 323/339 [00:10<00:00, 55.12it/s]Loading weights:  97%|█████████▋| 329/339 [00:10<00:00, 51.46it/s]Loading weights: 100%|██████████| 339/339 [00:11<00:00, 30.78it/s]
+  50/331  46s  acc=0.5800
+  100/331  86s  acc=0.6200
+  150/331  131s  acc=0.6133
+  200/331  172s  acc=0.6000
+  250/331  213s  acc=0.6120
+  300/331  257s  acc=0.6233
+{
+  "records": "results/rankcause/rank2plus_asis_records.jsonl",
+  "condition": "retrieved",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "base",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "excluded_unit_defect": false,
+  "input_tokens": {
+    "mean": 1263.6,
+    "median": 1207,
+    "max": 2675,
+    "n": 331
+  },
+  "context_limit": 32768,
+  "n_over_context_limit": 0,
+  "over_context_limit_ratio": 0.0,
+  "cells_delivered": {
+    "mean": 20.0,
+    "median": 20,
+    "max": 20,
+    "n": 331
+  },
+  "context_lines": {
+    "mean": 20.0,
+    "median": 20,
+    "max": 20,
+    "n": 331
+  },
+  "n": 331,
+  "answer_accuracy": 0.6375,
+  "answer_accuracy_all_mode": 0.6375,
+  "n_all_mode": 331,
+  "answer_accuracy_any_mode": null,
+  "n_any_mode": 0,
+  "retrieval_accuracy_here": 1.0,
+  "answer_given_retrieval_hit": 0.6375,
+  "n_retrieval_hit": 331,
+  "answer_given_retrieval_miss": null,
+  "n_retrieval_miss": 0,
+  "by_aggregation": {
+    "none": 0.6375
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:10,  1.35it/s]Loading weights:   1%|          | 2/339 [00:01<03:21,  1.67it/s]Loading weights:   1%|          | 4/339 [00:01<01:31,  3.65it/s]Loading weights:   1%|▏         | 5/339 [00:01<01:13,  4.53it/s]Loading weights:   3%|▎         | 10/339 [00:01<00:27, 12.12it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:15, 20.89it/s]Loading weights:   7%|▋         | 24/339 [00:01<00:10, 30.28it/s]Loading weights:   9%|▊         | 29/339 [00:02<00:10, 28.98it/s]Loading weights:  11%|█         | 36/339 [00:02<00:08, 35.31it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:08, 36.17it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 49.87it/s]Loading weights:  17%|█▋        | 58/339 [00:02<00:05, 50.02it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:05, 51.56it/s]Loading weights:  22%|██▏       | 76/339 [00:02<00:04, 60.34it/s]Loading weights:  24%|██▍       | 83/339 [00:02<00:04, 59.82it/s]Loading weights:  27%|██▋       | 90/339 [00:03<00:04, 53.64it/s]Loading weights:  30%|██▉       | 101/339 [00:03<00:03, 62.36it/s]Loading weights:  33%|███▎      | 112/339 [00:03<00:03, 69.16it/s]Loading weights:  35%|███▌      | 120/339 [00:03<00:03, 66.98it/s]Loading weights:  37%|███▋      | 127/339 [00:03<00:03, 53.22it/s]Loading weights:  40%|████      | 137/339 [00:03<00:03, 58.98it/s]Loading weights:  44%|████▎     | 148/339 [00:03<00:02, 63.72it/s]Loading weights:  46%|████▌     | 155/339 [00:04<00:02, 61.47it/s]Loading weights:  48%|████▊     | 162/339 [00:04<00:03, 54.85it/s]Loading weights:  51%|█████     | 173/339 [00:04<00:02, 61.43it/s]Loading weights:  54%|█████▍    | 184/339 [00:04<00:02, 68.72it/s]Loading weights:  57%|█████▋    | 192/339 [00:04<00:02, 67.06it/s]Loading weights:  59%|█████▊    | 199/339 [00:04<00:02, 58.67it/s]Loading weights:  62%|██████▏   | 209/339 [00:04<00:02, 63.60it/s]Loading weights:  65%|██████▍   | 220/339 [00:05<00:01, 68.28it/s]Loading weights:  67%|██████▋   | 227/339 [00:05<00:01, 63.42it/s]Loading weights:  69%|██████▉   | 234/339 [00:05<00:01, 55.64it/s]Loading weights:  72%|███████▏  | 245/339 [00:05<00:01, 63.12it/s]Loading weights:  76%|███████▌  | 256/339 [00:05<00:01, 68.62it/s]Loading weights:  78%|███████▊  | 264/339 [00:05<00:01, 66.75it/s]Loading weights:  80%|███████▉  | 271/339 [00:05<00:01, 59.44it/s]Loading weights:  83%|████████▎ | 281/339 [00:06<00:00, 64.39it/s]Loading weights:  86%|████████▌ | 292/339 [00:06<00:00, 69.37it/s]Loading weights:  88%|████████▊ | 300/339 [00:06<00:00, 68.09it/s]Loading weights:  91%|█████████ | 307/339 [00:06<00:00, 59.41it/s]Loading weights:  94%|█████████▎| 317/339 [00:06<00:00, 59.53it/s]Loading weights:  97%|█████████▋| 328/339 [00:06<00:00, 65.44it/s]Loading weights:  99%|█████████▉| 335/339 [00:06<00:00, 63.25it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 48.74it/s]
+  50/331  46s  acc=0.7000
+  100/331  86s  acc=0.7400
+  150/331  131s  acc=0.7333
+  200/331  171s  acc=0.7100
+  250/331  211s  acc=0.6960
+  300/331  256s  acc=0.7000
+{
+  "records": "results/rankcause/rank2plus_promote_records.jsonl",
+  "condition": "retrieved",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "base",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "excluded_unit_defect": false,
+  "input_tokens": {
+    "mean": 1263.6,
+    "median": 1207,
+    "max": 2675,
+    "n": 331
+  },
+  "context_limit": 32768,
+  "n_over_context_limit": 0,
+  "over_context_limit_ratio": 0.0,
+  "cells_delivered": {
+    "mean": 20.0,
+    "median": 20,
+    "max": 20,
+    "n": 331
+  },
+  "context_lines": {
+    "mean": 20.0,
+    "median": 20,
+    "max": 20,
+    "n": 331
+  },
+  "n": 331,
+  "answer_accuracy": 0.6888,
+  "answer_accuracy_all_mode": 0.6888,
+  "n_all_mode": 331,
+  "answer_accuracy_any_mode": null,
+  "n_any_mode": 0,
+  "retrieval_accuracy_here": 1.0,
+  "answer_given_retrieval_hit": 0.6888,
+  "n_retrieval_hit": 331,
+  "answer_given_retrieval_miss": null,
+  "n_retrieval_miss": 0,
+  "by_aggregation": {
+    "none": 0.6888
+  }
+}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:28,  1.62it/s]Loading weights:   1%|          | 2/339 [00:01<03:14,  1.73it/s]Loading weights:   1%|          | 4/339 [00:01<01:35,  3.50it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:59,  5.61it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:15, 20.88it/s]Loading weights:   7%|▋         | 24/339 [00:01<00:10, 29.43it/s]Loading weights:   9%|▊         | 29/339 [00:01<00:10, 29.58it/s]Loading weights:  11%|█         | 36/339 [00:02<00:08, 37.55it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:08, 36.11it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 49.15it/s]Loading weights:  17%|█▋        | 58/339 [00:02<00:05, 49.70it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:05, 52.01it/s]Loading weights:  22%|██▏       | 76/339 [00:02<00:04, 59.22it/s]Loading weights:  24%|██▍       | 83/339 [00:02<00:04, 59.46it/s]Loading weights:  27%|██▋       | 90/339 [00:02<00:04, 51.06it/s]Loading weights:  30%|██▉       | 101/339 [00:03<00:04, 58.18it/s]Loading weights:  33%|███▎      | 112/339 [00:03<00:03, 65.59it/s]Loading weights:  35%|███▌      | 119/339 [00:03<00:03, 63.32it/s]Loading weights:  37%|███▋      | 126/339 [00:03<00:04, 51.86it/s]Loading weights:  40%|████      | 136/339 [00:03<00:03, 59.17it/s]Loading weights:  42%|████▏     | 143/339 [00:03<00:03, 59.02it/s]Loading weights:  44%|████▍     | 150/339 [00:04<00:03, 52.32it/s]Loading weights:  47%|████▋     | 161/339 [00:04<00:02, 60.01it/s]Loading weights:  51%|█████     | 172/339 [00:04<00:02, 62.84it/s]Loading weights:  53%|█████▎    | 179/339 [00:04<00:02, 62.41it/s]Loading weights:  55%|█████▍    | 186/339 [00:04<00:02, 54.05it/s]Loading weights:  58%|█████▊    | 197/339 [00:04<00:02, 60.21it/s]Loading weights:  61%|██████▏   | 208/339 [00:04<00:01, 66.22it/s]Loading weights:  63%|██████▎   | 215/339 [00:05<00:01, 63.02it/s]Loading weights:  65%|██████▌   | 222/339 [00:05<00:02, 51.64it/s]Loading weights:  68%|██████▊   | 232/339 [00:05<00:01, 59.91it/s]Loading weights:  71%|███████   | 239/339 [00:05<00:01, 59.34it/s]Loading weights:  73%|███████▎  | 246/339 [00:05<00:01, 52.41it/s]Loading weights:  76%|███████▌  | 257/339 [00:05<00:01, 60.83it/s]Loading weights:  79%|███████▉  | 268/339 [00:05<00:01, 65.56it/s]Loading weights:  81%|████████  | 275/339 [00:06<00:01, 63.28it/s]Loading weights:  83%|████████▎ | 282/339 [00:06<00:01, 54.30it/s]Loading weights:  86%|████████▋ | 293/339 [00:06<00:00, 61.44it/s]Loading weights:  90%|████████▉ | 304/339 [00:06<00:00, 68.24it/s]Loading weights:  92%|█████████▏| 312/339 [00:06<00:00, 64.28it/s]Loading weights:  94%|█████████▍| 319/339 [00:06<00:00, 54.03it/s]Loading weights:  97%|█████████▋| 329/339 [00:06<00:00, 57.18it/s]Loading weights: 100%|██████████| 339/339 [00:07<00:00, 48.03it/s]
+  50/331  44s  acc=0.5400
+  100/331  83s  acc=0.5800
+  150/331  130s  acc=0.5867
+  200/331  172s  acc=0.6000
+  250/331  208s  acc=0.6000
+  300/331  251s  acc=0.6100
+{
+  "records": "results/rankcause/rank2plus_shuffle_records.jsonl",
+  "condition": "retrieved",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "base",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "excluded_unit_defect": false,
+  "input_tokens": {
+    "mean": 1263.6,
+    "median": 1207,
+    "max": 2675,
+    "n": 331
+  },
+  "context_limit": 32768,
+  "n_over_context_limit": 0,
+  "over_context_limit_ratio": 0.0,
+  "cells_delivered": {
+    "mean": 20.0,
+    "median": 20,
+    "max": 20,
+    "n": 331
+  },
+  "context_lines": {
+    "mean": 20.0,
+    "median": 20,
+    "max": 20,
+    "n": 331
+  },
+  "n": 331,
+  "answer_accuracy": 0.6133,
+  "answer_accuracy_all_mode": 0.6133,
+  "n_all_mode": 331,
+  "answer_accuracy_any_mode": null,
+  "n_any_mode": 0,
+  "retrieval_accuracy_here": 1.0,
+  "answer_given_retrieval_hit": 0.6133,
+  "n_retrieval_hit": 331,
+  "answer_given_retrieval_miss": null,
+  "n_retrieval_miss": 0,
+  "by_aggregation": {
+    "none": 0.6133
+  }
+}

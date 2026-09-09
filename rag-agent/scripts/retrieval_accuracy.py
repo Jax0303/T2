@@ -46,7 +46,8 @@ from rag_agent.data.loader import load_samples                        # noqa: E4
 from rag_agent.retrieve.encoders import default_encoder               # noqa: E402
 from rag_agent.retrieve.hybrid_index import _minmax, _tokenize        # noqa: E402
 from rag_agent.retrieve.sparse_bm25 import SparseBM25                 # noqa: E402
-from rag_agent.serialization.caption import caption_sentence          # noqa: E402
+from rag_agent.serialization.caption import (caption_sentence,        # noqa: E402
+                                             with_page_title)
 from rag_agent.serialization import tablerag_unit as trag             # noqa: E402
 from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,    # noqa: E402
                                                STRUCTURAL_COMPACT)
@@ -294,10 +295,7 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
         if tab is None:
             continue
         t = tab.table
-        title = tab.title
-        pg = (page_titles.get(tid) or {}).get("page_title", "").strip()
-        if pg:
-            title = f"{pg}: {title}" if title else pg
+        title = with_page_title(tab.title, page_titles.get(tid))
         live = [(i, j) for i in range(t.n_rows) for j in range(t.n_cols)
                 if str(t.data[i][j]).strip()]
         if unit == "cell":

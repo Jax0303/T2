@@ -441,7 +441,7 @@ def retrieval_table():
 def answer_table():
     out = ["## 표 2 — LLM 답변 정확도 (같은 질의, 검색이 준 문맥 그대로)", "",
            "채점기는 HiTab 공식 EM(`hitab_exact_match_text`) — 허용오차 없음.", "",
-           "| 조건 | 리더 | n | **답변 정확도(주지표 n)** | 전체 n | 검색 성공 질의에서 | 검색 실패 질의에서 |",
+           "| 조건 | 리더 | **주지표 (단일 셀 조회)** | 데이터셀 전체 | 전체 n | 검색 성공 질의에서 | 검색 실패 질의에서 |",
            "|---|---|---:|---:|---:|---:|---:|"]
     names = {"retrieved": "검색 문맥 (상위 20셀) — 배치되는 조건",
              "gold": "gold 셀만 주입 — **리더 천장**",
@@ -452,6 +452,16 @@ def answer_table():
                  "gold 셀만 + 출력 형식 지시 (사전등록 A, 라벨 결함 25건 제외)",
              "retrieved_evidence_nodefect":
                  "검색 문맥 + 근거 셀 우선 (사전등록 B, 라벨 결함 25건 제외)"}
+    P = primary_ids()
+
+    def primary_em(cond):
+        f = D / f"t_s3c_hybrid_answer_{cond}.jsonl"
+        if not f.exists():
+            return "—"
+        v = [j["answer_correct"] for j in map(json.loads, f.open())
+             if j["query_id"] in P]
+        return f"**{sum(v) / len(v):.4f}** ({sum(v)}/{len(v)})" if v else "—"
+
     any_row = False
     for cond in ("retrieved", "gold", "oracle", "retrieved_format_nodefect",
                  "gold_format_nodefect", "retrieved_evidence_nodefect"):
@@ -463,8 +473,8 @@ def answer_table():
             continue
         d = json.loads(f.read_text())
         any_row = True
-        out.append(f"| {names[cond]} | `{d['reader']}` | {d['n_all_mode']} | "
-                   f"**{d['answer_accuracy_all_mode']:.4f}** | "
+        out.append(f"| {names[cond]} | `{d['reader']}` | {primary_em(cond)} | "
+                   f"{d['answer_accuracy_all_mode']:.4f} (n={d['n_all_mode']}) | "
                    f"{d['answer_accuracy']:.4f} (n={d['n']}) | "
                    f"{d['answer_given_retrieval_hit']} (n={d['n_retrieval_hit']}) | "
                    f"{d['answer_given_retrieval_miss']} (n={d['n_retrieval_miss']}) |")
@@ -472,14 +482,87 @@ def answer_table():
         out.append("")
         out.append("*아직 측정 없음.*")
         return "\n".join(out)
+    o = load("t_s3c_hybrid_answer_oracle")
+    if o and o.get("composed"):
+        out += ["",
+                "`oracle` 행은 새 실행이 아니라 **`gold`(검색 성공분) + `retrieved`"
+                "(검색 실패분)의 합성**이다 (`analysis/compose_oracle.py`). 질의마다",
+                "프롬프트가 독립이고 온도 0 이라 정의상 같은 값이며, 생성 비용 없이",
+                "정확하다. 읽는 법: **지금 검색기 그대로 두고 distractor 만 없앴을 때** —",
+                "`gold` 처럼 검색 실패까지 면제해 주지 않는다.",
+                "",
+                "⚠️ `gold`·`oracle` 두 행은 2026-09-09 제목 버그(`BUGFIX_LOG.md`) "
+                "수정 **이전** 실행이다.",
+                "검색 성공 906건 중 188건이 색인에 없는 렌더링 위에서 나왔으므로 "
+                "재실행 전까지 **하한으로 읽는다.**"]
     if (D / "t_s3c_hybrid_answer_gold_format_nodefect.json").exists():
         out += ["",
-                "⚠️ **위 표의 행끼리 뺄셈하지 말 것.** 사전등록 A·B 행은 라벨 결함 25건을",
-                "제외한 n=1,220 이고 기준선 두 행은 n=1,245 다. 같은 모집단(n=1,220)에서의",
+                "⚠️ **`데이터셀 전체` 칸에서는 행끼리 뺄셈하지 말 것.** 사전등록 A·B 행은",
+                "라벨 결함 25건을 제외한 n=1,220 이고 기준선 두 행은 n=1,245 다.",
+                "(**`주지표` 칸은 여섯 행 모두 같은 991 건이다** — 빠진 25건이 전부 주지표",
+                "밖이라 그 칸끼리는 그대로 비교된다: A 는 `retrieved` +0.0011 / `gold`",
+                "+0.0030 으로 여기서도 0 이다.) 같은 모집단(n=1,220)에서의",
                 "기준선은 `retrieved` **0.6189**, `gold` **0.8648** 이므로, A 의 실제 효과는",
                 "`retrieved` +0.0008, `gold` **−0.0009** 로 **둘 다 0** 이다. 사전등록의",
                 "기각 기준(`gold` 0.87 미만)에 걸려 **A 는 기각**되었다 —",
                 "판정은 `results/retrieval_accuracy/VERDICT_PROMPT.md`."]
+    return "\n".join(out)
+
+
+
+def stratum_table():
+    """표 2d — 층별로 어느 몫이 큰가. 예산과 리더 중 무엇이 손잡이인지가 층마다 다르다."""
+    from rag_agent.eval.answer_em import query_type
+    legs = {c: {j["query_id"]: j["answer_correct"]
+                for j in map(json.loads, (D / f"t_s3c_hybrid_answer_{c}.jsonl").open())}
+            for c in ("retrieved", "oracle", "gold")
+            if (D / f"t_s3c_hybrid_answer_{c}.jsonl").exists()}
+    if len(legs) < 3:
+        return ""
+    R = recs("t_s3c_hybrid")
+    ladder = {k: {j["query_id"]: j["correct"]
+                  for j in map(json.loads, (D / f"t_s3c_{k}_records.jsonl").open())
+                  if "correct" in j}
+              for k in ("k5", "k10") if (D / f"t_s3c_{k}_records.jsonl").exists()}
+    S: dict = {}
+    for q, j in R.items():
+        t = "조회" if query_type(j.get("aggregation")) == "lookup" else "산술"
+        S.setdefault(f"{t} {'m=1' if j['m'] == 1 else 'm≥2'}", []).append(q)
+
+    def mean(v):
+        return sum(v) / len(v) if v else None
+
+    out = ["## 표 2d — 층별 손실 분해 (데이터셀 전체 1,245, 예산 20 고정)", "",
+           "`distractor 몫` = 검색 성공 질의에서 `gold` − `retrieved`. `천장 몫` = 1 − `gold`.",
+           "**어느 쪽이 큰가가 층마다 뒤집힌다** — 조회는 문맥 문제, 산술은 리더 문제다.",
+           "@10·@5 는 색인·검색을 그대로 두고 배달 셀 수만 줄였을 때의 검색 정확도"
+           " (`t_s3c_k{10,5}_records.jsonl`).", "",
+           "| 층 | n | 검색@20 | @10 | @5 | `retrieved` | `oracle` | `gold` (천장) | distractor 몫 | 천장 몫 |",
+           "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for k in ("조회 m=1", "조회 m≥2", "산술 m=1", "산술 m≥2"):
+        ids = S.get(k)
+        if not ids:
+            continue
+        hit = [q for q in ids if R[q]["correct"]]
+        gh, rh = mean([legs["gold"][q] for q in hit]), mean([legs["retrieved"][q] for q in hit])
+        cells = [f"{mean([R[q]['correct'] for q in ids]):.4f}"]
+        for kk in ("k10", "k5"):
+            v = mean([ladder[kk][q] for q in ids if q in ladder.get(kk, {})])
+            cells.append(f"{v:.4f}" if v is not None else "—")
+        out.append(f"| {k} | {len(ids)} | " + " | ".join(cells)
+                   + "".join(f" | {mean([legs[c][q] for q in ids]):.4f}"
+                             for c in ("retrieved", "oracle", "gold"))
+                   + f" | **−{gh - rh:.3f}** | **−{1 - gh:.3f}** |")
+    out += ["",
+            "읽는 법. **조회 m=1** 은 천장이 .96 이라 손실이 사실상 전부 distractor 다 —",
+            "예산·문맥 쪽 레버가 여기서만 산다. **산술** 은 정답 셀만 줘도 .32~.34 라",
+            "distractor 를 전부 없앤 세계(`oracle`)조차 .25~.32 다. **예산을 어떻게 만져도",
+            "산술은 안 오른다** — 남은 레버는 리더 교체(§23 Phase 5 Task C)뿐이다.",
+            "**조회 m≥2** 는 distractor 몫이 가장 크지만 n=38 이라 95% CI 가 ±16%p 다.",
+            "층으로 보고만 하고 설계 근거로 쓰지 않는다.", "",
+            "⚠️ 층을 가르는 데 쓴 `m` 은 gold 주석이므로 **배치 시점에는 모른다.**",
+            "질의마다 예산을 다르게 주는 정책(`@(c·m)` 류)은 오라클 정보를 쓰는 것이고,",
+            "§0.1 이 그 지표 자체를 금지한다. 하려면 질의 종류 분류기(§23)가 먼저다."]
     return "\n".join(out)
 
 
@@ -583,6 +666,10 @@ if __name__ == "__main__":
         print(_answer_by_arm())
     except Exception as e:                      # 답변 레그가 아직 없으면 표만 뺀다
         print(f"\n*(표 2b 미생성: {e})*")
+    st = stratum_table()
+    if st:
+        print()
+        print(st)
     gb = gap_block()
     if gb:
         print()

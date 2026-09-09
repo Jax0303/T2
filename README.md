@@ -1,68 +1,126 @@
-# RAG over hierarchical-header tables
+# 계층 헤더 표에 대한 RAG (RAG over hierarchical-header tables)
 
-Masters-thesis research code. The working project is **[`rag-agent/`](rag-agent/)**.
+석사 학위논문 연구 코드. 작업 프로젝트는 **[`rag-agent/`](rag-agent/)** 이다.
 
-Read in this order:
-
-1. [`rag-agent/CLAUDE.md`](rag-agent/CLAUDE.md) — what the thesis is (2026-08-30 redefinition),
-   the current priorities, the rejected hypotheses, and the citation rules. **Authoritative.**
-2. [`rag-agent/RESULTS.md`](rag-agent/RESULTS.md) — every current number with the results file
-   it came from. Pre-2026-08-31 numbers live in
-   [`rag-agent/RESULTS_ARCHIVE-2026-08-30.md`](rag-agent/RESULTS_ARCHIVE-2026-08-30.md).
-3. The latest `rag-agent/HANDOFF-<date>.md` — where the last session stopped.
-4. [`rag-agent/PRESENTATION-2026-09-04.md`](rag-agent/PRESENTATION-2026-09-04.md) — the talk,
-   one chapter per experiment, each line sourced.
-
-**Rule this repo runs on:** *every number carries the results file it came from.*
-A number without a source does not go in a document.
+**이 리포가 돌아가는 규칙: 모든 수치는 그 수치가 나온 결과 파일을 달고 다닌다.**
+출처 없는 숫자는 문서에 넣지 않는다. 아래 수치는 전부
+`rag-agent/results/retrieval_accuracy/TABLES.md` (생성기 `analysis/accuracy_tables.py`)
+에서 왔고, 판정은 전부 실행 **전에** 쓴 사전등록 문서를 짝으로 갖는다.
 
 ---
 
-## The line in one paragraph
+## 1. 연구 목표
 
-Hierarchical-header tables cannot go into a RAG prompt whole (86% of RealHiTBench gold
-tables exceed 512 tokens) and cannot be flattened without losing what a value means.
-So one data cell becomes one sentence — *table title + row header path + column header
-path + value* (`S3c`) — the whole corpus of cell sentences is indexed once, and a query
-is answered from the top-k cells a hybrid BM25 + dense index returns. The encoder is
-fine-tuned offline once (`models/bge-base-cell-ft-p0`); per-query cost stays one ANN
-lookup. The reader is a local Qwen2.5-7B (4-bit).
+계층 헤더 표(행·열 헤더가 트리를 이루는 표)는 RAG 프롬프트에 통째로 넣을 수 없고
+(RealHiTBench gold 표 중앙 1,561토큰, 86%가 512 초과 — `rag-agent/CLAUDE.md`), 평탄화하면 값의 의미가 사라진다.
+**표를 셀 단위로 색인해 질의마다 필요한 셀만 배달하는 것**이 이 연구의 대상이다.
 
-Stage 1 (retrieval) is scored as *query type × (table hit, cell hit given the table)* —
-`rag-agent/results/stage1/BOARD.md`. Stage 3 (answer EM) is scored on the same queries
-with the same cells injected — `rag-agent/results/stage3/`.
+측정 대상은 두 개이고 **같은 운영점**에서 잰다 (`CLAUDE.md` §0.2):
 
-## Positioning — what is prior art (do not present as novel)
+1. **검색 정확도** — 리더에게 준 문맥이 정답 근거 셀을 담았는가 (질의 단위 맞았다/틀렸다).
+2. **답변 EM** — 그 문맥 그대로 리더가 낸 답 (HiTab 공식 채점기, 허용오차 없음).
 
-- **"Verbalize each cell with its hierarchical row/column headers, retrieve top-n"** is
-  MT2Net (Zhao et al., *MultiHiertt*, ACL 2022, arXiv:2206.01347 §4), verbatim. Adopt and
-  cite. The difference from MT2Net is **per-query cost and scope**: MT2Net scores every
-  candidate with a cross-encoder inside one document; this indexes the corpus once and
-  does one ANN lookup (`rag-agent/CLAUDE.md` §2).
-- The header-path-vs-flat serialization gain is also published: OHD (arXiv:2602.01969)
-  Table 2, and MT2Net's own flat-vs-hierarchical comparison.
-- **"Fix MT2Net's 64% fact-integration error"** misreads MT2Net Table 6 — that table
-  classifies the generated program, not retrieval failures.
-- **Re-retrieval to recover missing operands** was measured here and is a budget change
-  in disguise (+.014, p=.55 against a per-query budget-matched control). Any arm that
-  grows the evidence set must report such a control before its delta is quoted.
+주 모집단은 **단일 셀 조회 n=991** (HiTab test, `aggregation`=none 이고 gold 셀 1개).
+데이터셀 전체 n=1,245 · 헤더답 n=336 은 따로 싣는다.
 
-## Archived measurements (2026-08, OSC line)
+## 2. 관련 연구 — 무엇이 선행 연구인가 (새롭다고 주장하지 않는 것)
 
-The repository's first line scored *Operand-Set Completeness* (all gold operand cells
-retrieved, or nothing) and built operand-targeted retrieval, structural injection and
-a completeness gate on top of it. Those interventions were measured against budget-matched
-controls and **lost**; the line was closed on 2026-08-30 and its code was removed from
-the tree on 2026-09-05 (history before commit `b2fddb8`; result files at `753fa2e`).
-Two measurements from it are still cited in the talk and are kept in
-`RESULTS_ARCHIVE-2026-08-30.md` §D and §I:
+- **"셀마다 계층 행·열 헤더를 붙여 문장으로 만들고 상위 n개를 검색한다"** 는
+  MT2Net (Zhao et al., *MultiHiertt*, ACL 2022, arXiv:2206.01347 §4) 그대로다.
+  채택하고 인용한다. 차이는 **질의당 비용과 범위**다 — MT2Net 은 한 문서 안에서
+  크로스인코더로 후보를 전부 채점하고, 여기서는 코퍼스를 한 번 색인해 ANN 한 번을 쓴다.
+- **헤더 경로 대 평탄 직렬화의 이득**도 이미 발표돼 있다 (OHD arXiv:2602.01969 Table 2,
+  그리고 MT2Net 자신의 flat-vs-hierarchical 비교).
+- **TableRAG (NeurIPS 2024)** 는 숫자 열을 min/max 요약 문서 하나로 접어서 개별 숫자를
+  색인하지 않고, 표를 가로질러 검색하지 않는다(표 하나를 받아 그 안에서 찾는다).
+  그래서 이 리포의 비교는 **성능 비교가 아니라 갭 진술**이다 —
+  "우리가 TableRAG 를 이겼다"로 쓰지 않는다 (`TABLES.md` 표 1 주석).
+- **"MT2Net 의 64% fact-integration error 를 고친다"** 는 MT2Net Table 6 의 오독이다.
+  그 표는 생성된 프로그램을 분류한 것이지 검색 실패를 분류한 것이 아니다.
+- **누락 피연산자 재검색**은 여기서 측정했고 예산 변경의 다른 이름이었다
+  (+.014, 질의별 예산 통제 대비 p=.55). 근거 집합을 키우는 arm 은 그 통제를 먼저 보고해야 한다.
 
-- RealHiTBench, raw hierarchical tables, same retriever and k, only the serialization
-  differs: S1 flat → S2 header-path lifts strict EM on gpt-5.1 .160 → .309 (n=94,
-  p=.0043), gpt-4.1-mini .170 → .277 (p=.0213), llama-3.3-70b .205 → .341 (n=44, p=.0703).
-- Six shuffle draws of a length-matched control: the header-path gain comes from the
-  ancestor header **words**; the hierarchical **order** effect is not detectable
-  (hybrid S2 sits inside the shuffle distribution, best permutation p ≈ .14).
+## 3. 방법론
 
-`rag-agent/RESEARCH_STRUCTURE.md` is that line's design document, kept for its
-related-work list and IP notes; where it conflicts with `CLAUDE.md`, `CLAUDE.md` wins.
+```
+표    -> 셀 문장  "In the table '<제목>', among <행 경로>, the value of <열 경로> is <값>."  (S3c)
+      -> 임베딩 (BAAI/bge-base-en-v1.5, 기성품 — 학습 없음) -> BM25+dense 하이브리드, 코퍼스 전역
+질의  -> 전 셀 랭킹 -> 상위 20 셀 문장 -> local Qwen2.5-7B-Instruct (4bit) -> EM
+```
+
+- **별도의 표 검색 단계가 없다.** 셀 랭킹이 표 선택을 겸한다.
+- **학습 단계가 없다** (2026-09-08 제거). 파인튜닝 인코더로 잰 수치는 이 연구의 수치가 아니다.
+- **dev 를 쓰지 않는다.** HiTab **test** 로만 실험한다. dev 가 없는 대신 **사전등록**이
+  과적합을 막는다 — 개입마다 실행 전에 예측치와 기각 기준을 문서로 박고, 한 번 돌리고,
+  규칙대로 판정한다. 이 리포의 판정은 전부 이 규율로 나왔다.
+- 리더 조건 세 개를 같이 잰다: `retrieved`(배달된 20셀, 배치 조건) ·
+  `gold`(정답 셀만 = 리더 천장) · `oracle`(검색 성공 시 gold, 실패 시 검색 문맥
+  = 지금 검색기를 두고 선별만 완벽할 때). 이 셋이 "검색은 .91인데 답변은 왜 .72인가"에
+  추측이 아니라 산술로 답한다.
+
+## 4. 현재 상황 (2026-09-09)
+
+### 4.1 수치 — 주지표 단일 셀 조회 n=991
+
+| | 값 |
+|---|---:|
+| 검색 정확도 | **0.9142** (906/991) |
+| 답변 EM (`retrieved`, 배치 조건) | **0.7164** (710/991) |
+| 답변 EM (`oracle`, 선별만 완벽) | 0.8819 (874/991) |
+| 답변 EM (`gold`, 리더 천장) | 0.9576 (949/991) |
+
+가장 가까운 발표된 방법(MT2Net 색인 단위) 대비 검색 격차 **+0.0989**,
+`bge-large` 로 바꿔도 +0.0928 로 유지된다 (`VERDICT_ENCODER.md`).
+
+### 4.2 손실이 어디에 있는가 — 층마다 뒤집힌다 (`TABLES.md` 표 2d)
+
+| 층 | n | `retrieved` | `gold`(천장) | distractor 몫 | 천장 몫 |
+|---|---:|---:|---:|---:|---:|
+| 조회 m=1 (주지표) | 991 | 0.7164 | 0.9576 | **−0.181** | −0.040 |
+| 조회 m≥2 | 38 | 0.5000 | 0.8947 | −0.312 | −0.125 |
+| 산술 m=1 | 60 | 0.2333 | 0.3167 | −0.089 | **−0.661** |
+| 산술 m≥2 | 156 | 0.0769 | 0.3397 | −0.237 | **−0.675** |
+
+**조회는 문맥 문제, 산술은 리더 문제다.** 조회 m=1 은 정답 셀만 주면 .96 이므로 손실이
+거의 전부 distractor(문맥에 같이 온 형제 셀)에서 나온다. 산술은 정답 셀만 줘도 .32~.34 라
+문맥을 어떻게 손봐도 오르지 않는다 — 남은 레버는 리더 교체다.
+
+실패 전수는 `results/retrieval_accuracy/FAILURES.json` (298건, 생성기
+`analysis/failure_dump.py`): distractor 181 · 검색 실패 81 · 리더 천장 19 ·
+gold 조건만 실패 17. distractor 181건 중 107건이 gold 의 **행 또는 열 형제**를 읽은 것이다.
+
+### 4.3 기각된 가설 (전부 사전등록 → 판정)
+
+| 개입 | 결과 | 판정 문서 |
+|---|---|---|
+| 출력 형식 지시로 채점기 몫 회수 | 기각 (효과 0) | `VERDICT_PROMPT.md` A |
+| 답하기 전 근거 셀 고르기 | 기각 (기준선과 구별 안 됨) | `VERDICT_PROMPT.md` B |
+| gold 를 상위로 올리면 답이 오른다 | 기각 (순위는 원인이 아니다) | `results/rankcause/VERDICT.md` |
+| 예산 축소 k=20→10 | 기각 (Δ=+0.016, p=0.141) | `VERDICT_BUDGET10.md` |
+| 인코더 교체로 검색 회수 | 회수 20건 · 상실 21건 = **순 −1** | `VERDICT_ENCODER.md` |
+| 제목 생성 · 크로스인코더 재정렬 · 헤더 범위 색인 | 기각 | `CLAUDE.md` §5 |
+
+k=10 은 기각됐지만 **기전은 확인됐다**: Cond.EM 0.7792 → 0.8353 으로 사전등록에 적은
+손익분기 0.8166 을 넘었다. 문맥을 줄이면 distractor 손실은 실제로 준다 — 다만 검색
+정확도가 −4.4%p 떨어지면서 순이득이 +1.6%p 로 남고 그 크기에서는 유의하지 않다.
+
+### 4.4 지금 못 박힌 한계
+
+- **조회 m=1 에서 0.9 는 지금 검색기로는 정의상 못 찍는다.** 선별을 완벽하게 해도
+  `oracle` 0.8819 가 상한이다. 0.9 는 검색 실패 85건 중 20건 이상 회수를 요구하는데,
+  가장 싼 회수 수단(기성품 인코더 교체)이 순 −1건이었다.
+- **문맥 층 개입은 여섯 번 기각됐다.** 남은 레버는 리더 교체와 색인 단위 재설계뿐이다.
+- ⚠️ `gold`/`oracle` 산출물은 2026-09-09 제목 버그(`BUGFIX_LOG.md`) 수정 **이전**
+  실행이다. 재실행 전까지 리더 천장은 **하한**으로 읽는다. 이것이 다음 세션의 첫 작업이다.
+
+---
+
+## 읽는 순서
+
+1. [`rag-agent/CLAUDE.md`](rag-agent/CLAUDE.md) — 지표·모집단·금지 사항. **최우선.**
+   §0 이 아래 전부를 이긴다.
+2. [`rag-agent/results/retrieval_accuracy/TABLES.md`](rag-agent/results/retrieval_accuracy/TABLES.md)
+   — 표 1(검색) · 표 2(답변) · 표 2b/2c(arm 별) · 표 2d(층별). 현행 수치는 여기가 전부다.
+3. [`rag-agent/RESULTS.md`](rag-agent/RESULTS.md) — 실험별 상세와 그 출처 파일.
+4. 최신 `rag-agent/HANDOFF-<날짜>.md` — 지난 세션이 어디서 멈췄는지.
+5. `rag-agent/PREREG-*.md` 와 `results/retrieval_accuracy/VERDICT_*.md` — 사전등록과 그 판정.

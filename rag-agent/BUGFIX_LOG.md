@@ -116,3 +116,39 @@ query_id: q-401(P1), q-146/q-196/q-118(P4), q-396/q-118/q-267(gold_cell).
 **재집계 산출물**: `results/phase4/FINAL.md` (`analysis/phase4g.py`).
 수정 전 수치는 `results/phase4/final_summary.md`, `phase4b.md`, `phase4e.md`에
 그대로 남겨 두었다.
+
+## 2026-09-09 — 리더 `gold`/`oracle` 조건이 색인에 없는 제목을 썼다
+
+**대상**: `scripts/answer_accuracy.py: gold_context()`
+
+**증상**: `gold_context` 가 만든 gold 셀 문장이 같은 질의의 검색 문맥 어디에도
+문자열로 존재하지 않는다. 주지표(all·`aggregation=none`·m=1) 검색 성공 906건 중
+**188건(20.8%)**.
+
+    gold_context : In the table 'career statistics', among cska sofia > total, ...
+    색인/검색 문맥 : In the table 'Hristo Yanev: career statistics', among cska sofia > total, ...
+
+**원인**: 색인은 `scripts/retrieval_accuracy.py: build_corpus()` 에서 ToTTo 페이지
+제목을 앞에 붙인다(`results/tableconf/totto_page_titles.json`, 1,851표). `gold_context`
+는 `tab.title`(HiTab 이 가진 ToTTo **섹션** 제목)을 그대로 썼다. 같은 규칙이 리포에
+세 벌 있었고 — `caption.effective_titles(mode="page")`, `build_corpus` 안의 인라인
+3줄, 그리고 `gold_context` 의 **누락** — 셋이 어긋났다.
+
+**성격**: 표기 문제가 아니라 측정 결함이다. **`retrieved` 조건과 `gold`/`oracle`
+조건이 서로 다른 렌더링 위에서 비교되고 있었다.** 제목 내용이 EM 을 움직인다는 것은
+이미 측정돼 있다 — CLAUDE.md §5 생성 제목 기각(.3082 → .2239, p=.0002). 방향은
+`gold` 조건이 **불리한** 쪽이므로 리더 천장은 과소평가일 수 있다.
+
+**수정**: 규칙을 `rag_agent/serialization/caption.py: with_page_title()` 한 곳으로
+모으고 세 호출자가 전부 그것을 부른다. 고친 뒤 188 → **0**.
+
+**검사**: `tests/test_gold_context_matches_index.py` — 검색 성공·m=1 질의는
+`gold_context` 문장이 리더가 받은 문맥 줄에 그대로 있어야 한다. 이 결함이 있으면
+실패한다. 전체 82 passed.
+
+**영향 — 아직 재실행하지 않았다**: `gold`/`oracle` 조건의 산출물이 전부 이 결함
+위에서 나왔다. `results/retrieval_accuracy/t_s3c_hybrid_answer_gold*.jsonl`,
+`VERDICT_PROMPT.md`(gold .8648 → .8639), `TABLES.md` 의 gold 행, 그리고 그 값을
+쓰는 CLAUDE.md §5 예산 축소 기각(“distractor 0 인 gold 조건조차 0.8474”)이
+해당한다. **재실행 전까지 리더 천장 수치는 하한으로 읽는다.** `retrieved` 조건은
+색인 문장을 그대로 쓰므로 영향 없음 — 표 1 과 표 2b 의 검색 arm 수치는 무관하다.

@@ -36,8 +36,10 @@ sys.path.insert(0, str(ROOT))
 from rag_agent.bench import hitab_grid as hg                          # noqa: E402
 from rag_agent.eval.metrics import hitab_exact_match_text             # noqa: E402
 from rag_agent.llm.factory import build_llm                           # noqa: E402
-from rag_agent.serialization.caption import caption_sentence          # noqa: E402
+from rag_agent.serialization.caption import (caption_sentence,        # noqa: E402
+                                             with_page_title)
 from rag_agent.serialization.templates import STRUCTURAL_COMPACT      # noqa: E402
+from scripts.retrieval_accuracy import PAGE_TITLES                    # noqa: E402
 
 BASE = ("You answer questions about a table. The context lines are cells of the "
         "table, each written as its headers and its value. Use only the context. "
@@ -70,14 +72,63 @@ EVIDENCE = FORMAT + (
 PROMPTS = {"base": BASE, "format": FORMAT, "evidence": EVIDENCE}
 
 
+#: The index prefixes ToTTo's page title (scripts/retrieval_accuracy.py
+#: build_corpus). Until 2026-09-09 gold_context did not, so the gold/oracle
+#: conditions handed the reader a title the corpus never held -- 188 of the 906
+#: main-population retrieval hits. BUGFIX_LOG.md 2026-09-09.
+_PAGE_TITLES = json.loads(PAGE_TITLES.read_text()) if PAGE_TITLES.exists() else {}
+
+
 def gold_context(rec, tabs, data_dir):
     tab = tabs.get(rec["table_id"])
     if tab is None:
         tab = tabs[rec["table_id"]] = hg.load_table(rec["table_id"], data_dir)
     t = tab.table
-    return [caption_sentence(tab.title, t.row_path(i), t.col_path(j),
+    title = with_page_title(tab.title, _PAGE_TITLES.get(rec["table_id"]))
+    return [caption_sentence(title, t.row_path(i), t.col_path(j),
                             value=t.data[i][j], template=STRUCTURAL_COMPACT)
             for _tid, i, j in rec.get("gold_cells", [])]
+
+
+def summarize(rows, limit=0):
+    """Leg metrics. A pure function of the rows so that a leg composed from
+    other legs (analysis/compose_oracle.py) is summarised by this same code
+    instead of a second copy of the definitions."""
+    def acc(v):
+        return round(sum(v) / len(v), 4) if v else None
+
+    by_mode = defaultdict(list)
+    for x in rows:
+        by_mode[x["mode"]].append(x["answer_correct"])
+    hit = [x["answer_correct"] for x in rows if x["retrieval_correct"]]
+    miss = [x["answer_correct"] for x in rows if not x["retrieval_correct"]]
+    def stat(key):
+        v = sorted(x[key] for x in rows if x.get(key) is not None)
+        if not v:
+            return None
+        return {"mean": round(sum(v) / len(v), 1), "median": v[len(v) // 2],
+                "max": v[-1], "n": len(v)}
+
+    over = [x for x in rows if x.get("n_tok") and limit and x["n_tok"] > limit]
+    return {
+        # 입력은 어디서도 잘리지 않는다(truncation 미설정). 그래서 한계를 넘는
+        # 프롬프트는 짧아지는 것이 아니라 실패한다 — 아래는 절단율이 아니라
+        # "한계 초과율"이고, 0 이 아니면 그 조건의 수치는 성립하지 않는다.
+        "input_tokens": stat("n_tok"), "context_limit": limit,
+        "n_over_context_limit": len(over),
+        "over_context_limit_ratio": round(len(over) / len(rows), 4) if rows else None,
+        "cells_delivered": stat("cells_in_context"),
+        "context_lines": stat("n_ctx"),
+        "n": len(rows), "answer_accuracy": acc([x["answer_correct"] for x in rows]),
+        "answer_accuracy_all_mode": acc(by_mode["all"]), "n_all_mode": len(by_mode["all"]),
+        "answer_accuracy_any_mode": acc(by_mode["any"]), "n_any_mode": len(by_mode["any"]),
+        "retrieval_accuracy_here": acc([x["retrieval_correct"] for x in rows]),
+        "answer_given_retrieval_hit": acc(hit), "n_retrieval_hit": len(hit),
+        "answer_given_retrieval_miss": acc(miss), "n_retrieval_miss": len(miss),
+        "by_aggregation": {k: acc(v) for k, v in sorted(
+            ((k, [x["answer_correct"] for x in rows if (x["aggregation"] or "none") == k])
+             for k in {(x["aggregation"] or "none") for x in rows}))},
+    }
 
 
 def main() -> int:
@@ -154,45 +205,12 @@ def main() -> int:
         for x in rows:
             fh.write(json.dumps(x, ensure_ascii=False) + "\n")
 
-    def acc(v):
-        return round(sum(v) / len(v), 4) if v else None
-
-    by_mode = defaultdict(list)
-    for x in rows:
-        by_mode[x["mode"]].append(x["answer_correct"])
-    hit = [x["answer_correct"] for x in rows if x["retrieval_correct"]]
-    miss = [x["answer_correct"] for x in rows if not x["retrieval_correct"]]
-    def stat(key):
-        v = sorted(x[key] for x in rows if x.get(key) is not None)
-        if not v:
-            return None
-        return {"mean": round(sum(v) / len(v), 1), "median": v[len(v) // 2],
-                "max": v[-1], "n": len(v)}
-
-    over = [x for x in rows if x.get("n_tok") and limit and x["n_tok"] > limit]
-    summary = {
-        "records": a.records, "condition": a.condition, "reader": llm.name,
-        "prompt": a.prompt, "seed": a.seed, "max_new_tokens": a.max_tokens,
-        "batch_size": 1,                       # 질의당 1건 생성 — 조건 무관 고정
-        "excluded_unit_defect": bool(a.exclude_unit_defect),
-        # 입력은 어디서도 잘리지 않는다(truncation 미설정). 그래서 한계를 넘는
-        # 프롬프트는 짧아지는 것이 아니라 실패한다 — 아래는 절단율이 아니라
-        # "한계 초과율"이고, 0 이 아니면 그 조건의 수치는 성립하지 않는다.
-        "input_tokens": stat("n_tok"), "context_limit": limit,
-        "n_over_context_limit": len(over),
-        "over_context_limit_ratio": round(len(over) / len(rows), 4) if rows else None,
-        "cells_delivered": stat("cells_in_context"),
-        "context_lines": stat("n_ctx"),
-        "n": len(rows), "answer_accuracy": acc([x["answer_correct"] for x in rows]),
-        "answer_accuracy_all_mode": acc(by_mode["all"]), "n_all_mode": len(by_mode["all"]),
-        "answer_accuracy_any_mode": acc(by_mode["any"]), "n_any_mode": len(by_mode["any"]),
-        "retrieval_accuracy_here": acc([x["retrieval_correct"] for x in rows]),
-        "answer_given_retrieval_hit": acc(hit), "n_retrieval_hit": len(hit),
-        "answer_given_retrieval_miss": acc(miss), "n_retrieval_miss": len(miss),
-        "by_aggregation": {k: acc(v) for k, v in sorted(
-            ((k, [x["answer_correct"] for x in rows if (x["aggregation"] or "none") == k])
-             for k in {(x["aggregation"] or "none") for x in rows}))},
-    }
+    summary = {"records": a.records, "condition": a.condition,
+               "reader": llm.name, "prompt": a.prompt, "seed": a.seed,
+               "max_new_tokens": a.max_tokens,
+               "batch_size": 1,      # 질의당 1건 생성 — 조건 무관 고정
+               "excluded_unit_defect": bool(a.exclude_unit_defect),
+               **summarize(rows, limit)}
     Path(str(out).replace(".jsonl", ".json")).write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary, indent=2))
     return 0
