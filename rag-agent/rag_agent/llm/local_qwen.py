@@ -58,8 +58,7 @@ class LocalQwenLLM(BaseLLM):
         self._torch = torch
         logger.info("LocalQwenLLM loaded %s on %s (quant=%s)", model_name, self.device, quantization)
 
-    def complete(self, system: str, user: str, max_tokens: int = 256,
-                 temperature: float = 0.0, top_p: float = 0.95) -> str:
+    def _prompt(self, system: str, user: str) -> str:
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         # Qwen3 templates default to thinking mode: the model emits
         # "<think>...</think>" before the answer, which both eats the
@@ -67,10 +66,27 @@ class LocalQwenLLM(BaseLLM):
         # enable_thinking=False makes the template pre-close the block. Verified
         # BYTE-IDENTICAL on Qwen2.5-7B-Instruct (its template ignores the flag),
         # so every result already on disk stays reproducible from this code.
-        prompt = self.tokenizer.apply_chat_template(
+        return self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True,
             enable_thinking=False,
         )
+
+    def n_prompt_tokens(self, system: str, user: str) -> int:
+        """생성에 들어가는 프롬프트의 토큰 수 — 채팅 템플릿까지 포함한 실측값.
+
+        입력은 어디서도 잘리지 않는다(`complete` 가 truncation 을 걸지 않는다).
+        그래서 한계를 넘는 프롬프트는 조용히 짧아지는 대신 실패하거나 OOM 이
+        되고, 조건별로 그 건수를 세려면 이 값이 필요하다.
+        """
+        return len(self.tokenizer(self._prompt(system, user))["input_ids"])
+
+    @property
+    def context_limit(self) -> int:
+        return int(getattr(self.model.config, "max_position_embeddings", 0)) or 0
+
+    def complete(self, system: str, user: str, max_tokens: int = 256,
+                 temperature: float = 0.0, top_p: float = 0.95) -> str:
+        prompt = self._prompt(system, user)
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
         gen_kwargs = dict(max_new_tokens=max_tokens or self.default_max_tokens,
                           pad_token_id=self.tokenizer.eos_token_id)

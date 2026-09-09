@@ -575,6 +575,14 @@ if __name__ == "__main__":
         print(bt)
         print()
     print(answer_table())
+    # 표 2b/2c — arm 별 답변 정확도. 생성기는 `analysis/answer_decompose.py` 이고
+    # 여기서는 그 결과를 그대로 싣는다 (수치를 두 벌 만들지 않는다).
+    try:
+        from analysis.answer_decompose import build as _answer_by_arm
+        print()
+        print(_answer_by_arm())
+    except Exception as e:                      # 답변 레그가 아직 없으면 표만 뺀다
+        print(f"\n*(표 2b 미생성: {e})*")
     gb = gap_block()
     if gb:
         print()

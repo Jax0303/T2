@@ -99,6 +99,9 @@ def main() -> int:
                          "question asks for a percentage (analysis/unit_defect.py). "
                          "Decided from the dataset alone, so queries we answer "
                          "CORRECTLY are dropped too.")
+    ap.add_argument("--seed", type=int, default=42,
+                    help="greedy 디코딩이라 무해하지만, 조건 넷이 같은 상태에서 "
+                         "돌았다는 것을 기록으로 남긴다")
     ap.add_argument("--out", default="")
     a = ap.parse_args()
 
@@ -122,6 +125,9 @@ def main() -> int:
         raise SystemExit(f"{out} exists — answer legs never overwrite; pass a new --out")
 
     llm = build_llm(a.reader)
+    import torch                                                   # noqa: E402
+    torch.manual_seed(a.seed)
+    limit = getattr(llm, "context_limit", 0)
     tabs: dict = {}
     rows, t0 = [], time.time()
     for k, r in enumerate(scored, 1):
@@ -130,12 +136,15 @@ def main() -> int:
         else:
             ctx = r.get("context") or []
         user = "Context:\n" + "\n".join(ctx) + f"\n\nQuestion: {r['question']}\nAnswer:"
+        n_tok = (llm.n_prompt_tokens(PROMPTS[a.prompt], user)
+                 if hasattr(llm, "n_prompt_tokens") else None)
         pred = llm.complete(PROMPTS[a.prompt], user, max_tokens=a.max_tokens,
                             temperature=0.0)
         ok = hitab_exact_match_text(pred, r["answer"])
         rows.append({"query_id": r["query_id"], "mode": r["mode"],
                      "retrieval_correct": r["correct"], "answer_correct": int(ok),
                      "aggregation": r.get("aggregation"), "n_ctx": len(ctx),
+                     "n_tok": n_tok, "cells_in_context": r.get("cells_in_context"),
                      "pred": pred, "answer": r["answer"]})
         if k % 50 == 0:
             print(f"  {k}/{len(scored)}  {time.time() - t0:.0f}s  "
@@ -153,9 +162,27 @@ def main() -> int:
         by_mode[x["mode"]].append(x["answer_correct"])
     hit = [x["answer_correct"] for x in rows if x["retrieval_correct"]]
     miss = [x["answer_correct"] for x in rows if not x["retrieval_correct"]]
+    def stat(key):
+        v = sorted(x[key] for x in rows if x.get(key) is not None)
+        if not v:
+            return None
+        return {"mean": round(sum(v) / len(v), 1), "median": v[len(v) // 2],
+                "max": v[-1], "n": len(v)}
+
+    over = [x for x in rows if x.get("n_tok") and limit and x["n_tok"] > limit]
     summary = {
         "records": a.records, "condition": a.condition, "reader": llm.name,
-        "prompt": a.prompt, "excluded_unit_defect": bool(a.exclude_unit_defect),
+        "prompt": a.prompt, "seed": a.seed, "max_new_tokens": a.max_tokens,
+        "batch_size": 1,                       # 질의당 1건 생성 — 조건 무관 고정
+        "excluded_unit_defect": bool(a.exclude_unit_defect),
+        # 입력은 어디서도 잘리지 않는다(truncation 미설정). 그래서 한계를 넘는
+        # 프롬프트는 짧아지는 것이 아니라 실패한다 — 아래는 절단율이 아니라
+        # "한계 초과율"이고, 0 이 아니면 그 조건의 수치는 성립하지 않는다.
+        "input_tokens": stat("n_tok"), "context_limit": limit,
+        "n_over_context_limit": len(over),
+        "over_context_limit_ratio": round(len(over) / len(rows), 4) if rows else None,
+        "cells_delivered": stat("cells_in_context"),
+        "context_lines": stat("n_ctx"),
         "n": len(rows), "answer_accuracy": acc([x["answer_correct"] for x in rows]),
         "answer_accuracy_all_mode": acc(by_mode["all"]), "n_all_mode": len(by_mode["all"]),
         "answer_accuracy_any_mode": acc(by_mode["any"]), "n_any_mode": len(by_mode["any"]),
