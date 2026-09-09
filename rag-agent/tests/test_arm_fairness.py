@@ -79,3 +79,20 @@ def test_every_arm_scored_the_same_queries():
             assert o[q].get("m") == ref[q].get("m"), f"{f.name}/{q}: gold 셀 수가 다르다"
             assert o[q].get("excluded") == ref[q].get("excluded"), \
                 f"{f.name}/{q}: 제외 사유가 다르다"
+
+
+def test_budget_counts_distinct_cells():
+    """예산은 리더가 받는 **서로 다른** 셀 수다.
+
+    겹치는 색인 단위(trag_hetero 는 200자 overlap)가 이미 배달된 셀을 다시 실어도
+    예산을 쓰지 않아야 한다. 중복을 세면 그 arm 만 두 번 손해다 -- 리더가 얻지도
+    않은 셀에 예산을 쓰고 멈추고, 보고되는 문맥 셀수는 프롬프트에 있지도 않은
+    크기를 적는다. `rowcol_select` 와 같은 규칙이라야 두 열이 같은 것을 잰다.
+    """
+    covers = [frozenset({("t", 0, j) for j in range(10)}),      # 0-9
+              frozenset({("t", 0, j) for j in range(5, 15)}),   # 5-14 (5 겹침)
+              frozenset({("t", 0, j) for j in range(15, 25)})]  # 15-24
+    texts = ["a", "b", "c"]
+    got, n, _ctx = ra.budget_select(range(3), covers, texts, 20, 0)
+    assert n == len(got), "보고된 문맥 셀수가 실제 셀 수와 다르다"
+    assert n == 25, f"겹친 5셀만큼 일찍 멈췄다 (n={n})"

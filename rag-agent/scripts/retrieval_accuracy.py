@@ -356,6 +356,27 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
     return texts, covers, is_row
 
 
+def budget_select(order, covers, texts, budget: int, dump: int):
+    """Top units until the context holds ``budget`` DISTINCT cells.
+
+    The budget is what the reader receives, so a unit that repeats a cell an
+    earlier unit already delivered does not spend budget for it. Counting the
+    repeats instead costs an overlapping arm twice: it stops early on cells the
+    reader never gained, and its reported context size overstates what was in
+    the prompt. ``trag_hetero`` carries 200 characters of overlap and delivers
+    15,510 of the split's 67,664 cells more than once, so this is not a corner
+    case. ``rowcol_select`` counts the distinct set already; this is that rule.
+    """
+    got, ctx = set(), []
+    for p in order:
+        if len(got) >= budget:
+            break
+        got |= covers[p]
+        if dump and len(ctx) < dump:
+            ctx.append(texts[p])
+    return got, len(got), ctx
+
+
 def rowcol_select(order, covers, texts, is_row, budget: int, dump: int, cap: int = 200):
     """RowColRetrieval's sub-table: top-K rows INTERSECT top-K columns.
 
@@ -498,19 +519,19 @@ def main() -> int:
             got, n_cells, ctx = rowcol_select(order, covers, texts, is_row,
                                               a.budget, a.dump_context)
         else:
-            got, n_cells, ctx = set(), 0, []
-            for p in order:
-                if n_cells >= a.budget:
-                    break
-                got |= covers[p]
-                n_cells += len(covers[p])
-                if a.dump_context and len(ctx) < a.dump_context:
-                    ctx.append(texts[p])
+            got, n_cells, ctx = budget_select(order, covers, texts,
+                                              a.budget, a.dump_context)
         gold = q["gold"]
         hit = (gold <= got) if q["mode"] == "all" else bool(gold & got)
+        # gold 를 처음 배달한 단위가 순위 몇 번째인가. 판정에는 쓰지 않는다 --
+        # 진단값이다(`CLAUDE.md` §0.1: 주지표는 질의 단위 정확도 하나). 예산 안에
+        # 들어왔는데도 리더가 틀리는 몫이 이 순위와 붙어 있어서 따로 센다.
+        grank = next((i for i, p2 in enumerate(order[:500], 1) if covers[p2] & gold),
+                     None)
         r = {"query_id": q["query_id"], "table_id": q["table_id"],
              "mode": q["mode"], "m": len(gold), "correct": int(hit),
              "aggregation": q.get("aggregation"), "cells_in_context": n_cells,
+             "gold_rank": grank,
              "gold_table_in_context": int(any(c[0] == q["table_id"] for c in got))}
         if a.dump_context:
             r["question"] = q["question"]
@@ -533,6 +554,11 @@ def main() -> int:
     summary = {
         "split": a.split, "corpus": a.corpus, "n_tables": len(tids),
         "n_units": len(texts), "unit": a.unit, "template": a.template,
+        # 단위를 정하는 인자도 적는다. 없으면 t_trag_hetero(1,000자)와
+        # t_trag_hetero_tok(2,400자)처럼 같은 unit 인 두 행을 결과 파일만 보고
+        # 구별할 수 없고, 어떤 명령이 이 파일을 만들었는지 복원되지 않는다.
+        "chunk_chars": a.chunk_chars, "row_text": a.row_text,
+        "tablerag_colmode": a.tablerag_colmode,
         "encoder": enc.name if enc else "none (bm25 only)", "alpha": a.alpha,
         "query_prefix": (enc.query_prefix if enc else ""), "budget_cells": a.budget,
         "n_queries_in_split": len(queries), "n_scored": len(scored),
