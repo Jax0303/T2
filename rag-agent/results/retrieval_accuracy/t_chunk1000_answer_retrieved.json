@@ -1,0 +1,62 @@
+{
+  "records": "results/retrieval_accuracy/t_chunk1000_records.jsonl",
+  "condition": "retrieved",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "base",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "excluded_unit_defect": false,
+  "input_tokens": {
+    "mean": 646.6,
+    "median": 645,
+    "max": 1249,
+    "n": 1581
+  },
+  "context_limit": 32768,
+  "n_over_context_limit": 0,
+  "over_context_limit_ratio": 0.0,
+  "cells_delivered": {
+    "mean": 66.6,
+    "median": 62,
+    "max": 173,
+    "n": 1581
+  },
+  "context_lines": {
+    "mean": 1.1,
+    "median": 1,
+    "max": 3,
+    "n": 1581
+  },
+  "n": 1581,
+  "answer_accuracy": 0.4991,
+  "answer_accuracy_all_mode": 0.5165,
+  "n_all_mode": 1245,
+  "answer_accuracy_any_mode": 0.4345,
+  "n_any_mode": 336,
+  "retrieval_accuracy_here": 0.7717,
+  "answer_given_retrieval_hit": 0.6369,
+  "n_retrieval_hit": 1220,
+  "answer_given_retrieval_miss": 0.0332,
+  "n_retrieval_miss": 361,
+  "by_aggregation": {
+    "argmax": 0.3333,
+    "argmin": 0.3158,
+    "average": 0.0,
+    "counta": 0.3333,
+    "diff": 0.125,
+    "div": 0.0395,
+    "greater_than": 0.4286,
+    "kth-argmax": 0.2,
+    "less_than": 0.5,
+    "max": 0.4375,
+    "min": 0.5,
+    "none": 0.5989,
+    "opposite": 0.32,
+    "pair-argmax": 0.3011,
+    "pair-argmin": 0.5714,
+    "range": 0.0,
+    "sum": 0.0455,
+    "topk-argmax": 0.2
+  }
+}
