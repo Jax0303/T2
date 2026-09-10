@@ -46,7 +46,7 @@ def test_covers_are_valid_and_lossless(unit, kw, complete):
         t = tb.table
         live |= {(tid, i, j) for i in range(t.n_rows) for j in range(t.n_cols)
                  if str(t.data[i][j]).strip()}
-    texts, covers, _, _ = ra.build_corpus(str(DATA), tids, "s3c", unit, {}, **kw)
+    texts, covers, *_ = ra.build_corpus(str(DATA), tids, "s3c", unit, {}, **kw)
     assert len(texts) == len(covers)
     got = set().union(*covers) if covers else set()
     assert got <= live, f"{unit}: 없는 셀 {len(got - live)}개를 주장한다"
@@ -96,3 +96,28 @@ def test_budget_counts_distinct_cells():
     got, n, _ctx = ra.budget_select(range(3), covers, texts, 20, 0)
     assert n == len(got), "보고된 문맥 셀수가 실제 셀 수와 다르다"
     assert n == 25, f"겹친 5셀만큼 일찍 멈췄다 (n={n})"
+
+
+def test_budget_never_scores_a_cell_it_did_not_deliver():
+    """채점한 집합 = 배달한 집합. `dump` 는 두 번째 예산이 아니다.
+
+    셀을 배달하지 않는 문서(TableRAG 의 schema/stub 문서)가 gold 앞에 오면,
+    예전 코드는 `dump` 를 넘어선 단위까지 채점하면서 문맥에는 싣지 않아
+    **gold 가 없는 문맥이 HIT 로** 기록됐다. 검색 정확도만 오르고 리더는 그 셀을
+    본 적이 없다.
+
+    고치는 방향은 **배달을 채점에 맞추는 것**이지 그 반대가 아니다. 훑기를 `dump`
+    에서 끊으면 운영점이 "20셀"에서 "20단위"로 옮겨 가는데, 그 차이는 셀 0개
+    단위를 갖는 arm 에서만 생긴다 — 우리가 만들어 낸 handicap 이고 이 파일이
+    막으려는 바로 그것이다. 단위를 제한하려면 `--max-units` 가 따로 있다.
+    """
+    covers = [frozenset(), frozenset(), frozenset({("t", 5, 5)})]
+    texts = ["schema1", "schema2", "GOLD"]
+    got, n, ctx = ra.budget_select(range(3), covers, texts, budget=20, dump=2)
+    assert ctx == ["schema1", "schema2", "GOLD"], ctx
+    assert got == {("t", 5, 5)} and n == 1, got
+
+    # 단위 제한은 명시적인 손잡이로만. 그때도 채점과 배달은 같은 집합이다.
+    got, n, ctx = ra.budget_select(range(3), covers, texts, budget=20, dump=2,
+                                   max_units=2)
+    assert ctx == ["schema1", "schema2"] and got == set() and n == 0, (ctx, got)

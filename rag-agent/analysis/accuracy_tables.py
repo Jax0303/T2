@@ -17,6 +17,19 @@ ROOT = Path(__file__).resolve().parent.parent
 D = ROOT / "results/retrieval_accuracy"
 
 
+#: 조건 이름 -> 디스크에 있는 레그 파일의 접미사. `gold`·`oracle` 은 2026-09-09
+#: 제목 버그(`BUGFIX_LOG.md`) 수정 **전** 실행이고, 수정 후 재실행이 `gold_v2` 와
+#: 그것으로 다시 합성한 `oracle_v2` 다. 생성기가 조건 이름을 파일 이름으로 그대로
+#: 쓰면 재실행이 표에 반영되지 않는다 -- 실제로 옛 천장(0.9576/0.8819)이 문서에
+#: 남은 채로 나갔다. 새 레그를 돌리면 여기 한 줄만 고친다.
+LEG = {"gold": "gold_v2", "oracle": "oracle_v2"}
+
+
+def leg_file(cond, ext="json"):
+    """조건 하나의 현행 레그 파일. `LEG` 가 유일한 이름 출처다."""
+    return D / f"t_s3c_hybrid_answer_{LEG.get(cond, cond)}.{ext}"
+
+
 def load(tag):
     f = D / f"{tag}.json"
     return json.loads(f.read_text()) if f.exists() else None
@@ -91,14 +104,14 @@ def ctx_mean(tag):
 BASELINE_ROWS = [
     ("t_s3c_hybrid", "**본 방법** — 셀 문장(제목+행경로+열경로+값)", "", "—"),
     ("t_row_values", "행 단위 — `RowColRetrieval` 의 행 절반 (TableRAG §4.2) ‡", "t_s3c_hybrid", "발표 논문(부분)"),
-    ("t_rowcol_values", "`RowColRetrieval` — 행 × 열 교집합, 온전 재현 ‡", "t_s3c_hybrid", "발표 논문"),
+    ("t_rowcol_values", "`RowColRetrieval` — 행 × 열 교집합의 sub-table ‡", "t_s3c_hybrid", "발표 논문 — 검색 컴포넌트"),
     ("t_table_hybrid", "표 통째 — 표 하나가 색인 단위 하나 (표 단위 검색)", "t_s3c_hybrid", "통제 — 셀 검색 없음"),
     ("t_mt2net_hybrid", "셀 + 계층 헤더, 표 제목 없음 — MT2Net 의 색인 **단위** (Zhao et al. 2022 §4) ¶", "t_s3c_hybrid", "발표 논문(단위)"),
-    ("t_trag_hetero", "TableRAG **(Huawei, EMNLP 2025)** 검색 레그 — 코드 읽기 1,000자", "t_s3c_hybrid", "발표 논문"),
-    ("t_trag_hetero_tok", "TableRAG **(Huawei)** 검색 레그 — 논문 읽기 1,000토큰(≈2,400자)", "t_s3c_hybrid", "발표 논문"),
+    ("t_trag_hetero", "TableRAG **(Huawei, EMNLP 2025)** 의 **청킹만** — 공통 검색기·공통 리더, 1,000자 ◆", "t_s3c_hybrid", "발표 논문 — 검색 레그만"),
+    ("t_trag_hetero_tok", "같은 청킹, 2,400자 (논문의 1,000**토큰** 재현이 아니다) ◆", "t_s3c_hybrid", "발표 논문 — 검색 레그만"),
     ("t_chunk1000", "고정 크기 청킹 1,000자 (LangChain 기본값, 청크마다 헤더 반복)", "t_s3c_hybrid", "업계 기본값"),
-    ("t_tablerag_leaf", "TableRAG **(NeurIPS 2024)** 셀 코퍼스, 열 이름 = 잎 라벨 ⚠️", "t_s3c_hybrid", "발표 논문"),
-    ("t_tablerag_path", "TableRAG **(NeurIPS 2024)** 셀 코퍼스, 열 이름 = 헤더 경로 (강한 변형) ⚠️", "t_s3c_hybrid", "발표 논문"),
+    ("t_tablerag_leaf", "TableRAG **(NeurIPS 2024)** 셀 코퍼스, 열 이름 = 잎 라벨 ⚠️", "t_s3c_hybrid", "발표 논문 — 색인 코퍼스만"),
+    ("t_tablerag_path", "TableRAG **(NeurIPS 2024)** 셀 코퍼스, 열 이름 = 헤더 경로 (강한 변형) ⚠️", "t_s3c_hybrid", "발표 논문 — 색인 코퍼스만"),
     ("full_s3c_hybrid", "**본 방법** — 코퍼스 전체(표 저장소 3,597표)", "", "—"),
     ("full_mt2net_hybrid", "MT2Net 의 색인 단위 — 코퍼스 전체 ¶", "full_s3c_hybrid", "발표 논문(단위)"),
 ]
@@ -226,7 +239,11 @@ def retrieval_table():
            "**이 표에는 리포 밖에 존재하는 방법만 싣는다.** 우리 시스템에서 한 부분을 뺀",
            "행(dense only, BM25 only, S2, flat)은 경쟁 상대가 아니므로 **표 1b** 로 뺐다 —",
            "그 행을 이겼다는 것은 결과가 아니라 그 부분이 사는 값이다.", "",
-           f"| 색인 단위 / 검색기 | 분류 | 색인 단위 수 | 문맥 셀수 | **단일 셀 조회 (n={len(P)})** | 데이터셀 전체 | 헤더답 | gold 표 | 본 방법 대비 (McNemar) |",
+           "**`분류` 는 재현 범위다.** `발표 논문 — …만` 인 행은 그 논문의 해당 부품을",
+           "공통 검색기·공통 리더 위에 얹은 것이고, **그 시스템을 재현한 것이 아니다.**",
+           "이 표의 어떤 행도 \"본 방법이 그 시스템을 이겼다\"의 근거가 되지 않는다 — 성립하는",
+           "문장은 \"검색기·리더·예산·채점기를 고정했을 때 그 **색인 단위**가 배달하는 셀\"뿐이다.", "",
+           f"| 색인 단위 / 검색기 | 분류 (재현 범위) | 색인 단위 수 | 문맥 셀수 | **단일 셀 조회 (n={len(P)})** | 데이터셀 전체 | 헤더답 | gold 표 | 본 방법 대비 (McNemar) |",
            "|---|---|---:|---:|---:|---:|---:|---:|---|"]
     for tag, label, ref, kind in BASELINE_ROWS:
         d = load(tag)
@@ -258,16 +275,33 @@ def retrieval_table():
             "| MT2Net | 논문 §4 원문 + 공식 코드 | **문장 불일치 확정.** 단위만 일치 — `¶` 참조 |",
             "| TableRAG (Huawei) | 논문 §3.2·§5.1.2 + 공식 코드 4파일 | 텍스트 검색 레그만. "
             "청크 크기는 코드(1,000자)를 따랐고 논문은 1,000토큰이다 — 아래 |",
-            "| TableRAG (NeurIPS'24) | 공식 코드 전체 + 논문 §4.2 | 셀 코퍼스만. "
-            "`build_schema_corpus` 누락(닿는 셀 0 변화 확인) |",
+            "| TableRAG (NeurIPS'24) | 공식 코드 전체 + 논문 §4.2 | 셀 코퍼스 + "
+            "`build_schema_corpus`(2026-09-10 포팅됨 — 아래 ⚠️) |",
             "| 고정 청킹 | — (LangChain 기본값, 논문 아님) | — |",
             "",
-            "**Huawei 청크 크기가 논문과 코드에서 다르다.** 논문 §5.1.2 는 *\"text is chunked "
-            "into segments of 1000 tokens, with a 200-token overlap\"* 인데, 코드",
-            "(`online_inference/tools/retriever.py`)는 `RecursiveCharacterTextSplitter("
+            "### ◆ Huawei 두 행이 재현한 것과 재현하지 않은 것 (2026-09-10 감사)", "",
+            "Huawei TableRAG(Yu et al., EMNLP 2025, arXiv:2506.10380)의 핵심은 **검색된 표의",
+            "스키마를 이용한 SQL 실행 · 질의 분해 · 반복 추론**이다. 위 두 행에는 그 셋이",
+            "**전혀 없다.** 코드(`trag_hetero_chunks`)가 스스로 검색 레그만 재현한다고 적고",
+            "있고, 검색기(BGE-M3+재순위화 → BGE-base+BM25)와 리더(단일 답변)도 그쪽 것이",
+            "아니다. 그러므로 이 두 행은 **\"Huawei 의 청킹 방식을 공통 검색기·공통 리더 위에",
+            "얹은 통제 실험\"** 이고, `Huawei TableRAG 보다 우수` 의 근거로 쓸 수 없다.",
+            "성립하는 질문은 **표현·청킹의 차이가 배달되는 셀을 어떻게 바꾸는가** 하나다.",
+            "",
+            "**청크 크기: 논문과 코드가 다르고, 우리는 둘 다 재현하지 않았다.** 논문 §5.1.2 는",
+            "*\"text is chunked into segments of 1000 tokens, with a 200-token overlap\"* 인데",
+            "코드(`online_inference/tools/retriever.py`)는 `RecursiveCharacterTextSplitter("
             "chunk_size=1000, chunk_overlap=200)` 로 **글자**를 센다(LangChain 기본 단위).",
-            "약 4배 차이다. 위 행은 **코드**를 따랐다 — 실제로 그들이 돌린 것이기 때문이다.",
-            "토큰 읽기로 다시 잰 행은 아직 없다.",
+            "위 두 행은 1,000자와 2,400자를 쓴다 — 2,400자는 1,000토큰의 **어림값이지 토큰",
+            "기반 분할이 아니다**(토크나이저를 명시한 적도 없다). 게다가 우리 `_pack()` 은",
+            "렌더된 **줄 단위**로 병합하고 줄 안에서는 절대 자르지 않는데, 저쪽 splitter 는",
+            "구분자를 재귀적으로 내려가며 글자 단위까지 자른다 — **같은 설정값이어도 같은",
+            "분할이 아니다.** (감사가 538표 중 330표에서 분할이 다르다고 보고했다. 이 리포는",
+            "그 수치를 재현하지 않았다 — langchain 이 설치돼 있지 않다. 재현 없이 인용하지 말 것.)",
+            "",
+            "고칠 방향: 코드 설정을 재현하려면 그 splitter·버전을 그대로 고정하고, 논문의",
+            "토큰 설정을 재현하려면 토크나이저를 명시한 **토큰 기반** 분할기를 쓴다. 지금은",
+            "둘 다 아니므로 두 행은 **청크 크기 감도 실험**으로만 읽는다.",
             "",
             "그쪽이 쓰는 인코더(BGE-M3)와 리랭커(top-30 → top-3)는 재현하지 않았다. 표 1 은",
             "**색인 단위**만 변수로 두므로 검색기를 모든 행에서 같게 고정한다. 참고로 이 리포는",
@@ -332,6 +366,18 @@ def retrieval_table():
             "",
             "(이전 라벨 `업계 관행` 은 근거 부족이었다. `CLAUDE.md` 의 \"row_chunk 는 발표된",
             "시스템이 아니다\" 진술도 같은 이유로 갱신이 필요하다.)",
+            "",
+            "**`RowColRetrieval` 행 — 2026-09-10 에 고친 결함.** `rowcol_select()` 는 교집합",
+            "`R & C` 로 채점하면서 리더에게는 **선택된 행 문장과 열 문장을 이어붙여** 줬다.",
+            "첫 행 `{a,b}` 와 첫 열 `{a,c}` 를 고르면 셀 `a` 하나를 채점하고 `a,b,c` 를",
+            "배달한다 — `df.iloc[row_ids, col_ids]` 가 아니다. 지금은 채점한 교집합을 그대로",
+            "sub-table 로 잘라 배달한다(`subtable_lines`, `tests/test_baseline_units.py`).",
+            "",
+            "**이 행의 검색 정확도는 그 결함의 영향을 받지 않았고, 고친 코드에서 그대로",
+            "재현된다** — 채점 집합이 원래 교집합이었기 때문이다 (재실행 대조 0건 변동,",
+            "`results/audit_fix_20260910/t_rowcol_values_fix.json`). 영향을 받은 것은 **리더",
+            "쪽**이다: 주 모집단에서 배달된 값 칸이 평균 166.3 → 36.5 로 줄었다. 따라서",
+            "**표 2·2b 의 RowCol 답변 EM 은 새 문맥으로 리더를 다시 돌리기 전까지 보류한다.**",
             "",
             "### † 표 단위 검색 — 왜 이 표의 지표로 셀 수 없는가 (2026-09-08)",
             "",
@@ -398,9 +444,24 @@ def retrieval_table():
             "대조했다. 구조는 일치한다(숫자 열 → min/max 요약 하나, 범주 셀 → (열,값) 중복 제거",
             "후 빈도순, `max_encode_cell` 예산). 차이 둘: ① 포트는 `\"dtype\": \"float64\"` 를",
             "고정하고 원본은 `col.dtype` 를 쓴다(질의에 dtype 이름이 안 나오므로 영향 없음),",
-            "② 원본은 `build_schema_corpus` 도 함께 쓰는데 포트는 셀 코퍼스만 담는다 —",
-            "**닿는 셀이 0개 늘어난다**(범주 열의 `cell_examples` 는 최빈 3개라 중복 제거된 셀",
-            "문서의 부분집합이고, 숫자 열은 같은 min/max 다). 측정에는 영향이 없다.",
+            "② 원본의 `build_schema_corpus` 는 **2026-09-10 에 포팅됐다**(그 전까지 포트는",
+            "셀 코퍼스만 담았다). **닿는 셀은 0개 늘어난다** — 범주 열의 `cell_examples` 는",
+            "최빈 3개라 중복 제거된 셀 문서의 부분집합이고 숫자 열은 같은 min/max 다.",
+            "**다만 \"측정에 영향이 없다\"는 틀린 말이었다**: 셀 0개 문서가 코퍼스에 1,180~1,203개",
+            "더 들어오므로 **순위가 달라진다**. 실측 효과는 아래 ⚠️ 에 있다.",
+            "",
+            "⚠️ **위 두 행의 수치는 포팅 전 코퍼스로 잰 것이다** (`n_units` 17,425 / 18,576).",
+            "현행 코드는 18,605 / 19,779 를 만든다 — 같은 arm 이름으로 `results/tablerag_fair/`",
+            "가 이미 새 값을 쓰고 있어 표 1 과 어긋나 있었다. 고친 코드로 재실행한 값",
+            "(`results/audit_fix_20260910/t_tablerag_{leaf,path}_fix.json`):",
+            "**주지표 0.0686 → 0.0676, 0.1433 → 0.1423 (각각 991건 중 1건 변동)** —",
+            "결론을 바꾸지 않으므로 위 행은 그대로 두고 여기 적는다.",
+            "",
+            "⚠️ **이 두 행의 답변 EM(표 2b)은 보류한다.** 검색은 예산이 20셀에 닿을 때까지",
+            "고른 단위 전부로 채점했는데 리더에게는 `--dump-context 20` 이 자른 20줄만 갔다",
+            "(실제 필요 줄수 leaf 평균 61.1·중앙 46·최대 556, path 평균 23.9). 즉 **리더는",
+            "채점된 근거의 일부만 받았다.** 고친 코드는 고른 단위를 전부 배달한다",
+            "(`BUGFIX_LOG.md` 2026-09-10 (2)). 새 문맥으로 리더를 다시 돌려야 한다.",
             "",
             "⚠️ **원본은 색인을 표마다 따로 만든다.** `init_retriever(table_id, df)` 가 호출될",
             "때마다 `db_dir = f'{data_type}_db_{max_encode_cell}_' + table_id` 로 FAISS 인덱스를",
@@ -455,7 +516,7 @@ def answer_table():
     P = primary_ids()
 
     def primary_em(cond):
-        f = D / f"t_s3c_hybrid_answer_{cond}.jsonl"
+        f = leg_file(cond, "jsonl")
         if not f.exists():
             return "—"
         v = [j["answer_correct"] for j in map(json.loads, f.open())
@@ -465,7 +526,7 @@ def answer_table():
     any_row = False
     for cond in ("retrieved", "gold", "oracle", "retrieved_format_nodefect",
                  "gold_format_nodefect", "retrieved_evidence_nodefect"):
-        f = D / f"t_s3c_hybrid_answer_{cond}.json"
+        f = leg_file(cond)
         if not f.exists() and cond.endswith("_nodefect"):
             continue                       # 미측정 개입은 줄을 만들지 않는다
         if not f.exists():
@@ -482,7 +543,7 @@ def answer_table():
         out.append("")
         out.append("*아직 측정 없음.*")
         return "\n".join(out)
-    o = load("t_s3c_hybrid_answer_oracle")
+    o = load(leg_file("oracle").stem)
     if o and o.get("composed"):
         out += ["",
                 "`oracle` 행은 새 실행이 아니라 **`gold`(검색 성공분) + `retrieved`"
@@ -491,10 +552,10 @@ def answer_table():
                 "정확하다. 읽는 법: **지금 검색기 그대로 두고 distractor 만 없앴을 때** —",
                 "`gold` 처럼 검색 실패까지 면제해 주지 않는다.",
                 "",
-                "⚠️ `gold`·`oracle` 두 행은 2026-09-09 제목 버그(`BUGFIX_LOG.md`) "
-                "수정 **이전** 실행이다.",
-                "검색 성공 906건 중 188건이 색인에 없는 렌더링 위에서 나왔으므로 "
-                "재실행 전까지 **하한으로 읽는다.**"]
+                f"두 행의 출처 파일: `{LEG['gold']}` / `{LEG['oracle']}` — 2026-09-09 "
+                "제목 버그(`BUGFIX_LOG.md`) 수정 **후** 재실행이다. 수정 전 실행"
+                "(`..._answer_gold` / `..._answer_oracle`)은 주지표에서 각각 0.9576 · "
+                "0.8819 였고, 그 값이 문서에 남아 있었다 — 인용하지 않는다."]
     if (D / "t_s3c_hybrid_answer_gold_format_nodefect.json").exists():
         out += ["",
                 "⚠️ **`데이터셀 전체` 칸에서는 행끼리 뺄셈하지 말 것.** 사전등록 A·B 행은",
@@ -514,9 +575,9 @@ def stratum_table():
     """표 2d — 층별로 어느 몫이 큰가. 예산과 리더 중 무엇이 손잡이인지가 층마다 다르다."""
     from rag_agent.eval.answer_em import query_type
     legs = {c: {j["query_id"]: j["answer_correct"]
-                for j in map(json.loads, (D / f"t_s3c_hybrid_answer_{c}.jsonl").open())}
+                for j in map(json.loads, leg_file(c, "jsonl").open())}
             for c in ("retrieved", "oracle", "gold")
-            if (D / f"t_s3c_hybrid_answer_{c}.jsonl").exists()}
+            if leg_file(c, "jsonl").exists()}
     if len(legs) < 3:
         return ""
     R = recs("t_s3c_hybrid")
@@ -599,8 +660,8 @@ def audit_block():
 def gap_block():
     """The professor's arithmetic: retrieval .9 -> answer .9, or not, and why."""
     r = load("t_s3c_hybrid")
-    fa = D / "t_s3c_hybrid_answer_retrieved.json"
-    fg = D / "t_s3c_hybrid_answer_gold.json"
+    fa = leg_file("retrieved")
+    fg = leg_file("gold")
     if not (r and fa.exists()):
         return ""
     A = json.loads(fa.read_text())

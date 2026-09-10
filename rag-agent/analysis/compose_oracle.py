@@ -11,7 +11,12 @@ it instead of paying for 1,581 more generations.
 Reads what it needs from the leg outputs only, so it is exact as long as the two
 legs ran on the same records with the same reader and prompt (asserted below).
 
-  PYTHONPATH=. .venv/bin/python analysis/compose_oracle.py
+Which `gold` leg to compose from is an argument, because there is more than one
+on disk: `gold` predates the 2026-09-09 title bug fix and `gold_v2` is the rerun
+after it. Composing from the stale leg is how a superseded ceiling stays in the
+tables (`analysis/accuracy_tables.py: LEG`).
+
+  PYTHONPATH=. .venv/bin/python analysis/compose_oracle.py [gold_v2]
 """
 from __future__ import annotations
 
@@ -35,15 +40,22 @@ def leg(name):
 
 
 def main() -> int:
-    out = D / f"{TAG}_answer_oracle.jsonl"
+    gname = sys.argv[1] if len(sys.argv) > 1 else "gold_v2"
+    oname = "oracle" + gname.removeprefix("gold")      # gold_v2 -> oracle_v2
+    out = D / f"{TAG}_answer_{oname}.jsonl"
     if out.exists():
         raise SystemExit(f"{out} exists — answer legs never overwrite")
-    gold, gmeta = leg("gold")
+    gold, gmeta = leg(gname)
     retr, rmeta = leg("retrieved")
 
-    # `.get` 이지 `[]` 가 아닌 이유: 두 기준선 레그는 prompt/seed 키가 생기기 전
-    # 실행이라 둘 다 없다. 없는 것끼리도 같아야 한다는 뜻은 그대로 성립한다.
-    for k in ("records", "reader", "prompt", "seed", "excluded_unit_defect"):
+    # 두 레그가 같은 조건인가. `records`·`reader` 는 둘 다 항상 적는다. prompt·seed·
+    # max_new_tokens 는 나중에 생긴 키라 옛 레그에는 없다 -- **한쪽만** 적은 키는
+    # 같다고 우길 수 없으므로 검사에서 빼고, 뺐다는 사실을 요약에 적는다.
+    KEYS = ("records", "reader", "prompt", "seed", "excluded_unit_defect")
+    unverified = [k for k in KEYS if (k in gmeta) != (k in rmeta)]
+    for k in KEYS:
+        if k in unverified:
+            continue
         assert gmeta.get(k) == rmeta.get(k), \
             f"legs disagree on {k}: {gmeta.get(k)} vs {rmeta.get(k)}"
     assert gold.keys() == retr.keys(), "legs cover different queries"
@@ -73,10 +85,12 @@ def main() -> int:
                "excluded_unit_defect": gmeta.get("excluded_unit_defect", False),
                # 새 생성이 아니라 두 레그의 합성이다. 표에 그렇게 적힌다.
                "composed": True,
-               "composed_from": {"retrieval_hit": f"{TAG}_answer_gold.jsonl",
+               "composed_from": {"retrieval_hit": f"{TAG}_answer_{gname}.jsonl",
                                  "retrieval_miss": f"{TAG}_answer_retrieved.jsonl"},
+               # 한쪽 레그에만 있어서 같은지 확인하지 못한 메타 키.
+               "meta_unverified": unverified,
                **summarize(rows, gmeta.get("context_limit") or 0)}
-    (D / f"{TAG}_answer_oracle.json").write_text(json.dumps(summary, indent=2))
+    (D / f"{TAG}_answer_{oname}.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary, indent=2))
     return 0
 

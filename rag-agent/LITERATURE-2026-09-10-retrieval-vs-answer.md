@@ -96,7 +96,7 @@ noise and are distracting information, resulting in sub-optimal performance."* �
 | 표에서 무관한 셀이 노이즈다 | 있음 (CABINET) | 재확인, 단일 표 한정 |
 | **EM = P(hit)×P(정답\|hit) 분해** | **없음** | **빈자리** |
 | **색인 단위가 P(정답\|hit) 를 바꾼다** | **없음** — 전부 passage 고정 | **빈자리** |
-| **계층표 + 다중 표 검색** | **없음** | **빈자리** |
+| **계층표 + 다중 표 검색** | **MixRAG (SIGKDD 2026) — §8.1** | ~~빈자리~~ **기각** |
 
 원문에서 명시적으로 확인한 부재:
 - UDCG: end-to-end 정확도를 retrieval × conditional 로 **분해하지 않는다**.
@@ -113,8 +113,9 @@ noise and are distracting information, resulting in sub-optimal performance."* �
    산수로 답한다.
 2. **색인 단위가 두 번째 항을 바꾼다.** 발표된 색인 단위 8개에서 검색 순위와 답변
    순위가 뒤집힌다. 문헌은 전부 passage 로 고정하고 k 만 바꾼다.
-3. **계층표 + 다중 표 검색 세팅.** CABINET(단일 표)도 TableRAG(표별 인덱스)도
-   다루지 않는다.
+3. ~~**계층표 + 다중 표 검색 세팅.**~~ **기각 (2026-09-10 감사 → §8 에서 확인).**
+   MixRAG (SIGKDD 2026) 가 **HiTab 과 MultiHiertt 로 만든 2,178문서 코퍼스에서
+   코퍼스 전역 검색**을 한다. 이 자리는 비어 있지 않다.
 
 **"distractor 가 해롭다"를 기여로 쓰면 안 된다.** 그건 SIGIR 2024 다.
 
@@ -126,3 +127,81 @@ noise and are distracting information, resulting in sub-optimal performance."* �
 - Hsia et al. *RAGGED: Towards Informed Design of Scalable and Stable RAG Systems.* arXiv:2403.09040
 - Patnaik et al. *CABINET: Content Relevance based Noise Reduction for Table Question Answering.* ICLR 2024 spotlight. arXiv:2402.01155
 - *The Powerless Noise: How Experimental Settings Shape the Reported Power of Noise.* SIGIR 2026. arXiv:2607.03615
+
+
+---
+
+## 8. 추가 대조 (2026-09-10 외부 감사가 지목, 이 세션이 원문 확인)
+
+감사(`T2_비교군_문헌_코드감사_2026-09-10.md`) §5 가 비교군 후보 다섯을 지목했다.
+아래 셋은 **초록/HTML 원문을 직접 열어** 확인했다. 상세 설정·수치 재현은 하지 않았으므로
+**실험 비교에 쓰기 전에 전문을 더 읽어야 한다.**
+
+### 8.1 MixRAG — 기여 후보 3 을 무너뜨린다 ⚠️
+
+**Zhang et al., *Mixture-of-RAG: Integrating Text and Tables with Large Language
+Models*, SIGKDD 2026, arXiv:2504.09554v3.** [공식 코드](https://github.com/ChiZhang-bit/Mixture-of-RAG)
+
+확인한 사실(원문 §3.2, 실험 절):
+
+- 코퍼스 출처가 **우리와 같은 데이터셋**이다 — MultiHiertt 표본과, *"we scrape
+  contextual information utilizing webpage links provided in HiTab (Cheng et al.,
+  2022), reconstructing heterogeneous documents"*. 데이터셋 이름이 `DocRAGLib`
+  (**2,178문서 / 4,468 QA**).
+- **코퍼스 전역 검색이다.** 과제가 *"the most relevant document D* from the document
+  corpus for a given question"* 을 찾는 것이다. 표 하나를 받아 그 안에서 찾는 세팅이 아니다.
+- 계층 구조를 **H-RCL** 로 표현한다 — *"The row-level summaries capture the
+  dependencies within the left headers, while the column-level summaries reflect the
+  relationships within the top headers."*
+- **LLM 재순위화**를 쓴다 (*"an ensemble retriever with LLM-based reranking"*).
+- 지표는 **HiT@K (문서 단위)**. HiT@1 54.1% (GPT-4o), HiT@3 72.44 / @5 76.03 / @10 86.89.
+
+**따라서 "계층표 + 코퍼스 검색은 선행연구에 없다"는 문장은 더 쓸 수 없다.** 감사가
+옳다. 이것을 기여 후보에서 지운다 (§7).
+
+**남는 자리 — 그리고 그 자리가 왜 남는지**:
+
+| | MixRAG | 본 연구 |
+|---|---|---|
+| 색인 단위 | 행·열 **요약문** (H-RCL) | **셀 하나** |
+| 검색 성공의 정의 | **문서**를 맞혔나 (HiT@K) | **정답 근거 셀**이 문맥에 왔나 |
+| 재순위화 | LLM reranker | 없음 (이 과제에서 해롭다고 3회 측정, `CLAUDE.md` §5) |
+
+즉 MixRAG 는 **어느 문서인가**까지 재고, 이 리포는 **그 문서 안 어느 칸인가**까지 잰다.
+기여 후보 1(분해 프레임)·2(색인 단위가 조건부 정확도를 바꾼다)는 이 차이 위에 그대로
+서지만, **"세팅이 새롭다"는 더 이상 그 근거가 아니다.**
+
+⚠️ **아직 안 한 것**: DocRAGLib 의 문서 구성이 우리 538표 코퍼스와 어떤 관계인지,
+HiT@K 를 우리 질의 단위 정확도와 어떻게 놓아야 하는지는 확인하지 않았다.
+**두 논문의 수치를 같은 표에 올리지 말 것.**
+
+### 8.2 FT-RAG — 셀 단위 지표를 쓰는 이웃, 단 벤치마크가 다르다
+
+**Guo et al., 2026, arXiv:2605.01495.** 표를 *"entry-level semantic units"* 로 분해해
+구조 그래프를 만들고, **table-level 과 cell-level Hit Rate 를 둘 다** 보고한다.
+자체 벤치마크 `Multi-Table-RAG-Lib` (9,870 QA) 를 쓰고 **HiTab 은 평가하지 않는다.**
+초록에 *"62.2% increase in exact value accuracy recall"* 이 있는데 **정의를 찾지 못했다** —
+감사의 경고대로 HiTab EM 과 같은 것으로 취급하면 안 된다. 발표 수치를 우리 표에 옮기지 않는다.
+
+### 8.3 OHD — 검색기가 아니라 **표현** 방법이다
+
+**Cao et al., *Orthogonal Hierarchical Decomposition*, ICML 2026, arXiv:2602.01969v2.**
+표 하나를 **column tree + row tree** 로 분해해 *"structure-preserving input
+representations of complex tables for LLMs"* 를 만든다. **코퍼스 검색을 하지 않는다.**
+AITQA·HiTab 으로 평가한다. 따라서 이것은 **표 1 의 색인 단위 행(직렬화 비교)** 자리에
+들어갈 후보이지, 비교할 RAG 시스템이 아니다. (README §2 가 이미 평탄 대 계층 직렬화의
+선행 근거로 인용하고 있다 — 그 용법이 맞다.)
+
+### 8.4 아직 안 읽은 것
+
+감사가 든 나머지 둘은 이 세션에서 열지 않았다 — **읽었다고 쓰지 말 것.**
+
+- Sun et al., 2026, FGTR, arXiv:2603.12702v2 — 스키마→셀 다중 표 검색, Spider/BIRD.
+  평평한 관계형 표라 계층 헤더와 다르다는 점을 감사가 지적했다.
+- Guo et al., 2026, ASTRA, arXiv:2604.08999 — 복잡한 표의 트리 변환·추론, HiTab 지원.
+
+## 인용 (§8 추가분)
+
+- Zhang et al. *Mixture-of-RAG: Integrating Text and Tables with Large Language Models.* SIGKDD 2026. arXiv:2504.09554
+- Guo et al. *FT-RAG.* 2026. arXiv:2605.01495
+- Cao et al. *Orthogonal Hierarchical Decomposition.* ICML 2026. arXiv:2602.01969

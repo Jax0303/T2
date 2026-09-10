@@ -31,9 +31,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 import time
 from collections import Counter, defaultdict
+from hashlib import md5, sha256
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -42,7 +44,8 @@ sys.path.insert(0, str(ROOT))
 import numpy as np                                                    # noqa: E402
 
 from rag_agent.bench import hitab_grid as hg                          # noqa: E402
-from rag_agent.data.loader import load_samples                        # noqa: E402
+from rag_agent.data.loader import (_find_data_root,                   # noqa: E402
+                                   load_samples)
 from rag_agent.retrieve.encoders import default_encoder               # noqa: E402
 from rag_agent.retrieve.hybrid_index import _minmax, _tokenize        # noqa: E402
 from rag_agent.retrieve.sparse_bm25 import SparseBM25                 # noqa: E402
@@ -65,6 +68,10 @@ ABLATIONS = ("flat", "s2")
 # baselines, not ablations -- see build_corpus.
 UNITS = ("cell", "row", "table", "chunk", "tablerag", "trag_hetero", "rowcol")
 PAGE_TITLES = ROOT / "results/tableconf/totto_page_titles.json"
+#: Huawei TableRAG's ``chunk_overlap``. Their code counts CHARACTERS here, the
+#: same unit as ``chunk_chars`` — see ``trag_hetero_chunks``. Named so it reaches
+#: the summary: a result file has to name every knob that set that run apart.
+TRAG_OVERLAP = 200
 
 
 def cell_unit(title, row_path, col_path, value, template: str) -> str:
@@ -302,11 +309,14 @@ def line_text(t, cells, title: str, template: str, row_text: str) -> str:
 def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dict,
                  chunk_chars: int = 1000, trag_mode: str = "leaf",
                  row_text: str = "sentence"):
-    """(texts, cell_sets, is_row, unit_tids) — one index unit per entry, the cells
-    it delivers, (``rowcol`` only) whether it is a row unit or a column unit, and
-    the table it came from. ``unit_tids`` is what ``--corpus gold`` masks on: a
-    unit carrying no cell (TableRAG's stub docs) still belongs to one table."""
-    texts, covers, is_row, unit_tids = [], [], [], []
+    """(texts, cell_sets, is_row, unit_tids, grid) — one index unit per entry, the
+    cells it delivers, (``rowcol`` only) whether it is a row unit or a column unit,
+    and the table it came from. ``unit_tids`` is what ``--corpus gold`` masks on: a
+    unit carrying no cell (TableRAG's stub docs) still belongs to one table.
+    ``grid`` is ``{table_id: (parsed table, title)}`` and is filled for ``rowcol``
+    only: its context is a SUB-TABLE cut at query time, so the cells have to still
+    be reachable after the corpus is built."""
+    texts, covers, is_row, unit_tids, grid = [], [], [], [], {}
     for tid in tids:
         tab = hg.load_table(tid, data_dir)
         if tab is None:
@@ -333,7 +343,8 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
                 texts.append(txt)
                 covers.append(frozenset((tid, i, j) for i, j in cs))
         elif unit == "trag_hetero":
-            for txt, cs in trag_hetero_chunks(tab, t, title, chunk_chars, 200):
+            for txt, cs in trag_hetero_chunks(tab, t, title, chunk_chars,
+                                              TRAG_OVERLAP):
                 texts.append(txt)
                 covers.append(frozenset((tid, i, j) for i, j in cs))
         elif unit == "tablerag":
@@ -349,6 +360,7 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
             # values joined, no header path -- that absence is the baseline, not a
             # handicap. The title rides on the first cell so the unit is findable at
             # corpus scale, the same courtesy every other arm gets.
+            grid[tid] = (t, title)
             for i in range(t.n_rows):
                 cs = [(i, j) for (a, j) in live if a == i]
                 if not cs:
@@ -370,7 +382,7 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
                 for k, (i, j) in enumerate(live)))
             covers.append(frozenset((tid, i, j) for i, j in live))
         unit_tids.extend([tid] * (len(texts) - before))
-    return texts, covers, is_row, unit_tids
+    return texts, covers, is_row, unit_tids, grid
 
 
 def budget_select(order, covers, texts, budget: int, dump: int, max_units: int = 0):
@@ -383,18 +395,55 @@ def budget_select(order, covers, texts, budget: int, dump: int, max_units: int =
     the prompt. ``trag_hetero`` carries 200 characters of overlap and delivers
     15,510 of the split's 67,664 cells more than once, so this is not a corner
     case. ``rowcol_select`` counts the distinct set already; this is that rule.
+
+    ``dump`` writes EVERY selected unit; it is a switch, not a second budget.
+    It used to stop the writing without stopping the walk, so a query could be
+    scored on cells from units the reader was never shown — two cell-free schema
+    docs ahead of the gold unit under ``dump=2`` scored a HIT on a context that
+    did not contain the gold. The scored set has to be the delivered set.
+
+    Capping the WALK at ``dump`` instead would restore that invariant too, but it
+    would silently move the operating point from "20 cells" to "20 units" — and
+    only for the one arm whose index units carry no cells (TableRAG's schema and
+    stub docs). ``CLAUDE.md`` §0.1 fixes the operating point at the cell count the
+    reader is handed, and inventing a per-arm unit cap here is exactly the
+    baseline handicap ``tests/test_arm_fairness.py`` exists to catch. A unit cap
+    is a deliberate setting with its own flag: ``--max-units``.
     """
     got, ctx = set(), []
     for n, p in enumerate(order):
         if len(got) >= budget or (max_units and n >= max_units):
             break
         got |= covers[p]
-        if dump and len(ctx) < dump:
+        if dump:
             ctx.append(texts[p])
     return got, len(got), ctx
 
 
-def rowcol_select(order, covers, texts, is_row, budget: int, dump: int, cap: int = 200):
+def subtable_lines(got, grid, template: str, row_text: str):
+    """The cells in ``got``, rendered as the sub-table they are.
+
+    ``sample_rows_and_columns`` hands the reader ``df.iloc[row_ids, col_ids]`` —
+    the INTERSECTION. Concatenating the selected row units and column units
+    instead delivers their union, so the reader reads values from outside the
+    sub-table that was scored: first row ``{a,b}`` and first column ``{a,c}``
+    score the one cell ``a`` and used to deliver ``a,b,c``. Cutting the same set
+    that is scored is the whole point of the arm.
+
+    One line per row, columns restricted to those the intersection kept, written
+    by the corpus's own ``line_text`` so the context matches the index unit.
+    """
+    out = []
+    for tid in sorted({c[0] for c in got}):
+        t, title = grid[tid]
+        cols = sorted({j for x, _i, j in got if x == tid})
+        for i in sorted({i for x, i, _j in got if x == tid}):
+            out.append(line_text(t, [(i, j) for j in cols], title, template, row_text))
+    return out
+
+
+def rowcol_select(order, covers, texts, is_row, budget: int, dump: int, grid=None,
+                  template: str = "s3c", row_text: str = "values", cap: int = 200):
     """RowColRetrieval's sub-table: top-K rows INTERSECT top-K columns.
 
     ``sample_rows_and_columns`` returns ``df.iloc[row_ids, col_ids]``, so a cell
@@ -417,8 +466,59 @@ def rowcol_select(order, covers, texts, is_row, budget: int, dump: int, cap: int
         got = R & C
         if len(got) >= budget:
             break
-    ctx = (rows[:k] + cols[:k])[:dump] if dump else []
-    return got, len(got), [texts[p] for p in ctx]
+    # 배달은 교집합 sub-table 이다 -- 채점한 집합과 같은 집합. `dump` 는 여기서
+    # 켜고 끄는 스위치일 뿐 잘라내지 않는다: sub-table 을 잘라내면 채점한 셀이
+    # 다시 문맥 밖으로 나가고, 그것이 이 함수가 고친 결함이다. 셀 수는 예산이
+    # 이미 묶고 있다.
+    return got, len(got), (subtable_lines(got, grid, template, row_text) if dump else [])
+
+
+def _data_sha(data_dir: str, split: str) -> str:
+    """The hash of the question file this run actually read.
+
+    HiTab's repo ships a second, revised split alongside the one everybody cites
+    (``test_samples_qualitycheck.jsonl``; the 2026-09-10 audit found 229 items
+    differ — 210 questions, 17 answers, 2 both). Two arms scored on different
+    editions are not comparable, and neither is a score compared against a
+    published one. Using either edition is fine; not recording which is not.
+    """
+    try:
+        f = _find_data_root(data_dir) / "data" / f"{split}_samples.jsonl"
+        return sha256(f.read_bytes()).hexdigest()[:16]
+    except Exception:
+        return "unknown"
+
+
+def encoder_truncation(enc, texts):
+    """How many index units the dense encoder cuts off, and at what length.
+
+    BGE's own SentenceTransformer config sets ``max_seq_length=512``, and this
+    repo never raises it. An arm that indexes long chunks therefore embeds only
+    the head of each one — evidence past the cut is not ranked low, it is not
+    in the vector at all. That is a RETRIEVAL INPUT limit, not the reader's
+    context window, and it is invisible in the score unless the run records it.
+    BM25 reads the whole text, so this is not "the rest is lost".
+    """
+    model = getattr(enc, "model", None)
+    tok, lim = getattr(model, "tokenizer", None), getattr(model, "max_seq_length", 0)
+    if tok is None or not lim or not texts:
+        return None
+    over = 0
+    for i in range(0, len(texts), 512):
+        over += sum(len(x) > lim
+                    for x in tok(texts[i:i + 512], add_special_tokens=True)["input_ids"])
+    return {"max_seq_length": lim, "n_units_over": over,
+            "ratio": round(over / len(texts), 4)}
+
+
+def _git_rev() -> str:
+    """The commit this run's code came from, ``"unknown"`` outside a checkout."""
+    try:
+        return subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+                              capture_output=True, text=True, timeout=5,
+                              check=True).stdout.strip()
+    except Exception:
+        return "unknown"
 
 
 def load_queries(data_dir: str, split: str, tabs):
@@ -485,8 +585,11 @@ def main() -> int:
                          "top_k=5 counts documents, not cells). 0 = no unit cap")
     ap.add_argument("--cache-dir", default=".cache/retrieval_accuracy")
     ap.add_argument("--dump-context", type=int, default=0,
-                    help="also write the top-N context sentences per query, "
-                         "for the reader stage")
+                    help="0 = off; any positive value writes the context the "
+                         "budget selected — ALL of it, for the reader stage. It "
+                         "is not a second budget: truncating here would score "
+                         "cells the reader never receives. To cap index units, "
+                         "use --max-units.")
     ap.add_argument("--tag", default="")
     ap.add_argument("--out-dir", default="results/retrieval_accuracy")
     a = ap.parse_args()
@@ -497,9 +600,9 @@ def main() -> int:
     queries = load_queries(a.data_dir, a.split, tabs)
     tids = (hg.table_ids(a.data_dir) if a.corpus == "all"
             else sorted({q["table_id"] for q in queries}))
-    texts, covers, is_row, unit_tids = build_corpus(a.data_dir, tids, a.template, a.unit,
-                                         page_titles, a.chunk_chars, a.tablerag_colmode,
-                                         a.row_text)
+    texts, covers, is_row, unit_tids, grid = build_corpus(
+        a.data_dir, tids, a.template, a.unit, page_titles, a.chunk_chars,
+        a.tablerag_colmode, a.row_text)
     unit_tid_arr = np.array(unit_tids)
     assert len(unit_tid_arr) == len(texts), "unit->table map lost a unit"
     print(f"[corpus] {len(tids)} tables / {len(texts)} {a.unit} units "
@@ -516,7 +619,6 @@ def main() -> int:
     if a.alpha > 0:
         cache = Path(a.cache_dir)
         cache.mkdir(parents=True, exist_ok=True)
-        from hashlib import md5
         key = md5("\x00".join(texts).encode()).hexdigest()[:16]
         f = cache / f"{enc.name.replace('/', '_')}_{len(texts)}_{key}.npy"
         if f.exists():
@@ -552,7 +654,8 @@ def main() -> int:
             order = sel[order]
         if a.unit == "rowcol":
             got, n_cells, ctx = rowcol_select(order, covers, texts, is_row,
-                                              a.budget, a.dump_context)
+                                              a.budget, a.dump_context, grid,
+                                              a.template, a.row_text)
         else:
             got, n_cells, ctx = budget_select(order, covers, texts,
                                               a.budget, a.dump_context, a.max_units)
@@ -572,7 +675,13 @@ def main() -> int:
             r["question"] = q["question"]
             r["answer"] = q["answer"]
             r["context"] = ctx
-            r["gold_cells"] = sorted(list(gold))[:64]
+            # 채점한 문맥과 리더가 실제로 받은 문맥이 같은 것인지, 결과
+            # 파일 두 개를 짝지어 확인할 수 있게 남긴다.
+            r["context_sha"] = md5("\n".join(ctx).encode()).hexdigest()[:12]
+            # 자르지 않는다. `[:64]` 는 헤더답 29건에서 65~408개 좌표를 64개로
+            # 깎았고, 검색은 전체 gold 로 채점하면서 gold/oracle 리더 레그만 잘린
+            # 집합을 받았다 (`scripts/answer_accuracy.py: gold_context`).
+            r["gold_cells"] = sorted(gold)
         recs.append(r)
         if k % 200 == 0:
             print(f"  {k}/{len(queries)}  {time.time() - t0:.0f}s", flush=True)
@@ -592,11 +701,16 @@ def main() -> int:
         # 단위를 정하는 인자도 적는다. 없으면 t_trag_hetero(1,000자)와
         # t_trag_hetero_tok(2,400자)처럼 같은 unit 인 두 행을 결과 파일만 보고
         # 구별할 수 없고, 어떤 명령이 이 파일을 만들었는지 복원되지 않는다.
-        "chunk_chars": a.chunk_chars, "row_text": a.row_text,
+        "chunk_chars": a.chunk_chars,
+        "chunk_overlap": TRAG_OVERLAP if a.unit == "trag_hetero" else 0,
+        "code_revision": _git_rev(), "data_sha256_16": _data_sha(a.data_dir, a.split),
+        "row_text": a.row_text,
         "tablerag_colmode": a.tablerag_colmode,
         "max_units": a.max_units,
         "encoder": enc.name if enc else "none (bm25 only)", "alpha": a.alpha,
-        "query_prefix": (enc.query_prefix if enc else ""), "budget_cells": a.budget,
+        "query_prefix": (enc.query_prefix if enc else ""),
+        "encoder_truncation": encoder_truncation(enc, texts),
+        "budget_cells": a.budget,
         "n_queries_in_split": len(queries), "n_scored": len(scored),
         "n_excluded": sum(excl.values()), "excluded_by_reason": dict(excl),
         "accuracy_all_mode": acc(by_mode["all"]), "n_all_mode": len(by_mode["all"]),

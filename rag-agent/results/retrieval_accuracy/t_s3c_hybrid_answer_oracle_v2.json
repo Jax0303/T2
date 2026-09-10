@@ -1,0 +1,72 @@
+{
+  "records": "results/retrieval_accuracy/t_s3c_hybrid_records.jsonl",
+  "condition": "oracle",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "base",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "excluded_unit_defect": false,
+  "composed": true,
+  "composed_from": {
+    "retrieval_hit": "t_s3c_hybrid_answer_gold_v2.jsonl",
+    "retrieval_miss": "t_s3c_hybrid_answer_retrieved.jsonl"
+  },
+  "meta_unverified": [
+    "prompt",
+    "seed",
+    "excluded_unit_defect"
+  ],
+  "input_tokens": {
+    "mean": 336.5,
+    "median": 171,
+    "max": 3929,
+    "n": 1392
+  },
+  "context_limit": 32768,
+  "n_over_context_limit": 0,
+  "over_context_limit_ratio": 0.0,
+  "cells_delivered": {
+    "mean": 20.0,
+    "median": 20,
+    "max": 20,
+    "n": 1392
+  },
+  "context_lines": {
+    "mean": 6.5,
+    "median": 1,
+    "max": 64,
+    "n": 1581
+  },
+  "n": 1581,
+  "answer_accuracy": 0.7204,
+  "answer_accuracy_all_mode": 0.7703,
+  "n_all_mode": 1245,
+  "answer_accuracy_any_mode": 0.5357,
+  "n_any_mode": 336,
+  "retrieval_accuracy_here": 0.8805,
+  "answer_given_retrieval_hit": 0.8111,
+  "n_retrieval_hit": 1392,
+  "answer_given_retrieval_miss": 0.0529,
+  "n_retrieval_miss": 189,
+  "by_aggregation": {
+    "argmax": 0.463,
+    "argmin": 0.4211,
+    "average": 0.5,
+    "counta": 0.6667,
+    "diff": 0.3929,
+    "div": 0.1053,
+    "greater_than": 0.5714,
+    "kth-argmax": 0.6,
+    "less_than": 0.8333,
+    "max": 0.5625,
+    "min": 0.5,
+    "none": 0.8666,
+    "opposite": 0.28,
+    "pair-argmax": 0.3978,
+    "pair-argmin": 0.381,
+    "range": 0.3333,
+    "sum": 0.2273,
+    "topk-argmax": 0.3
+  }
+}

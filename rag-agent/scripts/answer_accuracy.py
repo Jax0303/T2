@@ -28,6 +28,7 @@ import json
 import sys
 import time
 from collections import Counter, defaultdict
+from hashlib import md5
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -201,6 +202,10 @@ def main() -> int:
         rows.append({"query_id": r["query_id"], "mode": r["mode"],
                      "retrieval_correct": r["correct"], "answer_correct": int(ok),
                      "aggregation": r.get("aggregation"), "n_ctx": len(ctx),
+                     # 리더가 실제로 읽은 문맥의 해시. 검색 기록의 `context_sha`
+                     # 와 대조하면 채점한 문맥과 답한 문맥이 같은지가 파일만 보고
+                     # 확인된다 (gold/oracle 은 문맥을 다시 만드니 값이 다르다).
+                     "context_sha": md5("\n".join(ctx).encode()).hexdigest()[:12],
                      "n_tok": n_tok, "cells_in_context": r.get("cells_in_context"),
                      "pred": pred, "answer": r["answer"]})
         if k % 50 == 0:

@@ -1,0 +1,39 @@
+{
+  "split": "test",
+  "corpus": "split",
+  "n_tables": 538,
+  "n_units": 67664,
+  "unit": "cell",
+  "template": "s3c",
+  "chunk_chars": 1000,
+  "chunk_overlap": 0,
+  "code_revision": "4be96ab8620bf109a44a8dadd04e7b32225d85ae",
+  "data_sha256_16": "cfb8296a23d44817",
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "max_units": 0,
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "alpha": 0.7,
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "encoder_truncation": {
+    "max_seq_length": 512,
+    "n_units_over": 0,
+    "ratio": 0.0
+  },
+  "budget_cells": 20,
+  "n_queries_in_split": 1584,
+  "n_scored": 1581,
+  "n_excluded": 3,
+  "excluded_by_reason": {
+    "no_gold_annotation": 1,
+    "gold_unmappable": 1,
+    "unreadable_formula:=IF(F10=MIN(F5:F18),\"Quebec\",\"\")": 1
+  },
+  "accuracy_all_mode": 0.89,
+  "n_all_mode": 1245,
+  "accuracy_any_mode": 0.8452,
+  "n_any_mode": 336,
+  "accuracy_scored": 0.8805,
+  "accuracy_over_full_split": 0.8788,
+  "gold_table_in_context": 0.9538
+}

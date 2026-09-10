@@ -68,8 +68,12 @@ def test_chunk_repeats_the_header_block_and_partitions_cells():
 def test_tablerag_folds_numeric_and_keeps_the_stub_column():
     out = ra.tablerag_units(Tab(), T(), "leaf")
     docs = dict(out)
-    schema = [d for d in docs if '"dtype"' in d]
+    # `"dtype"` 은 숫자 열의 min/max 요약과 범주 열의 cell_examples 문서 둘 다에
+    # 실린다 (`build_schema_corpus` 포팅, 2026-09-10). 접히는 것은 숫자 열이다.
+    schema = [d for d in docs if '"min"' in d]
     assert len(schema) == 2, "숫자 열 둘이 요약 하나씩으로 접힌다"
+    assert len([d for d in docs if '"cell_examples"' in d]) == 1, \
+        "범주 열 하나가 스키마 문서 하나를 갖는다 (셀 0개 배달)"
     a = next(d for d in schema if '"column_name": "a"' in d)
     assert '"min": 10.0' in a and '"max": 30.0' in a
     assert docs[a] == [(0, 0), (1, 0)], "min 행과 max 행만 배달한다"
@@ -100,6 +104,34 @@ def test_rowcol_is_an_intersection_not_a_union():
     got, n, _ = ra.rowcol_select([0, 1, 2, 6, 7, 8], covers, texts, is_row,
                                  budget=9, dump=0)
     assert n == 9, n                          # 3x3 전체
+
+
+def test_rowcol_delivers_the_subtable_it_scored():
+    """채점한 집합 = 리더가 받는 집합.
+
+    행 문장과 열 문장을 이어 붙이면 교집합 밖의 값이 문맥에 실린다 -- 첫 행
+    `{a,b}` 와 첫 열 `{a,c}` 는 셀 `a` 하나를 채점하면서 `a,b,c` 를 배달했다.
+    그건 `df.iloc[row_ids, col_ids]` 가 아니다.
+    """
+    t = T()
+    rows = [frozenset(("A", i, j) for j in range(3)) for i in range(3)]
+    cols = [frozenset(("A", i, j) for i in range(3)) for j in range(3)]
+    covers, is_row = rows + cols, [True] * 3 + [False] * 3
+    texts = [f"u{i}" for i in range(6)]
+    grid = {"A": (t, "T")}
+
+    got, n, ctx = ra.rowcol_select([0, 3], covers, texts, is_row, budget=1,
+                                   dump=20, grid=grid, row_text="values")
+    assert got == {("A", 0, 0)} and n == 1, got
+    assert ctx == ["T | r0|10"], ctx           # 행 0 x 열 0, 그 한 칸뿐
+    joined = "\n".join(ctx)
+    assert "1.5" not in joined and "30" not in joined, \
+        "교집합 밖의 값이 리더 문맥에 실렸다"
+
+    # 2x2 sub-table: 행 0-1 x 열 0-1, 행마다 한 줄.
+    got, n, ctx = ra.rowcol_select([0, 1, 3, 4], covers, texts, is_row, budget=4,
+                                   dump=20, grid=grid, row_text="values")
+    assert n == 4 and ctx == ["T | r0|10|1.5", "T | r1|30|2.5"], ctx
 
 
 def test_published_row_unit_is_values_not_our_sentence():

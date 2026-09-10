@@ -80,7 +80,7 @@ def section_a(recs, args):
     pt = json.loads(PAGE_TITLES.read_text()); tabs = {}
     qs = {q["query_id"]: q for q in load_queries(args.data_dir, args.split, tabs)}
     tids = sorted({q["table_id"] for q in qs.values()})
-    texts, covers = build_corpus(args.data_dir, tids, "s3c", "cell", pt)
+    texts, covers, *_ = build_corpus(args.data_dir, tids, "s3c", "cell", pt)
     owner = [next(iter(c)) for c in covers]
     pos_of = {c: i for i, c in enumerate(owner)}
     by_tab = defaultdict(list)
