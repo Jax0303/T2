@@ -1,0 +1,180 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+  "split": "train",
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all (gold 셀 전부 문맥에). any 는 진단값.",
+  "unit": "cell",
+  "template": "s3c (제목 없음 -> S2 경로 문자열)",
+  "hierarchy_source": "self-reconstructed (rag_agent.reconstruct)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "budget_cells": 20,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_cells": 429048,
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2871,
+  "n_excluded": 37,
+  "excluded_by_reason": {
+    "gold_in_header": 31,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "gold_value_audit": {
+    "gold_cells_checked": 8129,
+    "value_match": 8107,
+    "value_mismatch": 22,
+    "no_description_key": 0
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 2871,
+      "corpus": {
+        "accuracy_all": 0.2567,
+        "accuracy_any_DIAGNOSTIC": 0.5413,
+        "any_minus_all": 0.2846,
+        "gold_doc_in_context": 0.6834
+      },
+      "doc": {
+        "accuracy_all": 0.8394,
+        "accuracy_any_DIAGNOSTIC": 0.9631,
+        "any_minus_all": 0.1237,
+        "gold_doc_in_context": 1.0
+      },
+      "mean_m": 2.648,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.5915,
+        "accuracy_any_DIAGNOSTIC": 0.5915,
+        "any_minus_all": 0.0,
+        "gold_doc_in_context": 0.7183
+      },
+      "doc": {
+        "accuracy_all": 0.9577,
+        "accuracy_any_DIAGNOSTIC": 0.9577,
+        "any_minus_all": 0.0,
+        "gold_doc_in_context": 1.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2224,
+      "corpus": {
+        "accuracy_all": 0.2271,
+        "accuracy_any_DIAGNOSTIC": 0.5535,
+        "any_minus_all": 0.3264,
+        "gold_doc_in_context": 0.6929
+      },
+      "doc": {
+        "accuracy_all": 0.8215,
+        "accuracy_any_DIAGNOSTIC": 0.9627,
+        "any_minus_all": 0.1412,
+        "gold_doc_in_context": 1.0
+      },
+      "mean_m": 2.733,
+      "m_over_budget": 0
+    },
+    "gold_multi_table": {
+      "n": 581,
+      "corpus": {
+        "accuracy_all": 0.2599,
+        "accuracy_any_DIAGNOSTIC": 0.821,
+        "any_minus_all": 0.5611,
+        "gold_doc_in_context": 0.9312
+      },
+      "doc": {
+        "accuracy_all": 0.8571,
+        "accuracy_any_DIAGNOSTIC": 0.9948,
+        "any_minus_all": 0.1377,
+        "gold_doc_in_context": 1.0
+      },
+      "mean_m": 2.203,
+      "m_over_budget": 0
+    },
+    "gold_single_table": {
+      "n": 2290,
+      "corpus": {
+        "accuracy_all": 0.2559,
+        "accuracy_any_DIAGNOSTIC": 0.4703,
+        "any_minus_all": 0.2144,
+        "gold_doc_in_context": 0.6205
+      },
+      "doc": {
+        "accuracy_all": 0.8349,
+        "accuracy_any_DIAGNOSTIC": 0.955,
+        "any_minus_all": 0.1201,
+        "gold_doc_in_context": 1.0
+      },
+      "mean_m": 2.761,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "corpus": {
+        "accuracy_all": 0.4123,
+        "accuracy_any_DIAGNOSTIC": 0.4123,
+        "any_minus_all": 0.0,
+        "gold_doc_in_context": 0.6635
+      },
+      "doc": {
+        "accuracy_all": 0.9479,
+        "accuracy_any_DIAGNOSTIC": 0.9479,
+        "any_minus_all": 0.0,
+        "gold_doc_in_context": 1.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.2822,
+        "accuracy_any_DIAGNOSTIC": 0.5315,
+        "any_minus_all": 0.2493,
+        "gold_doc_in_context": 0.6301
+      },
+      "doc": {
+        "accuracy_all": 0.863,
+        "accuracy_any_DIAGNOSTIC": 0.9753,
+        "any_minus_all": 0.1123,
+        "gold_doc_in_context": 1.0
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  },
+  "lower_bound_excluded_as_wrong": {
+    "lookup_m1": {
+      "n_incl_excluded": 212,
+      "corpus_all": 0.4104,
+      "doc_all": 0.9434
+    },
+    "lookup_m2+": {
+      "n_incl_excluded": 367,
+      "corpus_all": 0.2807,
+      "doc_all": 0.8583
+    },
+    "arith_m1": {
+      "n_incl_excluded": 71,
+      "corpus_all": 0.5915,
+      "doc_all": 0.9577
+    },
+    "arith_m2+": {
+      "n_incl_excluded": 2258,
+      "corpus_all": 0.2236,
+      "doc_all": 0.8091
+    },
+    "ALL": {
+      "n_incl_excluded": 2908,
+      "corpus_all": 0.2534,
+      "doc_all": 0.8287
+    }
+  }
+}
