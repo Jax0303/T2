@@ -10,13 +10,13 @@ not .9?" has an arithmetic answer instead of a guess.
 Three conditions, because the gap has two possible owners:
 
   retrieved  the top-K cells the retriever chose. The deployed number.
-  gold       only the annotated gold cells. The READER CEILING — whatever this
-             misses, no retriever can fix.
+  gold       only annotated gold cells: a diagnostic context intervention,
+             not a mathematical ceiling on other contexts.
   oracle     gold cells when retrieval found them all, the retrieved context
              when it did not. Isolates what perfect reranking inside K buys.
 
-Scored with ``hitab_exact_match_text`` — HiTab's own scorer, no tolerance and no
-rescaling, so the number stays comparable with published HiTab accuracies.
+Scored with ``hitab_exact_match_text``, the local text-output adapter to HiTab's
+numeric comparison (1e-5 tolerance). Multi-value text parsing is an adaptation.
 
   PYTHONPATH=. .venv/bin/python scripts/answer_accuracy.py \
       --records results/retrieval_accuracy/t_s3c_hybrid_records.jsonl
@@ -28,7 +28,6 @@ import json
 import sys
 import time
 from collections import Counter, defaultdict
-from hashlib import md5
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -41,6 +40,8 @@ from rag_agent.serialization.caption import (caption_sentence,        # noqa: E4
                                              with_page_title)
 from rag_agent.serialization.templates import STRUCTURAL_COMPACT      # noqa: E402
 from scripts.retrieval_accuracy import PAGE_TITLES                    # noqa: E402
+from rag_agent.eval.artifacts import (digest, file_digest, provenance, read_records,
+                                     validate_retrieval, write_pair)
 
 BASE = ("You answer questions about a table. The context lines are cells of the "
         "table, each written as its headers and its value. Use only the context. "
@@ -70,7 +71,30 @@ EVIDENCE = FORMAT + (
     " First find the one context line whose headers match every part of the "
     "question. Then answer using that line's value. Output only the answer.")
 
-PROMPTS = {"base": BASE, "format": FORMAT, "evidence": EVIDENCE}
+NEUTRAL = ("Answer the question using only the provided table context. The context "
+           "may contain tables, table excerpts, or descriptions of cells. Read the "
+           "row and column labels to identify the relevant values. Return only the "
+           "answer, without an explanation. If several values are requested, "
+           "separate them with commas.")
+PROMPTS = {"neutral": NEUTRAL, "base": BASE, "format": FORMAT, "evidence": EVIDENCE}
+
+
+def load_evidence(path):
+    records = read_records(path)
+    for row in records.values():
+        validate_retrieval(row)
+    path = Path(path)
+    meta_path = path.with_name(path.stem.removesuffix("_records") + ".json")
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    if meta.get("records_sha256") != file_digest(path) or meta.get("context_version") != 2:
+        raise ValueError("retrieval summary is missing, stale, or incompatible; regenerate evidence")
+    return records, meta
+
+
+def check_context_limit(n_tokens, max_new_tokens, context_limit):
+    if context_limit and n_tokens is not None and n_tokens + max_new_tokens > context_limit:
+        raise ValueError(f"prompt ({n_tokens}) + output budget ({max_new_tokens}) "
+                         f"exceeds reader context limit ({context_limit})")
 
 
 #: The index prefixes ToTTo's page title (scripts/retrieval_accuracy.py
@@ -85,6 +109,9 @@ def gold_context(rec, tabs, data_dir):
     if tab is None:
         tab = tabs[rec["table_id"]] = hg.load_table(rec["table_id"], data_dir)
     t = tab.table
+    for tid, i, j in rec["gold_cells"]:
+        if tid != rec["table_id"] or not (0 <= i < t.n_rows and 0 <= j < t.n_cols):
+            raise ValueError("gold coordinate is outside its declared table")
     title = with_page_title(tab.title, _PAGE_TITLES.get(rec["table_id"]))
     return [caption_sentence(title, t.row_path(i), t.col_path(j),
                             value=t.data[i][j], template=STRUCTURAL_COMPACT)
@@ -143,9 +170,9 @@ def main() -> int:
                     choices=["retrieved", "gold", "oracle"])
     ap.add_argument("--max-tokens", type=int, default=64)
     ap.add_argument("--limit", type=int, default=0)
-    ap.add_argument("--prompt", default="base", choices=list(PROMPTS),
-                    help="base = the original instruction; format / evidence are "
-                         "the two preregistered interventions")
+    ap.add_argument("--prompt", default="neutral", choices=list(PROMPTS),
+                    help="neutral works across representations; base/format/evidence "
+                         "are historical prompt variants")
     ap.add_argument("--exclude-unit-defect", action="store_true",
                     help="drop the queries whose gold is a fraction while the "
                          "question asks for a percentage (analysis/unit_defect.py). "
@@ -157,11 +184,14 @@ def main() -> int:
     ap.add_argument("--out", default="")
     a = ap.parse_args()
 
-    recs = [json.loads(l) for l in open(a.records)]
+    if a.max_tokens <= 0 or a.limit < 0:
+        ap.error("max-tokens must be positive and limit nonnegative")
+    records, retrieval_meta = load_evidence(a.records)
+    recs = list(records.values())
     scored = [r for r in recs if "correct" in r]
     if a.exclude_unit_defect:
         from analysis.unit_defect import defect_ids
-        bad = defect_ids(a.data_dir, "test")
+        bad = defect_ids(a.data_dir, retrieval_meta["split"])
         n0 = len(scored)
         scored = [r for r in scored if r["query_id"] not in bad]
         print(f"[exclude] 단위 불일치 라벨 결함 {n0 - len(scored)}건 제외 -> {len(scored)}건",
@@ -179,8 +209,26 @@ def main() -> int:
     if out.suffix != ".jsonl":
         raise SystemExit(f"--out must end in .jsonl (got {out.name}); the summary "
                          f"is written alongside it as .json")
-    if out.exists():
+    if out.exists() or out.with_suffix(".json").exists():
         raise SystemExit(f"{out} exists — answer legs never overwrite; pass a new --out")
+
+    if not scored:
+        raise ValueError("no scored queries after explicit filters")
+    if a.condition in {"gold", "oracle"}:
+        from rag_agent.data.loader import _find_data_root
+        split_path = _find_data_root(a.data_dir) / "data" / (retrieval_meta["split"] + "_samples.jsonl")
+        if file_digest(split_path) != retrieval_meta["dataset"]["split_sha256"]:
+            raise ValueError("gold renderer dataset differs from retrieval dataset")
+        titles_hash = file_digest(PAGE_TITLES) if PAGE_TITLES.exists() else None
+        if titles_hash != retrieval_meta["dataset"]["page_titles_sha256"]:
+            raise ValueError("gold renderer page titles differ from retrieval corpus")
+        raw_dir, hmt_dir = hg._dirs(a.data_dir)
+        tids = hg.table_ids(a.data_dir) if retrieval_meta["corpus"] == "all" else sorted({r["table_id"] for r in recs})
+        table_files = {f"{kind}/{tid}": file_digest(directory / f"{tid}.json")
+                       if (directory / f"{tid}.json").exists() else None
+                       for tid in tids for kind, directory in (("raw", raw_dir), ("hmt", hmt_dir))}
+        if digest(table_files) != retrieval_meta["dataset"]["tables_sha256"]:
+            raise ValueError("gold renderer tables differ from retrieval corpus")
 
     llm = build_llm(a.reader)
     import torch                                                   # noqa: E402
@@ -189,40 +237,44 @@ def main() -> int:
     tabs: dict = {}
     rows, t0 = [], time.time()
     for k, r in enumerate(scored, 1):
-        if a.condition == "gold" or (a.condition == "oracle" and r["correct"]):
+        use_gold = a.condition == "gold" or (a.condition == "oracle" and r["correct"])
+        if use_gold:
             ctx = gold_context(r, tabs, a.data_dir)
         else:
             ctx = r.get("context") or []
         user = "Context:\n" + "\n".join(ctx) + f"\n\nQuestion: {r['question']}\nAnswer:"
         n_tok = (llm.n_prompt_tokens(PROMPTS[a.prompt], user)
                  if hasattr(llm, "n_prompt_tokens") else None)
+        check_context_limit(n_tok, a.max_tokens, limit)
         pred = llm.complete(PROMPTS[a.prompt], user, max_tokens=a.max_tokens,
                             temperature=0.0)
         ok = hitab_exact_match_text(pred, r["answer"])
         rows.append({"query_id": r["query_id"], "mode": r["mode"],
+                     "question": r["question"],
                      "retrieval_correct": r["correct"], "answer_correct": int(ok),
                      "aggregation": r.get("aggregation"), "n_ctx": len(ctx),
-                     # 리더가 실제로 읽은 문맥의 해시. 검색 기록의 `context_sha`
-                     # 와 대조하면 채점한 문맥과 답한 문맥이 같은지가 파일만 보고
-                     # 확인된다 (gold/oracle 은 문맥을 다시 만드니 값이 다르다).
-                     "context_sha": md5("\n".join(ctx).encode()).hexdigest()[:12],
-                     "n_tok": n_tok, "cells_in_context": r.get("cells_in_context"),
+                     "n_tok": n_tok, "cells_in_context": r["m"] if use_gold else r["cells_in_context"],
+                     "context_sha256": digest(ctx),
+                     "source_context_sha256": r["context_sha256"],
+                     "context_condition": "gold" if use_gold else "retrieved",
                      "pred": pred, "answer": r["answer"]})
         if k % 50 == 0:
             print(f"  {k}/{len(scored)}  {time.time() - t0:.0f}s  "
                   f"acc={sum(x['answer_correct'] for x in rows) / k:.4f}", flush=True)
 
-    with open(out, "w") as fh:
-        for x in rows:
-            fh.write(json.dumps(x, ensure_ascii=False) + "\n")
-
     summary = {"records": a.records, "condition": a.condition,
+               "context_version": 2, "provenance": provenance(ROOT),
+               "retrieval_records_sha256": file_digest(a.records),
+               "query_ids_sha256": digest(sorted(r["query_id"] for r in scored)),
+               "reader_details": llm.metadata() if hasattr(llm, "metadata") else {"name": llm.name},
+               "prompt_sha256": digest(PROMPTS[a.prompt]), "prompt_text": PROMPTS[a.prompt],
+               "scorer": "hitab_exact_match_text", "scorer_numeric_tolerance": 1e-5,
                "reader": llm.name, "prompt": a.prompt, "seed": a.seed,
                "max_new_tokens": a.max_tokens,
                "batch_size": 1,      # 질의당 1건 생성 — 조건 무관 고정
                "excluded_unit_defect": bool(a.exclude_unit_defect),
                **summarize(rows, limit)}
-    Path(str(out).replace(".jsonl", ".json")).write_text(json.dumps(summary, indent=2))
+    write_pair(out, rows, summary)
     print(json.dumps(summary, indent=2))
     return 0
 

@@ -121,7 +121,7 @@ def test_rowcol_delivers_the_subtable_it_scored():
     grid = {"A": (t, "T")}
 
     got, n, ctx = ra.rowcol_select([0, 3], covers, texts, is_row, budget=1,
-                                   dump=20, grid=grid, row_text="values")
+                                   dump=20, grid=grid, row_text="values", context_format="legacy_values")
     assert got == {("A", 0, 0)} and n == 1, got
     assert ctx == ["T | r0|10"], ctx           # 행 0 x 열 0, 그 한 칸뿐
     joined = "\n".join(ctx)
@@ -130,7 +130,7 @@ def test_rowcol_delivers_the_subtable_it_scored():
 
     # 2x2 sub-table: 행 0-1 x 열 0-1, 행마다 한 줄.
     got, n, ctx = ra.rowcol_select([0, 1, 3, 4], covers, texts, is_row, budget=4,
-                                   dump=20, grid=grid, row_text="values")
+                                   dump=20, grid=grid, row_text="values", context_format="legacy_values")
     assert n == 4 and ctx == ["T | r0|10|1.5", "T | r1|30|2.5"], ctx
 
 

@@ -19,6 +19,7 @@ dependencies = [
     "transformers>=4.40",
     "bitsandbytes>=0.43",
     "sentence-transformers>=3.0",
+    "langchain-text-splitters==1.1.2",  # native recursive character splitter
     "faiss-cpu>=1.7",       # cell-stage vector index (exact IndexFlatIP, per-run)
     "rank-bm25==0.2.2",      # pinned: every call site relies on its BM25Okapi
                              # defaults (k1=1.5, b=0.75, epsilon=0.25)

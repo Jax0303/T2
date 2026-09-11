@@ -5,7 +5,7 @@ Replaces the ``short``/``medium``/``long`` preset axis. Sentence length is no
 longer an experimental variable; what remains is the one contrast that carries a
 claim:
 
-* :data:`MT2NET` — the reproduction baseline. Zhao et al. (2022), MultiHiertt /
+* :data:`MT2NET` — a historical, MT2Net-inspired serialization control. Zhao et al. (2022), MultiHiertt /
   MT2Net, ACL, arXiv:2206.01347 §4 renders each cell as a sentence carrying its
   hierarchical row and column headers, and retrieves the top-n such sentences.
   This template exists so "what the 2022 baseline indexes" is a thing this repo
@@ -50,8 +50,10 @@ What the paper DOES state (Section 4, verbatim) is the principle, not the form:
     "we turn each cell into a sentence, along with its hierarchical row and
      column headers"
 
-So this template reproduces MT2Net's INDEX UNIT (one cell, with both header
-paths, no table title) and NOT its sentence rendering. Report it that way. That
+This template shares the cell-plus-header idea, but is not a reproduction of
+the official table_description strings, learned retriever, or reasoning modules.
+The official 45bd9cc release reads precomputed table_description strings and uses
+a RoBERTa-base pair classifier (inference_configs/retriever_inference.yaml). That
 distinction is affordable because this repo already measured that the sentence's
 FORM does not carry the gain -- S2 .517 / S2r .527 / MT2Net .516 are
 indistinguishable (CLAUDE.md section 5) -- what carries it is the table's own

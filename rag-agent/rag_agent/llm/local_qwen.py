@@ -20,6 +20,7 @@ class LocalQwenLLM(BaseLLM):
         device: Optional[str] = None,
         quantization: Optional[str] = "4bit",   # None | "4bit" | "8bit"
         default_max_tokens: int = 256,
+        revision: Optional[str] = None,
         retry_on_429: int = 0,  # inert: no rate limit locally. Accepted so a
                                 # caller can hand the same kwargs to any backend.
     ) -> None:
@@ -40,9 +41,13 @@ class LocalQwenLLM(BaseLLM):
         # experiment rather than failing it
         if quantization not in {None, "none", "4bit", "8bit"}:
             raise ValueError(f"quantization must be none/4bit/8bit, got {quantization!r}")
+        if quantization in {"4bit", "8bit"} and not self.device.startswith("cuda"):
+            raise ValueError("requested quantization requires CUDA; use quantization=none explicitly on CPU")
+        self.quantization = quantization if quantization != "none" else None
+        self.revision = revision
 
-        load_kwargs = {"torch_dtype": torch_dtype, "device_map": "auto", "low_cpu_mem_usage": True}
-        if quantization in {"4bit", "8bit"} and self.device == "cuda":
+        load_kwargs = {"torch_dtype": torch_dtype, "device_map": {"": self.device}, "low_cpu_mem_usage": True}
+        if quantization in {"4bit", "8bit"}:
             from transformers import BitsAndBytesConfig
             if quantization == "4bit":
                 load_kwargs["quantization_config"] = BitsAndBytesConfig(
@@ -52,11 +57,18 @@ class LocalQwenLLM(BaseLLM):
             else:
                 load_kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, revision=revision)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name, revision=revision, **load_kwargs)
         self.model.eval()
         self._torch = torch
         logger.info("LocalQwenLLM loaded %s on %s (quant=%s)", model_name, self.device, quantization)
+
+    def metadata(self) -> dict:
+        return {"name": self.name, "revision_requested": self.revision,
+                "revision_resolved": getattr(self.model.config, "_commit_hash", None),
+                "quantization": self.quantization, "device": self.device,
+                "dtype": str(self.model.dtype), "context_limit": self.context_limit,
+                "chat_template": self.tokenizer.chat_template, "enable_thinking": False}
 
     def _prompt(self, system: str, user: str) -> str:
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]

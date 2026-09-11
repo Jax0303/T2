@@ -87,13 +87,16 @@ class SentenceTransformerEncoder:
         device: Optional[str] = None,
         batch_size: int = 64,
         prefixes: Optional[tuple] = None,
+        revision: Optional[str] = None,
     ) -> None:
         from sentence_transformers import SentenceTransformer  # lazy
         import torch
 
         self.name = model_name
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = SentenceTransformer(model_name, device=self.device, trust_remote_code=True)
+        self.model = SentenceTransformer(model_name, device=self.device,
+                                         revision=revision, trust_remote_code=True)
+        self.revision = revision
         self.batch_size = batch_size
         # The asymmetry the model was trained with. Resolved here, from the
         # model's own name, so no caller can forget it -- see _QUERY_PREFIXES.
@@ -115,6 +118,44 @@ class SentenceTransformerEncoder:
 
     def encode_query(self, texts: List[str]) -> np.ndarray:
         return self._encode(texts, self.query_prefix)
+
+    def metadata(self) -> dict:
+        first = self.model[0]
+        config = getattr(getattr(first, "auto_model", None), "config", None)
+        return {"name": self.name, "revision_requested": self.revision,
+                "revision_resolved": getattr(config, "_commit_hash", None),
+                "max_seq_length": int(self.model.max_seq_length),
+                "query_prefix": self.query_prefix, "passage_prefix": self.passage_prefix,
+                "device": self.device, "batch_size": self.batch_size,
+                "normalized": True}
+
+    def audit_inputs(self, texts, *, query=False, overflow="error") -> dict:
+        """Count full prefixed inputs, including special tokens, before encoding.
+
+        The tokenizer call deliberately disables truncation. A caller must opt
+        into the model's normal truncation and retain the returned audit.
+        """
+        if overflow not in {"error", "truncate"}:
+            raise ValueError("overflow must be error or truncate")
+        prefix = self.query_prefix if query else self.passage_prefix
+        lengths = []
+        for start in range(0, len(texts), self.batch_size):
+            batch = [prefix + t for t in texts[start:start + self.batch_size]]
+            tokens = self.model.tokenizer(batch, truncation=False, padding=False,
+                                          add_special_tokens=True)["input_ids"]
+            lengths.extend(map(len, tokens))
+        limit = int(self.model.max_seq_length)
+        over = [i for i, n in enumerate(lengths) if n > limit]
+        report = {"n": len(lengths), "max_tokens": max(lengths, default=0),
+                  "max_seq_length": limit, "n_overflow": len(over),
+                  "overflow_ratio": len(over) / len(lengths) if lengths else 0,
+                  "overflow_indices": over, "policy": overflow}
+        if over and overflow == "error":
+            raise ValueError(f"encoder input overflow: {len(over)}/{len(lengths)} "
+                             f"exceed {limit} tokens (max={max(lengths)}); "
+                             "choose a suitable encoder/chunk size or explicitly "
+                             "allow and report --embed-overflow truncate")
+        return report
 
 
 # Instruction prefixes the embedder families were TRAINED with. Retrieval is

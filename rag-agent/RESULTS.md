@@ -1,3 +1,5 @@
+> **2026-09-11 평가 무결성 정정:** 새 실행과 비교군 해석은 [EVALUATION-INTEGRITY-2026-09-11.md](EVALUATION-INTEGRITY-2026-09-11.md)를 먼저 읽는다. 아래 과거 수치를 수정 코드의 결과로 인용하지 않는다. Gold 문맥은 수학적 상한이 아니며, 기존 청킹 행은 전체 TableRAG 시스템 재현이 아니다.
+
 # 2026-09-08 — 현행 수치는 `results/retrieval_accuracy/TABLES.md`
 
 **이 절 위의 규칙이 아래 전부를 이긴다.** `CLAUDE.md` §0 의 재정의에 따라 축이 바뀌었다.

@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: MIT
 """TableRAG's cell index unit, ported as a serialization scheme.
 
-Reproduces ``build_cell_corpus`` from TableRAG (Chen et al., NeurIPS 2024,
-arXiv:2410.04739, ``google-research/table_rag/agent/retriever.py``) so the
-baseline is something this repo executes rather than paraphrases. It exists to
-answer one question and no other: **does putting the hierarchical header path
-inside the index unit beat the strongest published cell-level alternative?**
+This is a HiTab hint-representation adaptation of Google TableRAG, not a
+byte-identical port of its retriever. Verified against google-research commit
+08a8d6736475776f42ffac23b2c13111a28e5795 in September 2026: upstream preserves
+pandas dtypes; this adapter converts parseable numeric strings to float64.
+Upstream schema retrieval encodes column names and returns schema descriptions
+as metadata. The T2 evaluation corpus pools description strings with cell hints,
+so it does not reproduce the two upstream retrieval channels. Do not use its
+scores as Google TableRAG system results.
 
 What TableRAG indexes, verbatim from its source:
 
@@ -55,11 +58,11 @@ def _col_name(table: TableView, c: int, mode: str) -> str:
 
 
 def _is_numeric_column(table: TableView, c: int) -> bool:
-    """Mirror pandas' inference on a clean read: a column is numeric only if
+    """HiTab-specific numeric coercion (not pandas dtype inference): a column is numeric only if
     every non-empty cell in it parses as a number, otherwise it is ``object``.
 
-    Matching pandas matters because TableRAG branches on ``col.dtype``, and that
-    branch is what decides whether the column's cells are encoded at all.
+    Upstream branches on the actual pandas dtype. In particular, an object
+    column containing numeric-looking strings need not take this branch there.
     """
     seen = False
     for r in range(table.n_rows):
@@ -127,7 +130,8 @@ def serialize(
             col_index=c,
             header_paths=[list(table.col_path(c))],
             metadata={"tablerag_kind": kind,
-                      "column_name_mode": column_name_mode},
+                      "column_name_mode": column_name_mode,
+                      "implementation_scope": "hint_representation_adaptation"},
         ))
 
     numeric = [c for c in range(table.n_cols) if _is_numeric_column(table, c)]
