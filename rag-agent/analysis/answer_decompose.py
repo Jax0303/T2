@@ -28,6 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from analysis.result_sources import current_answer_rows, answer_path
 from analysis.answer_stats import (bootstrap_ci, holm,            # noqa: E402
                                    mcnemar_exact, paired_bootstrap)
 from rag_agent.eval.answer_em import score                        # noqa: E402
@@ -37,10 +38,10 @@ REF = "본 방법 (셀+헤더경로)"
 
 ARMS = [("본 방법 (셀+헤더경로)", "t_s3c_hybrid"),
         ("행 단위 (RowColRetrieval 행 절반)", "t_row_values"),
-        ("RowColRetrieval (행×열 온전)", "t_rowcol_values"),
+        ("RowColRetrieval (교집합 sub-table)", "t_rowcol_values"),
         ("MT2Net 색인 단위", "t_mt2net_hybrid"),
-        ("TableRAG Huawei (코드 1,000자)", "t_trag_hetero"),
-        ("TableRAG Huawei (논문 1,000토큰)", "t_trag_hetero_tok"),
+        ("Huawei 청킹 근사 (1,000자)", "t_trag_hetero"),
+        ("Huawei 청킹 근사 (2,400자)", "t_trag_hetero_tok"),
         ("TableRAG NeurIPS'24 (leaf)", "t_tablerag_leaf"),
         ("TableRAG NeurIPS'24 (path)", "t_tablerag_path"),
         ("고정 청킹 1,000자 (업계 기본값)", "t_chunk1000")]
@@ -81,11 +82,9 @@ def load(tag: str, condition: str = "retrieved") -> list:
     global _M
     if _M is None:
         _M = gold_size()
-    f = D / f"{tag}_answer_{condition}.jsonl"
-    if not f.exists():
-        return []
+    source = current_answer_rows(tag, condition)
     rows = []
-    for j in map(json.loads, f.open()):
+    for j in source:
         j.update(score(j["pred"], j["answer"], j.get("aggregation")))
         j["m"] = _M.get(j["query_id"])
         rows.append(j)
@@ -138,6 +137,7 @@ def build() -> str:
            "**모집단은 표 1 과 같은 모양이다** (2026-09-09 통일): 주지표는 단일 셀",
            "조회 n=991, `데이터셀 전체` 가 n=1,245, `헤더답` n=336 은 별도로 싣는다.",
            "표 1·표 2 와 같은 자리의 값끼리만 비교한다.", ""]
+    out += ["수정 arm의 출처: `results/audit_answers_20260910/`. 완료된 답변과 수정 검색 기록의 질의 집합·문맥 해시를 대조한다.", ""]
     if missing:
         out += [f"⚠️ **미실행: {', '.join(missing)}** — 아래 표에 행이 없다.", ""]
     if any(drift.values()):
@@ -147,12 +147,21 @@ def build() -> str:
             " 이 표를 쓰지 말 것.", ""]
 
     out += ["| 조건 | 모집단 | n | EM | 95% CI | Cond. EM (자기 모집단) | 검색실패 비율 | "
-            "형식결함 | 평균 입력 토큰 | 한계초과율 |",
+            "형식결함 | 평균 입력 토큰 (전체) | 한계초과율 |",
             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for name, _tag in ARMS:
         if name not in data:
             continue
-        sz = size["conditions"].get(name, {})
+        legacy_name = {"t_rowcol_values": "RowColRetrieval (행×열 온전)",
+                       "t_trag_hetero": "TableRAG Huawei (코드 1,000자)",
+                       "t_trag_hetero_tok": "TableRAG Huawei (논문 1,000토큰)"}.get(_tag, name)
+        sz = size["conditions"].get(legacy_name, {})
+        measured = [r["n_tok"] for r in data[name] if r.get("n_tok") is not None]
+        if len(measured) == len(data[name]):
+            summary_file = answer_path(_tag, suffix=".json")
+            limit = json.loads(summary_file.read_text()).get("context_limit", 0) if summary_file.exists() else 0
+            sz = {"tokens_mean": round(sum(measured)/len(measured), 1),
+                  "over_limit_ratio": sum(n > limit for n in measured)/len(measured) if limit else "—"}
         for t, keep in POPS:
             rows = [r for r in data[name] if keep(r)]
             c = cell(rows)

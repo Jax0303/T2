@@ -15,6 +15,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 D = ROOT / "results/retrieval_accuracy"
+sys.path.insert(0, str(ROOT))
+from analysis.result_sources import retrieval_path
 
 
 #: 조건 이름 -> 디스크에 있는 레그 파일의 접미사. `gold`·`oracle` 은 2026-09-09
@@ -31,12 +33,12 @@ def leg_file(cond, ext="json"):
 
 
 def load(tag):
-    f = D / f"{tag}.json"
+    f = retrieval_path(tag)
     return json.loads(f.read_text()) if f.exists() else None
 
 
 def recs(tag, mode="all"):
-    f = D / f"{tag}_records.jsonl"
+    f = retrieval_path(tag, "_records.jsonl")
     if not f.exists():
         return {}
     return {j["query_id"]: j for j in map(json.loads, f.open())
@@ -68,7 +70,7 @@ def acc(tag, ids):
 def paired(tag, ref="t_s3c_hybrid", mode="all", ids=None):
     """Exact McNemar of ``tag`` against our arm, over the queries both scored."""
     from math import comb
-    fa, fb = D / f"{ref}_records.jsonl", D / f"{tag}_records.jsonl"
+    fa, fb = retrieval_path(ref, "_records.jsonl"), retrieval_path(tag, "_records.jsonl")
     if tag == ref or not (fa.exists() and fb.exists()):
         return ""
     A = {json.loads(l)["query_id"]: json.loads(l) for l in fa.open()}
@@ -84,7 +86,7 @@ def paired(tag, ref="t_s3c_hybrid", mode="all", ids=None):
 
 
 def ctx_mean(tag):
-    f = D / f"{tag}_records.jsonl"
+    f = retrieval_path(tag, "_records.jsonl")
     if not f.exists():
         return None
     v = [json.loads(l)["cells_in_context"] for l in f.open() if '"correct"' in l]
@@ -150,7 +152,7 @@ def by_type_table():
     from collections import defaultdict
     recs = {}
     for tag, _l, _r, _k in BASELINE_ROWS:
-        f = D / f"{tag}_records.jsonl"
+        f = retrieval_path(tag, "_records.jsonl")
         if not f.exists() or tag in NO_CELL_STEP or tag.startswith("full_"):
             continue
         recs[tag] = {j["query_id"]: j for j in map(json.loads, f.open())
@@ -377,7 +379,7 @@ def retrieval_table():
             "재현된다** — 채점 집합이 원래 교집합이었기 때문이다 (재실행 대조 0건 변동,",
             "`results/audit_fix_20260910/t_rowcol_values_fix.json`). 영향을 받은 것은 **리더",
             "쪽**이다: 주 모집단에서 배달된 값 칸이 평균 166.3 → 36.5 로 줄었다. 따라서",
-            "**표 2·2b 의 RowCol 답변 EM 은 새 문맥으로 리더를 다시 돌리기 전까지 보류한다.**",
+            "**표 2b는 수정된 문맥의 완료된 재측정만 읽는다. 미완료이면 해당 답변 행을 보류한다.**",
             "",
             "### † 표 단위 검색 — 왜 이 표의 지표로 셀 수 없는가 (2026-09-08)",
             "",
@@ -457,7 +459,7 @@ def retrieval_table():
             "**주지표 0.0686 → 0.0676, 0.1433 → 0.1423 (각각 991건 중 1건 변동)** —",
             "결론을 바꾸지 않으므로 위 행은 그대로 두고 여기 적는다.",
             "",
-            "⚠️ **이 두 행의 답변 EM(표 2b)은 보류한다.** 검색은 예산이 20셀에 닿을 때까지",
+            "**이 두 행의 답변 EM(표 2b)은 수정된 문맥의 완료된 재측정만 읽는다.** 검색은 예산이 20셀에 닿을 때까지",
             "고른 단위 전부로 채점했는데 리더에게는 `--dump-context 20` 이 자른 20줄만 갔다",
             "(실제 필요 줄수 leaf 평균 61.1·중앙 46·최대 556, path 평균 23.9). 즉 **리더는",
             "채점된 근거의 일부만 받았다.** 고친 코드는 고른 단위를 전부 배달한다",
@@ -502,10 +504,10 @@ def retrieval_table():
 def answer_table():
     out = ["## 표 2 — LLM 답변 정확도 (같은 질의, 검색이 준 문맥 그대로)", "",
            "채점기는 HiTab 공식 EM(`hitab_exact_match_text`) — 허용오차 없음.", "",
-           "| 조건 | 리더 | **주지표 (단일 셀 조회)** | 데이터셀 전체 | 전체 n | 검색 성공 질의에서 | 검색 실패 질의에서 |",
+           "| 조건 | 리더 | **주지표 (단일 셀 조회)** | 데이터셀 전체 | 전체 n | 전체 1,581 중 검색 성공군 | 전체 1,581 중 검색 실패군 |",
            "|---|---|---:|---:|---:|---:|---:|"]
     names = {"retrieved": "검색 문맥 (상위 20셀) — 배치되는 조건",
-             "gold": "gold 셀만 주입 — **리더 천장**",
+             "gold": "gold 셀만 주입 — 진단 조건",
              "oracle": "검색이 맞았으면 gold, 틀렸으면 검색 문맥",
              "retrieved_format_nodefect":
                  "검색 문맥 + 출력 형식 지시 (사전등록 A, 라벨 결함 25건 제외)",
@@ -567,6 +569,7 @@ def answer_table():
                 "`retrieved` +0.0008, `gold` **−0.0009** 로 **둘 다 0** 이다. 사전등록의",
                 "기각 기준(`gold` 0.87 미만)에 걸려 **A 는 기각**되었다 —",
                 "판정은 `results/retrieval_accuracy/VERDICT_PROMPT.md`."]
+    out += ["", "gold_v2/oracle_v2는 제목 수정 후 결과다. 다만 헤더답 29문항은 gold 좌표 64개 제한 제거 전 입력이다. 주지표 991 및 데이터셀 1,245에는 영향이 없고, 헤더 포함 gold 진단은 미완료 수정 범위를 명시해 읽는다."]
     return "\n".join(out)
 
 
@@ -594,11 +597,11 @@ def stratum_table():
         return sum(v) / len(v) if v else None
 
     out = ["## 표 2d — 층별 손실 분해 (데이터셀 전체 1,245, 예산 20 고정)", "",
-           "`distractor 몫` = 검색 성공 질의에서 `gold` − `retrieved`. `천장 몫` = 1 − `gold`.",
-           "**어느 쪽이 큰가가 층마다 뒤집힌다** — 조회는 문맥 문제, 산술은 리더 문제다.",
+           "마지막 두 열은 검색 성공군 내부의 retrieved−gold 차이와 gold 오답률의 음수다. 전체 EM의 가산 분해가 아니다.",
+           "조회와 산술의 조건별 결과를 구분해서 보고한다. 관측된 차이만으로 원인을 확정하지 않는다.",
            "@10·@5 는 색인·검색을 그대로 두고 배달 셀 수만 줄였을 때의 검색 정확도"
            " (`t_s3c_k{10,5}_records.jsonl`).", "",
-           "| 층 | n | 검색@20 | @10 | @5 | `retrieved` | `oracle` | `gold` (천장) | distractor 몫 | 천장 몫 |",
+           "| 층 | n | 검색@20 | @10 | @5 | `retrieved` | `oracle` | `gold` | 성공군 retrieved−gold | 성공군 −gold 오답률 |",
            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for k in ("조회 m=1", "조회 m≥2", "산술 m=1", "산술 m≥2"):
         ids = S.get(k)
@@ -615,12 +618,9 @@ def stratum_table():
                              for c in ("retrieved", "oracle", "gold"))
                    + f" | **−{gh - rh:.3f}** | **−{1 - gh:.3f}** |")
     out += ["",
-            "읽는 법. **조회 m=1** 은 천장이 .96 이라 손실이 사실상 전부 distractor 다 —",
-            "예산·문맥 쪽 레버가 여기서만 산다. **산술** 은 정답 셀만 줘도 .32~.34 라",
-            "distractor 를 전부 없앤 세계(`oracle`)조차 .25~.32 다. **예산을 어떻게 만져도",
-            "산술은 안 오른다** — 남은 레버는 리더 교체(§23 Phase 5 Task C)뿐이다.",
-            "**조회 m≥2** 는 distractor 몫이 가장 크지만 n=38 이라 95% CI 가 ±16%p 다.",
-            "층으로 보고만 하고 설계 근거로 쓰지 않는다.", "",
+            "조회 m=1에서는 gold-only와 retrieved의 차이가 크고, 산술은 gold-only 자체도 낮다.",
+            "어느 문맥 정책도 산술을 개선할 수 없다거나 리더 교체만 가능하다는 결론은 이 측정으로 나오지 않는다.",
+            "조회 m≥2는 n=38이므로 작은 표본의 기술 통계로 해석한다.", "",
             "⚠️ 층을 가르는 데 쓴 `m` 은 gold 주석이므로 **배치 시점에는 모른다.**",
             "질의마다 예산을 다르게 주는 정책(`@(c·m)` 류)은 오라클 정보를 쓰는 것이고,",
             "§0.1 이 그 지표 자체를 금지한다. 하려면 질의 종류 분류기(§23)가 먼저다."]
@@ -658,50 +658,51 @@ def audit_block():
 
 
 def gap_block():
-    """The professor's arithmetic: retrieval .9 -> answer .9, or not, and why."""
-    r = load("t_s3c_hybrid")
-    fa = leg_file("retrieved")
-    fg = leg_file("gold")
-    if not (r and fa.exists()):
+    """Compute every numerator and denominator from the same query IDs."""
+    from analysis.population_accounting import account
+    from analysis.result_sources import read_jsonl
+    records_path = retrieval_path("t_s3c_hybrid", "_records.jsonl")
+    fa, fg = leg_file("retrieved", "jsonl"), leg_file("gold", "jsonl")
+    if not (records_path.exists() and fa.exists() and fg.exists()):
         return ""
-    A = json.loads(fa.read_text())
-    G = json.loads(fg.read_text()) if fg.exists() else None
-    ra, aa = r["accuracy_all_mode"], A["answer_accuracy_all_mode"]
-    lines = ["## 검색 .9 → 답변 .9 인가 (교수 질문에 대한 답)", "",
-             f"주지표 모집단(n={A['n_all_mode']})에서 검색 정확도 **{ra:.4f}**, "
-             f"같은 문맥에 대한 답변 정확도 **{aa:.4f}**. 차이 {ra - aa:+.4f}.", "",
-             "이 차이는 검색이 아니라 **리더가 만든다**. 분해:", "",
-             f"- 검색이 맞은 질의에서의 답변 정확도: **{A['answer_given_retrieval_hit']}** "
-             f"(n={A['n_retrieval_hit']})",
-             f"- 검색이 틀린 질의에서의 답변 정확도: **{A['answer_given_retrieval_miss']}** "
-             f"(n={A['n_retrieval_miss']})"]
-    if G:
-        ceil = G["answer_accuracy_all_mode"]
-        lines += [f"- **리더 천장** — 정답 셀만 넣었을 때: **{ceil:.4f}** "
-                  f"(n={G['n_all_mode']})", "",
-                  "손실이 어디서 나는지 두 단계로 갈린다. **둘 다 검색이 아니라 리더 쪽이다.**", "",
-                  "| 단계 | 값 | 그 단계에서 잃은 것 |",
-                  "|---|---:|---:|",
-                  f"| 검색 정확도 (정답 근거가 문맥에 있다) | {ra:.4f} | — |",
-                  f"| 리더 천장 (정답 셀만 줬을 때 답변) | {ceil:.4f} | {ceil - ra:+.4f} |",
-                  f"| 실제 답변 (검색이 준 20셀을 줬을 때) | {aa:.4f} | {aa - ceil:+.4f} |",
-                  "",
-                  f"① **{ra - ceil:.4f}** 는 리더가 정답 셀을 보고도 못 맞히는 몫이다. "
-                  f"검색을 1.0 으로 올려도 이 몫은 그대로 남는다.",
-                  f"② **{ceil - aa:.4f}** 는 문맥에 같이 들어온 **distractor** 몫이다. "
-                  "검색이 성공한 질의에서도 발생한다 — 정답 셀이 문맥에 있는데 리더가 옆 셀 "
-                  "값을 읽는다. 검색을 더 잘해서 줄일 수 있는 것이 아니라 **덜 넣어야** 준다.",
-                  "",
-                  f"따라서 '검색 .9면 답변 .9' 는 **리더 천장이 .9 이상이고 distractor 손실이 "
-                  f"0 일 때만** 성립한다. 여기서는 천장이 {ceil:.4f} 이고 distractor 손실이 "
-                  f"{ceil - aa:.4f} 라 성립하지 않는다. 검색을 고쳐서 닿을 수 있는 상한은 "
-                  f"**{ceil:.4f}** 이고, 그 위는 리더를 바꾸는 문제다."]
-    else:
-        lines += ["", "*(리더 천장 조건 미측정)*"]
-    if A.get("by_aggregation"):
-        worst = sorted((v, k) for k, v in A["by_aggregation"].items() if v is not None)[:5]
-        lines += ["", "질문 유형별 답변 정확도가 낮은 쪽 5개: "
-                  + ", ".join(f"`{k}` {v}" for v, k in worst)]
+    records, answers, gold = map(read_jsonl, (records_path, fa, fg))
+    definitions = [
+        ("단일 셀 조회 (주지표)", lambda r: r["mode"] == "all" and
+         (r.get("aggregation") or "none") == "none" and r["m"] == 1),
+        ("데이터셀 전체", lambda r: r["mode"] == "all"),
+        ("헤더답 (별도)", lambda r: r["mode"] == "any"),
+    ]
+    stats = {name: account(records, answers, gold, keep) for name, keep in definitions}
+    lines = ["## 검색 정확도와 답변 EM — 같은 모집단에서의 집계", "",
+             "각 행의 검색·답변·조건부 정확도는 정확히 같은 질의 집합에서 계산한다.",
+             "주지표 991문항과 데이터셀 전체 1,245문항, 헤더답 336문항을 섞지 않는다.", "",
+             "| 모집단 | n | 검색 성공 | 답변 EM | 검색 성공군 EM | 검색 실패군 EM | gold-only EM |",
+             "|---|---:|---:|---:|---:|---:|---:|"]
+    def ratio(correct, n):
+        return f"{correct/n:.4f} ({correct}/{n})" if n else "—"
+    for name,s in stats.items():
+        lines.append(f"| {name} | {s['n']} | {ratio(s['n_hit'],s['n'])} | "
+                     f"{ratio(s['retrieved_correct'],s['n'])} | "
+                     f"{ratio(s['hit_answer_correct'],s['n_hit'])} | "
+                     f"{ratio(s['miss_answer_correct'],s['n_miss'])} | "
+                     f"{ratio(s['gold_correct'],s['n'])} |")
+    s = stats["단일 셀 조회 (주지표)"]
+    lines += ["", "주지표의 정확한 항등식:",
+              f"EM = {s['n_hit']}/{s['n']} × {s['hit_answer_correct']}/{s['n_hit']} + "
+              f"{s['n_miss']}/{s['n']} × {s['miss_answer_correct']}/{s['n_miss']} "
+              f"= {s['answer_em']:.4f}.", "",
+              "gold-only와 retrieved의 차이는 같은 문항을 짝지어 아래처럼 나눈다.",
+              "이는 관측된 두 입력 정책의 차이이며 각 원인의 순수한 인과 효과는 아니다.", "",
+              "| 모집단 | gold-only − retrieved | 검색 성공군의 차이 / 전체 n | 검색 실패군의 차이 / 전체 n |",
+              "|---|---:|---:|---:|"]
+    for name,s in stats.items():
+        lines.append(f"| {name} | {s['gold_em']-s['answer_em']:+.4f} | "
+                     f"{s['hit_paired_gap']:+.4f} | {s['miss_paired_gap']:+.4f} |")
+    lines += ["", "gold-only와 oracle은 이 리더·프롬프트·문맥 정책의 측정값이다.",
+              "다른 문맥 정책이나 답변 절차의 절대 상한이 아니며, 몇 개 개입의 기각으로 "
+              "EM 0.8 또는 0.9가 불가능하다고 결론 내리지 않는다.",
+              "조건부 EM은 관측된 검색 성공 집합의 값이다. 검색기를 바꾸면 그 집합과 "
+              "문맥도 바뀌므로 이 값을 고정한 외삽은 예측 가정이지 성능 상한이 아니다."]
     return "\n".join(lines)
 
 

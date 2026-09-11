@@ -21,7 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from analysis.accuracy_tables import primary_ids                     # noqa: E402
+from analysis.accuracy_tables import primary_ids, leg_file                     # noqa: E402
 
 D = ROOT / "results/retrieval_accuracy"
 #: 셀 문장 = "In the table 'T', among <행경로>, the value of <열경로> is <값>."
@@ -31,7 +31,7 @@ SENT = re.compile(r"^In the table '(?P<table>.*?)', among (?P<row>.*?), "
 
 def leg(name):
     return {j["query_id"]: j for j in
-            map(json.loads, (D / f"t_s3c_hybrid_answer_{name}.jsonl").open())}
+            map(json.loads, leg_file(name, "jsonl").open())}
 
 
 def parse(line):
@@ -118,24 +118,26 @@ def main() -> int:
         "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit, temperature 0",
         "source": {"records": "t_s3c_hybrid_records.jsonl",
                    "legs": ["t_s3c_hybrid_answer_retrieved.jsonl",
-                            "t_s3c_hybrid_answer_gold.jsonl",
+                            "t_s3c_hybrid_answer_gold_v2.jsonl",
                             "t_s3c_k10_answer_retrieved.jsonl"],
                    "classes": "CEILING_CASES.json"},
-        "caveat": ("gold 레그는 2026-09-09 제목 버그 수정 이전 실행이다 "
-                   "(BUGFIX_LOG.md). bucket 판정 중 gold 조건에 기대는 부분은 "
-                   "재실행 전까지 잠정이다."),
+        "caveat": ("gold_v2 제목 수정 후 결과. reader_ceiling은 검색 성공이면서 두 답변 모두 오답인 경우이며 "
+                   "리더 능력의 절대 한계라는 뜻이 아니다. misread는 출력 값 일치에 근거한 추정이다. "
+                   "ceiling_class/route는 옛 CEILING_CASES.json의 미검증 진단을 보존한 것이며 권고가 아니다."),
         "buckets": {
             "retrieval_miss": "정답 셀이 20칸 안에 없다 — 검색의 몫",
-            "reader_ceiling": "정답 셀만 줘도 틀린다 — 리더의 몫",
-            "distractor": "정답 셀은 문맥에 있는데 다른 셀을 읽었다 — 문맥의 몫",
+            "reader_ceiling": "검색 성공이며 retrieved와 gold-only가 모두 오답",
+            "distractor": "검색 성공, retrieved 오답, gold-only 정답 — 관측된 조건 차이",
             "gold_only_fail": "20셀에서는 맞고 gold 한 줄에서 틀렸다"},
-        "counts": dict(by), "n_failures": len(rows),
+        "counts": dict(by), "n_failures": wrong,
+        "n_retrieved_failures": wrong,
+        "n_diagnostic_cases": len(rows),
         "answer_em_k20": round(sum(ret[q]["answer_correct"] for q in P) / len(P), 4),
         "cases": rows,
     }
     f = D / "FAILURES.json"
     f.write_text(json.dumps(out, ensure_ascii=False, indent=2))
-    print(json.dumps({"file": str(f), "n_failures": len(rows), "counts": dict(by)},
+    print(json.dumps({"file": str(f), "n_failures": wrong, "n_diagnostic_cases": len(rows), "counts": dict(by)},
                      ensure_ascii=False, indent=2))
     return 0
 
