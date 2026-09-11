@@ -1,0 +1,29 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:01<09:59,  1.77s/it]Loading weights:   1%|          | 2/339 [00:03<09:19,  1.66s/it]Loading weights:   1%|          | 4/339 [00:04<04:46,  1.17it/s]Loading weights:   1%|▏         | 5/339 [00:04<03:43,  1.50it/s]Loading weights:   2%|▏         | 6/339 [00:04<03:11,  1.74it/s]Loading weights:   3%|▎         | 10/339 [00:11<07:04,  1.29s/it]Loading weights:  44%|████▍     | 150/339 [00:16<00:14, 13.46it/s]Loading weights:  47%|████▋     | 160/339 [00:16<00:12, 14.49it/s]Loading weights:  47%|████▋     | 160/339 [00:27<00:12, 14.49it/s]Loading weights:  97%|█████████▋| 328/339 [00:35<00:01, 10.25it/s]Loading weights:  97%|█████████▋| 330/339 [00:35<00:00, 10.24it/s]Loading weights: 100%|██████████| 339/339 [00:35<00:00,  9.53it/s]
+baseline 50/50 predictions and scores identical
+{"t_rowcol_values": {"n": 1581, "mean": 436.14990512333964, "max": 1266, "over_8192": 0, "over_context_limit": 0}, "t_tablerag_leaf": {"n": 1581, "mean": 1791.0815939278937, "max": 14094, "over_8192": 10, "over_context_limit": 0}, "t_tablerag_path": {"n": 1581, "mean": 875.2036685641999, "max": 7019, "over_8192": 0, "over_context_limit": 0}}
+{"arm": "t_rowcol_values", "done": 50, "total": 1581, "seconds": 47}
+{"arm": "t_rowcol_values", "done": 100, "total": 1581, "seconds": 82}
+{"arm": "t_rowcol_values", "done": 150, "total": 1581, "seconds": 154}
+{"arm": "t_rowcol_values", "done": 200, "total": 1581, "seconds": 227}
+{"arm": "t_rowcol_values", "done": 250, "total": 1581, "seconds": 348}
+{"arm": "t_rowcol_values", "done": 300, "total": 1581, "seconds": 706}
+Traceback (most recent call last):
+  File "/home/user/T2-eval-audit/rag-agent/scripts/remeasure_audit_answers.py", line 124, in <module>
+    main()
+  File "/home/user/T2-eval-audit/rag-agent/scripts/remeasure_audit_answers.py", line 105, in main
+    pred=llm.complete(BASE,prompt,max_tokens=64,temperature=0.)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-eval-audit/rag-agent/rag_agent/llm/local_qwen.py", line 98, in complete
+    out = self.model.generate(**inputs, **gen_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-eval-audit/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-eval-audit/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2584, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/user/T2-eval-audit/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2791, in _sample
+    while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

@@ -1,0 +1,23 @@
+{
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "You answer questions about a table. The context lines are cells of the table, each written as its headers and its value. Use only the context. Answer with the value alone \u2014 no sentence, no units, no explanation. If the question asks for several values, separate them with commas.",
+  "max_new_tokens": 64,
+  "temperature": 0,
+  "seed": 42,
+  "batch_size": 1,
+  "source_commit": "6d88d4db00018fa08bc521676045b38198ae960e",
+  "runner_sha256": "2abf8f2cb5d3120af464bb0cd6635f0718d708a948424fe59fad057ff1eda1b0",
+  "reader_sha256": "6d1b8158d540cadff95d0684b9c8dbf03b0e908dff7914238161d18d44e3de05",
+  "scorer_sha256": "b55363de5c52b438854201b772908f8825719452c8f2f60cbc91428bfe39da68",
+  "answer_script_sha256": "7e005626f2cd1c1860ca69ff59f2131f778b921259198f3d440b8aeb7fa5df68",
+  "protocol_sha256": "40d3dfc75350bbf3b64adc17c3260f7c0286c49dcad0aaf24f2da6dee21e2d5f",
+  "sources": {
+    "t_rowcol_values": "c5ea504c376f9b67b1c3cba360e2872466fe87ce14067f28c5de2d482d1fe42b",
+    "t_tablerag_leaf": "aee4fbb7cc5c4e6eca59d2d29272295babb736f760ad4a9dcae606d529887215",
+    "t_tablerag_path": "9fa2cf2b040db84ed8a0e158a395ded509baeec88d5287459173b12464015b9b"
+  },
+  "torch": "2.12.1+cu130",
+  "transformers": "5.12.1",
+  "bitsandbytes": "0.50.1",
+  "cuda": "13.0"
+}
