@@ -37,8 +37,13 @@ def paired_counts(retrieval, answers, ids):
             "conditional_em": counts["hit_correct"] / hits if hits else None}
 
 
-def validate_answers(retrieval, answers, label):
+def validate_answers(retrieval, answers, label, ids=None):
     scored = {q: r for q, r in retrieval.items() if "correct" in r}
+    if ids is not None:
+        missing = set(ids) - set(scored)
+        if missing:
+            raise ValueError(f"{label}: selected IDs absent from retrieval: {len(missing)}")
+        scored = {q: scored[q] for q in ids}
     require_same_ids(scored, answers, label)
     for q, a in answers.items():
         r = scored[q]
@@ -192,10 +197,13 @@ def build(path=DEFAULT_MANIFEST):
         gpath = base / spec["gold_diagnostic"]
         gold, gm = read_leg(gpath, verified=verified)
         rr, ra, _, ram = loaded[spec["reference"]]
-        validate_answers(rr, gold, "gold diagnostic")
+        gold_ids = primary if gm.get("primary_only") else None
+        validate_answers(rr, gold, "gold diagnostic", ids=gold_ids)
         if gm["condition"] != "gold":
             raise ValueError("gold diagnostic must explicitly select a gold condition")
         if verified:
+            if gm.get("query_ids_sha256") != digest(sorted(gold)):
+                raise ValueError("gold diagnostic population hash differs")
             for key in ("retrieval_records_sha256", "reader_details", "prompt_sha256", "seed", "max_new_tokens"):
                 if key not in gm or gm[key] != ram[key]:
                     raise ValueError(f"gold/retrieved conditions disagree on {key}")

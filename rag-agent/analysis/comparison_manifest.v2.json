@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "evidence": "verified_v2",
+  "results_dir": "../results/evaluation_v2",
+  "reference": "s3c_v2",
+  "expected_counts": {
+    "queries": 1584,
+    "scored": 1581,
+    "primary": 991,
+    "excluded": 3
+  },
+  "gold_diagnostic": "s3c_v2_answer_gold_primary.jsonl",
+  "arms": [
+    {
+      "tag": "s3c_v2",
+      "label": "셀 문장 + 계층 헤더 + 표 제목",
+      "role": "reference",
+      "retrieval": "s3c_v2_records.jsonl",
+      "retrieval_summary": "s3c_v2.json",
+      "answers": "s3c_v2_answer_retrieved.jsonl"
+    },
+    {
+      "tag": "rowcol_v2",
+      "label": "RowCol 교집합 Markdown·leaf 헤더 — HiTab 적응",
+      "role": "representation",
+      "retrieval": "rowcol_v2_records.jsonl",
+      "retrieval_summary": "rowcol_v2.json",
+      "answers": "rowcol_v2_answer_retrieved.jsonl"
+    },
+    {
+      "tag": "huawei_char_v2",
+      "label": "Huawei에서 착안한 문자 청킹 — native splitter",
+      "role": "representation",
+      "retrieval": "huawei_char_v2_records.jsonl",
+      "retrieval_summary": "huawei_char_v2.json",
+      "answers": "huawei_char_v2_answer_retrieved.jsonl",
+      "note": "BGE 512-token 입력 초과 문서 26/1108은 --embed-overflow truncate를 명시해 측정했다."
+    }
+  ]
+}

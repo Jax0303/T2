@@ -174,6 +174,8 @@ def test_answer_rescoring_and_population_mismatch_fail():
     r = record()
     a = answer(r)
     validate_answers({"q": r}, {"q": a}, "fixture")
+    outside = dict(r, query_id="outside", aggregation="sum")
+    validate_answers({"q": r, "outside": outside}, {"q": a}, "fixture", ids={"q"})
     a["pred"] = "999"
     with pytest.raises(ValueError, match="rescoring"):
         validate_answers({"q": r}, {"q": a}, "fixture")
@@ -292,3 +294,33 @@ def test_reader_main_writes_verified_evidence_without_model_download(tmp_path, m
     assert len(calls) == 1 and calls[0][0] == aa.NEUTRAL
     assert result["answer_correct"] == 1 and result["cells_in_context"] == 1
     assert result["context_sha256"] == record()["context_sha256"]
+
+
+def test_reader_primary_only_uses_preregistered_population(tmp_path, monkeypatch):
+    import sys
+    write_verified_fixture(tmp_path)
+    base = record()
+    extra = dict(base, query_id="outside", aggregation="sum")
+    retrieval = tmp_path / "run_records.jsonl"
+    with retrieval.open("a", encoding="utf-8") as stream:
+        stream.write(json.dumps(extra) + "\n")
+    summary = retrieval.with_name("run.json")
+    meta = json.loads(summary.read_text())
+    from rag_agent.eval.artifacts import file_digest
+    meta["records_sha256"] = file_digest(retrieval)
+    summary.write_text(json.dumps(meta))
+
+    class Reader:
+        name = "fixture"
+        context_limit = 1000
+        def n_prompt_tokens(self, system, user): return 20
+        def complete(self, system, user, **kwargs): return "7"
+        def metadata(self): return {"name": self.name}
+
+    monkeypatch.setattr(aa, "build_llm", lambda spec: Reader())
+    monkeypatch.setitem(sys.modules, "torch", SimpleNamespace(manual_seed=lambda seed: None))
+    out = tmp_path / "primary.jsonl"
+    monkeypatch.setattr(sys, "argv", ["answer_accuracy.py", "--records", str(retrieval),
+                                      "--primary-only", "--out", str(out)])
+    assert aa.main() == 0
+    assert set(read_records(out)) == {base["query_id"]}
