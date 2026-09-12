@@ -129,14 +129,14 @@ def main() -> int:
             "reader_ceiling": "정답 셀만 줘도 틀린다 — 리더의 몫",
             "distractor": "정답 셀은 문맥에 있는데 다른 셀을 읽었다 — 문맥의 몫",
             "gold_only_fail": "20셀에서는 맞고 gold 한 줄에서 틀렸다"},
-        "counts": dict(by), "n_failures": len(rows),
+        "counts": dict(by), "n_cases": len(rows), "n_wrong_k20": wrong,
         "answer_em_k20": round(sum(ret[q]["answer_correct"] for q in P) / len(P), 4),
         "cases": rows,
     }
     f = D / "FAILURES.json"
     f.write_text(json.dumps(out, ensure_ascii=False, indent=2))
-    print(json.dumps({"file": str(f), "n_failures": len(rows), "counts": dict(by)},
-                     ensure_ascii=False, indent=2))
+    print(json.dumps({"file": str(f), "n_cases": len(rows), "n_wrong_k20": wrong,
+                      "counts": dict(by)}, ensure_ascii=False, indent=2))
     return 0
 
 
