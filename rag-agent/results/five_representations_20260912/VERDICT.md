@@ -12,6 +12,6 @@ RowCol 경로 손실의 영향은 같은 검색 셀을 고정한 진단으로 �
 
 검증: 매니페스트의 다섯 arm 전수 재채점, 파일·문맥 hash, 동일 query ID·gold 좌표·reader 조건 확인 통과. 기존 RowCol 경로 진단의 검색 셀 불변성 및 동일 생성 조건도 재검증했다. 평가 무결성/비교군 관련 회귀 테스트 56개 통과. 검수용 익명 목록은 준비했지만 사람 판정 미실시다.
 
-재현: 저장소 rag-agent에서  실행. 기존 출력은 덮어쓰지 않는다. 생성 명령은 와 각 결과 JSON의 arguments, 실행 로그를 참조한다.
+재현: 저장소 rag-agent에서 .venv/bin/python analysis/five_representation_audit.py --repo . --out NEW_OUTPUT_DIRECTORY 실행. 기존 출력은 덮어쓰지 않는다. 생성 명령은 PREREG-2026-09-12-five-representations.md와 각 결과 JSON의 arguments, 실행 로그를 참조한다.
 
 다음: 교수님께 전체 gap 표, 공통 hit 표, RowCol 경로 복원 진단을 함께 설명한다. MultiHiertt는 test 정답 비공개와 현 로컬 캐시/어댑터 제약을 먼저 해결해야 한다. train/validation 대체 실행이나 외부 제출은 하지 않았다.
