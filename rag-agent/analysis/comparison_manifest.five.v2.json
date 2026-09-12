@@ -1,0 +1,58 @@
+{
+  "version": 2,
+  "evidence": "verified_v2",
+  "results_dir": "../results/evaluation_v2",
+  "reference": "s3c_v2",
+  "expected_counts": {
+    "queries": 1584,
+    "scored": 1581,
+    "primary": 991,
+    "excluded": 3
+  },
+  "gold_diagnostic": "s3c_v2_answer_gold_primary.jsonl",
+  "arms": [
+    {
+      "tag": "s3c_v2",
+      "label": "셀 문장 + 계층 헤더 + 표 제목",
+      "role": "reference",
+      "retrieval": "s3c_v2_records.jsonl",
+      "retrieval_summary": "s3c_v2.json",
+      "answers": "s3c_v2_answer_retrieved.jsonl"
+    },
+    {
+      "tag": "chunk1000_v2",
+      "label": "자체 행 보존 Markdown 청킹·1,000자",
+      "role": "representation",
+      "retrieval": "chunk1000_v2_records.jsonl",
+      "retrieval_summary": "chunk1000_v2.json",
+      "answers": "chunk1000_v2_answer_retrieved.jsonl",
+      "note": "LangChain 기본값이 아니다. 헤더 반복·행 보존 자체 패커이며 크기는 엄격한 상한이 아니다. BGE 초과 문서 109/922는 명시적으로 절단했다."
+    },
+    {
+      "tag": "mt2net_v2",
+      "label": "MT2Net 착안 계층 셀 문장",
+      "role": "representation",
+      "retrieval": "mt2net_v2_records.jsonl",
+      "retrieval_summary": "mt2net_v2.json",
+      "answers": "mt2net_v2_answer_retrieved.jsonl",
+      "note": "표 제목은 사용하지 않는다. 원본 MT2Net의 학습 검색기·유형 분류·프로그램/스팬 추론을 재현한 것이 아니다."
+    },
+    {
+      "tag": "huawei_char_v2",
+      "label": "Huawei에서 착안한 문자 청킹 — native splitter",
+      "role": "representation",
+      "retrieval": "huawei_char_v2_records.jsonl",
+      "retrieval_summary": "huawei_char_v2.json",
+      "answers": "huawei_char_v2_answer_retrieved.jsonl",
+      "note": "BGE 512-token 입력 초과 문서 26/1108은 --embed-overflow truncate를 명시해 측정했다."
+    },
+    {
+      "tag": "rowcol_v2",
+      "label": "RowCol 교집합 Markdown·leaf 헤더 — HiTab 적응",
+      "role": "representation",
+      "retrieval": "rowcol_v2_records.jsonl",
+      "retrieval_summary": "rowcol_v2.json",
+      "answers": "rowcol_v2_answer_retrieved.jsonl"
+    }
+  ]
+}
