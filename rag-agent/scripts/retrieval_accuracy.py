@@ -194,7 +194,7 @@ def trag_hetero_chunks(tab, t, name: str, chunk_chars: int, overlap: int,
     return list(table_chunks(tab, t, name, chunk_chars, overlap, tokenizer))
 
 
-def tablerag_units(tab, t, mode: str):
+def tablerag_units(tab, t, mode: str, dtype: str = "infer"):
     """TableRAG's corpus for one table, with the cells each doc delivers.
 
     Text comes from the port (``rag_agent/serialization/tablerag_unit.py``) so
@@ -207,7 +207,18 @@ def tablerag_units(tab, t, mode: str):
     evidence any honest reading can credit it with.
     """
     out = []
-    numeric = [c for c in range(t.n_cols) if trag._is_numeric_column(t, c)]
+    # `dtype`: 어느 열이 "숫자 열"인가 — 이 한 줄이 TableRAG arm 의 색인을 가른다.
+    #   infer      열의 비어 있지 않은 셀이 전부 숫자로 읽히면 숫자 열. 그 열은
+    #              min/max 요약 문서 하나로 접히고 개별 숫자는 색인에서 사라진다.
+    #   all_object 모든 열을 범주형으로 본다 -> 셀마다 문서 하나.
+    # 원본(`utils/utils.py: table_text_to_df` -> `infer_dtype`)은 pandas dtype 으로
+    # 가른다. 계층 표를 잎 라벨로 펴면 열 이름이 겹치고(HiTab 120표에서 932열 중
+    # 487열), 그때 `pd.to_numeric(df[중복이름])` 은 Series 가 아니라 DataFrame 을
+    # 받아 예외를 내고 `errors='ignore'` 가 그것을 삼킨다 -- 그 열은 object 로 남아
+    # **셀마다 색인된다.** 즉 이 데이터에서 원본이 실제로 타는 분기는 `all_object`
+    # 쪽에 가깝고, `infer` 는 그만큼 이 비교군을 과소평가한다. 둘 다 보고한다.
+    numeric = ([] if dtype == "all_object"
+               else [c for c in range(t.n_cols) if trag._is_numeric_column(t, c)])
     for c in numeric:
         vals = {}
         for r in range(t.n_rows):
@@ -306,14 +317,18 @@ def line_text(t, cells, title: str, template: str, row_text: str,
 def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dict,
                  chunk_chars: int = 1000, trag_mode: str = "leaf",
                  row_text: str = "sentence", chunk_overlap: int = 200,
-                 chunk_tokenizer=None):
+                 chunk_tokenizer=None, load=None, trag_dtype: str = "infer"):
     """(texts, cell_sets, is_row, unit_tids, grid) — one index unit per entry, the cells
     it delivers, (``rowcol`` only) whether it is a row unit or a column unit, and
     the table it came from. ``unit_tids`` is what ``--corpus gold`` masks on: a
     unit carrying no cell (TableRAG's stub docs) still belongs to one table."""
     texts, covers, is_row, unit_tids, grid = [], [], [], [], {}
+    # `load` lets another corpus (MultiHiertt) reuse these unit builders by
+    # handing in its own table objects. Same code path, so an arm means the
+    # same thing on both datasets.
+    load = load or hg.load_table
     for tid in tids:
-        tab = hg.load_table(tid, data_dir)
+        tab = load(tid, data_dir)
         if tab is None:
             continue
         before = len(texts)
@@ -343,7 +358,7 @@ def build_corpus(data_dir: str, tids, template: str, unit: str, page_titles: dic
                 texts.append(txt)
                 covers.append(frozenset((tid, i, j) for i, j in cs))
         elif unit == "tablerag":
-            for txt, cs in tablerag_units(tab, t, trag_mode):
+            for txt, cs in tablerag_units(tab, t, trag_mode, trag_dtype):
                 texts.append(txt)
                 covers.append(frozenset((tid, i, j) for i, j in cs))
         elif unit == "rowcol":
@@ -555,6 +570,9 @@ def main() -> int:
                          "(TableRAG build_row_corpus: bare values, no header "
                          "path); 'sentence' joins OUR cell sentences and is an "
                          "ablation of our own granularity, not a baseline.")
+    ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"],
+                    help="--unit tablerag: 어느 열을 숫자 열로 접을지. 'all_object' 는 "
+                         "숫자 셀도 개별 색인하는 가장 유리한 읽기 (tablerag_units 주석)")
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"],
                     help="--unit tablerag: 'leaf' is what a plain read of a "
                          "hierarchical table yields, 'path' hands TableRAG the "
@@ -619,7 +637,8 @@ def main() -> int:
             else sorted({q["table_id"] for q in queries}))
     texts, covers, is_row, unit_tids, grid = build_corpus(a.data_dir, tids, a.template, a.unit,
                                          page_titles, size, a.tablerag_colmode,
-                                         a.row_text, a.chunk_overlap, tokenizer)
+                                         a.row_text, a.chunk_overlap, tokenizer,
+                                         trag_dtype=a.tablerag_dtype)
     unit_tid_arr = np.array(unit_tids)
     assert len(unit_tid_arr) == len(texts), "unit->table map lost a unit"
     print(f"[corpus] {len(tids)} tables / {len(texts)} {a.unit} units "
@@ -751,6 +770,7 @@ def main() -> int:
         # 구별할 수 없고, 어떤 명령이 이 파일을 만들었는지 복원되지 않는다.
         "chunk_chars": a.chunk_chars, "row_text": a.row_text,
         "tablerag_colmode": a.tablerag_colmode,
+        "tablerag_dtype": a.tablerag_dtype if a.unit == "tablerag" else None,
         "max_units": a.max_units,
         "rowcol_max_pairs": a.rowcol_max_pairs if a.unit == "rowcol" else None,
         "rowcol_context": a.rowcol_context if a.unit == "rowcol" else None,

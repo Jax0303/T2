@@ -173,6 +173,10 @@ def main() -> int:
     ap.add_argument("--prompt", default="neutral", choices=list(PROMPTS),
                     help="neutral works across representations; base/format/evidence "
                          "are historical prompt variants")
+    ap.add_argument("--mode", default="both", choices=["both", "all", "any"],
+                    help="retrieval scoring mode to keep. 'any' gold is a whole "
+                         "header scope, so --condition gold on it would hand the "
+                         "reader hundreds of lines; use --mode all there.")
     ap.add_argument("--primary-only", action="store_true",
                     help="evaluate only the preregistered single-cell population: "
                          "mode=all, m=1, aggregation=none")
@@ -192,6 +196,9 @@ def main() -> int:
     records, retrieval_meta = load_evidence(a.records)
     recs = list(records.values())
     scored = [r for r in recs if "correct" in r]
+    if a.mode != "both":
+        scored = [r for r in scored if r.get("mode") == a.mode]
+        print(f"[population] mode={a.mode} -> {len(scored)}", flush=True)
     if a.primary_only:
         scored = [r for r in scored
                   if r.get("mode") == "all" and r.get("m") == 1
@@ -210,6 +217,7 @@ def main() -> int:
         Path(a.records).stem.replace("_records", "")
         + f"_answer_{a.condition}"
         + ("" if a.prompt == "base" else f"_{a.prompt}")
+        + ("" if a.mode == "both" else f"_mode{a.mode}")
         + ("_primary" if a.primary_only else "")
         + ("_nodefect" if a.exclude_unit_defect else "") + ".jsonl"))
     # The per-query rows and the summary are written to `out` and to
@@ -281,7 +289,7 @@ def main() -> int:
                "reader": llm.name, "prompt": a.prompt, "seed": a.seed,
                "max_new_tokens": a.max_tokens,
                "batch_size": 1,      # 질의당 1건 생성 — 조건 무관 고정
-               "primary_only": bool(a.primary_only),
+               "primary_only": bool(a.primary_only), "mode_filter": a.mode,
                "excluded_unit_defect": bool(a.exclude_unit_defect),
                **summarize(rows, limit)}
     write_pair(out, rows, summary)

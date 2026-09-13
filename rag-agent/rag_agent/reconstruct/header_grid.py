@@ -473,9 +473,31 @@ def _left_region_blank(grid: Grid, r: int, n_header_cols: int) -> bool:
 _PAREN_NOTE_RE = re.compile(r"^\(.*\)$", re.DOTALL)
 
 
-def _left_region_units_note(grid: Grid, r: int, n_header_cols: int) -> bool:
+# v2 (PREREG-2026-09-13-header-units-note.md): the same annotation without the
+# parentheses -- "$ in millions", "in millions of dollars", "Dollars in
+# thousands" -- sat on the year row of 4.4% of MultiHiertt tables and ended the
+# header block there, deleting the years from every cell path below it.
+_UNITS_NOTE_RE = re.compile(r"\bin\s+(thousands|millions|billions)\b", re.I)
+
+
+def _left_region_units_note(grid: Grid, r: int, n_header_cols: int,
+                            rule: str = "v1") -> bool:
     text = " ".join(c.strip() for c in grid[r][:n_header_cols] if c.strip())
-    return bool(text) and bool(_PAREN_NOTE_RE.match(text))
+    if not text:
+        return False
+    if _PAREN_NOTE_RE.match(text):
+        return True
+    return rule == "v2" and len(text) <= 60 and bool(_UNITS_NOTE_RE.search(text))
+
+
+def _year_label_row(grid: Grid, r: int, n_header_cols: int) -> bool:
+    """v2: every filled non-stub cell is a bare year -> a column-label row.
+
+    `looks_numeric` already refuses to call a bare year data; this applies the
+    same fact to the corner scan, whatever the stub cell on that row says.
+    """
+    cells = [c.strip() for c in grid[r][n_header_cols:] if c.strip()]
+    return bool(cells) and all(_YEAR_RE.match(c) for c in cells)
 
 
 def _numeric_data_row(grid: Grid, r: int, n_header_cols: int) -> bool:
@@ -501,7 +523,8 @@ def _section_boundary(grid: Grid, r: int) -> bool:
     return bool(lab) and not _PAREN_NOTE_RE.match(lab.strip())
 
 
-def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int = 8) -> int:
+def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int = 8,
+                        rule: str = "v1") -> int:
     """Guess how many top rows are column headers, two signals in priority order.
 
     **Blank-corner signal (primary, when applicable).** In a table with row
@@ -529,7 +552,8 @@ def guess_n_header_rows(grid: Grid, n_header_cols: int = 1, max_header_rows: int
             if _section_boundary(grid, r):
                 return r
             if not _left_region_blank(grid, r, n_header_cols) and \
-                    not _left_region_units_note(grid, r, n_header_cols):
+                    not _left_region_units_note(grid, r, n_header_cols, rule) and \
+                    not (rule == "v2" and _year_label_row(grid, r, n_header_cols)):
                 return r
         # No row label ever appears (e.g. the table has no real row headers):
         # the corner signal is void — fall through to the numeric scan.
