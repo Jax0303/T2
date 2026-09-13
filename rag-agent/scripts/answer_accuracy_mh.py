@@ -13,6 +13,10 @@ HiTab 쪽 EM 과 **섞어 평균 내지 않는다** — 채점기가 다르다.
   retrieved  검색이 고른 셀. 운영 수치.
   gold       주석된 근거 셀만. 리더 천장이지 수학적 상한이 아니다.
 
+저장과 재개: 문항마다 결과 행을 즉시 쓰고, 실행 조건(질의 id·순서, 문맥 해시, 모델 revision, 프롬프트,
+생성 설정, 코드 해시)을 `<out>.run.json` 에 남긴다. 중단되면 같은 명령에 --resume 을 붙여 남은 문항만
+생성한다. 조건이 하나라도 다르거나 저장된 행이 어긋나면 이어 쓰지 않는다.
+
   PYTHONPATH=. .venv/bin/python scripts/answer_accuracy_mh.py \
       --records results/mh_arms/mh_s3c_records.jsonl --scope doc
 """
@@ -20,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import time
@@ -34,7 +39,7 @@ from answer_accuracy import PROMPTS, check_context_limit                # noqa: 
 from mh_arms import (NO_TITLE, build_tables, load_population,           # noqa: E402
                      resolve_gold)
 from rag_agent.eval.artifacts import (digest, file_digest, provenance,  # noqa: E402
-                                     read_records, write_pair)
+                                     read_records)
 from rag_agent.eval.multihiertt_em import mh_exact_match, self_check    # noqa: E402
 from rag_agent.llm.factory import build_llm                             # noqa: E402
 from rag_agent.serialization.caption import caption_sentence            # noqa: E402
@@ -107,6 +112,52 @@ def summarize(rows, limit=0):
             "by_layer": {k: block(v) for k, v in sorted(by.items())}}
 
 
+def run_config(a, llm, details, ctxs):
+    """재개할 때 저장된 실행과 같아야 하는 조건. 코드는 이 시점에 실제로 불러온 저장소 파일의 해시다."""
+    root = ROOT.resolve()
+    code = {}
+    for module in list(sys.modules.values()):
+        f = getattr(module, "__file__", None)
+        p = Path(f).resolve() if f else None
+        if p and p.suffix == ".py" and p.is_relative_to(root) and ".venv" not in p.parts:
+            code[str(p.relative_to(root))] = file_digest(p)
+    return {"records_sha256": file_digest(a.records), "scope": a.scope, "condition": a.condition,
+            "split": a.split, "header_rule": a.header_rule, "label_rule": a.label_rule,
+            "query_ids_sha256": digest(list(ctxs)),
+            "contexts_sha256": digest({q: digest(c) for q, c in ctxs.items()}),
+            "reader": llm.name,
+            "reader_details": {k: v for k, v in details.items() if k != "chat_template"},
+            "chat_template_sha256": digest(details.get("chat_template")),
+            "prompt": a.prompt, "prompt_sha256": digest(PROMPTS[a.prompt]),
+            "max_new_tokens": a.max_tokens, "temperature": 0.0, "seed": a.seed, "batch_size": 1,
+            "packages": provenance(ROOT)["packages"],
+            "code_sha256": digest(code), "code_files": code}
+
+
+def load_saved_rows(path, order, ctxs):
+    """이미 저장된 행. 중복·문맥 불일치·중간 누락이면 파일을 건드리지 않고 멈추고,
+    통과하면 쓰다 끊긴 마지막 줄만 잘라 낸다."""
+    raw = path.read_bytes()
+    whole = raw[:raw.rfind(b"\n") + 1]
+    done = {}
+    for line in whole.decode("utf-8").splitlines():
+        row = json.loads(line)
+        q = row["query_id"]
+        if q in done:
+            raise SystemExit(f"같은 질의가 두 번 저장돼 있다: {q}")
+        if q not in ctxs or row["context_sha256"] != digest(ctxs[q]):
+            raise SystemExit(f"저장된 행의 문맥이 이번 실행과 다르다: {q}")
+        done[q] = row
+    if list(done) != order[:len(done)]:
+        raise SystemExit(f"저장된 {len(done)}행이 실행 순서의 앞부분이 아니다 — 중간 누락")
+    if len(whole) != len(raw):
+        with path.open("r+b") as stream:
+            stream.truncate(len(whole))
+        print(f"[resume] 쓰다 끊긴 마지막 줄 {len(raw) - len(whole)}바이트를 잘라 냈다", flush=True)
+    print(f"[resume] 저장된 {len(done)}행을 이어 쓴다", flush=True)
+    return done
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -132,6 +183,9 @@ def main() -> int:
                     help="--same-queries-as 에 더해 질의마다 context_sha256 까지 이 답변 결과와 "
                          "같아야 한다. 리더·프롬프트만 바꾼 재실행용이며, 하나라도 다르면 리더를 "
                          "싣기 전에 멈춘다.")
+    ap.add_argument("--resume", action="store_true",
+                    help="--out 에 저장된 행이 있으면 이어 쓴다. 실행 조건(<out>.run.json)이 하나라도 "
+                         "다르면 멈춘다. 저장된 행이 없으면 새로 시작한다.")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--split", default="train")
     ap.add_argument("--header-rule", default="v1", choices=["v1", "v2"])
@@ -180,8 +234,11 @@ def main() -> int:
         meta_path.stem + f"_answer_{a.scope}_{a.condition}.jsonl"))
     if out.suffix != ".jsonl":
         raise SystemExit("--out must end in .jsonl")
-    if out.exists() or out.with_suffix(".json").exists():
-        raise SystemExit(f"{out} exists — answer legs never overwrite; pass a new --out")
+    run_path = out.with_suffix(".run.json")
+    if out.with_suffix(".json").exists():
+        raise SystemExit(f"{out.with_suffix('.json')} exists — 완료된 답변 레그는 다시 돌리지 않는다; pass a new --out")
+    if (out.exists() or run_path.exists()) and not a.resume:
+        raise SystemExit(f"{out} 에 저장된 실행이 있다 — 이어 쓰려면 --resume (덮어쓰지 않는다)")
 
     tables = gold = None
     if a.condition == "gold":
@@ -207,38 +264,65 @@ def main() -> int:
     import torch                                                       # noqa: E402
     torch.manual_seed(a.seed)
     limit = getattr(llm, "context_limit", 0)
-    rows, t0 = [], time.time()
-    for k, r in enumerate(scored, 1):
-        ctx = ctxs[r["query_id"]]
-        user = "Context:\n" + "\n".join(ctx) + f"\n\nQuestion: {r['question']}\nAnswer:"
-        n_tok = (llm.n_prompt_tokens(PROMPTS[a.prompt], user)
-                 if hasattr(llm, "n_prompt_tokens") else None)
-        check_context_limit(n_tok, a.max_tokens, limit)
-        raw = llm.complete(PROMPTS[a.prompt], user, max_tokens=a.max_tokens,
-                           temperature=0.0)
-        pred, marked = extract(raw) if a.prompt == "cot" else (raw, True)
-        rows.append({"query_id": r["query_id"], "layer": r["layer"], "kind": r["kind"],
-                     "m": r["m"], "question": r["question"],
-                     "retrieval_correct": r[a.scope]["correct"],
-                     "answer_correct": int(mh_exact_match(pred, r["answer"])),
-                     "n_ctx": len(ctx), "n_tok": n_tok,
-                     "cells_in_context": r[a.scope]["cells_in_context"],
-                     "context_sha256": digest(ctx),
-                     "source_context_sha256": r[a.scope].get("context_sha256"),
-                     "context_condition": a.condition,
-                     "pred": pred, "answer": r["answer"]})
-        if a.prompt == "cot":
-            rows[-1].update(raw=raw, marker_found=marked)
-        if k % 100 == 0:
-            print(f"  {k}/{len(scored)}  {time.time() - t0:.0f}s  "
-                  f"em={sum(x['answer_correct'] for x in rows) / k:.4f}", flush=True)
+    details = llm.metadata() if hasattr(llm, "metadata") else {"name": llm.name}
+    run = run_config(a, llm, details, ctxs)
+    if run_path.exists():
+        saved = json.loads(run_path.read_text(encoding="utf-8"))
+        bad = sorted(k for k in set(run) | set(saved) if run.get(k) != saved.get(k))
+        if bad:
+            raise SystemExit(f"재개 조건이 저장된 실행과 다르다: {bad}")
+    elif out.exists():
+        raise SystemExit(f"{out} 은 있는데 {run_path.name} 이 없다 — 이어 쓸 근거가 없다")
+    else:
+        with run_path.open("x", encoding="utf-8", newline="\n") as stream:
+            json.dump(run, stream, ensure_ascii=False, indent=2, allow_nan=False)
+    order = [r["query_id"] for r in scored]
+    done = load_saved_rows(out, order, ctxs) if out.exists() else {}
+
+    rows, t0 = list(done.values()), time.time()
+    # 문항마다 즉시 쓴다 — 중단돼도 끝난 문항은 디스크에 남는다
+    with out.open("a", encoding="utf-8", newline="\n") as stream:
+        for k, r in enumerate(scored, 1):
+            if r["query_id"] in done:
+                continue
+            t = time.time()
+            ctx = ctxs[r["query_id"]]
+            user = "Context:\n" + "\n".join(ctx) + f"\n\nQuestion: {r['question']}\nAnswer:"
+            n_tok = (llm.n_prompt_tokens(PROMPTS[a.prompt], user)
+                     if hasattr(llm, "n_prompt_tokens") else None)
+            check_context_limit(n_tok, a.max_tokens, limit)
+            raw = llm.complete(PROMPTS[a.prompt], user, max_tokens=a.max_tokens,
+                               temperature=0.0)
+            pred, marked = extract(raw) if a.prompt == "cot" else (raw, True)
+            row = {"query_id": r["query_id"], "layer": r["layer"], "kind": r["kind"],
+                   "m": r["m"], "question": r["question"],
+                   "retrieval_correct": r[a.scope]["correct"],
+                   "answer_correct": int(mh_exact_match(pred, r["answer"])),
+                   "n_ctx": len(ctx), "n_tok": n_tok,
+                   "cells_in_context": r[a.scope]["cells_in_context"],
+                   "context_sha256": digest(ctx),
+                   "source_context_sha256": r[a.scope].get("context_sha256"),
+                   "context_condition": a.condition,
+                   "pred": pred, "answer": r["answer"]}
+            if a.prompt == "cot":
+                row.update(raw=raw, marker_found=marked)
+            row["seconds"] = round(time.time() - t, 3)
+            stream.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+            rows.append(row)
+            if k % 100 == 0:
+                print(f"  {k}/{len(scored)}  {time.time() - t0:.0f}s  "
+                      f"em={sum(x['answer_correct'] for x in rows) / len(rows):.4f}", flush=True)
+    if [x["query_id"] for x in rows] != order:
+        raise SystemExit("저장된 행이 실행 계획과 다르다 — 누락 또는 중복")
 
     summary = {"records": a.records, "scope": a.scope, "condition": a.condition,
                "context_version": 2, "provenance": provenance(ROOT),
                "retrieval_records_sha256": file_digest(a.records),
                "retrieval_unit": meta.get("unit"), "retrieval_template": meta.get("template"),
                "query_ids_sha256": digest(sorted(r["query_id"] for r in scored)),
-               "reader_details": llm.metadata() if hasattr(llm, "metadata") else {"name": llm.name},
+               "reader_details": details,
                "prompt_sha256": digest(PROMPTS[a.prompt]), "prompt_text": PROMPTS[a.prompt],
                "scorer": "multihiertt_em.mh_exact_match (공식 포팅)",
                "scorer_self_check": check, "reader": llm.name, "prompt": a.prompt,
@@ -248,11 +332,14 @@ def main() -> int:
                "same_queries_as": a.same_queries_as or None,
                "same_contexts_as": a.same_contexts_as or None,
                "n_missing_from_same_queries": n_missing_same,
-               "generation_seconds": round(time.time() - t0, 1),
+               "generation_seconds": round(sum(x.get("seconds", 0) for x in rows), 1),
+               "resumed_rows": len(done), "run_config_sha256": file_digest(run_path),
                "marker_missing": (sum(not x["marker_found"] for x in rows)
                                   if a.prompt == "cot" else None),
                **summarize(rows, limit)}
-    write_pair(out, rows, summary)
+    summary["records_sha256"] = file_digest(out)
+    with out.with_suffix(".json").open("x", encoding="utf-8", newline="\n") as stream:
+        json.dump(summary, stream, ensure_ascii=False, indent=2, allow_nan=False)
     print(json.dumps({k: v for k, v in summary.items() if k != "provenance"},
                      indent=2, ensure_ascii=False))
     return 0
