@@ -118,8 +118,9 @@ def run_config(a, llm, details, ctxs):
     code = {}
     for module in list(sys.modules.values()):
         f = getattr(module, "__file__", None)
-        p = Path(f).resolve() if f else None
-        if p and p.suffix == ".py" and p.is_relative_to(root) and ".venv" not in p.parts:
+        # 상대 경로 __file__(torch 가 등록하는 '_ops.py' 등)은 저장소 파일이 아니다 — cwd 로 풀지 않는다
+        p = Path(f).resolve() if f and os.path.isabs(f) else None
+        if p and p.suffix == ".py" and p.is_file() and p.is_relative_to(root) and ".venv" not in p.parts:
             code[str(p.relative_to(root))] = file_digest(p)
     return {"records_sha256": file_digest(a.records), "scope": a.scope, "condition": a.condition,
             "split": a.split, "header_rule": a.header_rule, "label_rule": a.label_rule,

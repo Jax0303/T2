@@ -52,6 +52,8 @@ class Reader:
 def run(monkeypatch, rp, out, reader, *extra):
     monkeypatch.setattr(am, "build_llm", lambda spec: reader)
     monkeypatch.setitem(sys.modules, "torch", SimpleNamespace(manual_seed=lambda seed: None))
+    # 실제 torch 는 상대 경로 __file__('_ops.py')로 모듈을 등록한다 — 실행 조건 해시가 여기서 멈춘 전례
+    monkeypatch.setitem(sys.modules, "_relative_file_module", SimpleNamespace(__file__="_ops.py"))
     monkeypatch.setattr(sys, "argv", ["answer_accuracy_mh.py", "--records", str(rp),
                                       "--out", str(out), *extra])
     return am.main()
