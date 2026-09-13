@@ -1,0 +1,2374 @@
+{
+ "prereg": "PREREG-2026-09-14-header-v3.md",
+ "rule": "v3.2",
+ "models_run": false,
+ "v2_preserved_corpus_sha256": {
+  "cell": true,
+  "chunk": true,
+  "huawei": true,
+  "rowcol": true,
+  "tablerag_allobj_path": true
+ },
+ "n_tables": 11793,
+ "n_cells_v2": 425870,
+ "configs": {
+  "v2": {
+   "population": {
+    "n_scored": 2878,
+    "excluded_by_reason": {
+     "gold_in_header": 24,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.134,
+   "cross_table": {
+    "cells": 18771,
+    "table_pairs": 423,
+    "pairs_identical_header_block": 177
+   },
+   "M2_year_all": 0.9502,
+   "M2_year_any": 0.9517,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.9678,
+   "n_year_cells_in_our_cells": 312800,
+   "M3_data_cell": 0.9836,
+   "n_described_cells": 399750,
+   "n_cells": 425870
+  },
+  "v2+S1n": {
+   "population": {
+    "n_scored": 2878,
+    "excluded_by_reason": {
+     "gold_in_header": 24,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.1313,
+   "cross_table": {
+    "cells": 18931,
+    "table_pairs": 438,
+    "pairs_identical_header_block": 177
+   },
+   "M2_year_all": 0.9502,
+   "M2_year_any": 0.9517,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.9678,
+   "n_year_cells_in_our_cells": 312800,
+   "M3_data_cell": 0.9836,
+   "n_described_cells": 399750,
+   "n_cells": 425870,
+   "vs_v2": {
+    "tables_changed": 482,
+    "tables_header_shape_changed": 0,
+    "cells_sentence_changed": 10052,
+    "cells_left_data_region": 0,
+    "cells_entered_data_region": 0,
+    "change_type": {
+     "segments_added_only": 0,
+     "segments_removed_only": 10052,
+     "segments_replaced": 0,
+     "row_path_changed": 0,
+     "col_path_changed": 10052
+    },
+    "chars_delta_mean": -27.5,
+    "top_segments_added": [],
+    "top_segments_removed": [
+     [
+      "Years Ended December 31,",
+      1634
+     ],
+     [
+      "Twelve Months Ended",
+      1519
+     ],
+     [
+      "Defined benefit pension plans",
+      1020
+     ],
+     [
+      "For the Years Ended",
+      844
+     ],
+     [
+      "Year Ended December 31,",
+      619
+     ],
+     [
+      "As of and for the Year Ended December 31,",
+      508
+     ],
+     [
+      "Pension plans",
+      333
+     ],
+     [
+      "Residential mortgage",
+      216
+     ]
+    ],
+    "examples": [
+     {
+      "cell": [
+       "aeb519bee3074e9280cb909574f353a1::4",
+       1,
+       6
+      ],
+      "v2": "December 31, 2015 > Expected to mature before December 31,: Thereafter",
+      "new": "December 31, 2015: Thereafter"
+     },
+     {
+      "cell": [
+       "bed5d2cc3dc044f99db5b363145bf865::0",
+       17,
+       4
+      ],
+      "v2": "Operating Expenses > Provision for income tax expense (benefit) > Years Ended December 31, > % Change: 83.8%",
+      "new": "Operating Expenses > Provision for income tax expense (benefit) > % Change: 83.8%"
+     },
+     {
+      "cell": [
+       "924f8645d5174c42ac2ed6713ad92784::5",
+       2,
+       4
+      ],
+      "v2": "Description > Millions of kWh Delivered > For the Years Ended: PercentVariation",
+      "new": "Description > Millions of kWh Delivered: PercentVariation"
+     },
+     {
+      "cell": [
+       "ef56a2e435344e87937f8e4f0fcf94ef::2",
+       23,
+       8
+      ],
+      "v2": "Comprehensive income/(loss) > Minimum pension liability (net of tax of $255) > Accumulated Other Comprehensive Income/(Loss) > Derivative > Instruments > Total: -473",
+      "new": "Comprehensive income/(loss) > Minimum pension liability (net of tax of $255) > Total: -473"
+     },
+     {
+      "cell": [
+       "003594db953a4f919c2f5b6f46bbb79f::3",
+       17,
+       3
+      ],
+      "v2": "Operating Expenses > Provision for income tax expense (benefit) > Years Ended December 31, > Change: -165",
+      "new": "Operating Expenses > Provision for income tax expense (benefit) > Change: -165"
+     }
+    ]
+   }
+  },
+  "v2+S2n": {
+   "population": {
+    "n_scored": 2878,
+    "excluded_by_reason": {
+     "gold_in_header": 24,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.1268,
+   "cross_table": {
+    "cells": 18785,
+    "table_pairs": 429,
+    "pairs_identical_header_block": 177
+   },
+   "M2_year_all": 0.9502,
+   "M2_year_any": 0.9517,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.9678,
+   "n_year_cells_in_our_cells": 312800,
+   "M3_data_cell": 0.9836,
+   "n_described_cells": 399750,
+   "n_cells": 425870,
+   "vs_v2": {
+    "tables_changed": 371,
+    "tables_header_shape_changed": 0,
+    "cells_sentence_changed": 1761,
+    "cells_left_data_region": 0,
+    "cells_entered_data_region": 0,
+    "change_type": {
+     "segments_added_only": 0,
+     "segments_removed_only": 1761,
+     "segments_replaced": 0,
+     "row_path_changed": 1761,
+     "col_path_changed": 0
+    },
+    "chars_delta_mean": -20.5,
+    "top_segments_added": [],
+    "top_segments_removed": [
+     [
+      "West",
+      417
+     ],
+     [
+      "Noninterest income",
+      180
+     ],
+     [
+      "Non-U.S. commercial",
+      84
+     ],
+     [
+      "Other",
+      69
+     ],
+     [
+      "Non-U.S.commercial",
+      51
+     ],
+     [
+      "Other products",
+      40
+     ],
+     [
+      "Thereafter",
+      36
+     ],
+     [
+      "Fourth Quarter 2016 - post-Separation(a)",
+      28
+     ]
+    ],
+    "examples": [
+     {
+      "cell": [
+       "8b8888a1c482461ebd8f005c22a4f544::4",
+       6,
+       4
+      ],
+      "v2": "Mortgage-backed and other securities > Year ended December 31, > 2004 > FairValue: $396",
+      "new": "Year ended December 31, > 2004 > FairValue: $396"
+     },
+     {
+      "cell": [
+       "e30b8b7c49564bebbf3296d4c48a7c9b::0",
+       9,
+       7
+      ],
+      "v2": "West > Sales Order Cancellations Fiscal Year Ended September 30, > Cancellation Rate -1 > 2016: 23%",
+      "new": "Sales Order Cancellations Fiscal Year Ended September 30, > Cancellation Rate -1 > 2016: 23%"
+     },
+     {
+      "cell": [
+       "c49e4ece8df04a7ea7a13262c3fa26e8::1",
+       3,
+       1
+      ],
+      "v2": "Accumulated amortization > 2007: $635",
+      "new": "2007: $635"
+     },
+     {
+      "cell": [
+       "96d52acd9b364a1f8a071cd5fe22c6de::1",
+       10,
+       1
+      ],
+      "v2": "Construction in progress > December 31, > 2017: $6,251,100",
+      "new": "December 31, > 2017: $6,251,100"
+     },
+     {
+      "cell": [
+       "d6b82e659b194880bc6823afb0204eb9::1",
+       4,
+       3
+      ],
+      "v2": "Other > Non- controlling Interests: $6",
+      "new": "Non- controlling Interests: $6"
+     }
+    ]
+   }
+  },
+  "v2+S3n": {
+   "population": {
+    "n_scored": 2885,
+    "excluded_by_reason": {
+     "gold_in_header": 17,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.0866,
+   "cross_table": {
+    "cells": 18147,
+    "table_pairs": 425,
+    "pairs_identical_header_block": 171
+   },
+   "M2_year_all": 0.9746,
+   "M2_year_any": 0.9761,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.9918,
+   "n_year_cells_in_our_cells": 313073,
+   "M3_data_cell": 0.9842,
+   "n_described_cells": 399750,
+   "n_cells": 423473,
+   "vs_v2": {
+    "tables_changed": 489,
+    "tables_header_shape_changed": 489,
+    "cells_sentence_changed": 21785,
+    "cells_left_data_region": 2773,
+    "cells_entered_data_region": 376,
+    "change_type": {
+     "segments_added_only": 18892,
+     "segments_removed_only": 12,
+     "segments_replaced": 2865,
+     "row_path_changed": 4143,
+     "col_path_changed": 21785
+    },
+    "chars_delta_mean": 14.7,
+    "top_segments_added": [
+     [
+      "Variation",
+      1076
+     ],
+     [
+      "Fair Value",
+      813
+     ],
+     [
+      "Percent Variation",
+      776
+     ],
+     [
+      "2015",
+      729
+     ],
+     [
+      "Originally reported grossreserves for unpaid claim",
+      706
+     ],
+     [
+      "Amount",
+      589
+     ],
+     [
+      "2016",
+      581
+     ],
+     [
+      "Amortized Cost",
+      568
+     ]
+    ],
+    "top_segments_removed": [
+     [
+      "(in millions)",
+      1136
+     ],
+     [
+      "(In millions)",
+      968
+     ],
+     [
+      "($ millions, except percentages)",
+      78
+     ],
+     [
+      "(in billions)",
+      72
+     ],
+     [
+      "(In millions, except per share amounts)",
+      72
+     ],
+     [
+      "$—",
+      54
+     ],
+     [
+      "term",
+      54
+     ],
+     [
+      "(in millions, except per share data)",
+      48
+     ]
+    ],
+    "examples": [
+     {
+      "cell": [
+       "9807e7e7cd12444e904c92f338c84f9a::1",
+       45,
+       6
+      ],
+      "v2": "Net (deficiency) redundancy > related to: > Asbestos claims > Schedule of Loss Reserve Development: -98",
+      "new": "Originally reported grossreserves for unpaid claim > Net (deficiency) redundancy > related to: > Asbestos claims > Schedule of Loss Reserve Development > 2003: -98"
+     },
+     {
+      "cell": [
+       "e740b359dac647c98143a08ae376a133::3",
+       7,
+       2
+      ],
+      "v2": "Restaurant profit > 2017 vs. 2016: $-42",
+      "new": "Restaurant profit > 2017 vs. 2016 > Store Portfolio Actions: $-42"
+     },
+     {
+      "cell": [
+       "abc74ef0ecff4585a98fe7723b838338::0",
+       7,
+       4
+      ],
+      "v2": "Purchase and other commitments > Payments Due by Period: —",
+      "new": "Purchase and other commitments > Payments Due by Period > 4-5Years: —"
+     },
+     {
+      "cell": [
+       "8173ec5f5684449b84c6bf9e8134a36e::5",
+       11,
+       1
+      ],
+      "v2": "Total > Thousands of dths Delivered > Twelve Months Ended: 23,901",
+      "new": "Total > Thousands of dths Delivered > Twelve Months Ended > December 31, 2012: 23,901"
+     },
+     {
+      "cell": [
+       "d2937b54dffe48fab7ebf0e2cb2c6e56::2",
+       4,
+       7
+      ],
+      "v2": "Commercial/Industrial > Revenues in Millions (a) > For the Years Ended: 2",
+      "new": "Commercial/Industrial > Revenues in Millions (a) > For the Years Ended > Variation: 2"
+     }
+    ]
+   }
+  },
+  "v2+S4n2": {
+   "population": {
+    "n_scored": 2878,
+    "excluded_by_reason": {
+     "gold_in_header": 24,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.1349,
+   "cross_table": {
+    "cells": 18781,
+    "table_pairs": 424,
+    "pairs_identical_header_block": 177
+   },
+   "M2_year_all": 0.9485,
+   "M2_year_any": 0.95,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.9661,
+   "n_year_cells_in_our_cells": 312800,
+   "M3_data_cell": 0.9836,
+   "n_described_cells": 399750,
+   "n_cells": 425870,
+   "vs_v2": {
+    "tables_changed": 1142,
+    "tables_header_shape_changed": 0,
+    "cells_sentence_changed": 24408,
+    "cells_left_data_region": 0,
+    "cells_entered_data_region": 0,
+    "change_type": {
+     "segments_added_only": 0,
+     "segments_removed_only": 24408,
+     "segments_replaced": 0,
+     "row_path_changed": 24408,
+     "col_path_changed": 0
+    },
+    "chars_delta_mean": -23.1,
+    "top_segments_added": [],
+    "top_segments_removed": [
+     [
+      "Fee revenue:",
+      1814
+     ],
+     [
+      "Expenses",
+      1090
+     ],
+     [
+      "Revenues:",
+      975
+     ],
+     [
+      "Benefits and expenses:",
+      960
+     ],
+     [
+      "Operating costs and expenses",
+      747
+     ],
+     [
+      "Firm Sales",
+      572
+     ],
+     [
+      "In offices outside the U.S.",
+      540
+     ],
+     [
+      "Commercial",
+      501
+     ]
+    ],
+    "examples": [
+     {
+      "cell": [
+       "8c90636475ea42b3b020c7c961f1e46e::3",
+       15,
+       1
+      ],
+      "v2": "Fee revenue: > Income before income tax expense > InvestmentServicing > 2013: $2,405",
+      "new": "Income before income tax expense > InvestmentServicing > 2013: $2,405"
+     },
+     {
+      "cell": [
+       "feb496411ae843718af405783e8e5532::1",
+       17,
+       4
+      ],
+      "v2": "Statement of Operations Data -1 > Expenses: > Income (loss) from continuing operations before provision for income tax > Years Ended December 31, > 2006: 3,943",
+      "new": "Statement of Operations Data -1 > Income (loss) from continuing operations before provision for income tax > Years Ended December 31, > 2006: 3,943"
+     },
+     {
+      "cell": [
+       "da42ef16583a4c2d9fa9cfd32093bf8d::5",
+       16,
+       4
+      ],
+      "v2": "Other non-interest income: > Total non-interest income > Percentage Increase (Decrease) > 2013/2012: 6.2%",
+      "new": "Total non-interest income > Percentage Increase (Decrease) > 2013/2012: 6.2%"
+     },
+     {
+      "cell": [
+       "a22f3e0a94b84d34a18aaec702cce8a9::3",
+       8,
+       5
+      ],
+      "v2": "Employee benefits: > Full-time equivalent employees (“FTEs”) at December 31 > 2004: 8,026",
+      "new": "Full-time equivalent employees (“FTEs”) at December 31 > 2004: 8,026"
+     },
+     {
+      "cell": [
+       "ef7324285ad342f09b065a0d8290ddfc::1",
+       24,
+       5
+      ],
+      "v2": "2004 > Income tax expense (benefit) > Consolidated Total: 161,935",
+      "new": "Income tax expense (benefit) > Consolidated Total: 161,935"
+     }
+    ]
+   }
+  },
+  "v2+S5n2": {
+   "population": {
+    "n_scored": 2878,
+    "excluded_by_reason": {
+     "gold_in_header": 24,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.1253,
+   "cross_table": {
+    "cells": 18771,
+    "table_pairs": 423,
+    "pairs_identical_header_block": 177
+   },
+   "M2_year_all": 0.9503,
+   "M2_year_any": 0.9517,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.9679,
+   "n_year_cells_in_our_cells": 312800,
+   "M3_data_cell": 0.9836,
+   "n_described_cells": 399750,
+   "n_cells": 425870,
+   "vs_v2": {
+    "tables_changed": 108,
+    "tables_header_shape_changed": 0,
+    "cells_sentence_changed": 4281,
+    "cells_left_data_region": 0,
+    "cells_entered_data_region": 0,
+    "change_type": {
+     "segments_added_only": 4281,
+     "segments_removed_only": 0,
+     "segments_replaced": 0,
+     "row_path_changed": 4281,
+     "col_path_changed": 0
+    },
+    "chars_delta_mean": 38.1,
+    "top_segments_added": [
+     [
+      "In U.S. offices",
+      750
+     ],
+     [
+      "Comprehensive income:",
+      592
+     ],
+     [
+      "Firm Sales",
+      400
+     ],
+     [
+      "Other comprehensive income, net of tax and reclassification adjustments:",
+      384
+     ],
+     [
+      "Corporate loans",
+      375
+     ],
+     [
+      "2003",
+      240
+     ],
+     [
+      "2004",
+      240
+     ],
+     [
+      "Weighted-average assumptions used to determine net cost for years ended December 31",
+      240
+     ]
+    ],
+    "top_segments_removed": [],
+    "examples": [
+     {
+      "cell": [
+       "d41b4420cd974791a2c26183ebda6923::0",
+       42,
+       7
+      ],
+      "v2": "Other comprehensive income, net of tax and reclassification adjustments: > Minimum pension liability adjustment > Treasury Stock: —",
+      "new": "2004 > Comprehensive income: > Other comprehensive income, net of tax and reclassification adjustments: > Minimum pension liability adjustment > Treasury Stock: —"
+     },
+     {
+      "cell": [
+       "ee2e7137315e436faba4eee2b5848f77::2",
+       30,
+       2
+      ],
+      "v2": "Oilfield Services > Charges & credits-4 > 2010 > Income before taxes: 621",
+      "new": "(Stated in millions) > Oilfield Services > Charges & credits-4 > 2010 > Income before taxes: 621"
+     },
+     {
+      "cell": [
+       "b17b2fc4d5cf44d3b181f3320fa89501::1",
+       30,
+       5
+      ],
+      "v2": "Standardized measure of discounted future net cash flows- > -related to discontinued operations > Other Int'l: $1,228",
+      "new": "Year Ended December 31, 2013 > Standardized measure of discounted future net cash flows- > -related to discontinued operations > Other Int'l: $1,228"
+     },
+     {
+      "cell": [
+       "00f47268be69471fa1eb5dc8e23894f3::2",
+       26,
+       1
+      ],
+      "v2": "Oilfield Services > 2010 > Revenue: 774",
+      "new": "(Stated in millions) > Oilfield Services > 2010 > Revenue: 774"
+     },
+     {
+      "cell": [
+       "bbc0ca57d7e045469d7ec5ee5691dc6f::2",
+       24,
+       4
+      ],
+      "v2": "Components of net periodic benefit cost > Net periodic benefit cost (income) > Non-U.S. Pension Plans > 2012: $74",
+      "new": "Weighted-average assumptions used to determine net cost for years ended December 31 > Components of net periodic benefit cost > Net periodic benefit cost (income) > Non-U.S. Pension Plans > 2012: $74"
+     }
+    ]
+   }
+  },
+  "v2+S6n": {
+   "population": {
+    "n_scored": 2878,
+    "excluded_by_reason": {
+     "gold_in_header": 24,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.134,
+   "cross_table": {
+    "cells": 16617,
+    "table_pairs": 390,
+    "pairs_identical_header_block": 177
+   },
+   "M2_year_all": 0.9504,
+   "M2_year_any": 0.9518,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.968,
+   "n_year_cells_in_our_cells": 312800,
+   "M3_data_cell": 0.9836,
+   "n_described_cells": 399750,
+   "n_cells": 425870,
+   "vs_v2": {
+    "tables_changed": 216,
+    "tables_header_shape_changed": 0,
+    "cells_sentence_changed": 8767,
+    "cells_left_data_region": 0,
+    "cells_entered_data_region": 0,
+    "change_type": {
+     "segments_added_only": 8767,
+     "segments_removed_only": 0,
+     "segments_replaced": 0,
+     "row_path_changed": 0,
+     "col_path_changed": 8767
+    },
+    "chars_delta_mean": 29.2,
+    "top_segments_added": [
+     [
+      "As of December 31, 2014 (Dollars in millions)",
+      648
+     ],
+     [
+      "2010",
+      560
+     ],
+     [
+      "2003",
+      558
+     ],
+     [
+      "In millions of dollars at December 31, 2010",
+      462
+     ],
+     [
+      "For the Year Ended December 31, 2008",
+      432
+     ],
+     [
+      "Year Ended April 30, 2011",
+      385
+     ],
+     [
+      "Year Ended April 30, 2010",
+      385
+     ],
+     [
+      "2009",
+      376
+     ]
+    ],
+    "top_segments_removed": [],
+    "examples": [
+     {
+      "cell": [
+       "bc5af06d875f42a48f9cc71609a10ca9::0",
+       10,
+       2
+      ],
+      "v2": "Prime > 25 - 72% > Weighted-average (b): 46%",
+      "new": "Prime > 25 - 72% > December 31, 2012 Range > Weighted-average (b): 46%"
+     },
+     {
+      "cell": [
+       "d36e46189779482fbb18eb48eb40d339::0",
+       7,
+       1
+      ],
+      "v2": "Final purchase price > $13,100: $248,100",
+      "new": "Final purchase price > Net tangible assets acquired as of July 27, 2006 > $13,100: $248,100"
+     },
+     {
+      "cell": [
+       "abc74ef0ecff4585a98fe7723b838338::6",
+       8,
+       4
+      ],
+      "v2": "Income taxes (benefit) > Elims: -295,189",
+      "new": "Income taxes (benefit) > Year Ended April 30, 2010 > Elims: -295,189"
+     },
+     {
+      "cell": [
+       "04eb60771a8846a28be931110341dca1::2",
+       4,
+       1
+      ],
+      "v2": "Expected return on assets > Entergy Arkansas > (In Thousands): -6,210",
+      "new": "Expected return on assets > 2004 > Entergy Arkansas > (In Thousands): -6,210"
+     },
+     {
+      "cell": [
+       "acf0243084194af2bf6a4adc5b1d47e9::4",
+       6,
+       2
+      ],
+      "v2": "Cash flows from investing: > Net intercompany advances > BFC (Issuer): –",
+      "new": "Cash flows from investing: > Net intercompany advances > Year Ended April 30, 2009 > BFC (Issuer): –"
+     }
+    ]
+   }
+  },
+  "v3.2": {
+   "population": {
+    "n_scored": 2885,
+    "excluded_by_reason": {
+     "gold_in_header": 17,
+     "gold_table_unparsed": 4,
+     "gold_cell_missing": 2
+    }
+   },
+   "M1_within_table_collision": 0.0698,
+   "cross_table": {
+    "cells": 15905,
+    "table_pairs": 408,
+    "pairs_identical_header_block": 171
+   },
+   "M2_year_all": 0.9732,
+   "M2_year_any": 0.9747,
+   "n_year_cells": 318926,
+   "M2_year_any_in_our_cells": 0.9904,
+   "n_year_cells_in_our_cells": 313073,
+   "M3_data_cell": 0.9842,
+   "n_described_cells": 399750,
+   "n_cells": 423473,
+   "vs_v2": {
+    "tables_changed": 2454,
+    "tables_header_shape_changed": 489,
+    "cells_sentence_changed": 64830,
+    "cells_left_data_region": 2773,
+    "cells_entered_data_region": 376,
+    "change_type": {
+     "segments_added_only": 27333,
+     "segments_removed_only": 30898,
+     "segments_replaced": 6583,
+     "row_path_changed": 33051,
+     "col_path_changed": 37351
+    },
+    "chars_delta_mean": -1.7,
+    "top_segments_added": [
+     [
+      "Variation",
+      1076
+     ],
+     [
+      "2015",
+      929
+     ],
+     [
+      "2003",
+      864
+     ],
+     [
+      "Fair Value",
+      813
+     ],
+     [
+      "Percent Variation",
+      776
+     ],
+     [
+      "2010",
+      732
+     ],
+     [
+      "Originally reported grossreserves for unpaid claim",
+      706
+     ],
+     [
+      "2011",
+      693
+     ]
+    ],
+    "top_segments_removed": [
+     [
+      "Fee revenue:",
+      1814
+     ],
+     [
+      "Years Ended December 31,",
+      1634
+     ],
+     [
+      "Twelve Months Ended",
+      1387
+     ],
+     [
+      "(in millions)",
+      1136
+     ],
+     [
+      "Expenses",
+      1090
+     ],
+     [
+      "Defined benefit pension plans",
+      978
+     ],
+     [
+      "Revenues:",
+      975
+     ],
+     [
+      "(In millions)",
+      968
+     ]
+    ],
+    "examples": [
+     {
+      "cell": [
+       "70002358060f42b68e896ef716a403ea::2",
+       19,
+       3
+      ],
+      "v2": "Expenses: > Measure of segment profitability (pretax) > For the Year 2009 > Annuity: $312",
+      "new": "Measure of segment profitability (pretax) > For the Year 2009 > Annuity: $312"
+     },
+     {
+      "cell": [
+       "bd3f443d89ea42f89e3fd47fea4bcfb0::3",
+       18,
+       4
+      ],
+      "v2": "Operating Expenses > Operating earnings > Years Ended December 31, > % Change: -78.3%",
+      "new": "Operating earnings > % Change: -78.3%"
+     },
+     {
+      "cell": [
+       "a22f3e0a94b84d34a18aaec702cce8a9::2",
+       16,
+       1
+      ],
+      "v2": "Loans: > Goodwill > 2006 > Average balance: 1,887",
+      "new": "Goodwill > 2006 > Average balance: 1,887"
+     },
+     {
+      "cell": [
+       "7ce8c2d85bdc4b3b84056ef1c3fa8da3::3",
+       14,
+       4
+      ],
+      "v2": "Operating Expenses > Provision for income tax expense (benefit) > Years Ended December 31, > % Change: -25.2%",
+      "new": "Provision for income tax expense (benefit) > % Change: -25.2%"
+     },
+     {
+      "cell": [
+       "acd50ad620074570bf28f73eacc4757b::4",
+       4,
+       4
+      ],
+      "v2": "Securitization-related(a) > Residential mortgage: > Prime/Alt-A and option ARMs > JPMorgan Chase interest in securitized assets in nonconsolidated VIEs(c)(d)(e) > Trading assets: $226",
+      "new": "Securitization-related(a) > Residential mortgage: > Prime/Alt-A and option ARMs > December 31, 2016(in millions) > JPMorgan Chase interest in securitized assets in nonconsolidated VIEs(c)(d)(e) > Trading assets: $226"
+     }
+    ],
+    "cells_changed_by_rule_alone": {
+     "S1n": 9733,
+     "S2n": 1718,
+     "S3n": 21785,
+     "S4n2": 24408,
+     "S5n2": 3808,
+     "S6n": 8767
+    },
+    "cells_changed_only_in_combination": 36
+   }
+  }
+ },
+ "arms": {
+  "cell": {
+   "units_v2": 425870,
+   "units_new": 423473,
+   "units_not_in_v2": 65206,
+   "tables_with_changed_units": 2454
+  },
+  "chunk": {
+   "units_v2": 13917,
+   "units_new": 13891,
+   "units_not_in_v2": 182,
+   "tables_with_changed_units": 84
+  },
+  "huawei": {
+   "units_v2": 14989,
+   "units_new": 14989,
+   "units_not_in_v2": 0,
+   "tables_with_changed_units": 0
+  },
+  "rowcol": {
+   "units_v2": 148604,
+   "units_new": 148073,
+   "units_not_in_v2": 3231,
+   "tables_with_changed_units": 857
+  },
+  "tablerag_allobj_path": {
+   "units_v2": 535585,
+   "units_new": 534574,
+   "units_not_in_v2": 37527,
+   "tables_with_changed_units": 1076
+  }
+ },
+ "evaluation_sets": {
+  "mh_cell_hv2_answer_doc_1047": {
+   "n": 1047,
+   "excluded": [],
+   "gold_cell_set_changed": [],
+   "gold_sentence_changed": 161,
+   "doc_has_changed_sentence": 634
+  },
+  "interim200": {
+   "n": 200,
+   "excluded": [],
+   "gold_cell_set_changed": [],
+   "gold_sentence_changed": 35,
+   "doc_has_changed_sentence": 121
+  }
+ },
+ "cases": {
+  "ce87645c": {
+   "kind": "헤더 복원",
+   "cells_changed": 144,
+   "header_shape": {
+    "ce87645c74f2401583d9f1bd05e534b6::0": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "ce87645c74f2401583d9f1bd05e534b6::1": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "ce87645c74f2401583d9f1bd05e534b6::2": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "ce87645c74f2401583d9f1bd05e534b6::3": [
+     [
+      3,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 18,
+    "table_pairs": 1,
+    "pairs_identical_header_block": 1
+   },
+   "cross_table_new": {
+    "cells": 18,
+    "table_pairs": 1,
+    "pairs_identical_header_block": 1
+   },
+   "within_table_collisions_v2": 0,
+   "within_table_collisions_new": 0,
+   "examples": [
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      5,
+      1
+     ],
+     "v2": "Statement of Income: > Revenues > Premiums > Institutional > (In millions): $14,964",
+     "new": "Statement of Income: > Revenues > Premiums > For the Year Ended December 31, 2008 > Institutional > (In millions): $14,964",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      5,
+      2
+     ],
+     "v2": "Statement of Income: > Revenues > Premiums > Individual: $4,481",
+     "new": "Statement of Income: > Revenues > Premiums > For the Year Ended December 31, 2008 > Individual: $4,481",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      5,
+      3
+     ],
+     "v2": "Statement of Income: > Revenues > Premiums > International: $3,470",
+     "new": "Statement of Income: > Revenues > Premiums > For the Year Ended December 31, 2008 > International: $3,470",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      5,
+      4
+     ],
+     "v2": "Statement of Income: > Revenues > Premiums > Auto & Home: $2,971",
+     "new": "Statement of Income: > Revenues > Premiums > For the Year Ended December 31, 2008 > Auto & Home: $2,971",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      5,
+      5
+     ],
+     "v2": "Statement of Income: > Revenues > Premiums > Corporate & Other: $28",
+     "new": "Statement of Income: > Revenues > Premiums > For the Year Ended December 31, 2008 > Corporate & Other: $28",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      5,
+      6
+     ],
+     "v2": "Statement of Income: > Revenues > Premiums > Corporate & Other > Total: $25,914",
+     "new": "Statement of Income: > Revenues > Premiums > For the Year Ended December 31, 2008 > Total: $25,914",
+     "rules_alone": [
+      "S1n",
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      6,
+      1
+     ],
+     "v2": "Statement of Income: > Revenues > Universal life and investment-type product policy fees > Institutional > (In millions): 886",
+     "new": "Statement of Income: > Revenues > Universal life and investment-type product policy fees > For the Year Ended December 31, 2008 > Institutional > (In millions): 886",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "ce87645c74f2401583d9f1bd05e534b6::3",
+      6,
+      2
+     ],
+     "v2": "Statement of Income: > Revenues > Universal life and investment-type product policy fees > Individual: 3,400",
+     "new": "Statement of Income: > Revenues > Universal life and investment-type product policy fees > For the Year Ended December 31, 2008 > Individual: 3,400",
+     "rules_alone": [
+      "S6n"
+     ]
+    }
+   ]
+  },
+  "d4944be6": {
+   "kind": "헤더 복원",
+   "cells_changed": 16,
+   "header_shape": {
+    "d4944be624884dfbb5645ef00a3c98c8::0": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "d4944be624884dfbb5645ef00a3c98c8::1": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "d4944be624884dfbb5645ef00a3c98c8::2": [
+     [
+      1,
+      2
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "d4944be624884dfbb5645ef00a3c98c8::3": [
+     [
+      3,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "cross_table_new": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "within_table_collisions_v2": 38,
+   "within_table_collisions_new": 18,
+   "examples": [
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      2,
+      2
+     ],
+     "v2": "Debt1 > $5,986 > Payment Period: $1,322",
+     "new": "Debt1 > Payment Period > 2007: $1,322",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      2,
+      3
+     ],
+     "v2": "Debt1 > $5,986 > Payment Period: $2,055",
+     "new": "Debt1 > Payment Period > 2008 - 2009: $2,055",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      2,
+      4
+     ],
+     "v2": "Debt1 > $5,986 > Payment Period: $1,961",
+     "new": "Debt1 > Payment Period > 2010 - 2011: $1,961",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      2,
+      5
+     ],
+     "v2": "Debt1 > $5,986 > Payment Period: $648",
+     "new": "Debt1 > Payment Period > After 2011: $648",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      3,
+      2
+     ],
+     "v2": "Operating Leases > $691 > Payment Period: $191",
+     "new": "Operating Leases > Payment Period > 2007: $191",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      3,
+      3
+     ],
+     "v2": "Operating Leases > $691 > Payment Period: $205",
+     "new": "Operating Leases > Payment Period > 2008 - 2009: $205",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      3,
+      4
+     ],
+     "v2": "Operating Leases > $691 > Payment Period: $106",
+     "new": "Operating Leases > Payment Period > 2010 - 2011: $106",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "d4944be624884dfbb5645ef00a3c98c8::2",
+      3,
+      5
+     ],
+     "v2": "Operating Leases > $691 > Payment Period: $189",
+     "new": "Operating Leases > Payment Period > After 2011: $189",
+     "rules_alone": [
+      "S3n"
+     ]
+    }
+   ]
+  },
+  "8018bbdd": {
+   "kind": "헤더 복원",
+   "cells_changed": 95,
+   "header_shape": {
+    "8018bbdddd6e4756b50911ab70ab0613::0": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "8018bbdddd6e4756b50911ab70ab0613::1": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "8018bbdddd6e4756b50911ab70ab0613::2": [
+     [
+      2,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ],
+    "8018bbdddd6e4756b50911ab70ab0613::3": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "8018bbdddd6e4756b50911ab70ab0613::4": [
+     [
+      2,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "cross_table_new": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "within_table_collisions_v2": 98,
+   "within_table_collisions_new": 2,
+   "examples": [
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      3,
+      1
+     ],
+     "v2": "Con Edison > December 31, > 2010 (in millions): $10,676",
+     "new": "Con Edison > December 31, > 2010 (in millions) > Carrying Amount: $10,676",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      3,
+      2
+     ],
+     "v2": "Con Edison > December 31, > 2010 (in millions): $11,795",
+     "new": "Con Edison > December 31, > 2010 (in millions) > Fair Value: $11,795",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      3,
+      3
+     ],
+     "v2": "Con Edison > December 31, > 2009 (in millions): $10,585",
+     "new": "Con Edison > December 31, > 2009 (in millions) > Carrying Amount: $10,585",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      3,
+      4
+     ],
+     "v2": "Con Edison > December 31, > 2009 (in millions): $11,009",
+     "new": "Con Edison > December 31, > 2009 (in millions) > Fair Value: $11,009",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      4,
+      1
+     ],
+     "v2": "CECONY > December 31, > 2010 (in millions): $9,743",
+     "new": "CECONY > December 31, > 2010 (in millions) > Carrying Amount: $9,743",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      4,
+      2
+     ],
+     "v2": "CECONY > December 31, > 2010 (in millions): $10,680",
+     "new": "CECONY > December 31, > 2010 (in millions) > Fair Value: $10,680",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      4,
+      3
+     ],
+     "v2": "CECONY > December 31, > 2009 (in millions): $9,663",
+     "new": "CECONY > December 31, > 2009 (in millions) > Carrying Amount: $9,663",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "8018bbdddd6e4756b50911ab70ab0613::2",
+      4,
+      4
+     ],
+     "v2": "CECONY > December 31, > 2009 (in millions): $10,052",
+     "new": "CECONY > December 31, > 2009 (in millions) > Fair Value: $10,052",
+     "rules_alone": [
+      "S3n"
+     ]
+    }
+   ]
+  },
+  "04e25e10": {
+   "kind": "헤더 복원",
+   "cells_changed": 123,
+   "header_shape": {
+    "04e25e10791e4329bb6a6a046b7a6620::0": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "04e25e10791e4329bb6a6a046b7a6620::1": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "04e25e10791e4329bb6a6a046b7a6620::2": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "04e25e10791e4329bb6a6a046b7a6620::3": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "cross_table_new": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "within_table_collisions_v2": 40,
+   "within_table_collisions_new": 0,
+   "examples": [
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      5,
+      1
+     ],
+     "v2": "Operations > Defense, Space & Security: > Boeing Military Aircraft > 2015: 13,482",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Boeing Military Aircraft > 2015: 13,482",
+     "rules_alone": [
+      "S5n2"
+     ]
+    },
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      5,
+      2
+     ],
+     "v2": "Operations > Defense, Space & Security: > Boeing Military Aircraft > 2014: 13,500",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Boeing Military Aircraft > 2014: 13,500",
+     "rules_alone": [
+      "S5n2"
+     ]
+    },
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      5,
+      3
+     ],
+     "v2": "Operations > Defense, Space & Security: > Boeing Military Aircraft > 2013: 15,275",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Boeing Military Aircraft > 2013: 15,275",
+     "rules_alone": [
+      "S5n2"
+     ]
+    },
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      5,
+      4
+     ],
+     "v2": "Operations > Defense, Space & Security: > Boeing Military Aircraft > 2012: 15,373",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Boeing Military Aircraft > 2012: 15,373",
+     "rules_alone": [
+      "S5n2"
+     ]
+    },
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      5,
+      5
+     ],
+     "v2": "Operations > Defense, Space & Security: > Boeing Military Aircraft > 2011: 14,100",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Boeing Military Aircraft > 2011: 14,100",
+     "rules_alone": [
+      "S5n2"
+     ]
+    },
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      6,
+      1
+     ],
+     "v2": "Operations > Defense, Space & Security: > Network & Space Systems > 2015: 7,751",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Network & Space Systems > 2015: 7,751",
+     "rules_alone": [
+      "S5n2"
+     ]
+    },
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      6,
+      2
+     ],
+     "v2": "Operations > Defense, Space & Security: > Network & Space Systems > 2014: 8,003",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Network & Space Systems > 2014: 8,003",
+     "rules_alone": [
+      "S5n2"
+     ]
+    },
+    {
+     "cell": [
+      "04e25e10791e4329bb6a6a046b7a6620::0",
+      6,
+      3
+     ],
+     "v2": "Operations > Defense, Space & Security: > Network & Space Systems > 2013: 8,512",
+     "new": "Operations > Revenues: > Defense, Space & Security: > Network & Space Systems > 2013: 8,512",
+     "rules_alone": [
+      "S5n2"
+     ]
+    }
+   ]
+  },
+  "bd3f443d": {
+   "kind": "표 구분",
+   "cells_changed": 64,
+   "header_shape": {
+    "bd3f443d89ea42f89e3fd47fea4bcfb0::0": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "bd3f443d89ea42f89e3fd47fea4bcfb0::1": [
+     [
+      3,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ],
+    "bd3f443d89ea42f89e3fd47fea4bcfb0::2": [
+     [
+      3,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ],
+    "bd3f443d89ea42f89e3fd47fea4bcfb0::3": [
+     [
+      3,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 110,
+    "table_pairs": 1,
+    "pairs_identical_header_block": 1
+   },
+   "cross_table_new": {
+    "cells": 110,
+    "table_pairs": 1,
+    "pairs_identical_header_block": 1
+   },
+   "within_table_collisions_v2": 0,
+   "within_table_collisions_new": 0,
+   "examples": [
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      4,
+      3
+     ],
+     "v2": "Operating Revenues > Premiums > Years Ended December 31, > Change: $1,133",
+     "new": "Operating Revenues > Premiums > Change: $1,133",
+     "rules_alone": [
+      "S1n"
+     ]
+    },
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      4,
+      4
+     ],
+     "v2": "Operating Revenues > Premiums > Years Ended December 31, > % Change: 7.4%",
+     "new": "Operating Revenues > Premiums > % Change: 7.4%",
+     "rules_alone": [
+      "S1n"
+     ]
+    },
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      5,
+      3
+     ],
+     "v2": "Operating Revenues > Universal life and investment-type product policy fees > Years Ended December 31, > Change: 110",
+     "new": "Operating Revenues > Universal life and investment-type product policy fees > Change: 110",
+     "rules_alone": [
+      "S1n"
+     ]
+    },
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      5,
+      4
+     ],
+     "v2": "Operating Revenues > Universal life and investment-type product policy fees > Years Ended December 31, > % Change: 5.3%",
+     "new": "Operating Revenues > Universal life and investment-type product policy fees > % Change: 5.3%",
+     "rules_alone": [
+      "S1n"
+     ]
+    },
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      6,
+      3
+     ],
+     "v2": "Operating Revenues > Net investment income > Years Ended December 31, > Change: -292",
+     "new": "Operating Revenues > Net investment income > Change: -292",
+     "rules_alone": [
+      "S1n"
+     ]
+    },
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      6,
+      4
+     ],
+     "v2": "Operating Revenues > Net investment income > Years Ended December 31, > % Change: -4.8%",
+     "new": "Operating Revenues > Net investment income > % Change: -4.8%",
+     "rules_alone": [
+      "S1n"
+     ]
+    },
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      7,
+      3
+     ],
+     "v2": "Operating Revenues > Other revenues > Years Ended December 31, > Change: 9",
+     "new": "Operating Revenues > Other revenues > Change: 9",
+     "rules_alone": [
+      "S1n"
+     ]
+    },
+    {
+     "cell": [
+      "bd3f443d89ea42f89e3fd47fea4bcfb0::2",
+      7,
+      4
+     ],
+     "v2": "Operating Revenues > Other revenues > Years Ended December 31, > % Change: 1.1%",
+     "new": "Operating Revenues > Other revenues > % Change: 1.1%",
+     "rules_alone": [
+      "S1n"
+     ]
+    }
+   ]
+  },
+  "b8fe82b0": {
+   "kind": "표 구분",
+   "cells_changed": 4,
+   "header_shape": {
+    "b8fe82b02c084ce797bf065460e273cd::0": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "b8fe82b02c084ce797bf065460e273cd::1": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "b8fe82b02c084ce797bf065460e273cd::2": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "b8fe82b02c084ce797bf065460e273cd::3": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 158,
+    "table_pairs": 1,
+    "pairs_identical_header_block": 1
+   },
+   "cross_table_new": {
+    "cells": 158,
+    "table_pairs": 1,
+    "pairs_identical_header_block": 1
+   },
+   "within_table_collisions_v2": 74,
+   "within_table_collisions_new": 74,
+   "examples": [
+    {
+     "cell": [
+      "b8fe82b02c084ce797bf065460e273cd::1",
+      3,
+      1
+     ],
+     "v2": "Accumulated amortization > 2007: $635",
+     "new": "2007: $635",
+     "rules_alone": [
+      "S2n"
+     ]
+    },
+    {
+     "cell": [
+      "b8fe82b02c084ce797bf065460e273cd::1",
+      3,
+      2
+     ],
+     "v2": "Accumulated amortization > 2006: $575",
+     "new": "2006: $575",
+     "rules_alone": [
+      "S2n"
+     ]
+    },
+    {
+     "cell": [
+      "b8fe82b02c084ce797bf065460e273cd::1",
+      6,
+      1
+     ],
+     "v2": "Accumulated amortization > 2007: $921",
+     "new": "2007: $921",
+     "rules_alone": [
+      "S2n"
+     ]
+    },
+    {
+     "cell": [
+      "b8fe82b02c084ce797bf065460e273cd::1",
+      6,
+      2
+     ],
+     "v2": "Accumulated amortization > 2006: $921",
+     "new": "2006: $921",
+     "rules_alone": [
+      "S2n"
+     ]
+    }
+   ]
+  },
+  "b2585208": {
+   "kind": "표 구분(+범위)",
+   "cells_changed": 24,
+   "header_shape": {
+    "b2585208a8b0415f97fb82bd3ce4a407::0": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "b2585208a8b0415f97fb82bd3ce4a407::1": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "b2585208a8b0415f97fb82bd3ce4a407::2": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "b2585208a8b0415f97fb82bd3ce4a407::3": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "cross_table_new": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "within_table_collisions_v2": 0,
+   "within_table_collisions_new": 0,
+   "examples": [
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      9,
+      1
+     ],
+     "v2": "Alternatives > Long-term > AUM > 2014: 4,333,841",
+     "new": "Long-term > AUM > 2014: 4,333,841",
+     "rules_alone": [
+      "S4n2"
+     ]
+    },
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      9,
+      2
+     ],
+     "v2": "Alternatives > Long-term > AUM > 2013: 4,012,209",
+     "new": "Long-term > AUM > 2013: 4,012,209",
+     "rules_alone": [
+      "S4n2"
+     ]
+    },
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      9,
+      3
+     ],
+     "v2": "Alternatives > Long-term > AUM > 2012: 3,482,366",
+     "new": "Long-term > AUM > 2012: 3,482,366",
+     "rules_alone": [
+      "S4n2"
+     ]
+    },
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      9,
+      4
+     ],
+     "v2": "Alternatives > Long-term > Net Inflows (Outflows) > 2014: 181,253",
+     "new": "Long-term > Net Inflows (Outflows) > 2014: 181,253",
+     "rules_alone": [
+      "S4n2"
+     ]
+    },
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      9,
+      5
+     ],
+     "v2": "Alternatives > Long-term > Net Inflows (Outflows) > 2013: 117,113",
+     "new": "Long-term > Net Inflows (Outflows) > 2013: 117,113",
+     "rules_alone": [
+      "S4n2"
+     ]
+    },
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      9,
+      6
+     ],
+     "v2": "Alternatives > Long-term > Net Inflows (Outflows) > 2012 -1: -2,465",
+     "new": "Long-term > Net Inflows (Outflows) > 2012 -1: -2,465",
+     "rules_alone": [
+      "S4n2"
+     ]
+    },
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      10,
+      1
+     ],
+     "v2": "Alternatives > Cash management > AUM > 2014: 296,353",
+     "new": "Cash management > AUM > 2014: 296,353",
+     "rules_alone": [
+      "S4n2"
+     ]
+    },
+    {
+     "cell": [
+      "b2585208a8b0415f97fb82bd3ce4a407::3",
+      10,
+      2
+     ],
+     "v2": "Alternatives > Cash management > AUM > 2013: 275,554",
+     "new": "Cash management > AUM > 2013: 275,554",
+     "rules_alone": [
+      "S4n2"
+     ]
+    }
+   ]
+  },
+  "60a5af4a": {
+   "kind": "변환 누락",
+   "cells_changed": 117,
+   "header_shape": {
+    "60a5af4aa10c4b72875981ccdcb25e7b::0": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "60a5af4aa10c4b72875981ccdcb25e7b::1": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "60a5af4aa10c4b72875981ccdcb25e7b::2": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "cross_table_new": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "within_table_collisions_v2": 2,
+   "within_table_collisions_new": 0,
+   "examples": [
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      1,
+      1
+     ],
+     "v2": "Loans > Level 1: $—",
+     "new": "Loans > In millions of dollars at December 31, 2018 > Level 1: $—",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      1,
+      2
+     ],
+     "v2": "Loans > Level 2: $2,946",
+     "new": "Loans > In millions of dollars at December 31, 2018 > Level 2: $2,946",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      1,
+      3
+     ],
+     "v2": "Loans > Level 3: $277",
+     "new": "Loans > In millions of dollars at December 31, 2018 > Level 3: $277",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      1,
+      4
+     ],
+     "v2": "Loans > Grossinventory: $3,223",
+     "new": "Loans > In millions of dollars at December 31, 2018 > Grossinventory: $3,223",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      1,
+      5
+     ],
+     "v2": "Loans > Netting-1: $—",
+     "new": "Loans > In millions of dollars at December 31, 2018 > Netting-1: $—",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      1,
+      6
+     ],
+     "v2": "Loans > Netbalance: $3,223",
+     "new": "Loans > In millions of dollars at December 31, 2018 > Netbalance: $3,223",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      2,
+      1
+     ],
+     "v2": "Mortgage servicing rights > Level 1: —",
+     "new": "Mortgage servicing rights > In millions of dollars at December 31, 2018 > Level 1: —",
+     "rules_alone": [
+      "S6n"
+     ]
+    },
+    {
+     "cell": [
+      "60a5af4aa10c4b72875981ccdcb25e7b::1",
+      2,
+      2
+     ],
+     "v2": "Mortgage servicing rights > Level 2: —",
+     "new": "Mortgage servicing rights > In millions of dollars at December 31, 2018 > Level 2: —",
+     "rules_alone": [
+      "S6n"
+     ]
+    }
+   ]
+  },
+  "9807e7e7": {
+   "kind": "헤더 복원(추가)",
+   "cells_changed": 364,
+   "header_shape": {
+    "9807e7e7cd12444e904c92f338c84f9a::0": [
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "9807e7e7cd12444e904c92f338c84f9a::1": [
+     [
+      1,
+      1
+     ],
+     [
+      3,
+      1
+     ]
+    ],
+    "9807e7e7cd12444e904c92f338c84f9a::2": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cross_table_v2": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "cross_table_new": {
+    "cells": 0,
+    "table_pairs": 0,
+    "pairs_identical_header_block": 0
+   },
+   "within_table_collisions_v2": 374,
+   "within_table_collisions_new": 0,
+   "examples": [
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      1
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 28,506",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 1998: 28,506",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      2
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 26,850",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 1999(a): 26,850",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      3
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 26,510",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 2000: 26,510",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      4
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 29,649",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 2001(b): 29,649",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      5
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 25,719",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 2002(c): 25,719",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      6
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 31,284",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 2003: 31,284",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      7
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 31,204",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 2004: 31,204",
+     "rules_alone": [
+      "S3n"
+     ]
+    },
+    {
+     "cell": [
+      "9807e7e7cd12444e904c92f338c84f9a::1",
+      5,
+      8
+     ],
+     "v2": "(In millions of dollars) > Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development: 30,694",
+     "new": "Originally reported grossreserves for unpaid claim > and claim adjustment > expenses > Schedule of Loss Reserve Development > 2005: 30,694",
+     "rules_alone": [
+      "S3n"
+     ]
+    }
+   ]
+  }
+ },
+ "provenance": {
+  "git_commit": "701f2f03cd51e44c8f210ddca7865a85967961e1",
+  "git_dirty": true,
+  "source_sha256": "b97cb1ce1a6b0a483231d0b709f25db06a4e56b84238974e6c91cdafde7ac502",
+  "python": "3.12.3",
+  "packages": {
+   "numpy": "2.5.0",
+   "scipy": "1.18.0",
+   "transformers": "5.12.1",
+   "sentence-transformers": "5.6.0",
+   "langchain-text-splitters": "1.1.2",
+   "torch": "2.12.1+cu130",
+   "bitsandbytes": "0.50.1"
+  }
+ }
+}

@@ -1,0 +1,1210 @@
+{
+ "rule": "v3.2",
+ "models_run": false,
+ "unit": "(표, 행, 표제) 쌍",
+ "definition": "기계로 확인되는 두 오류 유형을 v2 와 새 규칙에서 같은 기준으로 센다 — 모델 없음.\n\n  E  잘못된 구획 종료. 표 본문의 구획 표제 행 h 아래, 그 구획 자신의 합계 행(표제 칸 낱말이\n     'total'·'subtotal' 뒤에 h 의 낱말 그대로) 위에 있는 데이터 행인데 행 경로에 h 가 없다.\n     표제 행과 합계 행 사이에 같은 표제가 다시 나오면 그 쌍은 판정에 쓰지 않는다.\n  N  숫자 표제 부착. 행 경로에 표 본문 구획 표제 행의 글이 붙었는데 그 글이 숫자다\n     (`_number_like`: 네 자리 연도는 숫자로 보지 않는다). 데이터 행 표제 칸에도 쓰인 글은 세지 않는다.\n\n(행, 표제) 쌍마다 v2 와 규칙에서 따로 판정해 가른다: 둘 다 오류(v2 부터 있음) / v2 에만 오류(규칙이 없앰) /\n규칙에만 오류(규칙이 만듦). 쌍 단위라서 v2 에서 이미 한 표제를 잃은 행이 규칙 때문에 다른 표제를 더 잃으면 그 표제는\n'규칙이 만듦'이다(2026-09-14 첫 집계 confirmed_errors_v3_{1,2}.json 은 행 단위라 이것을 'v2 부터 있음'에 넣었다).\n판정 대상은 두 설정 모두에서 본문 데이터 행인 행이다. 규칙 전체와, 행 경로를 건드리는 규칙 하나씩(v2 위에)을 잰다.",
+ "v2_alone": {
+  "E_pairs": 1250,
+  "E_rows": 1238,
+  "N_pairs": 55,
+  "N_rows": 55,
+  "E_rows_judged": 8705
+ },
+ "configs": {
+  "v3.2": {
+   "rows_data_in_both": 100240,
+   "rows_data_in_one_only": 558,
+   "E": {
+    "rows_judged_in_both": 8705,
+    "v2_and_rule": {
+     "pairs": 1115,
+     "rows": 1103,
+     "tables": 121,
+     "examples": [
+      {
+       "table": "b6e377d43f7d4cfc9af52b67dab263b4::1",
+       "raw_row": 10,
+       "heading": "Assets:",
+       "flag_v2": [
+        "Assets:"
+       ],
+       "flag_rule": [
+        "Assets:"
+       ],
+       "v2_row_path": [
+        "Loans:",
+        "Total loans"
+       ],
+       "rule_row_path": [
+        "Loans:",
+        "Total loans"
+       ]
+      },
+      {
+       "table": "d1fd35004d064318a3f07257277a5100::1",
+       "raw_row": 25,
+       "heading": "Expenses:",
+       "flag_v2": [
+        "Expenses:"
+       ],
+       "flag_rule": [
+        "Expenses:"
+       ],
+       "v2_row_path": [
+        "2006",
+        "Transportation costs(c)"
+       ],
+       "rule_row_path": [
+        "2006",
+        "Transportation costs(c)"
+       ]
+      },
+      {
+       "table": "9bd115cedf5244efa07a42f88fa6df37::0",
+       "raw_row": 24,
+       "heading": "Expenses:",
+       "flag_v2": [
+        "Expenses:"
+       ],
+       "flag_rule": [
+        "Expenses:"
+       ],
+       "v2_row_path": [
+        "2012",
+        "Depreciation, depletion and amortization(b)"
+       ],
+       "rule_row_path": [
+        "2012",
+        "Depreciation, depletion and amortization(b)"
+       ]
+      },
+      {
+       "table": "0120850188d146dea28a26ed9d3c0cd4::1",
+       "raw_row": 39,
+       "heading": "LIABILITIES AND EQUITY",
+       "flag_v2": [
+        "LIABILITIES AND EQUITY"
+       ],
+       "flag_rule": [
+        "LIABILITIES AND EQUITY"
+       ],
+       "v2_row_path": [
+        "COMMITMENTS AND CONTINGENT LIABILITIES",
+        "EQUITY",
+        "Noncontrolling interests"
+       ],
+       "rule_row_path": [
+        "COMMITMENTS AND CONTINGENT LIABILITIES",
+        "EQUITY",
+        "Noncontrolling interests"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 135,
+     "rows": 135,
+     "tables": 22,
+     "examples": [
+      {
+       "table": "a1db95387b6a4508875964a2114e9939::0",
+       "raw_row": 30,
+       "heading": "Corporate loans",
+       "flag_v2": [
+        "Corporate loans"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Consumer loans",
+        "In offices outside the U.S.",
+        "Mortgage and real estate-1"
+       ],
+       "rule_row_path": [
+        "Consumer loans",
+        "Corporate loans",
+        "In offices outside the U.S.",
+        "Mortgage and real estate-1"
+       ]
+      },
+      {
+       "table": "850fac45bf3c46af90dbe30626f8aa84::0",
+       "raw_row": 40,
+       "heading": "Contractual Backlog:",
+       "flag_v2": [
+        "Contractual Backlog:"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Operations",
+        "Defense, Space & Security:",
+        "Global Services & Support"
+       ],
+       "rule_row_path": [
+        "Operations",
+        "Contractual Backlog:",
+        "Defense, Space & Security:",
+        "Global Services & Support"
+       ]
+      },
+      {
+       "table": "588b7e1c808a4c1cbd7de012b5a888eb::2",
+       "raw_row": 34,
+       "heading": "Corporate loans",
+       "flag_v2": [
+        "Corporate loans"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Consumer loans",
+        "In offices outside the U.S.",
+        "Total"
+       ],
+       "rule_row_path": [
+        "Consumer loans",
+        "Corporate loans",
+        "In offices outside the U.S.",
+        "Total"
+       ]
+      },
+      {
+       "table": "850fac45bf3c46af90dbe30626f8aa84::0",
+       "raw_row": 39,
+       "heading": "Contractual Backlog:",
+       "flag_v2": [
+        "Contractual Backlog:"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Operations",
+        "Defense, Space & Security:",
+        "Network & Space Systems"
+       ],
+       "rule_row_path": [
+        "Operations",
+        "Contractual Backlog:",
+        "Defense, Space & Security:",
+        "Network & Space Systems"
+       ]
+      }
+     ]
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   },
+   "N": {
+    "v2_and_rule": {
+     "pairs": 55,
+     "rows": 55,
+     "tables": 16,
+     "examples": [
+      {
+       "table": "27f94cfabac845b8a1269897aed4c18c::0",
+       "raw_row": 44,
+       "heading": "679,659",
+       "flag_v2": [
+        "679,659"
+       ],
+       "flag_rule": [
+        "679,659"
+       ],
+       "v2_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "a2214c86d15b4ae1ac88b4b8f8276a6a::4",
+       "raw_row": 9,
+       "heading": "171,435",
+       "flag_v2": [
+        "171,435"
+       ],
+       "flag_rule": [
+        "171,435"
+       ],
+       "v2_row_path": [
+        "171,435",
+        "Less amount representing interest"
+       ],
+       "rule_row_path": [
+        "171,435",
+        "Less amount representing interest"
+       ]
+      },
+      {
+       "table": "da403bafee2c43ab803fa905594bc0a7::1",
+       "raw_row": 28,
+       "heading": "679,659",
+       "flag_v2": [
+        "679,659"
+       ],
+       "flag_rule": [
+        "679,659"
+       ],
+       "v2_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "dbced804cdc646b9b86315a672c52b5c::4",
+       "raw_row": 11,
+       "heading": "$4,331",
+       "flag_v2": [
+        "$4,331"
+       ],
+       "flag_rule": [
+        "$4,331"
+       ],
+       "v2_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ],
+       "rule_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   }
+  },
+  "v2+S2n": {
+   "rows_data_in_both": 100770,
+   "rows_data_in_one_only": 0,
+   "E": {
+    "rows_judged_in_both": 8705,
+    "v2_and_rule": {
+     "pairs": 1250,
+     "rows": 1238,
+     "tables": 121,
+     "examples": [
+      {
+       "table": "a22f3e0a94b84d34a18aaec702cce8a9::2",
+       "raw_row": 29,
+       "heading": "LIABILITIES:",
+       "flag_v2": [
+        "LIABILITIES:"
+       ],
+       "flag_rule": [
+        "LIABILITIES:"
+       ],
+       "v2_row_path": [
+        "Borrowed funds:",
+        "Securities sold, not yet purchased"
+       ],
+       "rule_row_path": [
+        "Borrowed funds:",
+        "Securities sold, not yet purchased"
+       ]
+      },
+      {
+       "table": "bd323dd400b745189c91300a6c73f272::0",
+       "raw_row": 8,
+       "heading": "VIEs:",
+       "flag_v2": [
+        "VIEs:"
+       ],
+       "flag_rule": [
+        "VIEs:"
+       ],
+       "v2_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ],
+       "rule_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ]
+      },
+      {
+       "table": "8e25715ff64c4faca35cd77293fe03bf::2",
+       "raw_row": 17,
+       "heading": "Investments:",
+       "flag_v2": [
+        "Investments:"
+       ],
+       "flag_rule": [
+        "Investments:"
+       ],
+       "v2_row_path": [
+        "Assets:",
+        "Corporate and other debt:",
+        "Other investments"
+       ],
+       "rule_row_path": [
+        "Assets:",
+        "Corporate and other debt:",
+        "Other investments"
+       ]
+      },
+      {
+       "table": "f6a4af380e5d407387d8b2d9d7ad0188::0",
+       "raw_row": 8,
+       "heading": "VIEs:",
+       "flag_v2": [
+        "VIEs:"
+       ],
+       "flag_rule": [
+        "VIEs:"
+       ],
+       "v2_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ],
+       "rule_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   },
+   "N": {
+    "v2_and_rule": {
+     "pairs": 55,
+     "rows": 55,
+     "tables": 16,
+     "examples": [
+      {
+       "table": "da403bafee2c43ab803fa905594bc0a7::1",
+       "raw_row": 44,
+       "heading": "701,462",
+       "flag_v2": [
+        "701,462"
+       ],
+       "flag_rule": [
+        "701,462"
+       ],
+       "v2_row_path": [
+        "701,462",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "701,462",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "de10552a452448dd803ad23dcee28aa6::4",
+       "raw_row": 11,
+       "heading": "$4,331",
+       "flag_v2": [
+        "$4,331"
+       ],
+       "flag_rule": [
+        "$4,331"
+       ],
+       "v2_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ],
+       "rule_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ]
+      },
+      {
+       "table": "27f94cfabac845b8a1269897aed4c18c::0",
+       "raw_row": 10,
+       "heading": "488,705",
+       "flag_v2": [
+        "488,705"
+       ],
+       "flag_rule": [
+        "488,705"
+       ],
+       "v2_row_path": [
+        "488,705",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "488,705",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "9092ba549f46453a97f9a41316a33d6c::2",
+       "raw_row": 15,
+       "heading": "$1,022,000",
+       "flag_v2": [
+        "$1,022,000"
+       ],
+       "flag_rule": [
+        "$1,022,000"
+       ],
+       "v2_row_path": [
+        "$1,022,000",
+        "Computation of gain on sale:",
+        "Recorded liability for repurchase reserves"
+       ],
+       "rule_row_path": [
+        "$1,022,000",
+        "Computation of gain on sale:",
+        "Recorded liability for repurchase reserves"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   }
+  },
+  "v2+S3n": {
+   "rows_data_in_both": 100240,
+   "rows_data_in_one_only": 558,
+   "E": {
+    "rows_judged_in_both": 8705,
+    "v2_and_rule": {
+     "pairs": 1250,
+     "rows": 1238,
+     "tables": 121,
+     "examples": [
+      {
+       "table": "a22f3e0a94b84d34a18aaec702cce8a9::2",
+       "raw_row": 29,
+       "heading": "LIABILITIES:",
+       "flag_v2": [
+        "LIABILITIES:"
+       ],
+       "flag_rule": [
+        "LIABILITIES:"
+       ],
+       "v2_row_path": [
+        "Borrowed funds:",
+        "Securities sold, not yet purchased"
+       ],
+       "rule_row_path": [
+        "Borrowed funds:",
+        "Securities sold, not yet purchased"
+       ]
+      },
+      {
+       "table": "bd323dd400b745189c91300a6c73f272::0",
+       "raw_row": 8,
+       "heading": "VIEs:",
+       "flag_v2": [
+        "VIEs:"
+       ],
+       "flag_rule": [
+        "VIEs:"
+       ],
+       "v2_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ],
+       "rule_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ]
+      },
+      {
+       "table": "8e25715ff64c4faca35cd77293fe03bf::2",
+       "raw_row": 17,
+       "heading": "Investments:",
+       "flag_v2": [
+        "Investments:"
+       ],
+       "flag_rule": [
+        "Investments:"
+       ],
+       "v2_row_path": [
+        "Assets:",
+        "Corporate and other debt:",
+        "Other investments"
+       ],
+       "rule_row_path": [
+        "Assets:",
+        "Corporate and other debt:",
+        "Other investments"
+       ]
+      },
+      {
+       "table": "f6a4af380e5d407387d8b2d9d7ad0188::0",
+       "raw_row": 8,
+       "heading": "VIEs:",
+       "flag_v2": [
+        "VIEs:"
+       ],
+       "flag_rule": [
+        "VIEs:"
+       ],
+       "v2_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ],
+       "rule_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   },
+   "N": {
+    "v2_and_rule": {
+     "pairs": 55,
+     "rows": 55,
+     "tables": 16,
+     "examples": [
+      {
+       "table": "da403bafee2c43ab803fa905594bc0a7::1",
+       "raw_row": 44,
+       "heading": "701,462",
+       "flag_v2": [
+        "701,462"
+       ],
+       "flag_rule": [
+        "701,462"
+       ],
+       "v2_row_path": [
+        "701,462",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "701,462",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "de10552a452448dd803ad23dcee28aa6::4",
+       "raw_row": 11,
+       "heading": "$4,331",
+       "flag_v2": [
+        "$4,331"
+       ],
+       "flag_rule": [
+        "$4,331"
+       ],
+       "v2_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ],
+       "rule_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ]
+      },
+      {
+       "table": "27f94cfabac845b8a1269897aed4c18c::0",
+       "raw_row": 10,
+       "heading": "488,705",
+       "flag_v2": [
+        "488,705"
+       ],
+       "flag_rule": [
+        "488,705"
+       ],
+       "v2_row_path": [
+        "488,705",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "488,705",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "9092ba549f46453a97f9a41316a33d6c::2",
+       "raw_row": 15,
+       "heading": "$1,022,000",
+       "flag_v2": [
+        "$1,022,000"
+       ],
+       "flag_rule": [
+        "$1,022,000"
+       ],
+       "v2_row_path": [
+        "$1,022,000",
+        "Computation of gain on sale:",
+        "Recorded liability for repurchase reserves"
+       ],
+       "rule_row_path": [
+        "$1,022,000",
+        "Computation of gain on sale:",
+        "Recorded liability for repurchase reserves"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   }
+  },
+  "v2+S4n2": {
+   "rows_data_in_both": 100770,
+   "rows_data_in_one_only": 0,
+   "E": {
+    "rows_judged_in_both": 8705,
+    "v2_and_rule": {
+     "pairs": 1250,
+     "rows": 1238,
+     "tables": 121,
+     "examples": [
+      {
+       "table": "a22f3e0a94b84d34a18aaec702cce8a9::2",
+       "raw_row": 29,
+       "heading": "LIABILITIES:",
+       "flag_v2": [
+        "LIABILITIES:"
+       ],
+       "flag_rule": [
+        "LIABILITIES:"
+       ],
+       "v2_row_path": [
+        "Borrowed funds:",
+        "Securities sold, not yet purchased"
+       ],
+       "rule_row_path": [
+        "Borrowed funds:",
+        "Securities sold, not yet purchased"
+       ]
+      },
+      {
+       "table": "bd323dd400b745189c91300a6c73f272::0",
+       "raw_row": 8,
+       "heading": "VIEs:",
+       "flag_v2": [
+        "VIEs:"
+       ],
+       "flag_rule": [
+        "VIEs:"
+       ],
+       "v2_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ],
+       "rule_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ]
+      },
+      {
+       "table": "8e25715ff64c4faca35cd77293fe03bf::2",
+       "raw_row": 17,
+       "heading": "Investments:",
+       "flag_v2": [
+        "Investments:"
+       ],
+       "flag_rule": [
+        "Investments:"
+       ],
+       "v2_row_path": [
+        "Assets:",
+        "Corporate and other debt:",
+        "Other investments"
+       ],
+       "rule_row_path": [
+        "Assets:",
+        "Other investments"
+       ]
+      },
+      {
+       "table": "f6a4af380e5d407387d8b2d9d7ad0188::0",
+       "raw_row": 8,
+       "heading": "VIEs:",
+       "flag_v2": [
+        "VIEs:"
+       ],
+       "flag_rule": [
+        "VIEs:"
+       ],
+       "v2_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ],
+       "rule_row_path": [
+        "Not consolidated:",
+        "CDOs"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   },
+   "N": {
+    "v2_and_rule": {
+     "pairs": 55,
+     "rows": 55,
+     "tables": 16,
+     "examples": [
+      {
+       "table": "da403bafee2c43ab803fa905594bc0a7::1",
+       "raw_row": 44,
+       "heading": "701,462",
+       "flag_v2": [
+        "701,462"
+       ],
+       "flag_rule": [
+        "701,462"
+       ],
+       "v2_row_path": [
+        "701,462",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "701,462",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "de10552a452448dd803ad23dcee28aa6::4",
+       "raw_row": 11,
+       "heading": "$4,331",
+       "flag_v2": [
+        "$4,331"
+       ],
+       "flag_rule": [
+        "$4,331"
+       ],
+       "v2_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ],
+       "rule_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ]
+      },
+      {
+       "table": "27f94cfabac845b8a1269897aed4c18c::0",
+       "raw_row": 10,
+       "heading": "488,705",
+       "flag_v2": [
+        "488,705"
+       ],
+       "flag_rule": [
+        "488,705"
+       ],
+       "v2_row_path": [
+        "488,705",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "488,705",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "9092ba549f46453a97f9a41316a33d6c::2",
+       "raw_row": 15,
+       "heading": "$1,022,000",
+       "flag_v2": [
+        "$1,022,000"
+       ],
+       "flag_rule": [
+        "$1,022,000"
+       ],
+       "v2_row_path": [
+        "$1,022,000",
+        "Computation of gain on sale:",
+        "Recorded liability for repurchase reserves"
+       ],
+       "rule_row_path": [
+        "$1,022,000",
+        "Computation of gain on sale:",
+        "Recorded liability for repurchase reserves"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   },
+   "previous_criterion_rows": {
+    "rows": 168,
+    "tables": 28,
+    "also_E_rule_made": 0,
+    "E_rule_made_not_in_previous": 0
+   }
+  },
+  "v2+S5n2": {
+   "rows_data_in_both": 100770,
+   "rows_data_in_one_only": 0,
+   "E": {
+    "rows_judged_in_both": 8705,
+    "v2_and_rule": {
+     "pairs": 1115,
+     "rows": 1103,
+     "tables": 121,
+     "examples": [
+      {
+       "table": "b6e377d43f7d4cfc9af52b67dab263b4::1",
+       "raw_row": 10,
+       "heading": "Assets:",
+       "flag_v2": [
+        "Assets:"
+       ],
+       "flag_rule": [
+        "Assets:"
+       ],
+       "v2_row_path": [
+        "Loans:",
+        "Total loans"
+       ],
+       "rule_row_path": [
+        "Loans:",
+        "Total loans"
+       ]
+      },
+      {
+       "table": "d1fd35004d064318a3f07257277a5100::1",
+       "raw_row": 25,
+       "heading": "Expenses:",
+       "flag_v2": [
+        "Expenses:"
+       ],
+       "flag_rule": [
+        "Expenses:"
+       ],
+       "v2_row_path": [
+        "2006",
+        "Transportation costs(c)"
+       ],
+       "rule_row_path": [
+        "2006",
+        "Transportation costs(c)"
+       ]
+      },
+      {
+       "table": "9bd115cedf5244efa07a42f88fa6df37::0",
+       "raw_row": 24,
+       "heading": "Expenses:",
+       "flag_v2": [
+        "Expenses:"
+       ],
+       "flag_rule": [
+        "Expenses:"
+       ],
+       "v2_row_path": [
+        "2012",
+        "Depreciation, depletion and amortization(b)"
+       ],
+       "rule_row_path": [
+        "2012",
+        "Depreciation, depletion and amortization(b)"
+       ]
+      },
+      {
+       "table": "0120850188d146dea28a26ed9d3c0cd4::1",
+       "raw_row": 39,
+       "heading": "LIABILITIES AND EQUITY",
+       "flag_v2": [
+        "LIABILITIES AND EQUITY"
+       ],
+       "flag_rule": [
+        "LIABILITIES AND EQUITY"
+       ],
+       "v2_row_path": [
+        "COMMITMENTS AND CONTINGENT LIABILITIES",
+        "EQUITY",
+        "Noncontrolling interests"
+       ],
+       "rule_row_path": [
+        "COMMITMENTS AND CONTINGENT LIABILITIES",
+        "EQUITY",
+        "Noncontrolling interests"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 135,
+     "rows": 135,
+     "tables": 22,
+     "examples": [
+      {
+       "table": "a1db95387b6a4508875964a2114e9939::0",
+       "raw_row": 30,
+       "heading": "Corporate loans",
+       "flag_v2": [
+        "Corporate loans"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Consumer loans",
+        "In offices outside the U.S.",
+        "Mortgage and real estate-1"
+       ],
+       "rule_row_path": [
+        "Consumer loans",
+        "Corporate loans",
+        "In U.S. offices",
+        "In offices outside the U.S.",
+        "Mortgage and real estate-1"
+       ]
+      },
+      {
+       "table": "850fac45bf3c46af90dbe30626f8aa84::0",
+       "raw_row": 40,
+       "heading": "Contractual Backlog:",
+       "flag_v2": [
+        "Contractual Backlog:"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Operations",
+        "Defense, Space & Security:",
+        "Global Services & Support"
+       ],
+       "rule_row_path": [
+        "Operations",
+        "Contractual Backlog:",
+        "Defense, Space & Security:",
+        "Global Services & Support"
+       ]
+      },
+      {
+       "table": "588b7e1c808a4c1cbd7de012b5a888eb::2",
+       "raw_row": 34,
+       "heading": "Corporate loans",
+       "flag_v2": [
+        "Corporate loans"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Consumer loans",
+        "In offices outside the U.S.",
+        "Total"
+       ],
+       "rule_row_path": [
+        "Consumer loans",
+        "Corporate loans",
+        "In U.S. offices",
+        "In offices outside the U.S.",
+        "Total"
+       ]
+      },
+      {
+       "table": "850fac45bf3c46af90dbe30626f8aa84::0",
+       "raw_row": 39,
+       "heading": "Contractual Backlog:",
+       "flag_v2": [
+        "Contractual Backlog:"
+       ],
+       "flag_rule": [],
+       "v2_row_path": [
+        "Operations",
+        "Defense, Space & Security:",
+        "Network & Space Systems"
+       ],
+       "rule_row_path": [
+        "Operations",
+        "Contractual Backlog:",
+        "Defense, Space & Security:",
+        "Network & Space Systems"
+       ]
+      }
+     ]
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   },
+   "N": {
+    "v2_and_rule": {
+     "pairs": 55,
+     "rows": 55,
+     "tables": 16,
+     "examples": [
+      {
+       "table": "27f94cfabac845b8a1269897aed4c18c::0",
+       "raw_row": 44,
+       "heading": "679,659",
+       "flag_v2": [
+        "679,659"
+       ],
+       "flag_rule": [
+        "679,659"
+       ],
+       "v2_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "a2214c86d15b4ae1ac88b4b8f8276a6a::4",
+       "raw_row": 9,
+       "heading": "171,435",
+       "flag_v2": [
+        "171,435"
+       ],
+       "flag_rule": [
+        "171,435"
+       ],
+       "v2_row_path": [
+        "171,435",
+        "Less amount representing interest"
+       ],
+       "rule_row_path": [
+        "171,435",
+        "Less amount representing interest"
+       ]
+      },
+      {
+       "table": "da403bafee2c43ab803fa905594bc0a7::1",
+       "raw_row": 28,
+       "heading": "679,659",
+       "flag_v2": [
+        "679,659"
+       ],
+       "flag_rule": [
+        "679,659"
+       ],
+       "v2_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ],
+       "rule_row_path": [
+        "679,659",
+        "Purchases of treasury stock"
+       ]
+      },
+      {
+       "table": "dbced804cdc646b9b86315a672c52b5c::4",
+       "raw_row": 11,
+       "heading": "$4,331",
+       "flag_v2": [
+        "$4,331"
+       ],
+       "flag_rule": [
+        "$4,331"
+       ],
+       "v2_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ],
+       "rule_row_path": [
+        "$4,331",
+        "Equity consideration for BRE merger"
+       ]
+      }
+     ]
+    },
+    "v2_only": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    },
+    "rule_made": {
+     "pairs": 0,
+     "rows": 0,
+     "tables": 0,
+     "examples": []
+    }
+   }
+  }
+ },
+ "provenance": {
+  "git_commit": "701f2f03cd51e44c8f210ddca7865a85967961e1",
+  "git_dirty": true,
+  "source_sha256": "42c4f175e0078527425114b9840122aadba6d3267639c0dba95cc14ac060e37f",
+  "python": "3.12.3",
+  "packages": {
+   "numpy": "2.5.0",
+   "scipy": "1.18.0",
+   "transformers": "5.12.1",
+   "sentence-transformers": "5.6.0",
+   "langchain-text-splitters": "1.1.2",
+   "torch": "2.12.1+cu130",
+   "bitsandbytes": "0.50.1"
+  }
+ }
+}

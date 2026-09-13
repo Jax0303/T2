@@ -40,6 +40,8 @@ from rag_agent.eval.artifacts import (Selection, digest, evidence_fields,  # noq
 from rag_agent.reconstruct import (guess_n_header_cols,               # noqa: E402
                                    guess_n_header_rows, parse_html_table,
                                    reconstruct_col_paths, reconstruct_row_paths)
+from rag_agent.reconstruct.header_grid import (corner_scope,           # noqa: E402
+                                              parse_html_table_layout)
 from rag_agent.retrieve.encoders import _tokenize, default_encoder    # noqa: E402
 from rag_agent.retrieve.hybrid_index import _minmax                   # noqa: E402
 from rag_agent.retrieve.sparse_bm25 import SparseBM25                 # noqa: E402
@@ -54,12 +56,25 @@ class MHTable:
 
     __slots__ = ("table_id", "grid", "nhr", "nhc", "data", "_rows", "_cols")
 
-    def __init__(self, table_id: str, grid, nhr: int, nhc: int):
+    def __init__(self, table_id: str, grid, nhr: int, nhc: int, cover=None, rules=()):
         self.table_id, self.grid, self.nhr, self.nhc = table_id, grid, nhr, nhc
         self.data = [[(grid[r][c] or "").strip() for c in range(nhc, len(grid[0]))]
                      for r in range(nhr, len(grid))]
-        self._rows = reconstruct_row_paths(grid, nhr, nhc)
-        self._cols = reconstruct_col_paths(grid, nhr, nhc)
+        rules = frozenset(rules)
+        self._rows = reconstruct_row_paths(grid, nhr, nhc,
+                                           cover=cover if rules & {"S2", "S2n"} else None,
+                                           isolated_blank_only="S2n" in rules,
+                                           close_on_total=("own" if "S4n2" in rules else
+                                                           "named" if "S4n" in rules else "S4" in rules),
+                                           disambiguate=("no_numbers" if "S5n2" in rules else
+                                                         "guarded" if "S5n" in rules else "S5" in rules))
+        cols = reconstruct_col_paths(grid, nhr, nhc, cover=cover if rules & {"S1", "S1n"} else None,
+                                     narrow="S1n" in rules)
+        if "S6n" in rules:
+            scope = corner_scope(grid, nhr, nhc, cols, row_paths=self._rows, max_len=60)
+        else:
+            scope = corner_scope(grid, nhr, nhc, cols) if "S6" in rules else ""
+        self._cols = [[scope, *p] for p in cols] if scope else cols
 
     @property
     def n_rows(self) -> int:
@@ -148,23 +163,39 @@ def table_labels(paragraphs, rule: str = "none") -> dict:
     return out
 
 
-def build_tables(docs, header_rule: str = "v1", label_rule: str = "none"):
-    """{table_id: MHDoc} — 표 하나가 색인의 한 '표'다. id 는 ``{uid}::{표 번호}``."""
+V3_RULES = ("S1", "S2", "S3", "S4", "S5", "S6")
+V31_RULES = ("S1n", "S2n", "S3n", "S4n", "S5n", "S6n")
+V32_RULES = ("S1n", "S2n", "S3n", "S4n2", "S5n2", "S6n")
+
+
+def build_tables(docs, header_rule: str = "v1", label_rule: str = "none", rules=None):
+    """{table_id: MHDoc} — 표 하나가 색인의 한 '표'다. id 는 ``{uid}::{표 번호}``.
+
+    ``header_rule="v3"`` 은 v2 + S1~S6, ``"v3.1"`` 은 v2 + 좁힌 S1n~S6n(정정 1), ``"v3.2"`` 는 v3.1 에서
+    S4n·S5n 을 S4n2·S5n2 로 바꾼 것이다(PREREG-2026-09-14-header-v3.md, 정정 3). ``rules`` 는 영향 분석이
+    규칙을 하나씩 v2 위에 얹어 보려고 두는 인자다. None 이면 v1/v2 는 규칙 없음, v3·v3.1·v3.2 는 각자의 전부.
+    """
+    if rules is None:
+        rules = {"v3": V3_RULES, "v3.1": V31_RULES, "v3.2": V32_RULES}.get(header_rule, ())
+    rules = frozenset(rules)
+    row_rule = ("v3.1" if "S3n" in rules else "v3" if "S3" in rules
+                else "v2" if header_rule in ("v3", "v3.1", "v3.2") else header_rule)
     tables, hdr = {}, {}
     for uid in sorted(docs):
         labels = table_labels(docs[uid][2] if len(docs[uid]) > 2 else [], label_rule)
         for t_idx, html in enumerate(docs[uid][0]):
-            grid = parse_html_table(html)
+            grid, cover = parse_html_table_layout(html) if rules else (parse_html_table(html), None)
             if len(grid) < 3 or len(grid[0]) < 2:
                 continue
             # 행 경계를 먼저(열 기본값 1), 그 경계로 열 경계를 잡는다 — gold nhc 가
             # 있는 tree_reconstruct_hitab_raw.py 에서 검증된 순서.
-            nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=1, rule=header_rule),
+            nhr = max(1, min(guess_n_header_rows(grid, n_header_cols=1, rule=row_rule),
                              len(grid) - 1))
             nhc = max(1, min(guess_n_header_cols(grid, n_header_rows=nhr),
                              len(grid[0]) - 1))
             tid = f"{uid}::{t_idx}"
-            tables[tid] = MHDoc(MHTable(tid, grid, nhr, nhc), labels.get(t_idx, NO_TITLE))
+            tables[tid] = MHDoc(MHTable(tid, grid, nhr, nhc, cover, rules),
+                                labels.get(t_idx, NO_TITLE))
             hdr[tid] = (nhr, nhc)
     return tables, hdr
 
@@ -257,8 +288,9 @@ def main() -> int:
     ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"])
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
     ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
-    ap.add_argument("--header-rule", default="v1", choices=["v1", "v2"],
-                    help="헤더 행 추정 규칙. v2 = PREREG-2026-09-13-header-units-note.md")
+    ap.add_argument("--header-rule", default="v1", choices=["v1", "v2", "v3", "v3.1", "v3.2"],
+                    help="헤더 행 추정 규칙. v2 = PREREG-2026-09-13-header-units-note.md, "
+                         "v3·v3.1·v3.2 = PREREG-2026-09-14-header-v3.md")
     ap.add_argument("--label-rule", default="none", choices=["none", "L1", "L2"],
                     help="표 고유 라벨 규칙. PREREG-2026-09-13-table-label.md")
     ap.add_argument("--chunk-chars", type=int, default=1000)

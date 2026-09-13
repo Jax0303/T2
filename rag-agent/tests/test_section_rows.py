@@ -105,3 +105,22 @@ def test_single_leading_heading_is_not_kept_as_scope():
     assert paths[1] == ["north", "seoul"]
     assert paths[3] == ["south", "daegu"], paths[3]
     assert "north" not in paths[3]
+
+
+def test_v2_keeps_a_year_row_under_an_unparenthesised_units_note():
+    # MultiHiertt: the units note sits on the YEAR row without parentheses, so
+    # v1 read "Dollars in millions" as the first row label and turned the years
+    # into data (PREREG-2026-09-13-header-units-note.md). v1 stays reproducible.
+    grid = [
+        ["", "Amount", "", ""],
+        ["Dollars in millions", "2010", "2009", "2008"],
+        ["U.S.", "$4,229", "$4,295", "$4,636"],
+    ]
+    assert guess_n_header_rows(grid, n_header_cols=1) == 1
+    assert guess_n_header_rows(grid, n_header_cols=1, rule="v2") == 2
+    # R2 alone: a year row is a header row whatever its stub says
+    grid[1][0] = "Pension fund"
+    assert guess_n_header_rows(grid, n_header_cols=1, rule="v2") == 2
+    # R1 must not swallow an ordinary data row
+    grid[1] = ["Revenue", "$1,000", "$900", "$800"]
+    assert guess_n_header_rows(grid, n_header_cols=1, rule="v2") == 1

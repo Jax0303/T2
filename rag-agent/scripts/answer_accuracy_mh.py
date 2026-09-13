@@ -189,7 +189,7 @@ def main() -> int:
                          "다르면 멈춘다. 저장된 행이 없으면 새로 시작한다.")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--split", default="train")
-    ap.add_argument("--header-rule", default="v1", choices=["v1", "v2"])
+    ap.add_argument("--header-rule", default="v1", choices=["v1", "v2", "v3", "v3.1", "v3.2"])
     ap.add_argument("--label-rule", default="none", choices=["none", "L1", "L2"])
     ap.add_argument("--out", default="")
     a = ap.parse_args()

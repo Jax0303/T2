@@ -1,0 +1,110 @@
+{
+ "S1_removed_segment_cells": {
+  "by_left_label": {
+   "declared_span": 10633,
+   "other": 964,
+   "one_by_one": 398
+  },
+  "year_lost_by_left_label": {
+   "declared_span": 553,
+   "other": 155,
+   "one_by_one": 113
+  },
+  "examples": {
+   "declared_span": [
+    {
+     "v2": "Operating Revenues > Premiums > Years Ended December 31, > Change: $1,418",
+     "S1": "Operating Revenues > Premiums > Change > (In millions): $1,418"
+    },
+    {
+     "v2": "Operating Revenues > Premiums > Years Ended December 31, > % Change: 112.1%",
+     "S1": "Operating Revenues > Premiums > % Change: 112.1%"
+    },
+    {
+     "v2": "Operating Revenues > Universal life and investment-type product policy fees > Years Ended December 31, > Change: 38",
+     "S1": "Operating Revenues > Universal life and investment-type product policy fees > Change > (In millions): 38"
+    }
+   ],
+   "one_by_one": [
+    {
+     "v2": "Expenses > Employee compensation and benefits > Year Ended December 31, > 2014 > % of > $Revenues: 28.5",
+     "S1": "Expenses > Employee compensation and benefits > Year Ended December 31, > % of > $Revenues > ($ in thousands): 28.5"
+    },
+    {
+     "v2": "Expenses > Employee compensation and benefits > Year Ended December 31, > 2014 > $ > Change: %$8,861",
+     "S1": "Expenses > Employee compensation and benefits > Year Ended December 31, > $ > Change > ($ in thousands): %$8,861"
+    },
+    {
+     "v2": "Expenses > Employee compensation and benefits > Year Ended December 31, > 2014 > % > Change: 11.8%",
+     "S1": "Expenses > Employee compensation and benefits > Year Ended December 31, > % > Change > ($ in thousands): 11.8%"
+    }
+   ]
+  }
+ },
+ "S3_moved_rows": {
+  "rows_moved": 750,
+  "rows_refused_by_number_test": 127,
+  "tables_where_first_moved_row_refused": 116,
+  "newly_excluded_gold_rows": [
+   {
+    "query_id": "04042d98ace94933adc63514ae6280e2",
+    "row": "Xcel Energy Inc. financing costs | $-0.11 | $-0.10 | $-0.13",
+    "refused_by_number_test": true
+   },
+   {
+    "query_id": "04042d98ace94933adc63514ae6280e2",
+    "row": "Xcel Energy Inc. financing costs | $-0.11 | $-0.10 | $-0.13",
+    "refused_by_number_test": true
+   },
+   {
+    "query_id": "fbb8fe64715449bbb0bbcd936be4af3d",
+    "row": "December 31, 2004 | $-6,939 | $-4,577 | $-3,271 | $-14,787",
+    "refused_by_number_test": true
+   },
+   {
+    "query_id": "fbb8fe64715449bbb0bbcd936be4af3d",
+    "row": "December 31, 2004 | $-6,939 | $-4,577 | $-3,271 | $-14,787",
+    "refused_by_number_test": true
+   }
+  ]
+ },
+ "S4_rows_losing_heading": {
+  "rows": 8694,
+  "closer_label": {
+   "names_heading": 2618,
+   "names_other": 5384,
+   "bare": 692
+  },
+  "rows_before_their_sections_own_total": 614,
+  "tables": 97,
+  "examples": [
+   {
+    "heading": "ASSETS",
+    "closer": "Total investments",
+    "v2": "ASSETS > Cash and cash equivalents > 2009 > Financial Services Business: 12,451",
+    "S4": "Cash and cash equivalents > 2009 > Financial Services Business: 12,451"
+   },
+   {
+    "heading": "ASSETS",
+    "closer": "Total investments",
+    "v2": "ASSETS > Accrued investment income > 2009 > Financial Services Business: 1,668",
+    "S4": "Accrued investment income > 2009 > Financial Services Business: 1,668"
+   },
+   {
+    "heading": "ASSETS",
+    "closer": "Total investments",
+    "v2": "ASSETS > Deferred policy acquisition costs > 2009 > Financial Services Business: 13,751",
+    "S4": "Deferred policy acquisition costs > 2009 > Financial Services Business: 13,751"
+   }
+  ]
+ },
+ "S5_readds_heading_S4_removed": {
+  "rows": 650
+ },
+ "evaluation_sets_v3": {
+  "ids_1047_excluded": [
+   "fbb8fe64715449bbb0bbcd936be4af3d"
+  ],
+  "ids_1047_gold_set_changed": 0
+ }
+}

@@ -1,0 +1,93 @@
+{
+ "rule": "v3.1",
+ "S1_removed_segment_cells": {
+  "rule": "S1n",
+  "by_left_label": {
+   "declared_span": 10040,
+   "one_by_one": 12
+  },
+  "year_lost_by_left_label": {},
+  "examples": {
+   "declared_span": [
+    {
+     "v2": "Operating Revenues > Premiums > Years Ended December 31, > Change: $1,418",
+     "S1": "Operating Revenues > Premiums > Change: $1,418"
+    },
+    {
+     "v2": "Operating Revenues > Premiums > Years Ended December 31, > % Change: 112.1%",
+     "S1": "Operating Revenues > Premiums > % Change: 112.1%"
+    },
+    {
+     "v2": "Operating Revenues > Universal life and investment-type product policy fees > Years Ended December 31, > Change: 38",
+     "S1": "Operating Revenues > Universal life and investment-type product policy fees > Change: 38"
+    }
+   ],
+   "one_by_one": [
+    {
+     "v2": "Key assumptions used to measure retainedinterests originated during the year(rates per annum): > Expected credit losses > Residential mortgage > Commercial and other: %(j)",
+     "S1": "Key assumptions used to measure retainedinterests originated during the year(rates per annum): > Expected credit losses: %(j)"
+    },
+    {
+     "v2": "Key assumptions used to measure retainedinterests originated during the year(rates per annum): > Expected credit losses > Residential mortgage > Commercial and other: (j)",
+     "S1": "Key assumptions used to measure retainedinterests originated during the year(rates per annum): > Expected credit losses: (j)"
+    },
+    {
+     "v2": "Key assumptions (rates per annum): > Prepayment rate(a) > Wholesale activities > Commercial > and other > $ 12,797: %",
+     "S1": "Key assumptions (rates per annum): > Prepayment rate(a): %"
+    }
+   ]
+  }
+ },
+ "S3_moved_rows": {
+  "rule": "S3n",
+  "rows_moved": 623,
+  "rows_refused_by_number_test": 0,
+  "tables_where_first_moved_row_refused": 0,
+  "examples_number_like": [],
+  "newly_excluded_gold_rows": []
+ },
+ "S4_rows_losing_heading": {
+  "rule": "S4n",
+  "rows": 5160,
+  "closer_label": {
+   "names_heading": 2618,
+   "names_other": 1850,
+   "bare": 692
+  },
+  "rows_before_their_sections_own_total": 219,
+  "tables": 56,
+  "examples": [
+   {
+    "heading": "EQUITY",
+    "closer": "Total attributed equity",
+    "v2": "COMMITMENTS AND CONTINGENT LIABILITIES > EQUITY > Noncontrolling interests > 2009 > Financial Services Business: 534",
+    "S4": "COMMITMENTS AND CONTINGENT LIABILITIES > Noncontrolling interests > 2009 > Financial Services Business: 534"
+   },
+   {
+    "heading": "Deposits",
+    "closer": "Total core deposits",
+    "v2": "Deposits > Other deposits > 2008: 5,861",
+    "S4": "Other deposits > 2008: 5,861"
+   },
+   {
+    "heading": "Defense, Space & Security:",
+    "closer": "Total Defense, Space & Security",
+    "v2": "Operations > Defense, Space & Security: > Boeing Capital > 2015: 413",
+    "S4": "Operations > Boeing Capital > 2015: 413"
+   }
+  ]
+ },
+ "S5_readds_heading_S4_removed": {
+  "rows": 0
+ },
+ "evaluation_sets": {
+  "ids_1047": {
+   "excluded": [],
+   "gold_set_changed": 0
+  },
+  "interim200": {
+   "excluded": [],
+   "gold_set_changed": 0
+  }
+ }
+}
