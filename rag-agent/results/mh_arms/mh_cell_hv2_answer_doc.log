@@ -1,0 +1,114 @@
+[same-queries] 1047 요청 -> 1047 (새 레코드에 없음 0)
+[scorer] gold 를 예측으로 넣었을 때 EM=1.0 (n=1047)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:01,  1.40it/s]Loading weights:   1%|          | 2/339 [00:01<04:22,  1.29it/s]Loading weights:   1%|          | 4/339 [00:01<02:16,  2.45it/s]Loading weights:   1%|▏         | 5/339 [00:02<01:47,  3.10it/s]Loading weights:   2%|▏         | 6/339 [00:02<01:31,  3.65it/s]Loading weights:   5%|▍         | 16/339 [00:02<00:20, 15.71it/s]Loading weights:   6%|▌         | 19/339 [00:02<00:18, 16.90it/s]Loading weights:   8%|▊         | 28/339 [00:02<00:12, 25.03it/s]Loading weights:   9%|▉         | 32/339 [00:02<00:11, 26.53it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:08, 35.75it/s]Loading weights:  13%|█▎        | 45/339 [00:03<00:08, 34.93it/s]Loading weights:  16%|█▌        | 53/339 [00:03<00:07, 39.74it/s]Loading weights:  17%|█▋        | 58/339 [00:15<03:02,  1.54it/s]Loading weights:  19%|█▉        | 64/339 [00:15<02:05,  2.18it/s]Loading weights:  90%|████████▉ | 305/339 [00:20<00:01, 22.77it/s]Loading weights:  93%|█████████▎| 316/339 [00:20<00:00, 23.71it/s]Loading weights: 100%|██████████| 339/339 [00:08<00:00, 38.22it/s]
+  100/1047  64s  em=0.2100
+  200/1047  125s  em=0.2300
+  300/1047  184s  em=0.2367
+  400/1047  244s  em=0.2425
+  500/1047  301s  em=0.2520
+  600/1047  362s  em=0.2517
+  700/1047  423s  em=0.2571
+  800/1047  480s  em=0.2612
+  900/1047  543s  em=0.2689
+  1000/1047  600s  em=0.2630
+{
+  "records": "results/mh_arms/mh_cell_hv2_records.jsonl",
+  "scope": "doc",
+  "condition": "retrieved",
+  "context_version": 2,
+  "retrieval_records_sha256": "b7ef97680f4bb6fa28e812713af5846082efa3a505db614c9caecf5b0d8928f2",
+  "retrieval_unit": "cell",
+  "retrieval_template": "s3c",
+  "query_ids_sha256": "0fb17eed6d8e24d91b14859ba5ab356748a07c3e9b63743537d7f0a4d0d1ac59",
+  "reader_details": {
+    "name": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+    "revision_requested": null,
+    "revision_resolved": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "quantization": "4bit",
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 32768,
+    "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- messages[0]['content'] }}\n    {%- else %}\n        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}\n    {%- endif %}\n    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n    {%- else %}\n        {{- '<|im_start|>system\\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- for message in messages %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}\n        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {{- '<|im_start|>' + message.role }}\n        {%- if message.content %}\n            {{- '\\n' + message.content }}\n        {%- endif %}\n        {%- for tool_call in message.tool_calls %}\n            {%- if tool_call.function is defined %}\n                {%- set tool_call = tool_call.function %}\n            {%- endif %}\n            {{- '\\n<tool_call>\\n{\"name\": \"' }}\n            {{- tool_call.name }}\n            {{- '\", \"arguments\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- '}\\n</tool_call>' }}\n        {%- endfor %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- message.content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n{%- endif %}\n",
+    "enable_thinking": false
+  },
+  "prompt_sha256": "279ee8f8739523e2e11da7537f40cb0d2f7eb974c8109aa140b167caf4c7185b",
+  "prompt_text": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "scorer": "multihiertt_em.mh_exact_match (공식 포팅)",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 1047,
+    "fail_examples": []
+  },
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "neutral",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "stratum_cap": 0,
+  "sample_seed": 20260913,
+  "header_rule": "v2",
+  "label_rule": "none",
+  "same_queries_as": "results/mh_arms/mh_cell_answer_doc.jsonl",
+  "n_missing_from_same_queries": 0,
+  "context_limit": 32768,
+  "n_over_context_limit": 0,
+  "by_layer": {
+    "ALL": {
+      "n": 1047,
+      "retrieval_accuracy_here": 0.8873,
+      "answer_em": 0.2598,
+      "answer_given_retrieval_hit": 0.2831,
+      "n_retrieval_hit": 929,
+      "answer_given_retrieval_miss": 0.0763,
+      "n_retrieval_miss": 118,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 659.7
+    },
+    "arith_m1": {
+      "n": 71,
+      "retrieval_accuracy_here": 0.9577,
+      "answer_em": 0.0423,
+      "answer_given_retrieval_hit": 0.0441,
+      "n_retrieval_hit": 68,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 3,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 641.7
+    },
+    "arith_m2+": {
+      "n": 400,
+      "retrieval_accuracy_here": 0.8525,
+      "answer_em": 0.025,
+      "answer_given_retrieval_hit": 0.0293,
+      "n_retrieval_hit": 341,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 59,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 642.0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "retrieval_accuracy_here": 0.9526,
+      "answer_em": 0.4171,
+      "answer_given_retrieval_hit": 0.4378,
+      "n_retrieval_hit": 201,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 10,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 676.0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "retrieval_accuracy_here": 0.874,
+      "answer_em": 0.4685,
+      "answer_given_retrieval_hit": 0.5078,
+      "n_retrieval_hit": 319,
+      "answer_given_retrieval_miss": 0.1957,
+      "n_retrieval_miss": 46,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 673.2
+    }
+  }
+}

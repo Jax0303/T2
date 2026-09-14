@@ -1,0 +1,26 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pilot] validation 산술 264 중 60
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:08,  1.36it/s]Loading weights:   1%|          | 2/339 [00:01<03:11,  1.76it/s]Loading weights:   1%|          | 4/339 [00:01<01:24,  3.96it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:53,  6.21it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:14, 21.66it/s]Loading weights:   7%|▋         | 24/339 [00:01<00:10, 29.95it/s]Loading weights:   9%|▊         | 29/339 [00:01<00:10, 29.19it/s]Loading weights:  10%|█         | 35/339 [00:01<00:08, 35.33it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:07, 39.20it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 50.23it/s]Loading weights:  17%|█▋        | 58/339 [00:02<00:05, 50.77it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:05, 53.75it/s]Loading weights:  22%|██▏       | 76/339 [00:02<00:04, 63.15it/s]Loading weights:  24%|██▍       | 83/339 [00:02<00:04, 63.55it/s]Loading weights:  27%|██▋       | 90/339 [00:02<00:04, 57.84it/s]Loading weights:  30%|██▉       | 101/339 [00:03<00:03, 65.64it/s]Loading weights:  33%|███▎      | 112/339 [00:03<00:03, 70.83it/s]Loading weights:  35%|███▌      | 120/339 [00:03<00:03, 65.45it/s]Loading weights:  37%|███▋      | 127/339 [00:03<00:03, 54.36it/s]Loading weights:  40%|████      | 136/339 [00:15<01:30,  2.24it/s]Loading weights:  41%|████      | 138/339 [00:15<01:22,  2.43it/s]Loading weights:  44%|████▍     | 149/339 [00:16<00:46,  4.09it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 50.84it/s]
+[direct] EM 0.033  질의당 0.4s  표시 누락 0
+[cot] EM 0.267  질의당 7.6s  표시 누락 2
+{
+  "split": "validation",
+  "n": 60,
+  "seed": 20260913,
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "header_rule": "v2",
+  "label_rule": "L1",
+  "context": "gold cells only",
+  "exploratory": true,
+  "cot_prompt": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "direct_prompt": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "direct": {
+    "em": 0.03333333333333333,
+    "marker_missing": 0
+  },
+  "cot": {
+    "em": 0.26666666666666666,
+    "marker_missing": 2
+  }
+}

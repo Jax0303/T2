@@ -1,0 +1,143 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pop] 2908 queries / 2908 docs (제외: {'needs_text_evidence': 4922}) 4s
+[corpus] 11793 tables / 13917 chunk units (7s)
+[bm25] 20269 terms in 0s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [-00:12<00:00, -16.39it/s]
+[dense] 0..13917 in 108s
+  200/2908  5s
+  400/2908  10s
+  600/2908  14s
+  800/2908  19s
+  1000/2908  23s
+  1200/2908  27s
+  1400/2908  31s
+  1600/2908  35s
+  1800/2908  39s
+  2000/2908  43s
+  2200/2908  47s
+  2400/2908  51s
+  2600/2908  56s
+  2800/2908  59s
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+  "split": "train",
+  "unit": "chunk",
+  "template": "s3c",
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "budget_cells": 20,
+  "header_rule": "v2",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 13917,
+  "corpus_text_sha256": "750f1d51294c520d968c1be524958c2914aba317476352b8afeb6ada5423070e",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2878,
+  "n_excluded": 30,
+  "excluded_by_reason": {
+    "gold_in_header": 24,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "dcfa903f50f4520dc44cee8a4966ce5a92aa842523acaac4e892fba35259b04b",
+  "by_layer": {
+    "ALL": {
+      "n": 2878,
+      "corpus": {
+        "accuracy_all": 0.1185,
+        "accuracy_any_DIAGNOSTIC": 0.1776,
+        "gold_doc_in_context": 0.1977,
+        "cells_delivered_mean": 36.9
+      },
+      "doc": {
+        "accuracy_all": 0.7192,
+        "accuracy_any_DIAGNOSTIC": 0.8767,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 49.9
+      },
+      "mean_m": 2.651,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.2958,
+        "accuracy_any_DIAGNOSTIC": 0.2958,
+        "gold_doc_in_context": 0.2958,
+        "cells_delivered_mean": 35.5
+      },
+      "doc": {
+        "accuracy_all": 0.831,
+        "accuracy_any_DIAGNOSTIC": 0.831,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 44.5
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2230,
+      "corpus": {
+        "accuracy_all": 0.1184,
+        "accuracy_any_DIAGNOSTIC": 0.1942,
+        "gold_doc_in_context": 0.213,
+        "cells_delivered_mean": 36.4
+      },
+      "doc": {
+        "accuracy_all": 0.6906,
+        "accuracy_any_DIAGNOSTIC": 0.8879,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 49.3
+      },
+      "mean_m": 2.737,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 212,
+      "corpus": {
+        "accuracy_all": 0.1085,
+        "accuracy_any_DIAGNOSTIC": 0.1085,
+        "gold_doc_in_context": 0.1462,
+        "cells_delivered_mean": 37.3
+      },
+      "doc": {
+        "accuracy_all": 0.8349,
+        "accuracy_any_DIAGNOSTIC": 0.8349,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 52.8
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.0904,
+        "accuracy_any_DIAGNOSTIC": 0.0932,
+        "gold_doc_in_context": 0.1151,
+        "cells_delivered_mean": 40.5
+      },
+      "doc": {
+        "accuracy_all": 0.8055,
+        "accuracy_any_DIAGNOSTIC": 0.8411,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 53.4
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  }
+}

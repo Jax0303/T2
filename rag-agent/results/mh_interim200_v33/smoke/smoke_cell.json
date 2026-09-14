@@ -1,0 +1,123 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+  "split": "train",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "536fe752f38ce0c0b02db0adf05f6d31ebc20701",
+    "git_dirty": true,
+    "source_sha256": "8d1f563d3bc7b74ffd98e757a13a6f25100e45ebcce5a916e65d34c3ca0badb6",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "cell",
+    "template": "s3c",
+    "row_text": "sentence",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v3.3",
+    "label_rule": "none",
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "alpha": 0.7,
+    "budget": 20,
+    "rowcol_max_pairs": 200,
+    "max_docs": 20,
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/mh_arms",
+    "out_dir": "results/mh_interim200_v33/smoke",
+    "tag": "smoke_cell"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "budget_cells": 20,
+  "header_rule": "v3.3",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 20,
+  "n_tables": 81,
+  "n_units": 2978,
+  "corpus_text_sha256": "c4112b4d565da66fe5d55a7010f47b1b3d52cd0542077c3b2e8d328ad9eb7b9c",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 20,
+  "n_scored": 20,
+  "n_excluded": 0,
+  "excluded_by_reason": {},
+  "query_ids_sha256": "59e9ee3871f9e5166225c9f949eb860e09c887e9131f101413d75f828a26b608",
+  "by_layer": {
+    "ALL": {
+      "n": 20,
+      "corpus": {
+        "accuracy_all": 0.65,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.75,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 2.65,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 16,
+      "corpus": {
+        "accuracy_all": 0.625,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.75,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 2.688,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 4,
+      "corpus": {
+        "accuracy_all": 0.75,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.75,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 2.5,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "1c49fdb313fc518acc2fe6331cf30b2d305ce4ecdf85542f58a54eadabefe184"
+}

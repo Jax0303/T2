@@ -1,0 +1,29 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pilot] validation 산술 264 중 60
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<04:46,  1.39it/s]Loading weights:   1%|          | 2/399 [00:01<03:55,  1.69it/s]Loading weights:   1%|          | 4/399 [00:01<01:42,  3.87it/s]Loading weights:   3%|▎         | 12/399 [00:01<00:26, 14.80it/s]Loading weights:   4%|▍         | 16/399 [00:01<00:20, 19.02it/s]Loading weights:   7%|▋         | 26/399 [00:01<00:11, 31.88it/s]Loading weights:   8%|▊         | 31/399 [00:01<00:10, 34.83it/s]Loading weights:  10%|▉         | 38/399 [00:01<00:09, 39.33it/s]Loading weights:  12%|█▏        | 48/399 [00:02<00:07, 50.03it/s]Loading weights:  14%|█▎        | 54/399 [00:02<00:06, 49.50it/s]Loading weights:  15%|█▌        | 61/399 [00:02<00:06, 50.41it/s]Loading weights:  18%|█▊        | 71/399 [00:02<00:05, 60.50it/s]Loading weights:  20%|██        | 81/399 [00:02<00:04, 67.49it/s]Loading weights:  23%|██▎       | 90/399 [00:02<00:04, 72.77it/s]Loading weights:  25%|██▍       | 98/399 [00:02<00:04, 70.79it/s]Loading weights:  27%|██▋       | 106/399 [00:02<00:04, 69.84it/s]Loading weights:  29%|██▉       | 115/399 [00:03<00:04, 68.61it/s]Loading weights:  31%|███▏      | 125/399 [00:03<00:03, 74.65it/s]Loading weights:  33%|███▎      | 133/399 [00:03<00:03, 75.80it/s]Loading weights:  35%|███▌      | 141/399 [00:03<00:03, 71.91it/s]Loading weights:  37%|███▋      | 149/399 [00:03<00:03, 63.01it/s]Loading weights:  40%|███▉      | 159/399 [00:03<00:03, 69.37it/s]Loading weights:  42%|████▏     | 169/399 [00:03<00:03, 72.09it/s]Loading weights:  44%|████▍     | 177/399 [00:03<00:03, 66.51it/s]Loading weights:  46%|████▌     | 184/399 [00:04<00:03, 65.56it/s]Loading weights:  48%|████▊     | 191/399 [00:04<00:03, 66.48it/s]Loading weights:  50%|█████     | 200/399 [00:04<00:03, 63.30it/s]Loading weights:  52%|█████▏    | 207/399 [00:04<00:03, 62.85it/s]Loading weights:  54%|█████▎    | 214/399 [00:04<00:02, 63.19it/s]Loading weights:  56%|█████▌    | 224/399 [00:04<00:02, 71.91it/s]Loading weights:  58%|█████▊    | 232/399 [00:04<00:02, 72.69it/s]Loading weights:  60%|██████    | 240/399 [00:04<00:02, 70.61it/s]Loading weights:  62%|██████▏   | 248/399 [00:05<00:02, 65.71it/s]Loading weights:  65%|██████▍   | 258/399 [00:05<00:01, 73.99it/s]Loading weights:  67%|██████▋   | 268/399 [00:05<00:01, 80.06it/s]Loading weights:  69%|██████▉   | 277/399 [00:05<00:01, 80.14it/s]Loading weights:  72%|███████▏  | 286/399 [00:05<00:01, 75.18it/s]Loading weights:  74%|███████▎  | 294/399 [00:05<00:01, 67.76it/s]Loading weights:  76%|███████▌  | 302/399 [00:05<00:01, 65.55it/s]Loading weights:  77%|███████▋  | 309/399 [00:18<00:44,  2.02it/s]Loading weights:  79%|███████▊  | 314/399 [00:18<00:33,  2.52it/s]Loading weights: 100%|██████████| 399/399 [00:07<00:00, 57.00it/s]
+[direct] EM 0.000  질의당 0.8s  표시 누락 0
+[cot] EM 0.317  질의당 7.7s  표시 누락 1
+{
+  "split": "validation",
+  "n": 60,
+  "seed": 20260913,
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "header_rule": "v2",
+  "label_rule": "none",
+  "context": "gold cells only",
+  "exploratory": true,
+  "cot_prompt": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "direct_prompt": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "direct": {
+    "em": 0.0,
+    "marker_missing": 0,
+    "sec_per_query": 0.85
+  },
+  "cot": {
+    "em": 0.31666666666666665,
+    "marker_missing": 1,
+    "sec_per_query": 7.72
+  }
+}

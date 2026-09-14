@@ -1,0 +1,115 @@
+{
+  "records": "results/mh_arms/mh_cell_records.jsonl",
+  "scope": "doc",
+  "condition": "gold",
+  "context_version": 2,
+  "provenance": {
+    "git_commit": "a3d4cea22dabdbaa05694d7103373f934d02d6a2",
+    "git_dirty": true,
+    "source_sha256": "b0ec3d9dc62e165b9cfcb65e47b0e0990b0ca72a32aac14f90f1b506f1cce47a",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "retrieval_records_sha256": "c80539ca19c98f98626ae4ce672e47a404be183e67b1ff7478ac86d189b65956",
+  "retrieval_unit": "cell",
+  "retrieval_template": "s3c",
+  "query_ids_sha256": "0fb17eed6d8e24d91b14859ba5ab356748a07c3e9b63743537d7f0a4d0d1ac59",
+  "reader_details": {
+    "name": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+    "revision_requested": null,
+    "revision_resolved": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "quantization": "4bit",
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 32768,
+    "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- messages[0]['content'] }}\n    {%- else %}\n        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}\n    {%- endif %}\n    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n    {%- else %}\n        {{- '<|im_start|>system\\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- for message in messages %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}\n        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {{- '<|im_start|>' + message.role }}\n        {%- if message.content %}\n            {{- '\\n' + message.content }}\n        {%- endif %}\n        {%- for tool_call in message.tool_calls %}\n            {%- if tool_call.function is defined %}\n                {%- set tool_call = tool_call.function %}\n            {%- endif %}\n            {{- '\\n<tool_call>\\n{\"name\": \"' }}\n            {{- tool_call.name }}\n            {{- '\", \"arguments\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- '}\\n</tool_call>' }}\n        {%- endfor %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- message.content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n{%- endif %}\n",
+    "enable_thinking": false
+  },
+  "prompt_sha256": "279ee8f8739523e2e11da7537f40cb0d2f7eb974c8109aa140b167caf4c7185b",
+  "prompt_text": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "scorer": "multihiertt_em.mh_exact_match (공식 포팅)",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 1047,
+    "fail_examples": []
+  },
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "prompt": "neutral",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "stratum_cap": 400,
+  "sample_seed": 20260913,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "same_queries_as": null,
+  "n_missing_from_same_queries": null,
+  "context_limit": 32768,
+  "n_over_context_limit": 0,
+  "by_layer": {
+    "ALL": {
+      "n": 1047,
+      "retrieval_accuracy_here": 0.8787,
+      "answer_em": 0.4117,
+      "answer_given_retrieval_hit": 0.4315,
+      "n_retrieval_hit": 920,
+      "answer_given_retrieval_miss": 0.2677,
+      "n_retrieval_miss": 127,
+      "context_lines_mean": 2.5,
+      "input_tokens_mean": 167.5
+    },
+    "arith_m1": {
+      "n": 71,
+      "retrieval_accuracy_here": 0.9577,
+      "answer_em": 0.2254,
+      "answer_given_retrieval_hit": 0.2206,
+      "n_retrieval_hit": 68,
+      "answer_given_retrieval_miss": 0.3333,
+      "n_retrieval_miss": 3,
+      "context_lines_mean": 1.0,
+      "input_tokens_mean": 128.3
+    },
+    "arith_m2+": {
+      "n": 400,
+      "retrieval_accuracy_here": 0.8425,
+      "answer_em": 0.1525,
+      "answer_given_retrieval_hit": 0.1513,
+      "n_retrieval_hit": 337,
+      "answer_given_retrieval_miss": 0.1587,
+      "n_retrieval_miss": 63,
+      "context_lines_mean": 2.7,
+      "input_tokens_mean": 173.5
+    },
+    "lookup_m1": {
+      "n": 211,
+      "retrieval_accuracy_here": 0.9479,
+      "answer_em": 0.763,
+      "answer_given_retrieval_hit": 0.77,
+      "n_retrieval_hit": 200,
+      "answer_given_retrieval_miss": 0.6364,
+      "n_retrieval_miss": 11,
+      "context_lines_mean": 1.0,
+      "input_tokens_mean": 124.8
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "retrieval_accuracy_here": 0.863,
+      "answer_em": 0.5288,
+      "answer_given_retrieval_hit": 0.5619,
+      "n_retrieval_hit": 315,
+      "answer_given_retrieval_miss": 0.32,
+      "n_retrieval_miss": 50,
+      "context_lines_mean": 3.4,
+      "input_tokens_mean": 193.2
+    }
+  },
+  "records_sha256": "adb45f501f01915730fb2a7bc420f71384e5ac5a13a246912c7c15423d5b81fd"
+}

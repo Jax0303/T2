@@ -1,0 +1,401 @@
+{
+  "exploratory": true,
+  "preregistered": false,
+  "note": "탐색용. 전체 1,047 본 실행(PREREG-2026-09-13-reader-qwen3.md)의 판정에 쓰지 않는다.",
+  "plan": "results/mh_interim200/PLAN_ARMS.md",
+  "ids_sha256": "52696e6b0150170d09edf9830bede81c171695fce8891dd52df4e32698cb5745",
+  "arms": {
+    "ours": "mh_cell_hv2",
+    "mt2net": "mh_mt2net",
+    "chunk": "mh_chunk_hv2",
+    "huawei": "mh_huawei_hv2",
+    "rowcol": "mh_rowcol_hv2",
+    "tablerag": "mh_tablerag_allobj_path_hv2"
+  },
+  "inputs_sha256": {
+    "mh_cell_hv2_answer_doc_qwen3_8b_cot_200.jsonl": "ccafe49643005a5a7ef7f3a011f892d9a92066615043f7bca5d9d66d94e6f4bc",
+    "mh_mt2net_answer_doc_qwen3_8b_cot_200.jsonl": "315c97a056716d2c6ad0f7eaad8f45918e9e2cfe69c0a0b21f5eee946fdfe714",
+    "mh_chunk_hv2_answer_doc_qwen3_8b_cot_200.jsonl": "fbd5288dfc96ea3d06f3d1fa5137e6399854b00d9e197911a42420c9e5be6041",
+    "mh_huawei_hv2_answer_doc_qwen3_8b_cot_200.jsonl": "2a734579588894644effd1725dc2337ce2db82c7258730a40cc0188ce82d5404",
+    "mh_rowcol_hv2_answer_doc_qwen3_8b_cot_200.jsonl": "b390ff3b75f6e2da7daabf1b03a1ec49d59bf341b20f5b3967ec1771c413545f",
+    "mh_tablerag_allobj_path_hv2_answer_doc_qwen3_8b_cot_200.jsonl": "149326ffccc4c27527c024c35cf7bf806c3b6b9fd9120a2eabcfede94b2c8c8e",
+    "ref_contexts_ours_200.jsonl": "f55343c30af2486860cb6cb225ff5cebce3ed7a183121d2fb072787c16ac79f8",
+    "ref_contexts_mt2net_200.jsonl": "33563a31f7e9e4892cc2a776037dc0084609ab5fff6c7d31965ba2b2c294d61e",
+    "ref_contexts_chunk_200.jsonl": "06d043e3dbb1745eccab20a4d3567d93a01919635f629bc0074d6355765129ef",
+    "ref_contexts_huawei_200.jsonl": "6e36a0e86709d2d57cfdbaca14282482eb2e9464faf903dc5e36472618e21dff",
+    "ref_contexts_rowcol_200.jsonl": "fcfa46fd2f90e4be5db5d07becb7543febec567e7d47abdd50d6471b0da03321",
+    "ref_contexts_tablerag_200.jsonl": "ca1adae5d4bcbec50922aec0c420df0e9c8ec9fd8c954d27b76613fb5f9f52ae"
+  },
+  "generation_settings": {
+    "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "prompt_sha256": "1f5ae3c04b4bc1b7f9409a3877a851db59b00c25ab06cc67725bcd1ee93b6d30",
+    "max_new_tokens": 384,
+    "seed": 42,
+    "batch_size": 1,
+    "scope": "doc",
+    "condition": "retrieved",
+    "header_rule": "v2",
+    "revision_resolved": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "code": {
+    "ours": {
+      "git_commit": "784e2447671f1759b6029671233f7f248e152a24",
+      "source_sha256": "1851a5c164428a83242a86b74f7e1ca6c92e46dc6dbc3cdf5c8f144992dcded9"
+    },
+    "mt2net": {
+      "git_commit": "784e2447671f1759b6029671233f7f248e152a24",
+      "source_sha256": "1851a5c164428a83242a86b74f7e1ca6c92e46dc6dbc3cdf5c8f144992dcded9"
+    },
+    "chunk": {
+      "git_commit": "701f2f03cd51e44c8f210ddca7865a85967961e1",
+      "source_sha256": "4c94d5d939ce4dbc20351c4df884118dd5a53f879895b4f1ac2b1a12d434af91"
+    },
+    "huawei": {
+      "git_commit": "701f2f03cd51e44c8f210ddca7865a85967961e1",
+      "source_sha256": "4c94d5d939ce4dbc20351c4df884118dd5a53f879895b4f1ac2b1a12d434af91"
+    },
+    "rowcol": {
+      "git_commit": "701f2f03cd51e44c8f210ddca7865a85967961e1",
+      "source_sha256": "4c94d5d939ce4dbc20351c4df884118dd5a53f879895b4f1ac2b1a12d434af91"
+    },
+    "tablerag": {
+      "git_commit": "701f2f03cd51e44c8f210ddca7865a85967961e1",
+      "source_sha256": "4c94d5d939ce4dbc20351c4df884118dd5a53f879895b4f1ac2b1a12d434af91"
+    }
+  },
+  "inference": {
+    "family": "본 방법 대 5 arm × 3 칸 = 15",
+    "p": "정확 McNemar, Holm 보정",
+    "ci": "짝지음 부트스트랩 20000회, 층 안 복원추출, Bonferroni 동시 수준 0.99667",
+    "seed": 20260913
+  },
+  "table": {
+    "ALL": {
+      "ours": {
+        "n": 200,
+        "em": 0.425,
+        "retrieval_accuracy": 0.895,
+        "marker_missing": 7
+      },
+      "mt2net": {
+        "n": 200,
+        "em": 0.405,
+        "retrieval_accuracy": 0.885,
+        "marker_missing": 10
+      },
+      "chunk": {
+        "n": 200,
+        "em": 0.475,
+        "retrieval_accuracy": 0.795,
+        "marker_missing": 3
+      },
+      "huawei": {
+        "n": 200,
+        "em": 0.39,
+        "retrieval_accuracy": 0.74,
+        "marker_missing": 6
+      },
+      "rowcol": {
+        "n": 200,
+        "em": 0.19,
+        "retrieval_accuracy": 0.48,
+        "marker_missing": 1
+      },
+      "tablerag": {
+        "n": 200,
+        "em": 0.12,
+        "retrieval_accuracy": 0.45,
+        "marker_missing": 17
+      }
+    },
+    "lookup_m2+": {
+      "ours": {
+        "n": 70,
+        "em": 0.6857,
+        "retrieval_accuracy": 0.9286,
+        "marker_missing": 3
+      },
+      "mt2net": {
+        "n": 70,
+        "em": 0.6143,
+        "retrieval_accuracy": 0.9286,
+        "marker_missing": 5
+      },
+      "chunk": {
+        "n": 70,
+        "em": 0.7429,
+        "retrieval_accuracy": 0.8286,
+        "marker_missing": 0
+      },
+      "huawei": {
+        "n": 70,
+        "em": 0.6,
+        "retrieval_accuracy": 0.7571,
+        "marker_missing": 4
+      },
+      "rowcol": {
+        "n": 70,
+        "em": 0.3286,
+        "retrieval_accuracy": 0.4714,
+        "marker_missing": 1
+      },
+      "tablerag": {
+        "n": 70,
+        "em": 0.2286,
+        "retrieval_accuracy": 0.3143,
+        "marker_missing": 8
+      }
+    },
+    "arith_m2+": {
+      "ours": {
+        "n": 76,
+        "em": 0.2105,
+        "retrieval_accuracy": 0.8289,
+        "marker_missing": 2
+      },
+      "mt2net": {
+        "n": 76,
+        "em": 0.2105,
+        "retrieval_accuracy": 0.7763,
+        "marker_missing": 3
+      },
+      "chunk": {
+        "n": 76,
+        "em": 0.2237,
+        "retrieval_accuracy": 0.75,
+        "marker_missing": 1
+      },
+      "huawei": {
+        "n": 76,
+        "em": 0.1579,
+        "retrieval_accuracy": 0.75,
+        "marker_missing": 2
+      },
+      "rowcol": {
+        "n": 76,
+        "em": 0.0789,
+        "retrieval_accuracy": 0.3421,
+        "marker_missing": 0
+      },
+      "tablerag": {
+        "n": 76,
+        "em": 0.0,
+        "retrieval_accuracy": 0.4211,
+        "marker_missing": 5
+      }
+    }
+  },
+  "tests": [
+    {
+      "arm": "mt2net",
+      "cell": "ALL",
+      "n": 200,
+      "ours_only_correct": 14,
+      "other_only_correct": 10,
+      "em_diff": 0.02,
+      "diff_ci_bonferroni": [
+        -0.05,
+        0.095
+      ],
+      "mcnemar_exact_p": 0.5412561893463135,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "mt2net",
+      "cell": "lookup_m2+",
+      "n": 70,
+      "ours_only_correct": 7,
+      "other_only_correct": 2,
+      "em_diff": 0.0714,
+      "diff_ci_bonferroni": [
+        -0.0429,
+        0.2
+      ],
+      "mcnemar_exact_p": 0.1796875,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "mt2net",
+      "cell": "arith_m2+",
+      "n": 76,
+      "ours_only_correct": 4,
+      "other_only_correct": 4,
+      "em_diff": 0.0,
+      "diff_ci_bonferroni": [
+        -0.1053,
+        0.1184
+      ],
+      "mcnemar_exact_p": 1.0,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "chunk",
+      "cell": "ALL",
+      "n": 200,
+      "ours_only_correct": 9,
+      "other_only_correct": 19,
+      "em_diff": -0.05,
+      "diff_ci_bonferroni": [
+        -0.1283,
+        0.025
+      ],
+      "mcnemar_exact_p": 0.08715855330228806,
+      "p_holm": 0.7844269797205925
+    },
+    {
+      "arm": "chunk",
+      "cell": "lookup_m2+",
+      "n": 70,
+      "ours_only_correct": 3,
+      "other_only_correct": 7,
+      "em_diff": -0.0571,
+      "diff_ci_bonferroni": [
+        -0.1857,
+        0.0714
+      ],
+      "mcnemar_exact_p": 0.34375,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "chunk",
+      "cell": "arith_m2+",
+      "n": 76,
+      "ours_only_correct": 4,
+      "other_only_correct": 5,
+      "em_diff": -0.0132,
+      "diff_ci_bonferroni": [
+        -0.1316,
+        0.1053
+      ],
+      "mcnemar_exact_p": 1.0,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "huawei",
+      "cell": "ALL",
+      "n": 200,
+      "ours_only_correct": 22,
+      "other_only_correct": 15,
+      "em_diff": 0.035,
+      "diff_ci_bonferroni": [
+        -0.05,
+        0.125
+      ],
+      "mcnemar_exact_p": 0.3240086000878364,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "huawei",
+      "cell": "lookup_m2+",
+      "n": 70,
+      "ours_only_correct": 12,
+      "other_only_correct": 6,
+      "em_diff": 0.0857,
+      "diff_ci_bonferroni": [
+        -0.0857,
+        0.2571
+      ],
+      "mcnemar_exact_p": 0.237884521484375,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "huawei",
+      "cell": "arith_m2+",
+      "n": 76,
+      "ours_only_correct": 6,
+      "other_only_correct": 2,
+      "em_diff": 0.0526,
+      "diff_ci_bonferroni": [
+        -0.0526,
+        0.1579
+      ],
+      "mcnemar_exact_p": 0.2890625,
+      "p_holm": 1.0
+    },
+    {
+      "arm": "rowcol",
+      "cell": "ALL",
+      "n": 200,
+      "ours_only_correct": 56,
+      "other_only_correct": 9,
+      "em_diff": 0.235,
+      "diff_ci_bonferroni": [
+        0.125,
+        0.34
+      ],
+      "mcnemar_exact_p": 2.049245302203524e-09,
+      "p_holm": 2.664018892864581e-08
+    },
+    {
+      "arm": "rowcol",
+      "cell": "lookup_m2+",
+      "n": 70,
+      "ours_only_correct": 26,
+      "other_only_correct": 1,
+      "em_diff": 0.3571,
+      "diff_ci_bonferroni": [
+        0.1857,
+        0.5286
+      ],
+      "mcnemar_exact_p": 4.172325134277344e-07,
+      "p_holm": 5.0067901611328125e-06
+    },
+    {
+      "arm": "rowcol",
+      "cell": "arith_m2+",
+      "n": 76,
+      "ours_only_correct": 14,
+      "other_only_correct": 4,
+      "em_diff": 0.1316,
+      "diff_ci_bonferroni": [
+        -0.0263,
+        0.2895
+      ],
+      "mcnemar_exact_p": 0.0308837890625,
+      "p_holm": 0.308837890625
+    },
+    {
+      "arm": "tablerag",
+      "cell": "ALL",
+      "n": 200,
+      "ours_only_correct": 63,
+      "other_only_correct": 2,
+      "em_diff": 0.305,
+      "diff_ci_bonferroni": [
+        0.21,
+        0.405
+      ],
+      "mcnemar_exact_p": 1.1633489310769463e-16,
+      "p_holm": 1.7450233966154194e-15
+    },
+    {
+      "arm": "tablerag",
+      "cell": "lookup_m2+",
+      "n": 70,
+      "ours_only_correct": 32,
+      "other_only_correct": 0,
+      "em_diff": 0.4571,
+      "diff_ci_bonferroni": [
+        0.2857,
+        0.6286
+      ],
+      "mcnemar_exact_p": 4.656612873077393e-10,
+      "p_holm": 6.51925802230835e-09
+    },
+    {
+      "arm": "tablerag",
+      "cell": "arith_m2+",
+      "n": 76,
+      "ours_only_correct": 16,
+      "other_only_correct": 0,
+      "em_diff": 0.2105,
+      "diff_ci_bonferroni": [
+        0.0921,
+        0.3553
+      ],
+      "mcnemar_exact_p": 3.0517578125e-05,
+      "p_holm": 0.000335693359375
+    }
+  ],
+  "records_sha256": "f1e9d32d6c95617bad85fd0a397fefee8cd705a3cfbf5602db03437294b675b7"
+}

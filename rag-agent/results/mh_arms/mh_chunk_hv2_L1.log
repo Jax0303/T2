@@ -1,0 +1,143 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[pop] 2908 queries / 2908 docs (제외: {'needs_text_evidence': 4922}) 4s
+[corpus] 11793 tables / 13917 chunk units (6s)
+[bm25] 21911 terms in 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  59%|█████▉    | 117/199 [00:00<00:00, 1163.39it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1363.94it/s]
+[dense] 0..13917 in 109s
+  200/2908  5s
+  400/2908  11s
+  600/2908  16s
+  800/2908  21s
+  1000/2908  28s
+  1200/2908  32s
+  1400/2908  37s
+  1600/2908  42s
+  1800/2908  49s
+  2000/2908  54s
+  2200/2908  58s
+  2400/2908  63s
+  2600/2908  68s
+  2800/2908  71s
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+  "split": "train",
+  "unit": "chunk",
+  "template": "s3c",
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "budget_cells": 20,
+  "header_rule": "v2",
+  "label_rule": "L1",
+  "n_tables_labelled": 11647,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 13917,
+  "corpus_text_sha256": "dcc4891a1cfb674d4eea84627ddb6e3ae893cd4751d07b53c42b9df3252c9b3a",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2878,
+  "n_excluded": 30,
+  "excluded_by_reason": {
+    "gold_in_header": 24,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "dcfa903f50f4520dc44cee8a4966ce5a92aa842523acaac4e892fba35259b04b",
+  "by_layer": {
+    "ALL": {
+      "n": 2878,
+      "corpus": {
+        "accuracy_all": 0.1077,
+        "accuracy_any_DIAGNOSTIC": 0.1539,
+        "gold_doc_in_context": 0.1689,
+        "cells_delivered_mean": 36.0
+      },
+      "doc": {
+        "accuracy_all": 0.7109,
+        "accuracy_any_DIAGNOSTIC": 0.869,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 49.1
+      },
+      "mean_m": 2.651,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.3099,
+        "accuracy_any_DIAGNOSTIC": 0.3099,
+        "gold_doc_in_context": 0.3099,
+        "cells_delivered_mean": 33.8
+      },
+      "doc": {
+        "accuracy_all": 0.8169,
+        "accuracy_any_DIAGNOSTIC": 0.8169,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 43.6
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2230,
+      "corpus": {
+        "accuracy_all": 0.109,
+        "accuracy_any_DIAGNOSTIC": 0.1686,
+        "gold_doc_in_context": 0.1821,
+        "cells_delivered_mean": 35.4
+      },
+      "doc": {
+        "accuracy_all": 0.6865,
+        "accuracy_any_DIAGNOSTIC": 0.8857,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 48.4
+      },
+      "mean_m": 2.737,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 212,
+      "corpus": {
+        "accuracy_all": 0.0613,
+        "accuracy_any_DIAGNOSTIC": 0.0613,
+        "gold_doc_in_context": 0.0708,
+        "cells_delivered_mean": 37.6
+      },
+      "doc": {
+        "accuracy_all": 0.8019,
+        "accuracy_any_DIAGNOSTIC": 0.8019,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 52.3
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.0877,
+        "accuracy_any_DIAGNOSTIC": 0.0877,
+        "gold_doc_in_context": 0.1178,
+        "cells_delivered_mean": 39.3
+      },
+      "doc": {
+        "accuracy_all": 0.7863,
+        "accuracy_any_DIAGNOSTIC": 0.8164,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 53.0
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  }
+}

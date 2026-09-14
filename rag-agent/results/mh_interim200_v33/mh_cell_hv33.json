@@ -1,0 +1,161 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+  "split": "train",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "536fe752f38ce0c0b02db0adf05f6d31ebc20701",
+    "git_dirty": true,
+    "source_sha256": "8d1f563d3bc7b74ffd98e757a13a6f25100e45ebcce5a916e65d34c3ca0badb6",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "cell",
+    "template": "s3c",
+    "row_text": "sentence",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v3.3",
+    "label_rule": "none",
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "alpha": 0.7,
+    "budget": 20,
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/mh_arms",
+    "out_dir": "results/mh_interim200_v33",
+    "tag": "mh_cell_hv33"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "budget_cells": 20,
+  "header_rule": "v3.3",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 423473,
+  "corpus_text_sha256": "f268d5c14c74afac1107d18c1d5a61a52bada802130b9a0b7270e53347f7c3c4",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2885,
+  "n_excluded": 23,
+  "excluded_by_reason": {
+    "gold_in_header": 17,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "ed462b6d1380fd6c95f06f0d6c77fde8c239f02d5cf44288d14014b6634d6ceb",
+  "by_layer": {
+    "ALL": {
+      "n": 2885,
+      "corpus": {
+        "accuracy_all": 0.2735,
+        "accuracy_any_DIAGNOSTIC": 0.5733,
+        "gold_doc_in_context": 0.6988,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8562,
+        "accuracy_any_DIAGNOSTIC": 0.9726,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 2.652,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.6197,
+        "accuracy_any_DIAGNOSTIC": 0.6197,
+        "gold_doc_in_context": 0.7465,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9577,
+        "accuracy_any_DIAGNOSTIC": 0.9577,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2235,
+      "corpus": {
+        "accuracy_all": 0.2385,
+        "accuracy_any_DIAGNOSTIC": 0.5843,
+        "gold_doc_in_context": 0.7016,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8403,
+        "accuracy_any_DIAGNOSTIC": 0.9723,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 2.738,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 212,
+      "corpus": {
+        "accuracy_all": 0.4245,
+        "accuracy_any_DIAGNOSTIC": 0.4245,
+        "gold_doc_in_context": 0.684,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9623,
+        "accuracy_any_DIAGNOSTIC": 0.9623,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 367,
+      "corpus": {
+        "accuracy_all": 0.3324,
+        "accuracy_any_DIAGNOSTIC": 0.5831,
+        "gold_doc_in_context": 0.6812,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8719,
+        "accuracy_any_DIAGNOSTIC": 0.9837,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 3.401,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "b938c15ac66498ce1fe118b7e560f6abf75f15d86e49ae8fa393b157f7a22e7d"
+}

@@ -1,0 +1,29 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pilot] validation 산술 264 중 60
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:06,  1.37it/s]Loading weights:   1%|          | 2/339 [00:01<04:30,  1.24it/s]Loading weights:   1%|          | 4/339 [00:01<02:03,  2.72it/s]Loading weights:   2%|▏         | 6/339 [00:02<01:23,  3.99it/s]Loading weights:   5%|▍         | 16/339 [00:02<00:24, 13.19it/s]Loading weights:   5%|▌         | 18/339 [00:02<00:25, 12.63it/s]Loading weights:   8%|▊         | 28/339 [00:02<00:13, 23.11it/s]Loading weights:   9%|▉         | 32/339 [00:02<00:13, 22.99it/s]Loading weights:  12%|█▏        | 40/339 [00:02<00:09, 32.38it/s]Loading weights:  13%|█▎        | 45/339 [00:03<00:08, 34.22it/s]Loading weights:  16%|█▌        | 53/339 [00:03<00:07, 38.83it/s]Loading weights:  18%|█▊        | 60/339 [00:03<00:06, 45.27it/s]Loading weights:  19%|█▉        | 66/339 [00:03<00:06, 42.70it/s]Loading weights:  23%|██▎       | 77/339 [00:03<00:05, 52.36it/s]Loading weights:  26%|██▌       | 88/339 [00:03<00:04, 61.65it/s]Loading weights:  28%|██▊       | 95/339 [00:03<00:03, 61.46it/s]Loading weights:  30%|███       | 102/339 [00:04<00:04, 55.12it/s]Loading weights:  33%|███▎      | 113/339 [00:04<00:03, 64.29it/s]Loading weights:  37%|███▋      | 124/339 [00:04<00:03, 69.76it/s]Loading weights:  39%|███▉      | 132/339 [00:04<00:03, 68.69it/s]Loading weights:  41%|████▏     | 140/339 [00:17<01:31,  2.17it/s]Loading weights:  44%|████▍     | 149/339 [00:17<01:01,  3.08it/s]Loading weights: 100%|██████████| 339/339 [00:07<00:00, 44.83it/s]
+[direct] EM 0.100  질의당 0.4s  표시 누락 0
+[cot] EM 0.233  질의당 7.8s  표시 누락 2
+{
+  "split": "validation",
+  "n": 60,
+  "seed": 20260913,
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "header_rule": "v2",
+  "label_rule": "none",
+  "context": "gold cells only",
+  "exploratory": true,
+  "cot_prompt": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "direct_prompt": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "direct": {
+    "em": 0.1,
+    "marker_missing": 0,
+    "sec_per_query": 0.38
+  },
+  "cot": {
+    "em": 0.23333333333333334,
+    "marker_missing": 2,
+    "sec_per_query": 7.82
+  }
+}

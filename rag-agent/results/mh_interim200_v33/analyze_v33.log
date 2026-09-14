@@ -1,0 +1,16 @@
+ALL {'ours/v2': 0.425, 'ours/new': 0.43, 'chunk/v2': 0.475, 'chunk/new': 0.47}
+lookup_m2+ {'ours/v2': 0.6857, 'ours/new': 0.7, 'chunk/v2': 0.7429, 'chunk/new': 0.7286}
+arith_m2+ {'ours/v2': 0.2105, 'ours/new': 0.1842, 'chunk/v2': 0.2237, 'chunk/new': 0.2237}
+ours ALL new vs v2 5:4 0.005 [-0.035, 0.045] p=1 holm=1.0
+ours lookup_m2+ new vs v2 2:1 0.0143 [-0.0429, 0.0857] p=1 holm=1.0
+ours arith_m2+ new vs v2 0:2 -0.0263 [-0.0921, 0.0] p=0.5 holm=1.0
+chunk ALL new vs v2 0:1 -0.005 [-0.02, 0.0] p=1 holm=1.0
+chunk lookup_m2+ new vs v2 0:1 -0.0143 [-0.0571, 0.0] p=1 holm=1.0
+chunk arith_m2+ new vs v2 0:0 0.0 [0.0, 0.0] p=1 holm=1.0
+ ALL ours vs chunk (new) 8:16 -0.04 [-0.1, 0.015] p=0.152 holm=0.4547688961029053
+ lookup_m2+ ours vs chunk (new) 3:5 -0.0286 [-0.1286, 0.0714] p=0.727 holm=1.0
+ arith_m2+ ours vs chunk (new) 3:6 -0.0395 [-0.1316, 0.0526] p=0.508 holm=1.0
+ ALL ours vs chunk (v2) 9:19 -0.05 [-0.1117, 0.01] p=0.0872 holm=-
+ lookup_m2+ ours vs chunk (v2) 3:7 -0.0571 [-0.1714, 0.0429] p=0.344 holm=-
+ arith_m2+ ours vs chunk (v2) 4:5 -0.0132 [-0.1053, 0.0789] p=1 holm=-
+contexts_changed {'ours': 119, 'chunk': 5} discord {'v2_ours_only_correct': {'n': 9, 'new_outcomes': {'ours_new=0,chunk_new=0': 1, 'ours_new=1,chunk_new=0': 8}}, 'v2_chunk_only_correct': {'n': 19, 'new_outcomes': {'ours_new=0,chunk_new=0': 1, 'ours_new=0,chunk_new=1': 13, 'ours_new=1,chunk_new=1': 5}}}

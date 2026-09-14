@@ -1,0 +1,21 @@
+{
+  "split": "validation",
+  "n": 60,
+  "seed": 20260913,
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit",
+  "header_rule": "v2",
+  "label_rule": "L1",
+  "context": "gold cells only",
+  "exploratory": true,
+  "cot_prompt": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "direct_prompt": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "direct": {
+    "em": 0.03333333333333333,
+    "marker_missing": 0
+  },
+  "cot": {
+    "em": 0.26666666666666666,
+    "marker_missing": 2
+  },
+  "records_sha256": "c4146c3799a61cd8cfd18997278c097fc9acb766617e6a59970e4623f97472e6"
+}
