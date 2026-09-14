@@ -1,0 +1,116 @@
+{
+  "rule": "success iff set(top-m ranked cell sentences) == gold cells, m = |gold|; no cell budget",
+  "sources": {
+    "s3c_v2_records.jsonl": "ad276bdb719ec37b049ff27fe049a08113463fe90e1a4c1b4f9d30fc28683ba8",
+    "mt2net_v2_records.jsonl": "6ac80672371bebb891acc2f68bf54b527c4254906dfad7d13d57b5f0737fee2f",
+    "s3c_v2_answer_gold_modeall.jsonl": "dc94ca2aee580c46a4e8c1da4bdf6420f1979e2c977399d51625eac5a2c134ff"
+  },
+  "retrieval": {
+    "s3c_v2": {
+      "label": "본 방법 — 셀 문장(표 제목+행경로+열경로+값)",
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 570,
+          "accuracy": 0.5752
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 11,
+          "accuracy": 0.2895
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 48,
+          "accuracy": 0.2222
+        },
+        "overall": {
+          "n": 1245,
+          "success": 629,
+          "accuracy": 0.5052
+        },
+        "n_excluded_unresolved_gold": 3
+      }
+    },
+    "mt2net_v2": {
+      "label": "MT2Net 셀 단위(계층 헤더, 표 제목 없음)",
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 466,
+          "accuracy": 0.4702
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 10,
+          "accuracy": 0.2632
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 53,
+          "accuracy": 0.2454
+        },
+        "overall": {
+          "n": 1245,
+          "success": 529,
+          "accuracy": 0.4249
+        },
+        "n_excluded_unresolved_gold": 3
+      }
+    }
+  },
+  "ours_vs_mt2net": {
+    "single_cell": {
+      "wins": 161,
+      "losses": 57,
+      "p_exact": 1.1212805276396096e-12,
+      "p_holm_3": 3.363841582918829e-12
+    },
+    "multi_cell": {
+      "wins": 2,
+      "losses": 1,
+      "p_exact": 1.0,
+      "p_holm_3": 1.0
+    },
+    "arithmetic": {
+      "wins": 10,
+      "losses": 15,
+      "p_exact": 0.42435622215270996,
+      "p_holm_3": 0.8487124443054199
+    },
+    "overall": {
+      "wins": 173,
+      "losses": 73,
+      "p_exact": 1.5501089183341902e-10
+    }
+  },
+  "not_applicable": "chunk1000_v2, huawei_char_v2, rowcol_v2: units carry many cells, no per-cell ranking",
+  "calibration_ours": {
+    "single_cell": {
+      "n": 991,
+      "n_retrieval_success": 570,
+      "em_on_success_gold_sentences_only": 0.9754,
+      "em_over_n_failure_as_0": 0.561
+    },
+    "multi_cell": {
+      "n": 38,
+      "n_retrieval_success": 11,
+      "em_on_success_gold_sentences_only": 0.9091,
+      "em_over_n_failure_as_0": 0.2632
+    },
+    "arithmetic": {
+      "n": 216,
+      "n_retrieval_success": 48,
+      "em_on_success_gold_sentences_only": 0.375,
+      "em_over_n_failure_as_0": 0.0833
+    },
+    "overall": {
+      "n": 1245,
+      "n_retrieval_success": 629,
+      "em_on_success_gold_sentences_only": 0.9285,
+      "em_over_n_failure_as_0": 0.4691
+    }
+  },
+  "calibration_context_order": "gold_cells order (sorted coordinates), not rank order",
+  "gold_context_not_equal_retrieved_top_m_sentences": []
+}
