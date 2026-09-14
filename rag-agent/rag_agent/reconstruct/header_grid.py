@@ -482,12 +482,13 @@ def reconstruct_row_paths(grid: Grid, n_header_rows: int, n_header_cols: int = 1
         stub = levels
         levels = _stack_levels(stacks, hard0) + stub
         if disambiguate:
-            guarded = disambiguate in ("guarded", "no_numbers")
+            guarded = disambiguate in ("guarded", "no_numbers", "no_numbers_guard")
             stacks = _split_identical_paths(stacks, sidxs, trails, levels,
                                             [bool(section_label(grid[r])) or not has_data(r)
                                              for r in body],
                                             closed=closeds if guarded else None, other_years=guarded,
-                                            skip_numbers=disambiguate == "no_numbers")
+                                            skip_numbers=disambiguate in ("no_numbers", "no_numbers_guard"),
+                                            numbers_guard=disambiguate == "no_numbers_guard")
             levels = _stack_levels(stacks, hard0) + stub
 
     # NOT applied: see band_qualifiers' docstring for why it stays off.
@@ -546,7 +547,7 @@ def _own_total_below(grid: Grid, r: int, n_header_cols: int, heading: str) -> bo
 
 
 def _split_identical_paths(stacks, sidxs, trails, levels, skip, closed=None, other_years=False,
-                           skip_numbers=False):
+                           skip_numbers=False, numbers_guard=False):
     """S5: tell apart data rows whose paths are identical, with headings the source put above them.
 
     A row's candidates are the section headings above it that are not on its path, nearest first.
@@ -556,6 +557,9 @@ def _split_identical_paths(stacks, sidxs, trails, levels, skip, closed=None, oth
     v3.1 S5n guards: ``closed[i]`` holds headings a total row closed before row ``i`` -- they no
     longer scope it -- and ``other_years`` refuses a heading dated differently from the path.
     v3.2 S5n2: ``skip_numbers`` refuses a heading that is a number ("544,823"); a year is not one.
+    v3.3 S5n3: ``numbers_guard`` leaves the whole tied group as it was when any member would take a
+    heading from above a number it skipped -- refusing the number must not hand the row a higher
+    heading nothing verifies.
     """
     paths = _hierarchical_carry(levels)
     groups: Dict[tuple, List[int]] = {}
@@ -580,7 +584,7 @@ def _split_identical_paths(stacks, sidxs, trails, levels, skip, closed=None, oth
     for group in groups.values():
         if len(group) < 2:
             continue
-        cands = {}
+        cands, past = {}, {}
         for i in group:
             seen, cands[i], dated = set(paths[i]), [], _years(paths[i])
             for ix, lab in reversed(trails[i]):
@@ -589,11 +593,16 @@ def _split_identical_paths(stacks, sidxs, trails, levels, skip, closed=None, oth
                 if other_years and dated and _years([lab]) - dated:
                     continue
                 if skip_numbers and _number_like(lab):
+                    if lab not in seen:                 # candidates from here on sit above a skipped number
+                        past.setdefault(i, len(cands[i]))
                     continue
                 if lab not in seen:
                     seen.add(lab)
                     cands[i].append((ix, lab))
         split(group, cands, 0)
+        if numbers_guard and any(len(extra.get(i, ())) > past.get(i, len(cands[i])) for i in group):
+            for i in group:
+                extra.pop(i, None)
     out = list(stacks)
     for i, add in extra.items():
         out[i] = [lab for _, lab in sorted(set(zip(sidxs[i], stacks[i])) | set(add))]

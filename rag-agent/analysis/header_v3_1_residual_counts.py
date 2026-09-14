@@ -28,9 +28,10 @@ UNITS = re.compile(r"^\(.*\)$|\bin\s+(thousands|millions|billions)\b", re.I)
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default=str(OUT))
-    ap.add_argument("--rule", default="v3.1", choices=["v3.1", "v3.2"], help="v3.2 는 S5n 대신 S5n2 를 잰다")
+    ap.add_argument("--rule", default="v3.1", choices=["v3.1", "v3.2", "v3.3"],
+                    help="v3.2·v3.3 은 S5n 대신 S5n2·S5n3 을 잰다")
     a = ap.parse_args()
-    out_path, s5 = Path(a.out), {"v3.1": "S5n", "v3.2": "S5n2"}[a.rule]
+    out_path, s5 = Path(a.out), {"v3.1": "S5n", "v3.2": "S5n2", "v3.3": "S5n3"}[a.rule]
     if out_path.exists():
         raise SystemExit(f"{out_path} exists — 덮어쓰지 않는다")
     _, docs, _ = load_population("train")

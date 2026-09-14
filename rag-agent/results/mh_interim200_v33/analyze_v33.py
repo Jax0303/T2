@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""interim200 — 헤더 규칙 v2 대 v3.2 답변 EM, 본 방법·chunk. PLAN.md (생성 전 고정, 탐색용).
+"""interim200 — 헤더 규칙 v2 대 v3.3 답변 EM, 본 방법·chunk. PLAN.md (생성 전 고정, 탐색용).
 
 interim200(train)은 헤더 규칙 v3 의 결함 사례를 찾은 **사후 분석·개발에 사용된 표본**이다. 여기서 나온 차이는 규칙이
 이 표본에 맞춰진 몫을 포함하므로 독립적인 미관측 평가가 아니다.
@@ -13,10 +13,10 @@ EM 차이에 Bonferroni 동시 수준 짝지음 부트스트랩 CI(층 안 복�
 묶음 B: 새 규칙에서 본 방법 대 chunk, 칸 셋. 정확 McNemar p 에 Holm(3). v2 의 같은 칸을 나란히 싣는다(보정 없음).
 기술: 문맥이 바뀐 질의 수, 검색 성공 변화, v2 불일치(본 방법 대 chunk)의 새 규칙 결과, 결함 사례 문서의 결과.
 
-  PYTHONPATH=. .venv/bin/python results/mh_interim200_v32/analyze_v32.py \
-      --out results/mh_interim200_v32/interim200_v32_qwen3_8b_cot.jsonl
+  PYTHONPATH=. .venv/bin/python results/mh_interim200_v33/analyze_v33.py \
+      --out results/mh_interim200_v33/interim200_v33_qwen3_8b_cot.jsonl
   # 배관 점검(생성 전): 새 규칙 자리에 v2 파일을 넣는다
-  PYTHONPATH=. .venv/bin/python results/mh_interim200_v32/analyze_v32.py --new-dir results/mh_interim200 \
+  PYTHONPATH=. .venv/bin/python results/mh_interim200_v33/analyze_v33.py --new-dir results/mh_interim200 \
       --new-retrieval-dir results/mh_arms --new-tag hv2 --expect-header-rule v2 --out <scratch>.jsonl
 """
 from __future__ import annotations
@@ -71,8 +71,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--new-dir", default=str(HERE), help="새 규칙 답변 파일 폴더")
     ap.add_argument("--new-retrieval-dir", default=str(HERE), help="새 규칙 검색 요약·레코드 폴더")
-    ap.add_argument("--new-tag", default="hv32")
-    ap.add_argument("--expect-header-rule", default="v3.2")
+    ap.add_argument("--new-tag", default="hv33")
+    ap.add_argument("--expect-header-rule", default="v3.3")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
@@ -156,7 +156,7 @@ def main() -> int:
                  "context_changed": {arm: int(rows[(arm, "v2")][i]["context_sha256"]
                                               != rows[(arm, "new")][i]["context_sha256"]) for arm in ARMS}}
                 for i in ids]
-    summary = {"exploratory": True, "plan": "results/mh_interim200_v32/PLAN.md",
+    summary = {"exploratory": True, "plan": "results/mh_interim200_v33/PLAN.md",
                "sample_status": "사후 분석·개발에 사용된 표본(train interim200). 독립적인 미관측 test 평가가 아니다.",
                "header_rules": {"v2": "v2", "new": a.expect_header_rule}, "ids_sha256": spec["ids_sha256"],
                "inputs_sha256": inputs, "generation_settings": settings[("ours", "v2")],

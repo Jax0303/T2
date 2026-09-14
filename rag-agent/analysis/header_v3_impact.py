@@ -22,13 +22,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT), str(ROOT / "scripts")]
 
-from mh_arms import (V3_RULES, V31_RULES, V32_RULES, _DESC, build_tables,       # noqa: E402
+from mh_arms import (V3_RULES, V31_RULES, V32_RULES, V33_RULES, _DESC, build_tables,  # noqa: E402
                      load_population, resolve_gold)
 from retrieval_accuracy import build_corpus                                       # noqa: E402
 from rag_agent.eval.artifacts import digest, provenance                           # noqa: E402
 
 OUT = ROOT / "results/mh_header_v3"
-RULES = {"v3": V3_RULES, "v3.1": V31_RULES, "v3.2": V32_RULES}
+RULES = {"v3": V3_RULES, "v3.1": V31_RULES, "v3.2": V32_RULES, "v3.3": V33_RULES}
 ARMS = ("cell", "chunk", "huawei", "rowcol", "tablerag_allobj_path")
 YEAR = re.compile(r"(?<!\d)(?:19|20)\d{2}(?!\d)")
 WORD_YEAR = re.compile(r"\b(?:19|20)\d{2}\b")

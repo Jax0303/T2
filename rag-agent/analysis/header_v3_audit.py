@@ -26,9 +26,9 @@ from mh_arms import build_tables, load_population                        # noqa:
 from rag_agent.reconstruct.header_grid import parse_html_table_layout   # noqa: E402
 
 OUT = {"v3": ROOT / "results/mh_header_v3/audit.json", "v3.1": ROOT / "results/mh_header_v3_1/audit.json",
-       "v3.2": ROOT / "results/mh_header_v3_2/audit.json"}
+       "v3.2": ROOT / "results/mh_header_v3_2/audit.json", "v3.3": ROOT / "results/mh_header_v3_3/audit.json"}
 RULE = {"v3": {"S1": "S1", "S2": "S2", "S3": "S3"}, "v3.1": {"S1": "S1n", "S2": "S2n", "S3": "S3n"},
-        "v3.2": {"S1": "S1n", "S2": "S2n", "S3": "S3n"}}
+        "v3.2": {"S1": "S1n", "S2": "S2n", "S3": "S3n"}, "v3.3": {"S1": "S1n", "S2": "S2n", "S3": "S3n"}}
 YEAR = re.compile(r"(?<!\d)(?:19|20)\d{2}(?!\d)")
 UNITS = re.compile(r"\bin\s+(thousands|millions|billions)\b", re.I)
 SEED = 20260914

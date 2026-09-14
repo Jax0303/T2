@@ -66,7 +66,8 @@ class MHTable:
                                            isolated_blank_only="S2n" in rules,
                                            close_on_total=("own" if "S4n2" in rules else
                                                            "named" if "S4n" in rules else "S4" in rules),
-                                           disambiguate=("no_numbers" if "S5n2" in rules else
+                                           disambiguate=("no_numbers_guard" if "S5n3" in rules else
+                                                         "no_numbers" if "S5n2" in rules else
                                                          "guarded" if "S5n" in rules else "S5" in rules))
         cols = reconstruct_col_paths(grid, nhr, nhc, cover=cover if rules & {"S1", "S1n"} else None,
                                      narrow="S1n" in rules)
@@ -166,20 +167,22 @@ def table_labels(paragraphs, rule: str = "none") -> dict:
 V3_RULES = ("S1", "S2", "S3", "S4", "S5", "S6")
 V31_RULES = ("S1n", "S2n", "S3n", "S4n", "S5n", "S6n")
 V32_RULES = ("S1n", "S2n", "S3n", "S4n2", "S5n2", "S6n")
+V33_RULES = ("S1n", "S2n", "S3n", "S4n2", "S5n3", "S6n")
 
 
 def build_tables(docs, header_rule: str = "v1", label_rule: str = "none", rules=None):
     """{table_id: MHDoc} — 표 하나가 색인의 한 '표'다. id 는 ``{uid}::{표 번호}``.
 
     ``header_rule="v3"`` 은 v2 + S1~S6, ``"v3.1"`` 은 v2 + 좁힌 S1n~S6n(정정 1), ``"v3.2"`` 는 v3.1 에서
-    S4n·S5n 을 S4n2·S5n2 로 바꾼 것이다(PREREG-2026-09-14-header-v3.md, 정정 3). ``rules`` 는 영향 분석이
-    규칙을 하나씩 v2 위에 얹어 보려고 두는 인자다. None 이면 v1/v2 는 규칙 없음, v3·v3.1·v3.2 는 각자의 전부.
+    S4n·S5n 을 S4n2·S5n2 로 바꾼 것(정정 3), ``"v3.3"`` 은 v3.2 에서 S5n2 를 S5n3 로 바꾼 것이다(정정 4,
+    PREREG-2026-09-14-header-v3.md). ``rules`` 는 영향 분석이 규칙을 하나씩 v2 위에 얹어 보려고 두는 인자다.
+    None 이면 v1/v2 는 규칙 없음, v3·v3.1·v3.2·v3.3 은 각자의 전부.
     """
     if rules is None:
-        rules = {"v3": V3_RULES, "v3.1": V31_RULES, "v3.2": V32_RULES}.get(header_rule, ())
+        rules = {"v3": V3_RULES, "v3.1": V31_RULES, "v3.2": V32_RULES, "v3.3": V33_RULES}.get(header_rule, ())
     rules = frozenset(rules)
     row_rule = ("v3.1" if "S3n" in rules else "v3" if "S3" in rules
-                else "v2" if header_rule in ("v3", "v3.1", "v3.2") else header_rule)
+                else "v2" if header_rule in ("v3", "v3.1", "v3.2", "v3.3") else header_rule)
     tables, hdr = {}, {}
     for uid in sorted(docs):
         labels = table_labels(docs[uid][2] if len(docs[uid]) > 2 else [], label_rule)
@@ -288,9 +291,9 @@ def main() -> int:
     ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"])
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
     ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
-    ap.add_argument("--header-rule", default="v1", choices=["v1", "v2", "v3", "v3.1", "v3.2"],
+    ap.add_argument("--header-rule", default="v1", choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3"],
                     help="헤더 행 추정 규칙. v2 = PREREG-2026-09-13-header-units-note.md, "
-                         "v3·v3.1·v3.2 = PREREG-2026-09-14-header-v3.md")
+                         "v3·v3.1·v3.2·v3.3 = PREREG-2026-09-14-header-v3.md")
     ap.add_argument("--label-rule", default="none", choices=["none", "L1", "L2"],
                     help="표 고유 라벨 규칙. PREREG-2026-09-13-table-label.md")
     ap.add_argument("--chunk-chars", type=int, default=1000)

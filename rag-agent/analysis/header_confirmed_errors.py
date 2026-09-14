@@ -31,7 +31,7 @@ import mh_arms as M                                                             
 from rag_agent.eval.artifacts import provenance                                # noqa: E402
 from rag_agent.reconstruct.header_grid import _number_like, section_label       # noqa: E402
 
-RULESETS = {"v3.1": "V31_RULES", "v3.2": "V32_RULES"}
+RULESETS = {"v3.1": "V31_RULES", "v3.2": "V32_RULES", "v3.3": "V33_RULES"}
 SEED = 20260914
 _TOTAL_HEADS = (["total"], ["totals"], ["subtotal"], ["subtotals"], ["sub", "total"], ["sub", "totals"])
 
