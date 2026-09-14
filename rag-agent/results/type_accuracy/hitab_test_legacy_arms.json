@@ -1,0 +1,1082 @@
+{
+  "metric": "retrieval_accuracy_G_subset_R",
+  "scored_by": "scripts/retrieval_accuracy.py:type_row/query_type (imported)",
+  "budget_note": "셀 예산은 검색 설정이며 지표 이름에 붙이지 않는다",
+  "retrieval_budget_cells": 20,
+  "provenance": {
+    "git_commit": "e67af7590539c45aa9e6317b6b92af5e27d941ad",
+    "git_dirty": false,
+    "source_sha256": "0a7693b8bf7d5e2c0291dcc5262945efa127b4f11e3d6c63b8566ba0f46c0900",
+    "python": "3.11.15",
+    "packages": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "transformers": null,
+      "sentence-transformers": null,
+      "langchain-text-splitters": null,
+      "torch": null,
+      "bitsandbytes": null
+    }
+  },
+  "verification": null,
+  "arms": [
+    {
+      "arm": "s3c_legacy",
+      "records": "results/retrieval_accuracy/t_s3c_hybrid_records.jsonl",
+      "records_sha256": "e6e8101db4b6d11e2db22ee235ddb87ccd15a640054b2530e6e302f7997c96cd",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 906,
+          "accuracy": 0.9142,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.8952,
+            0.9301
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 32,
+          "accuracy": 0.8421,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6958,
+            0.9256
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 170,
+          "accuracy": 0.787,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.7277,
+            0.8364
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 1108,
+          "accuracy": 0.89,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.8478,
+          "accuracy_ci95": [
+            0.8714,
+            0.9062
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.9142,
+            0.8421
+          ],
+          "difference": 0.0721,
+          "fisher_exact_two_sided_p": 0.139,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.9142,
+            0.787
+          ],
+          "difference": 0.1272,
+          "fisher_exact_two_sided_p": 4.43e-07,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.8421,
+            0.787
+          ],
+          "difference": 0.0551,
+          "fisher_exact_two_sided_p": 0.519,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "row_sentence",
+      "records": "results/retrieval_accuracy/t_row_hybrid_records.jsonl",
+      "records_sha256": "2e62d0fe7985f222535cda489c19f9fb8023fcfe56a491b4105900f85c55baf5",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 881,
+          "accuracy": 0.889,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.8679,
+            0.9071
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 31,
+          "accuracy": 0.8158,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6658,
+            0.9078
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 157,
+          "accuracy": 0.7269,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6639,
+            0.7819
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 1069,
+          "accuracy": 0.8586,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.8105,
+          "accuracy_ci95": [
+            0.8382,
+            0.8769
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.889,
+            0.8158
+          ],
+          "difference": 0.0732,
+          "fisher_exact_two_sided_p": 0.187,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.889,
+            0.7269
+          ],
+          "difference": 0.1621,
+          "fisher_exact_two_sided_p": 8.02e-09,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.8158,
+            0.7269
+          ],
+          "difference": 0.0889,
+          "fisher_exact_two_sided_p": 0.317,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "row_values",
+      "records": "results/retrieval_accuracy/t_row_values_records.jsonl",
+      "records_sha256": "5a033461defcdfabf8d9c8bf5a1810c78eaba9db125f8848f305542cf46b16b2",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 707,
+          "accuracy": 0.7134,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6845,
+            0.7407
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 24,
+          "accuracy": 0.6316,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.4728,
+            0.7662
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 145,
+          "accuracy": 0.6713,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6061,
+            0.7305
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 876,
+          "accuracy": 0.7036,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.6721,
+          "accuracy_ci95": [
+            0.6777,
+            0.7283
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.7134,
+            0.6316
+          ],
+          "difference": 0.0818,
+          "fisher_exact_two_sided_p": 0.278,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.7134,
+            0.6713
+          ],
+          "difference": 0.0421,
+          "fisher_exact_two_sided_p": 0.218,
+          "separated_at_05": false
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.6316,
+            0.6713
+          ],
+          "difference": -0.0397,
+          "fisher_exact_two_sided_p": 0.71,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "table_unit",
+      "records": "results/retrieval_accuracy/t_table_hybrid_records.jsonl",
+      "records_sha256": "4bc51595d7ca82903d347fca458d7e24e7261ae2ac53361b7a8a2c939f675f4f",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 839,
+          "accuracy": 0.8466,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.8228,
+            0.8677
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 34,
+          "accuracy": 0.8947,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.7587,
+            0.9583
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 171,
+          "accuracy": 0.7917,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.7326,
+            0.8405
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 1044,
+          "accuracy": 0.8386,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.8443,
+          "accuracy_ci95": [
+            0.8171,
+            0.8579
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.8466,
+            0.8947
+          ],
+          "difference": -0.0481,
+          "fisher_exact_two_sided_p": 0.643,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.8466,
+            0.7917
+          ],
+          "difference": 0.0549,
+          "fisher_exact_two_sided_p": 0.0535,
+          "separated_at_05": false
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.8947,
+            0.7917
+          ],
+          "difference": 0.103,
+          "fisher_exact_two_sided_p": 0.182,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "trag_hetero_tok",
+      "records": "results/retrieval_accuracy/t_trag_hetero_tok_records.jsonl",
+      "records_sha256": "d572a5ed8cd84230220c02c5ef0cb04c3f3df2ffdd55db64aa06df4cb5566b7b",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 794,
+          "accuracy": 0.8012,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.7752,
+            0.8249
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 31,
+          "accuracy": 0.8158,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6658,
+            0.9078
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 170,
+          "accuracy": 0.787,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.7277,
+            0.8364
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 995,
+          "accuracy": 0.7992,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.8013,
+          "accuracy_ci95": [
+            0.776,
+            0.8205
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.8012,
+            0.8158
+          ],
+          "difference": -0.0146,
+          "fisher_exact_two_sided_p": 1.0,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.8012,
+            0.787
+          ],
+          "difference": 0.0142,
+          "fisher_exact_two_sided_p": 0.64,
+          "separated_at_05": false
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.8158,
+            0.787
+          ],
+          "difference": 0.0288,
+          "fisher_exact_two_sided_p": 0.83,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "tablerag_leaf",
+      "records": "results/retrieval_accuracy/t_tablerag_leaf_records.jsonl",
+      "records_sha256": "9e6f7f80e6027c19444400c424540d8a84a9817c72d849fa786abb4a483e6b2e",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 68,
+          "accuracy": 0.0686,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.0545,
+            0.0861
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 2,
+          "accuracy": 0.0526,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.0146,
+            0.1729
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 4,
+          "accuracy": 0.0185,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.0072,
+            0.0466
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 74,
+          "accuracy": 0.0594,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.0466,
+          "accuracy_ci95": [
+            0.0476,
+            0.074
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.0686,
+            0.0526
+          ],
+          "difference": 0.016,
+          "fisher_exact_two_sided_p": 1.0,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.0686,
+            0.0185
+          ],
+          "difference": 0.0501,
+          "fisher_exact_two_sided_p": 0.00374,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.0526,
+            0.0185
+          ],
+          "difference": 0.0341,
+          "fisher_exact_two_sided_p": 0.221,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "tablerag_path",
+      "records": "results/retrieval_accuracy/t_tablerag_path_records.jsonl",
+      "records_sha256": "c4ee816b941da13bdb30f2225c3228048647a5cf7014423e0ee96b62a16f7898",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 142,
+          "accuracy": 0.1433,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.1229,
+            0.1665
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 2,
+          "accuracy": 0.0526,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.0146,
+            0.1729
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 19,
+          "accuracy": 0.088,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.057,
+            0.1333
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 163,
+          "accuracy": 0.1309,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.0946,
+          "accuracy_ci95": [
+            0.1133,
+            0.1508
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.1433,
+            0.0526
+          ],
+          "difference": 0.0907,
+          "fisher_exact_two_sided_p": 0.151,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.1433,
+            0.088
+          ],
+          "difference": 0.0553,
+          "fisher_exact_two_sided_p": 0.0352,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.0526,
+            0.088
+          ],
+          "difference": -0.0354,
+          "fisher_exact_two_sided_p": 0.749,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "s3c_bm25only",
+      "records": "results/retrieval_accuracy/t_s3c_bm25_records.jsonl",
+      "records_sha256": "a6fd37c31a57c856d755cb165de9129384fef8495b91371c6bf012dae1eee206",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 763,
+          "accuracy": 0.7699,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.7427,
+            0.7951
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 24,
+          "accuracy": 0.6316,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.4728,
+            0.7662
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 137,
+          "accuracy": 0.6343,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.5682,
+            0.6956
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 924,
+          "accuracy": 0.7422,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.6786,
+          "accuracy_ci95": [
+            0.7172,
+            0.7657
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.7699,
+            0.6316
+          ],
+          "difference": 0.1383,
+          "fisher_exact_two_sided_p": 0.0767,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.7699,
+            0.6343
+          ],
+          "difference": 0.1356,
+          "fisher_exact_two_sided_p": 6.61e-05,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.6316,
+            0.6343
+          ],
+          "difference": -0.0027,
+          "fisher_exact_two_sided_p": 1.0,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "s3c_denseonly",
+      "records": "results/retrieval_accuracy/t_s3c_dense_records.jsonl",
+      "records_sha256": "034afdca77c79bc6ce4397f53f34dee06f010d05dde784c73fd708030ac1c267",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 907,
+          "accuracy": 0.9152,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.8963,
+            0.931
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 30,
+          "accuracy": 0.7895,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6365,
+            0.8893
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 157,
+          "accuracy": 0.7269,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6639,
+            0.7819
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 1094,
+          "accuracy": 0.8787,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.8105,
+          "accuracy_ci95": [
+            0.8594,
+            0.8957
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.9152,
+            0.7895
+          ],
+          "difference": 0.1257,
+          "fisher_exact_two_sided_p": 0.0155,
+          "separated_at_05": true
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.9152,
+            0.7269
+          ],
+          "difference": 0.1883,
+          "fisher_exact_two_sided_p": 1.64e-12,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.7895,
+            0.7269
+          ],
+          "difference": 0.0626,
+          "fisher_exact_two_sided_p": 0.55,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "flat_ablation",
+      "records": "results/retrieval_accuracy/t_flat_hybrid_records.jsonl",
+      "records_sha256": "f195d5e97dcb1db52f5baccd64ba29851c5c68e48263e2fbf4d6fc7ecd2bf8b4",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 562,
+          "accuracy": 0.5671,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.5361,
+            0.5976
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 18,
+          "accuracy": 0.4737,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.3248,
+            0.6274
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 78,
+          "accuracy": 0.3611,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.3,
+            0.4271
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 658,
+          "accuracy": 0.5285,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.4673,
+          "accuracy_ci95": [
+            0.5007,
+            0.5561
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.5671,
+            0.4737
+          ],
+          "difference": 0.0934,
+          "fisher_exact_two_sided_p": 0.317,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.5671,
+            0.3611
+          ],
+          "difference": 0.206,
+          "fisher_exact_two_sided_p": 4.83e-08,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.4737,
+            0.3611
+          ],
+          "difference": 0.1126,
+          "fisher_exact_two_sided_p": 0.207,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    },
+    {
+      "arm": "s2_ablation",
+      "records": "results/retrieval_accuracy/t_s2_hybrid_records.jsonl",
+      "records_sha256": "93a607fef3fd07aa3782d08a390ced06b05457086943130f2a2d9665fa98cd7d",
+      "evidence": "stored_pass_fail",
+      "retrieval_setting": {
+        "split": null,
+        "corpus": null,
+        "unit": null,
+        "template": null,
+        "encoder": null,
+        "alpha": null,
+        "budget_cells": 20,
+        "n_units": null,
+        "context_version": null
+      },
+      "type_accuracy": {
+        "single_cell": {
+          "n": 991,
+          "success": 792,
+          "accuracy": 0.7992,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.7731,
+            0.823
+          ]
+        },
+        "multi_cell": {
+          "n": 38,
+          "success": 30,
+          "accuracy": 0.7895,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.6365,
+            0.8893
+          ]
+        },
+        "arithmetic": {
+          "n": 216,
+          "success": 138,
+          "accuracy": 0.6389,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "accuracy_ci95": [
+            0.5729,
+            0.7
+          ]
+        },
+        "overall": {
+          "n": 1245,
+          "success": 960,
+          "accuracy": 0.7711,
+          "mean_evidence_recall_DIAGNOSTIC": null,
+          "over_budget": null,
+          "macro_accuracy": 0.7425,
+          "accuracy_ci95": [
+            0.7469,
+            0.7936
+          ]
+        },
+        "n_excluded": 3
+      },
+      "pairwise_tests": {
+        "single_cell_vs_multi_cell": {
+          "accuracy": [
+            0.7992,
+            0.7895
+          ],
+          "difference": 0.0097,
+          "fisher_exact_two_sided_p": 0.838,
+          "separated_at_05": false
+        },
+        "single_cell_vs_arithmetic": {
+          "accuracy": [
+            0.7992,
+            0.6389
+          ],
+          "difference": 0.1603,
+          "fisher_exact_two_sided_p": 1.14e-06,
+          "separated_at_05": true
+        },
+        "multi_cell_vs_arithmetic": {
+          "accuracy": [
+            0.7895,
+            0.6389
+          ],
+          "difference": 0.1506,
+          "fisher_exact_two_sided_p": 0.0935,
+          "separated_at_05": false
+        }
+      },
+      "n_header_answer_not_typed": 336
+    }
+  ],
+  "rows_sha256": {
+    "s3c_legacy": "ff13851b728393b4ec36434a3bcec97ed866e1d6c569952c22c8aebdb0381dae",
+    "row_sentence": "599544403c543b8383be02c66b5cbf9d3b2e866751660e9a94e5a9bad7052eb2",
+    "row_values": "a8f6153f5fde33d5cd38c913a9f317315f94eeb40e47736d4b792c329a5d24b6",
+    "table_unit": "cd0785423956bf45fd2e3be82e5b33dfe442a5bb7d31c733c07663c07006cc7f",
+    "trag_hetero_tok": "dc91a09bc0080225251eaf0e4f36f264a559d53d3d322504707ac35024997eee",
+    "tablerag_leaf": "0d2b5f7ed6ddd0aea0912d552e4287d6b00789ba2d5565c26a3f4e03cdf52820",
+    "tablerag_path": "2e1e7db9f35f38c99bb7bbd395e6eb139357483ad9051792dba0f90a5ee041c7",
+    "s3c_bm25only": "e7fbc7c93bca7751bf5dbbebae560729d3049150490a0306fcc1f8c8a3569d35",
+    "s3c_denseonly": "738539e4a063ac8caeafb643f3b73003b012013796b19b88144929d3db6508c6",
+    "flat_ablation": "cbd70297ba6c6fedc08e56906cd785729a84aafee45e51ed6dd5dd30ad41ca98",
+    "s2_ablation": "4027470a86551c8d432eec576f13c81f15af44b08f7212fd38ae3ce46b8417e5"
+  }
+}
