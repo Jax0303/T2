@@ -4,7 +4,7 @@
 
 Start at [`CLAUDE.md`](CLAUDE.md) (authoritative: problem, priorities, rejected
 hypotheses, citation rules), then [`RESULTS.md`](RESULTS.md) (every current number with
-its source file) and the latest `HANDOFF-<date>.md`. Pre-2026-08-31 numbers are in
+its source file) and the latest status docs listed in `CLAUDE.md`. Pre-2026-08-31 numbers are in
 `RESULTS_ARCHIVE-2026-08-30.md`, deleted 2026-09-08 and recoverable with
 `git show 6e8302a:rag-agent/RESULTS_ARCHIVE-2026-08-30.md`.
 
@@ -101,4 +101,4 @@ injection, completeness gate, header-path resolvers, FinQA/WikiSQL/IM-TQA loader
 closed on 2026-08-30 and removed from the tree on 2026-09-05. The metric line that replaced
 it (`all-covered@k`, the fine-tuned encoders, the dev split) was closed on 2026-09-08 and its
 88 remaining files removed in the same commit. Both are in git history; nothing in the tree
-belongs to either. `START-HERE-2026-09-08.md` is where a new session begins.
+belongs to either. A new session begins at `CLAUDE.md` §0.
