@@ -169,3 +169,52 @@ def test_correction_refuses_a_gold_leg_from_a_different_reader(tmp_path):
     gold, gold_meta = read_leg(gold_path)
     with pytest.raises(ValueError, match="disagree on seed"):
         arm_table("arm", base, gold, gold_meta, 20)
+
+
+# --- 유형과 |G| 의 교락 ------------------------------------------------------
+
+def test_single_cell_gets_the_completion_term_for_free():
+    """단일 셀은 |G|=1 로 정의되므로 완결 항이 항상 1 이다 — 유형 비교를 막는 사실."""
+    from analysis.type_accuracy_offline import reach_completion
+
+    records = {"s1": record("s1", [0], [0], 1), "s2": record("s2", [0], [9], 0),
+               "a1": record("a1", [0, 1], [0, 1], 1, agg="sum"),
+               "a2": record("a2", [0, 1], [0, 9], 0, agg="sum")}   # 도달했으나 미완결
+    rows, _ = rows_from_records(records, 20)
+    rc = reach_completion(rows)
+    assert rc["single_cell"] == {"n": 2, "reach": 0.5, "reach_ci95": wilson(1, 2),
+                                 "completion_given_reach": 1.0,
+                                 "completion_is_free_by_definition": True, "accuracy": 0.5}
+    # 산술은 두 질의 모두 도달했지만 하나만 완결했다.
+    assert rc["arithmetic"]["reach"] == 1.0
+    assert rc["arithmetic"]["completion_given_reach"] == 0.5
+    assert rc["arithmetic"]["completion_is_free_by_definition"] is False
+
+
+def test_gold_count_strata_ignore_the_type_label():
+    from analysis.type_accuracy_offline import by_gold_count
+
+    records = {"s": record("s", [0], [0], 1),
+               "a": record("a", [1], [1], 1, agg="sum"),          # 산술인데 |G|=1
+               "m": record("m", [0, 1], [0], 0)}
+    strata = by_gold_count(rows_from_records(records, 20)[0])
+    assert strata["1"] == {"n": 2, "success": 2, "accuracy": 1.0,
+                           "accuracy_ci95": wilson(2, 2)}          # 유형이 섞인다
+    assert strata["2"]["n"] == 1
+
+
+def test_matched_tests_only_compare_types_that_share_a_gold_count():
+    """단일 셀과 다중 셀은 |G| 가 겹치지 않아 짝지을 칸이 없다."""
+    from analysis.type_accuracy_offline import matched_type_tests
+
+    records = {"s": record("s", [0], [0], 1),
+               "a1": record("a1", [1], [1], 1, agg="sum"),
+               "m": record("m", [0, 1], [0, 1], 1),
+               "a2": record("a2", [0, 1], [0], 0, agg="sum")}
+    out = matched_type_tests(rows_from_records(records, 20)[0])
+    assert set(out) == {"gold_cells_1", "gold_cells_2"}
+    assert set(out["gold_cells_1"]) == {"single_cell", "arithmetic",
+                                        "arithmetic_vs_single_cell_p"}
+    assert set(out["gold_cells_2"]) == {"multi_cell", "arithmetic",
+                                        "arithmetic_vs_multi_cell_p"}
+    assert "multi_cell" not in out["gold_cells_1"]

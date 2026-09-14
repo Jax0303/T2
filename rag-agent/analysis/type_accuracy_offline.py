@@ -164,6 +164,139 @@ def pairwise_tests(table) -> dict:
     return out
 
 
+def reach_completion(rows) -> dict:
+    """정확도를 두 항으로 가른다 — 도달했는가, 도달한 뒤 완결했는가.
+
+        P(G ⊆ R) = P(G ∩ R ≠ ∅) · P(G ⊆ R | G ∩ R ≠ ∅)
+                   ~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~
+                       도달              완결
+
+    ``single_cell`` 은 |G|=1 로 **정의**되므로 완결 항이 항상 1 이다. 세 유형의
+    정확도를 나란히 놓으면 단일 셀만 완결 조건을 면제받은 수가 되어, 유형 사이
+    난이도 비교로 읽을 수 없다. 이 분해가 그 면제를 눈에 보이게 만든다.
+    """
+    out = {}
+    for t in TYPES:
+        v = [r for r in rows if r["query_type"] == t and r["retrieval_success"] is not None
+             and r["num_gold_retrieved"] is not None]
+        if not v:
+            continue
+        reached = [r for r in v if r["num_gold_retrieved"] > 0]
+        done = sum(r["retrieval_success"] for r in v)
+        out[t] = {"n": len(v), "reach": round(len(reached) / len(v), 4),
+                  "reach_ci95": wilson(len(reached), len(v)),
+                  "completion_given_reach":
+                      round(done / len(reached), 4) if reached else None,
+                  "completion_is_free_by_definition": all(r["num_gold_cells"] == 1 for r in v),
+                  "accuracy": round(done / len(v), 4)}
+    return out
+
+
+def by_gold_count(rows, cap: int = 5) -> dict:
+    """gold 셀 수만으로 가른 정확도. 유형을 무시한다."""
+    groups = {}
+    for r in rows:
+        if r["retrieval_success"] is None or r["query_type"] not in TYPES:
+            continue
+        key = f"{cap}+" if r["num_gold_cells"] >= cap else str(r["num_gold_cells"])
+        groups.setdefault(key, []).append(r["retrieval_success"])
+    return {k: {"n": len(v), "success": sum(v), "accuracy": round(sum(v) / len(v), 4),
+                "accuracy_ci95": wilson(sum(v), len(v))}
+            for k, v in sorted(groups.items())}
+
+
+def matched_type_tests(rows) -> dict:
+    """|G| 를 고정한 유형 비교. 유형과 |G| 의 교락을 떼어 내는 유일한 방법이다.
+
+    ``single_cell`` 은 |G|=1 에서만, ``multi_cell`` 은 |G|>=2 에서만 존재하므로
+    두 유형이 같은 |G| 에서 만나는 칸은 없다. ``arithmetic`` 만 양쪽에 걸쳐 있어
+    단일과도 다중과도 짝지을 수 있다 — 이 표가 유형 효과를 보는 유일한 창이다.
+    """
+    from scipy.stats import fisher_exact
+    cells = {}
+    for r in rows:
+        if r["retrieval_success"] is None or r["query_type"] not in TYPES:
+            continue
+        cells.setdefault((r["num_gold_cells"], r["query_type"]), []).append(
+            r["retrieval_success"])
+    out = {}
+    for m in sorted({k[0] for k in cells}):
+        present = {t: cells[(m, t)] for t in TYPES if (m, t) in cells}
+        if len(present) < 2:
+            continue
+        row = {t: {"n": len(v), "success": sum(v), "accuracy": round(sum(v) / len(v), 4)}
+               for t, v in present.items()}
+        names = sorted(present)
+        for i, a in enumerate(names):
+            for b in names[i + 1:]:
+                x, y = present[a], present[b]
+                _, pv = fisher_exact([[sum(x), len(x) - sum(x)],
+                                      [sum(y), len(y) - sum(y)]])
+                row[f"{a}_vs_{b}_p"] = float(f"{float(pv):.3g}")
+        out[f"gold_cells_{m}"] = row
+    return out
+
+
+def table_coverage(records: dict) -> dict | None:
+    """예산이 표를 통째로 덮어 ``G ⊆ R`` 이 공짜가 되지는 않는지 확인한다.
+
+    표 크기는 이 실행이 관측한 좌표의 상한으로 잡는다 — gold 와 문맥에 등장한 최대
+    행·열 인덱스의 곱이라 **실제 크기의 하한**이고, 따라서 덮개율은 **상한**이다.
+    상한조차 작으면 지표가 퇴화하지 않았다는 뜻이 된다. 좌표가 없는 구형 실행은
+    계산하지 않는다.
+    """
+    import statistics
+    dims: dict = {}
+    for r in records.values():
+        for key in ("gold_cells", "context_cells"):
+            for c in r.get(key) or []:
+                d = dims.setdefault(c[0], [0, 0])
+                d[0], d[1] = max(d[0], c[1] + 1), max(d[1], c[2] + 1)
+    fractions, sizes = [], []
+    for r in records.values():
+        if "correct" not in r:
+            continue                       # 제외 질의는 문맥을 받지 않는다
+        if r.get("context_cells") is None:
+            return None
+        rows_, cols = dims[r["table_id"]]
+        size = rows_ * cols
+        got = sum(1 for c in r["context_cells"] if c[0] == r["table_id"])
+        sizes.append(size)
+        fractions.append(got / size)
+    return {"n": len(fractions),
+            "table_size_lower_bound_cells": {"median": statistics.median(sizes),
+                                             "mean": round(statistics.mean(sizes), 1)},
+            "gold_table_cells_delivered_over_table_size_UPPER_BOUND":
+                {"median": round(statistics.median(fractions), 4),
+                 "mean": round(statistics.mean(fractions), 4)},
+            "queries_receiving_essentially_the_whole_table":
+                sum(1 for f in fractions if f >= 0.999)}
+
+
+def accuracy_by_table_size(rows, records, edges=(20, 50, 200)) -> dict | None:
+    """표 크기 계단별 정확도. 큰 표에서 떨어지면 지표가 크기에 반응한다는 증거다."""
+    dims: dict = {}
+    for r in records.values():
+        if "correct" not in r:
+            continue
+        if r.get("context_cells") is None:
+            return None
+        for key in ("gold_cells", "context_cells"):
+            for c in r.get(key) or []:
+                d = dims.setdefault(c[0], [0, 0])
+                d[0], d[1] = max(d[0], c[1] + 1), max(d[1], c[2] + 1)
+    bounds = [(0, edges[0]), *zip(edges, edges[1:]), (edges[-1], float("inf"))]
+    out = {}
+    for lo, hi in bounds:
+        v = [r["retrieval_success"] for r in rows
+             if r["retrieval_success"] is not None and r["query_type"] in TYPES
+             and lo <= (lambda d: d[0] * d[1])(dims[records[r["query_id"]]["table_id"]]) < hi]
+        if v:
+            label = f"{lo}-{int(hi) - 1}" if hi != float("inf") else f"{lo}+"
+            out[label] = {"n": len(v), "accuracy": round(sum(v) / len(v), 4)}
+    return out
+
+
 def check_against_committed(rows, table) -> None:
     """좌표가 다 있으면 커밋된 채점 함수와 결과가 같은지 확인한다."""
     if any(r["num_gold_retrieved"] is None for r in rows
@@ -206,6 +339,14 @@ def score_arm(name: str, records_path: Path, budget: int) -> dict:
                                   "context_version": meta.get("context_version")},
             "type_accuracy": table,
             "pairwise_tests": pairwise_tests(table),
+            "pairwise_tests_WARNING": ("유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 "
+                                       "정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. "
+                                       "matched_type_tests 를 볼 것."),
+            "reach_completion": reach_completion(rows),
+            "accuracy_by_gold_count": by_gold_count(rows),
+            "matched_type_tests": matched_type_tests(rows),
+            "table_coverage": table_coverage(records),
+            "accuracy_by_table_size": accuracy_by_table_size(rows, records),
             "n_header_answer_not_typed": header_answer_count(rows),
             "rows": rows}
 
@@ -262,9 +403,28 @@ def table_markdown(arms) -> str:
         f"| {a['pairwise_tests']['single_cell_vs_arithmetic']['fisher_exact_two_sided_p']:.3g} "
         f"| {a['pairwise_tests']['multi_cell_vs_arithmetic']['fisher_exact_two_sided_p']:.3g} |\n"
         for a in arms)
+    a = arms[0]
+    rc = ("\n도달·완결 분해 — P(G ⊆ R) = P(도달) · P(완결|도달)  (%s)\n\n"
+          "| 유형 | 도달 | 완결\\|도달 | 정확도 | 완결이 정의상 공짜인가 |\n"
+          "|---|---|---|---|---|\n" % a["arm"])
+    for t in TYPES:
+        b = a["reach_completion"].get(t)
+        if b:
+            rc += (f"| {t} | {b['reach']:.4f} | {b['completion_given_reach']:.4f} "
+                   f"| {b['accuracy']:.4f} | "
+                   f"{'예 (|G|=1)' if b['completion_is_free_by_definition'] else '아니오'} |\n")
+    gc = "\ngold 셀 수만으로 가른 정확도 (유형 무시):\n\n| \\|G\\| | n | 정확도 |\n|---|---|---|\n"
+    gc += "".join(f"| {k} | {v['n']} | {v['accuracy']:.4f} |\n"
+                  for k, v in a["accuracy_by_gold_count"].items())
+    mt = "\n|G| 를 고정한 유형 비교 (교락을 뗀 유일한 창):\n\n"
+    for key, row in a["matched_type_tests"].items():
+        parts = [f"{t}={row[t]['success']}/{row[t]['n']}={row[t]['accuracy']:.4f}"
+                 for t in TYPES if t in row]
+        ps = [f"{k.replace('_p', '')} p={v:.3g}" for k, v in row.items() if k.endswith("_p")]
+        mt += f"- {key}: " + " · ".join(parts) + ("  —  " + " · ".join(ps) if ps else "") + "\n"
     return (head + body + f"\n질의 수: 단일 셀 {counts['single_cell']['n']} · "
             f"다중 셀 {counts['multi_cell']['n']} · 산술 {counts['arithmetic']['n']} "
-            f"· 합 {counts['overall']['n']}\n" + tests)
+            f"· 합 {counts['overall']['n']}\n" + tests + rc + gc + mt)
 
 
 def main() -> int:

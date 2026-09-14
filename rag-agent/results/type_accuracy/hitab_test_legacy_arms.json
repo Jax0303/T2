@@ -4,9 +4,9 @@
   "budget_note": "셀 예산은 검색 설정이며 지표 이름에 붙이지 않는다",
   "retrieval_budget_cells": 20,
   "provenance": {
-    "git_commit": "e67af7590539c45aa9e6317b6b92af5e27d941ad",
-    "git_dirty": false,
-    "source_sha256": "0a7693b8bf7d5e2c0291dcc5262945efa127b4f11e3d6c63b8566ba0f46c0900",
+    "git_commit": "9b8512fec37bddcb1bca2a74b036709ced92aeff",
+    "git_dirty": true,
+    "source_sha256": "434229eafa7bec39c9b2c3af37cee828f87e4ce2f5f93673c394c29fea392782",
     "python": "3.11.15",
     "packages": {
       "numpy": "2.4.6",
@@ -113,6 +113,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 962,
+          "accuracy": 0.9153,
+          "accuracy_ci95": [
+            0.8969,
+            0.9307
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 134,
+          "accuracy": 0.7882,
+          "accuracy_ci95": [
+            0.7208,
+            0.8429
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 7,
+          "accuracy": 0.7,
+          "accuracy_ci95": [
+            0.3968,
+            0.8922
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.4899
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 5,
+          "accuracy": 0.5,
+          "accuracy_ci95": [
+            0.2366,
+            0.7634
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 906,
+            "accuracy": 0.9142
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 56,
+            "accuracy": 0.9333
+          },
+          "arithmetic_vs_single_cell_p": 0.812
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 27,
+            "accuracy": 0.871
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 107,
+            "accuracy": 0.7698
+          },
+          "arithmetic_vs_multi_cell_p": 0.33
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 5,
+            "accuracy": 0.8333
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 2,
+            "accuracy": 0.5
+          },
+          "arithmetic_vs_multi_cell_p": 0.5
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -208,6 +313,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 932,
+          "accuracy": 0.8868,
+          "accuracy_ci95": [
+            0.8662,
+            0.9045
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 127,
+          "accuracy": 0.7471,
+          "accuracy_ci95": [
+            0.6768,
+            0.8064
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 6,
+          "accuracy": 0.6,
+          "accuracy_ci95": [
+            0.3127,
+            0.8318
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 3,
+          "accuracy": 0.75,
+          "accuracy_ci95": [
+            0.3006,
+            0.9544
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 1,
+          "accuracy": 0.1,
+          "accuracy_ci95": [
+            0.0179,
+            0.4042
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 881,
+            "accuracy": 0.889
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 51,
+            "accuracy": 0.85
+          },
+          "arithmetic_vs_single_cell_p": 0.398
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 26,
+            "accuracy": 0.8387
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 101,
+            "accuracy": 0.7266
+          },
+          "arithmetic_vs_multi_cell_p": 0.255
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 4,
+            "accuracy": 0.6667
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 2,
+            "accuracy": 0.5
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 1,
+            "accuracy": 1.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 2,
+            "accuracy": 0.6667
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -303,6 +513,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 756,
+          "accuracy": 0.7193,
+          "accuracy_ci95": [
+            0.6914,
+            0.7456
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 113,
+          "accuracy": 0.6647,
+          "accuracy_ci95": [
+            0.5908,
+            0.7313
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 5,
+          "accuracy": 0.5,
+          "accuracy_ci95": [
+            0.2366,
+            0.7634
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 1,
+          "accuracy": 0.25,
+          "accuracy_ci95": [
+            0.0456,
+            0.6994
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 1,
+          "accuracy": 0.1,
+          "accuracy_ci95": [
+            0.0179,
+            0.4042
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 707,
+            "accuracy": 0.7134
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 49,
+            "accuracy": 0.8167
+          },
+          "arithmetic_vs_single_cell_p": 0.103
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 20,
+            "accuracy": 0.6452
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 93,
+            "accuracy": 0.6691
+          },
+          "arithmetic_vs_multi_cell_p": 0.835
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 4,
+            "accuracy": 0.6667
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 1,
+            "accuracy": 0.25
+          },
+          "arithmetic_vs_multi_cell_p": 0.524
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 1,
+            "accuracy": 0.3333
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -398,6 +713,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 887,
+          "accuracy": 0.844,
+          "accuracy_ci95": [
+            0.8208,
+            0.8646
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 138,
+          "accuracy": 0.8118,
+          "accuracy_ci95": [
+            0.7464,
+            0.8634
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 7,
+          "accuracy": 0.7,
+          "accuracy_ci95": [
+            0.3968,
+            0.8922
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 4,
+          "accuracy": 1.0,
+          "accuracy_ci95": [
+            0.5101,
+            1.0
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 8,
+          "accuracy": 0.8,
+          "accuracy_ci95": [
+            0.4902,
+            0.9433
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 839,
+            "accuracy": 0.8466
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 48,
+            "accuracy": 0.8
+          },
+          "arithmetic_vs_single_cell_p": 0.358
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 29,
+            "accuracy": 0.9355
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 109,
+            "accuracy": 0.7842
+          },
+          "arithmetic_vs_multi_cell_p": 0.0727
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 4,
+            "accuracy": 0.6667
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 3,
+            "accuracy": 0.75
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 1,
+            "accuracy": 1.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 3,
+            "accuracy": 1.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -493,6 +913,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 843,
+          "accuracy": 0.8021,
+          "accuracy_ci95": [
+            0.7769,
+            0.8251
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 136,
+          "accuracy": 0.8,
+          "accuracy_ci95": [
+            0.7335,
+            0.8532
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 7,
+          "accuracy": 0.7,
+          "accuracy_ci95": [
+            0.3968,
+            0.8922
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 4,
+          "accuracy": 1.0,
+          "accuracy_ci95": [
+            0.5101,
+            1.0
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 5,
+          "accuracy": 0.5,
+          "accuracy_ci95": [
+            0.2366,
+            0.7634
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 794,
+            "accuracy": 0.8012
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 49,
+            "accuracy": 0.8167
+          },
+          "arithmetic_vs_single_cell_p": 0.868
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 25,
+            "accuracy": 0.8065
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 111,
+            "accuracy": 0.7986
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 5,
+            "accuracy": 0.8333
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 2,
+            "accuracy": 0.5
+          },
+          "arithmetic_vs_multi_cell_p": 0.5
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 1,
+            "accuracy": 1.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 3,
+            "accuracy": 1.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -588,6 +1113,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 68,
+          "accuracy": 0.0647,
+          "accuracy_ci95": [
+            0.0514,
+            0.0812
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 5,
+          "accuracy": 0.0294,
+          "accuracy_ci95": [
+            0.0126,
+            0.067
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 1,
+          "accuracy": 0.1,
+          "accuracy_ci95": [
+            0.0179,
+            0.4042
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.4899
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.2775
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 68,
+            "accuracy": 0.0686
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_single_cell_p": 0.028
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 1,
+            "accuracy": 0.0323
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 4,
+            "accuracy": 0.0288
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 1,
+            "accuracy": 0.1667
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -683,6 +1313,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 152,
+          "accuracy": 0.1446,
+          "accuracy_ci95": [
+            0.1247,
+            0.1672
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 10,
+          "accuracy": 0.0588,
+          "accuracy_ci95": [
+            0.0323,
+            0.1049
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 1,
+          "accuracy": 0.1,
+          "accuracy_ci95": [
+            0.0179,
+            0.4042
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.4899
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.2775
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 142,
+            "accuracy": 0.1433
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 10,
+            "accuracy": 0.1667
+          },
+          "arithmetic_vs_single_cell_p": 0.573
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 1,
+            "accuracy": 0.0323
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 9,
+            "accuracy": 0.0647
+          },
+          "arithmetic_vs_multi_cell_p": 0.691
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 1,
+            "accuracy": 0.1667
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -778,6 +1513,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 808,
+          "accuracy": 0.7688,
+          "accuracy_ci95": [
+            0.7424,
+            0.7933
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 106,
+          "accuracy": 0.6235,
+          "accuracy_ci95": [
+            0.5487,
+            0.6929
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 6,
+          "accuracy": 0.6,
+          "accuracy_ci95": [
+            0.3127,
+            0.8318
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 1,
+          "accuracy": 0.25,
+          "accuracy_ci95": [
+            0.0456,
+            0.6994
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 3,
+          "accuracy": 0.3,
+          "accuracy_ci95": [
+            0.1078,
+            0.6032
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 763,
+            "accuracy": 0.7699
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 45,
+            "accuracy": 0.75
+          },
+          "arithmetic_vs_single_cell_p": 0.753
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 19,
+            "accuracy": 0.6129
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 87,
+            "accuracy": 0.6259
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 4,
+            "accuracy": 0.6667
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 2,
+            "accuracy": 0.5
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 1,
+            "accuracy": 1.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 0.25
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -873,6 +1713,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 961,
+          "accuracy": 0.9144,
+          "accuracy_ci95": [
+            0.8959,
+            0.9298
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 122,
+          "accuracy": 0.7176,
+          "accuracy_ci95": [
+            0.6458,
+            0.7799
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 5,
+          "accuracy": 0.5,
+          "accuracy_ci95": [
+            0.2366,
+            0.7634
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 1,
+          "accuracy": 0.25,
+          "accuracy_ci95": [
+            0.0456,
+            0.6994
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 5,
+          "accuracy": 0.5,
+          "accuracy_ci95": [
+            0.2366,
+            0.7634
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 907,
+            "accuracy": 0.9152
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 54,
+            "accuracy": 0.9
+          },
+          "arithmetic_vs_single_cell_p": 0.635
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 27,
+            "accuracy": 0.871
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 95,
+            "accuracy": 0.6835
+          },
+          "arithmetic_vs_multi_cell_p": 0.046
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 3,
+            "accuracy": 0.5
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 2,
+            "accuracy": 0.5
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 1,
+            "accuracy": 0.3333
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -968,6 +1913,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 595,
+          "accuracy": 0.5661,
+          "accuracy_ci95": [
+            0.536,
+            0.5958
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 57,
+          "accuracy": 0.3353,
+          "accuracy_ci95": [
+            0.2687,
+            0.4092
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 6,
+          "accuracy": 0.6,
+          "accuracy_ci95": [
+            0.3127,
+            0.8318
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.4899
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.2775
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 562,
+            "accuracy": 0.5671
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 33,
+            "accuracy": 0.55
+          },
+          "arithmetic_vs_single_cell_p": 0.79
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 14,
+            "accuracy": 0.4516
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 43,
+            "accuracy": 0.3094
+          },
+          "arithmetic_vs_multi_cell_p": 0.144
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 4,
+            "accuracy": 0.6667
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 2,
+            "accuracy": 0.5
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     },
     {
@@ -1063,6 +2113,111 @@
           "separated_at_05": false
         }
       },
+      "pairwise_tests_WARNING": "유형과 |G| 가 교락돼 있다 — single_cell 은 m=1 로 정의된다. 이 p 값을 유형 난이도 차로 읽지 말 것. matched_type_tests 를 볼 것.",
+      "reach_completion": {},
+      "accuracy_by_gold_count": {
+        "1": {
+          "n": 1051,
+          "success": 842,
+          "accuracy": 0.8011,
+          "accuracy_ci95": [
+            0.7759,
+            0.8242
+          ]
+        },
+        "2": {
+          "n": 170,
+          "success": 109,
+          "accuracy": 0.6412,
+          "accuracy_ci95": [
+            0.5667,
+            0.7094
+          ]
+        },
+        "3": {
+          "n": 10,
+          "success": 7,
+          "accuracy": 0.7,
+          "accuracy_ci95": [
+            0.3968,
+            0.8922
+          ]
+        },
+        "4": {
+          "n": 4,
+          "success": 0,
+          "accuracy": 0.0,
+          "accuracy_ci95": [
+            0.0,
+            0.4899
+          ]
+        },
+        "5+": {
+          "n": 10,
+          "success": 2,
+          "accuracy": 0.2,
+          "accuracy_ci95": [
+            0.0567,
+            0.5098
+          ]
+        }
+      },
+      "matched_type_tests": {
+        "gold_cells_1": {
+          "single_cell": {
+            "n": 991,
+            "success": 792,
+            "accuracy": 0.7992
+          },
+          "arithmetic": {
+            "n": 60,
+            "success": 50,
+            "accuracy": 0.8333
+          },
+          "arithmetic_vs_single_cell_p": 0.619
+        },
+        "gold_cells_2": {
+          "multi_cell": {
+            "n": 31,
+            "success": 25,
+            "accuracy": 0.8065
+          },
+          "arithmetic": {
+            "n": 139,
+            "success": 84,
+            "accuracy": 0.6043
+          },
+          "arithmetic_vs_multi_cell_p": 0.0389
+        },
+        "gold_cells_3": {
+          "multi_cell": {
+            "n": 6,
+            "success": 5,
+            "accuracy": 0.8333
+          },
+          "arithmetic": {
+            "n": 4,
+            "success": 2,
+            "accuracy": 0.5
+          },
+          "arithmetic_vs_multi_cell_p": 0.5
+        },
+        "gold_cells_4": {
+          "multi_cell": {
+            "n": 1,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic": {
+            "n": 3,
+            "success": 0,
+            "accuracy": 0.0
+          },
+          "arithmetic_vs_multi_cell_p": 1.0
+        }
+      },
+      "table_coverage": null,
+      "accuracy_by_table_size": null,
       "n_header_answer_not_typed": 336
     }
   ],
