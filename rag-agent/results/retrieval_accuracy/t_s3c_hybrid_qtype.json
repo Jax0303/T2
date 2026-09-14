@@ -1,0 +1,162 @@
+{
+  "context_version": 2,
+  "provenance": {
+    "git_commit": "74bd2e41948e4970b8092b26187df0ac05884941",
+    "git_dirty": true,
+    "source_sha256": "c4e31ef565523f288c40ef22d71b32e74b4c25e362e94de7d9ec17e19a7eb44b",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.4.3",
+      "scipy": "1.17.1",
+      "transformers": "5.5.0",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.10.0",
+      "bitsandbytes": null
+    }
+  },
+  "arguments": {
+    "split": "test",
+    "data_dir": "data/hitab",
+    "corpus": "split",
+    "template": "s3c",
+    "unit": "cell",
+    "chunk_chars": 1000,
+    "chunk_tokens": 0,
+    "chunk_overlap": 200,
+    "chunk_tokenizer": "",
+    "chunk_tokenizer_revision": null,
+    "row_text": "sentence",
+    "tablerag_dtype": "infer",
+    "tablerag_colmode": "leaf",
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_revision": null,
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "budget": 20,
+    "no_query_prefix": false,
+    "max_units": 0,
+    "rowcol_max_pairs": 200,
+    "rowcol_context": "markdown",
+    "rowcol_header": "leaf",
+    "cache_dir": ".cache/retrieval_accuracy",
+    "dump_context": 20,
+    "tag": "t_s3c_hybrid_qtype",
+    "out_dir": "results/retrieval_accuracy"
+  },
+  "comparison_scope": "index_representation_adaptation",
+  "dataset": {
+    "split_sha256": "cfb8296a23d4481757e1e9f63874085c90bc498386aa0b522c9ef3df65c1f339",
+    "tables_sha256": "9cabadbf57a6b5519543f7fd8b23ee53f4d76b1e659fc38a806a9b2a561fdfcd",
+    "page_titles_sha256": "b2e8f8118906e63dc7f4baae52968415cae5dc548579d3393cdb9c60e54251c8"
+  },
+  "corpus_text_sha256": "ff6b0d2731df009d816d15e509c87a9e8278286a0f0a2a0862ea6756be1d7773",
+  "encoder_details": {
+    "name": "BAAI/bge-base-en-v1.5",
+    "revision_requested": null,
+    "revision_resolved": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
+    "max_seq_length": 512,
+    "query_prefix": "Represent this sentence for searching relevant passages: ",
+    "passage_prefix": "",
+    "device": "cpu",
+    "batch_size": 64,
+    "normalized": true
+  },
+  "embedding_input_audit": {
+    "documents": {
+      "n": 67664,
+      "max_tokens": 144,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 1584,
+      "max_tokens": 84,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "chunk_measure": "characters",
+  "chunk_size": 1000,
+  "chunk_overlap": 0,
+  "chunk_tokenizer": null,
+  "chunk_tokenizer_revision": null,
+  "splitter": null,
+  "budget_policy": "whole_unit_stop_after_distinct_cells",
+  "cells_delivered_mean": 20.0,
+  "cells_over_budget": 0,
+  "split": "test",
+  "corpus": "split",
+  "n_tables": 538,
+  "n_units": 67664,
+  "unit": "cell",
+  "template": "s3c",
+  "chunk_chars": 1000,
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "tablerag_dtype": null,
+  "max_units": 0,
+  "rowcol_max_pairs": null,
+  "rowcol_context": null,
+  "rowcol_header": null,
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "alpha": 0.7,
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "budget_cells": 20,
+  "n_queries_in_split": 1584,
+  "n_scored": 1581,
+  "n_excluded": 3,
+  "excluded_by_reason": {
+    "no_gold_annotation": 1,
+    "gold_unmappable": 1,
+    "unreadable_formula:=IF(F10=MIN(F5:F18),\"Quebec\",\"\")": 1
+  },
+  "accuracy_all_mode": 0.89,
+  "n_all_mode": 1245,
+  "accuracy_any_mode": 0.8452,
+  "n_any_mode": 336,
+  "accuracy_scored": 0.8805,
+  "accuracy_over_full_split": 0.8788,
+  "gold_table_in_context": 0.9538,
+  "type_accuracy": {
+    "single_cell": {
+      "n": 991,
+      "success": 906,
+      "accuracy": 0.9142,
+      "mean_evidence_recall_DIAGNOSTIC": 0.9142,
+      "over_budget": 0
+    },
+    "multi_cell": {
+      "n": 38,
+      "success": 32,
+      "accuracy": 0.8421,
+      "mean_evidence_recall_DIAGNOSTIC": 0.8618,
+      "over_budget": 0
+    },
+    "arithmetic": {
+      "n": 216,
+      "success": 170,
+      "accuracy": 0.787,
+      "mean_evidence_recall_DIAGNOSTIC": 0.8546,
+      "over_budget": 0
+    },
+    "overall": {
+      "n": 1245,
+      "success": 1108,
+      "accuracy": 0.89,
+      "mean_evidence_recall_DIAGNOSTIC": 0.9023,
+      "over_budget": 0,
+      "macro_accuracy": 0.8478
+    },
+    "n_excluded": 3
+  },
+  "n_header_answer_not_typed": 336,
+  "type_accuracy_records_sha256": "b53618bc426520c1440adde24482e55db51911f09576a40a162c1847742e9549",
+  "records_sha256": "e25bdec72b78fcf96dc8d88b5222b4cd3a3ddaab0d0963ec106ce3dbd612a8ff"
+}

@@ -57,8 +57,41 @@ def test_gold_shape_matches_the_scorer():
     assert all(isinstance(c, tuple) and len(c) == 3 for c in cells)
 
 
+def test_type_accuracy_needs_every_gold_cell():
+    """세 유형 표: gold 일부만 찾으면 FAIL, 제외는 분모 밖, macro 는 유형 정확도 평균."""
+    from retrieval_accuracy import query_type, type_accuracy, type_row
+    A, B, C, X, Y = (("t", 0, j) for j in range(5))
+
+    def q(qid, gold, agg="none", mode="all", why=None):
+        return {"query_id": qid, "gold": set(gold), "aggregation": agg,
+                "mode": mode, "excluded": why}
+
+    rows = [type_row(q("s1", [A]), {A, X}, 20),
+            type_row(q("s2", [A]), {X}, 20),
+            type_row(q("m1", [A, B, C]), {A, B, C, X}, 20),
+            type_row(q("m2", [A, B, C]), {A, B, X, Y}, 20),        # 2/3 -> FAIL
+            type_row(q("a1", [A, B], "diff"), {A, B, X}, 2),       # last unit overshoots
+            type_row(q("e1", [A, B], why="gold_is_header_cell"), None, 20)]
+    assert [r["query_type"] for r in rows[:5]] == ["single_cell"] * 2 + ["multi_cell"] * 2 + ["arithmetic"]
+    assert query_type(q("h", [A, B], "argmax", mode="any")) == "header_answer"
+    assert rows[3]["retrieval_success"] == 0 and rows[3]["evidence_recall"] == 0.6667
+    assert (rows[3]["gold_cell_ids"], rows[3]["num_gold_cells"], rows[3]["num_gold_retrieved"],
+            rows[3]["num_retrieved_cells"]) == (sorted([A, B, C]), 3, 2, 4)
+    assert rows[4]["over_budget"] and rows[4]["retrieval_success"] == 1
+    assert rows[5]["retrieval_success"] is None and rows[5]["unresolved_gold_reason"]
+
+    ta = type_accuracy(rows)
+    assert (ta["single_cell"]["n"], ta["single_cell"]["accuracy"]) == (2, 0.5)
+    assert ta["multi_cell"]["mean_evidence_recall_DIAGNOSTIC"] == 0.8333
+    assert (ta["arithmetic"]["n"], ta["arithmetic"]["accuracy"]) == (1, 1.0)
+    o = ta["overall"]
+    assert (o["n"], o["success"], o["accuracy"], o["macro_accuracy"]) == (5, 3, 0.6, 0.6667)
+    assert (ta["n_excluded"], o["over_budget"]) == (1, 1)
+
+
 if __name__ == "__main__":
     test_cell_budget_is_counted_in_cells_not_units()
     test_pass_fail_is_all_or_any_by_mode()
     test_gold_shape_matches_the_scorer()
+    test_type_accuracy_needs_every_gold_cell()
     print("ok")

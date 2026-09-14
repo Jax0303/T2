@@ -57,7 +57,10 @@ def test_covers_are_valid_and_lossless(unit, kw, complete):
 @needs_data
 def test_scoring_has_no_per_arm_branch():
     src = (ROOT / "scripts/retrieval_accuracy.py").read_text()
-    seg = src[src.index('gold = q["gold"]'):src.index("recs.append(r)")]
+    # 채점 구간의 시작점. `gold = q["gold"]` 은 type_row 에도 있어 앵커로 못 쓴다 --
+    # 그때 구간이 argparse 까지 삼켜 이 검사가 엉뚱한 곳에서 터졌다.
+    assert src.count("got, n_cells, ctx = selected") == 1, "채점 구간 앵커가 유일하지 않다"
+    seg = src[src.index("got, n_cells, ctx = selected"):src.index("recs.append(r)")]
     assert "a.unit" not in seg and "unit ==" not in seg, "채점이 arm 마다 갈라진다"
     assert seg.count("hit =") == 1, "판정 식이 하나가 아니다"
 

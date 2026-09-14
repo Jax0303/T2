@@ -25,6 +25,13 @@ systems. Two gold shapes exist, both from the annotation:
 Queries whose gold cannot be resolved are EXCLUDED BY NAME with a reason and
 counted in the summary. They are not dropped into the denominator's shadow.
 
+A second table splits the ``all`` queries into three types by HiTab's own
+fields: single_cell (aggregation none, m=1), multi_cell (aggregation none,
+m>=2), arithmetic (any aggregation; gold = the operand cells). Each is PASS only
+when every gold cell is in the context (G ⊆ R). ``any`` header answers stay out
+of it. Per-query rows: ``{tag}_type_accuracy.jsonl``; exclusions:
+``{tag}_excluded.jsonl``.
+
   PYTHONPATH=. .venv/bin/python scripts/retrieval_accuracy.py --arm hybrid
 """
 from __future__ import annotations
@@ -544,6 +551,91 @@ def load_queries(data_dir: str, split: str, tabs):
     return out
 
 
+# 세 유형 표 (2026-09-14 사용자 지정). 가르는 규칙은 analysis/cell_id_report.py
+# `groups_of` 와 같다 — HiTab 필드(mode, aggregation)와 gold 셀 수로만 정한다.
+TYPES = ("single_cell", "multi_cell", "arithmetic")
+
+
+def query_type(q) -> str:
+    """``mode="any"`` 는 답이 헤더라 gold 가 "이 중 하나"인 범위다. G ⊆ R 판정이
+    성립하지 않으므로 세 유형에 넣지 않고 ``header_answer`` 로 남긴다."""
+    if q["mode"] == "any":
+        return "header_answer"
+    if (q.get("aggregation") or "none") != "none":
+        return "arithmetic"                  # gold = 계산에 들어가는 피연산자 셀
+    return {0: "unknown", 1: "single_cell"}.get(len(q["gold"]), "multi_cell")
+
+
+def type_row(q, got, budget: int) -> dict:
+    """질의 하나의 판정. ``got`` 은 예산 안에서 배달된 unique 셀 집합, 제외면 무시.
+
+    성공은 G ⊆ R 일 때만 1 이다. gold 일부만 찾은 질의는 0 이고, 그 몫은
+    ``evidence_recall`` 에만 남는다(진단값 — 정확도에 섞지 않는다).
+    """
+    gold = q["gold"]
+    got = None if q["excluded"] else set(got)
+    found = None if got is None else len(gold & got)
+    return {"query_id": q["query_id"], "query_type": query_type(q),
+            "retrieval_budget_cells": budget,          # 시스템 설정, 지표 이름이 아니다
+            "gold_cell_ids": sorted(gold),
+            "retrieved_cell_ids": None if got is None else sorted(got),
+            "num_gold_cells": len(gold),
+            "num_retrieved_cells": None if got is None else len(got),
+            "num_gold_retrieved": found,
+            "evidence_recall": None if got is None else round(found / len(gold), 4),
+            "retrieval_success": None if got is None else int(gold <= got),
+            "over_budget": None if got is None else len(got) > budget,
+            "unresolved_gold_reason": q["excluded"]}
+
+
+def type_accuracy(rows) -> dict:
+    """Retrieval Accuracy — 유형별, overall(전체 합산), macro(세 유형 단순 평균).
+
+    제외 질의(``retrieval_success is None``)는 분모에 넣지 않는다. 셀 예산은
+    검색 설정으로 남고 지표 이름에는 붙지 않는다 (2026-09-14 사용자 지정):
+    ``@k`` / ``@budget`` 이름은 k 사다리를 다시 읽히게 만든다.
+    """
+    def rate(num, n):
+        return round(num / n, 4) if n else None
+
+    def block(v):
+        s = sum(r["retrieval_success"] for r in v)
+        return {"n": len(v), "success": s, "accuracy": rate(s, len(v)),
+                "mean_evidence_recall_DIAGNOSTIC": rate(
+                    sum(r["num_gold_retrieved"] / r["num_gold_cells"] for r in v), len(v)),
+                "over_budget": sum(r["over_budget"] for r in v)}
+
+    scored = [r for r in rows if r["retrieval_success"] is not None]
+    out = {t: block([r for r in scored if r["query_type"] == t]) for t in TYPES}
+    out["overall"] = block([r for r in scored if r["query_type"] in TYPES])
+    out["overall"]["macro_accuracy"] = (
+        rate(sum(out[t]["success"] / out[t]["n"] for t in TYPES), len(TYPES))
+        if all(out[t]["n"] for t in TYPES) else None)
+    out["n_excluded"] = sum(1 for r in rows if r["unresolved_gold_reason"])
+    return out
+
+
+def print_type_table(ta, budget: int, n_header_answer: int) -> None:
+    """지표 이름에 ``@budget`` 을 붙이지 않는다. 예산은 검색 설정 줄로만 적는다."""
+    f = lambda x: "n/a" if x is None else f"{x:.4f}"
+    print(f"\nRetrieval configuration (not part of the metric name): "
+          f"budget = {budget} distinct cells")
+    for t, name in zip(TYPES, ("Single-cell", "Multi-cell", "Arithmetic")):
+        b = ta[t]
+        print(f"\n{name}\n* Queries: {b['n']}\n* Success: {b['success']}\n"
+              f"* Retrieval Accuracy: {f(b['accuracy'])}")
+        if t != "single_cell":
+            print(f"* Mean Evidence Recall: {f(b['mean_evidence_recall_DIAGNOSTIC'])}")
+    o = ta["overall"]
+    print(f"\nOverall\n* Queries: {o['n']}\n* Success: {o['success']}\n"
+          f"* Retrieval Accuracy: {f(o['accuracy'])}\n"
+          f"* Macro Retrieval Accuracy: {f(o['macro_accuracy'])}\n")
+    print(f"Evaluable queries: {o['n']}")
+    print(f"Excluded unresolved gold: {ta['n_excluded']}")
+    print(f"Over-budget queries: {o['over_budget']}")
+    print(f"Header-answer queries (mode=any, outside the 3 types): {n_header_answer}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -621,7 +713,8 @@ def main() -> int:
     if Path(tag).name != tag or any(c in tag for c in ("/", "\\")):
         ap.error("tag must be a filename, not a path")
     out = Path(a.out_dir)
-    if any((out / f"{tag}{suffix}").exists() for suffix in (".json", "_records.jsonl")):
+    if any((out / f"{tag}{suffix}").exists() for suffix in
+           (".json", "_records.jsonl", "_type_accuracy.jsonl", "_excluded.jsonl")):
         ap.error("output exists; use a new tag so legacy evidence is preserved")
     tokenizer = None
     if a.chunk_tokens:
@@ -676,11 +769,12 @@ def main() -> int:
             np.save(f, emb)
             print(f"[dense] encoded {len(texts)} in {time.time() - t0:.0f}s", flush=True)
 
-    recs, t0 = [], time.time()
+    recs, type_rows, t0 = [], [], time.time()
     for k, q in enumerate(queries, 1):
         if q["excluded"]:
             recs.append({"query_id": q["query_id"], "excluded": q["excluded"],
                          "table_id": q["table_id"], "mode": q["mode"]})
+            type_rows.append(type_row(q, None, a.budget))
             continue
         # `--corpus gold` reproduces TableRAG's setting: `init_retriever(table_id,
         # df)` builds one index per table and searches only inside it. Masking the
@@ -709,6 +803,9 @@ def main() -> int:
         got, n_cells, ctx = selected
         gold = q["gold"]
         hit = (gold <= got) if q["mode"] == "all" else bool(gold & got)
+        if query_type(q) in TYPES:
+            type_rows.append(type_row(q, got, a.budget))
+            assert type_rows[-1]["retrieval_success"] == int(hit), q["query_id"]
         # gold 를 처음 배달한 단위가 순위 몇 번째인가. 판정에는 쓰지 않는다 --
         # 진단값이다(`CLAUDE.md` §0.1: 주지표는 질의 단위 정확도 하나). 예산 안에
         # 들어왔는데도 리더가 틀리는 몫이 이 순위와 붙어 있어서 따로 센다.
@@ -786,13 +883,25 @@ def main() -> int:
             sum(r["correct"] for r in scored) / len(queries), 4),
         "gold_table_in_context": round(
             sum(r["gold_table_in_context"] for r in scored) / max(len(scored), 1), 4),
+        "type_accuracy": type_accuracy(type_rows),
+        "n_header_answer_not_typed": sum(r["mode"] == "any" for r in scored),
     }
+    out.mkdir(parents=True, exist_ok=True)
+    type_path = out / f"{tag}_type_accuracy.jsonl"
+    excluded = [{"query_id": r["query_id"], "query_type": r["query_type"],
+                 "reason": r["unresolved_gold_reason"]}
+                for r in type_rows if r["unresolved_gold_reason"]]
+    for path, rows in ((type_path, type_rows), (out / f"{tag}_excluded.jsonl", excluded)):
+        with path.open("x", encoding="utf-8", newline="\n") as fh:
+            fh.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
+    summary["type_accuracy_records_sha256"] = file_digest(type_path)
     # Retrieval summaries historically use tag.json, while reader outputs use
     # one shared stem. Keep the retrieval path convention and hash its records.
     records_path = out / f"{tag}_records.jsonl"
     write_pair(records_path, recs, summary, summary_path=out / f"{tag}.json")
     print(json.dumps(summary, indent=2))
-    print(f"wrote -> {out / tag}.json")
+    print_type_table(summary["type_accuracy"], a.budget, summary["n_header_answer_not_typed"])
+    print(f"wrote -> {out / tag}.json, {type_path.name}, {tag}_excluded.jsonl")
     return 0
 
 
