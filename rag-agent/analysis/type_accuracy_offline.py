@@ -297,6 +297,42 @@ def accuracy_by_table_size(rows, records, edges=(20, 50, 200)) -> dict | None:
     return out
 
 
+def pooled_matched_test(rows, a: str, b: str) -> dict | None:
+    """|G| 층을 합쳐 두 유형을 비교한다 — Cochran-Mantel-Haenszel.
+
+    층별 Fisher 는 칸마다 표본이 쪼개져 힘이 없다. 층을 합치되 |G| 는 고정한 채로
+    비교하는 것이 CMH 다. ``single_cell`` 과 ``multi_cell`` 은 |G| 가 겹치지 않아
+    공통 층이 없으므로 ``None`` 을 돌려준다 — 합칠 것이 없다는 사실 자체가 답이다.
+    """
+    from scipy.stats import chi2
+    strata, num, den, totals = [], 0.0, 0.0, [0, 0, 0, 0]
+    for m in sorted({r["num_gold_cells"] for r in rows
+                     if r["retrieval_success"] is not None}):
+        A = [r for r in rows if r["retrieval_success"] is not None
+             and r["query_type"] == a and r["num_gold_cells"] == m]
+        B = [r for r in rows if r["retrieval_success"] is not None
+             and r["query_type"] == b and r["num_gold_cells"] == m]
+        if not A or not B:
+            continue
+        sa, sb, n1, n2 = (sum(r["retrieval_success"] for r in A),
+                          sum(r["retrieval_success"] for r in B), len(A), len(B))
+        n, hit = n1 + n2, sa + sb
+        strata.append(m)
+        num += sa - n1 * hit / n
+        den += n1 * n2 * hit * (n - hit) / (n * n * (n - 1)) if n > 1 else 0.0
+        totals = [totals[0] + sa, totals[1] + n1, totals[2] + sb, totals[3] + n2]
+    if not strata or den <= 0:
+        return None
+    stat = (abs(num) - 0.5) ** 2 / den                  # 연속성 보정
+    return {"strata_gold_counts": strata,
+            a: {"success": totals[0], "n": totals[1],
+                "accuracy": round(totals[0] / totals[1], 4)},
+            b: {"success": totals[2], "n": totals[3],
+                "accuracy": round(totals[2] / totals[3], 4)},
+            "cmh_chi2": round(stat, 3), "cmh_p": float(f"{chi2.sf(stat, 1):.3g}"),
+            "separated_at_05": bool(chi2.sf(stat, 1) < 0.05)}
+
+
 def check_against_committed(rows, table) -> None:
     """좌표가 다 있으면 커밋된 채점 함수와 결과가 같은지 확인한다."""
     if any(r["num_gold_retrieved"] is None for r in rows
@@ -345,6 +381,11 @@ def score_arm(name: str, records_path: Path, budget: int) -> dict:
             "reach_completion": reach_completion(rows),
             "accuracy_by_gold_count": by_gold_count(rows),
             "matched_type_tests": matched_type_tests(rows),
+            "pooled_matched_tests": {
+                f"{a}_vs_{b}": pooled_matched_test(rows, a, b)
+                for a, b in (("single_cell", "multi_cell"),
+                             ("single_cell", "arithmetic"),
+                             ("multi_cell", "arithmetic"))},
             "table_coverage": table_coverage(records),
             "accuracy_by_table_size": accuracy_by_table_size(rows, records),
             "n_header_answer_not_typed": header_answer_count(rows),
@@ -417,6 +458,11 @@ def table_markdown(arms) -> str:
     gc += "".join(f"| {k} | {v['n']} | {v['accuracy']:.4f} |\n"
                   for k, v in a["accuracy_by_gold_count"].items())
     mt = "\n|G| 를 고정한 유형 비교 (교락을 뗀 유일한 창):\n\n"
+    for key, v in a["pooled_matched_tests"].items():
+        mt += (f"- {key} 층 합산(CMH): 공통 |G| 층 없음 — 합칠 것이 없다\n" if v is None
+               else f"- {key} 층 합산(CMH, |G|={v['strata_gold_counts']}): "
+                    f"p={v['cmh_p']:.3g}\n")
+    mt += "\n"
     for key, row in a["matched_type_tests"].items():
         parts = [f"{t}={row[t]['success']}/{row[t]['n']}={row[t]['accuracy']:.4f}"
                  for t in TYPES if t in row]
