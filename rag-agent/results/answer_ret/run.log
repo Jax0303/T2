@@ -1,116 +1,0 @@
-[corpus] 424 tables / 58759 cells | [pop] 830 queries
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2228.98it/s]
-[cache] hit hitab_dev_models_bge-base-cell-ft-a0_58759_f3d4ebe830828512.npy
-[index] built in 1s
-  [rank] 100/830  14s
-  [rank] 200/830  30s
-  [rank] 300/830  45s
-  [rank] 400/830  59s
-  [rank] 500/830  74s
-  [rank] 600/830  89s
-  [rank] 700/830  104s
-  [rank] 800/830  119s
-[jobs] 3320 total, 0 done, 3320 to run
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:01<05:39,  1.00s/it]Loading weights:   1%|          | 2/339 [00:04<12:40,  2.26s/it]Loading weights:   1%|          | 4/339 [00:04<05:07,  1.09it/s]Loading weights:   1%|▏         | 5/339 [00:10<13:29,  2.42s/it]Loading weights:  87%|████████▋ | 294/339 [00:14<00:01, 28.24it/s]Loading weights:  90%|████████▉ | 305/339 [00:15<00:01, 29.18it/s]Loading weights: 100%|██████████| 339/339 [00:09<00:00, 35.27it/s]
-  100/3320  0.8min
-  200/3320  1.7min
-  300/3320  2.5min
-  400/3320  3.2min
-  500/3320  4.0min
-  600/3320  4.5min
-  700/3320  5.2min
-  800/3320  5.8min
-  900/3320  6.5min
-  1000/3320  7.2min
-  1100/3320  7.9min
-  1200/3320  8.6min
-  1300/3320  9.3min
-  1400/3320  9.9min
-  1500/3320  10.6min
-  1600/3320  11.3min
-  1700/3320  11.9min
-  1800/3320  12.5min
-  1900/3320  13.2min
-  2000/3320  13.9min
-  2100/3320  14.6min
-  2200/3320  15.2min
-  2300/3320  15.9min
-  2400/3320  16.5min
-  2500/3320  17.2min
-  2600/3320  17.9min
-  2700/3320  18.5min
-  2800/3320  19.2min
-  2900/3320  19.9min
-  3000/3320  20.5min
-  3100/3320  21.2min
-  3200/3320  21.8min
-  3300/3320  22.5min
-
-    cond     n       EM     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
-    gold   830   0.9036       1.0000     0.9036       nan       107
-    top1   830   0.6434       0.6819     0.9170    0.0568       107
-    top5   830   0.6819       0.8867     0.7595    0.0745       339
-   top10   830   0.6904       0.9145     0.7484    0.0704       630
--> results/answer_ret/a0_dev_all.jsonl
-[corpus] 424 tables / 58759 cells | [pop] 830 queries
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  55%|█████▌    | 110/199 [00:00<00:00, 1059.05it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1310.64it/s]
-[cache] hit hitab_dev_BAAI_bge-small-en-v1.5_58759_f3d4ebe830828512.npy
-[index] built in 1s
-  [rank] 100/830  12s
-  [rank] 200/830  25s
-  [rank] 300/830  38s
-  [rank] 400/830  51s
-  [rank] 500/830  63s
-  [rank] 600/830  77s
-  [rank] 700/830  90s
-  [rank] 800/830  102s
-[jobs] 830 total, 0 done, 830 to run
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:10,  1.35it/s]Loading weights:   1%|          | 2/339 [00:01<03:47,  1.48it/s]Loading weights:   1%|          | 4/339 [00:01<01:37,  3.45it/s]Loading weights:   2%|▏         | 6/339 [00:01<01:02,  5.30it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:15, 20.47it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:09, 33.94it/s]Loading weights:  10%|█         | 34/339 [00:02<00:08, 38.03it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:06, 42.93it/s]Loading weights:  14%|█▍        | 48/339 [00:07<01:19,  3.66it/s]Loading weights:  16%|█▌        | 53/339 [00:07<01:00,  4.73it/s]Loading weights:  19%|█▉        | 64/339 [00:08<00:34,  8.03it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 51.31it/s]
-  100/830  0.4min
-  200/830  0.9min
-  300/830  1.3min
-  400/830  1.8min
-  500/830  2.2min
-  600/830  2.6min
-  700/830  3.1min
-  800/830  3.5min
-
-    cond     n       EM     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
-    top1   830   0.4940       0.5157     0.9346    0.0249       108
--> results/answer_ret/base_dev_all.jsonl
-[corpus] 424 tables / 58759 cells | [pop] 33 queries
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2330.44it/s]
-[cache] hit hitab_dev_models_bge-base-cell-ft-a0_58759_f3d4ebe830828512.npy
-[index] built in 1s
-[jobs] 132 total, 0 done, 132 to run
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:29,  1.25it/s]Loading weights:   1%|          | 2/339 [00:01<03:37,  1.55it/s]Loading weights:   1%|          | 4/339 [00:07<11:20,  2.03s/it]Loading weights:   2%|▏         | 6/339 [00:07<06:05,  1.10s/it]Loading weights:   5%|▌         | 17/339 [00:07<01:17,  4.15it/s]Loading weights:  97%|█████████▋| 328/339 [00:12<00:00, 44.95it/s]Loading weights:  98%|█████████▊| 333/339 [00:12<00:00, 44.77it/s]Loading weights: 100%|██████████| 339/339 [00:12<00:00, 27.77it/s]
-  100/132  1.0min
-
-    cond     n       EM     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
-    gold    33   0.7879       1.0000     0.7879       nan       191
-    top1    33   0.0303       0.0000        nan    0.0303       119
-    top5    33   0.3030       0.5152     0.5294    0.0625       351
-   top10    33   0.3333       0.6667     0.5000    0.0000       625
--> results/answer_ret/a0_dev_multi.jsonl
-[corpus] 414 tables / 58460 cells | [pop] 31 queries
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2416.70it/s]
-[cache] hit hitab_test_models_bge-base-cell-ft-a0_58460_242671bfb9e2b75e.npy
-[index] built in 1s
-[jobs] 124 total, 0 done, 124 to run
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:46,  1.18it/s]Loading weights:   1%|          | 2/339 [00:01<03:32,  1.59it/s]Loading weights:   1%|          | 4/339 [00:01<01:30,  3.71it/s]Loading weights:   2%|▏         | 6/339 [00:01<00:55,  6.01it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:14, 22.52it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:08, 37.22it/s]Loading weights:  10%|█         | 34/339 [00:01<00:07, 39.88it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:06, 45.11it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:05, 53.89it/s]Loading weights:  17%|█▋        | 59/339 [00:02<00:05, 54.00it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:05, 48.65it/s]Loading weights:  22%|██▏       | 76/339 [00:08<00:57,  4.54it/s]Loading weights:  24%|██▎       | 80/339 [00:08<00:48,  5.35it/s]Loading weights:  26%|██▋       | 89/339 [00:08<00:31,  7.96it/s]Loading weights: 100%|██████████| 339/339 [00:06<00:00, 51.71it/s]
-  100/124  1.1min
-
-    cond     n       EM     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
-    gold    31   0.9032       1.0000     0.9032       nan       176
-    top1    31   0.0000       0.0000        nan    0.0000       110
-    top5    31   0.2903       0.5161     0.5625    0.0000       320
-   top10    31   0.3871       0.7097     0.5455    0.0000       590
--> results/answer_ret/a0_test_multi.jsonl

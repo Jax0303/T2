@@ -1,205 +1,0 @@
-=== dev lookup_all ===
-[corpus] 424 tables / 58759 cells | [pop] 809 audited queries
-  bm25_cell    @1=0.3906 @3=0.5946 @5=0.6638 @10=0.7540 @20=0.8133 @50=0.8690  (89s)
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  98%|█████████▊| 195/199 [00:00<00:00, 1949.79it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1980.82it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_01371b78fb0b9a3b.npy
-  dense_cell   @1=0.5266 @3=0.7169 @5=0.7738 @10=0.8344 @20=0.8888 @50=0.9308  (167s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  98%|█████████▊| 196/199 [00:00<00:00, 1959.72it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1984.01it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_01371b78fb0b9a3b.npy
-  hybrid_cell  @1=0.5637 @3=0.7404 @5=0.7960 @10=0.8591 @20=0.9061 @50=0.9407  (163s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2130.05it/s]
-[cache] wrote hitab_dev_BAAI_bge-base-en-v1.5_58759_b0cc0f10e77b875e.npy
-  flat_cell    @1=0.1706 @3=0.3103 @5=0.3684 @10=0.4635 @20=0.5698 @50=0.6786  (279s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2612.60it/s]
-[cache] wrote hitab_dev_BAAI_bge-base-en-v1.5_7196_17f9b7791cd02006.npy
-  row          @1=0.3968 @3=0.5402 @5=0.6007 @10=0.6724 @20=0.7750 @50=0.8443  (156s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2179.52it/s]
-[cache] wrote hitab_dev_BAAI_bge-base-en-v1.5_424_b46d2e7bce315c7d.npy
-  table        @1=0.8010 @3=0.9172 @5=0.9407 @10=0.9580 @20=0.9839 @50=0.9951  (23s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  20%|██        | 40/199 [00:00<00:00, 399.66it/s]Loading weights:  40%|████      | 80/199 [00:00<00:00, 393.15it/s]Loading weights:  60%|██████    | 120/199 [00:00<00:00, 373.25it/s]Loading weights:  85%|████████▌ | 170/199 [00:00<00:00, 420.26it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 474.32it/s]
-[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
-  ours         @1=0.7281 @3=0.8714 @5=0.9209 @10=0.9468 @20=0.9604 @50=0.9778  (147s)
-## `hitab_dev_lookup_all_clean` (n=809, split=dev, α=0.8, 제목 page)
-
-| 방식 | 청크 수 | 셀/청크 | @1 | @3 | @5 | @10 | @20 | @50 | MRR |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `bm25_cell` | 58759 | 1.0 | 0.3906 | 0.5946 | 0.6638 | 0.7540 | 0.8133 | 0.8690 | 0.5186 |
-| `dense_cell` | 58759 | 1.0 | 0.5266 | 0.7169 | 0.7738 | 0.8344 | 0.8888 | 0.9308 | 0.6375 |
-| `hybrid_cell` | 58759 | 1.0 | 0.5637 | 0.7404 | 0.7960 | 0.8591 | 0.9061 | 0.9407 | 0.6689 |
-| `flat_cell` | 58759 | 1.0 | 0.1706 | 0.3103 | 0.3684 | 0.4635 | 0.5698 | 0.6786 | 0.2696 |
-| `row` | 7196 | 8.17 | 0.3968 | 0.5402 | 0.6007 | 0.6724 | 0.7750 | 0.8443 | 0.4942 |
-| `table` | 424 | 138.58 | 0.8010 | 0.9172 | 0.9407 | 0.9580 | 0.9839 | 0.9951 | 0.8618 |
-| `ours` | 58759 | 1.0 | 0.7281 | 0.8714 | 0.9209 | 0.9468 | 0.9604 | 0.9778 | 0.8092 |
-EXIT 0
-=== dev lookup_multi ===
-[corpus] 424 tables / 58759 cells | [pop] 31 audited queries
-  bm25_cell    @1=0.0000 @3=0.2258 @5=0.3871 @10=0.5806 @20=0.7097 @50=0.8387  (6s)
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2376.01it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_01371b78fb0b9a3b.npy
-  dense_cell   @1=0.0000 @3=0.2903 @5=0.5484 @10=0.6129 @20=0.6452 @50=0.8065  (23s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2292.18it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_01371b78fb0b9a3b.npy
-  hybrid_cell  @1=0.0000 @3=0.3226 @5=0.5806 @10=0.6129 @20=0.6774 @50=0.8710  (14s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2571.39it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_b0cc0f10e77b875e.npy
-  flat_cell    @1=0.0000 @3=0.1613 @5=0.2903 @10=0.4194 @20=0.5484 @50=0.7419  (11s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2453.21it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_7196_17f9b7791cd02006.npy
-  row          @1=0.3226 @3=0.4839 @5=0.6129 @10=0.7419 @20=0.8387 @50=0.9677  (6s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2489.45it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_424_b46d2e7bce315c7d.npy
-  table        @1=0.8387 @3=0.9355 @5=0.9677 @10=0.9677 @20=1.0000 @50=1.0000  (5s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2105.69it/s]
-[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
-  ours         @1=0.0000 @3=0.4516 @5=0.5806 @10=0.8065 @20=0.8710 @50=0.9355  (10s)
-## `hitab_dev_lookup_multi_clean` (n=31, split=dev, α=0.8, 제목 page)
-
-| 방식 | 청크 수 | 셀/청크 | @1 | @3 | @5 | @10 | @20 | @50 | MRR |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `bm25_cell` | 58759 | 1.0 | 0.0000 | 0.2258 | 0.3871 | 0.5806 | 0.7097 | 0.8387 | 0.1863 |
-| `dense_cell` | 58759 | 1.0 | 0.0000 | 0.2903 | 0.5484 | 0.6129 | 0.6452 | 0.8065 | 0.2009 |
-| `hybrid_cell` | 58759 | 1.0 | 0.0000 | 0.3226 | 0.5806 | 0.6129 | 0.6774 | 0.8710 | 0.2245 |
-| `flat_cell` | 58759 | 1.0 | 0.0000 | 0.1613 | 0.2903 | 0.4194 | 0.5484 | 0.7419 | 0.1348 |
-| `row` | 7196 | 8.17 | 0.3226 | 0.4839 | 0.6129 | 0.7419 | 0.8387 | 0.9677 | 0.4526 |
-| `table` | 424 | 138.58 | 0.8387 | 0.9355 | 0.9677 | 0.9677 | 1.0000 | 1.0000 | 0.8871 |
-| `ours` | 58759 | 1.0 | 0.0000 | 0.4516 | 0.5806 | 0.8065 | 0.8710 | 0.9355 | 0.2516 |
-EXIT 0
-=== dev corpus_arith ===
-[corpus] 424 tables / 58759 cells | [pop] 167 audited queries
-  bm25_cell    @1=0.0898 @3=0.2395 @5=0.3234 @10=0.4431 @20=0.5090 @50=0.6228  (26s)
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2196.55it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_01371b78fb0b9a3b.npy
-  dense_cell   @1=0.1437 @3=0.2455 @5=0.3413 @10=0.3952 @20=0.5210 @50=0.6467  (47s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  61%|██████▏   | 122/199 [00:00<00:00, 1214.29it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1297.89it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_01371b78fb0b9a3b.npy
-  hybrid_cell  @1=0.1497 @3=0.2754 @5=0.3533 @10=0.4311 @20=0.5629 @50=0.6826  (39s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2582.33it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_58759_b0cc0f10e77b875e.npy
-  flat_cell    @1=0.0719 @3=0.1497 @5=0.1976 @10=0.3054 @20=0.3533 @50=0.4551  (32s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2115.81it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_7196_17f9b7791cd02006.npy
-  row          @1=0.1377 @3=0.3533 @5=0.4491 @10=0.5449 @20=0.6287 @50=0.6946  (11s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2579.00it/s]
-[cache] hit hitab_dev_BAAI_bge-base-en-v1.5_424_b46d2e7bce315c7d.npy
-  table        @1=0.6946 @3=0.8323 @5=0.8922 @10=0.9581 @20=1.0000 @50=1.0000  (8s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2181.19it/s]
-[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
-  ours         @1=0.1617 @3=0.3174 @5=0.4251 @10=0.5509 @20=0.6527 @50=0.7425  (38s)
-## `hitab_dev_corpus_arith_clean` (n=167, split=dev, α=0.8, 제목 page)
-
-| 방식 | 청크 수 | 셀/청크 | @1 | @3 | @5 | @10 | @20 | @50 | MRR |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `bm25_cell` | 58759 | 1.0 | 0.0898 | 0.2395 | 0.3234 | 0.4431 | 0.5090 | 0.6228 | 0.1972 |
-| `dense_cell` | 58759 | 1.0 | 0.1437 | 0.2455 | 0.3413 | 0.3952 | 0.5210 | 0.6467 | 0.2328 |
-| `hybrid_cell` | 58759 | 1.0 | 0.1497 | 0.2754 | 0.3533 | 0.4311 | 0.5629 | 0.6826 | 0.2475 |
-| `flat_cell` | 58759 | 1.0 | 0.0719 | 0.1497 | 0.1976 | 0.3054 | 0.3533 | 0.4551 | 0.1394 |
-| `row` | 7196 | 8.17 | 0.1377 | 0.3533 | 0.4491 | 0.5449 | 0.6287 | 0.6946 | 0.2803 |
-| `table` | 424 | 138.58 | 0.6946 | 0.8323 | 0.8922 | 0.9581 | 1.0000 | 1.0000 | 0.7817 |
-| `ours` | 58759 | 1.0 | 0.1617 | 0.3174 | 0.4251 | 0.5509 | 0.6527 | 0.7425 | 0.2818 |
-EXIT 0
-=== test lookup_all ===
-[corpus] 414 tables / 58460 cells | [pop] 728 audited queries
-  bm25_cell    @1=0.3242 @3=0.5330 @5=0.6154 @10=0.7280 @20=0.8008 @50=0.8599  (101s)
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2103.72it/s]
-[cache] wrote hitab_test_BAAI_bge-base-en-v1.5_58460_4ac6fab333541506.npy
-  dense_cell   @1=0.5247 @3=0.7212 @5=0.7830 @10=0.8654 @20=0.9203 @50=0.9698  (322s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2033.86it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_58460_4ac6fab333541506.npy
-  hybrid_cell  @1=0.5742 @3=0.7610 @5=0.8118 @10=0.8709 @20=0.9190 @50=0.9712  (160s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2140.72it/s]
-[cache] wrote hitab_test_BAAI_bge-base-en-v1.5_58460_79ea58c40afc72ed.npy
-  flat_cell    @1=0.1896 @3=0.3104 @5=0.3640 @10=0.4519 @20=0.5618 @50=0.6635  (204s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2313.77it/s]
-[cache] wrote hitab_test_BAAI_bge-base-en-v1.5_7136_8da36e23de4fec08.npy
-  row          @1=0.4835 @3=0.6277 @5=0.6717 @10=0.7363 @20=0.8118 @50=0.8764  (94s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2137.06it/s]
-[cache] wrote hitab_test_BAAI_bge-base-en-v1.5_414_082cac91ad8c3481.npy
-  table        @1=0.8434 @3=0.9258 @5=0.9437 @10=0.9643 @20=0.9835 @50=0.9931  (61s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  63%|██████▎   | 126/199 [00:00<00:00, 1257.76it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1690.24it/s]
-[cache] hit hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
-  ours         @1=0.6937 @3=0.8736 @5=0.9066 @10=0.9382 @20=0.9574 @50=0.9780  (637s)
-## `hitab_test_lookup_all_clean` (n=728, split=test, α=0.8, 제목 page)
-
-| 방식 | 청크 수 | 셀/청크 | @1 | @3 | @5 | @10 | @20 | @50 | MRR |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `bm25_cell` | 58460 | 1.0 | 0.3242 | 0.5330 | 0.6154 | 0.7280 | 0.8008 | 0.8599 | 0.4609 |
-| `dense_cell` | 58460 | 1.0 | 0.5247 | 0.7212 | 0.7830 | 0.8654 | 0.9203 | 0.9698 | 0.6419 |
-| `hybrid_cell` | 58460 | 1.0 | 0.5742 | 0.7610 | 0.8118 | 0.8709 | 0.9190 | 0.9712 | 0.6805 |
-| `flat_cell` | 58460 | 1.0 | 0.1896 | 0.3104 | 0.3640 | 0.4519 | 0.5618 | 0.6635 | 0.2800 |
-| `row` | 7136 | 8.19 | 0.4835 | 0.6277 | 0.6717 | 0.7363 | 0.8118 | 0.8764 | 0.5753 |
-| `table` | 414 | 141.21 | 0.8434 | 0.9258 | 0.9437 | 0.9643 | 0.9835 | 0.9931 | 0.8883 |
-| `ours` | 58460 | 1.0 | 0.6937 | 0.8736 | 0.9066 | 0.9382 | 0.9574 | 0.9780 | 0.7902 |
-EXIT 0
-=== test lookup_multi ===
-[corpus] 414 tables / 58460 cells | [pop] 29 audited queries
-  bm25_cell    @1=0.0000 @3=0.4138 @5=0.4828 @10=0.5862 @20=0.7931 @50=0.8621  (7s)
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2117.76it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_58460_4ac6fab333541506.npy
-  dense_cell   @1=0.0000 @3=0.3793 @5=0.6207 @10=0.6897 @20=0.8621 @50=1.0000  (1944s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  84%|████████▍ | 167/199 [00:00<00:00, 1659.76it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1896.46it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_58460_4ac6fab333541506.npy
-  hybrid_cell  @1=0.0000 @3=0.3793 @5=0.6897 @10=0.7586 @20=0.9310 @50=1.0000  (28s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2297.59it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_58460_79ea58c40afc72ed.npy
-  flat_cell    @1=0.0000 @3=0.1724 @5=0.2414 @10=0.4483 @20=0.6207 @50=0.7586  (24s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1988.39it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1983.10it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_7136_8da36e23de4fec08.npy
-  row          @1=0.2414 @3=0.5172 @5=0.5517 @10=0.6552 @20=0.7931 @50=0.9655  (9s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2319.39it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_414_082cac91ad8c3481.npy
-  table        @1=0.9655 @3=1.0000 @5=1.0000 @10=1.0000 @20=1.0000 @50=1.0000  (6s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  13%|█▎        | 25/199 [00:00<00:01, 107.45it/s]Loading weights:  21%|██        | 41/199 [00:00<00:01, 121.97it/s]Loading weights:  27%|██▋       | 54/199 [00:00<00:01, 113.14it/s]Loading weights:  37%|███▋      | 73/199 [00:00<00:01, 125.39it/s]Loading weights:  43%|████▎     | 86/199 [00:00<00:01, 80.96it/s] Loading weights:  48%|████▊     | 96/199 [00:01<00:01, 79.50it/s]Loading weights:  56%|█████▌    | 111/199 [00:01<00:01, 77.97it/s]Loading weights:  61%|██████    | 121/199 [00:01<00:00, 80.27it/s]Loading weights:  65%|██████▌   | 130/199 [00:01<00:00, 78.27it/s]Loading weights:  74%|███████▍  | 148/199 [00:01<00:00, 101.64it/s]Loading weights: 100%|██████████| 199/199 [00:01<00:00, 123.02it/s]
-[cache] hit hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
-  ours         @1=0.0000 @3=0.5172 @5=0.6207 @10=0.8621 @20=0.9310 @50=0.9655  (37s)
-## `hitab_test_lookup_multi_clean` (n=29, split=test, α=0.8, 제목 page)
-
-| 방식 | 청크 수 | 셀/청크 | @1 | @3 | @5 | @10 | @20 | @50 | MRR |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `bm25_cell` | 58460 | 1.0 | 0.0000 | 0.4138 | 0.4828 | 0.5862 | 0.7931 | 0.8621 | 0.2233 |
-| `dense_cell` | 58460 | 1.0 | 0.0000 | 0.3793 | 0.6207 | 0.6897 | 0.8621 | 1.0000 | 0.2677 |
-| `hybrid_cell` | 58460 | 1.0 | 0.0000 | 0.3793 | 0.6897 | 0.7586 | 0.9310 | 1.0000 | 0.2791 |
-| `flat_cell` | 58460 | 1.0 | 0.0000 | 0.1724 | 0.2414 | 0.4483 | 0.6207 | 0.7586 | 0.1370 |
-| `row` | 7136 | 8.19 | 0.2414 | 0.5172 | 0.5517 | 0.6552 | 0.7931 | 0.9655 | 0.3976 |
-| `table` | 414 | 141.21 | 0.9655 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 0.9770 |
-| `ours` | 58460 | 1.0 | 0.0000 | 0.5172 | 0.6207 | 0.8621 | 0.9310 | 0.9655 | 0.2950 |
-EXIT 0
-=== test corpus_arith ===
-[corpus] 414 tables / 58460 cells | [pop] 180 audited queries
-  bm25_cell    @1=0.0556 @3=0.2500 @5=0.3778 @10=0.5389 @20=0.7056 @50=0.8389  (29s)
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2363.36it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_58460_4ac6fab333541506.npy
-  dense_cell   @1=0.1111 @3=0.3722 @5=0.4833 @10=0.6500 @20=0.7833 @50=0.8833  (53s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2304.49it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_58460_4ac6fab333541506.npy
-  hybrid_cell  @1=0.1000 @3=0.4000 @5=0.5389 @10=0.7222 @20=0.8444 @50=0.9111  (45s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2317.71it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_58460_79ea58c40afc72ed.npy
-  flat_cell    @1=0.0556 @3=0.1167 @5=0.1667 @10=0.3000 @20=0.3722 @50=0.5278  (39s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2338.78it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_7136_8da36e23de4fec08.npy
-  row          @1=0.2889 @3=0.4556 @5=0.5333 @10=0.6333 @20=0.7333 @50=0.7667  (20s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2220.52it/s]
-[cache] hit hitab_test_BAAI_bge-base-en-v1.5_414_082cac91ad8c3481.npy
-  table        @1=0.9056 @3=0.9833 @5=0.9833 @10=0.9944 @20=0.9944 @50=1.0000  (14s)
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  53%|█████▎    | 106/199 [00:00<00:00, 1054.87it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1001.03it/s]
-[cache] hit hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
-  ours         @1=0.1889 @3=0.5333 @5=0.6111 @10=0.7389 @20=0.8778 @50=0.9389  (166s)
-## `hitab_test_corpus_arith_clean` (n=180, split=test, α=0.8, 제목 page)
-
-| 방식 | 청크 수 | 셀/청크 | @1 | @3 | @5 | @10 | @20 | @50 | MRR |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `bm25_cell` | 58460 | 1.0 | 0.0556 | 0.2500 | 0.3778 | 0.5389 | 0.7056 | 0.8389 | 0.2105 |
-| `dense_cell` | 58460 | 1.0 | 0.1111 | 0.3722 | 0.4833 | 0.6500 | 0.7833 | 0.8833 | 0.2874 |
-| `hybrid_cell` | 58460 | 1.0 | 0.1000 | 0.4000 | 0.5389 | 0.7222 | 0.8444 | 0.9111 | 0.2999 |
-| `flat_cell` | 58460 | 1.0 | 0.0556 | 0.1167 | 0.1667 | 0.3000 | 0.3722 | 0.5278 | 0.1194 |
-| `row` | 7136 | 8.19 | 0.2889 | 0.4556 | 0.5333 | 0.6333 | 0.7333 | 0.7667 | 0.4015 |
-| `table` | 414 | 141.21 | 0.9056 | 0.9833 | 0.9833 | 0.9944 | 0.9944 | 1.0000 | 0.9449 |
-| `ours` | 58460 | 1.0 | 0.1889 | 0.5333 | 0.6111 | 0.7389 | 0.8778 | 0.9389 | 0.3878 |
-EXIT 0
-BASELINES_DONE

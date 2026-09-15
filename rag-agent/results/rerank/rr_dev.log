@@ -1,57 +1,0 @@
-[corpus] 424 tables / 58759 cells | [pop] 830 queries
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  21%|██        | 41/199 [00:00<00:00, 398.69it/s]Loading weights:  46%|████▌     | 92/199 [00:00<00:00, 443.74it/s]Loading weights:  73%|███████▎  | 145/199 [00:00<00:00, 471.59it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 555.17it/s]
-[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
-[index] built in 1s
-Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:   7%|▋         | 27/393 [00:00<00:01, 269.80it/s]Loading weights:  15%|█▌        | 60/393 [00:00<00:01, 293.40it/s]Loading weights:  23%|██▎       | 90/393 [00:00<00:01, 294.54it/s]Loading weights:  31%|███       | 120/393 [00:00<00:00, 283.08it/s]Loading weights:  38%|███▊      | 149/393 [00:00<00:00, 275.14it/s]Loading weights:  46%|████▋     | 182/393 [00:00<00:00, 275.95it/s]Loading weights:  54%|█████▍    | 214/393 [00:00<00:00, 278.10it/s]Loading weights:  63%|██████▎   | 247/393 [00:00<00:00, 287.23it/s]Loading weights:  72%|███████▏  | 283/393 [00:00<00:00, 307.76it/s]Loading weights:  80%|███████▉  | 314/393 [00:08<00:05, 13.75it/s] Loading weights:  86%|████████▌ | 338/393 [00:08<00:03, 17.88it/s]Loading weights: 100%|██████████| 393/393 [00:08<00:00, 46.18it/s]
-  [rank] 100/830  23s
-  [rank] 200/830  44s
-  [rank] 300/830  67s
-  [rank] 400/830  91s
-  [rank] 500/830  114s
-  [rank] 600/830  138s
-  [rank] 700/830  169s
-  [rank] 800/830  184s
-[rerank] 리랭커 해제, GPU 0.42GiB
-[jobs] 3320 total, 0 done, 3320 to run
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<04:00,  1.40it/s]Loading weights:   1%|          | 2/339 [00:01<03:29,  1.61it/s]Loading weights:   1%|          | 4/339 [00:01<01:34,  3.56it/s]Loading weights:   2%|▏         | 6/339 [00:01<01:03,  5.27it/s]Loading weights:   5%|▍         | 16/339 [00:01<00:17, 18.49it/s]Loading weights:   6%|▌         | 20/339 [00:01<00:16, 19.17it/s]Loading weights:   8%|▊         | 28/339 [00:02<00:11, 27.13it/s]Loading weights:   9%|▉         | 32/339 [00:02<00:11, 26.47it/s]Loading weights:  12%|█▏        | 41/339 [00:02<00:08, 35.33it/s]Loading weights:  15%|█▌        | 52/339 [00:02<00:06, 44.36it/s]Loading weights:  17%|█▋        | 57/339 [00:02<00:06, 41.63it/s]Loading weights:  19%|█▉        | 65/339 [00:02<00:06, 44.54it/s]Loading weights:  22%|██▏       | 76/339 [00:03<00:05, 51.12it/s]Loading weights:  24%|██▍       | 82/339 [00:03<00:05, 49.12it/s]Loading weights:  26%|██▋       | 89/339 [00:03<00:04, 51.08it/s]Loading weights:  28%|██▊       | 95/339 [00:10<01:21,  3.01it/s]Loading weights:  29%|██▉       | 100/339 [00:10<01:02,  3.85it/s]Loading weights: 100%|██████████| 339/339 [00:07<00:00, 45.95it/s]
-  100/3320  0.5min
-  200/3320  1.2min
-  300/3320  1.7min
-  400/3320  2.3min
-  500/3320  2.8min
-  600/3320  3.4min
-  700/3320  3.9min
-  800/3320  4.5min
-  900/3320  5.0min
-  1000/3320  5.6min
-  1100/3320  6.2min
-  1200/3320  6.7min
-  1300/3320  7.3min
-  1400/3320  7.8min
-  1500/3320  8.4min
-  1600/3320  9.0min
-  1700/3320  9.5min
-  1800/3320  10.1min
-  1900/3320  10.7min
-  2000/3320  11.3min
-  2100/3320  11.9min
-  2200/3320  12.4min
-  2300/3320  13.0min
-  2400/3320  13.5min
-  2500/3320  14.1min
-  2600/3320  14.7min
-  2700/3320  15.2min
-  2800/3320  15.8min
-  2900/3320  16.4min
-  3000/3320  17.0min
-  3100/3320  17.6min
-  3200/3320  18.1min
-  3300/3320  18.7min
-
-    cond     n       EMEMlenient     gold전부주입     EM|주입됨     EM|안됨    ptok중앙
-    rr10   830   0.5916   0.6060       0.6181     0.9259    0.0505       108
-  rr10_3   830   0.6795   0.6976       0.8205     0.8062    0.1007       224
-    top1   830   0.6807   0.6988       0.7193     0.9196    0.0687       107
-    top3   830   0.7157   0.7434       0.8699     0.8047    0.1204       222
--> results/rerank/rr_dev.jsonl

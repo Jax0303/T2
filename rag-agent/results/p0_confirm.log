@@ -1,204 +1,0 @@
-=== [1] 산술 통제: 기성품 bge-base, page, sel, alpha=0.0 (기대 .5728) ===
-[corpus] 2043 tables / 291403 cells | [pop] 756 queries | 5s
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 31/199 [00:00<00:00, 295.57it/s]Loading weights:  33%|███▎      | 65/199 [00:00<00:00, 302.50it/s]Loading weights:  48%|████▊     | 96/199 [00:00<00:00, 295.60it/s]Loading weights:  65%|██████▍   | 129/199 [00:00<00:00, 280.34it/s]Loading weights:  79%|███████▉  | 158/199 [00:00<00:00, 165.75it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 259.18it/s]
-[cache] wrote hitab_train_BAAI_bge-base-en-v1.5_291403_32854596746f0224.npy
-[index] built in 504s
-  100/756  65s
-  200/756  125s
-  300/756  188s
-  400/756  252s
-  500/756  314s
-  600/756  375s
-  700/756  431s
-
-hitab / S3c / hybrid a=0.0 / table_prior=0.0  n=756
-     k  Recall@k   setEM@k   hit@k
-     1    0.2751    0.2751  0.2751
-     5    0.5106    0.5106  0.5106
-    10    0.5728    0.5728  0.5728
-    20    0.6521    0.6521  0.6521
-    50    0.7421    0.7421  0.7421
-   100    0.7804    0.7804  0.7804
-   200    0.8188    0.8188  0.8188
-   500    0.8810    0.8810  0.8810
-  setEM@10 miss n=323: of the cells outranking gold, 0.039 sit in the gold table itself (distinct tables above gold: median 6)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.3836 @5=0.7037 @10=0.8016 @20=0.8889 @50=0.9497   (gold table holds median 115 cells)
-  MRR(first gold cell)=0.3797   table recall@1=0.6005 @10=0.8770
-
-  split m=1  n=756
-     k  Recall@k   setEM@k   hit@k
-     1    0.2751    0.2751  0.2751
-     5    0.5106    0.5106  0.5106
-    10    0.5728    0.5728  0.5728
-    20    0.6521    0.6521  0.6521
-    50    0.7421    0.7421  0.7421
-   100    0.7804    0.7804  0.7804
-   200    0.8188    0.8188  0.8188
-   500    0.8810    0.8810  0.8810
-  setEM@10 miss n=323: of the cells outranking gold, 0.039 sit in the gold table itself (distinct tables above gold: median 6)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.3836 @5=0.7037 @10=0.8016 @20=0.8889 @50=0.9497   (gold table holds median 115 cells)
-  MRR(first gold cell)=0.3797   table recall@1=0.6005 @10=0.8770
-wrote -> results/p0_sel_stock/hitab_train_sel_lookup_all_S3c_page_hybrid0.0_tp0.0_ranks.jsonl
-CONTROL_DONE
-=== [2] dev 확정: p0, alpha=0.8 ===
-[corpus] 424 tables / 58759 cells | [pop] 830 queries | 1s
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  17%|█▋        | 33/199 [00:00<00:00, 307.80it/s]Loading weights:  36%|███▌      | 71/199 [00:00<00:00, 348.13it/s]Loading weights:  53%|█████▎    | 106/199 [00:00<00:00, 332.02it/s]Loading weights:  70%|███████   | 140/199 [00:00<00:00, 333.77it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 448.37it/s]
-[cache] wrote hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
-[index] built in 99s
-  100/830  19s
-  200/830  35s
-  300/830  53s
-  400/830  70s
-  500/830  88s
-  600/830  108s
-  700/830  126s
-  800/830  144s
-
-hitab / S3c / hybrid a=0.8 / table_prior=0.0  n=830
-     k  Recall@k   setEM@k   hit@k
-     1    0.7193    0.7193  0.7193
-     5    0.9193    0.9193  0.9193
-    10    0.9446    0.9446  0.9446
-    20    0.9578    0.9578  0.9578
-    50    0.9771    0.9771  0.9771
-   100    0.9855    0.9855  0.9855
-   200    0.9928    0.9928  0.9928
-   500    0.9976    0.9976  0.9976
-  setEM@10 miss n=46: of the cells outranking gold, 0.132 sit in the gold table itself (distinct tables above gold: median 6)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.7566 @5=0.9446 @10=0.9639 @20=0.9819 @50=0.9976   (gold table holds median 120 cells)
-  MRR(first gold cell)=0.8040   table recall@1=0.9193 @10=0.9964
-
-  split m=1  n=830
-     k  Recall@k   setEM@k   hit@k
-     1    0.7193    0.7193  0.7193
-     5    0.9193    0.9193  0.9193
-    10    0.9446    0.9446  0.9446
-    20    0.9578    0.9578  0.9578
-    50    0.9771    0.9771  0.9771
-   100    0.9855    0.9855  0.9855
-   200    0.9928    0.9928  0.9928
-   500    0.9976    0.9976  0.9976
-  setEM@10 miss n=46: of the cells outranking gold, 0.132 sit in the gold table itself (distinct tables above gold: median 6)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.7566 @5=0.9446 @10=0.9639 @20=0.9819 @50=0.9976   (gold table holds median 120 cells)
-  MRR(first gold cell)=0.8040   table recall@1=0.9193 @10=0.9964
-wrote -> results/p0_confirm/hitab_dev_lookup_all_S3c_page_hybrid0.8_tp0.0_ranks.jsonl
-[corpus] 424 tables / 58759 cells | [pop] 33 queries | 1s
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  18%|█▊        | 35/199 [00:00<00:00, 346.22it/s]Loading weights:  39%|███▉      | 78/199 [00:00<00:00, 392.34it/s]Loading weights:  63%|██████▎   | 126/199 [00:00<00:00, 432.01it/s]Loading weights:  85%|████████▌ | 170/199 [00:00<00:00, 415.83it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 471.69it/s]
-[cache] hit hitab_dev_models_bge-base-cell-ft-p0_58759_01371b78fb0b9a3b.npy
-[index] built in 2s
-
-hitab / S3c / hybrid a=0.8 / table_prior=0.0  n=33
-     k  Recall@k   setEM@k   hit@k
-     1    0.2308    0.0000  0.5455
-     5    0.7192    0.5758  0.8485
-    10    0.8712    0.8182  0.9394
-    20    0.9369    0.8788  1.0000
-    50    0.9697    0.9394  1.0000
-   100    0.9848    0.9697  1.0000
-   200    1.0000    1.0000  1.0000
-   500    1.0000    1.0000  1.0000
-  setEM@10 miss n=6: of the cells outranking gold, 0.406 sit in the gold table itself (distinct tables above gold: median 4)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.0000 @5=0.6364 @10=0.8485 @20=0.9394 @50=0.9697   (gold table holds median 90 cells)
-  MRR(first gold cell)=0.6815   table recall@1=0.9091 @10=1.0000
-
-  split m>=2  n=33
-     k  Recall@k   setEM@k   hit@k
-     1    0.2308    0.0000  0.5455
-     5    0.7192    0.5758  0.8485
-    10    0.8712    0.8182  0.9394
-    20    0.9369    0.8788  1.0000
-    50    0.9697    0.9394  1.0000
-   100    0.9848    0.9697  1.0000
-   200    1.0000    1.0000  1.0000
-   500    1.0000    1.0000  1.0000
-  setEM@10 miss n=6: of the cells outranking gold, 0.406 sit in the gold table itself (distinct tables above gold: median 4)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.0000 @5=0.6364 @10=0.8485 @20=0.9394 @50=0.9697   (gold table holds median 90 cells)
-  MRR(first gold cell)=0.6815   table recall@1=0.9091 @10=1.0000
-wrote -> results/p0_confirm/hitab_dev_lookup_multi_S3c_page_hybrid0.8_tp0.0_ranks.jsonl
-DEV_DONE
-=== test 확정 1회: p0, alpha=0.8, page ===
-[corpus] 414 tables / 58460 cells | [pop] 769 queries | 1s
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 32/199 [00:00<00:00, 291.97it/s]Loading weights:  37%|███▋      | 74/199 [00:00<00:00, 347.79it/s]Loading weights:  61%|██████    | 121/199 [00:00<00:00, 385.68it/s]Loading weights:  85%|████████▌ | 170/199 [00:00<00:00, 419.66it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 460.38it/s]
-[cache] wrote hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
-[index] built in 99s
-  100/769  20s
-  200/769  38s
-  300/769  54s
-  400/769  72s
-  500/769  86s
-  600/769  102s
-  700/769  117s
-
-hitab / S3c / hybrid a=0.8 / table_prior=0.0  n=769
-     k  Recall@k   setEM@k   hit@k
-     1    0.6710    0.6710  0.6710
-     5    0.8869    0.8869  0.8869
-    10    0.9246    0.9246  0.9246
-    20    0.9480    0.9480  0.9480
-    50    0.9766    0.9766  0.9766
-   100    0.9883    0.9883  0.9883
-   200    0.9935    0.9935  0.9935
-   500    0.9961    0.9961  0.9961
-  setEM@10 miss n=58: of the cells outranking gold, 0.267 sit in the gold table itself (distinct tables above gold: median 3)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.7178 @5=0.9090 @10=0.9415 @20=0.9649 @50=0.9896   (gold table holds median 90 cells)
-  MRR(first gold cell)=0.7701   table recall@1=0.9324 @10=0.9922
-
-  split m=1  n=769
-     k  Recall@k   setEM@k   hit@k
-     1    0.6710    0.6710  0.6710
-     5    0.8869    0.8869  0.8869
-    10    0.9246    0.9246  0.9246
-    20    0.9480    0.9480  0.9480
-    50    0.9766    0.9766  0.9766
-   100    0.9883    0.9883  0.9883
-   200    0.9935    0.9935  0.9935
-   500    0.9961    0.9961  0.9961
-  setEM@10 miss n=58: of the cells outranking gold, 0.267 sit in the gold table itself (distinct tables above gold: median 3)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.7178 @5=0.9090 @10=0.9415 @20=0.9649 @50=0.9896   (gold table holds median 90 cells)
-  MRR(first gold cell)=0.7701   table recall@1=0.9324 @10=0.9922
-wrote -> results/p0_confirm/hitab_test_lookup_all_S3c_page_hybrid0.8_tp0.0_ranks.jsonl
-[corpus] 414 tables / 58460 cells | [pop] 31 queries | 1s
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  25%|██▌       | 50/199 [00:00<00:00, 469.11it/s]Loading weights:  49%|████▊     | 97/199 [00:00<00:00, 402.10it/s]Loading weights:  69%|██████▉   | 138/199 [00:00<00:00, 383.01it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 509.27it/s]
-[cache] hit hitab_test_models_bge-base-cell-ft-p0_58460_4ac6fab333541506.npy
-[index] built in 1s
-
-hitab / S3c / hybrid a=0.8 / table_prior=0.0  n=31
-     k  Recall@k   setEM@k   hit@k
-     1    0.3763    0.0000  0.8065
-     5    0.7581    0.5806  0.9032
-    10    0.8925    0.8387  0.9355
-    20    0.9355    0.9032  0.9677
-    50    0.9516    0.9355  0.9677
-   100    0.9892    0.9677  1.0000
-   200    1.0000    1.0000  1.0000
-   500    1.0000    1.0000  1.0000
-  setEM@10 miss n=5: of the cells outranking gold, 0.221 sit in the gold table itself (distinct tables above gold: median 3)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.0000 @5=0.6129 @10=0.9032 @20=0.9677 @50=1.0000   (gold table holds median 63 cells)
-  MRR(first gold cell)=0.8472   table recall@1=0.9355 @10=1.0000
-
-  split m>=2  n=31
-     k  Recall@k   setEM@k   hit@k
-     1    0.3763    0.0000  0.8065
-     5    0.7581    0.5806  0.9032
-    10    0.8925    0.8387  0.9355
-    20    0.9355    0.9032  0.9677
-    50    0.9516    0.9355  0.9677
-   100    0.9892    0.9677  1.0000
-   200    1.0000    1.0000  1.0000
-   500    1.0000    1.0000  1.0000
-  setEM@10 miss n=5: of the cells outranking gold, 0.221 sit in the gold table itself (distinct tables above gold: median 3)
-  ORACLE table gating (rank inside the gold table only):
-   @1=0.0000 @5=0.6129 @10=0.9032 @20=0.9677 @50=1.0000   (gold table holds median 63 cells)
-  MRR(first gold cell)=0.8472   table recall@1=0.9355 @10=1.0000
-wrote -> results/p0_confirm/hitab_test_lookup_multi_S3c_page_hybrid0.8_tp0.0_ranks.jsonl
-TEST_DONE
