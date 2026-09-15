@@ -1,0 +1,35 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] 7117 queries / 7117 docs (제외: {'text_only': 713}) 2s
+[corpus] 28801 tables / 994405 cell units (19s)
+[bm25] 25466 terms in 5s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2855.57it/s]
+[dense] 0..50000 in 38s
+[dense] 50000..100000 in 40s
+[dense] 100000..150000 in 36s
+[dense] 150000..200000 in 37s
+[dense] 200000..250000 in 37s
+[dense] 250000..300000 in 36s
+[dense] 300000..350000 in 38s
+[dense] 350000..400000 in 38s
+[dense] 400000..450000 in 38s
+[dense] 450000..500000 in 37s
+[dense] 500000..550000 in 37s
+[dense] 550000..600000 in 38s
+[dense] 600000..650000 in 37s
+[dense] 650000..700000 in 37s
+[dense] 700000..750000 in 38s
+[dense] 750000..800000 in 37s
+[dense] 800000..850000 in 36s
+[dense] 850000..900000 in 37s
+[dense] 900000..950000 in 37s
+[dense] 950000..994405 in 33s
+overall: N=7036  Strict Recall=0.3110  Exact Set Match=0.1310  macro P/R/F1=0.5153/0.5259/0.4703  micro P/R/F1=0.4198/0.4762/0.4462  pred cells mean/median/p95=3.0684/2.0000/8  gold cells mean=2.7047  context tokens mean/median=88.5986/61.0000  Derived Table Coverage strict/P/R/F1=0.7652/0.8892/0.8478/0.8478
+single_cell: N=558  Strict Recall=0.6613  Exact Set Match=0.1344  macro P/R/F1=0.2973/0.6613/0.3743  micro P/R/F1=0.1992/0.6613/0.3062  pred cells mean/median/p95=3.3190/3.0000/9  gold cells mean=1.0000  context tokens mean/median=101.7473/71.0000  Derived Table Coverage strict/P/R/F1=0.9516/0.9023/0.9516/0.9185
+multi_cell: N=954  Strict Recall=0.5147  Exact Set Match=0.2516  macro P/R/F1=0.6022/0.6759/0.5919  micro P/R/F1=0.5169/0.6048/0.5574  pred cells mean/median/p95=3.8973/3.0000/10  gold cells mean=3.3312  context tokens mean/median=118.1583/85.0000  Derived Table Coverage strict/P/R/F1=0.9497/0.8981/0.9502/0.9151
+arithmetic: N=5524  Strict Recall=0.2404  Exact Set Match=0.1099  macro P/R/F1=0.5224/0.4864/0.4590  micro P/R/F1=0.4227/0.4428/0.4325  pred cells mean/median/p95=2.8999/2.0000/8  gold cells mean=2.7686  context tokens mean/median=82.1655/56.0000  Derived Table Coverage strict/P/R/F1=0.7145/0.8863/0.8196/0.8291
+all_table_questions: N=7036  Strict Recall=0.3110  Exact Set Match=0.1310  macro P/R/F1=0.5153/0.5259/0.4703  micro P/R/F1=0.4198/0.4762/0.4462  pred cells mean/median/p95=3.0684/2.0000/8  gold cells mean=2.7047  context tokens mean/median=88.5986/61.0000  Derived Table Coverage strict/P/R/F1=0.7652/0.8892/0.8478/0.8478
+table_only_questions: N=2885  Strict Recall=0.3383  Exact Set Match=0.1490  macro P/R/F1=0.5156/0.5437/0.4810  micro P/R/F1=0.4180/0.4986/0.4548  pred cells mean/median/p95=3.1633/2/9  gold cells mean=2.6520  context tokens mean/median=90.0101/59  Derived Table Coverage strict/P/R/F1=0.7847/0.8823/0.8582/0.8502
+hybrid_questions: N=4151  Strict Recall=0.2920  Exact Set Match=0.1185  macro P/R/F1=0.5152/0.5136/0.4629  micro P/R/F1=0.4211/0.4612/0.4402  pred cells mean/median/p95=3.0024/2/8  gold cells mean=2.7413  context tokens mean/median=87.6177/61  Derived Table Coverage strict/P/R/F1=0.7516/0.8940/0.8405/0.8462
+threshold 0.91 (applied_from_file, selected on validation); budget_select calls 0
+population {'all_table_questions': 7117, 'table_only_questions': 2908, 'hybrid_questions': 4209, 'text_only_questions_excluded': 713, 'no_evidence_excluded': 0, 'bad_evidence_coord_excluded': 0}; excluded 81 {'gold_in_header': 72, 'gold_table_unparsed': 6, 'gold_cell_missing': 3}; gold anomalies 25; wrote -> results/strict_no_k/mh_train_cell_hv3.3_none_doc_strict_no_k_*

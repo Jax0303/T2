@@ -375,3 +375,44 @@ def gold_target(sample: dict, tab: HitabTable) -> Tuple[set, str, Optional[str]]
     if not scope:
         return set(), "any", "gold_unmappable"
     return scope, "any", None
+
+
+def answer_gold(sample: dict, tab: HitabTable):
+    """``(gold, carriers, source, exclusion_reason, anomaly)`` — Strict Recall 의 gold.
+
+    ``linked_cells`` 의 ``[ANSWER]`` 좌표가 먼저다 (quantity_link 는 데이터 셀, entity_link 는
+    헤더 셀). 좌표가 없거나 읽히지 않을 때만 ``answer_formulas`` + ``reference_cells_map``.
+    두 집합을 합치지 않는다 — 공식 참조가 ``[ANSWER]`` 와 다르면 ``anomaly`` 로 돌려준다.
+
+    데이터 셀은 ``(table_id, i, j)``, 헤더 셀은 ``(table_id, "header", r, c)`` (원 격자 좌표).
+    ``carriers[헤더]`` 는 그 헤더를 문장 경로에 싣는 데이터 셀(:func:`header_scope`)이다.
+    """
+    lc = sample.get("linked_cells") or {}
+    buckets = [(lc.get("quantity_link") or {}).get("[ANSWER]"),
+               *(v.get("[ANSWER]") for v in (lc.get("entity_link") or {}).values()
+                 if isinstance(v, dict))]
+    coords = [parse_coord(k) for b in buckets if isinstance(b, dict) for k in b]
+    refs, err = formula_refs(sample)
+    source, anomaly = "[ANSWER]", None
+    if not coords or None in coords:
+        source, coords = "answer_formulas", refs
+        if err or not coords:
+            return set(), {}, source, err or "no_gold_annotation", None
+    elif set(refs) != set(coords):
+        anomaly = {"answer_cells": sorted(set(coords)), "formula_cells": sorted(set(refs)),
+                   "formula_error": err, "answer_formulas": sample.get("answer_formulas")}
+    gold, carriers = set(), {}
+    for rc in dict.fromkeys(coords):
+        d = tab.to_data(rc)
+        if d is not None:
+            if not str(tab.table.data[d[0]][d[1]]).strip():
+                return set(), {}, source, "gold_cell_is_empty", anomaly
+            gold.add((tab.table_id, *d))
+            continue
+        scope = header_scope(tab, rc)
+        if not scope:
+            return set(), {}, source, "gold_unmappable", anomaly
+        h = (tab.table_id, "header", *rc)
+        gold.add(h)
+        carriers[h] = frozenset(scope)
+    return gold, carriers, source, None, anomaly

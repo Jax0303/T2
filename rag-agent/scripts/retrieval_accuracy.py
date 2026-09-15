@@ -32,7 +32,20 @@ when every gold cell is in the context (G ⊆ R). ``any`` header answers stay ou
 of it. Per-query rows: ``{tag}_type_accuracy.jsonl``; exclusions:
 ``{tag}_excluded.jsonl``.
 
+Set scoring (``rag_agent/eval/strict_recall.py``; gold from ``[ANSWER]`` via
+``hitab_grid.answer_gold``; search inside the question's own table):
+
+  strict_fixed_budget  Strict Recall under the ``--budget``-cell context that
+                       ``budget_select`` hands the reader. A baseline.
+  strict_no_k          budget-free: R_q = units whose relevance score (the
+                       hybrid score, min-max over the table) is >= a threshold
+                       picked on dev by macro F1 and applied unchanged to test.
+                       ``budget_select`` is never called; the run asserts it.
+
   PYTHONPATH=. .venv/bin/python scripts/retrieval_accuracy.py --arm hybrid
+  PYTHONPATH=. .venv/bin/python scripts/retrieval_accuracy.py --metric-mode strict_no_k --split dev
+  PYTHONPATH=. .venv/bin/python scripts/retrieval_accuracy.py --metric-mode strict_no_k --split test \\
+      --threshold-from results/strict_no_k/hitab_dev_gold_cell_s3c_a0.7_strict_no_k_summary.json
 """
 from __future__ import annotations
 
@@ -60,6 +73,7 @@ from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,    # noqa: E4
                                                STRUCTURAL_COMPACT)
 from rag_agent.eval.artifacts import (Selection, digest, evidence_fields, file_digest,
                                      provenance, validate_retrieval, write_pair)
+from rag_agent.eval import strict_recall as sr                        # noqa: E402
 
 TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "mt2net": MT2NET}
 # Two ablations of the index unit itself, not templates: they answer "what does
@@ -413,6 +427,7 @@ def budget_select(order, covers, texts, budget: int, dump: int, max_units: int =
     15,510 of the split's 67,664 cells more than once, so this is not a corner
     case. ``rowcol_select`` counts the distinct set already; this is that rule.
     """
+    budget_select.calls += 1
     if budget <= 0 or max_units < 0 or dump < 0:
         raise ValueError("budget must be positive; dump/max_units must be nonnegative")
     got, units = set(), []
@@ -424,6 +439,23 @@ def budget_select(order, covers, texts, budget: int, dump: int, max_units: int =
     # dump enables export; it never truncates the evidence. --max-units changes
     # selection explicitly when a cap on retrieved units is wanted.
     return Selection(got, units, bool(dump))
+
+
+budget_select.calls = 0       # strict_no_k 가 이 선택기를 부르지 않았다는 실측 근거
+
+
+def threshold_select(scores, units, covers, texts, threshold: float, dump: int):
+    """Units whose relevance score is >= ``threshold``, best first — no budget, no K.
+
+    ``scores[k]`` belongs to unit ``units[k]``. The set length varies per question;
+    an empty set is a valid (failing) answer and nothing is added to fill it.
+    """
+    scores = np.asarray(scores, dtype=np.float64)
+    pos = np.argsort(-scores, kind="stable")
+    keep = np.asarray(units)[pos[:int((scores >= threshold).sum())]]
+    got = set().union(*(covers[p] for p in keep))
+    return Selection(got, [{"index_unit": int(p), "text": texts[p], "cells": sorted(covers[p])}
+                           for p in keep], bool(dump))
 
 
 def subtable_units(got, grid, template="s3c", row_text="values",
@@ -527,8 +559,10 @@ def subtable_context(cells, tabs, data_dir, page_titles, header_mode="path"):
     return units
 
 
-def load_queries(data_dir: str, split: str, tabs):
-    """Every question in the split, with its gold target and why it is excluded."""
+def load_queries(data_dir: str, split: str, tabs, strict: bool = False):
+    """Every question in the split, with its gold target and why it is excluded.
+
+    ``strict`` takes gold from :func:`hitab_grid.answer_gold` ([ANSWER] first)."""
     out, seen = [], set()
     for s in load_samples(data_dir, split):
         if s["id"] in seen:
@@ -542,12 +576,16 @@ def load_queries(data_dir: str, split: str, tabs):
                         "answer": s.get("answer"), "table_id": tid,
                         "gold": set(), "mode": "all", "excluded": "table_missing"})
             continue
-        gold, mode, why = hg.gold_target(s, tab)
-        out.append({"query_id": s["id"], "question": s["question"],
-                    "answer": s.get("answer"), "table_id": tid,
-                    "aggregation": (s.get("aggregation") or [None])[0]
-                    if isinstance(s.get("aggregation"), list) else s.get("aggregation"),
-                    "gold": gold, "mode": mode, "excluded": why})
+        q = {"query_id": s["id"], "question": s["question"],
+             "answer": s.get("answer"), "table_id": tid,
+             "aggregation": (s.get("aggregation") or [None])[0]
+             if isinstance(s.get("aggregation"), list) else s.get("aggregation"), "mode": "all"}
+        if strict:
+            (q["gold"], q["carriers"], q["gold_source"], q["excluded"],
+             q["anomaly"]) = hg.answer_gold(s, tab)
+        else:
+            q["gold"], q["mode"], q["excluded"] = hg.gold_target(s, tab)
+        out.append(q)
     return out
 
 
@@ -641,8 +679,9 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--split", default="test")
     ap.add_argument("--data-dir", default="data/hitab")
-    ap.add_argument("--corpus", default="all", choices=["all", "split", "gold"],
-                    help="all = every table in the store (the real haystack); "
+    ap.add_argument("--corpus", default=None, choices=["all", "split", "gold"],
+                    help="default all (gold under --metric-mode strict_no_k). "
+                         "all = every table in the store (the real haystack); "
                          "split = only tables this split's questions touch, "
                          "gold = build over the split but search ONLY inside each "
                          "query's own table (TableRAG's per-table setting)")
@@ -693,9 +732,33 @@ def main() -> int:
     ap.add_argument("--cache-dir", default=".cache/retrieval_accuracy")
     ap.add_argument("--dump-context", type=int, default=1,
                     help="0 = no reader export; any positive value exports ALL selected units")
+    ap.add_argument("--metric-mode", default="accuracy",
+                    choices=["accuracy", "strict_fixed_budget", "strict_no_k"],
+                    help="strict_fixed_budget: Strict Recall under the --budget cell context "
+                         "(budget_select). strict_no_k: budget-free, R_q = units whose relevance "
+                         "score >= a threshold selected on another split; budget_select not called")
+    ap.add_argument("--threshold-from", default="",
+                    help="strict_no_k: summary JSON of the run that selected the threshold; "
+                         "omit to select it on this split (refused on test)")
+    ap.add_argument("--context-tokenizer", default="Qwen/Qwen2.5-7B-Instruct",
+                    help="strict_*: reader tokenizer for context token counts ('' = skip)")
     ap.add_argument("--tag", default="")
-    ap.add_argument("--out-dir", default="results/retrieval_accuracy")
+    ap.add_argument("--out-dir", default=None,
+                    help="default results/retrieval_accuracy, results/strict_fixed_budget "
+                         "or results/strict_no_k by --metric-mode")
     a = ap.parse_args()
+    strict, no_k = a.metric_mode != "accuracy", a.metric_mode == "strict_no_k"
+    a.corpus = a.corpus or ("gold" if strict else "all")
+    a.out_dir = a.out_dir or {"accuracy": "results/retrieval_accuracy",
+                              "strict_fixed_budget": "results/strict_fixed_budget",
+                              "strict_no_k": "results/strict_no_k"}[a.metric_mode]
+    if no_k and (a.corpus != "gold" or a.unit == "rowcol"):
+        ap.error("strict_no_k thresholds units inside the question's own table: "
+                 "--corpus gold and a unit other than rowcol")
+    if a.threshold_from and not no_k:
+        ap.error("--threshold-from is only for strict_no_k")
+    if no_k and a.split == "test" and not a.threshold_from:
+        ap.error("the threshold is never selected on test; pass --threshold-from")
     if a.budget <= 0 or a.max_units < 0 or a.dump_context < 0 or not 0 <= a.alpha <= 1:
         ap.error("invalid budget, max-units, dump-context or alpha")
     if a.unit == "rowcol" and a.max_units:
@@ -709,12 +772,21 @@ def main() -> int:
     size = a.chunk_tokens or a.chunk_chars
     if size <= 0 or (a.unit == "trag_hetero" and not 0 <= a.chunk_overlap < size):
         ap.error("invalid chunk size/overlap")
-    tag = a.tag or f"{a.split}_{a.corpus}_{a.unit}_{a.template}_a{a.alpha}_k{a.budget}_v2"
+    mark = {"strict_no_k": "strict_no_k",
+            "strict_fixed_budget": f"fixed_budget{a.budget}"}.get(a.metric_mode)
+    tag = a.tag or (f"hitab_{a.split}_{a.corpus}_{a.unit}_{a.template}_a{a.alpha}_{mark}"
+                    if strict else
+                    f"{a.split}_{a.corpus}_{a.unit}_{a.template}_a{a.alpha}_k{a.budget}_v2")
     if Path(tag).name != tag or any(c in tag for c in ("/", "\\")):
         ap.error("tag must be a filename, not a path")
     out = Path(a.out_dir)
-    if any((out / f"{tag}{suffix}").exists() for suffix in
-           (".json", "_records.jsonl", "_type_accuracy.jsonl", "_excluded.jsonl")):
+    if strict and (mark not in f"{out}/{tag}" or (not no_k and "strict_no_k" in f"{out}/{tag}")):
+        ap.error(f"{a.metric_mode} outputs need '{mark}' in --out-dir or --tag, "
+                 "and fixed-budget outputs never carry 'strict_no_k'")
+    targets = (sr.outputs(out, tag) if strict else
+               [out / f"{tag}{suffix}" for suffix in
+                (".json", "_records.jsonl", "_type_accuracy.jsonl", "_excluded.jsonl")])
+    if any(p.exists() for p in targets):
         ap.error("output exists; use a new tag so legacy evidence is preserved")
     tokenizer = None
     if a.chunk_tokens:
@@ -725,7 +797,7 @@ def main() -> int:
     t0 = time.time()
     page_titles = json.loads(PAGE_TITLES.read_text()) if PAGE_TITLES.exists() else {}
     tabs: dict = {}
-    queries = load_queries(a.data_dir, a.split, tabs)
+    queries = load_queries(a.data_dir, a.split, tabs, strict)
     tids = (hg.table_ids(a.data_dir) if a.corpus == "all"
             else sorted({q["table_id"] for q in queries}))
     texts, covers, is_row, unit_tids, grid = build_corpus(a.data_dir, tids, a.template, a.unit,
@@ -769,6 +841,21 @@ def main() -> int:
             np.save(f, emb)
             print(f"[dense] encoded {len(texts)} in {time.time() - t0:.0f}s", flush=True)
 
+    count, tok_info = sr.token_counter(a.context_tokenizer) if strict else (None, None)
+    strict_rows, pending = [], []
+
+    def strict_row(q, selected):
+        # 채점 대상은 선택기가 리더에게 넘긴 셀 전부다. 여기서 다시 자르지 않는다.
+        unit_texts = [u["text"] for u in selected.units]
+        return sr.row(
+            "hitab", a.split, q["query_id"],
+            sr.question_type((q["aggregation"] or "none") != "none", len(q["gold"])),
+            q["gold"], selected.cells, q["carriers"], table_of=lambda c: c[0],
+            gold_source=q["gold_source"], aggregation=q["aggregation"],
+            num_header_gold_cells=len(q["carriers"]), context_units=len(unit_texts),
+            context_tokens=count(unit_texts) if count else None,
+            context_sha256=digest(unit_texts))
+
     recs, type_rows, t0 = [], [], time.time()
     for k, q in enumerate(queries, 1):
         if q["excluded"]:
@@ -789,6 +876,9 @@ def main() -> int:
             s = a.alpha * _minmax(d) + (1 - a.alpha) * _minmax(s) if a.alpha < 1 else d
         elif sel is not None:
             s = s[sel]
+        if no_k:                  # 선택은 임계값이 정해진 뒤 루프 밖에서 한다
+            pending.append((q, sel, s))
+            continue
         order = np.argsort(-s, kind="stable")
         if sel is not None:
             order = sel[order]
@@ -801,6 +891,9 @@ def main() -> int:
             selected = budget_select(order, covers, texts,
                                      a.budget, a.dump_context, a.max_units)
         got, n_cells, ctx = selected
+        if strict:
+            strict_rows.append(strict_row(q, selected))
+            continue
         gold = q["gold"]
         hit = (gold <= got) if q["mode"] == "all" else bool(gold & got)
         if query_type(q) in TYPES:
@@ -824,6 +917,74 @@ def main() -> int:
         recs.append(r)
         if k % 200 == 0:
             print(f"  {k}/{len(queries)}  {time.time() - t0:.0f}s", flush=True)
+
+    if strict:
+        from rag_agent.data.loader import _find_data_root
+        threshold = None
+        if no_k:
+            config = {"unit": a.unit, "template": a.template, "alpha": a.alpha}
+            if a.threshold_from:
+                threshold = sr.load_threshold(a.threshold_from, "hitab", a.split, config)
+            else:
+                threshold = sr.selected_threshold(
+                    sr.sweep([(q["gold"], q["carriers"],
+                               [(float(v), covers[p]) for v, p in zip(s, idx)])
+                              for q, idx, s in pending]),
+                    a.split, f"{a.alpha}*minmax(BGE cosine) + {round(1 - a.alpha, 4)}*minmax(BM25), "
+                             "min-max over the units of the question's own table", config)
+            for q, idx, s in pending:
+                strict_rows.append(strict_row(q, threshold_select(
+                    s, idx, covers, texts, threshold["applied_threshold"], a.dump_context)))
+            if budget_select.calls:
+                raise RuntimeError("budget_select was called on the strict_no_k path")
+        excluded = [{"query_id": q["query_id"], "reason": q["excluded"]}
+                    for q in queries if q["excluded"]]
+        anomalies = [{"query_id": q["query_id"], **q["anomaly"]}
+                     for q in queries if q.get("anomaly")]
+        groups = {"overall": lambda r: True,
+                  **{t: (lambda r, t=t: r["question_type"] == t) for t in sr.TYPES},
+                  "header_gold": lambda r: r["num_header_gold_cells"] > 0,
+                  "data_cell_gold_only": lambda r: r["num_header_gold_cells"] == 0}
+        summary = sr.write(out, tag, strict_rows, groups, {
+            "dataset": "hitab", "split": a.split,
+            "metric": ("Strict Recall, budget-free: R_q = units with relevance score >= threshold"
+                       if no_k else
+                       f"Strict Recall under a {a.budget}-cell context (fixed-budget baseline)"),
+            "selector": ({"function": "threshold_select",
+                          "threshold": threshold["applied_threshold"],
+                          "budget_select_calls": budget_select.calls, "search_scope": a.corpus}
+                         if no_k else
+                         {"function": "rowcol_select" if a.unit == "rowcol" else "budget_select",
+                          "stop_after_distinct_cells": a.budget, "last_unit_kept_whole": True,
+                          "max_units": a.max_units, "search_scope": a.corpus}),
+            "threshold": threshold,
+            "gold_rule": "linked_cells [ANSWER] (quantity_link -> data cell, entity_link -> header "
+                         "cell); answer_formulas + reference_cells_map only when [ANSWER] is "
+                         "absent or unparsable; never unioned (hitab_grid.answer_gold)",
+            "header_gold_rule": "a header gold cell is delivered when a delivered data cell's "
+                                "sentence path carries it (hitab_grid.header_scope)",
+            "question_type_rule": "arithmetic = HiTab aggregation != none (repo rule, "
+                                  "query_type); otherwise single/multi by gold cell count",
+            "table_retrieval": "not scored (the gold table is given)",
+            "n_questions_in_split": len(queries),
+            "excluded_by_reason": dict(Counter(x["reason"] for x in excluded)),
+            "gold_source_counts": dict(Counter(q.get("gold_source") for q in queries)),
+            "aggregation_counts_arithmetic": dict(Counter(
+                r["aggregation"] for r in strict_rows if r["question_type"] == "arithmetic")),
+            "context_tokenizer": tok_info, "unit": a.unit, "template": a.template,
+            "alpha": a.alpha, "encoder": enc.metadata() if enc else None,
+            "query_prefix": enc.query_prefix if enc else "",
+            "split_sha256": file_digest(_find_data_root(a.data_dir) / "data"
+                                        / f"{a.split}_samples.jsonl"),
+            "corpus_text_sha256": digest(texts), "n_tables": len(tids), "n_units": len(texts),
+            "provenance": provenance(ROOT), "arguments": vars(a)}, anomalies, excluded)
+        sr.print_groups(summary["groups"])
+        if threshold:
+            print(f"threshold {threshold['applied_threshold']} ({threshold['role']}, selected on "
+                  f"{threshold['selected_on_split']}); budget_select calls {budget_select.calls}")
+        print(f"excluded {len(excluded)} {summary['excluded_by_reason']}; "
+              f"gold anomalies {len(anomalies)}; wrote -> {out / tag}_*")
+        return 0
 
     scored = [r for r in recs if "correct" in r]
     excl = Counter(r["excluded"] for r in recs if "excluded" in r)

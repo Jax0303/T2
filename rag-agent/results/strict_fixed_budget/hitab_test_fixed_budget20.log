@@ -1,0 +1,11 @@
+[corpus] 538 tables / 67664 cell units (1s)
+[bm25] 16051 terms in 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2670.79it/s]
+[dense] encoded 67664 in 87s
+overall: N=1583  Strict Recall=0.9406  Exact Set Match=0.0032  macro P/R/F1=0.1153/0.9534/0.1789  micro P/R/F1=0.1146/0.9365/0.2043  pred cells mean/median/p95=19.5458/20/20  gold cells mean=1.2230  context tokens mean/median=1147.5426/1100
+single_cell: N=1082  Strict Recall=0.9649  Exact Set Match=0.0018  macro P/R/F1=0.0859/0.9649/0.1384  micro P/R/F1=0.0856/0.9649/0.1573  pred cells mean/median/p95=19.4972/20.0000/20  gold cells mean=1.0000  context tokens mean/median=1118.3826/1060.5000
+multi_cell: N=50  Strict Recall=0.8400  Exact Set Match=0.0200  macro P/R/F1=0.2603/0.9310/0.3260  micro P/R/F1=0.2617/0.8800/0.4034  pred cells mean/median/p95=19.6400/20.0000/20  gold cells mean=2.5000  context tokens mean/median=1104.3000/1072.0000
+arithmetic: N=451  Strict Recall=0.8936  Exact Set Match=0.0044  macro P/R/F1=0.1698/0.9284/0.2598  micro P/R/F1=0.1674/0.9040/0.2825  pred cells mean/median/p95=19.6519/20/20  gold cells mean=1.6164  context tokens mean/median=1222.2949/1174
+header_gold: N=338  Strict Recall=0.9231  Exact Set Match=0.0148  macro P/R/F1=0.3201/0.9432/0.4308  micro P/R/F1=0.3199/0.9069/0.4730  pred cells mean/median/p95=19.5503/20.0000/20  gold cells mean=1.2396  context tokens mean/median=1093.7041/1029.5000
+data_cell_gold_only: N=1245  Strict Recall=0.9454  Exact Set Match=0.0000  macro P/R/F1=0.0597/0.9562/0.1105  micro P/R/F1=0.0589/0.9446/0.1109  pred cells mean/median/p95=19.5446/20/20  gold cells mean=1.2185  context tokens mean/median=1162.1590/1110
+excluded 1 {'gold_unmappable': 1}; gold anomalies 4; wrote -> results/strict_no_k/hitab_test_gold_cell_s3c_a0.7_strict_no_k_*

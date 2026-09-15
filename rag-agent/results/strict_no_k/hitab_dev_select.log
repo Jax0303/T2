@@ -1,0 +1,12 @@
+[corpus] 540 tables / 67315 cell units (1s)
+[bm25] 16719 terms in 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2607.24it/s]
+[dense] cache hit BAAI_bge-base-en-v1.5_67315_4b07d547cfb5fc069c1aa2c7.npy
+overall: N=1671  Strict Recall=0.5847  Exact Set Match=0.3411  macro P/R/F1=0.4759/0.6029/0.5031  micro P/R/F1=0.4173/0.5148/0.4610  pred cells mean/median/p95=1.7522/1/5  gold cells mean=1.2765  context tokens mean/median=99.4536/67
+single_cell: N=1140  Strict Recall=0.7018  Exact Set Match=0.4202  macro P/R/F1=0.5337/0.7018/0.5785  micro P/R/F1=0.4255/0.7018/0.5298  pred cells mean/median/p95=1.8079/1.0000/5  gold cells mean=1.0000  context tokens mean/median=97.9754/66.0000
+multi_cell: N=55  Strict Recall=0.2727  Exact Set Match=0.2000  macro P/R/F1=0.4337/0.3727/0.3760  micro P/R/F1=0.5765/0.3525/0.4375  pred cells mean/median/p95=1.5455/1/4  gold cells mean=2.5273  context tokens mean/median=94.6727/79
+arithmetic: N=476  Strict Recall=0.3403  Exact Set Match=0.1681  macro P/R/F1=0.3424/0.3928/0.3372  micro P/R/F1=0.3785/0.2916/0.3294  pred cells mean/median/p95=1.6429/1.0000/4  gold cells mean=1.7941  context tokens mean/median=103.5462/68.5000
+header_gold: N=345  Strict Recall=0.4870  Exact Set Match=0.2870  macro P/R/F1=0.3861/0.4918/0.4132  micro P/R/F1=0.4717/0.4411/0.4559  pred cells mean/median/p95=1.8435/1/5  gold cells mean=1.1565  context tokens mean/median=108.8087/76
+data_cell_gold_only: N=1326  Strict Recall=0.6101  Exact Set Match=0.3552  macro P/R/F1=0.4992/0.6318/0.5264  micro P/R/F1=0.4023/0.5317/0.4580  pred cells mean/median/p95=1.7285/1.0000/5  gold cells mean=1.3077  context tokens mean/median=97.0196/65.0000
+threshold 0.94 (selected_here, selected on dev); budget_select calls 0
+excluded 0 {}; gold anomalies 1; wrote -> results/strict_no_k/hitab_dev_gold_cell_s3c_a0.7_strict_no_k_*

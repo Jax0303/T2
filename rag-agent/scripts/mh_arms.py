@@ -16,12 +16,21 @@
 범위 둘 다 싣는다. `doc` 이 MultiHiertt 의 과제 정의이자 MT2Net 의 범위(문서 내
 재정렬)이고, `corpus` 는 문서 전부를 한 색인에 넣은 스트레스 조건이다.
 
+집합 채점 (`rag_agent/eval/strict_recall.py`, doc 범위, hybrid 질문도 표 근거로 포함):
+`--metric-mode strict_fixed_budget` 은 budget_select 가 리더에게 주는 --budget 셀 문맥을 채점하는
+기준선이고, `strict_no_k` 는 예산 없이 문서 안 관련성 점수 >= 임계값인 단위를 고른다 — 임계값은
+한 분할(validation)에서 macro F1 로 고르고 다른 분할에 그대로 적용한다. budget_select 는 부르지 않는다.
+
   PYTHONPATH=. .venv/bin/python scripts/mh_arms.py --unit cell --tag mh_s3c
+  PYTHONPATH=. .venv/bin/python scripts/mh_arms.py --metric-mode strict_no_k --split validation
+  PYTHONPATH=. .venv/bin/python scripts/mh_arms.py --metric-mode strict_no_k --split train \\
+      --threshold-from results/strict_no_k/mh_validation_cell_hv3.3_none_doc_strict_no_k_summary.json
 """
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from collections import Counter, defaultdict
@@ -34,9 +43,10 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import numpy as np                                                    # noqa: E402
 
 from retrieval_accuracy import (budget_select, build_corpus,          # noqa: E402
-                                rowcol_select)
+                                rowcol_select, threshold_select)
 from rag_agent.eval.artifacts import (Selection, digest, evidence_fields,  # noqa: E402
                                      provenance, write_pair)
+from rag_agent.eval import strict_recall as sr                        # noqa: E402
 from rag_agent.reconstruct import (guess_n_header_cols,               # noqa: E402
                                    guess_n_header_rows, parse_html_table,
                                    reconstruct_col_paths, reconstruct_row_paths)
@@ -107,18 +117,22 @@ class MHDoc:
         self.col_map = {c: c - table.nhc for c in range(table.nhc, len(table.grid[0]))}
 
 
-def load_population(split: str):
-    """(queries, docs) — 표 근거만 있는 질의 전부와 그 문서. 필드 정의는 데이터셋 것."""
+def load_population(split: str, keep_hybrid: bool = False):
+    """(queries, docs) — 표 근거만 있는 질의 전부와 그 문서. 필드 정의는 데이터셋 것.
+
+    ``keep_hybrid`` 는 text_evidence 도 있는 질의를 표 근거로 남긴다(strict_no_k). 그때
+    표 근거가 없는 text-only 질의는 ``skipped["text_only"]`` 로 센다."""
     from datasets import load_dataset
     rows = load_dataset("bevaya/MultiHiertt", split=split)
     queries, docs, skipped = [], {}, Counter()
     for row in rows:
         ev = row.get("table_evidence") or []
-        if row.get("text_evidence"):
+        text = bool(row.get("text_evidence"))
+        if text and not keep_hybrid:
             skipped["needs_text_evidence"] += 1       # 셀 색인이 원리적으로 못 담는다
             continue
         if not ev:
-            skipped["no_table_evidence"] += 1
+            skipped["text_only" if text else "no_table_evidence"] += 1
             continue
         coords = []
         for e in ev:
@@ -133,7 +147,9 @@ def load_population(split: str):
         queries.append({"uid": row["uid"], "question": row["question"],
                         "answer": row.get("answer"), "coords": coords,
                         "kind": "arith" if (row.get("program") or "").strip() else "lookup",
-                        "n_gold_tables": len({c[0] for c in coords})})
+                        "n_gold_tables": len({c[0] for c in coords}),
+                        "has_text_evidence": text,
+                        "program_ops": re.findall(r"([a-z_]+)\(", row.get("program") or "")})
         docs[row["uid"]] = (row["tables"], row["table_description"], row["paragraphs"])
     return queries, docs, skipped
 
@@ -274,6 +290,33 @@ def resolve_gold(queries, tables, hdr, live):
     return queries
 
 
+def cell_id(cell, hdr) -> str:
+    """``(표 id, i, j)`` -> ``"{uid}::{표}-{행}-{열}"`` — ``table_evidence`` 와
+    ``table_description`` 이 쓰는 펼친 격자 좌표. ``MHTable.data`` 는 ``grid[nhr:][nhc:]``."""
+    tid, i, j = cell
+    return f"{tid}-{i + hdr[tid][0]}-{j + hdr[tid][1]}"
+
+
+def evidence_anomalies(q, docs, tables) -> list:
+    """gold 좌표가 ``table_description`` 의 같은 키·같은 값을 가리키는지. 어긋나면 기록만 한다."""
+    desc = docs[q["uid"]][1]
+    desc = json.loads(desc) if isinstance(desc, str) else desc
+    norm = lambda s: re.sub(r"[,\s]", "", s or "")
+    out = []
+    for t, r, c in q["coords"]:
+        key, tab = f"{t}-{r}-{c}", tables.get(f"{q['uid']}::{t}")
+        m = _DESC.match(desc.get(key, ""))
+        if m is None:
+            out.append({"cell": key, "problem": "no_table_description_sentence"})
+            continue
+        grid = tab.table.grid if tab is not None else []
+        got = (grid[r][c] or "") if r < len(grid) and c < len(grid[r]) else None
+        if got is None or norm(m.group(3)) != norm(got):
+            out.append({"cell": key, "problem": "value_differs",
+                        "description_value": m.group(3), "grid_value": got})
+    return out
+
+
 def layer(q) -> str:
     return f"{q['kind']}_m{'1' if len(q['gold']) == 1 else '2+'}"
 
@@ -291,8 +334,9 @@ def main() -> int:
     ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"])
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
     ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
-    ap.add_argument("--header-rule", default="v1", choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3"],
-                    help="헤더 행 추정 규칙. v2 = PREREG-2026-09-13-header-units-note.md, "
+    ap.add_argument("--header-rule", default=None, choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3"],
+                    help="헤더 행 추정 규칙. 기본 v1, strict_no_k 는 채택 규칙 v3.3 "
+                         "(PREREG-2026-09-14-header-v3.md 정정 4). v2 = PREREG-2026-09-13-header-units-note.md, "
                          "v3·v3.1·v3.2·v3.3 = PREREG-2026-09-14-header-v3.md")
     ap.add_argument("--label-rule", default="none", choices=["none", "L1", "L2"],
                     help="표 고유 라벨 규칙. PREREG-2026-09-13-table-label.md")
@@ -307,17 +351,45 @@ def main() -> int:
     ap.add_argument("--shard", type=int, default=50000)
     ap.add_argument("--dump-context", type=int, default=1)
     ap.add_argument("--cache-dir", default=".cache/mh_arms")
-    ap.add_argument("--out-dir", default="results/mh_arms")
-    ap.add_argument("--tag", required=True)
+    ap.add_argument("--out-dir", default=None,
+                    help="기본 results/mh_arms, results/strict_fixed_budget, results/strict_no_k")
+    ap.add_argument("--tag", default="", help="필수 (strict_* 는 자동)")
+    ap.add_argument("--metric-mode", default="accuracy",
+                    choices=["accuracy", "strict_fixed_budget", "strict_no_k"],
+                    help="strict_fixed_budget: doc 범위, --budget 셀 문맥을 Strict Recall 로 채점. "
+                         "strict_no_k: 예산 없음, 문서 안 관련성 점수 >= 임계값 (budget_select 안 부름)")
+    ap.add_argument("--threshold-from", default="",
+                    help="strict_no_k: 임계값을 고른 실행의 summary JSON. 없으면 이 분할에서 고른다 (test 금지)")
+    ap.add_argument("--context-tokenizer", default="Qwen/Qwen3-8B",
+                    help="strict_*: 문맥 토큰 수를 셀 리더 토크나이저 ('' = 세지 않음)")
     a = ap.parse_args()
+    strict, no_k = a.metric_mode != "accuracy", a.metric_mode == "strict_no_k"
     if a.budget <= 0 or not 0 <= a.alpha <= 1:
         ap.error("invalid budget or alpha")
+    if not (a.tag or strict):
+        ap.error("--tag is required")
+    if a.threshold_from and not no_k:
+        ap.error("--threshold-from is only for strict_no_k")
+    if no_k and (a.unit == "rowcol" or (a.split == "test" and not a.threshold_from)):
+        ap.error("strict_no_k: not rowcol, and the threshold is never selected on test")
+    a.header_rule = a.header_rule or ("v3.3" if strict else "v1")
+    a.out_dir = a.out_dir or {"accuracy": "results/mh_arms",
+                              "strict_fixed_budget": "results/strict_fixed_budget",
+                              "strict_no_k": "results/strict_no_k"}[a.metric_mode]
+    mark = {"strict_no_k": "strict_no_k",
+            "strict_fixed_budget": f"fixed_budget{a.budget}"}.get(a.metric_mode)
+    a.tag = a.tag or f"mh_{a.split}_{a.unit}_h{a.header_rule}_{a.label_rule}_doc_{mark}"
     out = Path(a.out_dir)
-    if any((out / f"{a.tag}{s}").exists() for s in (".json", "_records.jsonl")):
+    if strict and (mark not in f"{out}/{a.tag}" or (not no_k and "strict_no_k" in f"{out}/{a.tag}")):
+        ap.error(f"{a.metric_mode} outputs need '{mark}' in --out-dir or --tag, "
+                 "and fixed-budget outputs never carry 'strict_no_k'")
+    targets = (sr.outputs(out, a.tag) if strict else
+               [out / f"{a.tag}{s}" for s in (".json", "_records.jsonl")])
+    if any(p.exists() for p in targets):
         ap.error("output exists; use a new tag")
 
     t0 = time.time()
-    queries, docs, skipped = load_population(a.split)
+    queries, docs, skipped = load_population(a.split, keep_hybrid=strict)
     if a.max_docs:
         keep = set(sorted(docs)[:a.max_docs])
         queries = [q for q in queries if q["uid"] in keep]
@@ -358,20 +430,45 @@ def main() -> int:
     cache = Path(a.cache_dir)
     cache.mkdir(parents=True, exist_ok=True)
     key = digest(texts)[:16]
-    emb = np.empty((len(texts), 768), dtype=np.float32)
+    # strict_no_k 는 질문의 문서 행만 읽으므로 조각을 메모리 매핑한다 — train 전체 행렬(약 3GB)을
+    # 이 상자 RAM 에 올리지 않는다. 다른 모드는 예전 그대로 한 행렬에 채운다.
+    emb = None if no_k else np.empty((len(texts), 768), dtype=np.float32)
+    shards = []
     for s in range(0, len(texts), a.shard):
         f = cache / f"{a.unit}_{len(texts)}_{key}_{s}.npy"
         if f.exists():
-            v = np.load(f)
+            v = np.load(f, mmap_mode="r" if no_k else None)
         else:
             t1 = time.time()
             v = enc.encode(texts[s:s + a.shard])
             np.save(f, v)
             print(f"[dense] {s}..{s + len(v)} in {time.time() - t1:.0f}s", flush=True)
-        emb[s:s + len(v)] = v
+            if no_k:
+                v = np.load(f, mmap_mode="r")
+        if no_k:
+            shards.append(v)
+        else:
+            emb[s:s + len(v)] = v
         del v
 
     TOP = 2048            # 진단·선택에 충분한 상한. 전체 argsort 를 피한다.
+    count, tok_info = sr.token_counter(a.context_tokenizer) if strict else (None, None)
+    strict_rows, pending = [], []
+    ids = lambda cells: {cell_id(c, hdr) for c in cells}
+
+    def strict_row(q, selected):
+        # 채점 대상은 선택기가 리더에게 넘긴 셀 전부다. 여기서 다시 자르지 않는다.
+        unit_texts = [u["text"] for u in selected.units]
+        return sr.row(
+            "multihiertt", a.split, q["uid"],
+            sr.question_type(q["kind"] == "arith", len(q["gold"])),
+            ids(q["gold"]), ids(selected.cells),
+            table_of=lambda s: s.rsplit("-", 2)[0], table_metrics=True,
+            population="hybrid_questions" if q["has_text_evidence"] else "table_only_questions",
+            layer=layer(q), program_ops=q["program_ops"], context_units=len(unit_texts),
+            context_tokens=count(unit_texts) if count else None,
+            context_sha256=digest(unit_texts))
+
     recs, t0 = [], time.time()
     for n, q in enumerate(queries, 1):
         if q["excluded"] or not q["gold"]:
@@ -380,13 +477,22 @@ def main() -> int:
                          "excluded": q["excluded"] or "gold_empty"})
             continue
         sp = bm.get_scores(_tokenize(q["question"]))
+        if no_k:
+            # 관련성 점수는 질문의 문서 안에서 min-max 한다 — 다른 분할에서 고른 임계값이 같은
+            # 척도를 보도록. (고정 예산 모드는 코퍼스 전체 min-max 뒤 문서로 마스크한다.)
+            sel = np.flatnonzero(uid_arr == q["uid"])
+            qv = enc.encode_query([q["question"]])[0].astype(np.float32)
+            dn = np.concatenate([shards[k][sel[sel // a.shard == k] - k * a.shard]
+                                 for k in np.unique(sel // a.shard)]) @ qv
+            pending.append((q, sel, a.alpha * _minmax(dn) + (1 - a.alpha) * _minmax(sp[sel])))
+            continue
         dn = emb @ enc.encode_query([q["question"]])[0].astype(np.float32)
         sc = a.alpha * _minmax(dn) + (1 - a.alpha) * _minmax(sp)
         r = {"query_id": q["uid"], "kind": q["kind"], "m": len(q["gold"]),
              "m_annotated": len(q["coords"]), "n_gold_tables": q["n_gold_tables"],
              "layer": layer(q), "question": q["question"], "answer": q["answer"],
              "mode": "all"}
-        for scope in ("corpus", "doc"):
+        for scope in (("doc",) if strict else ("corpus", "doc")):
             if scope == "doc":
                 sel = np.flatnonzero(uid_arr == q["uid"])
                 k = min(TOP, len(sel) - 1)
@@ -402,6 +508,9 @@ def main() -> int:
             else:
                 selected = budget_select(order, covers, texts, a.budget, a.dump_context)
             got, n_cells, ctx = selected
+            if strict:
+                strict_rows.append(strict_row(q, selected))
+                continue
             r[scope] = {"correct": int(q["gold"] <= got),
                         "any_DIAGNOSTIC": int(bool(q["gold"] & got)),
                         "cells_in_context": n_cells,
@@ -419,6 +528,83 @@ def main() -> int:
         recs.append(r)
         if n % 200 == 0:
             print(f"  {n}/{len(queries)}  {time.time() - t0:.0f}s", flush=True)
+
+    if strict:
+        threshold = None
+        if no_k:
+            config = {"unit": a.unit, "template": a.template, "alpha": a.alpha,
+                      "header_rule": a.header_rule, "label_rule": a.label_rule}
+            if a.threshold_from:
+                threshold = sr.load_threshold(a.threshold_from, "multihiertt", a.split, config)
+            else:
+                threshold = sr.selected_threshold(
+                    sr.sweep([(ids(q["gold"]), None,
+                               [(float(v), ids(covers[p])) for v, p in zip(s, sel)])
+                              for q, sel, s in pending]),
+                    a.split, f"{a.alpha}*minmax(BGE cosine) + {round(1 - a.alpha, 4)}*minmax(BM25, "
+                             "corpus IDF), min-max over the units of the question's own document",
+                    config)
+            for q, sel, s in pending:
+                strict_rows.append(strict_row(q, threshold_select(
+                    s, sel, covers, texts, threshold["applied_threshold"], a.dump_context)))
+            if budget_select.calls:
+                raise RuntimeError("budget_select was called on the strict_no_k path")
+        pop = lambda q: "hybrid_questions" if q["has_text_evidence"] else "table_only_questions"
+        excluded = [{"query_id": q["uid"], "reason": q["excluded"] or "gold_empty",
+                     "population": pop(q)} for q in queries if q["excluded"] or not q["gold"]]
+        anomalies = [{"query_id": q["uid"], "cells": bad} for q in queries
+                     if (bad := evidence_anomalies(q, docs, tables))]
+        groups = {"overall": lambda r: True,
+                  **{t: (lambda r, t=t: r["question_type"] == t) for t in sr.TYPES},
+                  "all_table_questions": lambda r: True,
+                  "table_only_questions": lambda r: r["population"] == "table_only_questions",
+                  "hybrid_questions": lambda r: r["population"] == "hybrid_questions"}
+        summary = sr.write(out, a.tag, strict_rows, groups, {
+            "dataset": "multihiertt", "split": a.split,
+            "metric": ("Strict Recall, budget-free: R_q = units with relevance score >= threshold"
+                       if no_k else
+                       f"Strict Recall under a {a.budget}-cell context (fixed-budget baseline)"),
+            "selector": ({"function": "threshold_select",
+                          "threshold": threshold["applied_threshold"],
+                          "budget_select_calls": budget_select.calls,
+                          "search_scope": "doc: tables of the question's own document"}
+                         if no_k else
+                         {"function": "rowcol_select" if a.unit == "rowcol" else "budget_select",
+                          "stop_after_distinct_cells": a.budget, "last_unit_kept_whole": True,
+                          "search_scope": "doc: tables of the question's own document"}),
+            "threshold": threshold,
+            "gold_rule": "table_evidence '{table}-{row}-{col}' on the expanded grid, the same key "
+                         "as table_description; cell id '{uid}::{table}-{row}-{col}' (cell_id)",
+            "question_type_rule": "arithmetic = non-empty program (repo rule, load_population "
+                                  "kind); otherwise single/multi by gold cell count",
+            "arithmetic_without_program_operator": sum(
+                1 for r in strict_rows if r["question_type"] == "arithmetic" and not r["program_ops"]),
+            "non_arithmetic_with_program_operator": sum(
+                1 for r in strict_rows if r["question_type"] != "arithmetic" and r["program_ops"]),
+            "table_metric": "Derived Table Coverage: tables recovered from the selected cells; "
+                            "no separate table retrieval stage exists",
+            "population_counts": {
+                "all_table_questions": len(queries),
+                "table_only_questions": sum(not q["has_text_evidence"] for q in queries),
+                "hybrid_questions": sum(q["has_text_evidence"] for q in queries),
+                "text_only_questions_excluded": skipped.get("text_only", 0),
+                "no_evidence_excluded": skipped.get("no_table_evidence", 0),
+                "bad_evidence_coord_excluded": skipped.get("bad_evidence_coord", 0)},
+            "excluded_by_reason": dict(Counter(x["reason"] for x in excluded)),
+            "header_rule": a.header_rule, "label_rule": a.label_rule, "unit": a.unit,
+            "template": a.template, "alpha": a.alpha, "encoder": enc.name,
+            "query_prefix": enc.query_prefix, "context_tokenizer": tok_info,
+            "n_docs": len(docs), "n_tables": len(tables), "n_units": len(texts),
+            "corpus_text_sha256": digest(texts), "provenance": provenance(ROOT),
+            "arguments": vars(a)}, anomalies, excluded)
+        sr.print_groups(summary["groups"])
+        if threshold:
+            print(f"threshold {threshold['applied_threshold']} ({threshold['role']}, selected on "
+                  f"{threshold['selected_on_split']}); budget_select calls {budget_select.calls}")
+        print(f"population {summary['population_counts']}; excluded {len(excluded)} "
+              f"{summary['excluded_by_reason']}; gold anomalies {len(anomalies)}; "
+              f"wrote -> {out / a.tag}_*")
+        return 0
 
     scored = [r for r in recs if "corpus" in r]
     excl = Counter(r["excluded"] for r in recs if "excluded" in r)

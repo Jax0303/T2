@@ -46,6 +46,12 @@ supporting fact 중 한 개만 찾아도 통과한다. 그 규칙으로도 같�
 한계이지 MultiHiertt 의 결과가 아니다.
 
   PYTHONPATH=. python3 scripts/retrieval_accuracy_mh.py
+
+`--metric-mode strict_fixed_budget|strict_no_k` 는 이 파일이 아니라 `mh_arms.py` 가 처리한다. 이 계측기의
+선택은 리더에게 가지 않고, Strict Recall 은 리더에게 실제로 넘어간 셀을 채점해야 한다.
+인자는 그대로 넘긴다 (`mh_arms.py --help`).
+
+  PYTHONPATH=. python3 scripts/retrieval_accuracy_mh.py --metric-mode strict_no_k --split validation
 """
 from __future__ import annotations
 
@@ -213,7 +219,13 @@ def rate(hits, n):
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--metric-mode", default="accuracy",
+                     choices=["accuracy", "strict_fixed_budget", "strict_no_k"])
+    if pre.parse_known_args()[0].metric_mode != "accuracy":
+        import mh_arms
+        return mh_arms.main()
+    ap = argparse.ArgumentParser(description=__doc__, parents=[pre],
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--split", default="train",
                     help="MultiHiertt test 는 gold 를 공개하지 않는다. train 이 "
