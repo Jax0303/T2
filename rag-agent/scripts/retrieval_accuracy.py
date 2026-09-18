@@ -70,12 +70,17 @@ from rag_agent.serialization.caption import (caption_sentence,        # noqa: E4
                                              with_page_title)
 from rag_agent.serialization import tablerag_unit as trag             # noqa: E402
 from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,    # noqa: E402
-                                               STRUCTURAL_COMPACT)
+                                               STRUCTURAL_COMPACT, STRUCTURAL_LEAF)
 from rag_agent.eval.artifacts import (Selection, digest, evidence_fields, file_digest,
                                      provenance, validate_retrieval, write_pair)
 from rag_agent.eval import strict_recall as sr                        # noqa: E402
 
-TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "mt2net": MT2NET}
+# "sleaf" is the confirmed method as of 2026-09-17 (leaf-repeat axis, see
+# results/leaf_repeat*/embedding_fusion_diagnosis_20260917/) -- superseded s3c
+# as the deployed dense-side template; kept alongside s3c/s3/mt2net rather
+# than replacing any of them since those stay comparable with older numbers.
+TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "mt2net": MT2NET,
+            "sleaf": STRUCTURAL_LEAF}
 # Two ablations of the index unit itself, not templates: they answer "what does
 # the header path buy, and what does the table's own label buy" by removing one
 # at a time. Byte-identical to point3_reconstruction_cost.cell_text(..., "flat")
@@ -84,7 +89,10 @@ ABLATIONS = ("flat", "s2")
 # cell/row/table are index-unit sizes of OUR sentence. chunk and tablerag are
 # representation adaptations and ignore --template. Neither `chunk` nor
 # `tablerag` is a reproduction of a published end-to-end system.
-UNITS = ("cell", "row", "table", "chunk", "tablerag", "trag_hetero", "rowcol")
+UNITS = ("cell", "row", "table", "chunk", "tablerag", "trag_hetero", "rowcol", "randrow")
+# RandRowSampling: TableRAG's (Chen et al., NeurIPS 2024) own third baseline
+# alongside TableRAG and RowColRetrieval -- K random rows, no ranking at all.
+# Same row unit/text as --unit row; only the selection order is random.
 PAGE_TITLES = ROOT / "results/tableconf/totto_page_titles.json"
 
 
@@ -800,10 +808,11 @@ def main() -> int:
     queries = load_queries(a.data_dir, a.split, tabs, strict)
     tids = (hg.table_ids(a.data_dir) if a.corpus == "all"
             else sorted({q["table_id"] for q in queries}))
-    texts, covers, is_row, unit_tids, grid = build_corpus(a.data_dir, tids, a.template, a.unit,
-                                         page_titles, size, a.tablerag_colmode,
-                                         a.row_text, a.chunk_overlap, tokenizer,
-                                         trag_dtype=a.tablerag_dtype)
+    texts, covers, is_row, unit_tids, grid = build_corpus(
+        a.data_dir, tids, a.template, "row" if a.unit == "randrow" else a.unit,
+        page_titles, size, a.tablerag_colmode,
+        a.row_text, a.chunk_overlap, tokenizer,
+        trag_dtype=a.tablerag_dtype)
     unit_tid_arr = np.array(unit_tids)
     assert len(unit_tid_arr) == len(texts), "unit->table map lost a unit"
     print(f"[corpus] {len(tids)} tables / {len(texts)} {a.unit} units "
@@ -879,9 +888,15 @@ def main() -> int:
         if no_k:                  # 선택은 임계값이 정해진 뒤 루프 밖에서 한다
             pending.append((q, sel, s))
             continue
-        order = np.argsort(-s, kind="stable")
-        if sel is not None:
-            order = sel[order]
+        if a.unit == "randrow":
+            if sel is None:
+                raise ValueError("--unit randrow needs --corpus gold (samples within the question's own table)")
+            seed = int(digest(q["query_id"])[:8], 16)
+            order = np.random.default_rng(seed).permutation(sel)
+        else:
+            order = np.argsort(-s, kind="stable")
+            if sel is not None:
+                order = sel[order]
         if a.unit == "rowcol":
             selected = rowcol_select(order, covers, texts, is_row,
                                      a.budget, a.dump_context, grid, a.template, a.row_text,

@@ -93,7 +93,8 @@ class GroqLLM(BaseLLM):
         self.client = Groq(api_key=key, timeout=request_timeout)
         self.last_finish_reason: str | None = None  # see BaseLLM
 
-    def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
+    def complete(self, system: str, user: str, max_tokens: int = 256,
+                temperature: float | None = None) -> str:
         # Patience is wall-clock, not attempts. Groq's hint is sized for the
         # tokens this one request asked for. On the free tier the binding limit
         # is tokens-per-DAY (200k), which appears only in the 429 body and never
@@ -113,7 +114,7 @@ class GroqLLM(BaseLLM):
             try:
                 resp = self.client.chat.completions.create(
                     model=self.model_name,
-                    temperature=self.temperature,
+                    temperature=self.temperature if temperature is None else temperature,
                     max_tokens=max_tokens,
                     messages=[
                         {"role": "system", "content": system},

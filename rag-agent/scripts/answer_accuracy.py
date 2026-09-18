@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from collections import Counter, defaultdict
@@ -41,7 +42,7 @@ from rag_agent.serialization.caption import (caption_sentence,        # noqa: E4
 from rag_agent.serialization.templates import STRUCTURAL_COMPACT      # noqa: E402
 from scripts.retrieval_accuracy import PAGE_TITLES                    # noqa: E402
 from rag_agent.eval.artifacts import (digest, file_digest, provenance, read_records,
-                                     validate_retrieval, write_pair)
+                                     validate_retrieval)
 
 BASE = ("You answer questions about a table. The context lines are cells of the "
         "table, each written as its headers and its value. Use only the context. "
@@ -118,6 +119,28 @@ def gold_context(rec, tabs, data_dir):
             for _tid, i, j in rec.get("gold_cells", [])]
 
 
+def load_saved_rows(path, order):
+    """이미 저장된 행을 읽는다. 중복·순서 불일치면 파일을 건드리지 않고 멈추고,
+    통과하면 쓰다 끊긴 마지막 줄만 잘라 낸다 (WSL/드라이버가 중간에 죽인 실행 재개용)."""
+    raw = path.read_bytes()
+    whole = raw[:raw.rfind(b"\n") + 1]
+    done = {}
+    for line in whole.decode("utf-8").splitlines():
+        row = json.loads(line)
+        q = row["query_id"]
+        if q in done:
+            raise SystemExit(f"같은 질의가 두 번 저장돼 있다: {q}")
+        done[q] = row
+    if list(done) != order[:len(done)]:
+        raise SystemExit(f"저장된 {len(done)}행이 실행 순서의 앞부분이 아니다 — 중간 누락")
+    if len(whole) != len(raw):
+        with path.open("r+b") as stream:
+            stream.truncate(len(whole))
+        print(f"[resume] 쓰다 끊긴 마지막 줄 {len(raw) - len(whole)}바이트를 잘라 냈다", flush=True)
+    print(f"[resume] 저장된 {len(done)}행을 이어 쓴다", flush=True)
+    return done
+
+
 def summarize(rows, limit=0):
     """Leg metrics. A pure function of the rows so that a leg composed from
     other legs (analysis/compose_oracle.py) is summarised by this same code
@@ -185,15 +208,23 @@ def main() -> int:
                          "question asks for a percentage (analysis/unit_defect.py). "
                          "Decided from the dataset alone, so queries we answer "
                          "CORRECTLY are dropped too.")
+    ap.add_argument("--k", type=int, default=0,
+                    help="cell unit only: hand the reader the top-k retrieved cells "
+                         "(a prefix of the dumped context); retrieval hit = gold_rank <= k")
     ap.add_argument("--seed", type=int, default=42,
                     help="greedy 디코딩이라 무해하지만, 조건 넷이 같은 상태에서 "
                          "돌았다는 것을 기록으로 남긴다")
+    ap.add_argument("--resume", action="store_true",
+                    help="--out 에 저장된 행이 있으면 이어 쓴다 (실행 조건은 검증하지 않는다 — "
+                         "같은 명령으로만 재개할 것)")
     ap.add_argument("--out", default="")
     a = ap.parse_args()
 
     if a.max_tokens <= 0 or a.limit < 0:
         ap.error("max-tokens must be positive and limit nonnegative")
     records, retrieval_meta = load_evidence(a.records)
+    if a.k and (a.k < 0 or a.condition != "retrieved" or retrieval_meta.get("unit") != "cell"):
+        ap.error("--k needs --condition retrieved on cell-unit records")
     recs = list(records.values())
     scored = [r for r in recs if "correct" in r]
     if a.mode != "both":
@@ -219,15 +250,18 @@ def main() -> int:
         + ("" if a.prompt == "base" else f"_{a.prompt}")
         + ("" if a.mode == "both" else f"_mode{a.mode}")
         + ("_primary" if a.primary_only else "")
-        + ("_nodefect" if a.exclude_unit_defect else "") + ".jsonl"))
+        + ("_nodefect" if a.exclude_unit_defect else "")
+        + (f"_k{a.k}" if a.k else "") + ".jsonl"))
     # The per-query rows and the summary are written to `out` and to
     # `out.replace(".jsonl", ".json")`. An --out that does not end in .jsonl makes
     # those the same path and the summary silently destroys the predictions.
     if out.suffix != ".jsonl":
         raise SystemExit(f"--out must end in .jsonl (got {out.name}); the summary "
                          f"is written alongside it as .json")
-    if out.exists() or out.with_suffix(".json").exists():
-        raise SystemExit(f"{out} exists — answer legs never overwrite; pass a new --out")
+    if out.with_suffix(".json").exists():
+        raise SystemExit(f"{out.with_suffix('.json')} exists — 완료된 답변 레그는 다시 돌리지 않는다; pass a new --out")
+    if out.exists() and not a.resume:
+        raise SystemExit(f"{out} 에 저장된 실행이 있다 — 이어 쓰려면 --resume (덮어쓰지 않는다)")
 
     if not scored:
         raise ValueError("no scored queries after explicit filters")
@@ -252,32 +286,55 @@ def main() -> int:
     torch.manual_seed(a.seed)
     limit = getattr(llm, "context_limit", 0)
     tabs: dict = {}
-    rows, t0 = [], time.time()
-    for k, r in enumerate(scored, 1):
-        use_gold = a.condition == "gold" or (a.condition == "oracle" and r["correct"])
-        if use_gold:
-            ctx = gold_context(r, tabs, a.data_dir)
-        else:
-            ctx = r.get("context") or []
-        user = "Context:\n" + "\n".join(ctx) + f"\n\nQuestion: {r['question']}\nAnswer:"
-        n_tok = (llm.n_prompt_tokens(PROMPTS[a.prompt], user)
-                 if hasattr(llm, "n_prompt_tokens") else None)
-        check_context_limit(n_tok, a.max_tokens, limit)
-        pred = llm.complete(PROMPTS[a.prompt], user, max_tokens=a.max_tokens,
-                            temperature=0.0)
-        ok = hitab_exact_match_text(pred, r["answer"])
-        rows.append({"query_id": r["query_id"], "mode": r["mode"],
-                     "question": r["question"],
-                     "retrieval_correct": r["correct"], "answer_correct": int(ok),
-                     "aggregation": r.get("aggregation"), "n_ctx": len(ctx),
-                     "n_tok": n_tok, "cells_in_context": r["m"] if use_gold else r["cells_in_context"],
-                     "context_sha256": digest(ctx),
-                     "source_context_sha256": r["context_sha256"],
-                     "context_condition": "gold" if use_gold else "retrieved",
-                     "pred": pred, "answer": r["answer"]})
-        if k % 50 == 0:
-            print(f"  {k}/{len(scored)}  {time.time() - t0:.0f}s  "
-                  f"acc={sum(x['answer_correct'] for x in rows) / k:.4f}", flush=True)
+    order = [r["query_id"] for r in scored]
+    done = load_saved_rows(out, order) if out.exists() else {}
+    rows, t0 = list(done.values()), time.time()
+    # 문항마다 즉시 쓴다 — WSL/드라이버가 중간에 죽여도 끝난 문항은 디스크에 남는다
+    with out.open("a", encoding="utf-8", newline="\n") as stream:
+        for k, r in enumerate(scored, 1):
+            if r["query_id"] in done:
+                continue
+            use_gold = a.condition == "gold" or (a.condition == "oracle" and r["correct"])
+            hit = r["correct"]
+            if use_gold:
+                ctx = gold_context(r, tabs, a.data_dir)
+            else:
+                ctx = r.get("context") or []
+                if a.k:
+                    units = r["context_units"][:a.k]
+                    if (len(units) < a.k or any(len(u["cells"]) != 1 for u in units)
+                            or ctx[:a.k] != [u["text"] for u in units]):
+                        raise ValueError(f"{r['query_id']}: top-{a.k} is not {a.k} single-cell lines")
+                    ctx = ctx[:a.k]
+                    got = {tuple(c) for u in units for c in u["cells"]}
+                    gold = {tuple(c) for c in r["gold_cells"]}
+                    hit = int(gold <= got if r["mode"] == "all" else bool(gold & got))
+            user = "Context:\n" + "\n".join(ctx) + f"\n\nQuestion: {r['question']}\nAnswer:"
+            n_tok = (llm.n_prompt_tokens(PROMPTS[a.prompt], user)
+                     if hasattr(llm, "n_prompt_tokens") else None)
+            check_context_limit(n_tok, a.max_tokens, limit)
+            pred = llm.complete(PROMPTS[a.prompt], user, max_tokens=a.max_tokens,
+                                temperature=0.0)
+            ok = hitab_exact_match_text(pred, r["answer"])
+            row = {"query_id": r["query_id"], "mode": r["mode"],
+                   "question": r["question"],
+                   "retrieval_correct": hit, "answer_correct": int(ok),
+                   "aggregation": r.get("aggregation"), "n_ctx": len(ctx),
+                   "n_tok": n_tok,
+                   "cells_in_context": r["m"] if use_gold else (a.k or r["cells_in_context"]),
+                   "context_sha256": digest(ctx),
+                   "source_context_sha256": r["context_sha256"],
+                   "context_condition": "gold" if use_gold else "retrieved",
+                   "pred": pred, "answer": r["answer"]}
+            stream.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+            rows.append(row)
+            if k % 50 == 0:
+                print(f"  {k}/{len(scored)}  {time.time() - t0:.0f}s  "
+                      f"acc={sum(x['answer_correct'] for x in rows) / len(rows):.4f}", flush=True)
+    if [x["query_id"] for x in rows] != order:
+        raise SystemExit("저장된 행이 실행 계획과 다르다 — 누락 또는 중복")
 
     summary = {"records": a.records, "condition": a.condition,
                "context_version": 2, "provenance": provenance(ROOT),
@@ -287,12 +344,15 @@ def main() -> int:
                "prompt_sha256": digest(PROMPTS[a.prompt]), "prompt_text": PROMPTS[a.prompt],
                "scorer": "hitab_exact_match_text", "scorer_numeric_tolerance": 1e-5,
                "reader": llm.name, "prompt": a.prompt, "seed": a.seed,
-               "max_new_tokens": a.max_tokens,
+               "max_new_tokens": a.max_tokens, "k": a.k or None,
                "batch_size": 1,      # 질의당 1건 생성 — 조건 무관 고정
                "primary_only": bool(a.primary_only), "mode_filter": a.mode,
                "excluded_unit_defect": bool(a.exclude_unit_defect),
+               "resumed_rows": len(done),
                **summarize(rows, limit)}
-    write_pair(out, rows, summary)
+    summary["records_sha256"] = file_digest(out)
+    with out.with_suffix(".json").open("x", encoding="utf-8", newline="\n") as stream:
+        json.dump(summary, stream, ensure_ascii=False, indent=2, allow_nan=False)
     print(json.dumps(summary, indent=2))
     return 0
 

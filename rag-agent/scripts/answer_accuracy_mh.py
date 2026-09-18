@@ -163,7 +163,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--records", required=True)
-    ap.add_argument("--scope", default="doc", choices=["doc", "corpus"])
+    ap.add_argument("--scope", default="doc", choices=["doc", "corpus", "table"])
     ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold"])
     ap.add_argument("--reader", default="local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit")
     ap.add_argument("--prompt", default="neutral", choices=list(PROMPTS))

@@ -29,6 +29,42 @@ claim:
   template is the mechanism's own prescription, pre-registered in
   PREREG-2026-08-23-compact-untitled.md before it was run.
 
+* :data:`STRUCTURAL_LEAF` — :data:`STRUCTURAL_COMPACT` with the row/col LEAF
+  labels (the last segment of each path — the token that actually varies
+  between two cells that share a table and one axis) repeated as a prefix:
+  ``"{row_leaf} / {col_leaf}: {structural_compact body}"``. Targets same-table,
+  one-axis-right top-1 errors (results/bottleneck_root_cause/BOTTLENECK_ROOT_CAUSE.md,
+  wrong_row+wrong_column = 61.4% of top-1 errors, 2026-09-16): two cells in the
+  same table differ from their sentence's boilerplate only in a few leaf
+  tokens buried mid-sentence, and repeating them was expected to weight them
+  more heavily in a mean-pooled embedding. That assumption was WRONG: the
+  deployed encoder (BAAI/bge-base-en-v1.5 via sentence-transformers) pools by
+  CLS token, not mean (results/embedding_fusion_diagnosis_20260917/, read off
+  the model's own ``1_Pooling`` config, ``pooling_mode: 'cls'`` — not
+  templates.py's assumption, which was never checked against the model until
+  that script did). A dense-only/sparse-only 2x2 (results/embedding_fusion_diagnosis_20260917/
+  leaf_channel_ablation.json) decomposed which side of the hybrid score
+  actually carries the gain: R@1 plain/plain .5752, leaf-on-dense-only .6135
+  (+.0383), leaf-on-sparse-only .5792 (+.0040), both .6176 (+.0424) — the two
+  channel contributions are almost exactly additive (.0383+.0040=.0423≈.0424,
+  no interaction), and 90% of the gain is the DENSE side despite CLS (not
+  mean) pooling: the repeated tokens must be shifting the CLS vector through
+  self-attention, not through mean-pool averaging or BM25 term frequency. Not
+  a length knob returning through the back door either way: it repeats
+  content already in the sentence, it does not add new information.
+
+* :data:`STRUCTURAL_LEAF_X2` — :data:`STRUCTURAL_LEAF` with its own leaf prefix
+  repeated once more: ``"{row_leaf} / {col_leaf}: {structural_leaf body}"``.
+  One repeat (STRUCTURAL_LEAF) moved R@1 .5752->.6176 and cut wrong_row
+  113->91, wrong_column 143->126 of 991 (results/sentence_disambiguation_20260916/
+  SENTENCE_DISAMBIGUATION.md) but left most of both error classes standing.
+  This tested whether a second repeat of the SAME leaf tokens kept buying
+  R@1/lowering wrong_row+wrong_column further, or had already plateaued.
+  Result: plateaued and reversed slightly — R@1 .6176->.6145, wrong_row
+  91->98, wrong_column 126->125 (results/sentence_disambiguation_20260916/
+  SENTENCE_DISAMBIGUATION_structural_leaf_x2.md, 2026-09-17). Repetition count
+  is not a lever worth pushing further on this template.
+
 PROVISIONAL — CONFIRMED NOT TO MATCH (checked against the paper 2026-09-08).
 The knobs below were reverse-engineered from the paper's rendered example, and
 rendering that example's own cell with them does not reproduce it:
@@ -91,7 +127,9 @@ from .base import fmt_value, join_path
 MT2NET = "mt2net"
 STRUCTURAL = "structural"
 STRUCTURAL_COMPACT = "structural_compact"
-TEMPLATES = (MT2NET, STRUCTURAL, STRUCTURAL_COMPACT)
+STRUCTURAL_LEAF = "structural_leaf"
+STRUCTURAL_LEAF_X2 = "structural_leaf_x2"
+TEMPLATES = (MT2NET, STRUCTURAL, STRUCTURAL_COMPACT, STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2)
 
 # --- provisional readings of the single published MT2Net example ---
 MT2NET_ROW_SEP = " of "
@@ -120,6 +158,14 @@ def render(template: str, title, row_path: Sequence[str], col_path: Sequence[str
     has_val = value is not None
     val_s = fmt_value(value) if has_val else ""
     title_s = fmt_value(title) if title else ""
+
+    if template in (STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2):
+        inner = STRUCTURAL_COMPACT if template == STRUCTURAL_LEAF else STRUCTURAL_LEAF
+        body = render(inner, title, row_path, col_path, value)
+        row_leaf = fmt_value(row_path[-1]) if row_path else ""
+        col_leaf = fmt_value(col_path[-1]) if col_path else ""
+        prefix = " / ".join(p for p in (row_leaf, col_leaf) if p)
+        return f"{prefix}: {body}" if prefix else body
 
     if template == STRUCTURAL_COMPACT and not title_s:
         # The frame ("in the table X, among ..., the value of ... is ...") exists

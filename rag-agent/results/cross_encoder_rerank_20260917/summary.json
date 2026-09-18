@@ -1,0 +1,34 @@
+{
+  "n": 991,
+  "pool_size": 50,
+  "rerank_model": "BAAI/bge-reranker-v2-m3",
+  "elapsed_s": 496.9,
+  "embed_cache_hit": true,
+  "baseline_vs_k20": {
+    "n": 991,
+    "baseline_r1": 0.6176,
+    "k20_r1": 0.6054,
+    "baseline_only": 107,
+    "k20_only": 95,
+    "discordant": 202,
+    "p_value": 0.439
+  },
+  "baseline_vs_k50": {
+    "n": 991,
+    "baseline_r1": 0.6176,
+    "k50_r1": 0.6054,
+    "baseline_only": 112,
+    "k50_only": 100,
+    "discordant": 212,
+    "p_value": 0.45
+  },
+  "k20_vs_k50": {
+    "n": 991,
+    "k20_r1": 0.6054,
+    "k50_r1": 0.6054,
+    "k20_only": 8,
+    "k50_only": 8,
+    "discordant": 16,
+    "p_value": 1.0
+  }
+}

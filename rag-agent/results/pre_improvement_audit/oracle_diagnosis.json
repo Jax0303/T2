@@ -1,0 +1,72 @@
+{
+  "note": "gold-table/row/column filters below are diagnostic oracles used to bound where retrieval loses the gold cell; they are never used to select or score anything and are not a proposed retrieval method.",
+  "conditions": {
+    "global": {
+      "population_definition": "primary single-cell population (m=1, mode=all, aggregation=none), gold_rank from the deployed top-500-capped scan (no filter -- the real method)",
+      "n_population": 991,
+      "n_known_rank": 985,
+      "n_unknown_rank": 6,
+      "recall_at_1": 0.5752,
+      "recall_at_5": 0.7982,
+      "recall_at_20": 0.9142,
+      "mrr_over_known_rank_only": 0.6814,
+      "esm_at_1": 0.5752,
+      "esm_note": "single gold cell -> ESM>0 only possible at rank 1, equal to recall_at_1"
+    },
+    "gold_table_only": {
+      "population_definition": "DIAGNOSTIC ORACLE, not a real retrieval method: gold table/row/column identity is used as a filter. Computed only over queries observable in the existing top-20 window (gold_rank<=20); relative order within that window is preserved from the already-ranked context_units, so no rescoring/model call is needed. Queries with gold_rank>20 or unknown cannot be resolved from the top-20 window alone and are reported as censored, not estimated.",
+      "n_observable": 906,
+      "n_censored_gold_rank_gt20_or_unknown": 85,
+      "recall_at_1": 0.6799,
+      "recall_at_5": 0.9095,
+      "recall_at_20": 1.0,
+      "mrr": 0.7822,
+      "esm_at_1": 0.6799,
+      "esm_note": "single gold cell -> ESM>0 only possible at rank 1, equal to recall_at_1"
+    },
+    "gold_row_compatible": {
+      "population_definition": "DIAGNOSTIC ORACLE, not a real retrieval method: gold table/row/column identity is used as a filter. Computed only over queries observable in the existing top-20 window (gold_rank<=20); relative order within that window is preserved from the already-ranked context_units, so no rescoring/model call is needed. Queries with gold_rank>20 or unknown cannot be resolved from the top-20 window alone and are reported as censored, not estimated.",
+      "n_observable": 906,
+      "n_censored_gold_rank_gt20_or_unknown": 85,
+      "recall_at_1": 0.7859,
+      "recall_at_5": 0.9713,
+      "recall_at_20": 1.0,
+      "mrr": 0.8685,
+      "esm_at_1": 0.7859,
+      "esm_note": "single gold cell -> ESM>0 only possible at rank 1, equal to recall_at_1"
+    },
+    "gold_column_compatible": {
+      "population_definition": "DIAGNOSTIC ORACLE, not a real retrieval method: gold table/row/column identity is used as a filter. Computed only over queries observable in the existing top-20 window (gold_rank<=20); relative order within that window is preserved from the already-ranked context_units, so no rescoring/model call is needed. Queries with gold_rank>20 or unknown cannot be resolved from the top-20 window alone and are reported as censored, not estimated.",
+      "n_observable": 906,
+      "n_censored_gold_rank_gt20_or_unknown": 85,
+      "recall_at_1": 0.8245,
+      "recall_at_5": 0.9735,
+      "recall_at_20": 1.0,
+      "mrr": 0.8885,
+      "esm_at_1": 0.8245,
+      "esm_note": "single gold cell -> ESM>0 only possible at rank 1, equal to recall_at_1"
+    },
+    "gold_table_and_row": {
+      "population_definition": "DIAGNOSTIC ORACLE, not a real retrieval method: gold table/row/column identity is used as a filter. Computed only over queries observable in the existing top-20 window (gold_rank<=20); relative order within that window is preserved from the already-ranked context_units, so no rescoring/model call is needed. Queries with gold_rank>20 or unknown cannot be resolved from the top-20 window alone and are reported as censored, not estimated.",
+      "n_observable": 906,
+      "n_censored_gold_rank_gt20_or_unknown": 85,
+      "recall_at_1": 0.8124,
+      "recall_at_5": 0.9845,
+      "recall_at_20": 1.0,
+      "mrr": 0.8863,
+      "esm_at_1": 0.8124,
+      "esm_note": "single gold cell -> ESM>0 only possible at rank 1, equal to recall_at_1"
+    },
+    "gold_table_and_column": {
+      "population_definition": "DIAGNOSTIC ORACLE, not a real retrieval method: gold table/row/column identity is used as a filter. Computed only over queries observable in the existing top-20 window (gold_rank<=20); relative order within that window is preserved from the already-ranked context_units, so no rescoring/model call is needed. Queries with gold_rank>20 or unknown cannot be resolved from the top-20 window alone and are reported as censored, not estimated.",
+      "n_observable": 906,
+      "n_censored_gold_rank_gt20_or_unknown": 85,
+      "recall_at_1": 0.8433,
+      "recall_at_5": 0.9757,
+      "recall_at_20": 1.0,
+      "mrr": 0.9002,
+      "esm_at_1": 0.8433,
+      "esm_note": "single gold cell -> ESM>0 only possible at rank 1, equal to recall_at_1"
+    }
+  }
+}

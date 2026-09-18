@@ -1,0 +1,100 @@
+{
+  "n_groups": 943,
+  "n_cross_table_groups": 823,
+  "n_within_table_groups": 120,
+  "cross_table_examples": [
+    {
+      "text": "In the table 'Matt Asiata: statistics', among 2008, the value of rushing > att is 146.0.",
+      "coords": [
+        [
+          "124_totto14730-2",
+          0,
+          0
+        ],
+        [
+          "324_totto36813-0",
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "text": "In the table 'Matt Asiata: statistics', among 2008, the value of rushing > yards is 707.0.",
+      "coords": [
+        [
+          "124_totto14730-2",
+          0,
+          1
+        ],
+        [
+          "324_totto36813-0",
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "text": "In the table 'Matt Asiata: statistics', among 2008, the value of rushing > avg is 4.8.",
+      "coords": [
+        [
+          "124_totto14730-2",
+          0,
+          2
+        ],
+        [
+          "324_totto36813-0",
+          0,
+          2
+        ]
+      ]
+    }
+  ],
+  "within_table_examples": [
+    {
+      "text": "In the table 'Paul Lodge: statistics', among southport > total, the value of other > goals is 0.",
+      "coords": [
+        [
+          "104_totto12294-0",
+          17,
+          5
+        ],
+        [
+          "104_totto12294-0",
+          24,
+          5
+        ]
+      ]
+    },
+    {
+      "text": "In the table 'Kerli discography: studio albums', among shadow works > released: february 22, 2019 label: seeking blue formats: cd, digital download, the value o",
+      "coords": [
+        [
+          "128_totto15628-4",
+          1,
+          0
+        ],
+        [
+          "128_totto15628-4",
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "text": "In the table 'comparison of cohort and in-scope births, by selected birth and maternal characteristics, canada, 2004 to 2006', among total, the value of birth-c",
+      "coords": [
+        [
+          "1312",
+          0,
+          4
+        ],
+        [
+          "1312",
+          0,
+          6
+        ]
+      ]
+    }
+  ],
+  "verdict": "cross-table 그룹 다수는 서로 다른 table_id가 동일 제목·동일 값을 가진 진짜 중복/근사중복 표(예: 같은 선수의 통계표가 두 문서에 각각 존재)로, 셀 직렬화에 어떤 '의미 있는' 필드를 추가해도 구별 불가능 — table_id 자체를 노출하는 것은 정답을 암기시키는 것과 같아 타당한 수정이 아님. 이 유형은 same_value류와 같은 성격: 검색이 '틀렸다'기보다 답변 가능한 셀이 여러 개 존재하는 평가 한계에 가깝다. within-table 그룹(소수)은 같은 표 안에서 서로 다른 행/열이 동일 header path 문자열로 축약되는 경우로, 더 깊은 header 계층(현재 col_path/row_path가 담지 못하는 레벨)이 남아 있는지 확인해야 하며, 그런 레벨이 실제로 존재한다면 노출이 타당한 고정 후보이다 — 다만 이는 테이블별 hmt raw tree 재조사가 필요한 별도 작업이다."
+}

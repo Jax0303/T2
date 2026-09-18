@@ -108,6 +108,42 @@ def test_s2r_reverses_each_axis_and_keeps_every_token():
     assert seg(s2) == seg(s2r)
 
 
+def test_structural_leaf_prefixes_row_col_leaves_onto_structural_compact():
+    """STRUCTURAL_LEAF repeats the two leaf tokens, changes nothing else."""
+    from rag_agent.serialization.templates import STRUCTURAL_COMPACT, STRUCTURAL_LEAF
+
+    args = ("Table 3", ["Total", "Married mothers"], ["Revenue", "2018"], 2894)
+    body = render(STRUCTURAL_COMPACT, *args)
+    got = render(STRUCTURAL_LEAF, *args)
+    assert got == "Married mothers / 2018: " + body
+    assert got.endswith(body)
+
+
+def test_structural_leaf_drops_prefix_when_both_paths_empty():
+    from rag_agent.serialization.templates import STRUCTURAL_COMPACT, STRUCTURAL_LEAF
+
+    assert render(STRUCTURAL_LEAF, "T", [], [], "5") == render(
+        STRUCTURAL_COMPACT, "T", [], [], "5")
+
+
+def test_structural_leaf_x2_repeats_the_leaf_prefix_a_second_time():
+    """STRUCTURAL_LEAF_X2 wraps STRUCTURAL_LEAF in the same prefix again."""
+    from rag_agent.serialization.templates import STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2
+
+    args = ("Table 3", ["Total", "Married mothers"], ["Revenue", "2018"], 2894)
+    once = render(STRUCTURAL_LEAF, *args)
+    twice = render(STRUCTURAL_LEAF_X2, *args)
+    assert twice == "Married mothers / 2018: " + once
+    assert twice.endswith(once)
+
+
+def test_structural_leaf_x2_drops_prefix_when_both_paths_empty():
+    from rag_agent.serialization.templates import STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2
+
+    assert render(STRUCTURAL_LEAF_X2, "T", [], [], "5") == render(
+        STRUCTURAL_LEAF, "T", [], [], "5")
+
+
 def test_s2t_tags_by_table_and_changes_nothing_else():
     """S2t is S2 plus a per-table tag: uniqueness with no matchable meaning.
 

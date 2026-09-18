@@ -62,10 +62,12 @@ class _Stub:
 
     def __init__(self, fails, msg=TPD):
         self.fails, self.msg, self.calls = fails, msg, 0
+        self.last_kwargs = None
         self.chat = SimpleNamespace(completions=SimpleNamespace(create=self._create))
 
-    def _create(self, **_kw):
+    def _create(self, **kw):
         self.calls += 1
+        self.last_kwargs = kw
         if self.calls <= self.fails:
             raise RuntimeError(self.msg)
         return SimpleNamespace(choices=[SimpleNamespace(
@@ -117,6 +119,18 @@ def test_gives_up_when_the_patience_budget_is_spent():
     assert 900.0 * 8 - 60 <= sum(slept) <= 900.0 * 8 + 1, sum(slept)
 
 
+def test_complete_defaults_to_the_constructor_temperature():
+    llm = _llm(0, [])
+    llm.complete("s", "u")
+    assert llm.client.last_kwargs["temperature"] == 0.0
+
+
+def test_complete_per_call_temperature_overrides_the_constructor_one():
+    llm = _llm(0, [])
+    llm.complete("s", "u", temperature=0.7)
+    assert llm.client.last_kwargs["temperature"] == 0.7
+
+
 def test_a_non_429_error_is_not_retried():
     llm = _llm(1, [])
     llm.client.msg = "500 internal error"
@@ -138,5 +152,7 @@ if __name__ == "__main__":
     test_gpt_oss_does_not_pay_for_medium_reasoning()
     test_rides_out_a_ten_minute_window_in_short_hops()
     test_gives_up_when_the_patience_budget_is_spent()
+    test_complete_defaults_to_the_constructor_temperature()
+    test_complete_per_call_temperature_overrides_the_constructor_one()
     test_a_non_429_error_is_not_retried()
     print("ok")

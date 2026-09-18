@@ -1,0 +1,64 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2671.53it/s]
+{
+  "representation": "predicted_path",
+  "alpha": 0.7,
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "embed_cache_hit": false,
+  "n_units": 67664,
+  "n_predicted_path_fallback_to_value_only": 0,
+  "n_population": 991,
+  "n_scored": 991,
+  "n_excluded": 0,
+  "recall_at_1": 0.553,
+  "recall_at_5": 0.7891,
+  "recall_at_10": 0.8668,
+  "recall_at_20": 0.9082,
+  "esm_at_1_note": "ESM defined as before: >0 only possible at k=1 (single gold cell)",
+  "mrr": 0.6644,
+  "median_rank": 1
+}
+{
+  "n_structure_correct": 519,
+  "n_structure_wrong": 472,
+  "n_structure_undetermined": 0,
+  "predicted_path__structure_correct": {
+    "n": 519,
+    "recall_at_1": 0.553,
+    "recall_at_5": 0.7765,
+    "recall_at_10": 0.8728,
+    "recall_at_20": 0.9171,
+    "mrr": 0.6593,
+    "median_rank": 1
+  },
+  "predicted_path__structure_wrong": {
+    "n": 472,
+    "recall_at_1": 0.553,
+    "recall_at_5": 0.803,
+    "recall_at_10": 0.8602,
+    "recall_at_20": 0.8983,
+    "mrr": 0.6699,
+    "median_rank": 1
+  },
+  "predicted_path__structure_undetermined": {
+    "n": 0
+  },
+  "gold_path__on_structure_correct_subset": {
+    "n": 519,
+    "recall_at_1": 0.5453,
+    "recall_at_5": 0.7803,
+    "recall_at_10": 0.869,
+    "recall_at_20": 0.9094,
+    "mrr": 0.6547,
+    "median_rank": 1
+  },
+  "predicted_path__on_structure_correct_subset": {
+    "n": 519,
+    "recall_at_1": 0.553,
+    "recall_at_5": 0.7765,
+    "recall_at_10": 0.8728,
+    "recall_at_20": 0.9171,
+    "mrr": 0.6593,
+    "median_rank": 1
+  }
+}

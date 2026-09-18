@@ -1,0 +1,27 @@
+{
+  "template": "structural_leaf",
+  "alpha": 0.7,
+  "pooling_verified": {
+    "pooling_mode": "cls",
+    "pooling_class": "Pooling",
+    "normalize_class": "Normalize",
+    "normalize_embeddings_flag_in_encode_call": true,
+    "WARNING": "pooling is NOT mean -- templates.py's STRUCTURAL_LEAF/STRUCTURAL_LEAF_X2 docstrings justify leaf-repetition via 'mean-pooled embeddings weight repeated tokens more', which does not describe this encoder"
+  },
+  "n_population": 991,
+  "n_hybrid_miss": 379,
+  "combination_failure": {
+    "n": 59,
+    "pct_of_misses": 0.1557
+  },
+  "shared_representation_failure": {
+    "n": 320,
+    "pct_of_misses": 0.8443,
+    "same_antagonist_in_both_channels": {
+      "n": 62,
+      "pct_of_shared_representation_failures": 0.1938
+    }
+  },
+  "mean_dense_margin_gold_minus_top1": -0.026,
+  "mean_sparse_margin_gold_minus_top1": -4.4369
+}

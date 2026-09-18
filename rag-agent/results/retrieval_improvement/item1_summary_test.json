@@ -1,0 +1,72 @@
+{
+  "split": "test",
+  "n_population": 991,
+  "n_scored": 991,
+  "n_gold_not_in_corpus": 0,
+  "dense": {
+    "n": 991,
+    "recall_at_1": 0.5156,
+    "recall_at_5": 0.7699,
+    "recall_at_20": 0.9152,
+    "mrr": 0.6349,
+    "esm_at_1": 0.5156,
+    "n_top1_ties": 14
+  },
+  "sparse": {
+    "n": 991,
+    "recall_at_1": 0.4803,
+    "recall_at_5": 0.6731,
+    "recall_at_20": 0.7851,
+    "mrr": 0.5692,
+    "esm_at_1": 0.4803,
+    "n_top1_ties": 457
+  },
+  "hybrid": {
+    "n": 991,
+    "recall_at_1": 0.5782,
+    "recall_at_5": 0.7982,
+    "recall_at_20": 0.9142,
+    "mrr": 0.6789,
+    "esm_at_1": 0.5782,
+    "n_top1_ties": 13
+  },
+  "error_class_distribution_among_top1_wrong": {
+    "dense": {
+      "wrong_table": 120,
+      "wrong_column": 132,
+      "wrong_row": 154,
+      "same_leaf_header": 22,
+      "same_value": 20,
+      "other": 22,
+      "nearby_cell": 10
+    },
+    "sparse": {
+      "wrong_table": 216,
+      "wrong_column": 132,
+      "other": 38,
+      "nearby_cell": 14,
+      "wrong_row": 80,
+      "same_leaf_header": 29,
+      "same_value": 6
+    },
+    "hybrid": {
+      "wrong_table": 102,
+      "wrong_column": 143,
+      "wrong_row": 113,
+      "same_leaf_header": 15,
+      "nearby_cell": 11,
+      "same_value": 19,
+      "other": 15
+    }
+  },
+  "reversal": {
+    "dense_top1_correct_hybrid_top1_wrong": 32,
+    "hybrid_top1_correct_dense_top1_wrong": 94,
+    "both_top1_correct": 479,
+    "note": "alpha=0.7 minmax-weighted sum; a reversal means minmax rescaling let a lower-raw-cosine but higher-BM25 cell outrank the dense winner, or vice versa"
+  },
+  "checks": {
+    "candidate_truncation": "none in this recomputation -- full-corpus rank used (n_units=67664), unlike the deployed pipeline's top-500 scan cap",
+    "normalization": "_minmax per query over the full candidate set, matching the deployed hybrid formula exactly"
+  }
+}

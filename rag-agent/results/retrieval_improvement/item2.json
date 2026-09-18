@@ -1,0 +1,124 @@
+{
+  "dev_selection": {
+    "table_recall": [
+      {
+        "k": 1,
+        "table_recall_at_k": 0.7844,
+        "n": 1062
+      },
+      {
+        "k": 3,
+        "table_recall_at_k": 0.8983,
+        "n": 1062
+      },
+      {
+        "k": 5,
+        "table_recall_at_k": 0.9473,
+        "n": 1062
+      }
+    ],
+    "routing_by_k": {
+      "1": {
+        "k_tables": 1,
+        "n": 1062,
+        "n_gold_table_routed_out": 229,
+        "recall_at_1": 0.5,
+        "recall_at_5": 0.6855,
+        "recall_at_20": 0.7458,
+        "mrr": 0.5822
+      },
+      "3": {
+        "k_tables": 3,
+        "n": 1062,
+        "n_gold_table_routed_out": 108,
+        "recall_at_1": 0.5405,
+        "recall_at_5": 0.7646,
+        "recall_at_20": 0.8437,
+        "mrr": 0.6402
+      }
+    },
+    "best_k_tables": 3,
+    "rerank_by_wt": {
+      "0.1": {
+        "k_pool": 50,
+        "wt": 0.1,
+        "n": 1062,
+        "recall_at_1": 0.5753,
+        "recall_at_5": 0.8173,
+        "mrr": 0.6822
+      },
+      "0.2": {
+        "k_pool": 50,
+        "wt": 0.2,
+        "n": 1062,
+        "recall_at_1": 0.5772,
+        "recall_at_5": 0.8145,
+        "mrr": 0.6817
+      },
+      "0.3": {
+        "k_pool": 50,
+        "wt": 0.3,
+        "n": 1062,
+        "recall_at_1": 0.5763,
+        "recall_at_5": 0.8079,
+        "mrr": 0.6794
+      },
+      "0.4": {
+        "k_pool": 50,
+        "wt": 0.4,
+        "n": 1062,
+        "recall_at_1": 0.5734,
+        "recall_at_5": 0.7994,
+        "mrr": 0.6755
+      }
+    },
+    "best_wt": 0.2
+  },
+  "test": {
+    "table_recall": [
+      {
+        "k": 1,
+        "table_recall_at_k": 0.7901,
+        "n": 991
+      },
+      {
+        "k": 3,
+        "table_recall_at_k": 0.9092,
+        "n": 991
+      },
+      {
+        "k": 5,
+        "table_recall_at_k": 0.9415,
+        "n": 991
+      }
+    ],
+    "routing_by_k": {
+      "1": {
+        "k_tables": 1,
+        "n": 991,
+        "n_gold_table_routed_out": 208,
+        "recall_at_1": 0.4985,
+        "recall_at_5": 0.6811,
+        "recall_at_20": 0.7598,
+        "mrr": 0.5817
+      },
+      "3": {
+        "k_tables": 3,
+        "n": 991,
+        "n_gold_table_routed_out": 90,
+        "recall_at_1": 0.5499,
+        "recall_at_5": 0.7538,
+        "recall_at_20": 0.8648,
+        "mrr": 0.644
+      }
+    },
+    "rerank_at_dev_best_wt": {
+      "k_pool": 50,
+      "wt": 0.2,
+      "n": 991,
+      "recall_at_1": 0.5681,
+      "recall_at_5": 0.7921,
+      "mrr": 0.6715
+    }
+  }
+}

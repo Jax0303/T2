@@ -328,7 +328,7 @@ def main() -> int:
                     help="MultiHiertt test 는 gold 를 공개하지 않는다.")
     ap.add_argument("--unit", default="cell",
                     choices=["cell", "row", "chunk", "trag_hetero", "tablerag",
-                             "rowcol", "mt2net_desc", "mt2net_header_s3c",
+                             "rowcol", "randrow", "mt2net_desc", "mt2net_header_s3c",
                              "mt2net_desc_label"])
     ap.add_argument("--template", default="s3c")
     ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"])
@@ -343,6 +343,8 @@ def main() -> int:
     ap.add_argument("--chunk-chars", type=int, default=1000)
     ap.add_argument("--chunk-overlap", type=int, default=200)
     ap.add_argument("--embed-model", default="BAAI/bge-base-en-v1.5")
+    ap.add_argument("--embed-overflow", choices=["error", "truncate"], default="error",
+                    help="refuse hidden encoder truncation unless explicitly allowed")
     ap.add_argument("--alpha", type=float, default=0.7,
                     help="HiTab arm 에 고정된 값을 그대로 쓴다 — 재선택하지 않는다")
     ap.add_argument("--budget", type=int, default=20)
@@ -405,8 +407,8 @@ def main() -> int:
                                 "mt2net_desc_label": "label"}[a.unit])
     else:
         texts, covers, is_row, unit_tids, grid = build_corpus(
-            "", sorted(tables), a.template, a.unit, {}, a.chunk_chars,
-            a.tablerag_colmode, a.row_text, a.chunk_overlap, None,
+            "", sorted(tables), a.template, "row" if a.unit == "randrow" else a.unit,
+            {}, a.chunk_chars, a.tablerag_colmode, a.row_text, a.chunk_overlap, None,
             load=lambda tid, _d: tables.get(tid), trag_dtype=a.tablerag_dtype)
     # gold 해석은 arm 과 무관해야 한다. 이 arm 이 배달할 수 있는 셀(covers)로
     # 가르면, 숫자 열을 min/max 로 접는 TableRAG 처럼 셀을 못 담는 arm 은 그 질의가
@@ -418,6 +420,7 @@ def main() -> int:
             for j, v in enumerate(row) if str(v).strip()}
     queries = resolve_gold(queries, tables, hdr, live)
     uid_arr = np.array([t.split("::")[0] for t in unit_tids])
+    tid_arr = np.array(unit_tids)
     assert len(uid_arr) == len(texts), "unit->doc map lost a unit"
     print(f"[corpus] {len(tables)} tables / {len(texts)} {a.unit} units "
           f"({time.time() - t0:.0f}s)", flush=True)
@@ -427,6 +430,9 @@ def main() -> int:
     print(f"[bm25] {len(bm.vocab)} terms in {time.time() - t0:.0f}s", flush=True)
 
     enc = default_encoder(model_name=a.embed_model)
+    input_audit = {"documents": enc.audit_inputs(texts, overflow=a.embed_overflow),
+                   "queries": enc.audit_inputs([q["question"] for q in queries],
+                                               query=True, overflow=a.embed_overflow)}
     cache = Path(a.cache_dir)
     cache.mkdir(parents=True, exist_ok=True)
     key = digest(texts)[:16]
@@ -492,8 +498,16 @@ def main() -> int:
              "m_annotated": len(q["coords"]), "n_gold_tables": q["n_gold_tables"],
              "layer": layer(q), "question": q["question"], "answer": q["answer"],
              "mode": "all"}
-        for scope in (("doc",) if strict else ("corpus", "doc")):
-            if scope == "doc":
+        gold_tids = {c[0] for c in q["gold"]}
+        for scope in (("doc",) if strict else ("corpus", "doc", "table")):
+            if scope == "table":
+                # HiTab 의 corpus=gold(그 표 1개로만 좁힘) 와 대응되는 범위 — "표가 이미
+                # 주어졌다" 는 가정. gold 가 표 여러 개에 걸치는 질의(20.2%, PREREG 미기재
+                # 실측치)는 그 표들의 합집합을 후보로 둔다 — 여전히 "표는 안다, 셀만 찾는다".
+                sel = np.flatnonzero(np.isin(tid_arr, list(gold_tids)))
+                k = min(TOP, len(sel) - 1)
+                top = sel[np.argpartition(-sc[sel], k)[:k + 1]]
+            elif scope == "doc":
                 sel = np.flatnonzero(uid_arr == q["uid"])
                 k = min(TOP, len(sel) - 1)
                 top = sel[np.argpartition(-sc[sel], k)[:k + 1]]
@@ -501,6 +515,8 @@ def main() -> int:
                 k = min(TOP, len(sc) - 1)       # 작은 코퍼스(--max-docs)에서 kth 초과 방지
                 top = np.argpartition(-sc, k)[:k + 1]
             order = top[np.argsort(-sc[top], kind="stable")]
+            if a.unit == "randrow" and scope in ("doc", "table"):
+                order = np.random.default_rng(int(digest(q["uid"])[:8], 16)).permutation(sel)
             if a.unit == "rowcol":
                 selected = rowcol_select(order, covers, texts, is_row, a.budget,
                                          a.dump_context, grid, a.template, a.row_text,
@@ -596,6 +612,7 @@ def main() -> int:
             "query_prefix": enc.query_prefix, "context_tokenizer": tok_info,
             "n_docs": len(docs), "n_tables": len(tables), "n_units": len(texts),
             "corpus_text_sha256": digest(texts), "provenance": provenance(ROOT),
+            "embedding_input_audit": input_audit,
             "arguments": vars(a)}, anomalies, excluded)
         sr.print_groups(summary["groups"])
         if threshold:
@@ -618,7 +635,7 @@ def main() -> int:
 
     def block(rows):
         o = {"n": len(rows)}
-        for scope in ("corpus", "doc"):
+        for scope in ("corpus", "doc", "table"):
             o[scope] = {
                 "accuracy_all": rate([x[scope]["correct"] for x in rows]),
                 "accuracy_any_DIAGNOSTIC": rate([x[scope]["any_DIAGNOSTIC"] for x in rows]),
@@ -641,6 +658,7 @@ def main() -> int:
                              else "self-reconstructed"),
         "provenance": provenance(ROOT), "arguments": vars(a),
         "encoder": enc.name, "query_prefix": enc.query_prefix, "alpha": a.alpha,
+        "embedding_input_audit": input_audit,
         "budget_cells": a.budget, "header_rule": a.header_rule, "label_rule": a.label_rule,
         "n_tables_labelled": sum(1 for t in tables.values() if t.title),
         "context_version": 2 if a.dump_context else None,

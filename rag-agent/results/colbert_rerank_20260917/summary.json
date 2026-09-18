@@ -1,0 +1,35 @@
+{
+  "n": 991,
+  "pool_size": 50,
+  "rerank_model": "colbert-ir/colbertv2.0",
+  "preprocessing": "official (Q/D markers, query MASK augmentation, doc skiplist)",
+  "elapsed_s": 135.3,
+  "embed_cache_hit": true,
+  "baseline_vs_k20": {
+    "n": 991,
+    "baseline_r1": 0.6176,
+    "k20_r1": 0.5439,
+    "baseline_only": 142,
+    "k20_only": 69,
+    "discordant": 211,
+    "p_value": 0.0
+  },
+  "baseline_vs_k50": {
+    "n": 991,
+    "baseline_r1": 0.6176,
+    "k50_r1": 0.5439,
+    "baseline_only": 142,
+    "k50_only": 69,
+    "discordant": 211,
+    "p_value": 0.0
+  },
+  "k20_vs_k50": {
+    "n": 991,
+    "k20_r1": 0.5439,
+    "k50_r1": 0.5439,
+    "k20_only": 2,
+    "k50_only": 2,
+    "discordant": 4,
+    "p_value": 1.0
+  }
+}

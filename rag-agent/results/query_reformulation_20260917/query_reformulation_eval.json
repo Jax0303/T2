@@ -1,0 +1,18 @@
+{
+  "n": 150,
+  "recall_at_1": 0.5333,
+  "embed_cache_hit": true,
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "alpha": 0.7,
+  "comparison_vs_deployed": {
+    "label": "structural_leaf deployed vs query_reformulation(dense-only)",
+    "n": 150,
+    "a_acc": 0.6533,
+    "b_acc": 0.5333,
+    "a_only": 25,
+    "b_only": 7,
+    "both": 73,
+    "discordant": 32,
+    "p_value": 0.0021
+  }
+}

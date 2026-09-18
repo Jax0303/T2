@@ -1,0 +1,43 @@
+{
+  "pool_size": 50,
+  "normalization": "preserved (no pool-level renormalization)",
+  "dev_best_single_weight": {
+    "table": 0.2,
+    "row": 0.2,
+    "col": 0.2
+  },
+  "dev_best_all_weight": 0.3,
+  "test_variants": {
+    "baseline": {
+      "n": 991,
+      "recall_at_1": 0.5752,
+      "recall_at_5": 0.7982,
+      "mrr": 0.6768
+    },
+    "table": {
+      "n": 991,
+      "recall_at_1": 0.5681,
+      "recall_at_5": 0.7931,
+      "mrr": 0.6712
+    },
+    "row": {
+      "n": 991,
+      "recall_at_1": 0.5792,
+      "recall_at_5": 0.7911,
+      "mrr": 0.6769
+    },
+    "column": {
+      "n": 991,
+      "recall_at_1": 0.558,
+      "recall_at_5": 0.78,
+      "mrr": 0.6601
+    },
+    "all": {
+      "n": 991,
+      "recall_at_1": 0.5621,
+      "recall_at_5": 0.7861,
+      "mrr": 0.6648
+    }
+  },
+  "best_variant_on_test": "row"
+}

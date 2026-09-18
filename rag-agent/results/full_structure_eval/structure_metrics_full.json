@@ -1,0 +1,40 @@
+{
+  "n_tables_total": 538,
+  "n_tables_excluded": 0,
+  "excluded_reasons": {},
+  "boundary": {
+    "n_tables_scored": 538,
+    "nhr_exact_accuracy": 0.7007,
+    "nhc_exact_accuracy": 0.9257,
+    "nhr_mae": 0.3662,
+    "nhc_mae": 0.1152,
+    "bootstrap": "nhc0=guess_cols(nhr=1); nhr=guess_rows(nhc=nhc0); nhc=guess_cols(nhr=nhr); gold never used as input"
+  },
+  "row_path_exact_match": 0.7669,
+  "col_path_exact_match": 0.888,
+  "row_path_segment_f1_path_node_f1": 0.927,
+  "col_path_segment_f1_path_node_f1": 0.9628,
+  "row_pair_prf": {
+    "precision": 0.8859,
+    "recall": 0.865,
+    "f1": 0.8753,
+    "n_gold_edges": 11689,
+    "n_rec_edges": 11413
+  },
+  "col_pair_prf": {
+    "precision": 0.9408,
+    "recall": 0.9568,
+    "f1": 0.9487,
+    "n_gold_edges": 5975,
+    "n_rec_edges": 6077
+  },
+  "row_paths_scored": 9137,
+  "col_paths_scored": 4402,
+  "joint_path_em_primary_population": {
+    "n_population": 991,
+    "n_correct": 679,
+    "n_wrong": 305,
+    "n_undetermined": 7,
+    "rate": 0.6852
+  }
+}

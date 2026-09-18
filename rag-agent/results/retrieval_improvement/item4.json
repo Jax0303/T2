@@ -1,0 +1,17 @@
+{
+  "n_collision_groups_gold_path": 943,
+  "n_cells_in_a_collision": 1886,
+  "primary_population_gold_in_collision": {
+    "n": 17,
+    "n_known_rank": 17,
+    "recall_at_1": 0.1765,
+    "mean_rank_known": 5.18
+  },
+  "primary_population_gold_not_in_collision": {
+    "n": 974,
+    "n_known_rank": 968,
+    "recall_at_1": 0.5821,
+    "mean_rank_known": 9.05
+  },
+  "note": "identical serialized text -> identical dense AND sparse score, so a duplicate-text sibling in a DIFFERENT (wrong) location ties the gold cell; argsort's stable tie-break then hands rank 1 to whichever came first in the corpus (table order), not to gold, whenever gold is not that first duplicate"
+}
