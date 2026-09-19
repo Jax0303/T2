@@ -347,6 +347,13 @@ def main() -> int:
                     help="refuse hidden encoder truncation unless explicitly allowed")
     ap.add_argument("--alpha", type=float, default=0.7,
                     help="HiTab arm 에 고정된 값을 그대로 쓴다 — 재선택하지 않는다")
+    ap.add_argument("--rerank-model", default="",
+                    help="학습된 sentence_transformers CrossEncoder 경로. 주어지면 "
+                         "'doc' 범위(질의 자신의 문서 안 후보)의 순위를 하이브리드 "
+                         "점수 대신 이 분류기 점수로만 매긴다 — MT2Net(Zhao 2022)의 "
+                         "실제 채점 메커니즘. --unit mt2net_desc 필수(코퍼스 전체 "
+                         "스캔은 계산상 불가능, PREREG-2026-09-20-"
+                         "mt2net-reranker-multihiertt.md).")
     ap.add_argument("--budget", type=int, default=20)
     ap.add_argument("--rowcol-max-pairs", type=int, default=200)
     ap.add_argument("--max-docs", type=int, default=0, help="배관 점검용. 보고용은 0")
@@ -368,6 +375,8 @@ def main() -> int:
     strict, no_k = a.metric_mode != "accuracy", a.metric_mode == "strict_no_k"
     if a.budget <= 0 or not 0 <= a.alpha <= 1:
         ap.error("invalid budget or alpha")
+    if a.rerank_model and (a.unit != "mt2net_desc" or strict):
+        ap.error("--rerank-model requires --unit mt2net_desc and --metric-mode accuracy")
     if not (a.tag or strict):
         ap.error("--tag is required")
     if a.threshold_from and not no_k:
@@ -428,6 +437,13 @@ def main() -> int:
     t0 = time.time()
     bm = SparseBM25(_tokenize(t) for t in texts)
     print(f"[bm25] {len(bm.vocab)} terms in {time.time() - t0:.0f}s", flush=True)
+
+    reranker = None
+    if a.rerank_model:
+        import torch
+        from sentence_transformers.cross_encoder import CrossEncoder
+        reranker = CrossEncoder(a.rerank_model, device="cuda" if torch.cuda.is_available() else "cpu")
+        print(f"[rerank] loaded {a.rerank_model}", flush=True)
 
     enc = default_encoder(model_name=a.embed_model)
     input_audit = {"documents": enc.audit_inputs(texts, overflow=a.embed_overflow),
@@ -515,6 +531,11 @@ def main() -> int:
                 k = min(TOP, len(sc) - 1)       # 작은 코퍼스(--max-docs)에서 kth 초과 방지
                 top = np.argpartition(-sc, k)[:k + 1]
             order = top[np.argsort(-sc[top], kind="stable")]
+            if reranker is not None and scope == "doc":
+                # MT2Net scores candidates with exactly one trained pairwise
+                # classifier, not mixed with the hybrid embedding score.
+                s_re = np.asarray(reranker.predict([(q["question"], texts[i]) for i in sel]))
+                order = sel[np.argsort(-s_re, kind="stable")]
             if a.unit == "randrow" and scope in ("doc", "table"):
                 order = np.random.default_rng(int(digest(q["uid"])[:8], 16)).permutation(sel)
             if a.unit == "rowcol":

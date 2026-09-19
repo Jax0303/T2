@@ -1,0 +1,216 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+  "split": "train",
+  "unit": "mt2net_desc",
+  "template": "s3c",
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "dataset table_description (원문 그대로)",
+  "provenance": {
+    "git_commit": "bee2e248cc0dfaa93c8a2f58ea1a6c4e581a18c9",
+    "git_dirty": true,
+    "source_sha256": "fe8ae406f19f8e8bfc7e6bc96fb3c67edfbd53fcba4ed26a7d87bc859ad479eb",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "mt2net_desc",
+    "template": "s3c",
+    "row_text": "sentence",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v1",
+    "label_rule": "none",
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "rerank_model": "models/mt2net-reranker-multihiertt",
+    "budget": 20,
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/mh_arms",
+    "out_dir": "results/mh_arms",
+    "tag": "mh_train_mt2net_reranker_hv1_none_doc",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 399750,
+      "max_tokens": 209,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 2908,
+      "max_tokens": 78,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "budget_cells": 20,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 399750,
+  "corpus_text_sha256": "053559639b7267850ae6bd6ae3212d32db546fcd3c7d3020cac8944f2605b4bb",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2871,
+  "n_excluded": 37,
+  "excluded_by_reason": {
+    "gold_in_header": 31,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "e45e77fe9ba42097660d7614179b066696ff87d626f6fc69c9f17d4dc574d610",
+  "by_layer": {
+    "ALL": {
+      "n": 2871,
+      "corpus": {
+        "accuracy_all": 0.2755,
+        "accuracy_any_DIAGNOSTIC": 0.581,
+        "gold_doc_in_context": 0.7046,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8805,
+        "accuracy_any_DIAGNOSTIC": 0.9777,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9053,
+        "accuracy_any_DIAGNOSTIC": 0.9798,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.6
+      },
+      "mean_m": 2.648,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.6479,
+        "accuracy_any_DIAGNOSTIC": 0.6479,
+        "gold_doc_in_context": 0.7465,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9718,
+        "accuracy_any_DIAGNOSTIC": 0.9718,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9718,
+        "accuracy_any_DIAGNOSTIC": 0.9718,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.9
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2224,
+      "corpus": {
+        "accuracy_all": 0.2464,
+        "accuracy_any_DIAGNOSTIC": 0.5949,
+        "gold_doc_in_context": 0.7091,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8705,
+        "accuracy_any_DIAGNOSTIC": 0.9807,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.8943,
+        "accuracy_any_DIAGNOSTIC": 0.982,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.3
+      },
+      "mean_m": 2.733,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "corpus": {
+        "accuracy_all": 0.4739,
+        "accuracy_any_DIAGNOSTIC": 0.4739,
+        "gold_doc_in_context": 0.7204,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9526,
+        "accuracy_any_DIAGNOSTIC": 0.9526,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9668,
+        "accuracy_any_DIAGNOSTIC": 0.9668,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.8
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.2658,
+        "accuracy_any_DIAGNOSTIC": 0.5452,
+        "gold_doc_in_context": 0.6603,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8822,
+        "accuracy_any_DIAGNOSTIC": 0.9753,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9233,
+        "accuracy_any_DIAGNOSTIC": 0.9753,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.7
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "d27ed7ce6e0711f8966f58b820755f55ad10d95955d2e08f164cbf284d121560"
+}

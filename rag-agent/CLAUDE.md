@@ -287,8 +287,13 @@ gold 셀만 48토큰 주면 EM .888, 검색으로 509토큰 주면 .604 (`RESULT
   (`scripts/mt2net_retriever_baseline.py`, 2026-09-08 삭제) — 현행 재현은
   `scripts/retrieval_accuracy.py --template mt2net` 이며 검색·정답률 양쪽에 레그가 있다
   (`results/SUMMARY_TABLES-2026-09-18.md` 각주¹). 학습된 재정렬기(실제 BERT pairwise
-  채점 메커니즘) 재현은 완료됐고, 예측과 반대로 임베딩만 쓰는 템플릿 arm보다 유의하게
-  **더 나쁘다**(n=1581, McNemar p≈0) — 같은 문서 각주⁵, `PREREG-2026-09-20-mt2net-reranker-hitab.md`.
+  채점 메커니즘) 재현은 **HiTab·MultiHiertt 둘 다 완료**됐고, 결과가 정반대다: HiTab은
+  예측과 반대로 임베딩만 쓰는 템플릿 arm보다 유의하게 **더 나쁘다**(n=1581, McNemar
+  p≈0, 각주⑤, `PREREG-2026-09-20-mt2net-reranker-hitab.md`). MultiHiertt는 문서 범위(표
+  여러 개가 실제로 한 문서에 있어 MT2Net의 전제가 성립)로 재현했는데 예측과 반대로
+  ours·mt2net_desc(임베딩) 둘 다 유의하게 **이긴다**(n=2871, McNemar 둘 다 p<1e-4, 각주⑥,
+  `PREREG-2026-09-20-mt2net-reranker-multihiertt.md`) — 두 데이터셋에서 학습 효과의
+  방향이 갈린 것 자체가 결과이지, 어느 한쪽을 대표값으로 쓰지 않는다.
   trag_hetero(Yu 2025)도 청킹 표현만 재현하고 SQL 리그·전용 검색 오케스트레이션은
   재현하지 않음(같은 문서 각주⁴).
 
