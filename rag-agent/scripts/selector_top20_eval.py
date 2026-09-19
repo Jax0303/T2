@@ -52,6 +52,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import numpy as np                                                    # noqa: E402
 
+from rag_agent.bench import hitab_grid as hg                          # noqa: E402
 from rag_agent.eval.metrics import hitab_exact_match_text             # noqa: E402
 from rag_agent.llm.factory import build_llm                           # noqa: E402
 from rag_agent.retrieve.encoders import default_encoder               # noqa: E402
@@ -60,6 +61,7 @@ from rag_agent.retrieve.sparse_bm25 import SparseBM25                 # noqa: E4
 from bottleneck_diagnosis import load_primary_population              # noqa: E402
 from sentence_disambiguation_eval import build_leaf_corpus, encode_corpus  # noqa: E402
 from answer_accuracy import PROMPTS                                   # noqa: E402
+import retrieval_accuracy as ra                                       # noqa: E402
 
 OUT_DIR = ROOT / "results/selector_top20_20260916"
 ALPHA = 0.7
@@ -143,7 +145,58 @@ def main() -> int:
     ap.add_argument("--shuffle-seed", type=int, default=0,
                      help="0 = present candidates in hybrid-rank order (default); "
                           "nonzero = shuffle per query (seeded, reproducible) to test position bias")
+    ap.add_argument("--corpus", choices=["split", "gold"], default="split",
+                     help="split (default, original behaviour) = rank candidates across all "
+                          "538 split tables; gold = mask candidates to the query's own table "
+                          "only (retrieval_accuracy.py's --corpus gold / TableRAG's per-table "
+                          "setting) -- same masking formula as retrieval_accuracy.py main()")
+    ap.add_argument("--template", choices=["structural_leaf", "mt2net"], default="structural_leaf",
+                     help="cell-caption template for --arm cell")
+    ap.add_argument("--arm", choices=["cell", "tablerag-leaf", "tablerag-path"], default="cell",
+                     help="cell = structural_leaf/mt2net atomic-cell candidates (needs a corpus-wide "
+                          "embed pass); tablerag-leaf/-path = TableRAG's own per-table units "
+                          "(scripts/retrieval_accuracy.py:tablerag_units), embedded on the fly per "
+                          "query since gold scope only ever looks at one table. tablerag-* requires "
+                          "--corpus gold (no split-corpus TableRAG path implemented -- not needed here).")
+    ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
+    ap.add_argument("--data-dir", default="data/hitab")
+    ap.add_argument("--selftest", action="store_true",
+                     help="no GPU/LLM: assert --corpus gold masking never lets a candidate "
+                          "leak from a different table, for both --arm cell and tablerag-*")
     a = ap.parse_args()
+    if a.arm != "cell" and a.corpus != "gold":
+        raise SystemExit("--arm tablerag-* only implemented under --corpus gold")
+
+    if a.selftest:
+        pop = load_primary_population()
+        qids = sorted(pop)[:5]
+        enc = default_encoder()
+        texts, coords = build_leaf_corpus(template_name="structural_leaf")
+        coord_index = {c: i for i, c in enumerate(coords)}
+        table_ids_arr = np.array([c[0] for c in coords])
+        emb, _ = encode_corpus(texts, enc)
+        bm = SparseBM25(_tokenize(t) for t in texts)
+        for qid in qids:
+            r = pop[qid]
+            q = r["question"]
+            qvec = enc.encode_query([q])[0].astype(np.float32)
+            sel = np.flatnonzero(table_ids_arr == r["table_id"])
+            dense, sparse = (emb @ qvec)[sel], bm.get_scores(_tokenize(q))[sel]
+            hybrid = ALPHA * _minmax(dense) + (1 - ALPHA) * _minmax(sparse)
+            order = sel[np.argsort(-hybrid, kind="stable")]
+            topk = order[:K]
+            assert all(coords[i][0] == r["table_id"] for i in topk), \
+                f"{qid}: --corpus gold leaked a candidate from another table"
+            gold = tuple(sorted(map(tuple, r["gold_cells"]))[0])
+            assert coord_index[gold] in set(np.flatnonzero(table_ids_arr == r["table_id"])), \
+                f"{qid}: gold cell not even in its own table's masked pool (bug in masking)"
+            tab = hg.load_table(r["table_id"], a.data_dir)
+            units = ra.tablerag_units(tab, tab.table, "leaf", "infer")
+            for _, cells in units:
+                assert all((r["table_id"], *rc) for rc in cells), "tablerag unit malformed"
+        print(f"[selftest] OK -- {len(qids)} queries, --corpus gold never leaked cross-table, "
+              "tablerag units well-formed")
+        return 0
     if a.out:
         out_path = Path(a.out)
     else:
@@ -159,13 +212,23 @@ def main() -> int:
     if a.limit:
         qids = qids[:a.limit]
 
-    print("[corpus] building structural_leaf corpus...", flush=True)
-    texts, coords = build_leaf_corpus()
-    coord_index = {c: i for i, c in enumerate(coords)}
     enc = default_encoder()
-    emb, cache_hit = encode_corpus(texts, enc)
-    bm = SparseBM25(_tokenize(t) for t in texts)
-    print(f"[corpus] {len(texts)} units, embed_cache_hit={cache_hit}", flush=True)
+    table_ids_arr = None
+    if a.arm == "cell":
+        print(f"[corpus] building {a.template} corpus...", flush=True)
+        texts, coords = build_leaf_corpus(template_name=a.template)
+        coord_index = {c: i for i, c in enumerate(coords)}
+        emb, cache_hit = encode_corpus(texts, enc)
+        bm = SparseBM25(_tokenize(t) for t in texts)
+        if a.corpus == "gold":
+            table_ids_arr = np.array([c[0] for c in coords])
+        print(f"[corpus] {len(texts)} units, embed_cache_hit={cache_hit}", flush=True)
+    else:
+        # tablerag-*: no global corpus -- each query only ever looks inside its
+        # own table under --corpus gold, so build/embed that table's handful of
+        # units on demand instead of embedding all 538 tables' TableRAG docs.
+        texts = coords = emb = bm = coord_index = None
+        print(f"[corpus] --arm {a.arm}: per-table units built on demand", flush=True)
 
     cross_encoder = None
     if a.method in ("cross_encoder", "hybrid_ce_llm"):
@@ -202,21 +265,52 @@ def main() -> int:
                 continue
             r = pop[qid]
             gold = tuple(sorted(map(tuple, r["gold_cells"]))[0])
-            gidx = coord_index.get(gold)
             q = r["question"]
+            qvec = enc.encode_query([q])[0].astype(np.float32)
 
-            dense = emb @ enc.encode_query([q])[0].astype(np.float32)
-            sparse = bm.get_scores(_tokenize(q))
-            hybrid = ALPHA * _minmax(dense) + (1 - ALPHA) * _minmax(sparse)
-            order = np.argsort(-hybrid, kind="stable")
-            ranks = np.empty_like(order)
-            ranks[order] = np.arange(1, len(order) + 1)
-            gold_rank = int(ranks[gidx]) if gidx is not None else None
-            gold_in_topk = bool(gold_rank is not None and gold_rank <= a.k)
+            if a.arm == "cell":
+                gidx = coord_index.get(gold)
+                dense_full = emb @ qvec
+                sparse_full = bm.get_scores(_tokenize(q))
+                if a.corpus == "gold":
+                    sel = np.flatnonzero(table_ids_arr == r["table_id"])
+                    dense, sparse = dense_full[sel], sparse_full[sel]
+                    hybrid = ALPHA * _minmax(dense) + (1 - ALPHA) * _minmax(sparse)
+                    order = sel[np.argsort(-hybrid, kind="stable")]
+                else:
+                    hybrid = ALPHA * _minmax(dense_full) + (1 - ALPHA) * _minmax(sparse_full)
+                    order = np.argsort(-hybrid, kind="stable")
+                # rank against the FULL corpus index space either way (sentinel
+                # for units outside this query's --corpus gold table, same as
+                # "not in range" -> gold_rank stays None-equivalent for those).
+                ranks = np.full(len(texts), len(texts) + 1, dtype=np.int64)
+                ranks[order] = np.arange(1, len(order) + 1)
+                gold_rank = int(ranks[gidx]) if gidx is not None else None
+                gold_in_topk = bool(gold_rank is not None and gold_rank <= a.k)
 
-            topk_idx = order[:a.k]
-            cand_cells = [coords[i] for i in topk_idx]
-            cand_texts = [texts[i] for i in topk_idx]
+                topk_idx = order[:a.k]
+                cand_cells = [coords[i] for i in topk_idx]
+                cand_texts = [texts[i] for i in topk_idx]
+            else:
+                mode = "leaf" if a.arm == "tablerag-leaf" else "path"
+                tab = hg.load_table(r["table_id"], a.data_dir)
+                t = tab.table
+                units = ra.tablerag_units(tab, t, mode, a.tablerag_dtype)
+                texts_t = [u[0] for u in units]
+                covers_t = [frozenset((r["table_id"], i, j) for i, j in u[1]) for u in units]
+                # per-table corpora are tiny (tens of docs) -- no cache needed, reuse `enc`
+                dense_t = enc.encode(texts_t) @ qvec
+                bm_t = SparseBM25(_tokenize(x) for x in texts_t)
+                sparse_t = bm_t.get_scores(_tokenize(q))
+                hybrid_t = ALPHA * _minmax(dense_t) + (1 - ALPHA) * _minmax(sparse_t)
+                order_t = np.argsort(-hybrid_t, kind="stable")
+                selection = ra.budget_select(order_t, covers_t, texts_t, budget=20, dump=1)
+                cand_texts = [u["text"] for u in selection.units]
+                cand_cells = [gold if gold in set(u["cells"]) else
+                             (tuple(u["cells"][0]) if u["cells"] else ("__none__", -1, -1))
+                             for u in selection.units]
+                gold_rank = next((i + 1 for i, c in enumerate(cand_cells) if c == gold), None)
+                gold_in_topk = gold_rank is not None
 
             if a.shuffle_seed:
                 perm = list(range(len(cand_cells)))
@@ -255,7 +349,7 @@ def main() -> int:
                 picks = []
                 for _ in range(a.k_samples):
                     raw_i = llm.complete(SELECTOR_SYSTEM, sel_user, max_tokens=8, temperature=0.7)
-                    picks.append(parse_selection(raw_i, a.k))
+                    picks.append(parse_selection(raw_i, len(cand_texts)))
                 sel_n = majority_vote(picks)
                 sel_raw = json.dumps(picks)
                 sel_pos = (sel_n - 1) if sel_n else 0
@@ -282,10 +376,10 @@ def main() -> int:
                            f"Which candidate number answers the question?")
                 if a.method == "llm_cot":
                     sel_raw = llm.complete(SELECTOR_SYSTEM_COT, sel_user, max_tokens=200, temperature=0.0)
-                    sel_n = parse_selection_cot(sel_raw, a.k)
+                    sel_n = parse_selection_cot(sel_raw, len(cand_texts))
                 else:
                     sel_raw = llm.complete(SELECTOR_SYSTEM, sel_user, max_tokens=8, temperature=0.0)
-                    sel_n = parse_selection(sel_raw, a.k)
+                    sel_n = parse_selection(sel_raw, len(cand_texts))
                 sel_pos = (sel_n - 1) if sel_n else 0  # unparseable -> fall back to rank-1 candidate
             if a.method != "stuff":
                 selected_cell = cand_cells[sel_pos]
@@ -298,7 +392,8 @@ def main() -> int:
 
             row = {
                 "query_id": qid, "gold_cell": list(gold), "gold_rank": gold_rank,
-                "gold_in_topk": int(gold_in_topk), "k": a.k, "gold_list_pos": gold_list_pos,
+                "gold_in_topk": int(gold_in_topk), "k": a.k, "k_actual": len(cand_texts),
+                "gold_list_pos": gold_list_pos, "arm": a.arm, "corpus": a.corpus,
                 "shuffle_seed": a.shuffle_seed,
                 "selector_raw": sel_raw, "selector_parsed": sel_n,
                 "selector_fallback_used": (a.method != "stuff" and sel_n is None),
