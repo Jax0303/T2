@@ -27,6 +27,14 @@
 > 파인튜닝·dev·`stage1_clean` 포함), `results/retrieval_accuracy/` 중 v1 매니페스트·슬라이드 감사·09-13 감사·발명신고서 출처
 > (`t_flat_hybrid`·`t_s2_hybrid`·`full_*`)가 아닌 것, 20셀 유형표(`t_s3c_hybrid_qtype*`). 아래 절·다른 문서가 없는 파일을
 > 가리키면 `git show f4e6865:rag-agent/<경로>` 로 읽는다.
+>
+> 2026-09-21 **사용자 지시로** `results/K_LADDER_TABLES-2026-09-16.md` 를 지웠다. 그 문서의
+> 수치(질의가 속한 분할의 표 538개를 한 색인에 넣고 검색한 조건의 k별 답변 정확도, 예: k=20
+> 검색 0.9142 / 답변 0.6509, 정답 셀만 주입 0.9839)는 **인용하지 않는다.** 본 방법의 답변
+> 정확도는 예산 20 · **질문이 속한 표 안에서만 검색하는 조건**으로만 보고한다.
+> 원문은 `git show f8ef0bc:rag-agent/results/K_LADDER_TABLES-2026-09-16.md`. 원본 레코드
+> `results/k_ladder_qwen3_8b_20260916/` 는 `scripts/bottleneck_diagnosis.py` 가 읽으므로 남겨 뒀다.
+> 다른 문서·코드 주석이 지워진 문서를 가리키면 위 커밋에서 읽는다.
 
 사용자 지시로 축과 규칙을 다시 잡았다. 아래 §1~§9 중 이 절과 어긋나는 서술은 **폐기**다.
 
