@@ -1,0 +1,307 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+  "split": "train",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "sentence",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "a80e1d37be3958c0502d658227a9e3d9139181ab",
+    "git_dirty": true,
+    "source_sha256": "a5f535ed10d46e1c5563a6b1b5fc2b78641601aa2e9ffa8a8bf3c4ae7b73c374",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "cell",
+    "template": "s3c",
+    "row_text": "sentence",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v1",
+    "label_rule": "none",
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "rerank_model": "",
+    "budget": 20,
+    "k_ladder": "1,5,10,20",
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/mh_arms",
+    "out_dir": "results/mh_arms",
+    "tag": "mh_train_cell_hv1_none_doc_kladder",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 429048,
+      "max_tokens": 145,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 2908,
+      "max_tokens": 78,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "budget_cells": 20,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 429048,
+  "corpus_text_sha256": "f301380bb206b82f1f131ece278097ebe1b153540fbca60a2e43f2b40fb348d7",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2871,
+  "n_excluded": 37,
+  "excluded_by_reason": {
+    "gold_in_header": 31,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "e45e77fe9ba42097660d7614179b066696ff87d626f6fc69c9f17d4dc574d610",
+  "by_layer": {
+    "ALL": {
+      "n": 2871,
+      "corpus": {
+        "accuracy_all": 0.2564,
+        "accuracy_any_DIAGNOSTIC": 0.5395,
+        "gold_doc_in_context": 0.682,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0098,
+          "5": 0.0773,
+          "10": 0.1609,
+          "20": 0.2564
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.8394,
+        "accuracy_any_DIAGNOSTIC": 0.9631,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0394,
+          "5": 0.5009,
+          "10": 0.7015,
+          "20": 0.8394
+        }
+      },
+      "table": {
+        "accuracy_all": 0.8959,
+        "accuracy_any_DIAGNOSTIC": 0.9833,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.7,
+        "accuracy_all_at_k": {
+          "1": 0.0411,
+          "5": 0.5517,
+          "10": 0.7558,
+          "20": 0.8959
+        }
+      },
+      "mean_m": 2.648,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.5915,
+        "accuracy_any_DIAGNOSTIC": 0.5915,
+        "gold_doc_in_context": 0.7183,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.1972,
+          "5": 0.4366,
+          "10": 0.5493,
+          "20": 0.5915
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9577,
+        "accuracy_any_DIAGNOSTIC": 0.9577,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.5352,
+          "5": 0.831,
+          "10": 0.9014,
+          "20": 0.9577
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9859,
+        "accuracy_any_DIAGNOSTIC": 0.9859,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.1,
+        "accuracy_all_at_k": {
+          "1": 0.5634,
+          "5": 0.8451,
+          "10": 0.9577,
+          "20": 0.9859
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2224,
+      "corpus": {
+        "accuracy_all": 0.2262,
+        "accuracy_any_DIAGNOSTIC": 0.5513,
+        "gold_doc_in_context": 0.6915,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.0558,
+          "10": 0.1308,
+          "20": 0.2262
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.8215,
+        "accuracy_any_DIAGNOSTIC": 0.9627,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.4573,
+          "10": 0.6682,
+          "20": 0.8215
+        }
+      },
+      "table": {
+        "accuracy_all": 0.8835,
+        "accuracy_any_DIAGNOSTIC": 0.9856,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.4,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5094,
+          "10": 0.7298,
+          "20": 0.8835
+        }
+      },
+      "mean_m": 2.733,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "corpus": {
+        "accuracy_all": 0.4123,
+        "accuracy_any_DIAGNOSTIC": 0.4123,
+        "gold_doc_in_context": 0.6588,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0664,
+          "5": 0.2464,
+          "10": 0.3602,
+          "20": 0.4123
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9479,
+        "accuracy_any_DIAGNOSTIC": 0.9479,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.3555,
+          "5": 0.7251,
+          "10": 0.8673,
+          "20": 0.9479
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9621,
+        "accuracy_any_DIAGNOSTIC": 0.9621,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.9,
+        "accuracy_all_at_k": {
+          "1": 0.3697,
+          "5": 0.7773,
+          "10": 0.872,
+          "20": 0.9621
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.2849,
+        "accuracy_any_DIAGNOSTIC": 0.5315,
+        "gold_doc_in_context": 0.6301,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.0411,
+          "10": 0.1534,
+          "20": 0.2849
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.863,
+        "accuracy_any_DIAGNOSTIC": 0.9753,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5726,
+          "10": 0.7699,
+          "20": 0.863
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9151,
+        "accuracy_any_DIAGNOSTIC": 0.9808,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.7,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.6219,
+          "10": 0.8082,
+          "20": 0.9151
+        }
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "ed24f178de1cc77fd2c93a2bb16e4127f3dd8b9af66295f31b3da27b04a26667"
+}

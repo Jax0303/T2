@@ -355,6 +355,9 @@ def main() -> int:
                          "스캔은 계산상 불가능, PREREG-2026-09-20-"
                          "mt2net-reranker-multihiertt.md).")
     ap.add_argument("--budget", type=int, default=20)
+    ap.add_argument("--k-ladder", default="",
+                    help="예: 1,5,10,20 — 같은 순위 목록을 셀 예산별로 재채점한다 "
+                         "(§0.1 주지표와 같은 운영점 정의, 재검색 없음). ablation 전용")
     ap.add_argument("--rowcol-max-pairs", type=int, default=200)
     ap.add_argument("--max-docs", type=int, default=0, help="배관 점검용. 보고용은 0")
     ap.add_argument("--shard", type=int, default=50000)
@@ -379,6 +382,9 @@ def main() -> int:
         ap.error("--rerank-model requires --unit mt2net_desc and --metric-mode accuracy")
     if not (a.tag or strict):
         ap.error("--tag is required")
+    ladder = sorted(int(x) for x in a.k_ladder.split(",") if x.strip())
+    if ladder and (strict or ladder[0] <= 0 or ladder[-1] > a.budget):
+        ap.error("--k-ladder: accuracy 모드 전용, 1..--budget 범위의 양수")
     if a.threshold_from and not no_k:
         ap.error("--threshold-from is only for strict_no_k")
     if no_k and (a.unit == "rowcol" or (a.split == "test" and not a.threshold_from)):
@@ -538,16 +544,22 @@ def main() -> int:
                 order = sel[np.argsort(-s_re, kind="stable")]
             if a.unit == "randrow" and scope in ("doc", "table"):
                 order = np.random.default_rng(int(digest(q["uid"])[:8], 16)).permutation(sel)
-            if a.unit == "rowcol":
-                selected = rowcol_select(order, covers, texts, is_row, a.budget,
-                                         a.dump_context, grid, a.template, a.row_text,
+            def select(budget, dump):
+                if a.unit == "rowcol":
+                    return rowcol_select(order, covers, texts, is_row, budget,
+                                         dump, grid, a.template, a.row_text,
                                          cap=a.rowcol_max_pairs)
-            else:
-                selected = budget_select(order, covers, texts, a.budget, a.dump_context)
+                return budget_select(order, covers, texts, budget, dump)
+
+            selected = select(a.budget, a.dump_context)
             got, n_cells, ctx = selected
             if strict:
                 strict_rows.append(strict_row(q, selected))
                 continue
+            if ladder:
+                # 같은 순위 목록의 앞부분만 다시 채점한다 — 재검색 없음.
+                r.setdefault("correct_at", {})[scope] = {
+                    str(b): int(q["gold"] <= select(b, 0).cells) for b in ladder}
             r[scope] = {"correct": int(q["gold"] <= got),
                         "any_DIAGNOSTIC": int(bool(q["gold"] & got)),
                         "cells_in_context": n_cells,
@@ -664,6 +676,12 @@ def main() -> int:
                 "cells_delivered_mean": (round(sum(x[scope]["cells_in_context"]
                                                    for x in rows) / len(rows), 1)
                                          if rows else None)}
+            if ladder:
+                o[scope]["accuracy_all_at_k"] = at_k = {
+                    str(b): rate([x["correct_at"][scope][str(b)] for x in rows])
+                    for b in ladder}
+                # 사다리의 운영점 칸은 주지표와 같은 선택기·같은 순위 목록이다.
+                assert at_k.get(str(a.budget), o[scope]["accuracy_all"]) == o[scope]["accuracy_all"]
         o["mean_m"] = round(sum(x["m"] for x in rows) / len(rows), 3) if rows else None
         o["m_over_budget"] = sum(1 for x in rows if x["m"] > a.budget)
         return o
