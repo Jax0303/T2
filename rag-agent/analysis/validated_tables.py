@@ -159,7 +159,7 @@ def build(path=DEFAULT_MANIFEST):
     for name, ids in populations:
         if not ids:
             continue
-        lines += [f"## {name}", "", "| 표현 | n | 검색 | EM | 차이(pp) | hit→오답 | miss→정답 | hit 조건 EM | 평균 셀 |",
+        lines += [f"## {name}", "", "| 표현 | query count | 검색 | EM | 차이(pp) | hit→오답 | miss→정답 | hit 조건 EM | 평균 셀 |",
                   "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
         for arm in spec["arms"]:
             if arm["tag"] not in loaded:
@@ -175,7 +175,7 @@ def build(path=DEFAULT_MANIFEST):
     if outside:
         included = [a for a in spec["arms"] if a["tag"] in loaded]
         lines += ["## 주지표 밖 데이터셀 질의 — 유형별 전수", "",
-                  "| 유형 | n | " + " | ".join(a["label"] + " EM" for a in included) + " |",
+                  "| 유형 | query count | " + " | ".join(a["label"] + " EM" for a in included) + " |",
                   "|---|---:|" + "---:|" * len(included)]
         for kind in sorted({ref_r[q].get("aggregation") or "none" for q in outside}):
             ids = {q for q in outside if (ref_r[q].get("aggregation") or "none") == kind}

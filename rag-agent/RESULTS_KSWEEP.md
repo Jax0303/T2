@@ -9,7 +9,7 @@
 리더: local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit, prompt=neutral, max_new_tokens=64, seed=42, temperature=0, do_sample=False
 모집단: HiTab primary population(mode=all, m=1, aggregation=none) 991건 중 stratified_sample(n=300, seed=42) 300건
 
-## LEG A — 자연 절단 (main), n=300
+## LEG A — 자연 절단 (main), query count=300
 
 | k | EM | 95% CI (bootstrap B=10000) | 정답 셀 포함 쿼리 비율 |
 |---|---:|---|---:|
@@ -20,7 +20,7 @@
 | 10 | 0.7267 | [0.6767, 0.7767] | 0.8533 |
 | 20 | 0.7667 | [0.7200, 0.8133] | 0.9167 |
 
-## LEG B — GOLD-FORCED (not deployable), n=275
+## LEG B — GOLD-FORCED (not deployable), query count=275
 
 대상 쿼리 수: 275 / 제외 쿼리 수: 25 (300건 중 top-20 검색 실패)
 
@@ -46,7 +46,7 @@ eea2dc4d8aa18842ce53df88d297236a
 
 최고 EM: k=1 (0.9527)
 
-McNemar (k=1 vs k=20, exact, n=275):
+McNemar (k=1 vs k=20, exact, query count=275):
 - k=1에서만 정답: 41
 - k=20에서만 정답: 7
 - discordant: 48

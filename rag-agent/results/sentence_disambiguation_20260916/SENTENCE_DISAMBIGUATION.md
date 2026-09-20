@@ -1,6 +1,6 @@
 # 문장 축-구분 개입 (structural_leaf) — 2026-09-16
 
-모집단: hitab test primary (mode=all, m=1, aggregation=none), n=991. encoder/hybrid(alpha=0.7)/corpus(split)는 baseline과 동일 — 바뀐 변수는 cell 문장 템플릿 하나(s3c -> structural_leaf, row/col leaf 접두)뿐.
+모집단: hitab test primary (mode=all, m=1, aggregation=none), query count=991. encoder/hybrid(alpha=0.7)/corpus(split)는 baseline과 동일 — 바뀐 변수는 cell 문장 템플릿 하나(s3c -> structural_leaf, row/col leaf 접두)뿐.
 
 ## R@1/5/10/20/MRR — baseline vs structural_leaf
 
@@ -44,8 +44,8 @@ population/reader/prompt/scorer 는 K_LADDER_TABLES-2026-09-16.md 의 k=1 레그
 
 | 조건 | 답변 정확도 | 검색 성공 시 | 검색 실패 시 |
 |---|---|---|---|
-| k=1 baseline (s3c) | .5923 | .9877 (n=570) | .0570 (n=421) |
-| k=1 structural_leaf | **.6307** | .9886 (n=612) | .0528 (n=379) |
+| k=1 baseline (s3c) | .5923 | .9877 (query count=570) | .0570 (query count=421) |
+| k=1 structural_leaf | **.6307** | .9886 (query count=612) | .0528 (query count=379) |
 
 +.0384 (baseline 대비). 0.8 목표까지 남은 거리: **.1693**. 검색 성공/실패 시 조건부 정확도는
 거의 그대로(.99/.05대) — 개입은 R@1(=성공 비율)만 올렸고, 리더의 조건부 성능에는 영향이 없다.

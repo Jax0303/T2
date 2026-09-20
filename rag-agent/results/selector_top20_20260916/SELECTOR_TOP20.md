@@ -1,6 +1,6 @@
 # top-20 후보 중 LLM 셀렉터 개입 — 2026-09-16
 
-모집단: hitab test primary (mode=all, m=1, aggregation=none), n=991. 검색은
+모집단: hitab test primary (mode=all, m=1, aggregation=none), query count=991. 검색은
 structural_leaf 코퍼스(hybrid α=0.7, split corpus) top-20 후보. 리더/셀렉터
 둘 다 같은 로컬 모델 Qwen3-8B 4bit, 학습 없음 — zero-shot 프롬프트 두 번
 (① 20개 후보 중 정답이 담긴 번호 선택 ② 선택된 문장 하나만 문맥으로 답변).
@@ -21,7 +21,7 @@ structural_leaf 코퍼스(hybrid α=0.7, split corpus) top-20 후보. 리더/셀
 R@20(gold_in_top20) = 913/991 = .9213 — sentence_disambiguation 레그와 동일 검색.
 셀렉터는 파싱 실패(fallback) 0건 — 항상 번호 하나를 반환.
 
-| 구간 | n | 답변 정확도 |
+| 구간 | query count | 답변 정확도 |
 |---|---|---|
 | gold가 top20에 없음 | 78 | .0513 |
 | gold가 top20에 있으나 셀렉터가 오답 선택 | 209 | .1196 |
@@ -39,13 +39,13 @@ R@20(.9213)과 gold 조건부 리더 정확도(.9886)가 이미 높으므로, 20
 .5923→.6307→.7316로 개입이 누적될수록 목표(.8)에 가까워짐 — 남은 갭 .0684는
 대부분 셀렉터 오선택(209건, .1196)에서 온다.
 
-## Addendum — 셀렉터 방식 파일럿 비교 (n=150, 2026-09-17)
+## Addendum — 셀렉터 방식 파일럿 비교 (query count=150, 2026-09-17)
 
 셀렉터 오선택을 줄이는 두 대안을 같은 첫 150개 질의(정렬된 query_id 기준)로 파일럿:
 ① 같은 리더에 CoT(1-2문장 근거 후 `ANSWER: N`) 프롬프트, ② LLM 대신 `BAAI/bge-reranker-v2-m3`
 크로스인코더로 20개 후보 점수화 후 argmax(셀렉션 단계에 LLM 호출 없음).
 
-| 방식 | n | selected_is_gold | 답변 정확도 | 속도(초/질의) |
+| 방식 | query count | selected_is_gold | 답변 정확도 | 속도(초/질의) |
 |---|---|---|---|---|
 | zero-shot LLM (기존, 같은 150건) | 150 | .7733 | .8000 | ~2 |
 | CoT LLM | 150 | .7600 | .7867 | ~5.2 |
@@ -54,7 +54,7 @@ R@20(.9213)과 gold 조건부 리더 정확도(.9886)가 이미 높으므로, 20
 둘 다 개선 없음(오히려 하락) — CoT는 소폭, 크로스인코더는 뚜렷하게 나쁨. 크로스인코더는
 정답 문장을 "찾는" 게 아니라 "관련 있는" 문장을 점수화하므로, 이 태스크(20개 중 정답이
 정확히 하나)에서는 LLM의 직접 선택보다 약함. 파싱 실패(fallback)는 두 방식 모두 0건.
-n=150 파일럿 단계에서 결론이 명확해(둘 다 하락) 991 전체 재실행은 하지 않음.
+query count=150 파일럿 단계에서 결론이 명확해(둘 다 하락) 991 전체 재실행은 하지 않음.
 기존 zero-shot LLM 셀렉터가 그대로 최선의 방식으로 유지.
 
 ## Addendum 2 — 오답 209건 원인 분류 + 추가 개입 2종 (2026-09-17)
@@ -64,7 +64,7 @@ n=150 파일럿 단계에서 결론이 명확해(둘 다 하락) 991 전체 재�
 `bottleneck_diagnosis.classify_top1_error`(선택 셀 vs gold 셀 관계)를 그대로 재사용,
 전수(991 기준) 209건 전부 분류:
 
-| class | n | 비율 | 이 안에서 답변정확도 |
+| class | query count | 비율 | 이 안에서 답변정확도 |
 |---|---|---|---|
 | wrong_column | 71 | .3397 | 0 |
 | wrong_row | 66 | .3158 | 0 |
@@ -87,9 +87,9 @@ leaf 접두를 다 포함(`rag_agent/serialization/templates.py` STRUCTURAL_LEAF
 기존 템플릿 체계 안에서 추가할 구조 정보가 없어 실행하지 않음 — 실행해도 문장이 동일해
 결과가 바뀌지 않는다.
 
-### 크로스인코더 20→5 축소 + LLM 선택 (hybrid_ce_llm, n=150)
+### 크로스인코더 20→5 축소 + LLM 선택 (hybrid_ce_llm, query count=150)
 
-| 방식 | n | selected_is_gold | 답변 정확도 |
+| 방식 | query count | selected_is_gold | 답변 정확도 |
 |---|---|---|---|
 | zero-shot LLM 20-중-1 (기존, 같은 150건) | 150 | .7733 | .8000 |
 | CE로 20→5 압축 후 LLM 5-중-1 | 150 | .7067 | .7333 |
@@ -99,9 +99,9 @@ gold가 top20에 있을 때(142건) CE가 그중 top5 안에 gold를 넣는 비�
 20개 중에서 고를 때(.8169)보다 오히려 낮아짐 — CE가 relevance 기준으로 뽑은 5개가 정답과
 더 헷갈리는 후보(같은 축 hard negative)로 편중된 것으로 보임. 개선 없음.
 
-### Self-consistency (5-샘플 다수결, temperature=0.7, n=150)
+### Self-consistency (5-샘플 다수결, temperature=0.7, query count=150)
 
-| 방식 | n | selected_is_gold | 답변 정확도 |
+| 방식 | query count | selected_is_gold | 답변 정확도 |
 |---|---|---|---|
 | zero-shot LLM (greedy, 기존) | 150 | .7733 | .8000 |
 | 5-샘플 다수결 | 150 | .7733 | .8000 |
@@ -118,7 +118,7 @@ gold가 top20에 있을 때(142건) CE가 그중 top5 안에 gold를 넣는 비�
 디코딩 방식(프롬프트/샘플링/후보 축소)을 바꾸는 접근은 이 지점에서 막힌 것으로 판단.
 기존 zero-shot LLM 셀렉터(전체 991 기준 답변정확도 .7316)를 그대로 유지.
 
-## Addendum 3 — 셀렉터 방식 k별 답변 정확도 (n=991 전체, 2026-09-17)
+## Addendum 3 — 셀렉터 방식 k별 답변 정확도 (query count=991 전체, 2026-09-17)
 
 zero-shot LLM 셀렉터(디코딩 그대로, temperature=0.0)를 후보 풀 크기 k=5/10/20으로 전체
 991건 재실행. k=1은 후보가 1개뿐이라 선택이 트리비얼 — structural_leaf k=1 기존 측정치(.6307)와
@@ -143,7 +143,7 @@ k가 커질수록 검색 성공률(gold_in_topk)은 오르고 그 안에서 셀�
 나온 것이다. 아래 Addendum 4에서 이 순서 자체가 결과에 크게 기여함을 확인했다 — 즉
 표의 답변정확도는 "내용만 보고 고르는 능력"이 아니라 "내용 + 암묵적 순서 신뢰"의 합이다.
 
-## Addendum 4 — 위치 편향(position bias) 검증 (n=991 전체, 2026-09-17)
+## Addendum 4 — 위치 편향(position bias) 검증 (query count=991 전체, 2026-09-17)
 
 k=20 zero-shot LLM 셀렉터에서, 후보를 항상 hybrid 검색 랭킹 순서(1번=검색 1위)로
 번호 매겨 제시해왔다. 이 순서 정보 자체가 결과에 기여하는지 확인하기 위해, 같은 991건에

@@ -1,6 +1,6 @@
 # 문장 축-구분 개입 (structural_leaf_x2) — 2026-09-17
 
-모집단: hitab test primary (mode=all, m=1, aggregation=none), n=991. encoder/hybrid(alpha=0.7)/corpus(split)는 baseline과 동일 — 바뀐 변수는 cell 문장 템플릿 하나뿐.
+모집단: hitab test primary (mode=all, m=1, aggregation=none), query count=991. encoder/hybrid(alpha=0.7)/corpus(split)는 baseline과 동일 — 바뀐 변수는 cell 문장 템플릿 하나뿐.
 
 ## R@1/5/10/20/MRR — baseline .. structural_leaf_x2
 

@@ -505,7 +505,7 @@ def write_md() -> Path:
     if rb_path.exists():
         d = json.loads(rb_path.read_text())
         lines += ["## 1. gold-cell rank 버킷별 N / 답변 정확도", "",
-                  f"모집단: {d['population']} (n={d['n']}, gold_rank 미확인 {d['n_gold_rank_none_in_top500']}건 "
+                  f"모집단: {d['population']} (query count={d['n']}, gold_rank 미확인 {d['n_gold_rank_none_in_top500']}건 "
                   "→ '>20' 버킷에 포함)", "",
                   "| rank | N | QA k=1 | QA k=5 | QA k=10 | QA k=20 |",
                   "|---|---|---|---|---|---|"]
@@ -518,7 +518,7 @@ def write_md() -> Path:
     if ec_path.exists():
         d = json.loads(ec_path.read_text())
         lines += ["## 2. top-1 검색 오류 분류", "",
-                  f"모집단: {d['population']} (n={d['n']}, top-1 정답 {d['n_top1_correct']}건, "
+                  f"모집단: {d['population']} (query count={d['n']}, top-1 정답 {d['n_top1_correct']}건, "
                   f"top-1 오답 {d['n_top1_wrong']}건)", "",
                   "| class | N | 오답 중 비율 |", "|---|---|---|"]
         for c in d["classes"]:
@@ -529,7 +529,7 @@ def write_md() -> Path:
     legs = sorted(cq_dir.glob("controlled_qa_gold_*.json"))
     if legs:
         lines += ["## 3. Controlled QA (gold + 통제된 distractor)", "",
-                  "| condition | n | dropped | 답변 정확도 |", "|---|---|---|---|"]
+                  "| condition | query count | dropped | 답변 정확도 |", "|---|---|---|---|"]
         for p in legs:
             d = json.loads(p.read_text())
             lines.append(f"| {d['condition']} | {d['n']} | {d['n_dropped']} | {d['answer_accuracy']} |")

@@ -13,7 +13,7 @@
 
 ## gold 개수(m) 분포
 
-| m | n |
+| m | query count |
 |---|---|
 | 1 | 1052 |
 | 2 | 187 |
@@ -81,7 +81,7 @@
 
 ## (mode, aggregation) 분포
 
-| mode | aggregation | n |
+| mode | aggregation | query count |
 |---|---|---|
 | all | none | 1029 |
 | any | none | 103 |

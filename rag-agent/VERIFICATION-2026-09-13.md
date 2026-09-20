@@ -18,7 +18,7 @@
   두 가지이고 둘 다 **관대함이 아니라 모양 맞추기**다: ① `$` 제거(HiTab 은 0건 이동,
   AIT-QA 44건), ② 자유 텍스트 한 줄을 다값 gold 모양으로 쪼개기.
 - **자체 검증 통과**: gold 를 그대로 예측으로 넣으면 EM = 1.0000
-  (조회 n=1,132, 산술 n=449). 채점기가 정답을 떨어뜨리고 있지 않다.
+  (조회 query count=1,132, 산술 query count=449). 채점기가 정답을 떨어뜨리고 있지 않다.
   재현: `PYTHONPATH=. .venv/bin/python -m rag_agent.eval.answer_em results/evaluation_v2/s3c_v2_records.jsonl`
 - MultiHiertt 공식 채점기도 같은 방식으로 옮겼다(`rag_agent/eval/multihiertt_em.py`).
   ⚠️ 원본 `str_to_num` 은 `-` 를 지워 부호를 없앤다. 원본의 성질이므로 그대로 두되,

@@ -30,7 +30,7 @@ context. No training. Selection methods (--method):
                 comparison against the selector methods above).
 
 Same primary population as every other leg in this investigation: hitab test
-primary (mode=all, m=1, aggregation=none), n=991.
+primary (mode=all, m=1, aggregation=none), query count=991.
 
   PYTHONPATH=. .venv/bin/python scripts/selector_top20_eval.py --method llm_cot --limit 150
   PYTHONPATH=. .venv/bin/python scripts/selector_top20_eval.py --method cross_encoder --resume

@@ -354,7 +354,7 @@ def write_report() -> Path:
              "- gold-path/known-boundary 조건은 nhr/nhc가 gold이므로 이 항목이 정의상 100%/0 — "
              "비교 대상 아님(fully-predicted-path만 해당하는 항목)", "",
              "## 2) 비교표 — path EM / F1 / pair F1 / joint EM", "",
-             "| condition | row EM | col EM | row F1 | col F1 | row pair F1 | col pair F1 | joint EM(gold cell, n=991) |",
+             "| condition | row EM | col EM | row F1 | col F1 | row pair F1 | col pair F1 | joint EM(gold cell, query count=991) |",
              "|---|---|---|---|---|---|---|---|",
              f"| gold-path | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 (991/991, {sm_gold_path}) |",
              f"| known-boundary predicted-path | {known['row_path_exact_match']} | {known['col_path_exact_match']} | "
@@ -367,7 +367,7 @@ def write_report() -> Path:
              f"{full_sm['joint_path_em_primary_population']['rate']} "
              f"({full_sm['joint_path_em_primary_population']['n_correct']}/"
              f"{full_sm['joint_path_em_primary_population']['n_population']}) |",
-             "", "## 3) Hybrid retrieval (R@1/5/20, MRR, ESM), test n=991", "",
+             "", "## 3) Hybrid retrieval (R@1/5/20, MRR, ESM), test query count=991", "",
              "| condition | R@1 | R@5 | R@20 | MRR | ESM |", "|---|---|---|---|---|---|",
              f"| gold-path | {gold_ret['recall_at_1']} | {gold_ret['recall_at_5']} | {gold_ret['recall_at_20']} | "
              f"{gold_ret['mrr']} | {gold_ret['recall_at_1']} |",

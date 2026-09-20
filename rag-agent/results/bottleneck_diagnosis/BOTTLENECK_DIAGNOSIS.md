@@ -4,7 +4,7 @@ K_LADDER_TABLES-2026-09-16.md 의 k-사다리 현상(recall 상승 / 검색성�
 
 ## 1. gold-cell rank 버킷별 N / 답변 정확도
 
-모집단: hitab test primary (mode=all, m=1, aggregation=none) (n=991, gold_rank 미확인 6건 → '>20' 버킷에 포함)
+모집단: hitab test primary (mode=all, m=1, aggregation=none) (query count=991, gold_rank 미확인 6건 → '>20' 버킷에 포함)
 
 | rank | N | QA k=1 | QA k=5 | QA k=10 | QA k=20 |
 |---|---|---|---|---|---|
@@ -18,7 +18,7 @@ K_LADDER_TABLES-2026-09-16.md 의 k-사다리 현상(recall 상승 / 검색성�
 
 ## 2. top-1 검색 오류 분류
 
-모집단: hitab test primary (mode=all, m=1, aggregation=none) (n=991, top-1 정답 570건, top-1 오답 421건)
+모집단: hitab test primary (mode=all, m=1, aggregation=none) (query count=991, top-1 정답 570건, top-1 오답 421건)
 
 | class | N | 오답 중 비율 |
 |---|---|---|
@@ -32,7 +32,7 @@ K_LADDER_TABLES-2026-09-16.md 의 k-사다리 현상(recall 상승 / 검색성�
 
 ## 3. Controlled QA (gold + 통제된 distractor)
 
-| condition | n | dropped | 답변 정확도 |
+| condition | query count | dropped | 답변 정확도 |
 |---|---|---|---|
 | gold_1_hard_negative_first | 150 | 0 | 0.84 |
 | gold_1_hard_negative_last | 150 | 0 | 0.76 |

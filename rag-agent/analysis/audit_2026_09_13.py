@@ -45,7 +45,7 @@ def gap_table():
         c[2] += got[qid]["answer_correct"]
         c[3] += g["answer_correct"]
     print("## 표 1 — 검색-EM 간극 분해 (HiTab test, mode=all, 본 방법 s3c)\n")
-    print("| 층 | n | 검색 정확도 | EM(검색 문맥) | EM(gold 문맥만) | distractor 비용 | 리더 천장까지 |")
+    print("| 층 | query count | 검색 정확도 | EM(검색 문맥) | EM(gold 문맥만) | distractor 비용 | 리더 천장까지 |")
     print("|---|---:|---:|---:|---:|---:|---:|")
     tot = [0, 0, 0, 0]
     for k in sorted(cells):

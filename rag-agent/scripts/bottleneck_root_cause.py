@@ -640,7 +640,7 @@ def write_md() -> Path:
                  "hitab_grid row_map/col_map). 이 저장소에서는 사용 가능해 skip 사유 없음.", ""]
     if decomp:
         lines += ["structure correct/wrong × predicted_path 검색 성능:", "",
-                 "| subset | n | R@1 | R@5 | R@10 | R@20 | MRR | median rank |",
+                 "| subset | query count | R@1 | R@5 | R@10 | R@20 | MRR | median rank |",
                  "|---|---|---|---|---|---|---|---|"]
         for key, label in (("predicted_path__structure_correct", "structure correct"),
                           ("predicted_path__structure_wrong", "structure wrong"),
@@ -651,7 +651,7 @@ def write_md() -> Path:
                             f"{b['recall_at_10']} | {b['recall_at_20']} | {b['mrr']} | {b['median_rank']} |")
         lines += ["", "structure-correct 부분집합에서 gold_path vs predicted_path (재구성이 맞아도 "
                  "남는 차이가 있는지):", "",
-                 "| repr | n | R@1 | R@5 | R@10 | R@20 | MRR | median rank |", "|---|---|---|---|---|---|---|---|"]
+                 "| repr | query count | R@1 | R@5 | R@10 | R@20 | MRR | median rank |", "|---|---|---|---|---|---|---|---|"]
         for key, label in (("gold_path__on_structure_correct_subset", "gold_path"),
                           ("predicted_path__on_structure_correct_subset", "predicted_path")):
             b = decomp[key]
@@ -675,7 +675,7 @@ def write_md() -> Path:
     if hardneg:
         lines += [f"gold-only 기준선 답변 정확도: {hardneg['gold_only_baseline_answer_accuracy']} "
                  f"(n_sample={hardneg['n_sample']})", "",
-                 "| condition | n | 답변 정확도 |", "|---|---|---|"]
+                 "| condition | query count | 답변 정확도 |", "|---|---|---|"]
         for cond, b in hardneg["legs"].items():
             lines.append(f"| {cond} | {b['n']} | {b['answer_accuracy']} |")
         lines.append("")
@@ -684,11 +684,11 @@ def write_md() -> Path:
             if not b:
                 continue
             lines += [f"### {cond} — distractor 구조 클래스별", "",
-                     "| class | n | 답변 정확도 |", "|---|---|---|"]
+                     "| class | query count | 답변 정확도 |", "|---|---|---|"]
             for c, v in sorted(b["by_distractor_class"].items()):
                 lines.append(f"| {c} | {v['n']} | {v['answer_accuracy']} |")
             lines += ["", f"### {cond} — score margin 구간별 (margin은 distractor가 top-1일 때만 계산됨)", "",
-                     "| margin bucket | n | 답변 정확도 |", "|---|---|---|"]
+                     "| margin bucket | query count | 답변 정확도 |", "|---|---|---|"]
             for m, v in sorted(b["by_margin_bucket"].items()):
                 lines.append(f"| {m} | {v['n']} | {v['answer_accuracy']} |")
             lines.append("")
@@ -706,7 +706,7 @@ def write_md() -> Path:
              "(tree_reconstruct_hitab_raw.py의 known-boundary 모드와 동일 조건).",
              "- H3 margin은 hard-negative distractor가 해당 질의의 top-1 검색 결과와 정확히 같을 때만 "
              "계산됨 — 그 외는 'unknown' 버킷.",
-             "- controlled QA는 n=150 표본(2026-09-16 seed=42 고정, 재실행 없음)에 대한 재분석이며 "
+             "- controlled QA는 query count=150 표본(2026-09-16 seed=42 고정, 재실행 없음)에 대한 재분석이며 "
              "새 리더 호출은 없음.", "",
              "## 산출물", "",
              "- `results/bottleneck_root_cause/structure_metrics.json`",

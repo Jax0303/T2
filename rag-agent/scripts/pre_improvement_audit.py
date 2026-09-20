@@ -299,7 +299,7 @@ def write_error_examples(records: dict, tabs: dict) -> dict:
             by_class[row["error_class"]].append(row)
 
     lines = ["# 오류 사례 (사전 개선 진단)", "",
-             "모집단: hitab test primary (mode=all, m=1, aggregation=none), n=991 "
+             "모집단: hitab test primary (mode=all, m=1, aggregation=none), query count=991 "
              "(results/bottleneck_root_cause/top1_error_detail.csv 그대로 사용, "
              "새로 채점하지 않음). 예시는 query_id 오름차순 처음 20건.", ""]
 
@@ -578,10 +578,10 @@ def write_integrity_audit(records: dict, tabs: dict) -> None:
     for rep, d in reps.items():
         lines.append(f"- {rep} 색인 단위 수: {d['n_units']} "
                      f"(predicted_path fallback to value_only: {d['n_predicted_path_fallback_to_value_only']})")
-    lines += ["", "## gold 개수(m) 분포", "", "| m | n |", "|---|---|"]
+    lines += ["", "## gold 개수(m) 분포", "", "| m | query count |", "|---|---|"]
     for m, n in sorted(m_dist.items()):
         lines.append(f"| {m} | {n} |")
-    lines += ["", "## (mode, aggregation) 분포", "", "| mode | aggregation | n |", "|---|---|---|"]
+    lines += ["", "## (mode, aggregation) 분포", "", "| mode | aggregation | query count |", "|---|---|---|"]
     for (mode, agg), n in sorted(mode_agg_dist.items(), key=lambda x: -x[1]):
         lines.append(f"| {mode} | {agg} | {n} |")
 
@@ -633,7 +633,7 @@ def write_top_md(n_rows: int, n_queries: int, err_summary: dict, oracle: dict) -
              "results/bottleneck_root_cause/*)와 data/hitab 테이블 파일만 사용.", "",
              f"- 전체 query {n_queries}건, top20_detail 행 {n_rows}건",
              f"- global: R@1={g['recall_at_1']} R@5={g['recall_at_5']} R@20={g['recall_at_20']} "
-             f"MRR={g['mrr_over_known_rank_only']} (n={g['n_population']}, unknown_rank={g['n_unknown_rank']})",
+             f"MRR={g['mrr_over_known_rank_only']} (query count={g['n_population']}, unknown_rank={g['n_unknown_rank']})",
              f"- top1 성공 {err_summary['counts']['top1 성공']['n_total_in_class']}건, "
              f"wrong_table {err_summary['counts']['wrong_table']['n_total_in_class']}건, "
              f"wrong_row {err_summary['counts']['wrong_row']['n_total_in_class']}건, "

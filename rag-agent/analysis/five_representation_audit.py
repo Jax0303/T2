@@ -93,7 +93,7 @@ def main():
         c = d["common_hit"]
         if c:
             lines.append(f"| {labels[tag]} | {c['hit_correct']}/{c['n']} | {c['em']:.4f} |")
-    lines += ["", "## 쌍별 공통 검색 성공", "", "| 왼쪽 | 오른쪽 | n | 왼쪽 EM | 오른쪽 EM | 왼쪽만 정답 | 오른쪽만 정답 |", "|---|---|---:|---:|---:|---:|---:|"]
+    lines += ["", "## 쌍별 공통 검색 성공", "", "| 왼쪽 | 오른쪽 | query count | 왼쪽 EM | 오른쪽 EM | 왼쪽만 정답 | 오른쪽만 정답 |", "|---|---|---:|---:|---:|---:|---:|"]
     for p in result["pairwise_common_hits"]:
         if p["n"]:
             lines.append(f"| {labels[p['left']]} | {labels[p['right']]} | {p['n']} | {p['left_em']:.4f} | {p['right_em']:.4f} | {p['left_only']} | {p['right_only']} |")

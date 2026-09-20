@@ -1,6 +1,6 @@
 # 오류 사례 (사전 개선 진단)
 
-모집단: hitab test primary (mode=all, m=1, aggregation=none), n=991 (results/bottleneck_root_cause/top1_error_detail.csv 그대로 사용, 새로 채점하지 않음). 예시는 query_id 오름차순 처음 20건.
+모집단: hitab test primary (mode=all, m=1, aggregation=none), query count=991 (results/bottleneck_root_cause/top1_error_detail.csv 그대로 사용, 새로 채점하지 않음). 예시는 query_id 오름차순 처음 20건.
 
 ## top1 성공 (전체 570건 중 20건)
 

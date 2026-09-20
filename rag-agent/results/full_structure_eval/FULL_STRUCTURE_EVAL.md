@@ -17,13 +17,13 @@ nhc0=guess_cols(nhr=1); nhr=guess_rows(nhc=nhc0); nhc=guess_cols(nhr=nhr); gold 
 
 ## 2) 비교표 — path EM / F1 / pair F1 / joint EM
 
-| condition | row EM | col EM | row F1 | col F1 | row pair F1 | col pair F1 | joint EM(gold cell, n=991) |
+| condition | row EM | col EM | row F1 | col F1 | row pair F1 | col pair F1 | joint EM(gold cell, query count=991) |
 |---|---|---|---|---|---|---|---|
 | gold-path | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 (991/991, trivial: paths ARE gold by construction) |
 | known-boundary predicted-path | 0.6905 | 0.9442 | 0.9084 | 0.9857 | 0.8593 | 0.9784 | 0.5237 (519/991) |
 | fully-predicted-path | 0.7669 | 0.888 | 0.927 | 0.9628 | 0.8753 | 0.9487 | 0.6852 (679/991) |
 
-## 3) Hybrid retrieval (R@1/5/20, MRR, ESM), test n=991
+## 3) Hybrid retrieval (R@1/5/20, MRR, ESM), test query count=991
 
 | condition | R@1 | R@5 | R@20 | MRR | ESM |
 |---|---|---|---|---|---|

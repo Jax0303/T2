@@ -77,7 +77,7 @@ def check_ci_mcnemar() -> dict:
         "mcnemar_discordant_c_top1right_top20wrong": c,
         "mcnemar_exact_p_value": round(mcnemar_p, 4) if mcnemar_p is not None else None,
         "verdict": ("차이 유의함 (p<0.05)" if mcnemar_p is not None and mcnemar_p < 0.05
-                   else "n=150 표본으로는 통계적으로 유의하다고 말하기 어려움")}
+                   else "query count=150 표본으로는 통계적으로 유의하다고 말하기 어려움")}
     (OUT_DIR / "robustness_ci_mcnemar.json").write_text(
         json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(out, indent=2, ensure_ascii=False))

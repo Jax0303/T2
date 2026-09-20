@@ -269,7 +269,7 @@ def write_report(template_name: str = "structural_leaf") -> Path:
                   _load_counts(_out("top1_error_detail", "csv", template_name))))
 
     lines = [f"# 문장 축-구분 개입 ({template_name}) — 2026-09-17", "",
-            "모집단: hitab test primary (mode=all, m=1, aggregation=none), n=991. "
+            "모집단: hitab test primary (mode=all, m=1, aggregation=none), query count=991. "
             "encoder/hybrid(alpha=0.7)/corpus(split)는 baseline과 동일 — 바뀐 변수는 "
             "cell 문장 템플릿 하나뿐.", "",
             f"## R@1/5/10/20/MRR — baseline .. {template_name}", "",

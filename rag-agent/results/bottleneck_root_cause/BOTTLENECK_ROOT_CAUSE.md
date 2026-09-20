@@ -14,14 +14,14 @@ BOTTLENECK_DIAGNOSIS.md의 후속. ESM 정의는 그대로(단일 gold+고정 k 
 
 structure correct/wrong × predicted_path 검색 성능:
 
-| subset | n | R@1 | R@5 | R@10 | R@20 | MRR | median rank |
+| subset | query count | R@1 | R@5 | R@10 | R@20 | MRR | median rank |
 |---|---|---|---|---|---|---|---|
 | structure correct | 519 | 0.553 | 0.7765 | 0.8728 | 0.9171 | 0.6593 | 1 |
 | structure wrong | 472 | 0.553 | 0.803 | 0.8602 | 0.8983 | 0.6699 | 1 |
 
 structure-correct 부분집합에서 gold_path vs predicted_path (재구성이 맞아도 남는 차이가 있는지):
 
-| repr | n | R@1 | R@5 | R@10 | R@20 | MRR | median rank |
+| repr | query count | R@1 | R@5 | R@10 | R@20 | MRR | median rank |
 |---|---|---|---|---|---|---|---|
 | gold_path | 519 | 0.5453 | 0.7803 | 0.869 | 0.9094 | 0.6547 | 1 |
 | predicted_path | 519 | 0.553 | 0.7765 | 0.8728 | 0.9171 | 0.6593 | 1 |
@@ -38,7 +38,7 @@ structure-correct 부분집합에서 gold_path vs predicted_path (재구성이 �
 
 gold-only 기준선 답변 정확도: 0.9933 (n_sample=150)
 
-| condition | n | 답변 정확도 |
+| condition | query count | 답변 정확도 |
 |---|---|---|
 | gold_1_random_first | 150 | 0.94 |
 | gold_1_random_last | 150 | 0.94 |
@@ -47,7 +47,7 @@ gold-only 기준선 답변 정확도: 0.9933 (n_sample=150)
 
 ### gold_1_hard_negative_first — distractor 구조 클래스별
 
-| class | n | 답변 정확도 |
+| class | query count | 답변 정확도 |
 |---|---|---|
 | nearby_cell | 1 | 1.0 |
 | other | 3 | 0.6667 |
@@ -59,7 +59,7 @@ gold-only 기준선 답변 정확도: 0.9933 (n_sample=150)
 
 ### gold_1_hard_negative_first — score margin 구간별 (margin은 distractor가 top-1일 때만 계산됨)
 
-| margin bucket | n | 답변 정확도 |
+| margin bucket | query count | 답변 정확도 |
 |---|---|---|
 | 0.00-0.05 | 42 | 0.7381 |
 | 0.05-0.15 | 18 | 0.7222 |
@@ -68,7 +68,7 @@ gold-only 기준선 답변 정확도: 0.9933 (n_sample=150)
 
 ### gold_1_hard_negative_last — distractor 구조 클래스별
 
-| class | n | 답변 정확도 |
+| class | query count | 답변 정확도 |
 |---|---|---|
 | nearby_cell | 1 | 1.0 |
 | other | 3 | 0.6667 |
@@ -80,7 +80,7 @@ gold-only 기준선 답변 정확도: 0.9933 (n_sample=150)
 
 ### gold_1_hard_negative_last — score margin 구간별 (margin은 distractor가 top-1일 때만 계산됨)
 
-| margin bucket | n | 답변 정확도 |
+| margin bucket | query count | 답변 정확도 |
 |---|---|---|
 | 0.00-0.05 | 42 | 0.6667 |
 | 0.05-0.15 | 18 | 0.5556 |
@@ -99,7 +99,7 @@ gold-only 기준선 답변 정확도: 0.9933 (n_sample=150)
 
 - predicted structure는 헤더 블록 크기(nhr/nhc)는 gold를 쓰고 경로 내용만 재구성함 (tree_reconstruct_hitab_raw.py의 known-boundary 모드와 동일 조건).
 - H3 margin은 hard-negative distractor가 해당 질의의 top-1 검색 결과와 정확히 같을 때만 계산됨 — 그 외는 'unknown' 버킷.
-- controlled QA는 n=150 표본(2026-09-16 seed=42 고정, 재실행 없음)에 대한 재분석이며 새 리더 호출은 없음.
+- controlled QA는 query count=150 표본(2026-09-16 seed=42 고정, 재실행 없음)에 대한 재분석이며 새 리더 호출은 없음.
 
 ## 산출물
 

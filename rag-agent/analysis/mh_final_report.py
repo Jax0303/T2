@@ -87,7 +87,7 @@ def retrieval_section(md):
         ids = sorted(set.intersection(*[set(r) for _n, r in recs]))
         base = recs[0][1]
         for scope in ("doc", "corpus"):
-            md.append(f"### {cond} — {scope} 범위 (n={len(ids)})\n")
+            md.append(f"### {cond} — {scope} 범위 (query count={len(ids)})\n")
             md.append("| arm | " + " | ".join(LNAME[k] for k in LAYERS) + " |")
             md.append("|---" * (len(LAYERS) + 1) + "|")
             for name, r in recs:
@@ -124,7 +124,7 @@ def answer_section(md):
         g = load(f"{GOLD[cond]}.jsonl")
         ids = sorted(set.intersection(*[set(r) for _n, r in recs]))
         base = recs[0][1]
-        md.append(f"### {cond} (n={len(ids)})\n")
+        md.append(f"### {cond} (query count={len(ids)})\n")
         md.append("| arm | " + " | ".join(f"{LNAME[k]} 검색 / EM" for k in LAYERS) + " |")
         md.append("|---" * (len(LAYERS) + 1) + "|")
         rows = recs + ([("**gold 셀만 (리더 천장)**", g)] if g else [])
@@ -200,7 +200,7 @@ def pilot_section(md):
     if not p.exists():
         md.append("파일럿 결과 없음.\n"); missing.append(str(p.relative_to(ROOT))); return
     s = json.loads(p.read_text())
-    md.append(f"n={s['n']} (seed {s['seed']}), 리더 {s['reader']}. **보고용 수치가 아니다** — 다음 사전등록의 근거.\n")
+    md.append(f"query count={s['n']} (seed {s['seed']}), 리더 {s['reader']}. **보고용 수치가 아니다** — 다음 사전등록의 근거.\n")
     md.append("| 프롬프트 | EM | 'Final answer' 표시 누락 |")
     md.append("|---|---:|---:|")
     md.append(f"| 답만 (현행 neutral, 64토큰) | {s['direct']['em']:.3f} | — |")
@@ -273,7 +273,7 @@ L2 로 바꿔 재실행하지 않았다 — 결과를 보고 규칙을 고르는
 표 산술에서 7~8B 가 GPT-4o 의 절반 수준이라는 선행 결과는 TableBench(arXiv:2408.09174),
 DocMath-Eval(arXiv:2311.09805).
 
-**표본 크기**: 5pt EM 차이를 잡으려면 짝지은 질의 약 1,000건(n=100 이면 검정력 .10~.14).
+**표본 크기**: 5pt EM 차이를 잡으려면 짝지은 질의 약 1,000건(query count=100 이면 검정력 .10~.14).
 """
 
 NEXT = """## 8. 다음 단계 (2026-09-13 사용자와 확정)

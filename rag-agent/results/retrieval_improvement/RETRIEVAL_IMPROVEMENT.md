@@ -2,7 +2,7 @@
 
 원본 파일/모델/기존 랭킹 미변경. 기존 코드(retrieval_accuracy.build_corpus/cell_unit, bottleneck_root_cause.encode_corpus 캐시, bottleneck_diagnosis population/error 분류기, answer_accuracy reader 유틸)를 재사용. dev(1,671건, table 540)로만 가중치 선택, test(991)에 1회 적용. gold는 채점/oracle에만 사용.
 
-## 1) dense-only / sparse-only / hybrid (test, n=991)
+## 1) dense-only / sparse-only / hybrid (test, query count=991)
 
 | method | R@1 | R@5 | R@20 | MRR | ESM | top1 tie 수 |
 |---|---|---|---|---|---|---|
@@ -62,8 +62,8 @@ dev 최적 단일 가중치: {'table': 0.2, 'row': 0.2, 'col': 0.1}, all 가중�
 
 ## 4) 동일 직렬화 충돌(943그룹/1886셀)이 primary R@1에 미치는 영향
 
-- 충돌 그룹에 속한 gold: n=17, R@1=0.1765, 평균 rank(known)=5.18
-- 충돌 없는 gold: n=974, R@1=0.5821, 평균 rank(known)=9.05
+- 충돌 그룹에 속한 gold: query count=17, R@1=0.1765, 평균 rank(known)=5.18
+- 충돌 없는 gold: query count=974, R@1=0.5821, 평균 rank(known)=9.05
 
 ## 5) 최고 reranker top1-only reader vs 기존 top-20 reader (공통 150 QA)
 
@@ -135,7 +135,7 @@ PYTHONPATH=. .venv/bin/python scripts/retrieval_improvement.py item5
 - top1-only: 0.58 (95% CI [0.5, 0.656])
 - 기존 top-20: 0.64 (95% CI [0.5606, 0.7124])
 - McNemar (불일치쌍 top1오답/top20정답=24, top1정답/top20오답=15), exact p=0.1996
-- **결론: n=150 표본으로는 통계적으로 유의하다고 말하기 어려움** — 58% vs 64% 차이를 n=150에서 통계적으로 확정할 수 없음
+- **결론: query count=150 표본으로는 통계적으로 유의하다고 말하기 어려움** — 58% vs 64% 차이를 query count=150에서 통계적으로 확정할 수 없음
 
 ### 4. cross-table hard negative의 캡션 부족 (wrong_table=102건)
 

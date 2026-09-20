@@ -785,7 +785,7 @@ def write_report() -> Path:
              "population/error 분류기, answer_accuracy reader 유틸)를 재사용. dev(1,671건, "
              "table 540)로만 가중치 선택, test(991)에 1회 적용. gold는 채점/oracle에만 사용.", ""]
 
-    lines += ["## 1) dense-only / sparse-only / hybrid (test, n=991)", ""]
+    lines += ["## 1) dense-only / sparse-only / hybrid (test, query count=991)", ""]
     if i1t:
         lines += ["| method | R@1 | R@5 | R@20 | MRR | ESM | top1 tie 수 |",
                  "|---|---|---|---|---|---|---|"]
@@ -848,9 +848,9 @@ def write_report() -> Path:
     lines += ["## 4) 동일 직렬화 충돌(943그룹/1886셀)이 primary R@1에 미치는 영향", ""]
     if i4:
         a, u = i4["primary_population_gold_in_collision"], i4["primary_population_gold_not_in_collision"]
-        lines += [f"- 충돌 그룹에 속한 gold: n={a['n']}, R@1={a['recall_at_1']}, "
+        lines += [f"- 충돌 그룹에 속한 gold: query count={a['n']}, R@1={a['recall_at_1']}, "
                  f"평균 rank(known)={a['mean_rank_known']}",
-                 f"- 충돌 없는 gold: n={u['n']}, R@1={u['recall_at_1']}, "
+                 f"- 충돌 없는 gold: query count={u['n']}, R@1={u['recall_at_1']}, "
                  f"평균 rank(known)={u['mean_rank_known']}", ""]
 
     lines += ["## 5) 최고 reranker top1-only reader vs 기존 top-20 reader (공통 150 QA)", ""]
@@ -946,7 +946,7 @@ def write_report() -> Path:
                  f"- McNemar (불일치쌍 top1오답/top20정답={ci['mcnemar_discordant_b_top1wrong_top20right']}, "
                  f"top1정답/top20오답={ci['mcnemar_discordant_c_top1right_top20wrong']}), "
                  f"exact p={ci['mcnemar_exact_p_value']}",
-                 f"- **결론: {ci['verdict']}** — 58% vs 64% 차이를 n=150에서 통계적으로 확정할 수 없음", ""]
+                 f"- **결론: {ci['verdict']}** — 58% vs 64% 차이를 query count=150에서 통계적으로 확정할 수 없음", ""]
 
     lines += ["### 4. cross-table hard negative의 캡션 부족 (wrong_table=102건)", ""]
     if wt:

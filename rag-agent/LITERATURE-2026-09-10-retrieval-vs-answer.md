@@ -19,7 +19,7 @@ Power of Noise 의 Table 1 격자는 텍스트 추출이 깨져 본문 서술문
 
 우리 20셀이 정확히 이것이다 — 같은 표, 같은 행/열의 이웃 칸.
 
-| 조건 | Power of Noise (Llama2, NQ) | **본 연구 (Qwen2.5-7B-4bit, HiTab, n=862)** |
+| 조건 | Power of Noise (Llama2, NQ) | **본 연구 (Qwen2.5-7B-4bit, HiTab, query count=862)** |
 |---|---:|---:|
 | gold 만 | 0.5642 | **0.9629** |
 | + hard distractor 1 | 0.4068 | — |
