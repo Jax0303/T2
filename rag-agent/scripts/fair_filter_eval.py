@@ -42,9 +42,13 @@ ARMS = {  # 표시 이름 -> records stem (전부 --corpus gold, 예산 20)
     "tablerag_path": "t_tablerag_path_v2_gold",
     "tablerag_leaf": "t_tablerag_leaf_v2_gold",
 }
-# 산술(2단계, PREREG-2026-09-21-fair-llm-filtering-arithmetic.md): 같은 실행의 arithmetic
-# 분할 파일. mt2net 만 그 분할 파일이 없어 같은 실행의 전체 records 를 쓴다 -- 모집단이
-# 216건으로 고정돼 있으므로 필터링은 질의 순회에서 자연히 일어난다.
+# 산술(2단계): **2026-09-21 사용자 지시로 폐기**. 모집단 파일과 사전등록을 지웠으므로
+# --arith 경로는 지금 돌지 않는다. 폐기 사유는 모집단 결함 -- HiTab 의 aggregation 라벨이
+# 참조 셀 개수를 보지 않아 216건 중 60건이 m=1 이고, 그 60건에는 이 실험이 재려던 상황이
+# 없다. 복원은 `git show 2d3163f:rag-agent/<경로>`, 다시 할 거면 참조 셀 개수로 모집단을
+# 정의하는 새 사전등록부터 한다. 아래 두 줄은 그때 되살릴 자리 표시로만 남긴다.
+# (원래 주석: 같은 실행의 arithmetic 분할 파일. mt2net 만 그 분할 파일이 없어 같은 실행의
+#  전체 records 를 쓴다 -- 모집단이 216건으로 고정돼 있으므로 필터링은 질의 순회에서 일어난다.)
 ARMS_ARITH = {k: (v if k == "mt2net" else v + "_arithmetic") for k, v in ARMS.items()}
 POP = ROOT / "results" / "ksweep_population_300.json"
 POP_ARITH = ROOT / "results" / "fair_filter_arith_population_216.json"

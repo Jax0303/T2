@@ -35,6 +35,17 @@
 > 원문은 `git show f8ef0bc:rag-agent/results/K_LADDER_TABLES-2026-09-16.md`. 원본 레코드
 > `results/k_ladder_qwen3_8b_20260916/` 는 `scripts/bottleneck_diagnosis.py` 가 읽으므로 남겨 뒀다.
 > 다른 문서·코드 주석이 지워진 문서를 가리키면 위 커밋에서 읽는다.
+>
+> 2026-09-21 **사용자 지시로 HiTab 산술 노선을 폐기**했다: 요약표 §5·§5a·§5b, 사전등록
+> `PREREG-2026-09-21-fair-llm-filtering-arithmetic.md`, `results/fair_filter_arith_20260921/`,
+> `results/fair_filter_arith_population_216.json`, `scripts/arith_reader_ceiling.py`.
+> **사유는 모집단 결함**: HiTab 의 `aggregation` 라벨은 "계산이 필요하다"만 뜻하고 **표에서
+> 꺼낼 참조 셀 개수를 보지 않아** 216건 중 60건이 m=1 이다 — 그 60건에는 "필터가 피연산자
+> 하나를 버려 계산이 불가능해진다"는 이 실험의 전제가 아예 없고, 전수 216 과 m≥2 156 에서
+> 판정이 갈렸다. 이 노선의 수치를 인용하지 않는다. 복원은 `git show 2d3163f:rag-agent/<경로>`.
+> **다시 하려면 참조 셀 개수로 모집단을 정의하는 새 사전등록부터 한다.**
+> `scripts/fair_filter_eval.py` 의 `--arith` 경로는 모집단 파일이 없어 지금 돌지 않는다(주석에 명시).
+> HiTab 단일조회(§4)와 MultiHiertt(§2)는 영향 없다.
 
 사용자 지시로 축과 규칙을 다시 잡았다. 아래 §1~§9 중 이 절과 어긋나는 서술은 **폐기**다.
 
