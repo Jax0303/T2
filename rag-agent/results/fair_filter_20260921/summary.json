@@ -1,0 +1,243 @@
+{
+  "n_rows": 2400,
+  "arms": {
+    "ours": {
+      "n": 300,
+      "retrieval_accuracy": 0.9467,
+      "answer_base": 0.75,
+      "answer_filtered": 0.7667,
+      "delta": 0.0167,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 22,
+        "b_only": 27,
+        "discordant": 49,
+        "p_value": 0.568172
+      },
+      "evidence_kept_base": 0.95,
+      "evidence_kept_filtered": 0.8667,
+      "answer_given_retrieval_hit_base": 0.7923,
+      "answer_given_retrieval_hit_filtered": 0.8063,
+      "filter_fallback_n": 0,
+      "filter_input_tokens_mean": 1454.6,
+      "lines_mean": 19.4,
+      "lines_kept_mean": 2.0
+    },
+    "mt2net": {
+      "n": 300,
+      "retrieval_accuracy": 0.9433,
+      "answer_base": 0.7433,
+      "answer_filtered": 0.7367,
+      "delta": -0.0066,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 21,
+        "b_only": 19,
+        "discordant": 40,
+        "p_value": 0.874629
+      },
+      "evidence_kept_base": 0.9433,
+      "evidence_kept_filtered": 0.8533,
+      "answer_given_retrieval_hit_base": 0.788,
+      "answer_given_retrieval_hit_filtered": 0.7774,
+      "filter_fallback_n": 0,
+      "filter_input_tokens_mean": 637.2,
+      "lines_mean": 19.4,
+      "lines_kept_mean": 2.1
+    },
+    "chunk": {
+      "n": 300,
+      "retrieval_accuracy": 0.8767,
+      "answer_base": 0.6867,
+      "answer_filtered": 0.4033,
+      "delta": -0.2834,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 95,
+        "b_only": 10,
+        "discordant": 105,
+        "p_value": 0.0
+      },
+      "evidence_kept_base": 0.8467,
+      "evidence_kept_filtered": 0.7867,
+      "answer_given_retrieval_hit_base": 0.7833,
+      "answer_given_retrieval_hit_filtered": 0.4601,
+      "filter_fallback_n": 0,
+      "filter_input_tokens_mean": 691.0,
+      "lines_mean": 15.6,
+      "lines_kept_mean": 2.2
+    },
+    "trag_hetero": {
+      "n": 300,
+      "retrieval_accuracy": 0.7767,
+      "answer_base": 0.6,
+      "answer_filtered": 0.3933,
+      "delta": -0.2067,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 77,
+        "b_only": 15,
+        "discordant": 92,
+        "p_value": 0.0
+      },
+      "evidence_kept_base": 0.7767,
+      "evidence_kept_filtered": 0.7167,
+      "answer_given_retrieval_hit_base": 0.7682,
+      "answer_given_retrieval_hit_filtered": 0.4979,
+      "filter_fallback_n": 0,
+      "filter_input_tokens_mean": 571.9,
+      "lines_mean": 12.9,
+      "lines_kept_mean": 2.4
+    },
+    "rowcol": {
+      "n": 300,
+      "retrieval_accuracy": 0.7467,
+      "answer_base": 0.47,
+      "answer_filtered": 0.3333,
+      "delta": -0.1367,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 52,
+        "b_only": 11,
+        "discordant": 63,
+        "p_value": 0.0
+      },
+      "evidence_kept_base": 0.78,
+      "evidence_kept_filtered": 0.65,
+      "answer_given_retrieval_hit_base": 0.6295,
+      "answer_given_retrieval_hit_filtered": 0.4464,
+      "filter_fallback_n": 1,
+      "filter_input_tokens_mean": 346.9,
+      "lines_mean": 8.4,
+      "lines_kept_mean": 2.1
+    },
+    "randrow": {
+      "n": 300,
+      "retrieval_accuracy": 0.3367,
+      "answer_base": 0.1533,
+      "answer_filtered": 0.1333,
+      "delta": -0.02,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 16,
+        "b_only": 10,
+        "discordant": 26,
+        "p_value": 0.32694
+      },
+      "evidence_kept_base": 0.4467,
+      "evidence_kept_filtered": 0.3967,
+      "answer_given_retrieval_hit_base": 0.4158,
+      "answer_given_retrieval_hit_filtered": 0.3762,
+      "filter_fallback_n": 11,
+      "filter_input_tokens_mean": 347.1,
+      "lines_mean": 4.1,
+      "lines_kept_mean": 1.5
+    },
+    "tablerag_path": {
+      "n": 300,
+      "retrieval_accuracy": 0.3067,
+      "answer_base": 0.1433,
+      "answer_filtered": 0.1033,
+      "delta": -0.04,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 22,
+        "b_only": 10,
+        "discordant": 32,
+        "p_value": 0.050102
+      },
+      "evidence_kept_base": 0.39,
+      "evidence_kept_filtered": 0.2967,
+      "answer_given_retrieval_hit_base": 0.4565,
+      "answer_given_retrieval_hit_filtered": 0.3261,
+      "filter_fallback_n": 0,
+      "filter_input_tokens_mean": 659.2,
+      "lines_mean": 19.9,
+      "lines_kept_mean": 2.4
+    },
+    "tablerag_leaf": {
+      "n": 300,
+      "retrieval_accuracy": 0.2967,
+      "answer_base": 0.08,
+      "answer_filtered": 0.0733,
+      "delta": -0.0067,
+      "mcnemar_base_vs_filtered": {
+        "n": 300,
+        "a_only": 11,
+        "b_only": 9,
+        "discordant": 20,
+        "p_value": 0.823803
+      },
+      "evidence_kept_base": 0.38,
+      "evidence_kept_filtered": 0.23,
+      "answer_given_retrieval_hit_base": 0.2697,
+      "answer_given_retrieval_hit_filtered": 0.2472,
+      "filter_fallback_n": 0,
+      "filter_input_tokens_mean": 653.5,
+      "lines_mean": 21.1,
+      "lines_kept_mean": 2.4
+    }
+  },
+  "rank_after_filter": [
+    "ours",
+    "mt2net",
+    "chunk",
+    "trag_hetero",
+    "rowcol",
+    "randrow",
+    "tablerag_path",
+    "tablerag_leaf"
+  ],
+  "ours_is_first": true,
+  "ours_vs_others_filtered": {
+    "mt2net": {
+      "n": 300,
+      "a_only": 25,
+      "b_only": 16,
+      "discordant": 41,
+      "p_value": 0.211024
+    },
+    "chunk": {
+      "n": 300,
+      "a_only": 126,
+      "b_only": 17,
+      "discordant": 143,
+      "p_value": 0.0
+    },
+    "trag_hetero": {
+      "n": 300,
+      "a_only": 125,
+      "b_only": 13,
+      "discordant": 138,
+      "p_value": 0.0
+    },
+    "rowcol": {
+      "n": 300,
+      "a_only": 147,
+      "b_only": 17,
+      "discordant": 164,
+      "p_value": 0.0
+    },
+    "randrow": {
+      "n": 300,
+      "a_only": 194,
+      "b_only": 4,
+      "discordant": 198,
+      "p_value": 0.0
+    },
+    "tablerag_path": {
+      "n": 300,
+      "a_only": 203,
+      "b_only": 4,
+      "discordant": 207,
+      "p_value": 0.0
+    },
+    "tablerag_leaf": {
+      "n": 300,
+      "a_only": 213,
+      "b_only": 5,
+      "discordant": 218,
+      "p_value": 0.0
+    }
+  }
+}
