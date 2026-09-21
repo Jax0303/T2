@@ -1,4 +1,4 @@
-"""Index-unit serialization for the cell sentence (S3 / S3c / mt2net templates).
+"""Index-unit serialization for the cell sentence (S3 / S3c templates).
 
 :mod:`.caption` renders one data cell as one sentence carrying the table's title
 slot, its row header path, its column header path and the value; :mod:`.templates`

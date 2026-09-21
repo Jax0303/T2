@@ -43,7 +43,7 @@ scripts/
 analysis/
   validated_tables.py, five_representation_audit.py, compose_oracle.py, unit_defect.py
   verify_upstream.py, upstream_parity.py, upstream_audit/
-  mh_final_report.py, audit_2026_09_13.py, mh_em_split.py, header_*.py
+  mh_final_report.py, audit_2026_09_13.py, header_*.py
 tests/
 ```
 

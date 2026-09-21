@@ -1,26 +1,14 @@
 # SPDX-License-Identifier: MIT
-"""The two S3 templates must not drift.
+"""The S3 templates must not drift.
 
 STRUCTURAL is pinned byte-for-byte because results already on disk were produced
 under the retired ``length="long"`` preset and must stay reproducible from this
-code. MT2NET is pinned to the one sentence Zhao et al. (2022) §4 publishes — if
-that assertion ever fails, the "MT2Net reproduction" label is no longer true.
+code.
 """
 import pytest
 
 from rag_agent.serialization import caption
-from rag_agent.serialization.templates import MT2NET, STRUCTURAL, render
-
-PAPER_SENTENCE = ("For Innovation Systems of Segment, sales of product in 2018, "
-                  "Year Ended December 31 is 2,894")
-
-
-def test_mt2net_reproduces_the_published_example():
-    got = render(MT2NET, "",
-                 ["Segment", "Innovation Systems"],
-                 ["Year Ended December 31", "sales of product in 2018"],
-                 "2,894")
-    assert got == PAPER_SENTENCE
+from rag_agent.serialization.templates import STRUCTURAL, render
 
 
 @pytest.mark.parametrize("title,row,col,val,want", [

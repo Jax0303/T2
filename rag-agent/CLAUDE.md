@@ -46,6 +46,15 @@
 > **다시 하려면 참조 셀 개수로 모집단을 정의하는 새 사전등록부터 한다.**
 > `scripts/fair_filter_eval.py` 의 `--arith` 경로는 모집단 파일이 없어 지금 돌지 않는다(주석에 명시).
 > HiTab 단일조회(§4)와 MultiHiertt(§2)는 영향 없다.
+>
+> 2026-09-21 **지도교수 지시로 MT2Net(Zhao et al. 2022)을 비교대상에서 제외**했다.
+> §2("MT2Net과 무엇이 다른가")를 포함해 아래 문서 전체에 남아 있는 MT2Net 수치·서술은
+> **더 이상 갱신되지 않는 과거 기록**이며, 새 실험·보고서에 MT2Net을 비교군으로 넣지
+> 않는다. 코드 쪽은 `rag_agent/serialization/templates.py` 의 `MT2NET` 템플릿,
+> `--rerank-model`(MT2Net 재정렬기 재현) 옵션, `mh_arms.py --unit mt2net_*`,
+> `train_mt2net_reranker_*.py`, `analysis/mh_em_split.py` 를 모두 제거했다. 관련 결과·
+> 사전등록 문서는 `archive/mt2net-2026-09-21/`로 옮겼다(삭제 아님 — 과거 수치의
+> 출처로서 보존). 새 세션은 MT2Net 재현·재정렬기 학습·MT2Net 대비 수치를 계획하지 말 것.
 
 사용자 지시로 축과 규칙을 다시 잡았다. 아래 §1~§9 중 이 절과 어긋나는 서술은 **폐기**다.
 
@@ -223,6 +232,9 @@ gold 셀 해석 누락(1,584 질의 중 937건만 채점), BGE 쿼리 접두어 
 
 # 2. MT2Net과 무엇이 다른가 (과장·축소 양쪽 전과 있음)
 
+> ⚠️ **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다(§0 참조).** 아래는
+> 그 결정 이전에 확정된 과거 기록이며 새 비교에 인용하지 않는다.
+
 **"셀+헤더 선형화를 우리가 제안한다"고 쓰지 말 것** — Zhao et al. (2022)이 그 전처리
 한 줄은 이미 했다. 그러나 **파이프라인은 다르고, 같은 조건에서 우리가 이긴다.**
 
@@ -302,24 +314,16 @@ gold 셀만 48토큰 주면 EM .888, 검색으로 509토큰 주면 .604 (`RESULT
   게다가 잎 라벨을 gold에서 가져오므로 `flat`에 유리한 조건이다.
   "기존 방법", "published baseline"이라 부르지 말 것.
 - **`row_chunk`는 업계 관행이지 발표된 시스템이 아니다.** 그렇게 표기할 것.
-- **발표된 시스템**: TARGET(표 단위) / TableRAG(열+셀) / MT2Net(셀+헤더, BERT 분류기).
+- **발표된 시스템**: TARGET(표 단위) / TableRAG(열+셀).
   **(2026-09-20 정정) "TableRAG은 이 저장소에 구현 없음"은 낡은 문장이다** — 이후
   `rag_agent/serialization/tablerag_unit.py`로 구현됨(텍스트 표현은 구글 공식 코드와
   대조 확인된 고신뢰 포트, 검색기는 ours와 동일한 임베딩이라 "구글 TableRAG 시스템
   결과"로는 인용하지 말 것 — 코드 자체 주석에 명시, `results/SUMMARY_TABLES-2026-09-18.md`
-  각주³ 참조). MT2Net은 검색기만 재구현됨
-  (`scripts/mt2net_retriever_baseline.py`, 2026-09-08 삭제) — 현행 재현은
-  `scripts/retrieval_accuracy.py --template mt2net` 이며 검색·정답률 양쪽에 레그가 있다
-  (`results/SUMMARY_TABLES-2026-09-18.md` 각주¹). 학습된 재정렬기(실제 BERT pairwise
-  채점 메커니즘) 재현은 **HiTab·MultiHiertt 둘 다 완료**됐고, 결과가 정반대다: HiTab은
-  예측과 반대로 임베딩만 쓰는 템플릿 arm보다 유의하게 **더 나쁘다**(query count=1581, McNemar
-  p≈0, 각주⑤, `PREREG-2026-09-20-mt2net-reranker-hitab.md`). MultiHiertt는 문서 범위(표
-  여러 개가 실제로 한 문서에 있어 MT2Net의 전제가 성립)로 재현했는데 예측과 반대로
-  ours·mt2net_desc(임베딩) 둘 다 유의하게 **이긴다**(query count=2871, McNemar 둘 다 p<1e-4, 각주⑥,
-  `PREREG-2026-09-20-mt2net-reranker-multihiertt.md`) — 두 데이터셋에서 학습 효과의
-  방향이 갈린 것 자체가 결과이지, 어느 한쪽을 대표값으로 쓰지 않는다.
+  각주³ 참조).
   trag_hetero(Yu 2025)도 청킹 표현만 재현하고 SQL 리그·전용 검색 오케스트레이션은
   재현하지 않음(같은 문서 각주⁴).
+  **MT2Net(Zhao et al. 2022)은 2026-09-21 지도교수 지시로 비교대상에서 제외했다(§0
+  참조) — 과거 재현 수치는 `archive/mt2net-2026-09-21/`에 있고 인용하지 않는다.**
 
 ---
 

@@ -1,18 +1,15 @@
-ALL {'ours': 0.425, 'mt2net': 0.405, 'chunk': 0.475, 'huawei': 0.39, 'rowcol': 0.19, 'tablerag': 0.12}
-lookup_m2+ {'ours': 0.6857, 'mt2net': 0.6143, 'chunk': 0.7429, 'huawei': 0.6, 'rowcol': 0.3286, 'tablerag': 0.2286}
-arith_m2+ {'ours': 0.2105, 'mt2net': 0.2105, 'chunk': 0.2237, 'huawei': 0.1579, 'rowcol': 0.0789, 'tablerag': 0.0}
-mt2net ALL 14:10 0.02 [-0.05, 0.095] p_holm=1
-mt2net lookup_m2+ 7:2 0.0714 [-0.0429, 0.2] p_holm=1
-mt2net arith_m2+ 4:4 0.0 [-0.1053, 0.1184] p_holm=1
-chunk ALL 9:19 -0.05 [-0.1283, 0.025] p_holm=0.784
-chunk lookup_m2+ 3:7 -0.0571 [-0.1857, 0.0714] p_holm=1
+ALL {'ours': 0.425, 'chunk': 0.475, 'huawei': 0.39, 'rowcol': 0.19, 'tablerag': 0.12}
+lookup_m2+ {'ours': 0.6857, 'chunk': 0.7429, 'huawei': 0.6, 'rowcol': 0.3286, 'tablerag': 0.2286}
+arith_m2+ {'ours': 0.2105, 'chunk': 0.2237, 'huawei': 0.1579, 'rowcol': 0.0789, 'tablerag': 0.0}
+chunk ALL 9:19 -0.05 [-0.125, 0.025] p_holm=0.523
+chunk lookup_m2+ 3:7 -0.0571 [-0.2, 0.0714] p_holm=1
 chunk arith_m2+ 4:5 -0.0132 [-0.1316, 0.1053] p_holm=1
-huawei ALL 22:15 0.035 [-0.05, 0.125] p_holm=1
+huawei ALL 22:15 0.035 [-0.05, 0.12] p_holm=1
 huawei lookup_m2+ 12:6 0.0857 [-0.0857, 0.2571] p_holm=1
-huawei arith_m2+ 6:2 0.0526 [-0.0526, 0.1579] p_holm=1
-rowcol ALL 56:9 0.235 [0.125, 0.34] p_holm=2.66e-08
-rowcol lookup_m2+ 26:1 0.3571 [0.1857, 0.5286] p_holm=5.01e-06
-rowcol arith_m2+ 14:4 0.1316 [-0.0263, 0.2895] p_holm=0.309
-tablerag ALL 63:2 0.305 [0.21, 0.405] p_holm=1.75e-15
-tablerag lookup_m2+ 32:0 0.4571 [0.2857, 0.6286] p_holm=6.52e-09
-tablerag arith_m2+ 16:0 0.2105 [0.0921, 0.3553] p_holm=0.000336
+huawei arith_m2+ 6:2 0.0526 [-0.0526, 0.1711] p_holm=1
+rowcol ALL 56:9 0.235 [0.13, 0.34] p_holm=2.05e-08
+rowcol lookup_m2+ 26:1 0.3571 [0.1857, 0.5286] p_holm=3.76e-06
+rowcol arith_m2+ 14:4 0.1316 [-0.0132, 0.2895] p_holm=0.216
+tablerag ALL 63:2 0.305 [0.21, 0.4] p_holm=1.4e-15
+tablerag lookup_m2+ 32:0 0.4571 [0.2857, 0.6286] p_holm=5.12e-09
+tablerag arith_m2+ 16:0 0.2105 [0.0921, 0.3421] p_holm=0.000244

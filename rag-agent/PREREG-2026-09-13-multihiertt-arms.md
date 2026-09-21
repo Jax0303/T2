@@ -1,5 +1,10 @@
 # 사전등록 — MultiHiertt 다중 조회·산술: 검색 정확도와 답변 EM (2026-09-13)
 
+> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** 이 사전등록이 계획한
+> `mt2net_desc`·`mt2net_header_s3c` 두 arm에 대한 서술을 지웠다(원 수치는
+> `archive/mt2net-2026-09-21/`). 나머지 arm(cell/trag_hetero/tablerag/rowcol/chunk)의
+> 설계·예측은 MT2Net과 무관하므로 그대로 둔다.
+
 실행 **전에** 조건과 예측을 박는다. 결과를 보고 규칙을 고르지 않는다(`CLAUDE.md` §7).
 
 ## 왜 이 데이터셋인가
@@ -41,7 +46,6 @@ MultiHiertt 는 질의당 supporting fact 가 여러 개이고 문서 안에 표
 | arm | 출처 | 이 실험에서 재현한 것 | 재현하지 **않은** 것 |
 |---|---|---|---|
 | `cell` (본 방법, s3c) | 본 연구 | 셀+행/열 경로 문장, 제목 없으면 S2 경로 | — |
-| `mt2net_desc` | Zhao et al., ACL 2022 (MultiHiertt/MT2Net) | **데이터셋이 실어 준 `table_description` 문자열 그대로** (`utils/retriever_utils.py` 가 쓰는 바로 그 후보) | RoBERTa 쌍분류 검색기, span/program 추론 모듈 |
 | `trag_hetero` | Huawei TableRAG, arXiv 2506.10380 | `excel_to_markdown` → `RecursiveCharacterTextSplitter(1000, 200)` → `"File name: …"` 접두 | BGE-M3·리랭커, NL2SQL 레그 |
 | `tablerag` | Chen et al., NeurIPS 2024 (TableRAG) | `build_cell_corpus` + `build_schema_corpus` 문서 문자열 | 스키마/셀 채널 분리, ReAct 코드 실행 에이전트 |
 | `rowcol` | 같은 논문 §4.2 (TableSampling) | 행·열 단위 인코딩 후 **교집합 부분표** | 표당 색인(`init_retriever(table_id, df)`), top_k=5 고정 |
@@ -58,14 +62,11 @@ MultiHiertt 는 질의당 supporting fact 가 여러 개이고 문서 안에 표
    arm(`chunk`, `trag_hetero`)에서 **더 작다** — 한 단위가 여러 gold 를 동시에 담는다.
    → 즉 **다중 셀에서는 청킹이 셀 단위를 따라잡거나 이길 수 있다.** 이것이 이
    데이터셋에서 본 방법이 질 수 있는 자리이고, 지면 그대로 싣는다.
-3. `mt2net_desc` 는 `cell` 과 **구별되지 않거나 근소하게 진다**. MultiHiertt 표는
-   제목이 없어 s3c 가 S2 경로로 떨어지고, 두 문장이 담는 정보가 같아진다.
-   (HiTab 에서 본 방법의 이득은 **표의 고유 라벨**에서 나왔다 — `CLAUDE.md` §5.)
 4. 검색 정확도와 답변 EM 의 간극은 산술 층(`arith_*`)에서 조회 층보다 크다.
 5. `gold` 조건(근거 셀만 주입) EM 이 `retrieved` 조건보다 높다. 그 차이가
    distractor 비용이고, 그것이 검색-EM 간극의 주된 몫이다.
 
-예측이 틀리면 틀린 대로 적는다. 2·3 은 본 방법이 지는 쪽을 먼저 적은 것이다.
+예측이 틀리면 틀린 대로 적는다. 2 는 본 방법이 지는 쪽을 먼저 적은 것이다.
 
 ## 판정
 
@@ -87,12 +88,8 @@ McNemar (짝지음, 같은 질의 집합). 층별로 따로 본다. 다중비교
 3. **arm 추가·교체** (검색 레그에서 드러난 것):
    - `tablerag` → `tablerag_allobj_path`. 원래 레그는 gold 해석이 arm 에 의존하는 결함으로
      2,685건만 채점했다(고침). HiTab 주 표와 같은 가장 유리한 읽기로 재실행한 것을 쓴다.
-   - `mt2net_header_s3c` 추가. MT2Net 문장의 헤더 구절을 본 방법 형태로 쓴 변형으로,
-     검색에서 MT2Net 이 이긴 몫을 헤더 출처(−2.0pt)와 문장 형태(+0.6pt)로 갈랐다.
-     답변에서도 같은 분해가 서는지 본다.
 4. **gold 조건**: `cell` 레코드의 질의 집합에서 gold 셀만 s3c 문장으로 주입(리더 천장).
 
 예측 추가:
-6. 답변 EM 에서도 `mt2net_header_s3c` ≥ `cell`. 헤더 출처 몫이 답변까지 남는다.
 7. 검색에서 청킹 arm 이 셀 단위보다 .12 이상 낮으므로 답변 EM 도 낮다. 단 산술 층에서는
    청크가 행 전체를 통째로 주므로 **차이가 줄어들 수 있다** — 줄면 그대로 적는다.

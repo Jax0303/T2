@@ -1,4 +1,8 @@
-# 사전등록: LLM 필터링을 8개 arm 전부에 똑같이 적용한 공정 비교 (HiTab 단일조회, 2026-09-21)
+# 사전등록: LLM 필터링을 7개 arm 전부에 똑같이 적용한 공정 비교 (HiTab 단일조회, 2026-09-21)
+
+> **같은 날(2026-09-21) 늦게 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** 이 사전등록은
+> 원래 8개 arm(mt2net 포함)으로 실행했다 — mt2net 관련 서술을 지웠다(원 수치는
+> `archive/mt2net-2026-09-21/`, 코드는 `scripts/fair_filter_eval.py`의 `ARMS`에서 이미 제거).
 
 ## 왜
 
@@ -49,17 +53,17 @@ import해 재사용한다.
 
 - 모집단: `results/ksweep_population_300.json` (n=300, seed=42). 8개 arm 전부에 300건이
   모두 존재하고 전부 주 모집단 조건(mode=all, m=1, aggregation=none)을 만족함을 확인했다.
-- arm 8개(전부 `--corpus gold`, 예산 20, 기존 records 재사용):
-  ours `t_sleaf_gold` / mt2net `t_mt2net_gold` / chunk `t_chunk_s3c_gold_v2` /
+- arm 7개(전부 `--corpus gold`, 예산 20, 기존 records 재사용):
+  ours `t_sleaf_gold` / chunk `t_chunk_s3c_gold_v2` /
   trag_hetero `t_trag_hetero_gold_v2` / rowcol `t_rowcol_s3c_gold_v2` /
   randrow `t_randrow_s3c_gold` / tablerag-path `t_tablerag_path_v2_gold` /
   tablerag-leaf `t_tablerag_leaf_v2_gold`.
 - 검색 정확도(무필터, 이 모집단 실측, 이미 확정된 값):
-  ours .9467 / mt2net .9433 / chunk .8767 / trag_hetero .7767 / rowcol .7467 /
+  ours .9467 / chunk .8767 / trag_hetero .7767 / rowcol .7467 /
   randrow .3367 / tablerag-path .3067 / tablerag-leaf .2967.
 - 필터 LLM과 리더 LLM 모두 `local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit`,
   temperature 0, 리더 프롬프트 `neutral`, 채점 `hitab_exact_match_text`. 한 프로세스에서
-  모델 한 번만 올려 8 arm × 300질의 × (무필터 리더 / 필터 / 필터후 리더)를 돈다.
+  모델 한 번만 올려 7 arm × 300질의 × (무필터 리더 / 필터 / 필터후 리더)를 돈다.
 - 질의별 페어링: 같은 질의의 무필터/필터 결과를 한 행에 같이 기록한다(McNemar용).
 - 폴백: 번호 파싱 실패·빈 출력이면 원본 문맥 그대로 사용하고 그 횟수를 arm별로 센다.
 
@@ -69,11 +73,11 @@ import해 재사용한다.
    답변정확도는 대체로 검색 정확도를 넘지 못하는데, ours의 천장(.9467)이 chunk(.8767)보다
    7%p 높다. chunk가 ours를 넘으려면 필터 적용 후 "검색 성공 시 정확도"가 ours보다
    8%p 이상 높아야 한다.
-2. 수치 예측: **ours .78~.86**, mt2net .72~.84, chunk .60~.75, trag_hetero .50~.68,
+2. 수치 예측: **ours .78~.86**, chunk .60~.75, trag_hetero .50~.68,
    rowcol .48~.66, randrow .15~.30, tablerag-path .12~.28, tablerag-leaf .12~.28.
    **ours − chunk 격차는 +.02 ~ +.12** 사이일 것으로 예측한다.
-3. 필터의 효과 방향: 셀 arm(ours/mt2net)은 상승(2026-09-19 selector 실험에서 gold 조건
-   ours +6.7%p, mt2net +17.3%p). 청크 arm(chunk/trag_hetero/rowcol)도 **상승**할 것으로
+3. 필터의 효과 방향: 셀 arm(ours)은 상승(2026-09-19 selector 실험에서 gold 조건
+   ours +6.7%p). 청크 arm(chunk/trag_hetero/rowcol)도 **상승**할 것으로
    예측한다 — 이들의 주된 약점이 노이즈였기 때문이며, 상승폭은 셀 arm보다 클 수도 있다.
    tablerag-leaf/path는 후보 자체가 정답을 못 담는 경우가 70%라 거의 안 변할 것으로
    예측한다(2026-09-19 실험에서 +2.0%p / +0.7%p, 둘 다 유의하지 않았음).

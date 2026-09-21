@@ -1,6 +1,10 @@
 # T2 논문·공식 코드 구현 검증 — 2026-09-11
 
-현재 비교군은 **동일 검색기·reader 아래 표현 방식을 비교하는 HiTab 적응 실험**으로는 사용할 수 있다. 그러나 Huawei TableRAG, Google TableRAG, MT2Net의 **전체 시스템을 재현한 결과로 제시하면 안 된다**. 공식 코드 대조에서 RowCol 열 헤더 누락을 추가 발견해 수정했다. 기존 EM은 수정된 문맥으로 다시 생성해야 하며, 이번 작업에서 GPU 답변 EM을 새로 측정하지 않았다.
+> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** MT2Net/MultiHiertt 공식
+> 코드 대조 행·서술을 지웠다(검증은 유효했던 기록이며 `archive/mt2net-2026-09-21/`에
+> 원문이 있다). Huawei·Google TableRAG·MixRAG 대조는 MT2Net과 무관하므로 그대로 둔다.
+
+현재 비교군은 **동일 검색기·reader 아래 표현 방식을 비교하는 HiTab 적응 실험**으로는 사용할 수 있다. 그러나 Huawei TableRAG, Google TableRAG의 **전체 시스템을 재현한 결과로 제시하면 안 된다**. 공식 코드 대조에서 RowCol 열 헤더 누락을 추가 발견해 수정했다. 기존 EM은 수정된 문맥으로 다시 생성해야 하며, 이번 작업에서 GPU 답변 EM을 새로 측정하지 않았다.
 
 ## 원본과 구현의 차이
 
@@ -9,14 +13,11 @@
 | Huawei TableRAG (2025) | 질의 분해, 텍스트 검색·재정렬, SQL 실행, 중간 답변의 반복 | 현재 청킹+BGE/BM25+Qwen 실험에는 핵심 추론 단계가 없다. ‘Huawei에서 착안한 문자 청킹’으로 제한해 해석해야 한다. |
 | Google TableRAG (2024) | schema/cell 별도 검색, 질의 확장, 전체 표에 접근하는 PyReAct | T2의 혼합 hint 인덱스와 단일 답변 생성은 전체 재현이 아니다. 기존 Google arm은 본 비교에서 제외 유지. |
 | Google 논문의 RowCol | 선택한 행·열의 교집합 DataFrame을 열 이름과 함께 Markdown으로 제공 | 교집합 수정 뒤에도 열 이름이 빠져 있었다. 선택된 열의 leaf 헤더를 보존하도록 수정. HiTab 적응이라는 표기 유지. |
-| MT2Net / MultiHiertt (2022) | 질문–fact 학습 분류 검색기, top-n 선택, program/span 추론 | T2의 수동 셀 문장 템플릿은 착안한 표현 비교군이다. 공식 table_description 및 학습 검색기·reasoner 재현이 아니다. |
 | MixRAG | H-RCL, 검색 결합, LLM 재정렬, RECAP | 문헌상의 후보이며 T2에 전체 구현되어 있지 않다. 구현된 비교군으로 집계하지 않는다. |
 
 근거 논문: Yu·Jian·Chen (2025), [TableRAG: A Retrieval Augmented Generation Framework for Heterogeneous Document Reasoning, arXiv:2506.10380v2](https://arxiv.org/html/2506.10380v2); Chen 외 (2024), [TableRAG: Million-Token Table Understanding with Language Models, arXiv:2410.04739](https://arxiv.org/html/2410.04739); [MultiHiertt: Numerical Reasoning over Multi Hierarchical Tabular and Textual Data, arXiv:2206.01347v1](https://arxiv.org/html/2206.01347v1); [Mixture-of-RAG: Integrating Text and Tables with Large Language Models, arXiv:2504.09554v3](https://arxiv.org/html/2504.09554v3).
 
 Google 공식 구현은 schema 검색 문서에 **열 이름**을 넣고 schema 설명은 검색 결과 metadata로 전달한다. T2의 schema 설명 자체를 검색하는 방식과 다르다. 숫자 dtype 추론과 cell corpus 구성도 일치하지 않는다. 원본 RowCol의 top-K·인코딩 예산 및 PyReAct 조건과 T2의 corpus 검색·셀 예산·Qwen 조건 역시 다르다. [고정된 공식 retriever 소스](https://github.com/google-research/google-research/blob/08a8d6736475776f42ffac23b2c13111a28e5795/table_rag/agent/retriever.py), [공식 reader 소스](https://github.com/google-research/google-research/blob/08a8d6736475776f42ffac23b2c13111a28e5795/table_rag/agent/agent.py).
-
-MT2Net은 논문에 BERT-base 검색기를 기술하지만 확인한 공개 inference 설정은 roberta-base, top-n 10이다. 논문 설정과 공개 설정을 구분해서 기록해야 한다. [공식 설정](https://github.com/psunlpgroup/MultiHiertt/blob/45bd9ccdf3142ea059bd5e69c0afb83437fa539c/inference_configs/retriever_inference.yaml), [학습 검색기](https://github.com/psunlpgroup/MultiHiertt/blob/45bd9ccdf3142ea059bd5e69c0afb83437fa539c/lightning_modules/models/retriever_model.py), [fact 처리](https://github.com/psunlpgroup/MultiHiertt/blob/45bd9ccdf3142ea059bd5e69c0afb83437fa539c/utils/retriever_utils.py).
 
 ## 추가 발견하고 수정한 결함
 
@@ -54,7 +55,6 @@ Reranker의 기본 초기화는 모형 로딩을 대체한 검사에서 `cuda:4`
 |---|---|
 | yxh-y/TableRAG | `f8d798fc60fb44736d7285ca3ca1dbcb7b3e984d` |
 | google-research/google-research | `08a8d6736475776f42ffac23b2c13111a28e5795` |
-| psunlpgroup/MultiHiertt | `45bd9ccdf3142ea059bd5e69c0afb83437fa539c` |
 | ChiZhang-bit/Mixture-of-RAG | `f498eb62a68b944bbfc6f107a51466a35add0e97` |
 
 수정은 `work/t2-audit`의 `fix/evaluation-integrity`에서 수행했다. 기준 T2 commit은 `6d88d4db00018fa08bc521676045b38198ae960e`이다. 원래 `C:\Users\ugh\T2`의 작업 변경은 보존했고 commit·push는 하지 않았다.

@@ -13,8 +13,8 @@
 층은 데이터셋 필드가 정한다: `program` 이 비면 조회, 있으면 산술. `m` 은
 `table_evidence` 의 셀 수. 다중 조회 = `lookup_m2+`, 다중 산술 = `arith_m2+`.
 
-범위 둘 다 싣는다. `doc` 이 MultiHiertt 의 과제 정의이자 MT2Net 의 범위(문서 내
-재정렬)이고, `corpus` 는 문서 전부를 한 색인에 넣은 스트레스 조건이다.
+범위 둘 다 싣는다. `doc` 이 MultiHiertt 의 과제 정의(문서 내 재정렬)이고, `corpus` 는
+문서 전부를 한 색인에 넣은 스트레스 조건이다.
 
 집합 채점 (`rag_agent/eval/strict_recall.py`, doc 범위, hybrid 질문도 표 근거로 포함):
 `--metric-mode strict_fixed_budget` 은 budget_select 가 리더에게 주는 --budget 셀 문맥을 채점하는
@@ -222,51 +222,6 @@ def build_tables(docs, header_rule: str = "v1", label_rule: str = "none", rules=
 _DESC = __import__("re").compile(r"^Table (\d+) shows (.*) is (.*?)\s*\.?\s*$", __import__("re").S)
 
 
-def mt2net_units(tables, docs, form: str = "desc"):
-    """MT2Net 의 색인 단위 — **데이터셋이 실어 준 그 문장 그대로**.
-
-    `psunlpgroup/MultiHiertt` 의 `utils/retriever_utils.py` 는 `table_description`
-    의 문자열을 그대로 후보로 쓴다(생성하지 않는다). 그래서 이 arm 은 재현이 아니라
-    **원문 그대로**다 — HiTab 쪽 `--template mt2net` 이 논문 예시 한 줄에서 역설계한
-    추정인 것과 다르다. 바뀌는 것은 검색기뿐이고, 그건 모든 arm 이 공유한다.
-
-    ``form="s3c"`` 는 같은 문장에서 헤더 구절과 값만 꺼내 본 방법의 제목 없는
-    형태(``"{경로}: {값}"``)로 다시 쓴다. 헤더 **내용**은 MT2Net 과 같고(데이터셋의
-    구조 주석에서 나온 것) **형태**만 본 방법 것이다. 그래서
-      cell(자가복원 헤더) 대 이것  = 헤더 출처의 몫
-      이것 대 mt2net_desc          = 문장 형태의 몫
-    으로 MultiHiertt 에서 MT2Net 이 이긴 차이를 가른다. train 22,498문장 표본에서
-    ``Table N shows … is … .`` 형태가 100% 맞았다.
-    """
-    texts, covers, unit_tids = [], [], []
-    for uid in sorted(docs):
-        desc = json.loads(docs[uid][1]) if isinstance(docs[uid][1], str) else docs[uid][1]
-        for key in sorted(desc):
-            parts = key.split("-")
-            if len(parts) != 3:
-                continue
-            t_idx, r, c = (int(x) for x in parts)
-            tid = f"{uid}::{t_idx}"
-            tab = tables.get(tid)
-            if tab is None:
-                continue
-            t = tab.table
-            i, j = r - t.nhr, c - t.nhc
-            m = _DESC.match(desc[key]) if form == "s3c" else None
-            text = f"{m.group(2)}: {m.group(3)}" if m else desc[key]
-            if form == "label" and tab.title:
-                # 본 방법이 제목을 앉히는 자리와 같은 틀. 헤더 렌더링만 다르다.
-                text = f"In the table '{tab.title}', {desc[key]}"
-            texts.append(text)
-            # 헤더 영역의 문장은 데이터 셀을 배달하지 않는다 — TableRAG 의 스키마
-            # 문서와 같은 취급이고, 예산을 쓰지 않으므로 이 arm 에 불리하지 않다.
-            cells = ([(tid, i, j)] if 0 <= i < t.n_rows and 0 <= j < t.n_cols
-                     and str(t.data[i][j]).strip() else [])
-            covers.append(frozenset(cells))
-            unit_tids.append(tid)
-    return texts, covers, [], unit_tids, {}
-
-
 def resolve_gold(queries, tables, hdr, live):
     """질의마다 gold 셀 집합과 제외 사유. 제외는 이름을 붙여 세고 숨기지 않는다."""
     for q in queries:
@@ -328,8 +283,7 @@ def main() -> int:
                     help="MultiHiertt test 는 gold 를 공개하지 않는다.")
     ap.add_argument("--unit", default="cell",
                     choices=["cell", "row", "chunk", "trag_hetero", "tablerag",
-                             "rowcol", "randrow", "mt2net_desc", "mt2net_header_s3c",
-                             "mt2net_desc_label"])
+                             "rowcol", "randrow"])
     ap.add_argument("--template", default="s3c")
     ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"])
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
@@ -347,13 +301,6 @@ def main() -> int:
                     help="refuse hidden encoder truncation unless explicitly allowed")
     ap.add_argument("--alpha", type=float, default=0.7,
                     help="HiTab arm 에 고정된 값을 그대로 쓴다 — 재선택하지 않는다")
-    ap.add_argument("--rerank-model", default="",
-                    help="학습된 sentence_transformers CrossEncoder 경로. 주어지면 "
-                         "'doc' 범위(질의 자신의 문서 안 후보)의 순위를 하이브리드 "
-                         "점수 대신 이 분류기 점수로만 매긴다 — MT2Net(Zhao 2022)의 "
-                         "실제 채점 메커니즘. --unit mt2net_desc 필수(코퍼스 전체 "
-                         "스캔은 계산상 불가능, PREREG-2026-09-20-"
-                         "mt2net-reranker-multihiertt.md).")
     ap.add_argument("--budget", type=int, default=20)
     ap.add_argument("--k-ladder", default="",
                     help="예: 1,5,10,20 — 같은 순위 목록을 셀 예산별로 재채점한다 "
@@ -378,8 +325,6 @@ def main() -> int:
     strict, no_k = a.metric_mode != "accuracy", a.metric_mode == "strict_no_k"
     if a.budget <= 0 or not 0 <= a.alpha <= 1:
         ap.error("invalid budget or alpha")
-    if a.rerank_model and (a.unit != "mt2net_desc" or strict):
-        ap.error("--rerank-model requires --unit mt2net_desc and --metric-mode accuracy")
     if not (a.tag or strict):
         ap.error("--tag is required")
     ladder = sorted(int(x) for x in a.k_ladder.split(",") if x.strip())
@@ -416,15 +361,10 @@ def main() -> int:
 
     t0 = time.time()
     tables, hdr = build_tables(docs, a.header_rule, a.label_rule)
-    if a.unit in ("mt2net_desc", "mt2net_header_s3c", "mt2net_desc_label"):
-        texts, covers, is_row, unit_tids, grid = mt2net_units(
-            tables, docs, form={"mt2net_desc": "desc", "mt2net_header_s3c": "s3c",
-                                "mt2net_desc_label": "label"}[a.unit])
-    else:
-        texts, covers, is_row, unit_tids, grid = build_corpus(
-            "", sorted(tables), a.template, "row" if a.unit == "randrow" else a.unit,
-            {}, a.chunk_chars, a.tablerag_colmode, a.row_text, a.chunk_overlap, None,
-            load=lambda tid, _d: tables.get(tid), trag_dtype=a.tablerag_dtype)
+    texts, covers, is_row, unit_tids, grid = build_corpus(
+        "", sorted(tables), a.template, "row" if a.unit == "randrow" else a.unit,
+        {}, a.chunk_chars, a.tablerag_colmode, a.row_text, a.chunk_overlap, None,
+        load=lambda tid, _d: tables.get(tid), trag_dtype=a.tablerag_dtype)
     # gold 해석은 arm 과 무관해야 한다. 이 arm 이 배달할 수 있는 셀(covers)로
     # 가르면, 숫자 열을 min/max 로 접는 TableRAG 처럼 셀을 못 담는 arm 은 그 질의가
     # '오답'이 아니라 '제외'가 되어 분모가 줄고 정확도가 부푼다 (2026-09-13 실측:
@@ -443,13 +383,6 @@ def main() -> int:
     t0 = time.time()
     bm = SparseBM25(_tokenize(t) for t in texts)
     print(f"[bm25] {len(bm.vocab)} terms in {time.time() - t0:.0f}s", flush=True)
-
-    reranker = None
-    if a.rerank_model:
-        import torch
-        from sentence_transformers.cross_encoder import CrossEncoder
-        reranker = CrossEncoder(a.rerank_model, device="cuda" if torch.cuda.is_available() else "cpu")
-        print(f"[rerank] loaded {a.rerank_model}", flush=True)
 
     enc = default_encoder(model_name=a.embed_model)
     input_audit = {"documents": enc.audit_inputs(texts, overflow=a.embed_overflow),
@@ -537,11 +470,6 @@ def main() -> int:
                 k = min(TOP, len(sc) - 1)       # 작은 코퍼스(--max-docs)에서 kth 초과 방지
                 top = np.argpartition(-sc, k)[:k + 1]
             order = top[np.argsort(-sc[top], kind="stable")]
-            if reranker is not None and scope == "doc":
-                # MT2Net scores candidates with exactly one trained pairwise
-                # classifier, not mixed with the hybrid embedding score.
-                s_re = np.asarray(reranker.predict([(q["question"], texts[i]) for i in sel]))
-                order = sel[np.argsort(-s_re, kind="stable")]
             if a.unit == "randrow" and scope in ("doc", "table"):
                 order = np.random.default_rng(int(digest(q["uid"])[:8], 16)).permutation(sel)
             def select(budget, dump):
@@ -692,9 +620,7 @@ def main() -> int:
         "row_text": a.row_text, "tablerag_colmode": a.tablerag_colmode,
         "chunk_chars": a.chunk_chars, "chunk_overlap": a.chunk_overlap,
         "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
-        "hierarchy_source": ("dataset table_description (원문 그대로)"
-                             if a.unit.startswith("mt2net")
-                             else "self-reconstructed"),
+        "hierarchy_source": "self-reconstructed",
         "provenance": provenance(ROOT), "arguments": vars(a),
         "encoder": enc.name, "query_prefix": enc.query_prefix, "alpha": a.alpha,
         "embedding_input_audit": input_audit,

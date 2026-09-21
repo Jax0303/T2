@@ -33,7 +33,7 @@ from rag_agent.retrieve.encoders import default_encoder               # noqa: E4
 from rag_agent.retrieve.hybrid_index import _minmax, _tokenize        # noqa: E402
 from rag_agent.retrieve.sparse_bm25 import SparseBM25                 # noqa: E402
 from rag_agent.serialization.caption import caption_sentence, with_page_title  # noqa: E402
-from rag_agent.serialization.templates import STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2, MT2NET  # noqa: E402
+from rag_agent.serialization.templates import STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2  # noqa: E402
 from scripts.retrieval_accuracy import PAGE_TITLES                    # noqa: E402
 from bottleneck_diagnosis import classify_top1_error, load_primary_population, split_corpus_table_ids  # noqa: E402
 
@@ -41,8 +41,7 @@ OUT_DIR = ROOT / "results/sentence_disambiguation_20260916"
 BASELINE_DIR = ROOT / "results/bottleneck_root_cause"
 EMBED_CACHE = ROOT / ".cache/retrieval_accuracy"
 ALPHA = 0.7
-TEMPLATE_BY_NAME = {"structural_leaf": STRUCTURAL_LEAF, "structural_leaf_x2": STRUCTURAL_LEAF_X2,
-                    "mt2net": MT2NET}
+TEMPLATE_BY_NAME = {"structural_leaf": STRUCTURAL_LEAF, "structural_leaf_x2": STRUCTURAL_LEAF_X2}
 _PAGE_TITLES = json.loads(PAGE_TITLES.read_text()) if PAGE_TITLES.exists() else {}
 
 

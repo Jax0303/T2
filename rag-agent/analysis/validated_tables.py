@@ -149,7 +149,7 @@ def build(path=DEFAULT_MANIFEST):
     lines = ["# HiTab 검색·답변 비교", "",
              "검증된 새 실행(v2)." if verified else
              "**기존 실행의 감사용 재집계입니다. 수정 코드의 성능 결과가 아닙니다. 기존 문맥의 무결성은 보증하지 않습니다.**",
-             "", "범위: 공통 검색기·리더 아래 색인 표현 비교. Huawei/Google TableRAG와 MT2Net 전체 시스템 재현 점수로 인용할 수 없습니다.",
+             "", "범위: 공통 검색기·리더 아래 색인 표현 비교. Huawei/Google TableRAG 전체 시스템 재현 점수로 인용할 수 없습니다.",
              "", f"전체 {spec['expected_counts']['queries']}건, 채점 {spec['expected_counts']['scored']}건, "
              f"제외 {spec['expected_counts']['excluded']}건. 주지표는 단일 셀 조회 {len(primary)}건입니다.", ""]
     ref_r = loaded[spec["reference"]][0]

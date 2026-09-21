@@ -5,12 +5,6 @@ Replaces the ``short``/``medium``/``long`` preset axis. Sentence length is no
 longer an experimental variable; what remains is the one contrast that carries a
 claim:
 
-* :data:`MT2NET` — a historical, MT2Net-inspired serialization control. Zhao et al. (2022), MultiHiertt /
-  MT2Net, ACL, arXiv:2206.01347 §4 renders each cell as a sentence carrying its
-  hierarchical row and column headers, and retrieves the top-n such sentences.
-  This template exists so "what the 2022 baseline indexes" is a thing this repo
-  can actually run, rather than a thing it paraphrases.
-
 * :data:`STRUCTURAL` — this work's index unit. Byte-identical to what the old
   ``length="long"`` preset produced, so every result already on disk that was
   produced under ``"long"`` stays reproducible from this code — with ONE
@@ -64,59 +58,6 @@ claim:
   91->98, wrong_column 126->125 (results/sentence_disambiguation_20260916/
   SENTENCE_DISAMBIGUATION_structural_leaf_x2.md, 2026-09-17). Repetition count
   is not a lever worth pushing further on this template.
-
-PROVISIONAL — CONFIRMED NOT TO MATCH (checked against the paper 2026-09-08).
-The knobs below were reverse-engineered from the paper's rendered example, and
-rendering that example's own cell with them does not reproduce it:
-
-    ours  For Product of Innovation Systems of Segment, Sales, 2018, Year Ended December 31 is 2,894
-    paper For Innovation Systems of Segment, sales of product in 2018, Year Ended December 31 is 2,894
-
-The paper puts the ROW's leaf inside the COLUMN clause ("sales of product in
-2018") and joins the year with " in "; these knobs concatenate the two axes with
-fixed separators. The rendering is semantic, not a separator join.
-
-Worse, the paper shows a SECOND rendered fact in Figure 1's "Retrieved top-n
-Facts" -- "The funded Aerospace Systems in 2017 was 9560" -- whose shape ("The
-... was X") disagrees with the first ("For ... is X"). Two examples, two shapes,
-no stated rule.
-
-What the paper DOES state (Section 4, verbatim) is the principle, not the form:
-
-    "we turn each cell into a sentence, along with its hierarchical row and
-     column headers"
-
-This template shares the cell-plus-header idea, but is not a reproduction of
-the official table_description strings, learned retriever, or reasoning modules.
-The official 45bd9cc release reads precomputed table_description strings and uses
-a RoBERTa-base pair classifier (inference_configs/retriever_inference.yaml). That
-distinction is affordable because this repo already measured that the sentence's
-FORM does not carry the gain -- S2 .517 / S2r .527 / MT2Net .516 are
-indistinguishable (CLAUDE.md section 5) -- what carries it is the table's own
-label, which MT2Net's unit does not have.
-
-The paper's rendered example, for the record:
-
-    "For Innovation Systems of Segment, sales of product in 2018,
-     Year Ended December 31 is 2,894"
-
-One example does not determine the rule. The knobs below are the readings that
-match that string most literally; each is a judgement call awaiting confirmation,
-and until they are confirmed the ``MT2NET`` label overstates what is verified.
-Do not cite a number produced under this template as "MT2Net reproduction"
-without saying which readings were used.
-
-  MT2NET_ROW_SEP / MT2NET_COL_SEP
-      The example joins the row path with " of " and the column path with ", ".
-      Whether those are the general separators, or artefacts of these particular
-      headers, is not stated.
-  MT2NET_LEAF_FIRST
-      "Innovation Systems of Segment" reads leaf-then-parent. This repo's own
-      paths run root-to-leaf. Whether MT2Net emits leaf-first on both axes, or
-      whether "Segment" is the stub column's *name* rather than a parent header
-      level, is not stated.
-  MT2NET_TRAILING_PERIOD
-      The quoted example carries no terminal period.
 """
 from __future__ import annotations
 
@@ -124,25 +65,11 @@ from typing import Sequence
 
 from .base import fmt_value, join_path
 
-MT2NET = "mt2net"
 STRUCTURAL = "structural"
 STRUCTURAL_COMPACT = "structural_compact"
 STRUCTURAL_LEAF = "structural_leaf"
 STRUCTURAL_LEAF_X2 = "structural_leaf_x2"
-TEMPLATES = (MT2NET, STRUCTURAL, STRUCTURAL_COMPACT, STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2)
-
-# --- provisional readings of the single published MT2Net example ---
-MT2NET_ROW_SEP = " of "
-MT2NET_COL_SEP = ", "
-MT2NET_LEAF_FIRST = True
-MT2NET_TRAILING_PERIOD = False
-
-
-def _path(path: Sequence[str], sep: str, leaf_first: bool) -> str:
-    segs = list(path)
-    if leaf_first:
-        segs = segs[::-1]
-    return join_path(segs, sep=sep)
+TEMPLATES = (STRUCTURAL, STRUCTURAL_COMPACT, STRUCTURAL_LEAF, STRUCTURAL_LEAF_X2)
 
 
 def render(template: str, title, row_path: Sequence[str], col_path: Sequence[str],
@@ -179,18 +106,6 @@ def render(template: str, title, row_path: Sequence[str], col_path: Sequence[str
         if not has_val:
             return path
         return f"{path}: {val_s}" if path else val_s
-
-    if template == MT2NET:
-        row_s = _path(row_path, MT2NET_ROW_SEP, MT2NET_LEAF_FIRST)
-        col_s = _path(col_path, MT2NET_COL_SEP, MT2NET_LEAF_FIRST)
-        pred = f" is {val_s}" if has_val else ""
-        end = "." if MT2NET_TRAILING_PERIOD else ""
-        if row_s and col_s:
-            return f"For {row_s}, {col_s}{pred}{end}"
-        label = col_s or row_s
-        if label:
-            return f"{label}{pred}{end}"
-        return f"The value{pred}{end}"
 
     # STRUCTURAL — byte-identical to the retired length="long" preset
     row_s = join_path(row_path)

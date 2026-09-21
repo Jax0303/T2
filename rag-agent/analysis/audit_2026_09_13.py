@@ -19,7 +19,7 @@ from scipy.stats import binomtest
 
 ROOT = Path(__file__).resolve().parent.parent
 V2 = ROOT / "results/evaluation_v2"
-ARMS = ["s3c", "mt2net", "chunk1000", "huawei_char", "rowcol"]
+ARMS = ["s3c", "chunk1000", "huawei_char", "rowcol"]
 
 
 def rows(path):
@@ -66,7 +66,6 @@ def acc(path):
 def scope_ladder():
     cand = {
         "표 1개 (자기 범위)": {"s3c": "results/tablerag_fair/g1_s3c_records.jsonl",
-                              "mt2net": "results/scope_fair/g_mt2net_records.jsonl",
                               "rowcol": "results/scope_fair/g_rowcol_values_records.jsonl",
                               "chunk1000": "results/scope_fair/g_chunk1000_records.jsonl",
                               "huawei_char": "results/scope_fair/g_trag_hetero_records.jsonl",
@@ -75,11 +74,10 @@ def scope_ladder():
         "538표 (이 분할)": {a: f"results/evaluation_v2/{a}_v2_records.jsonl" for a in ARMS}
         | {"tablerag_leaf": "results/audit_fix_20260910/t_tablerag_leaf_fix_records.jsonl",
            "tablerag_allobj": "results/scope_fair/trag_allobj_leaf_split_records.jsonl"},
-        "3,597표 (저장소 전체)": {"s3c": "results/retrieval_accuracy/full_s3c_hybrid_records.jsonl",
-                                 "mt2net": "results/retrieval_accuracy/full_mt2net_hybrid_records.jsonl"},
+        "3,597표 (저장소 전체)": {"s3c": "results/retrieval_accuracy/full_s3c_hybrid_records.jsonl"},
     }
     print("## 표 2 — 검색 범위 사다리 (같은 계측기, 같은 예산 20셀)\n")
-    names = ["s3c", "mt2net", "chunk1000", "huawei_char", "rowcol",
+    names = ["s3c", "chunk1000", "huawei_char", "rowcol",
              "tablerag_leaf", "tablerag_allobj"]
     print("| 범위 | " + " | ".join(names) + " |")
     print("|---" * (len(names) + 1) + "|")
@@ -121,7 +119,7 @@ def significance():
 
 
 MH = ROOT / "results/mh_arms"
-MH_ARMS = [("cell", "본 방법 s3c"), ("mt2net", "MT2Net(원문 문장)"),
+MH_ARMS = [("cell", "본 방법 s3c"),
            ("chunk", "generic chunk"), ("huawei", "Huawei TableRAG"),
            ("rowcol", "RowCol"), ("tablerag", "TableRAG 셀/스키마")]
 LAYERS = ["lookup_m1", "lookup_m2+", "arith_m1", "arith_m2+", "ALL"]

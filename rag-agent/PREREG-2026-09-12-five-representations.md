@@ -1,10 +1,14 @@
 # 다섯 표현 비교 보완 — 2026-09-12
 
-목적: 기존 슬라이드의 고정 청킹과 MT2Net 착안 표현을 현재 v2 근거 계약으로 보완해 검색 정확도−답변 EM의 방법별 차이를 동일 기준에서 설명한다. 기존 test 결과를 본 상태의 재측정이며 새로운 독립 확증 실험이 아니다.
+> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** 이 사전등록은 실행 당시(2026-09-12)
+> 원문 그대로 두되, MT2Net arm에 대한 언급을 지웠다 — 그 arm의 원 수치는 `archive/mt2net-2026-09-21/`에
+> 있고, 실제 비교 결과(`results/five_representations_20260912/`)는 이 결정에 맞춰 4-arm으로 재생성했다.
 
-추가 arm: (1) unit=chunk, chunk_chars=1000, template=s3c인 자체 행 보존·헤더 반복 Markdown 청킹, (2) unit=cell, template=mt2net인 MT2Net 착안 계층 셀 문장. 전체 원본 시스템 재현으로 명명하지 않는다. 코드가 제공하는 제목·행/열 경로를 감사해서 보고한다.
+목적: 기존 슬라이드의 고정 청킹 표현을 현재 v2 근거 계약으로 보완해 검색 정확도−답변 EM의 방법별 차이를 동일 기준에서 설명한다. 기존 test 결과를 본 상태의 재측정이며 새로운 독립 확증 실험이 아니다.
 
-고정 조건: HiTab test, corpus=split, BGE-base revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a, alpha=.7, 쿼리 접두어 유지, budget=20의 whole-unit-stop 정책. MT2Net 표현의 임베딩 초과는 오류로 처리한다. 큰 청크는 기존 절단 조건을 명시적으로 재현하는 embed-overflow=truncate로 실행하고 초과 건수를 보고한다.
+추가 arm: unit=chunk, chunk_chars=1000, template=s3c인 자체 행 보존·헤더 반복 Markdown 청킹. 전체 원본 시스템 재현으로 명명하지 않는다. 코드가 제공하는 제목·행/열 경로를 감사해서 보고한다.
+
+고정 조건: HiTab test, corpus=split, BGE-base revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a, alpha=.7, 쿼리 접두어 유지, budget=20의 whole-unit-stop 정책. 큰 청크는 기존 절단 조건을 명시적으로 재현하는 embed-overflow=truncate로 실행하고 초과 건수를 보고한다.
 
 리더: Qwen2.5-7B-Instruct 4bit revision a09a35458c702b33eeacc393d103063234e8bc28, neutral, seed=42, greedy, max_new_tokens=64. 전체 채점 1,581건 생성, 주지표 991건 및 보조 모집단 보고. 기존 결과를 덮어쓰지 않는다.
 

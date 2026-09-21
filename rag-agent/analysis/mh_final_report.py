@@ -26,20 +26,18 @@ LAYERS = ["lookup_m1", "lookup_m2+", "arith_m1", "arith_m2+", "ALL"]
 LNAME = {"lookup_m1": "단일 조회", "lookup_m2+": "다중 조회", "arith_m1": "단일 산술",
          "arith_m2+": "다중 산술", "ALL": "전체"}
 
-# 조건별 arm -> 태그. MT2Net 원문 문장은 표 파서·라벨과 무관한 텍스트라 v1 레그 하나를 기준으로 쓴다.
+# 조건별 arm -> 태그.
 RET = {
     "v1 (헤더 수정 전, 라벨 없음)": [
-        ("본 방법", "mh_cell"), ("MT2Net 원문", "mh_mt2net"),
-        ("MT2Net 헤더+본 방법 형태", "mh_mt2net_header_s3c"), ("chunk", "mh_chunk"),
+        ("본 방법", "mh_cell"), ("chunk", "mh_chunk"),
         ("Huawei TableRAG", "mh_huawei"), ("RowCol", "mh_rowcol"),
         ("TableRAG (유리한 설정)", "mh_tablerag_allobj_path")],
     "v2 (헤더 수정, 라벨 없음)": [
-        ("본 방법", "mh_cell_hv2"), ("MT2Net 원문", "mh_mt2net"),
+        ("본 방법", "mh_cell_hv2"),
         ("chunk", "mh_chunk_hv2"), ("Huawei TableRAG", "mh_huawei_hv2"),
         ("RowCol", "mh_rowcol_hv2"), ("TableRAG (유리한 설정)", "mh_tablerag_allobj_path_hv2")],
     "v2+L1 (헤더 수정 + 표 고유 라벨)": [
-        ("본 방법", "mh_cell_hv2_L1"), ("MT2Net 원문", "mh_mt2net"),
-        ("MT2Net 원문+라벨", "mh_mt2net_desc_label_hv2_L1"), ("chunk", "mh_chunk_hv2_L1"),
+        ("본 방법", "mh_cell_hv2_L1"), ("chunk", "mh_chunk_hv2_L1"),
         ("Huawei TableRAG", "mh_huawei_hv2_L1"), ("RowCol", "mh_rowcol_hv2_L1"),
         ("TableRAG (유리한 설정)", "mh_tablerag_allobj_path_hv2_L1")],
 }
@@ -239,6 +237,9 @@ HEADER = """# 2026-09-13 작업 기록 — 비교군 실사, 검색-EM 간극, M
 
 > 이 문서는 `analysis/mh_final_report.py` 가 레코드에서 표를 다시 세어 만든다. 서술 부분은
 > 실행 전에 적은 것이고, 수치는 전부 아래 표에서 온다.
+>
+> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외**하고 이 문서를 재생성했다.
+> 원 MT2Net 레그 수치는 `archive/mt2net-2026-09-21/`에 있다.
 
 ## 0. 오늘 한 일과 결정 (요약)
 
@@ -262,11 +263,8 @@ HEADER = """# 2026-09-13 작업 기록 — 비교군 실사, 검색-EM 간극, M
 (doc .8495 → .8304, p=.0014; corpus .2654 → .2264, p=7.9e-8). 같은 라벨의 Huawei 도 .696 → .647.
 사전등록 예측 1(corpus 상승)은 틀렸고 예측 3(잡음 문장이면 하락)이 맞았다. 선택 지표(U_doc, 문장 구별력)는
 검색 정확도를 예측하지 못했다. 이 결과로 **공정 비교 기준 조건을 v2(헤더 수정, 라벨 없음)로 두고**, 사용자
-결정에 따라 라벨 레그의 답변 EM 6개·gold, TableRAG·MT2Net 라벨 검색을 **실행하지 않았다**(이탈). 라벨 규칙을
+결정에 따라 라벨 레그의 답변 EM 6개·gold, TableRAG 라벨 검색을 **실행하지 않았다**(이탈). 라벨 규칙을
 L2 로 바꿔 재실행하지 않았다 — 결과를 보고 규칙을 고르는 것이 되기 때문이다.
-
-**MT2Net 위치** (원문 arXiv:2206.01347 확인): RAG 가 아니라 문서 내 지도학습 근거 선택기. 시스템이 아니라
-**라벨 없는 선행 색인 단위**로 비교한다. MT2Net 문장은 데이터셋 구조 주석으로 만든 것이다.
 
 **리더 산술**: "7B 가 산술을 못 한다"는 과한 서술이었다. Qwen2.5-7B-Instruct 는 GSM8K 91.6 / MATH 75.5
 (arXiv:2412.15115), 가중치 4bit 는 거의 무손실(arXiv:2504.04823). 현행 프로토콜이 풀이를 금지한다(§5).
@@ -290,13 +288,10 @@ NEXT = """## 8. 다음 단계 (2026-09-13 사용자와 확정)
 
 **B. 보강 (선택)**
 4. HiTab 답변 EM: 표 1개 범위, TableRAG 수정판.
-5. MT2Net 검색 모듈(학습된 분류기)과 dev 분할 비교 — 공개 체크포인트. 학습 없는 검색이 이길 가능성은 낮다.
-6. RAG 비교군 추가 후보 T-RAG(arXiv:2504.01346, 코드 공개). FT-RAG(arXiv:2605.01495)는 코드 미확인.
+5. RAG 비교군 추가 후보 T-RAG(arXiv:2504.01346, 코드 공개). FT-RAG(arXiv:2605.01495)는 코드 미확인.
 
 **C. 논문 서술**
-7. MT2Net 은 "선행 표현(비RAG)" 블록. 주장은 "학습 없이 코퍼스 전체에서 검색, RAG 비교군 대비 검색 우위,
-   데이터셋 제목이 있으면(HiTab) MT2Net 문장 대비 우위, 없으면(MultiHiertt) 동등".
-8. 문단 캡션 라벨(L1)은 검색을 떨어뜨린 부정적 결과로 싣는다. 라벨 규칙을 바꿔 재실행하지 않는다.
+6. 문단 캡션 라벨(L1)은 검색을 떨어뜨린 부정적 결과로 싣는다. 라벨 규칙을 바꿔 재실행하지 않는다.
 """
 
 

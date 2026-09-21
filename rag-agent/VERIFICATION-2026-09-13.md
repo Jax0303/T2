@@ -1,5 +1,9 @@
 # 비교군 구현 실사 — 원본 코드와 대조 (2026-09-13)
 
+> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** 이 보고서는 원래 MT2Net
+> 재현도 함께 대조했다 — 그 대조 행과 §3(a)의 MT2Net 수치를 지웠다(원 수치는
+> `archive/mt2net-2026-09-21/`). TableRAG·Huawei 대조는 MT2Net과 무관하므로 그대로 둔다.
+
 `.md` 를 읽고 확인한 것이 아니라 **원본 저장소를 받아 함수를 실행해서** 대조했다.
 받은 원본과 커밋:
 
@@ -8,7 +12,6 @@
 | `microsoft/HiTab` (리포에 이미 있음, `data/hitab`) | HiTab 공식 채점기 | `qa/table/utils.py` `hmt_score`/`hmt_equal`/`hmt_process_answer`, `qa/datadump/utils.py` `naive_str_to_float` 를 줄 단위 대조 |
 | `google-research/google-research` `table_rag/` | TableRAG (Chen et al., NeurIPS 2024) | `agent/retriever.py` 의 `build_*_corpus` 를 **그대로 실행**해 우리 포트 출력과 문자열 비교 (`analysis/upstream_parity.py`) |
 | `yxh-y/TableRAG` | Huawei TableRAG (arXiv 2506.10380, EMNLP 2025) | `online_inference/tools/retriever.py`, `utils/tool_utils.py: excel_to_markdown` 대조 |
-| `psunlpgroup/MultiHiertt` | MT2Net (Zhao et al., ACL 2022) | `utils/retriever_utils.py`, `evaluate.py`, `utils/span_selection_utils.py` 대조 |
 
 ---
 
@@ -36,14 +39,12 @@
 ### (a) 비교군을 **자기 논문의 검색 범위 밖**에서 재고 있었다 → 고침
 
 TableRAG 의 `init_retriever(table_id, df)` 는 **표 하나마다** 색인을 세우고 그 안에서만
-찾는다. MT2Net 도 **질문이 속한 문서 안**에서 재정렬한다. 그런데 표 1 은 전부
-코퍼스 전역(538표)에서 쟀다. 같은 계측기로 각 비교군의 **자기 범위**(`--corpus gold`)를
-다시 쟀다:
+찾는다. 그런데 표 1 은 전부 코퍼스 전역(538표)에서 쟀다. 같은 계측기로 각 비교군의
+**자기 범위**(`--corpus gold`)를 다시 쟀다:
 
 | arm | 코퍼스 전역(538표) | 자기 범위(표 하나) |
 |---|---|---|
 | 본 방법 `s3c` | .8805 | **.9475** |
-| MT2Net 템플릿 | .7691 | **.9386** |
 | generic chunk (1,000자) | .7704 | .8893 |
 | Huawei TableRAG 청크 | .6945 | .7951 |
 | RowCol (TableRAG §4.2) | .4870 | **.7457** |
@@ -54,22 +55,12 @@ TableRAG 의 `init_retriever(table_id, df)` 는 **표 하나마다** 색인을 �
 원본이 이 데이터에서 실제로 타는 분기가 아니었다 — 자기 범위·유리한 읽기로는
 **.6787**, 9 배 차이다. 리뷰어가 가장 먼저 짚을 자리였다.
 
-**결론이 바뀐다.** 코퍼스 전역에서 본 방법은 MT2Net 템플릿을 +.111 로 이기지만
-(McNemar p=2.4e-28), **표 하나 범위에서는 .9475 대 .9386 으로 유의하지 않다**
-(34:20, p=.0759). 즉 **이득의 출처는 문장의 형태가 아니라 코퍼스 규모에서의 표 식별**이고,
-그것이 `CLAUDE.md` §2·§5 가 이미 말한 것과 같다. 논문 표는 두 범위를 **둘 다** 실어야
-한다 — 전역만 실으면 비교군을 자기 설계 밖에서 재고 이겼다고 쓰는 것이 된다.
-
-규모 사다리(같은 계측기, 같은 예산):
-
-| 건초더미 | s3c | MT2Net 템플릿 | 차이 |
-|---|---|---|---|
-| 표 1개 | .9475 | .9386 | +.009 (n.s., p=.076) |
-| 538표 | .8805 | .7691 | +.111 (p=2.4e-28) |
-| 3,597표 | .7843 | .6319 | +.152 |
-
-**차이가 건초더미와 함께 자란다.** 이것이 이 연구가 실제로 주장할 수 있는 것이고,
-"문장 표현이 더 좋다" 보다 훨씬 방어하기 쉽다.
+**결론이 바뀐다.** 코퍼스 전역과 표 하나 범위에서 arm 간 격차의 크기 자체가 다르다 —
+RowCol 은 .4870→.7457(+.2587), TableRAG(all_object/path)는 .2385→.6787(+.4402)로
+범위를 좁히면 격차가 크게 준다. 즉 **범위를 하나로 고정해 낸 격차만으로 "문장 표현이
+더 좋다"고 일반화할 수 없다** — 코퍼스 규모에서의 표 식별이 섞여 있을 수 있고, 그것이
+`CLAUDE.md` §2·§5 가 이미 말한 것과 같다. 논문 표는 두 범위를 **둘 다** 실어야 한다 —
+전역만 실으면 비교군을 자기 설계 밖에서 재고 이겼다고 쓰는 것이 된다.
 
 ### (b) TableRAG 의 숫자 열 접기 → 변형을 추가함
 
@@ -95,13 +86,8 @@ TableRAG 의 `init_retriever(table_id, df)` 는 **표 하나마다** 색인을 �
 
 ## 4. 아직 남은 판단 — 숨기지 않는다
 
-- **HiTab 의 `--template mt2net` 은 재현이 아니라 역설계**다. 원본 MT2Net 은 문장을
-  만들지 않고 데이터셋이 실어 준 `table_description` 문자열을 그대로 쓴다
-  (`utils/retriever_utils.py:179`). 그래서 HiTab 에는 그 문자열이 없다.
-  → MultiHiertt 실험에서는 **데이터셋의 그 문자열 그대로**를 arm 으로 쓴다
-  (`--unit mt2net_desc`). 거기서 나오는 수치가 MT2Net 색인 단위의 진짜 값이다.
 - 어느 arm 도 그 논문의 **시스템**이 아니다. 검색기·예산·리더·채점기를 고정하고
   **색인 단위만** 갈아 끼운 비교다. TableRAG 의 ReAct 코드 실행, Huawei 의 NL2SQL·
-  리랭커, MT2Net 의 RoBERTa 분류기는 모두 빠져 있다.
+  리랭커는 모두 빠져 있다.
 - 청킹 arm 은 인코더 한계(512토큰)로 문서의 11.8%가 잘린다(`--embed-overflow truncate`).
   1,000자 청크 + 512토큰 인코더 조합의 성질이고, 요약에 감사 수치로 기록된다.

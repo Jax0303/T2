@@ -20,7 +20,7 @@ def main():
     manifest = args.repo / "analysis/comparison_manifest.five.v2.json"
     spec, base, arms, primary = load_manifest(manifest)
     report = build(manifest)  # also validates the gold diagnostic
-    assert len(arms) == 5 and len(primary) == 991
+    assert len(arms) == 4 and len(primary) == 991
     common = {q for q in primary if all(r[q]["correct"] for r, _, _, _ in arms.values())}
     result = {"manifest_sha256": file_digest(manifest), "primary_n": len(primary),
               "human_review_completed": False, "common_hit_ids": sorted(common),
@@ -78,7 +78,7 @@ def main():
         "five_arm_common_hit": paired_counts(path_r, path_a, common) if common else None,
         "answers_sha256": path_am["records_sha256"],
         "retrieval_sha256": path_rm["records_sha256"]}
-    lines = ["# 다섯 표현의 검색–답변 간극 감사", "",
+    lines = ["# 네 표현의 검색–답변 간극 감사", "",
              "전체 원본 시스템이 아닌 공통 검색기·리더 아래의 HiTab 표현 적응 비교다. test 결과를 본 후 시행한 재측정/사후 진단이다.", "",
              "| 표현 | 검색 | EM | 차이(pp) | hit·오답 | miss·정답 | 평균 셀 | 평균 입력 토큰 |",
              "|---|---:|---:|---:|---:|---:|---:|---:|"]
@@ -86,7 +86,7 @@ def main():
         c, x = d["primary"], d["primary_context"]
         lines.append(f"| {labels[tag]} | {c['retrieval']:.4f} | {c['em']:.4f} | {100*c['gap']:.2f} | {c['hit_wrong']} | {c['miss_correct']} | {x['mean_cells']:.1f} | {x['mean_tokens']:.1f} |")
     lines += ["", "차이 = (hit·오답 − miss·정답)/991. 동일 리더라도 전달 정보, 문맥 크기, 방해 셀, 검색 성공 문항 구성에 따라 간극이 다를 수 있다. 이 표만으로 각각의 인과적 기여량을 알 수는 없다.", "",
-              f"## 다섯 표현 모두 검색 성공한 {len(common)}문항", "",
+              f"## 네 표현 모두 검색 성공한 {len(common)}문항", "",
               "선택된 부분집합의 기술 통계다. 전체 성능이나 모든 난도에서의 우열로 일반화하지 않는다.", "",
               "| 표현 | 정답 | EM |", "|---|---:|---:|"]
     for tag, d in result["arms"].items():
@@ -100,13 +100,12 @@ def main():
     d = result["rowcol_path_posthoc_diagnostic"]
     c = d["primary"]
     lines += ["", "## 별도: 같은 검색 셀의 RowCol 전체 헤더 경로 복원", "",
-              f"주지표 {c['n']}문항: 검색 {c['retrieval']:.4f}, EM {c['em']:.4f}, 차이 {100*c['gap']:.2f}pp. 다섯 원래 표현의 표와 구분한 사후 진단이다."]
+              f"주지표 {c['n']}문항: 검색 {c['retrieval']:.4f}, EM {c['em']:.4f}, 차이 {100*c['gap']:.2f}pp. 네 원래 표현의 표와 구분한 사후 진단이다."]
     c = d["five_arm_common_hit"]
     if c:
-        lines += [f"위 다섯 표현의 공통 hit {c['n']}문항에서 경로 복원 EM은 {c['em']:.4f} ({c['hit_correct']}/{c['n']})이다."]
+        lines += [f"위 네 표현의 공통 hit {c['n']}문항에서 경로 복원 EM은 {c['em']:.4f} ({c['hit_correct']}/{c['n']})이다."]
     lines += ["", "## 비교의 한계", "",
               "- 같은 셀 예산 중단 규칙을 썼지만 큰 단위를 통째로 전달하므로 실제 셀 수·입력 길이는 다르다.",
-              "- S3c는 제목과 전체 계층 경로를 사용한다. MT2Net 착안 문장은 전체 경로를 사용하지만 표 제목을 넣지 않는다. 원본 MT2Net 파이프라인 재현이 아니다.",
               "- RowCol leaf 결과에는 헤더 경로 정보 손실이 있다. 같은 셀에 경로를 복원한 별도 진단(991건 EM .3290→.4289)을 함께 공개해야 한다. 길이 증가도 수반한 사후 개입이며 원본 논문 재현 성능이 아니다.",
               "- 두 문자 청킹은 별개 구현이다. 고정 청킹은 자체 행 보존 Markdown, Huawei 착안 청킹은 native splitter만 재현한다. 전체 TableRAG로 부르지 않는다.",
               "- 검증기는 모든 답변을 같은 기존 점수 함수로 재채점하고 원본 검색 문맥 hash·모델·프롬프트·모집단을 대조했다. 사람이 의미적 정답을 검수한 것은 아니다.",
@@ -129,7 +128,7 @@ def main():
         blind.append({"review_id": rid, **{k:v for k,v in d.items() if k != "mappings"},
                       "human_label": None, "human_reason": None})
         key_rows.append({"review_id": rid, "mappings": d["mappings"]})
-    assert sum(len(d["mappings"]) for d in key_rows) == 5*991
+    assert sum(len(d["mappings"]) for d in key_rows) == 4*991
     result["blinded_review_unique_predictions"] = len(blind)
     args.out.mkdir(parents=True, exist_ok=True)
     artifacts = {"GAP_REPORT.md": "\n".join(lines)+"\n", "VERIFIED_TABLES.md": report,

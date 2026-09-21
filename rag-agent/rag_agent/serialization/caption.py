@@ -11,7 +11,6 @@ preset axis is retired: sentence length is no longer an experimental variable.
 * ``templates.STRUCTURAL`` — this work's index unit. Byte-identical to the old
   ``length="long"``, so results on disk produced under ``"long"`` remain
   reproducible from this code.
-* ``templates.MT2NET`` — provisional reproduction of Zhao et al. (2022) §4.
 
 Granularity is unchanged: ``"row"`` (default), ``"cell"``, ``"table"``.
 """
@@ -20,7 +19,7 @@ from __future__ import annotations
 from typing import List, Sequence
 
 from .base import Chunk, TableView, fmt_value
-from .templates import MT2NET, STRUCTURAL, TEMPLATES, render
+from .templates import STRUCTURAL, TEMPLATES, render
 
 
 SCHEME = "S3"
@@ -30,8 +29,7 @@ def _reject_length(kwargs) -> None:
     if "length" in kwargs:
         raise TypeError(
             "the short/medium/long length axis is retired; pass "
-            "template='structural' (was length='long') or template='mt2net' "
-            "(the provisional MT2Net reproduction). See "
+            "template='structural' (was length='long'). See "
             "rag_agent/serialization/templates.py"
         )
 

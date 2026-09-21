@@ -69,7 +69,7 @@ from rag_agent.retrieve.sparse_bm25 import SparseBM25                 # noqa: E4
 from rag_agent.serialization.caption import (caption_sentence,        # noqa: E402
                                              with_page_title)
 from rag_agent.serialization import tablerag_unit as trag             # noqa: E402
-from rag_agent.serialization.templates import (MT2NET, STRUCTURAL,    # noqa: E402
+from rag_agent.serialization.templates import (STRUCTURAL,            # noqa: E402
                                                STRUCTURAL_COMPACT, STRUCTURAL_LEAF)
 from rag_agent.eval.artifacts import (Selection, digest, evidence_fields, file_digest,
                                      provenance, validate_retrieval, write_pair)
@@ -77,10 +77,9 @@ from rag_agent.eval import strict_recall as sr                        # noqa: E4
 
 # "sleaf" is the confirmed method as of 2026-09-17 (leaf-repeat axis, see
 # results/leaf_repeat*/embedding_fusion_diagnosis_20260917/) -- superseded s3c
-# as the deployed dense-side template; kept alongside s3c/s3/mt2net rather
-# than replacing any of them since those stay comparable with older numbers.
-TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "mt2net": MT2NET,
-            "sleaf": STRUCTURAL_LEAF}
+# as the deployed dense-side template; kept alongside s3c/s3 rather than
+# replacing any of them since those stay comparable with older numbers.
+TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "sleaf": STRUCTURAL_LEAF}
 # Two ablations of the index unit itself, not templates: they answer "what does
 # the header path buy, and what does the table's own label buy" by removing one
 # at a time. Byte-identical to point3_reconstruction_cost.cell_text(..., "flat")
@@ -724,16 +723,6 @@ def main() -> int:
                     help="dense weight. 0 = BM25 only, 1 = dense only. The "
                          "default was fixed on the dev split in an earlier "
                          "phase and is not re-tuned here.")
-    ap.add_argument("--rerank-model", default="",
-                    help="PATH to a trained sentence_transformers CrossEncoder "
-                         "(query, cell text) pairwise scorer. When given, this "
-                         "REPLACES the hybrid embedding/BM25 score entirely for "
-                         "ranking (not mixed with --alpha) -- MT2Net (Zhao 2022) "
-                         "scores candidates with exactly one trained classifier, "
-                         "not a hybrid. Requires --corpus gold: scoring every "
-                         "candidate with a cross-encoder is computationally "
-                         "infeasible corpus-wide (CLAUDE.md §2). "
-                         "PREREG-2026-09-20-mt2net-reranker-hitab.md.")
     ap.add_argument("--budget", type=int, default=20,
                     help="stop after this many distinct cells; the last unit stays whole")
     ap.add_argument("--no-query-prefix", action="store_true",
@@ -773,10 +762,6 @@ def main() -> int:
     if no_k and (a.corpus != "gold" or a.unit == "rowcol"):
         ap.error("strict_no_k thresholds units inside the question's own table: "
                  "--corpus gold and a unit other than rowcol")
-    if a.rerank_model and (a.corpus != "gold" or strict):
-        ap.error("--rerank-model requires --corpus gold and --metric-mode accuracy "
-                 "(scoring every candidate corpus-wide with a cross-encoder is "
-                 "computationally infeasible; strict_* is out of scope for this arm)")
     if a.threshold_from and not no_k:
         ap.error("--threshold-from is only for strict_no_k")
     if no_k and a.split == "test" and not a.threshold_from:
@@ -864,13 +849,6 @@ def main() -> int:
             np.save(f, emb)
             print(f"[dense] encoded {len(texts)} in {time.time() - t0:.0f}s", flush=True)
 
-    reranker = None
-    if a.rerank_model:
-        import torch
-        from sentence_transformers.cross_encoder import CrossEncoder
-        reranker = CrossEncoder(a.rerank_model, device="cuda" if torch.cuda.is_available() else "cpu")
-        print(f"[rerank] loaded {a.rerank_model}", flush=True)
-
     count, tok_info = sr.token_counter(a.context_tokenizer) if strict else (None, None)
     strict_rows, pending = [], []
 
@@ -898,19 +876,14 @@ def main() -> int:
         # candidate set is that, for the dense leg exactly (cosine is per-document);
         # the sparse leg keeps corpus-wide IDF, which alpha=1.0 removes entirely.
         sel = np.flatnonzero(unit_tid_arr == q["table_id"]) if a.corpus == "gold" else None
-        if reranker is not None:
-            # MT2Net scores candidates with exactly one trained pairwise classifier
-            # -- not mixed with the hybrid embedding score.
-            s = np.asarray(reranker.predict([(q["question"], texts[i]) for i in sel]))
-        else:
-            s = bm.get_scores(_tokenize(q["question"]))
-            if emb is not None:
-                d = emb @ enc.encode_query([q["question"]])[0].astype(np.float32)
-                if sel is not None:
-                    s, d = s[sel], d[sel]
-                s = a.alpha * _minmax(d) + (1 - a.alpha) * _minmax(s) if a.alpha < 1 else d
-            elif sel is not None:
-                s = s[sel]
+        s = bm.get_scores(_tokenize(q["question"]))
+        if emb is not None:
+            d = emb @ enc.encode_query([q["question"]])[0].astype(np.float32)
+            if sel is not None:
+                s, d = s[sel], d[sel]
+            s = a.alpha * _minmax(d) + (1 - a.alpha) * _minmax(s) if a.alpha < 1 else d
+        elif sel is not None:
+            s = s[sel]
         if no_k:                  # 선택은 임계값이 정해진 뒤 루프 밖에서 한다
             pending.append((q, sel, s))
             continue

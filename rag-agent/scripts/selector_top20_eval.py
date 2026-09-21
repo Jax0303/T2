@@ -150,10 +150,10 @@ def main() -> int:
                           "538 split tables; gold = mask candidates to the query's own table "
                           "only (retrieval_accuracy.py's --corpus gold / TableRAG's per-table "
                           "setting) -- same masking formula as retrieval_accuracy.py main()")
-    ap.add_argument("--template", choices=["structural_leaf", "mt2net"], default="structural_leaf",
+    ap.add_argument("--template", choices=["structural_leaf"], default="structural_leaf",
                      help="cell-caption template for --arm cell")
     ap.add_argument("--arm", choices=["cell", "tablerag-leaf", "tablerag-path"], default="cell",
-                     help="cell = structural_leaf/mt2net atomic-cell candidates (needs a corpus-wide "
+                     help="cell = structural_leaf atomic-cell candidates (needs a corpus-wide "
                           "embed pass); tablerag-leaf/-path = TableRAG's own per-table units "
                           "(scripts/retrieval_accuracy.py:tablerag_units), embedded on the fly per "
                           "query since gold scope only ever looks at one table. tablerag-* requires "

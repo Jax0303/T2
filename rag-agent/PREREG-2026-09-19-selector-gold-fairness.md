@@ -1,5 +1,9 @@
 # 사전등록: LLM 셀렉터(top-K→1) 를 자기 표 안 검색(gold) 조건에서, 다른 셀 단위 arm에도 붙여 공정성을 검증한다 (2026-09-19)
 
+> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** 이 사전등록은 원래
+> mt2net(B1/B2) arm도 포함했다 — 그 arm에 대한 서술과 예측을 지웠다(원 수치는
+> `archive/mt2net-2026-09-21/`). TableRAG-leaf/path(C/D) 비교는 MT2Net과 무관하므로 그대로 둔다.
+
 ## 왜 다시 재는가
 
 `results/selector_top20_20260916/SELECTOR_TOP20.md`(top-20 후보 중 LLM이 1개 선택 후
@@ -14,7 +18,7 @@
 
     1. 코퍼스 전체 검색으로 잰 셀렉터 수치를 gold(자기 표 안) 조건으로 다시 잰다
        → 0.82가 실측이면 이 조건에서 나와야 한다.
-    2. 셀렉터를 ours 외 다른 "원자적 셀 후보" arm(mt2net, TableRAG-leaf/path)에도
+    2. 셀렉터를 ours 외 다른 "원자적 셀 후보" arm(TableRAG-leaf/path)에도
        똑같이 붙여, 이득이 ours만의 것인지 원자적 셀 단위라면 다 받는 일반 효과인지 가른다.
 
 chunk/trag_hetero/rowcol는 budget=20 조건에서 후보가 **통짜 유닛 1개**로 나온다
@@ -28,8 +32,6 @@ chunk/trag_hetero/rowcol는 budget=20 조건에서 후보가 **통짜 유닛 1�
 - `--corpus gold`: `retrieval_accuracy.py` main()의 마스킹 공식과 동일하게, 쿼리마다
   자기 table_id 셀만 후보 풀로 남긴다(`sel = flatnonzero(table_ids == q.table_id)`,
   그 부분집합 안에서 minmax 재정규화 후 정렬 — retrieval_accuracy.py:879 그대로 재현).
-- `--template mt2net`: `TEMPLATE_BY_NAME`에 MT2NET 추가(`sentence_disambiguation_eval.py`
-  1줄), 기존 `build_leaf_corpus(template_name=...)` 파라미터를 그대로 활용.
 - `--arm tablerag-leaf|tablerag-path`: 코퍼스 전체를 임베딩하지 않고, gold 조건이므로
   쿼리마다 자기 표 하나에 대해서만 `retrieval_accuracy.tablerag_units()`로 후보를 만들고
   `retrieval_accuracy.budget_select()`로 budget=20까지 채운다(§1/§3의 TableRAG 행과 동일
@@ -45,12 +47,10 @@ chunk/trag_hetero/rowcol는 budget=20 조건에서 후보가 **통짜 유닛 1�
 §1/§3 표는 `Qwen2.5-7B-Instruct`를 쓰므로, 표1의 .7567/.7333과 비교하는 것은 리더 모델도
 다르다는 뜻이고 "sanity range check" 이상의 의미는 없다는 것을 미리 못박는다).
 
-## arm (8개, 전부 `--corpus gold`)
+## arm (6개, 전부 `--corpus gold`)
 
     A1  ours(structural_leaf)  method=stuff  — 선택 없음, top-k 그대로 스터핑
     A2  ours(structural_leaf)  method=llm    — 20개 중 1개 선택
-    B1  mt2net                 method=stuff
-    B2  mt2net                 method=llm
     C1  tablerag-leaf          method=stuff
     C2  tablerag-leaf          method=llm
     D1  tablerag-path          method=stuff
@@ -66,18 +66,14 @@ chunk/trag_hetero/rowcol는 budget=20 조건에서 후보가 **통짜 유닛 1�
   않는다(파일이 없다는 사실은 안 바뀐다).**
 - **A2가 A1보다 유의하게 높을 것으로 예측한다** (McNemar p<.05) — split 조건에서 이미
   검증된 패턴(구조가 다른데도 상대적 순서는 유지될 것).
-- **B2(mt2net+셀렉터)도 B1보다 오를 것으로 예측하되, 상승폭은 A2-A1보다 작거나 비슷할
-  것으로 예측한다** — mt2net은 ours와 정확히 같은 원자적 셀 단위·같은 검색기이므로
-  구조적 이점이 같다. 이득이 mt2net에서도 비슷하게 나타나면 "셀렉터가 ours만의 이점"이라는
-  주장은 **기각**해야 한다(원자적 후보 단위라면 다 받는 일반 효과).
 - **C2/D2(TableRAG-leaf/path+셀렉터)는 상승폭이 A2-A1보다 뚜렷이 작거나 없을 것으로
   예측한다** — TableRAG 후보(숫자열 min/max 요약, 범주형 dedup 등)는 §2가 이미 정리한
   것처럼 개별 숫자 셀을 직접 담지 못하는 경우가 많아(계층표 연산의 피연산자 대부분이 숫자
   셀), 후보 풀 자체의 품질 상한이 낮다 — 셀렉터가 완벽해도 못 채우는 천장이 있다.
-- **이 패턴이 그대로 나오면**: "셀렉터가 대체로 원자적 후보 단위 전반에 이득을 주지만
-  (mt2net도 오른다), 후보 자체가 정답을 못 담는 arm(TableRAG)에는 안 먹힌다" —
-  이러면 "ours만의 이점"이 아니라 **"원자적 셀 인덱싱 + 셀렉터"의 결합 이점**이라고
-  적어야 한다. 이게 0.82를 baseline과 나란히 놓을 때 방어 가능한 유일한 문장이다.
+- **이 패턴이 그대로 나오면**: "셀렉터가 원자적 후보 단위(ours)에는 이득을 주지만, 후보
+  자체가 정답을 못 담는 arm(TableRAG)에는 안 먹힌다" — 이러면 "ours만의 이점"이 아니라
+  **"원자적 셀 인덱싱 + 셀렉터"의 결합 이점**이라고 적어야 한다. 이게 0.82를 baseline과
+  나란히 놓을 때 방어 가능한 유일한 문장이다.
 - 어느 예측이든 벗어나면 그대로 적고 표를 그대로 싣는다 — 결과를 보고 문장을 고르지 않는다.
 
 ## 고정
