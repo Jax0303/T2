@@ -1,0 +1,120 @@
+{
+  "records": "results/mh_arms/mh_train_cell_hv1_none_doc_b5_records.jsonl",
+  "scope": "doc",
+  "condition": "retrieved",
+  "context_version": 2,
+  "provenance": {
+    "git_commit": "d33665e32e814f87a474030efd0f7de88a469d55",
+    "git_dirty": false,
+    "source_sha256": "a5f535ed10d46e1c5563a6b1b5fc2b78641601aa2e9ffa8a8bf3c4ae7b73c374",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "retrieval_records_sha256": "37791cc35b1f5770d438d264f9d2bcea45960fbb3ddafc2d4a58d178bb353d84",
+  "retrieval_unit": "cell",
+  "retrieval_template": "s3c",
+  "query_ids_sha256": "eedf2e0a500a5e2bf45679648db4ca02b211b7317580894f02d03ec49e70089a",
+  "reader_details": {
+    "name": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "revision_requested": null,
+    "revision_resolved": "b968826d9c46dd6066d109eabc6255188de91218",
+    "quantization": "4bit",
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 40960,
+    "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0].role == 'system' %}\n        {{- messages[0].content + '\\n\\n' }}\n    {%- endif %}\n    {{- \"# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0].content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" and message.content is string and not(message.content.startswith('<tool_response>') and message.content.endswith('</tool_response>')) %}\n        {%- set ns.multi_step_tool = false %}\n        {%- set ns.last_query_index = index %}\n    {%- endif %}\n{%- endfor %}\n{%- for message in messages %}\n    {%- if message.content is string %}\n        {%- set content = message.content %}\n    {%- else %}\n        {%- set content = '' %}\n    {%- endif %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        {%- if loop.index0 > ns.last_query_index %}\n            {%- if loop.last or (not loop.last and reasoning_content) %}\n                {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content.strip('\\n') + '\\n</think>\\n\\n' + content.lstrip('\\n') }}\n            {%- else %}\n                {{- '<|im_start|>' + message.role + '\\n' + content }}\n            {%- endif %}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if (loop.first and content) or (not loop.first) %}\n                    {{- '\\n' }}\n                {%- endif %}\n                {%- if tool_call.function %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {{- '<tool_call>\\n{\"name\": \"' }}\n                {{- tool_call.name }}\n                {{- '\", \"arguments\": ' }}\n                {%- if tool_call.arguments is string %}\n                    {{- tool_call.arguments }}\n                {%- else %}\n                    {{- tool_call.arguments | tojson }}\n                {%- endif %}\n                {{- '}\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is false %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}",
+    "enable_thinking": false
+  },
+  "prompt_sha256": "279ee8f8739523e2e11da7537f40cb0d2f7eb974c8109aa140b167caf4c7185b",
+  "prompt_text": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "scorer": "multihiertt_em.mh_exact_match (공식 포팅)",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 299,
+    "fail_examples": []
+  },
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt": "neutral",
+  "seed": 42,
+  "max_new_tokens": 64,
+  "batch_size": 1,
+  "stratum_cap": 0,
+  "sample_seed": 20260913,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "same_queries_as": "results/mh_arms/mh_train_cell_hv1_none_doc_answer_doc_retrieved.jsonl",
+  "same_contexts_as": null,
+  "n_missing_from_same_queries": 0,
+  "generation_seconds": 198.8,
+  "resumed_rows": 0,
+  "run_config_sha256": "d196309965cfd2083891ae6a858079f2b3c79f942055a75bbbfe3faf810d19fb",
+  "marker_missing": null,
+  "context_limit": 40960,
+  "n_over_context_limit": 0,
+  "by_layer": {
+    "ALL": {
+      "n": 299,
+      "retrieval_accuracy_here": 0.6254,
+      "answer_em": 0.2408,
+      "answer_given_retrieval_hit": 0.3422,
+      "n_retrieval_hit": 187,
+      "answer_given_retrieval_miss": 0.0714,
+      "n_retrieval_miss": 112,
+      "context_lines_mean": 5.0,
+      "input_tokens_mean": 236.5
+    },
+    "arith_m1": {
+      "n": 71,
+      "retrieval_accuracy_here": 0.831,
+      "answer_em": 0.0845,
+      "answer_given_retrieval_hit": 0.1017,
+      "n_retrieval_hit": 59,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 12,
+      "context_lines_mean": 5.0,
+      "input_tokens_mean": 234.4
+    },
+    "arith_m2+": {
+      "n": 76,
+      "retrieval_accuracy_here": 0.4342,
+      "answer_em": 0.0132,
+      "answer_given_retrieval_hit": 0.0303,
+      "n_retrieval_hit": 33,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 43,
+      "context_lines_mean": 5.0,
+      "input_tokens_mean": 233.9
+    },
+    "lookup_m1": {
+      "n": 76,
+      "retrieval_accuracy_here": 0.7237,
+      "answer_em": 0.4474,
+      "answer_given_retrieval_hit": 0.6182,
+      "n_retrieval_hit": 55,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 21,
+      "context_lines_mean": 5.0,
+      "input_tokens_mean": 238.9
+    },
+    "lookup_m2+": {
+      "n": 76,
+      "retrieval_accuracy_here": 0.5263,
+      "answer_em": 0.4079,
+      "answer_given_retrieval_hit": 0.575,
+      "n_retrieval_hit": 40,
+      "answer_given_retrieval_miss": 0.2222,
+      "n_retrieval_miss": 36,
+      "context_lines_mean": 5.0,
+      "input_tokens_mean": 238.8
+    }
+  },
+  "records_sha256": "b2253127d1dc092b1750429ab7c7c1e298c2af07cce29ec4ab56353f7deecddc"
+}
