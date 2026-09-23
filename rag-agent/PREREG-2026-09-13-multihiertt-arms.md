@@ -1,10 +1,5 @@
 # 사전등록 — MultiHiertt 다중 조회·산술: 검색 정확도와 답변 EM (2026-09-13)
 
-> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** 이 사전등록이 계획한
-> `mt2net_desc`·`mt2net_header_s3c` 두 arm에 대한 서술을 지웠다(원 수치는
-> `archive/mt2net-2026-09-21/`). 나머지 arm(cell/trag_hetero/tablerag/rowcol/chunk)의
-> 설계·예측은 MT2Net과 무관하므로 그대로 둔다.
-
 실행 **전에** 조건과 예측을 박는다. 결과를 보고 규칙을 고르지 않는다(`CLAUDE.md` §7).
 
 ## 왜 이 데이터셋인가

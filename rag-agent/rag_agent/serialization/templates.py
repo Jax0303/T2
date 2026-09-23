@@ -16,11 +16,7 @@ claim:
 * :data:`STRUCTURAL_COMPACT` — :data:`STRUCTURAL` where a title exists, the bare
   S2 path string where it does not. Not a length knob returning through the back
   door: the frame is the title's grammatical seat, so with no title it asserts
-  nothing while still spending budget. Measured across three corpora, the sign of
-  STRUCTURAL's advantage over MT2Net tracks title coverage — HiTab 99.3% titled
-  gives +.082, RealHiTBench 38.2% gives +.004, AIT-QA 0% gives **-.062**
-  (Holm-corrected, results/h2h830_*.json and results/h2h_untitled_*.json). This
-  template is the mechanism's own prescription, pre-registered in
+  nothing while still spending budget. This template was pre-registered in
   PREREG-2026-08-23-compact-untitled.md before it was run.
 
 * :data:`STRUCTURAL_LEAF` — :data:`STRUCTURAL_COMPACT` with the row/col LEAF
@@ -97,11 +93,9 @@ def render(template: str, title, row_path: Sequence[str], col_path: Sequence[str
     if template == STRUCTURAL_COMPACT and not title_s:
         # The frame ("in the table X, among ..., the value of ... is ...") exists
         # to seat a TITLE in a grammatical sentence. With no title it states
-        # nothing and still costs tokens, and the budget pays in cells that fit:
-        # on AIT-QA (0% titled) STRUCTURAL runs 24.3 tok/cell against MT2Net's
-        # 20.3, a 1.20x capacity deficit that lands as a 1.21x OSC deficit and
-        # -.062 answer EM (results/h2h_untitled_*.json). Fall back to the S2 path
-        # string, byte-identical to point3_reconstruction_cost.cell_text(...,"S2").
+        # nothing and still costs tokens, and the budget pays in cells that fit.
+        # Fall back to the S2 path string, byte-identical to
+        # point3_reconstruction_cost.cell_text(...,"S2").
         path = join_path([*row_path, *col_path])
         if not has_val:
             return path

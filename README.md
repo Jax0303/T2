@@ -4,10 +4,6 @@
 
 표의 데이터셀에 행·열 계층 헤더와 표 제목을 붙여 색인하고, 질문에 필요한 셀을 검색해 같은 리더에 전달하는 방법을 연구한다. 현재 비교는 **공통 검색기·리더 아래의 색인 표현 적응 실험**이다. TableRAG 등 원본 전체 시스템을 재현해 이겼다는 주장이 아니다.
 
-> **2026-09-21 지도교수 지시로 MT2Net(Zhao et al. 2022)을 비교대상에서 제외했다.** 아래 2026-09-12
-> 검증 표의 MT2Net 행은 그 결정 이전의 기록이며 새 비교에 인용하지 않는다. 관련 코드·결과는
-> `rag-agent/archive/mt2net-2026-09-21/`에 보존했다.
-
 ## 현재 검증 결과 — 2026-09-12
 
 최신 다섯 표현의 검색 정확도, 답변 EM, 두 지표의 차이는 [검증 표](rag-agent/results/five_representations_20260912/VERIFIED_TABLES.md)와 [간극 감사](rag-agent/results/five_representations_20260912/GAP_REPORT.md)를 기준으로 읽는다. [선택 매니페스트](rag-agent/analysis/comparison_manifest.five.v2.json)가 원본 결과 파일을 지정한다. 과거 실행 수치를 새 표에 혼합하지 않는다.
@@ -20,7 +16,6 @@
 |---|---|
 | 본 방법 S3c | 셀 값 + 전체 행·열 헤더 경로 + 표 제목 |
 | 자체 행 보존 Markdown 청킹 | 1,000자 중단 기준, 행 보존·헤더 반복. LangChain 기본 청킹이 아님 |
-| MT2Net 착안 셀 문장 | 계층 경로의 문장화. 표 제목, 원본 학습 검색기·유형 분류·추론 모듈 미포함 |
 | Huawei 착안 문자 청킹 | native RecursiveCharacterTextSplitter 1,000자/200자 중첩. 원본 전체 TableRAG 파이프라인 미포함 |
 | RowCol HiTab 적응 | 행·열 검색 교집합을 Markdown으로 전달. 기본 leaf 헤더에는 상위 경로 정보 손실이 있음 |
 

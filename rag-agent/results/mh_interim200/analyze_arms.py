@@ -1,9 +1,6 @@
 # SPDX-License-Identifier: MIT
 """interim200 다섯 arm 답변 EM — 본 방법 대 네 비교군 (탐색용, 사전등록 아님). PLAN_ARMS.md.
 
-2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다 — ARMS에서 뺐다(원 수치는
-archive/mt2net-2026-09-21/results/mh_interim200/interim200_arms_qwen3_8b_cot_original_6arm.json).
-
 검사: 여섯 파일 모두 ids_200.json 의 200 질의를 담고, 질의마다 문맥 해시가 기준 파일과 같고, 요약의
 records_sha256 이 파일과 같으며, 생성 설정·모델 revision 이 본 방법과 같아야 한다. 어긋나면 멈춘다.
 

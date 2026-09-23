@@ -4,7 +4,7 @@
 기존 답변 레그의 1,047개 질의 id 에서 층별 고정 개수를 고정 시드로 뽑는다. 읽는 필드는
 query_id, layer, context_sha256 셋뿐이다(정답 여부·예측은 읽지 않는다). 층 이름 순서대로
 정렬된 id 에 random.Random(SEED).sample 을 부르므로 같은 입력이면 항상 같은 목록이 나온다.
-두 방법에 같은 id 목록을 쓰고, 방법마다 기준 문맥 해시 파일을 함께 쓴다.
+같은 id 목록과 기준 문맥 해시 파일을 함께 쓴다.
 
   .venv/bin/python results/mh_interim200/make_sample.py
 """
@@ -17,7 +17,7 @@ HERE = Path(__file__).resolve().parent
 D = HERE.parents[0] / "mh_arms"
 SEED = 20260913
 QUOTA = {"arith_m1": 14, "arith_m2+": 76, "lookup_m1": 40, "lookup_m2+": 70}
-SRC = {"ours": D / "mh_cell_hv2_answer_doc.jsonl", "mt2net": D / "mh_mt2net_answer_doc.jsonl"}
+SRC = {"ours": D / "mh_cell_hv2_answer_doc.jsonl"}
 
 
 def fields(path):
@@ -26,10 +26,8 @@ def fields(path):
 
 
 arms = {k: fields(p) for k, p in SRC.items()}
-if set(arms["ours"]) != set(arms["mt2net"]) or len(arms["ours"]) != 1047:
-    raise SystemExit("두 기준 파일의 질의 id 집합이 1,047개로 같지 않다")
-if any(arms["ours"][i]["layer"] != arms["mt2net"][i]["layer"] for i in arms["ours"]):
-    raise SystemExit("층 라벨이 두 파일에서 다르다")
+if len(arms["ours"]) != 1047:
+    raise SystemExit("기준 파일의 질의 id 가 1,047개가 아니다")
 
 rng = random.Random(SEED)
 by_layer, population = {}, {}

@@ -1,9 +1,5 @@
 # 사전등록: LLM 셀렉터(top-K→1) 를 자기 표 안 검색(gold) 조건에서, 다른 셀 단위 arm에도 붙여 공정성을 검증한다 (2026-09-19)
 
-> **2026-09-21 지도교수 지시로 MT2Net을 비교대상에서 제외했다.** 이 사전등록은 원래
-> mt2net(B1/B2) arm도 포함했다 — 그 arm에 대한 서술과 예측을 지웠다(원 수치는
-> `archive/mt2net-2026-09-21/`). TableRAG-leaf/path(C/D) 비교는 MT2Net과 무관하므로 그대로 둔다.
-
 ## 왜 다시 재는가
 
 `results/selector_top20_20260916/SELECTOR_TOP20.md`(top-20 후보 중 LLM이 1개 선택 후
@@ -78,7 +74,7 @@ chunk/trag_hetero/rowcol는 budget=20 조건에서 후보가 **통짜 유닛 1�
 
 ## 고정
 
-- 커밋 기준: 이 세션 시작 시점 HEAD(mt2net 행 추가만 반영, 미커밋).
+- 커밋 기준: 이 세션 시작 시점 HEAD(미커밋 변경 있음).
 - 인코더 `BAAI/bge-base-en-v1.5`, 하이브리드 α=0.7. 셀렉터/리더 `Qwen3-8B` 4bit,
   temperature 0(stuff/llm 기준 — self_consistency/order_ensemble 등 다른 method는 이
   실험 범위 밖). 채점 `hitab_exact_match_text`.

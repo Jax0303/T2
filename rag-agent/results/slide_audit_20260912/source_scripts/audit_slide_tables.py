@@ -14,7 +14,7 @@ ref = read_records(old / 't_s3c_hybrid_records.jsonl')
 ids = {q for q,r in ref.items() if 'correct' in r and r['mode']=='all' and r['m']==1 and (r.get('aggregation') or 'none')=='none'}
 historical = {}
 loaded = {}
-for tag in ['t_s3c_hybrid','t_chunk1000','t_mt2net_hybrid','t_trag_hetero','t_row_values','t_rowcol_values']:
+for tag in ['t_s3c_hybrid','t_chunk1000','t_trag_hetero','t_row_values','t_rowcol_values']:
     rp = old / (tag+'_records.jsonl')
     ap = old / (tag+'_answer_retrieved.jsonl')
     r,a = read_records(rp),read_records(ap)

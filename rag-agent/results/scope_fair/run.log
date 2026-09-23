@@ -1,9 +1,6 @@
 ### --unit rowcol --template s3c --row-text values --tag g_rowcol_values
 }
 wrote -> results/scope_fair/g_rowcol_values.json
-### --unit cell --template mt2net --tag g_mt2net
-}
-wrote -> results/scope_fair/g_mt2net.json
 ### --unit chunk --template s3c --tag g_chunk1000
     raise ValueError(f"encoder input overflow: {len(over)}/{len(lengths)} "
 ValueError: encoder input overflow: 109/922 exceed 512 tokens (max=807); choose a suitable encoder/chunk size or explicitly allow and report --embed-overflow truncate

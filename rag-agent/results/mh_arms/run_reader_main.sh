@@ -11,8 +11,6 @@ leg () { name=$1; shift; out="$D/${name}_${TAG}.jsonl"; echo "##### ${name} $(da
   echo "exit=$? $(date +%H:%M:%S)"; }
 leg mh_cell_hv2_answer_doc --records $D/mh_cell_hv2_records.jsonl --condition retrieved \
   --same-contexts-as $D/mh_cell_hv2_answer_doc.jsonl
-leg mh_mt2net_answer_doc --records $D/mh_mt2net_records.jsonl --condition retrieved \
-  --same-contexts-as $D/mh_mt2net_answer_doc.jsonl
 leg mh_GOLD_hv2_doc --records $D/mh_cell_hv2_records.jsonl --condition gold --label-rule none \
   --same-contexts-as $D/mh_GOLD_hv2_doc.jsonl
 echo MAIN_DONE
