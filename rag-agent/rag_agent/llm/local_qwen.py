@@ -70,7 +70,7 @@ class LocalQwenLLM(BaseLLM):
                 "dtype": str(self.model.dtype), "context_limit": self.context_limit,
                 "chat_template": self.tokenizer.chat_template, "enable_thinking": False}
 
-    def _prompt(self, system: str, user: str) -> str:
+    def _prompt(self, system: str, user: str, thinking: bool = False) -> str:
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         # Qwen3 templates default to thinking mode: the model emits
         # "<think>...</think>" before the answer, which both eats the
@@ -78,9 +78,10 @@ class LocalQwenLLM(BaseLLM):
         # enable_thinking=False makes the template pre-close the block. Verified
         # BYTE-IDENTICAL on Qwen2.5-7B-Instruct (its template ignores the flag),
         # so every result already on disk stays reproducible from this code.
+        # thinking=True is Qwen3's own recommendation for math (model card, Best Practices).
         return self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True,
-            enable_thinking=False,
+            enable_thinking=thinking,
         )
 
     def n_prompt_tokens(self, system: str, user: str) -> int:
@@ -97,16 +98,31 @@ class LocalQwenLLM(BaseLLM):
         return int(getattr(self.model.config, "max_position_embeddings", 0)) or 0
 
     def complete(self, system: str, user: str, max_tokens: int = 256,
-                 temperature: float = 0.0, top_p: float = 0.95) -> str:
-        prompt = self._prompt(system, user)
+                 temperature: float = 0.0, top_p: float = 0.95, top_k: Optional[int] = None,
+                 min_p: Optional[float] = None, thinking: bool = False) -> str:
+        """thinking=True 이면 ``</think>`` 뒤의 답만 돌려준다(모델 카드의 파싱 그대로, 토큰 151668).
+        생성 토큰 수와 생각 블록이 닫혔는지는 ``last_generation`` 에 남긴다."""
+        prompt = self._prompt(system, user, thinking)
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
         gen_kwargs = dict(max_new_tokens=max_tokens or self.default_max_tokens,
                           pad_token_id=self.tokenizer.eos_token_id)
         if temperature and temperature > 0:
             gen_kwargs.update(do_sample=True, temperature=temperature, top_p=top_p)
+            if top_k is not None:
+                gen_kwargs["top_k"] = top_k
+            if min_p is not None:
+                gen_kwargs["min_p"] = min_p
         else:
             gen_kwargs.update(do_sample=False)
         with self._torch.inference_mode():
             out = self.model.generate(**inputs, **gen_kwargs)
-        gen = out[0, inputs["input_ids"].shape[1]:]
-        return self.tokenizer.decode(gen, skip_special_tokens=True).strip()
+        gen = out[0, inputs["input_ids"].shape[1]:].tolist()
+        cut = 0
+        if thinking:
+            try:
+                cut = len(gen) - gen[::-1].index(151668)          # </think>
+            except ValueError:
+                cut = 0                                          # 생각이 한도 안에 안 닫힘
+        self.last_generation = {"new_tokens": len(gen), "think_tokens": cut,
+                                "think_closed": (not thinking) or cut > 0}
+        return self.tokenizer.decode(gen[cut:], skip_special_tokens=True).strip()
