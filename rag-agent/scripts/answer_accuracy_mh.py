@@ -168,9 +168,11 @@ def main() -> int:
     ap.add_argument("--records", required=True)
     ap.add_argument("--scope", default="doc", choices=["doc", "corpus", "table"])
     ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold"])
-    ap.add_argument("--reader", default="local:Qwen/Qwen2.5-7B-Instruct?quantization=4bit")
-    ap.add_argument("--prompt", default="neutral", choices=list(PROMPTS))
-    ap.add_argument("--max-tokens", type=int, default=64)
+    # 기본값 = 채택 설정 (PREREG-2026-09-13-reader-qwen3.md, 재확인 PREREG-2026-09-23-reader-thinking-pilot.md).
+    # 2026-09-21 실행 15개가 옛 기본값(neutral, 64)으로 돌아 채택 설정이 아닌 수치를 낸 전례가 있다.
+    ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit")
+    ap.add_argument("--prompt", default="cot", choices=list(PROMPTS))
+    ap.add_argument("--max-tokens", type=int, default=384)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--stratum-cap", type=int, default=0,
                     help="층마다 최대 이 개수까지만 리더에 태운다 (0 = 전부). "

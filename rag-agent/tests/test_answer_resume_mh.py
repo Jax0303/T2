@@ -96,7 +96,7 @@ def test_resume_refuses_different_reader_setting(tmp_path, monkeypatch, change):
     if change == "revision":
         reader = Reader(revision="r2")
     elif change == "prompt":
-        extra += ["--prompt", "cot"]
+        extra += ["--prompt", "neutral"]
     else:
         extra += ["--max-tokens", "32"]
     with pytest.raises(SystemExit, match="재개 조건"):
