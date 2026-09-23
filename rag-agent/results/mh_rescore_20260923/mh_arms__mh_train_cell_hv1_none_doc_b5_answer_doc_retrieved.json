@@ -1,0 +1,68 @@
+{
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "source": "results/mh_arms/mh_train_cell_hv1_none_doc_b5_answer_doc_retrieved.jsonl",
+  "source_sha256": "b2253127d1dc092b1750429ab7c7c1e298c2af07cce29ec4ab56353f7deecddc",
+  "by_layer": {
+    "ALL": {
+      "n": 299,
+      "em_old": 0.2408,
+      "em_official": 0.2441,
+      "em_docmath": 0.2475,
+      "em_official_ceiling": 0.9465,
+      "old_to_official_gain": 3,
+      "old_to_official_loss": 2,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "arith_m1": {
+      "n": 71,
+      "em_old": 0.0845,
+      "em_official": 0.1268,
+      "em_docmath": 0.1408,
+      "em_official_ceiling": 0.9014,
+      "old_to_official_gain": 3,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 0.25
+    },
+    "arith_m2+": {
+      "n": 76,
+      "em_old": 0.0132,
+      "em_official": 0.0132,
+      "em_docmath": 0.0132,
+      "em_official_ceiling": 0.8816,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "lookup_m1": {
+      "n": 76,
+      "em_old": 0.4474,
+      "em_official": 0.4211,
+      "em_docmath": 0.4211,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 2,
+      "mcnemar_p_old_vs_official": 0.5
+    },
+    "lookup_m2+": {
+      "n": 76,
+      "em_old": 0.4079,
+      "em_official": 0.4079,
+      "em_docmath": 0.4079,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    }
+  },
+  "docmath_only_rows": [
+    {
+      "query_id": "4d3f4d88bdcb42e7a9475e9c84877b55",
+      "layer": "arith_m1",
+      "question": "As As the chart 1 shows, what is the Rate for the Net interest margin - fully taxable-equivalent basis for Year ended December 31,2007 ?",
+      "pred": "1.71%",
+      "official_answer": 0.0171,
+      "bevaya_answer": "0.0171"
+    }
+  ]
+}

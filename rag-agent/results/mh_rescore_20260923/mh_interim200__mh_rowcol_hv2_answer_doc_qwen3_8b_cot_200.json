@@ -1,0 +1,108 @@
+{
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "source": "results/mh_interim200/mh_rowcol_hv2_answer_doc_qwen3_8b_cot_200.jsonl",
+  "source_sha256": "b390ff3b75f6e2da7daabf1b03a1ec49d59bf341b20f5b3967ec1771c413545f",
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "em_old": 0.19,
+      "em_official": 0.19,
+      "em_docmath": 0.22,
+      "em_official_ceiling": 0.96,
+      "old_to_official_gain": 1,
+      "old_to_official_loss": 1,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "arith_m1": {
+      "n": 14,
+      "em_old": 0.1429,
+      "em_official": 0.1429,
+      "em_docmath": 0.2143,
+      "em_official_ceiling": 0.9286,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "arith_m2+": {
+      "n": 76,
+      "em_old": 0.0789,
+      "em_official": 0.0789,
+      "em_docmath": 0.1447,
+      "em_official_ceiling": 0.9079,
+      "old_to_official_gain": 1,
+      "old_to_official_loss": 1,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "lookup_m1": {
+      "n": 40,
+      "em_old": 0.175,
+      "em_official": 0.175,
+      "em_docmath": 0.175,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "lookup_m2+": {
+      "n": 70,
+      "em_old": 0.3286,
+      "em_official": 0.3286,
+      "em_docmath": 0.3286,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    }
+  },
+  "docmath_only_rows": [
+    {
+      "query_id": "3ff92b956014443a9e0f624c389c662d",
+      "layer": "arith_m2+",
+      "question": "What was the average value of Net income (loss), Net income noncontrolling interests, Loss from discontinued operations, net of tax -3 in 2008",
+      "pred": "-16.27",
+      "official_answer": -16.26667,
+      "bevaya_answer": "-16.2667"
+    },
+    {
+      "query_id": "947b8ae75eeb4df0a666c5b156b85816",
+      "layer": "arith_m1",
+      "question": "What's the 30 % of total elements in 2013? (in thousand)",
+      "pred": "258.378",
+      "official_answer": 258378.0,
+      "bevaya_answer": "258378"
+    },
+    {
+      "query_id": "9f07a70f6ded44758a675511c96d0a3c",
+      "layer": "arith_m2+",
+      "question": "what was the percentage change in cash provided by operating activities from 2013 to 2014?",
+      "pred": "8.24",
+      "official_answer": 0.08237,
+      "bevaya_answer": "0.08237"
+    },
+    {
+      "query_id": "a684000e8dd54da3b21cefef73d90749",
+      "layer": "arith_m2+",
+      "question": "by what percentage did the average price of wti crude oil increase from 2011 to 2013?",
+      "pred": "3.09",
+      "official_answer": 0.03091,
+      "bevaya_answer": "0.03091"
+    },
+    {
+      "query_id": "b8fe82b02c084ce797bf065460e273cd",
+      "layer": "arith_m2+",
+      "question": "If JW Marriott for RevPAR develops with the same growth rate in 2016, what will it reach in 2017?",
+      "pred": "194.40",
+      "official_answer": 194.5008,
+      "bevaya_answer": "194.501"
+    },
+    {
+      "query_id": "e9e4169197c0470e877505a087c53106",
+      "layer": "arith_m2+",
+      "question": "what is the growth rate in net revenue in 2007 for entergy arkansas , inc.?",
+      "pred": "3.36",
+      "official_answer": 0.0336,
+      "bevaya_answer": "0.0336"
+    }
+  ]
+}

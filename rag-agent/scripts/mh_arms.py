@@ -117,6 +117,22 @@ class MHDoc:
         self.col_map = {c: c - table.nhc for c in range(table.nhc, len(table.grid[0]))}
 
 
+OFFICIAL_REPO, OFFICIAL_REV = "yilunzhao/MultiHiertt", "f18473da528dede3d9ce2274366d9ee8102ea0fd"
+
+
+def official_answers(split: str) -> dict:
+    """{uid: 정답} — 공식 릴리스의 ``qa.answer`` (프로그램 문항은 float, span 문항은 str).
+
+    ``bevaya/MultiHiertt`` 는 정답을 유효숫자 6자리 문자열로 잘라 실었다(예: 346930.6 → '346931').
+    2026-09-23 train 7,830건 전수 대조: 나머지 필드는 전부 같고, 잘린 정답 430건은 정확한
+    답도 공식 허용오차(최대 0.1) 밖이다. 그래서 정답만 공식 파일에서 읽는다."""
+    from huggingface_hub import hf_hub_download
+    name = {"train": "train", "validation": "dev"}[split]
+    path = hf_hub_download(OFFICIAL_REPO, f"multihiertt_data/{name}.json",
+                           repo_type="dataset", revision=OFFICIAL_REV)
+    return {d["uid"]: d["qa"]["answer"] for d in json.loads(Path(path).read_text(encoding="utf-8"))}
+
+
 def load_population(split: str, keep_hybrid: bool = False):
     """(queries, docs) — 표 근거만 있는 질의 전부와 그 문서. 필드 정의는 데이터셋 것.
 
@@ -124,6 +140,7 @@ def load_population(split: str, keep_hybrid: bool = False):
     표 근거가 없는 text-only 질의는 ``skipped["text_only"]`` 로 센다."""
     from datasets import load_dataset
     rows = load_dataset("bevaya/MultiHiertt", split=split)
+    answers = official_answers(split)
     queries, docs, skipped = [], {}, Counter()
     for row in rows:
         ev = row.get("table_evidence") or []
@@ -145,7 +162,7 @@ def load_population(split: str, keep_hybrid: bool = False):
             skipped["bad_evidence_coord"] += 1
             continue
         queries.append({"uid": row["uid"], "question": row["question"],
-                        "answer": row.get("answer"), "coords": coords,
+                        "answer": answers[row["uid"]], "coords": coords,
                         "kind": "arith" if (row.get("program") or "").strip() else "lookup",
                         "n_gold_tables": len({c[0] for c in coords}),
                         "has_text_evidence": text,
@@ -615,7 +632,7 @@ def main() -> int:
         return o
 
     summary = {
-        "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt",
+        "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from " + f"{OFFICIAL_REPO}@{OFFICIAL_REV}",
         "split": a.split, "unit": a.unit, "template": a.template,
         "row_text": a.row_text, "tablerag_colmode": a.tablerag_colmode,
         "chunk_chars": a.chunk_chars, "chunk_overlap": a.chunk_overlap,

@@ -1,0 +1,100 @@
+{
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "source": "results/mh_arms/mh_train_cell_hv1_none_tablescope_answer_table_retrieved.jsonl",
+  "source_sha256": "bf3c286fafaa8d764afe7f1a480aa60bf8e39ce765b331fd71fda131ceb2babe",
+  "by_layer": {
+    "ALL": {
+      "n": 299,
+      "em_old": 0.2609,
+      "em_official": 0.2642,
+      "em_docmath": 0.2809,
+      "em_official_ceiling": 0.9465,
+      "old_to_official_gain": 3,
+      "old_to_official_loss": 2,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "arith_m1": {
+      "n": 71,
+      "em_old": 0.0704,
+      "em_official": 0.1127,
+      "em_docmath": 0.169,
+      "em_official_ceiling": 0.9014,
+      "old_to_official_gain": 3,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 0.25
+    },
+    "arith_m2+": {
+      "n": 76,
+      "em_old": 0.0132,
+      "em_official": 0.0132,
+      "em_docmath": 0.0263,
+      "em_official_ceiling": 0.8816,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "lookup_m1": {
+      "n": 76,
+      "em_old": 0.5263,
+      "em_official": 0.5,
+      "em_docmath": 0.5,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 2,
+      "mcnemar_p_old_vs_official": 0.5
+    },
+    "lookup_m2+": {
+      "n": 76,
+      "em_old": 0.4211,
+      "em_official": 0.4211,
+      "em_docmath": 0.4211,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    }
+  },
+  "docmath_only_rows": [
+    {
+      "query_id": "07a1e662565d44428449139f9801264e",
+      "layer": "arith_m2+",
+      "question": "what is the rate of return of an investment in teleflex incorporated from 2009 to 2010?",
+      "pred": "102 - 100 = 2, 2 / 100 = 0.02, 0.02 * 100 = 2%",
+      "official_answer": 0.02,
+      "bevaya_answer": "0.02"
+    },
+    {
+      "query_id": "4d3f4d88bdcb42e7a9475e9c84877b55",
+      "layer": "arith_m1",
+      "question": "As As the chart 1 shows, what is the Rate for the Net interest margin - fully taxable-equivalent basis for Year ended December 31,2007 ?",
+      "pred": "1.71%",
+      "official_answer": 0.0171,
+      "bevaya_answer": "0.0171"
+    },
+    {
+      "query_id": "9fab687550ff4c4dab35f7e9d5f0d9d5",
+      "layer": "arith_m1",
+      "question": "what was the growth rate of reit index as of 12/31/2003",
+      "pred": "138-100=38, 38/100=0.38, 0.38*100=38%",
+      "official_answer": 0.38,
+      "bevaya_answer": "0.38"
+    },
+    {
+      "query_id": "ac8740c0b0de49b09eaa78ee4feda688",
+      "layer": "arith_m1",
+      "question": "What was the average of the Commercial loans in the years where Private equity/venture capital is positive? (in thousand)",
+      "pred": "17070.38",
+      "official_answer": 17070380.0,
+      "bevaya_answer": "1.70704e+07"
+    },
+    {
+      "query_id": "d8d0b1cce0084d69b811d963167e10a4",
+      "layer": "arith_m1",
+      "question": "What's the 1 % of total America's Total Premiums of Revenues in 2013? (in million)",
+      "pred": "27369",
+      "official_answer": 273.69,
+      "bevaya_answer": "273.69"
+    }
+  ]
+}

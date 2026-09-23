@@ -36,11 +36,12 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from answer_accuracy import PROMPTS, check_context_limit                # noqa: E402
-from mh_arms import (NO_TITLE, build_tables, load_population,           # noqa: E402
-                     resolve_gold)
+from mh_arms import (NO_TITLE, OFFICIAL_REPO, OFFICIAL_REV,              # noqa: E402
+                     build_tables, load_population, official_answers, resolve_gold)
 from rag_agent.eval.artifacts import (digest, file_digest, provenance,  # noqa: E402
                                      read_records)
-from rag_agent.eval.multihiertt_em import mh_exact_match, self_check    # noqa: E402
+from rag_agent.eval.multihiertt_em import (docmath_match, mh_exact_match,  # noqa: E402
+                                           self_check)
 from rag_agent.llm.factory import build_llm                             # noqa: E402
 from rag_agent.serialization.caption import caption_sentence            # noqa: E402
 from rag_agent.serialization.templates import STRUCTURAL_COMPACT        # noqa: E402
@@ -101,6 +102,8 @@ def summarize(rows, limit=0):
         return {"n": len(rs),
                 "retrieval_accuracy_here": acc([x["retrieval_correct"] for x in rs]),
                 "answer_em": acc([x["answer_correct"] for x in rs]),
+                "answer_em_docmath": acc([x["answer_correct_docmath"] for x in rs
+                                          if "answer_correct_docmath" in x]),
                 "answer_given_retrieval_hit": acc(hit), "n_retrieval_hit": len(hit),
                 "answer_given_retrieval_miss": acc(miss), "n_retrieval_miss": len(miss),
                 "context_lines_mean": round(sum(x["n_ctx"] for x in rs) / len(rs), 1) if rs else None,
@@ -248,7 +251,11 @@ def main() -> int:
         if bad:
             raise SystemExit(f"gold 셀 수가 검색 레코드와 다르다: {len(bad)}건 (예: {bad[:3]})")
 
-    check = self_check([r["answer"] for r in scored])
+    # 검색 레코드의 answer 는 bevaya 판의 잘린 값일 수 있다 — 채점 정답은 공식 파일에서 읽는다
+    answers = official_answers(a.split)
+    for r in scored:
+        r["answer"] = answers[r["query_id"]]
+    check = self_check([r["answer"] for r in scored], [r["kind"] == "arith" for r in scored])
     print(f"[scorer] gold 를 예측으로 넣었을 때 EM={check['em']} (n={check['n']})", flush=True)
 
     ctxs = {r["query_id"]: (gold_context(gold[r["query_id"]], tables) if a.condition == "gold"
@@ -298,7 +305,8 @@ def main() -> int:
             row = {"query_id": r["query_id"], "layer": r["layer"], "kind": r["kind"],
                    "m": r["m"], "question": r["question"],
                    "retrieval_correct": r[a.scope]["correct"],
-                   "answer_correct": int(mh_exact_match(pred, r["answer"])),
+                   "answer_correct": int(mh_exact_match(pred, r["answer"], r["kind"] == "arith")),
+                   "answer_correct_docmath": int(docmath_match(pred, r["answer"], r["kind"] == "arith")),
                    "n_ctx": len(ctx), "n_tok": n_tok,
                    "cells_in_context": r[a.scope]["cells_in_context"],
                    "context_sha256": digest(ctx),
@@ -325,7 +333,9 @@ def main() -> int:
                "query_ids_sha256": digest(sorted(r["query_id"] for r in scored)),
                "reader_details": details,
                "prompt_sha256": digest(PROMPTS[a.prompt]), "prompt_text": PROMPTS[a.prompt],
-               "scorer": "multihiertt_em.mh_exact_match (공식 포팅)",
+               "scorer": "multihiertt_em.mh_exact_match (공식 포팅, 문항 유형 갈래)",
+               "scorer_secondary": "multihiertt_em.docmath_match (DocMath-Eval compare_two_numbers)",
+               "answer_source": f"{OFFICIAL_REPO}@{OFFICIAL_REV}",
                "scorer_self_check": check, "reader": llm.name, "prompt": a.prompt,
                "seed": a.seed, "max_new_tokens": a.max_tokens, "batch_size": 1,
                "stratum_cap": a.stratum_cap, "sample_seed": a.sample_seed,

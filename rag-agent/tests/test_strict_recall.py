@@ -193,6 +193,7 @@ def test_mh_text_only_questions_are_excluded_hybrids_kept(monkeypatch):
                  program="add(5, 3), divide(#0, const_2)"),
             dict(base, uid="x", table_evidence=[], text_evidence=[3])]
     monkeypatch.setattr(datasets, "load_dataset", lambda *a, **k: rows)
+    monkeypatch.setattr(mh, "official_answers", lambda split: {r["uid"]: r["answer"] for r in rows})
     qs, _docs, skipped = mh.load_population("validation", keep_hybrid=True)
     assert [(q["uid"], q["has_text_evidence"], q["kind"]) for q in qs] == [
         ("t", False, "lookup"), ("h", True, "arith")]

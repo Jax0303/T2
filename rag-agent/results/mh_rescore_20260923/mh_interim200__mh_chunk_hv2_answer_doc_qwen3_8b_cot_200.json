@@ -1,0 +1,164 @@
+{
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "source": "results/mh_interim200/mh_chunk_hv2_answer_doc_qwen3_8b_cot_200.jsonl",
+  "source_sha256": "fbd5288dfc96ea3d06f3d1fa5137e6399854b00d9e197911a42420c9e5be6041",
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "em_old": 0.475,
+      "em_official": 0.485,
+      "em_docmath": 0.55,
+      "em_official_ceiling": 0.96,
+      "old_to_official_gain": 2,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 0.5
+    },
+    "arith_m1": {
+      "n": 14,
+      "em_old": 0.2143,
+      "em_official": 0.2143,
+      "em_docmath": 0.5714,
+      "em_official_ceiling": 0.9286,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "arith_m2+": {
+      "n": 76,
+      "em_old": 0.2237,
+      "em_official": 0.25,
+      "em_docmath": 0.3553,
+      "em_official_ceiling": 0.9079,
+      "old_to_official_gain": 2,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 0.5
+    },
+    "lookup_m1": {
+      "n": 40,
+      "em_old": 0.575,
+      "em_official": 0.575,
+      "em_docmath": 0.575,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "lookup_m2+": {
+      "n": 70,
+      "em_old": 0.7429,
+      "em_official": 0.7429,
+      "em_docmath": 0.7429,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    }
+  },
+  "docmath_only_rows": [
+    {
+      "query_id": "199f043bd8a0464a8ec0cc9ab08ad126",
+      "layer": "arith_m1",
+      "question": "what is the five year performance of ups class b common stock?",
+      "pred": "60.61%",
+      "official_answer": 0.6061,
+      "bevaya_answer": "0.6061"
+    },
+    {
+      "query_id": "2e44735c0cd64f72ad4803e8c2593632",
+      "layer": "arith_m2+",
+      "question": "what is the percentage change in comprehensive income attributable to nbcuniversal from 2013 to 2014?",
+      "pred": "47.35",
+      "official_answer": 0.47348,
+      "bevaya_answer": "0.47348"
+    },
+    {
+      "query_id": "58e0935053504230ad2e5f19c2faaab3",
+      "layer": "arith_m1",
+      "question": "what was the percentage total return for delphi automotive plc for the five years ended december 31 2014?\\\\n",
+      "pred": "250.82",
+      "official_answer": 2.5082,
+      "bevaya_answer": "2.5082"
+    },
+    {
+      "query_id": "6afd682a2f80427db42c85471fd96de0",
+      "layer": "arith_m2+",
+      "question": "what was the percentage change in rental income from 2005 to 2006?",
+      "pred": "40.68",
+      "official_answer": 0.40678,
+      "bevaya_answer": "0.40678"
+    },
+    {
+      "query_id": "9f07a70f6ded44758a675511c96d0a3c",
+      "layer": "arith_m2+",
+      "question": "what was the percentage change in cash provided by operating activities from 2013 to 2014?",
+      "pred": "8.24",
+      "official_answer": 0.08237,
+      "bevaya_answer": "0.08237"
+    },
+    {
+      "query_id": "a684000e8dd54da3b21cefef73d90749",
+      "layer": "arith_m2+",
+      "question": "by what percentage did the average price of wti crude oil increase from 2011 to 2013?",
+      "pred": "3.09",
+      "official_answer": 0.03091,
+      "bevaya_answer": "0.03091"
+    },
+    {
+      "query_id": "b7a75991a0304892aba007a1f702c399",
+      "layer": "arith_m1",
+      "question": "what was the percentage cadence design systems , inc . 2019s cumulative 5-year total shareholder return on common stock for the period ending 12/29/07?",
+      "pred": "39.82",
+      "official_answer": 0.3982,
+      "bevaya_answer": "0.3982"
+    },
+    {
+      "query_id": "b8eb88feff634995a7d0eeedde49f881",
+      "layer": "arith_m1",
+      "question": "what is the roi of an investment in dj us containers & packaging from 2006 to 2008?",
+      "pred": "-33.09",
+      "official_answer": -0.3309,
+      "bevaya_answer": "-0.3309"
+    },
+    {
+      "query_id": "d82fbd3ad2524059a7c9c4fea9d0642f",
+      "layer": "arith_m1",
+      "question": "what is the roi of nasdaq composite from 2008 to 2012?",
+      "pred": "10.78",
+      "official_answer": 0.1078,
+      "bevaya_answer": "0.1078"
+    },
+    {
+      "query_id": "e9e4169197c0470e877505a087c53106",
+      "layer": "arith_m2+",
+      "question": "what is the growth rate in net revenue in 2007 for entergy arkansas , inc.?",
+      "pred": "3.36",
+      "official_answer": 0.0336,
+      "bevaya_answer": "0.0336"
+    },
+    {
+      "query_id": "ea2a61fbf02b44b897d6018cdffd65dd",
+      "layer": "arith_m2+",
+      "question": "what was the percentage cumulative total return for apple inc . for the five year period ended september 2018?",
+      "pred": "259",
+      "official_answer": 2.59,
+      "bevaya_answer": "2.59"
+    },
+    {
+      "query_id": "f3e2d3a8cdb944fa928c4ac921dcbb94",
+      "layer": "arith_m2+",
+      "question": "what is the percentage increase in gross carrying amount from the beginning of 2015 to the end of 2016?",
+      "pred": "3.43",
+      "official_answer": 0.03431,
+      "bevaya_answer": "0.03431"
+    },
+    {
+      "query_id": "f45dcbba5fd640bdb11123620fba9e0a",
+      "layer": "arith_m2+",
+      "question": "What is the growing rate of Less: net interest income attributable to noncontrolling interests in the year with the most GAAP noninterest expense?",
+      "pred": "10.0",
+      "official_answer": -0.1,
+      "bevaya_answer": "-0.1"
+    }
+  ]
+}

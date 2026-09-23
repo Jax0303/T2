@@ -1,0 +1,76 @@
+{
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "source": "results/mh_interim200/mh_tablerag_allobj_path_hv2_answer_doc_qwen3_8b_cot_200.jsonl",
+  "source_sha256": "149326ffccc4c27527c024c35cf7bf806c3b6b9fd9120a2eabcfede94b2c8c8e",
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "em_old": 0.12,
+      "em_official": 0.12,
+      "em_docmath": 0.13,
+      "em_official_ceiling": 0.96,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "arith_m1": {
+      "n": 14,
+      "em_old": 0.1429,
+      "em_official": 0.1429,
+      "em_docmath": 0.1429,
+      "em_official_ceiling": 0.9286,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "arith_m2+": {
+      "n": 76,
+      "em_old": 0.0,
+      "em_official": 0.0,
+      "em_docmath": 0.0263,
+      "em_official_ceiling": 0.9079,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "lookup_m1": {
+      "n": 40,
+      "em_old": 0.15,
+      "em_official": 0.15,
+      "em_docmath": 0.15,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    },
+    "lookup_m2+": {
+      "n": 70,
+      "em_old": 0.2286,
+      "em_official": 0.2286,
+      "em_docmath": 0.2286,
+      "em_official_ceiling": 1.0,
+      "old_to_official_gain": 0,
+      "old_to_official_loss": 0,
+      "mcnemar_p_old_vs_official": 1.0
+    }
+  },
+  "docmath_only_rows": [
+    {
+      "query_id": "2091564cef7a415587e912f33cbf5e60",
+      "layer": "arith_m2+",
+      "question": "If Operating income develops with the same increasing rate in 2009, what will it reach in 2010? (in million)",
+      "pred": "7263",
+      "official_answer": 7263.58544,
+      "bevaya_answer": "7263.59"
+    },
+    {
+      "query_id": "f3e2d3a8cdb944fa928c4ac921dcbb94",
+      "layer": "arith_m2+",
+      "question": "what is the percentage increase in gross carrying amount from the beginning of 2015 to the end of 2016?",
+      "pred": "3.43",
+      "official_answer": 0.03431,
+      "bevaya_answer": "0.03431"
+    }
+  ]
+}
