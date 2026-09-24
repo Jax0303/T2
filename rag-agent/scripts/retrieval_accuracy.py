@@ -84,7 +84,9 @@ TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "sleaf": STRUCTURAL_LE
 # the header path buy, and what does the table's own label buy" by removing one
 # at a time. Byte-identical to point3_reconstruction_cost.cell_text(..., "flat")
 # and (..., "S2"), so they stay comparable with the older numbers on disk.
-ABLATIONS = ("flat", "s2")
+# ``s3frame`` keeps s3c's sentence frame but drops the label, so s3c vs s3frame
+# isolates the label and s3frame vs s2 isolates the frame (2026-09-23).
+ABLATIONS = ("flat", "s2", "s3frame")
 # cell/row/table are index-unit sizes of OUR sentence. chunk and tablerag are
 # representation adaptations and ignore --template. Neither `chunk` nor
 # `tablerag` is a reproduction of a published end-to-end system.
@@ -109,6 +111,8 @@ def cell_unit(title, row_path, col_path, value, template: str) -> str:
     if template == "s2":
         path = " > ".join([*row_path, *col_path])
         return f"{path}: {value}" if path else str(value)
+    if template == "s3frame":
+        return caption_sentence("", row_path, col_path, value=value, template=STRUCTURAL)
     return caption_sentence(title, row_path, col_path, value=value,
                             template=TEMPLATES[template])
 

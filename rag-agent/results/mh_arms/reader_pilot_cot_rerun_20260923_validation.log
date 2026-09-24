@@ -1,0 +1,98 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pilot] validation 산술 264 중 60
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:03<21:33,  3.25s/it]Loading weights:   1%|          | 2/399 [00:03<11:42,  1.77s/it]Loading weights:   1%|          | 4/399 [00:04<04:38,  1.42it/s]Loading weights:   2%|▏         | 6/399 [00:04<02:36,  2.51it/s]Loading weights:   4%|▍         | 15/399 [00:04<00:41,  9.23it/s]Loading weights:   5%|▍         | 19/399 [00:04<00:31, 12.14it/s]Loading weights:   7%|▋         | 27/399 [00:04<00:18, 20.26it/s]Loading weights:   9%|▉         | 37/399 [00:04<00:11, 30.72it/s]Loading weights:  11%|█         | 43/399 [00:04<00:10, 34.66it/s]Loading weights:  12%|█▏        | 49/399 [00:04<00:09, 38.24it/s]Loading weights:  15%|█▍        | 59/399 [00:05<00:07, 46.95it/s]Loading weights:  16%|█▋        | 65/399 [00:05<00:07, 46.14it/s]Loading weights:  18%|█▊        | 71/399 [00:05<00:07, 46.55it/s]Loading weights:  20%|██        | 81/399 [00:05<00:07, 41.01it/s]Loading weights:  22%|██▏       | 86/399 [00:05<00:07, 40.38it/s]Loading weights:  23%|██▎       | 93/399 [00:05<00:06, 44.85it/s]Loading weights:  26%|██▌       | 103/399 [00:06<00:05, 52.36it/s]Loading weights:  27%|██▋       | 109/399 [00:06<00:05, 49.32it/s]Loading weights:  29%|██▉       | 115/399 [00:06<00:06, 42.90it/s]Loading weights:  31%|███▏      | 125/399 [00:06<00:05, 52.24it/s]Loading weights:  33%|███▎      | 131/399 [00:06<00:05, 53.25it/s]Loading weights:  34%|███▍      | 137/399 [00:06<00:04, 53.58it/s]Loading weights:  37%|███▋      | 147/399 [00:06<00:04, 60.56it/s]Loading weights:  39%|███▊      | 154/399 [00:06<00:04, 59.96it/s]Loading weights:  40%|████      | 161/399 [00:07<00:04, 56.55it/s]Loading weights:  43%|████▎     | 170/399 [00:07<00:03, 61.52it/s]Loading weights:  45%|████▌     | 180/399 [00:07<00:03, 64.92it/s]Loading weights:  47%|████▋     | 187/399 [00:07<00:03, 64.83it/s]Loading weights:  49%|████▊     | 194/399 [00:07<00:03, 53.83it/s]Loading weights:  51%|█████     | 202/399 [00:07<00:03, 59.26it/s]Loading weights:  53%|█████▎    | 210/399 [00:07<00:03, 62.92it/s]Loading weights:  54%|█████▍    | 217/399 [00:07<00:03, 59.55it/s]Loading weights:  56%|█████▋    | 225/399 [00:08<00:02, 60.91it/s]Loading weights:  59%|█████▉    | 235/399 [00:08<00:02, 66.23it/s]Loading weights:  61%|██████    | 242/399 [00:08<00:02, 63.41it/s]Loading weights:  62%|██████▏   | 249/399 [00:15<00:40,  3.67it/s]Loading weights:  65%|██████▍   | 258/399 [00:15<00:26,  5.37it/s]Loading weights: 100%|██████████| 399/399 [00:10<00:00, 38.03it/s]
+[cot] EM 0.383  질의당 7.9s  표시 누락 1
+{
+  "split": "validation",
+  "n": 60,
+  "seed": 20260913,
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "header_rule": "v2",
+  "label_rule": "none",
+  "context": "gold cells only",
+  "exploratory": true,
+  "cot_prompt": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "direct_prompt": "Answer the question using only the provided table context. The context may contain tables, table excerpts, or descriptions of cells. Read the row and column labels to identify the relevant values. Return only the answer, without an explanation. If several values are requested, separate them with commas.",
+  "think_boxed": {
+    "system": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values.",
+    "suffix": "Please reason step by step, and put your final answer within \\boxed{}.",
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "max_new_tokens": 8192
+  },
+  "gen_seed": 42,
+  "query_ids": [
+    "082e18b816824239b23471ae9413035a",
+    "08f6538bafb0465f9f738854592f8804",
+    "0c64b517b1594ee2a73d7b1e18fcdb83",
+    "11904e0323e04189a6d0c03ebec8c27f",
+    "15b06e6b07934ebd8de47b3ac57f637a",
+    "1bdc664049c8474eaa3175f8ccf1a5fe",
+    "1d43af3556a141f19498859046f8a14f",
+    "1f70539b80bb4faa80fa3c34321cf587",
+    "24f730c9d9704a8d9597fe4ae83ada60",
+    "287afb8038f44401a8b8dc9a3413ae44",
+    "2c9988d9cd9846a79794a25e40dbe960",
+    "317533683dd34bd098fcf9ceff439b4d",
+    "326f465758bf44c08bd21a20dfcf8e4f",
+    "403cce559073438495e15ae374e83b02",
+    "4dcfac0c84e145c4b58f9de254397d0e",
+    "509bdf8e0a4b456b952cd64524b836f6",
+    "57a773d8c0e24224abdf7c4029852d1f",
+    "5b517a2f25604d1da72d9b9ab5d7f7f2",
+    "6846706dd2fe489b87422799be0bb5f7",
+    "6a0f1b1690954cf995f94b710c5354e5",
+    "6cb885be36094b3ba483cf79e43c393b",
+    "6d291f42ba4648d9af86a8d75a0bdded",
+    "7276447b879d4c728c841613c3902dca",
+    "79e3c22e2d934ac1a08c5b58781a9c7a",
+    "7d672b76304d4a65bfd3b8cb0a0f7e6d",
+    "80f1bd5b56e24c75a15086e99f5ee028",
+    "8859055e4d784668ac6e4914f2b736d3",
+    "8c06ea3eea23453c9248ac471a6b093f",
+    "8caf20e28a314f43a0bc3fdbadcc2220",
+    "8ce2db08e664492193dc999d6bdb12e8",
+    "925baee59589424285de9bbfd8af8d07",
+    "932e8da3f3324d86869c8e65768431db",
+    "941f09ad96cb481ea8d5a20d19bee855",
+    "96d716da2b764c88bbedb6e731005c0f",
+    "9efe21fd6c46407d9179e64ff0c03a26",
+    "a2f79e423a91402db60f308c472a8b74",
+    "aad54f148a144ed28f0cffc0a0331fe0",
+    "ab4d5887c96d43c6a458546abbfaeaad",
+    "ae289fc53ef241099c59fc20de42e133",
+    "ae6d9aa990834a86ba5f55daecf02c59",
+    "b3636117d30545eebb2a2f2a9afea0ae",
+    "b610ee5fd46946418c8a8d57a009e48f",
+    "b743fcf8e9e34ca1bb74d8c5231d4c4d",
+    "b8f171ffe3a04d0db779380da5e94602",
+    "bb29d151f2fb45cabe6ccff4e04e9984",
+    "bc2b34a04ec546ca961c819c6af00f9f",
+    "bf0be874d3ff40318d2f8abb66185938",
+    "cf81fdff311647ddae73a88d073beb9f",
+    "d60ad199f8ad47eaa33024fc316b3692",
+    "dacab9e0b9ec47059b3162145c4f0a2e",
+    "dcbf50822c884611aafdae61e7a73deb",
+    "de4c814a71ad4feebada695ac2d641ae",
+    "e5a3feacfac341bcb9cc99b74037ce18",
+    "e5d0203f872e45cf8232f2e2d3f192c3",
+    "e7945bfc204a456a9ece132950c1dd46",
+    "e9d82cb1ac4545deb5e71dadd8c7ba4f",
+    "f46f940cf4ca4930944d9d653f1c1476",
+    "f6af4df731d44ef8a74ae72330da5db5",
+    "f790e8acf95b49c88751230a8ca89e8f",
+    "f8aa84de2b954c0bb2e019ffaecf5692"
+  ],
+  "cot": {
+    "em": 0.38333333333333336,
+    "em_docmath": 0.6833333333333333,
+    "marker_missing": 1,
+    "think_unclosed": 0,
+    "new_tokens_mean": 129.6,
+    "sec_per_query": 7.91
+  }
+}
