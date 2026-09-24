@@ -143,3 +143,6 @@
 - 같은 882건(`--same-queries-as cap300_20260924/cell.jsonl`), 리더·프롬프트·384·배치 128 동일.
 - **예측(방향만):** (가) v3.3u 가 v3.3 보다 조회 두 그룹 EM 이 높다. (나) 예측하지 않는다.
 - **보고:** 주 표의 비교군은 v1(사전등록) 그대로 두고, (나)는 "머리글을 맞춘 비교"로 옆에 싣는다. 모든 대조는 정확 McNemar.
+- **randrow·tablerag_leaf 처음부터 (03:4x):** 두 조건의 이어 쓰기는 저장된 실행 조건의 코드 해시와 달라 멈춘다(v3.3u 를 넣으며
+  `mh_arms.py`·`answer_accuracy_mh.py` 가 바뀜 — v1 경로의 동작은 그대로, 테스트 통과). 멈춘 randrow 384행은 `randrow.stopped.*`,
+  0행에서 죽은 tablerag_leaf 는 `tablerag_leaf.crashed.*` 로 보관하고 둘 다 처음부터 다시 돈다. 판정에는 새 실행만 쓴다.
