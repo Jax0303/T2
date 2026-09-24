@@ -1,0 +1,80 @@
+# 제3장 제안 방법
+
+## 3.1 개요
+
+제안 방법은 표의 셀 하나하나를 독립된 문장으로 만들고, 그 문장들을 기성 임베딩 모델로 색인해 질문과 가장 가까운 셀을 찾는다. 전체 흐름은 다음 다섯 단계다.
+
+1. **머리글 경로 구성.** 표의 각 데이터 셀에 대해, 그 셀이 속한 행의 머리글 경로와 열의 머리글 경로를 구한다(3.2절).
+2. **셀 문장 생성.** 고유 라벨, 행 경로, 열 경로, 셀 값을 정해진 틀에 넣어 셀마다 문장 하나를 만든다(3.3절).
+3. **색인.** 셀 문장을 임베딩 모델로 벡터화하고, 같은 문장으로 BM25 색인을 만든다(3.4절).
+4. **검색.** 질문과 짝지어진 표(또는 문서) 안의 셀 문장만을 후보로, dense 점수와 BM25 점수를 섞은 하이브리드 점수로 순위를 매긴다(3.4절).
+5. **리더 입력.** 상위 20개 셀 문장을 순위대로 리더에게 주고 답을 생성한다(3.5절, 3.6절).
+
+학습 단계는 없다. 임베딩 모델과 리더는 모두 공개된 가중치를 그대로 쓰며, 모든 계산은 로컬에서 수행한다.
+
+## 3.2 머리글 경로
+
+셀 (i, j)의 **행 경로**는 i행에 해당하는 행 머리글을 위 계층부터 차례로 나열한 것이고, **열 경로**는 j열에 해당하는 열 머리글을 위 계층부터 나열한 것이다. 예를 들어 표 3-1의 셀 `52.1`은 행 경로 "percent > food service", 열 경로 "eastern ontario > french-language workers"를 가진다.
+
+**HiTab.** 데이터셋이 표마다 행·열 머리글의 계층 트리를 준다. 본 연구는 이 트리를 따라 경로를 만들며, 원본 격자의 좌표와 계층 트리의 좌표를 대응시키는 과정에서 병합 머리글 때문에 대응이 빠지는 열을 순서 정보로 보완했다.
+
+**MultiHiertt.** 표가 HTML로만 주어지고 머리글 계층 정보가 없다. 따라서 머리글 행 수와 머리글 열 수를 규칙으로 추정한다. 머리글 행은 (가) 왼쪽 위 모서리가 비어 있는 표에서 처음으로 행 머리글 칸에 글자가 나타나는 행을 첫 데이터 행으로 보고, (나) 이 신호를 쓸 수 없으면 행 머리글 칸을 제외한 칸의 절반 이상이 숫자인 첫 행을 첫 데이터 행으로 본다. 머리글 열은 머리글 블록의 마지막 행에서 비어 있는 왼쪽 열의 수로 정하고, 이 신호를 쓸 수 없으면 데이터처럼 보이는 칸이 절반 이상인 첫 열 앞까지로 정한다. 그다음 머리글 행의 값을 위에서부터 이어 열 경로를, 머리글 열의 값을 왼쪽에서부터 이어 행 경로를 만든다. 본 연구의 MultiHiertt 결과는 모두 이 초기 규칙(v1)으로 만든 경로를 쓴다. 이후 평가 데이터의 오류 사례를 보고 고친 규칙(v2 이상)은 본 논문의 비교에 쓰지 않았다(4.1절).
+
+## 3.3 셀 문장
+
+셀 문장은 다음 틀을 쓴다.
+
+> In the table '{고유 라벨}', among {행 경로}, the value of {열 경로} is {값}.
+
+경로의 각 층은 " > "로 잇는다. 고유 라벨이 없는 표는 문장 틀이 담을 내용이 없으므로 경로와 값만 쓴다.
+
+> {행 경로} > {열 경로}: {값}
+
+**고유 라벨.** 고유 라벨은 셀이 속한 표를 다른 표와 구별해 주는 자연어 데이터다. HiTab에서는 데이터셋이 준 표의 절 제목 앞에, 표의 원 출처인 위키백과 페이지의 제목(ToTTo 페이지 제목)이 있으면 그것을 붙인다. 표 번호나 문서 id처럼 질문이 부를 수 없는 인위적 식별자는 라벨로 쓰지 않는다. 표에 제목이 주어지지 않는 MultiHiertt에서는 라벨을 쓰지 않는다. 표 직전 문단을 라벨로 쓰는 변형을 사전등록해 시험했으나 검색 정확도가 떨어졌기 때문이다(5.6절).
+
+**잎 라벨 머리말(HiTab).** HiTab의 본 방법은 위 문장 앞에 행 경로와 열 경로의 마지막 층(잎 라벨)을 한 번 더 붙인다.
+
+> {행 잎} / {열 잎}: In the table '{고유 라벨}', among {행 경로}, the value of {열 경로} is {값}.
+
+같은 표 안에서 두 셀의 문장은 잎 라벨 몇 단어만 다르므로, 그 단어를 문장 앞에 한 번 더 둔 변형이다. 잎 라벨 머리말의 유무는 질문이 속한 표 안 검색에서 구별되지 않았다(.9586 대 .9637, 7:12, p=.36, query count=991). 라벨 효과 실험(5.1절)은 머리말 없는 틀을 기준으로 수행했다.
+
+표 3-1은 HiTab의 한 질문에 대해 본 방법과 비교군이 색인하는 단위의 실제 텍스트를 보인다.
+
+표 3-1. 색인 단위 텍스트의 예 (HiTab, 질문: "in eastern ontario, what percent of french-language workers have worked in the restaurant and food services sector?", 정답 52.1)
+
+| 표현 | 색인 단위 텍스트(앞부분) |
+|---|---|
+| 본 방법 | food service / french-language workers: In the table 'agri-food industry sub-groups for workers aged 15 years and over, two agricultural regions of ontario, 2011', among percent > food service, the value of eastern ontario > french-language workers is 52.1. |
+| 고정 청크 | # agri-food industry sub-groups … 2011 / \| sub-groups of the agri-food industry \| eastern ontario \| \| northern ontario \| \| … |
+| TableRAG(Yu) 청크 | File name: agri-food industry sub-groups … 2011 / Table name: … / \| sub-groups of the agri-food industry \| eastern ontario \| … |
+| TableRAG(Chen) RowCol | # agri-food industry … / \| row \| french-language workers \| other workers \| … \| / \| input and service supply \| 2.9 \| 2.1 \| 2.9 \| 1.3 \| … |
+| TableRAG(Chen) RandRow | agri-food industry … 2011 \| food, beverage, and tobacco processing\|9.7\|6.0\|3.0\|3.3 |
+| TableRAG(Chen) leaf | {"column_name": "sub-groups of the agri-food industry", "cell_value": "food, beverage, and tobacco processing"} |
+| TableRAG(Chen) path | {"column_name": "eastern ontario > french-language workers", "dtype": "float64", "min": 2.9, "max": 52.1} |
+
+본 방법의 문장은 값 `52.1` 하나에 표 제목과 두 머리글 경로를 모두 붙인다. 반면 청크와 행 단위 표현은 여러 값을 한 단위에 담고, 상위 머리글은 첫 청크나 첫 줄에만 있다.
+
+## 3.4 임베딩과 하이브리드 검색
+
+**임베딩.** 셀 문장과 질문을 `BAAI/bge-base-en-v1.5`(Xiao et al., 2024)로 임베딩한다. 이 모델의 사용법대로 질문 앞에만 검색용 지시문("Represent this sentence for searching relevant passages: ")을 붙이고 문장에는 붙이지 않는다. 벡터는 정규화해 코사인 유사도를 쓴다. 입력 한도(512토큰)를 넘는 셀 문장은 없었다(HiTab 67,664문장 중 최대 159토큰).
+
+**BM25.** 같은 셀 문장으로 BM25(Robertson and Zaragoza, 2009) 색인을 만든다.
+
+**하이브리드 점수.** 질문과 짝지어진 표(또는 문서)의 셀 문장만을 후보로, 두 점수를 후보 안에서 각각 최소-최대 정규화한 뒤 가중합한다.
+
+> score = 0.7 × minmax(cosine) + 0.3 × minmax(BM25)
+
+가중치 α=0.7은 초기 개발 단계에서 HiTab dev 분할로 하이브리드가 dense 단독보다 낫다는 것을 확인할 때 정한 값이다. 그때 0.5와 0.7은 구별되지 않았다. 본 논문의 평가 데이터(HiTab test, MultiHiertt train)로 α를 고르지 않았고, 두 데이터셋에 같은 값을 쓴다. 순위는 모든 후보와의 내적을 전부 계산해 매기며 근사 최근접 탐색은 쓰지 않는다.
+
+## 3.5 셀 예산
+
+리더에게 주는 문맥의 크기는 **셀 예산**으로 맞춘다. 검색 순위대로 색인 단위를 하나씩 넣으면서, 지금까지 넣은 단위들이 담은 서로 다른 데이터 셀의 수가 20에 이르면 멈춘다. 본 방법은 단위 하나가 셀 하나이므로 상위 20개 셀 문장이 들어간다. 청크나 행처럼 셀 여러 개를 담는 단위는 마지막 단위 때문에 20개를 넘을 수 있고, 겹치는 청크가 이미 넣은 셀을 다시 담으면 그 셀은 예산에 다시 세지 않는다. 이 규칙은 모든 방법에 똑같이 적용된다.
+
+## 3.6 리더
+
+리더는 데이터셋마다 정해 둔 설정을 쓴다.
+
+- **HiTab:** `Qwen2.5-7B-Instruct`(Qwen Team, 2024) 4비트 양자화, greedy 디코딩, 최대 64토큰. 프롬프트는 "주어진 표 문맥만 써서 질문에 답하라. 문맥은 표, 표 일부, 셀 설명일 수 있다. 행·열 라벨을 읽어 해당 값을 찾아라. 설명 없이 답만 내라. 값이 여러 개면 쉼표로 구분하라"는 뜻의 영어 지시문이다(부록 E).
+- **MultiHiertt:** `Qwen3-8B`(Qwen Team, 2025) 4비트 양자화, 비생각(non-thinking) 모드, greedy 디코딩, 최대 384토큰. 산술 질문이 대부분이므로 풀이 과정을 쓰게 하고 마지막 줄에 "Final answer: "와 값만 쓰게 한다. 채점은 마지막 "Final answer:" 뒤의 값으로 한다.
+
+리더 입력은 "Context:" 다음에 검색된 단위의 텍스트를 순위대로 한 줄씩 쓰고, 그 뒤에 질문을 붙인 것이다. HiTab 리더 설정은 HiTab 비교 실험 전체에서 고정해 온 것이다. MultiHiertt 리더 설정은 validation 분할 60건의 파일럿에서 사전등록 규칙으로 골랐고, 평가 분할(train)로 고르지 않았다(4.4절).
