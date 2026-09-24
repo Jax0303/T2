@@ -132,13 +132,18 @@ class LocalQwenLLM(BaseLLM):
         바로 넣는다. 8GB 에서 고정 묶음은 긴 입력이 메모리를 넘겨 쓰지 않았다. 배치 1 과 연산 경로가
         달라 ``complete`` 와 출력이 바이트 단위로 같다는 보장은 없다 — 쓰기 전에 대조한다."""
         from transformers import ContinuousBatchingConfig, GenerationConfig
+        # WSL 은 GPU 메모리를 넘기면 오류 대신 시스템 메모리로 넘쳐 수십 배 느려진다(2026-09-24,
+        # max_memory_percent=0.9 에서 128건이 13분 넘게 안 끝남). 넘치면 OOM 으로 멈추게 상한을 건다.
+        self._torch.cuda.set_per_process_memory_fraction(0.95)
         tok = self.tokenizer
         ids = [tok(self._prompt(system, u))["input_ids"] for u in users]
         cfg = GenerationConfig(max_new_tokens=max_tokens, do_sample=False,
                                eos_token_id=tok.eos_token_id, pad_token_id=tok.eos_token_id)
+        # 0.75·블록 64: 48건 2.79초/건(0.6·64 는 3.16, 0.6·256 은 3.58), 캐시 6,016토큰 >
+        # 가장 긴 입력(표 전체 5,190) + 384
         out = self.model.generate_batch(inputs=ids, generation_config=cfg, progress_bar=False,
                                         continuous_batching_config=ContinuousBatchingConfig(
-                                            max_memory_percent=0.9))
+                                            max_memory_percent=0.75, block_size=64))
         # 요청 id 는 'req_<입력 순번>' — 순번으로 되돌린다
         keys = sorted(out, key=lambda k: int(k.rsplit("_", 1)[1]))
         if len(keys) != len(ids):

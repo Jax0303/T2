@@ -1,0 +1,127 @@
+[same-queries] 683 요청 -> 683 (새 레코드에 없음 0)
+[scorer] gold 를 예측으로 넣었을 때 EM=0.9333333333333333 (n=120)
+[same-contexts] 120건 context_sha256 일치
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<06:26,  1.03it/s]Loading weights:   1%|          | 2/399 [00:02<07:26,  1.12s/it]Loading weights:   1%|          | 4/399 [00:02<03:14,  2.03it/s]Loading weights:   2%|▏         | 6/399 [00:02<02:01,  3.24it/s]Loading weights:   4%|▍         | 15/399 [00:02<00:35, 10.79it/s]Loading weights:   5%|▍         | 18/399 [00:03<00:32, 11.57it/s]Loading weights:   7%|▋         | 26/399 [00:03<00:19, 18.67it/s]Loading weights:   7%|▋         | 29/399 [00:03<00:21, 17.51it/s]Loading weights:   9%|▉         | 37/399 [00:03<00:14, 25.79it/s]Loading weights:  11%|█         | 43/399 [00:03<00:11, 31.04it/s]Loading weights:  12%|█▏        | 49/399 [00:03<00:09, 35.72it/s]Loading weights:  15%|█▍        | 59/399 [00:03<00:07, 44.69it/s]Loading weights:  18%|█▊        | 70/399 [00:04<00:05, 54.92it/s]Loading weights:  20%|██        | 81/399 [00:04<00:05, 60.14it/s]Loading weights:  23%|██▎       | 92/399 [00:04<00:04, 67.47it/s]Loading weights:  25%|██▌       | 101/399 [00:04<00:04, 72.58it/s]Loading weights:  27%|██▋       | 109/399 [00:04<00:04, 72.04it/s]Loading weights:  29%|██▉       | 117/399 [00:04<00:04, 68.62it/s]Loading weights:  32%|███▏      | 126/399 [00:04<00:03, 73.75it/s]Loading weights:  34%|███▍      | 136/399 [00:04<00:03, 79.45it/s]Loading weights:  36%|███▋      | 145/399 [00:05<00:03, 78.17it/s]Loading weights:  38%|███▊      | 153/399 [00:05<00:03, 70.47it/s]Loading weights:  40%|████      | 161/399 [00:05<00:03, 67.59it/s]Loading weights:  43%|████▎     | 170/399 [00:05<00:03, 72.44it/s]Loading weights:  45%|████▌     | 180/399 [00:05<00:02, 76.91it/s]Loading weights:  47%|████▋     | 188/399 [00:05<00:02, 72.53it/s]Loading weights:  49%|████▉     | 196/399 [00:05<00:02, 70.20it/s]Loading weights:  51%|█████     | 204/399 [00:05<00:02, 68.87it/s]Loading weights:  54%|█████▎    | 214/399 [00:05<00:02, 74.91it/s]Loading weights:  56%|█████▌    | 224/399 [00:06<00:02, 80.39it/s]Loading weights:  58%|█████▊    | 233/399 [00:06<00:02, 83.00it/s]Loading weights:  61%|██████    | 242/399 [00:06<00:01, 78.70it/s]Loading weights:  63%|██████▎   | 250/399 [00:06<00:02, 73.12it/s]Loading weights:  65%|██████▍   | 258/399 [00:06<00:01, 73.57it/s]Loading weights:  67%|██████▋   | 268/399 [00:06<00:01, 79.08it/s]Loading weights:  69%|██████▉   | 277/399 [00:06<00:01, 79.66it/s]Loading weights:  72%|███████▏  | 286/399 [00:06<00:01, 76.62it/s]Loading weights:  74%|███████▎  | 294/399 [00:07<00:01, 72.49it/s]Loading weights:  76%|███████▌  | 302/399 [00:07<00:01, 70.94it/s]Loading weights:  78%|███████▊  | 312/399 [00:07<00:01, 75.80it/s]Loading weights:  80%|████████  | 320/399 [00:07<00:01, 73.23it/s]Loading weights:  82%|████████▏ | 328/399 [00:07<00:00, 72.01it/s]Loading weights:  84%|████████▍ | 336/399 [00:07<00:00, 66.65it/s]Loading weights:  87%|████████▋ | 346/399 [00:07<00:00, 74.49it/s]Loading weights:  89%|████████▉ | 356/399 [00:07<00:00, 79.59it/s]Loading weights:  91%|█████████▏| 365/399 [00:07<00:00, 80.16it/s]Loading weights:  94%|█████████▎| 374/399 [00:08<00:00, 76.00it/s]Loading weights:  96%|█████████▌| 382/399 [00:08<00:00, 73.39it/s]Loading weights:  98%|█████████▊| 390/399 [00:08<00:00, 73.76it/s]Loading weights: 100%|██████████| 399/399 [00:08<00:00, 47.60it/s]
+2026-09-24 16:41:28,222 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-24 16:41:28,294 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.07s.
+  100/120  297s  em=0.3200
+{
+  "records": "results/mh_arms/mh_train_cell_hv1_none_doc_records.jsonl",
+  "scope": "doc",
+  "condition": "retrieved",
+  "context_version": 2,
+  "retrieval_records_sha256": "c80539ca19c98f98626ae4ce672e47a404be183e67b1ff7478ac86d189b65956",
+  "retrieval_unit": "cell",
+  "retrieval_template": "s3c",
+  "query_ids_sha256": "876bb711d6db6fa98ad1c2aa066a31e9f2868f961b138f5fc46a7bef318bb546",
+  "reader_details": {
+    "name": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "revision_requested": null,
+    "revision_resolved": "b968826d9c46dd6066d109eabc6255188de91218",
+    "quantization": "4bit",
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 40960,
+    "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0].role == 'system' %}\n        {{- messages[0].content + '\\n\\n' }}\n    {%- endif %}\n    {{- \"# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0].content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" and message.content is string and not(message.content.startswith('<tool_response>') and message.content.endswith('</tool_response>')) %}\n        {%- set ns.multi_step_tool = false %}\n        {%- set ns.last_query_index = index %}\n    {%- endif %}\n{%- endfor %}\n{%- for message in messages %}\n    {%- if message.content is string %}\n        {%- set content = message.content %}\n    {%- else %}\n        {%- set content = '' %}\n    {%- endif %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        {%- if loop.index0 > ns.last_query_index %}\n            {%- if loop.last or (not loop.last and reasoning_content) %}\n                {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content.strip('\\n') + '\\n</think>\\n\\n' + content.lstrip('\\n') }}\n            {%- else %}\n                {{- '<|im_start|>' + message.role + '\\n' + content }}\n            {%- endif %}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if (loop.first and content) or (not loop.first) %}\n                    {{- '\\n' }}\n                {%- endif %}\n                {%- if tool_call.function %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {{- '<tool_call>\\n{\"name\": \"' }}\n                {{- tool_call.name }}\n                {{- '\", \"arguments\": ' }}\n                {%- if tool_call.arguments is string %}\n                    {{- tool_call.arguments }}\n                {%- else %}\n                    {{- tool_call.arguments | tojson }}\n                {%- endif %}\n                {{- '}\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is false %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}",
+    "enable_thinking": false
+  },
+  "prompt_sha256": "1f5ae3c04b4bc1b7f9409a3877a851db59b00c25ab06cc67725bcd1ee93b6d30",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "scorer": "multihiertt_em.mh_exact_match (공식 포팅, 문항 유형 갈래)",
+  "scorer_secondary": "multihiertt_em.docmath_match (DocMath-Eval compare_two_numbers)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.9333333333333333,
+    "n": 120,
+    "fail_examples": [
+      -0.21935,
+      -0.78785,
+      -0.04655,
+      -0.23077,
+      -0.0101
+    ],
+    "n_fail": 8
+  },
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt": "cot",
+  "seed": 42,
+  "max_new_tokens": 384,
+  "batch_size": 120,
+  "stratum_cap": 0,
+  "sample_seed": 20260913,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "same_queries_as": "results/mh_arms/mh_train_cell_hv1_none_doc_answer_doc_retrieved_fulln_cot384.jsonl",
+  "same_contexts_as": "results/mh_arms/mh_train_cell_hv1_none_doc_answer_doc_retrieved_fulln_cot384.jsonl",
+  "n_missing_from_same_queries": 0,
+  "generation_seconds": 297.1,
+  "resumed_rows": 0,
+  "run_config_sha256": "84457fd9917097cfd355edc71f03715043ce8438f688a4ca08df936628619456",
+  "marker_missing": 4,
+  "context_limit": 40960,
+  "n_over_context_limit": 0,
+  "by_layer": {
+    "ALL": {
+      "n": 120,
+      "retrieval_accuracy_here": 0.8417,
+      "answer_em": 0.3,
+      "answer_em_docmath": 0.3917,
+      "answer_given_retrieval_hit": 0.3564,
+      "n_retrieval_hit": 101,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 19,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 630.9
+    },
+    "arith_m1": {
+      "n": 2,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.5,
+      "answer_em_docmath": 0.5,
+      "answer_given_retrieval_hit": 0.5,
+      "n_retrieval_hit": 2,
+      "answer_given_retrieval_miss": null,
+      "n_retrieval_miss": 0,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 768.0
+    },
+    "arith_m2+": {
+      "n": 101,
+      "retrieval_accuracy_here": 0.8317,
+      "answer_em": 0.2673,
+      "answer_em_docmath": 0.3762,
+      "answer_given_retrieval_hit": 0.3214,
+      "n_retrieval_hit": 84,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 17,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 629.7
+    },
+    "lookup_m1": {
+      "n": 7,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.2857,
+      "answer_em_docmath": 0.2857,
+      "answer_given_retrieval_hit": 0.2857,
+      "n_retrieval_hit": 7,
+      "answer_given_retrieval_miss": null,
+      "n_retrieval_miss": 0,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 595.7
+    },
+    "lookup_m2+": {
+      "n": 10,
+      "retrieval_accuracy_here": 0.8,
+      "answer_em": 0.6,
+      "answer_em_docmath": 0.6,
+      "answer_given_retrieval_hit": 0.75,
+      "n_retrieval_hit": 8,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 2,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 639.8
+    }
+  },
+  "records_sha256": "4b1498874969ce043218ebda0db4d27eae01f014af05074259d513feefd0dd42"
+}
