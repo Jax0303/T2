@@ -173,4 +173,5 @@ def docmath_match(pred, gold, program: bool) -> bool:
     if not program:
         return span_exact_match(pred, gold)
     p = docmath_number(pred)
-    return p is not None and compare_two_numbers(p, float(gold))
+    # 자릿수가 너무 긴 예측·'inf'·'nan' 은 float 가 inf/nan 이 되어 compare_two_numbers 가 죽는다 — 오답으로 둔다
+    return p is not None and math.isfinite(p) and compare_two_numbers(p, float(gold))

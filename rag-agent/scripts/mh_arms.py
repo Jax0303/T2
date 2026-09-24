@@ -202,6 +202,81 @@ V31_RULES = ("S1n", "S2n", "S3n", "S4n", "S5n", "S6n")
 V32_RULES = ("S1n", "S2n", "S3n", "S4n2", "S5n2", "S6n")
 V33_RULES = ("S1n", "S2n", "S3n", "S4n2", "S5n3", "S6n")
 
+# 헤더 규칙 v3.3u = v3.3 + 문서 안 셀 문장 고유화 (PREREG-2026-09-24-mh-answer-cap300.md 끝, 2026-09-25).
+_VALUE = re.compile(r"^[\s$€£(\-–—−]*[\d.,]+\s*%?\s*\)?$|^[—–\-−]+$|^n/?a$", re.I)
+_YEAR = re.compile(r"^(19|20)\d\d$")
+
+
+def _dup_groups(items, key):
+    g = defaultdict(list)
+    for x in items:
+        g[key(x)].append(x)
+    return [v for v in g.values() if len(v) > 1]
+
+
+def unique_paths(t: MHTable, cover) -> None:
+    """한 표 안에서 경로가 같은 행끼리·열끼리만 경로를 늘려 셀 문장을 모두 다르게 한다.
+
+    먼저 표 안의 글: 행은 바로 위의 절 제목 행(데이터 칸이 빈 행)의 머리글, 열은 첫 값이 나오기 전
+    열 윗부분의 글(가로 병합으로 빈 칸은 원래 칸의 글). 그래도 같으면 위치('row N'/'column N') —
+    위치는 CLAUDE.md §1 의 라벨이 아니다, 같은 문장을 가르는 마지막 수단일 뿐이다.
+    """
+    t._rows = [t.row_path(i) for i in range(t.n_rows)]
+    t._cols = [t.col_path(j) for j in range(t.n_cols)]
+    rows = [i for i in range(t.n_rows) if any(str(v).strip() for v in t.data[i])]
+    cols = [j for j in range(t.n_cols) if any(str(t.data[i][j]).strip() for i in range(t.n_rows))]
+
+    def text(i, j):
+        r, c = t.nhr + i, t.nhc + j
+        s = (t.grid[r][c] or "").strip()
+        o = cover[r][c] if cover else None
+        return s or ((t.grid[o[0]][o[1]] or "").strip() if o and o[0] == r else "")
+
+    for g in _dup_groups(rows, lambda i: tuple(t._rows[i])):
+        for i in g:
+            for k in range(i - 1, -1, -1):
+                if not any(str(v).strip() for v in t.data[k]):
+                    head = " ".join(x.strip() for x in t.grid[t.nhr + k][:t.nhc] if x and x.strip())
+                    if head and head not in t._rows[i]:
+                        t._rows[i] = [*t._rows[i][:-1], head, *t._rows[i][-1:]]
+                        break
+    for g in _dup_groups(cols, lambda j: tuple(t._cols[j])):
+        for j in g:
+            extra = []
+            for i in range(t.n_rows):
+                s = text(i, j)
+                # ponytail: 앞 3개까지 — 값이 없는 글 열이 문장 전체를 끌고 오지 않게
+                if (_VALUE.match(s) and not _YEAR.match(s)) or len(extra) == 3:
+                    break
+                if s and s not in t._cols[j] and s not in extra:
+                    extra.append(s)
+            t._cols[j] = [*t._cols[j], *extra]
+    for g in _dup_groups(rows, lambda i: tuple(t._rows[i])):
+        for i in g:
+            t._rows[i] = [*t._rows[i], f"row {i + 1}"]
+    for g in _dup_groups(cols, lambda j: tuple(t._cols[j])):
+        for j in g:
+            t._cols[j] = [*t._cols[j], f"column {j + 1}"]
+
+
+def unique_doc(tabs: dict) -> None:
+    """문서 안의 다른 표와 같은 문장이 있는 표는 행 경로 앞에 'Table k'(문서 안 순서)를 붙인다.
+    표 번호도 §1 의 라벨이 아니다. 끝나면 문서 안 모든 데이터 셀 문장이 서로 다른지 확인한다."""
+    def labels(tid):
+        t = tabs[tid].table
+        return [" > ".join([*t.row_path(i), *t.col_path(j)])
+                for i, row in enumerate(t.data) for j, v in enumerate(row) if str(v).strip()]
+    seen = defaultdict(set)
+    for tid in tabs:
+        for s in labels(tid):
+            seen[s].add(tid)
+    for tid in {x for ts in seen.values() if len(ts) > 1 for x in ts}:
+        t = tabs[tid].table
+        t._rows = [[f"Table {int(tid.split('::')[1]) + 1}", *p] for p in t._rows]
+    every = [s for tid in tabs for s in labels(tid)]
+    if len(every) != len(set(every)):
+        raise ValueError(f"v3.3u: 문서 안에 같은 셀 문장이 남았다 ({sorted(tabs)[0]})")
+
 
 def build_tables(docs, header_rule: str = "v1", label_rule: str = "none", rules=None):
     """{table_id: MHDoc} — 표 하나가 색인의 한 '표'다. id 는 ``{uid}::{표 번호}``.
@@ -212,10 +287,11 @@ def build_tables(docs, header_rule: str = "v1", label_rule: str = "none", rules=
     None 이면 v1/v2 는 규칙 없음, v3·v3.1·v3.2·v3.3 은 각자의 전부.
     """
     if rules is None:
-        rules = {"v3": V3_RULES, "v3.1": V31_RULES, "v3.2": V32_RULES, "v3.3": V33_RULES}.get(header_rule, ())
+        rules = {"v3": V3_RULES, "v3.1": V31_RULES, "v3.2": V32_RULES, "v3.3": V33_RULES,
+                 "v3.3u": V33_RULES}.get(header_rule, ())
     rules = frozenset(rules)
     row_rule = ("v3.1" if "S3n" in rules else "v3" if "S3" in rules
-                else "v2" if header_rule in ("v3", "v3.1", "v3.2", "v3.3") else header_rule)
+                else "v2" if header_rule in ("v3", "v3.1", "v3.2", "v3.3", "v3.3u") else header_rule)
     tables, hdr = {}, {}
     for uid in sorted(docs):
         labels = table_labels(docs[uid][2] if len(docs[uid]) > 2 else [], label_rule)
@@ -233,6 +309,11 @@ def build_tables(docs, header_rule: str = "v1", label_rule: str = "none", rules=
             tables[tid] = MHDoc(MHTable(tid, grid, nhr, nhc, cover, rules),
                                 labels.get(t_idx, NO_TITLE))
             hdr[tid] = (nhr, nhc)
+            if header_rule == "v3.3u":
+                unique_paths(tables[tid].table, cover)
+        if header_rule == "v3.3u":
+            unique_doc({f"{uid}::{k}": tables[f"{uid}::{k}"] for k in range(len(docs[uid][0]))
+                        if f"{uid}::{k}" in tables})
     return tables, hdr
 
 
@@ -305,8 +386,8 @@ def main() -> int:
     ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"])
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
     ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
-    ap.add_argument("--header-rule", default=None, choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3"],
-                    help="헤더 행 추정 규칙. 기본 v1, strict_no_k 는 채택 규칙 v3.3 "
+    ap.add_argument("--header-rule", default=None, choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3", "v3.3u"],
+                    help="헤더 행 추정 규칙. v3.3u = v3.3 + 문서 안 셀 문장 고유화. 기본 v1, strict_no_k 는 채택 규칙 v3.3 "
                          "(PREREG-2026-09-14-header-v3.md 정정 4). v2 = PREREG-2026-09-13-header-units-note.md, "
                          "v3·v3.1·v3.2·v3.3 = PREREG-2026-09-14-header-v3.md")
     ap.add_argument("--label-rule", default="none", choices=["none", "L1", "L2"],

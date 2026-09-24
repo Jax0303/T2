@@ -18,7 +18,8 @@ ROOT = Path(__file__).resolve().parent.parent
 D = ROOT / "results" / "mh_arms" / "cap300_20260924"
 POP = {"lookup_m1": 211, "lookup_m2+": 365, "arith_m1": 71, "arith_m2+": 2224}   # 채점 2,871 의 그룹 크기
 W = {g: n / sum(POP.values()) for g, n in POP.items()}
-ORDER = ["cell", "fulltable", "chunk", "rowcol", "trag_hetero", "tablerag_path", "tablerag_leaf", "randrow"]
+REF = "cell_uniq"   # 본 방법 주 조건(v3.3u, 2026-09-25 사용자 결정). v1 은 "cell"
+ORDER = ["cell_uniq", "cell", "fulltable", "chunk", "rowcol", "trag_hetero", "tablerag_path", "tablerag_leaf", "randrow"]
 REPS, SEED = 10_000, 0
 
 
@@ -42,7 +43,7 @@ def boot(ids_by_group, f, rng):
 def main() -> int:
     names = [n for n in ORDER if (D / f"{n}.jsonl").exists()]
     data = {n: load(n) for n in names}
-    ref = data["cell"]
+    ref = data[REF]
     groups = {g: sorted(q for q, r in ref.items() if r["layer"] == g) for g in POP}
     for n, rows in data.items():
         if set(rows) != set(ref):
@@ -58,7 +59,7 @@ def main() -> int:
                   "weighted_em": round(float(est), 4), "ci95": [round(float(x), 4) for x in ci],
                   "retrieval": {g: round(float(np.mean([rows[q]["retrieval_correct"] for q in ids])), 4)
                                 for g, ids in groups.items()}}
-        if n != "cell":
+        if n != REF:
             d = {g: np.array([ref[q]["answer_correct"] - rows[q]["answer_correct"] for q in ids])
                  for g, ids in groups.items()}
             dci = boot({g: np.arange(len(ids)) for g, ids in groups.items()},
