@@ -87,6 +87,20 @@ def gold_context(cells, tables):
     return out
 
 
+def full_tables(split, header_rule="v1", label_rule="none"):
+    """(질의 id -> 문서의 표 전부) — 표마다 청킹 arm 과 같은 markdown(`chunks.markdown_source`).
+    라벨이 없으면 빈 "Table name:" 줄은 뺀다. 색인이 버리는 표(3행 미만·2열 미만)는 gold 도 없으므로 같이 뺀다."""
+    from rag_agent.serialization.chunks import markdown_source
+    _queries, docs, _ = load_population(split)
+    tables, _ = build_tables(docs, header_rule, label_rule)
+    out = defaultdict(list)
+    for tid in sorted(tables, key=lambda t: (t.split("::")[0], int(t.split("::")[1]))):
+        tab = tables[tid]
+        out[tid.split("::")[0]].append(
+            markdown_source(tab, tab.table, tab.title)[0].removeprefix("Table name: \n"))
+    return out
+
+
 def summarize(rows, limit=0):
     def acc(v):
         return round(sum(v) / len(v), 4) if v else None
@@ -133,7 +147,7 @@ def run_config(a, llm, details, ctxs):
             "reader_details": {k: v for k, v in details.items() if k != "chat_template"},
             "chat_template_sha256": digest(details.get("chat_template")),
             "prompt": a.prompt, "prompt_sha256": digest(PROMPTS[a.prompt]),
-            "max_new_tokens": a.max_tokens, "temperature": 0.0, "seed": a.seed, "batch_size": 1,
+            "max_new_tokens": a.max_tokens, "temperature": 0.0, "seed": a.seed, "batch_size": a.batch_size,
             "packages": provenance(ROOT)["packages"],
             "code_sha256": digest(code), "code_files": code}
 
@@ -167,7 +181,7 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--records", required=True)
     ap.add_argument("--scope", default="doc", choices=["doc", "corpus", "table"])
-    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold"])
+    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold", "fulltable"])
     # 기본값 = 채택 설정 (PREREG-2026-09-13-reader-qwen3.md, 재확인 PREREG-2026-09-23-reader-thinking-pilot.md).
     # 2026-09-21 실행 15개가 옛 기본값(neutral, 64)으로 돌아 채택 설정이 아닌 수치를 낸 전례가 있다.
     ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit")
@@ -189,6 +203,9 @@ def main() -> int:
                     help="--same-queries-as 에 더해 질의마다 context_sha256 까지 이 답변 결과와 "
                          "같아야 한다. 리더·프롬프트만 바꾼 재실행용이며, 하나라도 다르면 리더를 "
                          "싣기 전에 멈춘다.")
+    ap.add_argument("--batch-size", type=int, default=1,
+                    help="한 번에 넘길 문항 수(= 저장 단위). 1 이 아니면 LocalQwenLLM.complete_batch "
+                         "(continuous batching, greedy 전용) — 동시에 도는 수는 메모리로 정해진다.")
     ap.add_argument("--resume", action="store_true",
                     help="--out 에 저장된 행이 있으면 이어 쓴다. 실행 조건(<out>.run.json)이 하나라도 "
                          "다르면 멈춘다. 저장된 행이 없으면 새로 시작한다.")
@@ -260,7 +277,9 @@ def main() -> int:
     check = self_check([r["answer"] for r in scored], [r["kind"] == "arith" for r in scored])
     print(f"[scorer] gold 를 예측으로 넣었을 때 EM={check['em']} (n={check['n']})", flush=True)
 
+    full = full_tables(a.split, a.header_rule, a.label_rule) if a.condition == "fulltable" else None
     ctxs = {r["query_id"]: (gold_context(gold[r["query_id"]], tables) if a.condition == "gold"
+                            else full[r["query_id"]] if full is not None
                             else r[a.scope].get("context") or []) for r in scored}
     if a.same_contexts_as:
         ref = {x["query_id"]: x["context_sha256"]
@@ -289,41 +308,49 @@ def main() -> int:
     order = [r["query_id"] for r in scored]
     done = load_saved_rows(out, order, ctxs) if out.exists() else {}
 
+    def generate(todo):
+        """(질의, 입력 토큰 수, 출력, 질의당 초) — --batch-size 건씩 한 번에 생성한다."""
+        for s in range(0, len(todo), a.batch_size):
+            batch, t = todo[s:s + a.batch_size], time.time()
+            users = ["Context:\n" + "\n".join(ctxs[r["query_id"]])
+                     + f"\n\nQuestion: {r['question']}\nAnswer:" for r in batch]
+            n_toks = [llm.n_prompt_tokens(PROMPTS[a.prompt], u)
+                      if hasattr(llm, "n_prompt_tokens") else None for u in users]
+            for n_tok in n_toks:
+                check_context_limit(n_tok, a.max_tokens, limit)
+            raws = ([llm.complete(PROMPTS[a.prompt], users[0], max_tokens=a.max_tokens,
+                                  temperature=0.0)] if a.batch_size == 1 else
+                    llm.complete_batch(PROMPTS[a.prompt], users, max_tokens=a.max_tokens))
+            seconds = round((time.time() - t) / len(batch), 3)
+            yield from ((r, n, raw, seconds) for r, n, raw in zip(batch, n_toks, raws))
+
     rows, t0 = list(done.values()), time.time()
-    # 문항마다 즉시 쓴다 — 중단돼도 끝난 문항은 디스크에 남는다
+    # 배치마다 즉시 쓴다 — 중단돼도 끝난 문항은 디스크에 남는다
     with out.open("a", encoding="utf-8", newline="\n") as stream:
-        for k, r in enumerate(scored, 1):
-            if r["query_id"] in done:
-                continue
-            t = time.time()
+        for r, n_tok, raw, seconds in generate([r for r in scored if r["query_id"] not in done]):
             ctx = ctxs[r["query_id"]]
-            user = "Context:\n" + "\n".join(ctx) + f"\n\nQuestion: {r['question']}\nAnswer:"
-            n_tok = (llm.n_prompt_tokens(PROMPTS[a.prompt], user)
-                     if hasattr(llm, "n_prompt_tokens") else None)
-            check_context_limit(n_tok, a.max_tokens, limit)
-            raw = llm.complete(PROMPTS[a.prompt], user, max_tokens=a.max_tokens,
-                               temperature=0.0)
             pred, marked = extract(raw) if a.prompt == "cot" else (raw, True)
             row = {"query_id": r["query_id"], "layer": r["layer"], "kind": r["kind"],
                    "m": r["m"], "question": r["question"],
-                   "retrieval_correct": r[a.scope]["correct"],
+                   # 표 전체는 정의상 근거를 전부 담는다
+                   "retrieval_correct": 1 if full is not None else r[a.scope]["correct"],
                    "answer_correct": int(mh_exact_match(pred, r["answer"], r["kind"] == "arith")),
                    "answer_correct_docmath": int(docmath_match(pred, r["answer"], r["kind"] == "arith")),
                    "n_ctx": len(ctx), "n_tok": n_tok,
-                   "cells_in_context": r[a.scope]["cells_in_context"],
+                   "cells_in_context": None if full is not None else r[a.scope]["cells_in_context"],
                    "context_sha256": digest(ctx),
                    "source_context_sha256": r[a.scope].get("context_sha256"),
                    "context_condition": a.condition,
                    "pred": pred, "answer": r["answer"]}
             if a.prompt == "cot":
                 row.update(raw=raw, marker_found=marked)
-            row["seconds"] = round(time.time() - t, 3)
+            row["seconds"] = seconds
             stream.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
             stream.flush()
             os.fsync(stream.fileno())
             rows.append(row)
-            if k % 100 == 0:
-                print(f"  {k}/{len(scored)}  {time.time() - t0:.0f}s  "
+            if len(rows) % 100 == 0:
+                print(f"  {len(rows)}/{len(scored)}  {time.time() - t0:.0f}s  "
                       f"em={sum(x['answer_correct'] for x in rows) / len(rows):.4f}", flush=True)
     if [x["query_id"] for x in rows] != order:
         raise SystemExit("저장된 행이 실행 계획과 다르다 — 누락 또는 중복")
@@ -339,7 +366,7 @@ def main() -> int:
                "scorer_secondary": "multihiertt_em.docmath_match (DocMath-Eval compare_two_numbers)",
                "answer_source": f"{OFFICIAL_REPO}@{OFFICIAL_REV}",
                "scorer_self_check": check, "reader": llm.name, "prompt": a.prompt,
-               "seed": a.seed, "max_new_tokens": a.max_tokens, "batch_size": 1,
+               "seed": a.seed, "max_new_tokens": a.max_tokens, "batch_size": a.batch_size,
                "stratum_cap": a.stratum_cap, "sample_seed": a.sample_seed,
                "header_rule": a.header_rule, "label_rule": a.label_rule,
                "same_queries_as": a.same_queries_as or None,

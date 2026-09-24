@@ -126,3 +126,21 @@ class LocalQwenLLM(BaseLLM):
         self.last_generation = {"new_tokens": len(gen), "think_tokens": cut,
                                 "think_closed": (not thinking) or cut > 0}
         return self.tokenizer.decode(gen[cut:], skip_special_tokens=True).strip()
+
+    def complete_batch(self, system: str, users: list, max_tokens: int = 256) -> list:
+        """비생각·greedy 전용 continuous batching(`generate_batch`) — 끝난 문항 자리에 다음 문항을
+        바로 넣는다. 8GB 에서 고정 묶음은 긴 입력이 메모리를 넘겨 쓰지 않았다. 배치 1 과 연산 경로가
+        달라 ``complete`` 와 출력이 바이트 단위로 같다는 보장은 없다 — 쓰기 전에 대조한다."""
+        from transformers import ContinuousBatchingConfig, GenerationConfig
+        tok = self.tokenizer
+        ids = [tok(self._prompt(system, u))["input_ids"] for u in users]
+        cfg = GenerationConfig(max_new_tokens=max_tokens, do_sample=False,
+                               eos_token_id=tok.eos_token_id, pad_token_id=tok.eos_token_id)
+        out = self.model.generate_batch(inputs=ids, generation_config=cfg, progress_bar=False,
+                                        continuous_batching_config=ContinuousBatchingConfig(
+                                            max_memory_percent=0.9))
+        # 요청 id 는 'req_<입력 순번>' — 순번으로 되돌린다
+        keys = sorted(out, key=lambda k: int(k.rsplit("_", 1)[1]))
+        if len(keys) != len(ids):
+            raise RuntimeError(f"generate_batch 가 {len(ids)}건 중 {len(keys)}건만 돌려줬다")
+        return [tok.decode(out[k].generated_tokens, skip_special_tokens=True).strip() for k in keys]
