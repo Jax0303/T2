@@ -1,0 +1,96 @@
+[same-queries] 683 요청 -> 683 (새 레코드에 없음 0)
+[scorer] gold 를 예측으로 넣었을 때 EM=0.95 (n=20)
+[same-contexts] 20건 context_sha256 일치
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<04:55,  1.35it/s]Loading weights:   1%|          | 4/399 [00:00<01:11,  5.54it/s]Loading weights:   2%|▏         | 6/399 [00:01<00:51,  7.58it/s]Loading weights:   4%|▍         | 15/399 [00:01<00:17, 22.15it/s]Loading weights:   5%|▍         | 19/399 [00:01<00:14, 25.62it/s]Loading weights:   7%|▋         | 27/399 [00:01<00:10, 34.25it/s]Loading weights:   9%|▊         | 34/399 [00:01<00:09, 40.27it/s]Loading weights:  10%|▉         | 39/399 [00:01<00:08, 40.11it/s]Loading weights:  12%|█▏        | 49/399 [00:01<00:06, 51.20it/s]Loading weights:  15%|█▍        | 59/399 [00:01<00:05, 60.61it/s]Loading weights:  17%|█▋        | 66/399 [00:02<00:05, 62.79it/s]Loading weights:  18%|█▊        | 73/399 [00:02<00:05, 58.55it/s]Loading weights:  21%|██        | 82/399 [00:02<00:04, 64.08it/s]Loading weights:  23%|██▎       | 92/399 [00:02<00:04, 72.34it/s]Loading weights:  25%|██▌       | 100/399 [00:02<00:04, 72.90it/s]Loading weights:  27%|██▋       | 108/399 [00:02<00:04, 70.55it/s]Loading weights:  29%|██▉       | 116/399 [00:02<00:04, 60.95it/s]Loading weights:  32%|███▏      | 126/399 [00:02<00:04, 67.96it/s]Loading weights:  34%|███▍      | 136/399 [00:03<00:03, 69.98it/s]Loading weights:  36%|███▌      | 144/399 [00:03<00:03, 67.76it/s]Loading weights:  38%|███▊      | 151/399 [00:03<00:03, 64.41it/s]Loading weights:  40%|███▉      | 159/399 [00:03<00:03, 65.15it/s]Loading weights:  42%|████▏     | 169/399 [00:03<00:03, 69.82it/s]Loading weights:  44%|████▍     | 177/399 [00:03<00:03, 68.81it/s]Loading weights:  46%|████▌     | 184/399 [00:03<00:03, 66.60it/s]Loading weights:  48%|████▊     | 192/399 [00:03<00:03, 65.57it/s]Loading weights:  51%|█████     | 202/399 [00:03<00:02, 73.86it/s]Loading weights:  53%|█████▎    | 210/399 [00:04<00:02, 73.42it/s]Loading weights:  55%|█████▍    | 218/399 [00:04<00:02, 63.88it/s]Loading weights:  56%|█████▋    | 225/399 [00:04<00:02, 60.69it/s]Loading weights:  59%|█████▉    | 235/399 [00:04<00:02, 66.99it/s]Loading weights:  61%|██████    | 242/399 [00:04<00:02, 65.73it/s]Loading weights:  62%|██████▏   | 249/399 [00:04<00:02, 58.85it/s]Loading weights:  65%|██████▍   | 258/399 [00:04<00:02, 63.10it/s]Loading weights:  67%|██████▋   | 268/399 [00:05<00:01, 67.50it/s]Loading weights:  69%|██████▉   | 276/399 [00:05<00:01, 69.45it/s]Loading weights:  71%|███████   | 284/399 [00:05<00:01, 68.18it/s]Loading weights:  73%|███████▎  | 291/399 [00:05<00:01, 67.05it/s]Loading weights:  75%|███████▌  | 301/399 [00:05<00:01, 70.40it/s]Loading weights:  77%|███████▋  | 309/399 [00:05<00:01, 69.95it/s]Loading weights:  79%|███████▉  | 316/399 [00:05<00:01, 66.30it/s]Loading weights:  81%|████████  | 324/399 [00:05<00:01, 64.42it/s]Loading weights:  84%|████████▎ | 334/399 [00:05<00:00, 68.92it/s]Loading weights:  85%|████████▌ | 341/399 [00:14<00:19,  3.04it/s]Loading weights:  87%|████████▋ | 346/399 [00:14<00:14,  3.77it/s]Loading weights: 100%|██████████| 399/399 [00:06<00:00, 61.86it/s]
+{
+  "records": "results/mh_arms/mh_train_cell_hv1_none_doc_records.jsonl",
+  "scope": "doc",
+  "condition": "retrieved",
+  "context_version": 2,
+  "retrieval_records_sha256": "c80539ca19c98f98626ae4ce672e47a404be183e67b1ff7478ac86d189b65956",
+  "retrieval_unit": "cell",
+  "retrieval_template": "s3c",
+  "query_ids_sha256": "59e9ee3871f9e5166225c9f949eb860e09c887e9131f101413d75f828a26b608",
+  "reader_details": {
+    "name": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "revision_requested": null,
+    "revision_resolved": "b968826d9c46dd6066d109eabc6255188de91218",
+    "quantization": "4bit",
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 40960,
+    "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0].role == 'system' %}\n        {{- messages[0].content + '\\n\\n' }}\n    {%- endif %}\n    {{- \"# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0].content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" and message.content is string and not(message.content.startswith('<tool_response>') and message.content.endswith('</tool_response>')) %}\n        {%- set ns.multi_step_tool = false %}\n        {%- set ns.last_query_index = index %}\n    {%- endif %}\n{%- endfor %}\n{%- for message in messages %}\n    {%- if message.content is string %}\n        {%- set content = message.content %}\n    {%- else %}\n        {%- set content = '' %}\n    {%- endif %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        {%- if loop.index0 > ns.last_query_index %}\n            {%- if loop.last or (not loop.last and reasoning_content) %}\n                {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content.strip('\\n') + '\\n</think>\\n\\n' + content.lstrip('\\n') }}\n            {%- else %}\n                {{- '<|im_start|>' + message.role + '\\n' + content }}\n            {%- endif %}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if (loop.first and content) or (not loop.first) %}\n                    {{- '\\n' }}\n                {%- endif %}\n                {%- if tool_call.function %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {{- '<tool_call>\\n{\"name\": \"' }}\n                {{- tool_call.name }}\n                {{- '\", \"arguments\": ' }}\n                {%- if tool_call.arguments is string %}\n                    {{- tool_call.arguments }}\n                {%- else %}\n                    {{- tool_call.arguments | tojson }}\n                {%- endif %}\n                {{- '}\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is false %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}",
+    "enable_thinking": false
+  },
+  "prompt_sha256": "1f5ae3c04b4bc1b7f9409a3877a851db59b00c25ab06cc67725bcd1ee93b6d30",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "scorer": "multihiertt_em.mh_exact_match (공식 포팅, 문항 유형 갈래)",
+  "scorer_secondary": "multihiertt_em.docmath_match (DocMath-Eval compare_two_numbers)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.95,
+    "n": 20,
+    "fail_examples": [
+      -0.21935
+    ],
+    "n_fail": 1
+  },
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt": "cot",
+  "seed": 42,
+  "max_new_tokens": 384,
+  "batch_size": 1,
+  "stratum_cap": 0,
+  "sample_seed": 20260913,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "same_queries_as": "results/mh_arms/mh_train_cell_hv1_none_doc_answer_doc_retrieved_fulln_cot384.jsonl",
+  "same_contexts_as": "results/mh_arms/mh_train_cell_hv1_none_doc_answer_doc_retrieved_fulln_cot384.jsonl",
+  "n_missing_from_same_queries": 0,
+  "generation_seconds": 208.6,
+  "resumed_rows": 0,
+  "run_config_sha256": "a77566e7b22e8770b1b77f474b844c14ab1f0966a249433ff9f5560ef9562284",
+  "marker_missing": 2,
+  "context_limit": 40960,
+  "n_over_context_limit": 0,
+  "by_layer": {
+    "ALL": {
+      "n": 20,
+      "retrieval_accuracy_here": 0.8,
+      "answer_em": 0.45,
+      "answer_em_docmath": 0.5,
+      "answer_given_retrieval_hit": 0.5625,
+      "n_retrieval_hit": 16,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 4,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 653.5
+    },
+    "arith_m2+": {
+      "n": 16,
+      "retrieval_accuracy_here": 0.8125,
+      "answer_em": 0.375,
+      "answer_em_docmath": 0.4375,
+      "answer_given_retrieval_hit": 0.4615,
+      "n_retrieval_hit": 13,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 3,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 642.1
+    },
+    "lookup_m2+": {
+      "n": 4,
+      "retrieval_accuracy_here": 0.75,
+      "answer_em": 0.75,
+      "answer_em_docmath": 0.75,
+      "answer_given_retrieval_hit": 1.0,
+      "n_retrieval_hit": 3,
+      "answer_given_retrieval_miss": 0.0,
+      "n_retrieval_miss": 1,
+      "context_lines_mean": 20.0,
+      "input_tokens_mean": 699.0
+    }
+  },
+  "records_sha256": "b04421d42c6a45391a649dc7ae79d146ba0324a359d5a50b9b914aee3811fe43"
+}
