@@ -1,0 +1,196 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] 2908 queries / 2908 docs (제외: {'needs_text_evidence': 4922}) 4s
+[corpus] 11793 tables / 101929 randrow units (7s)
+[bm25] 18308 terms in 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:   5%|▌         | 10/199 [00:00<00:02, 93.52it/s]Loading weights:  12%|█▏        | 24/199 [00:00<00:01, 96.06it/s]Loading weights:  17%|█▋        | 34/199 [00:00<00:01, 96.22it/s]Loading weights:  22%|██▏       | 44/199 [00:00<00:02, 64.41it/s]Loading weights:  28%|██▊       | 55/199 [00:00<00:01, 75.46it/s]Loading weights:  32%|███▏      | 64/199 [00:00<00:01, 72.78it/s]Loading weights:  36%|███▌      | 72/199 [00:00<00:01, 66.03it/s]Loading weights:  40%|████      | 80/199 [00:01<00:02, 42.12it/s]Loading weights:  46%|████▌     | 92/199 [00:01<00:02, 45.24it/s]Loading weights:  52%|█████▏    | 104/199 [00:01<00:02, 46.45it/s]Loading weights:  59%|█████▉    | 118/199 [00:02<00:01, 52.84it/s]Loading weights:  62%|██████▏   | 124/199 [00:02<00:01, 48.00it/s]Loading weights:  68%|██████▊   | 135/199 [00:02<00:01, 54.00it/s]Loading weights:  76%|███████▌  | 151/199 [00:02<00:00, 68.45it/s]Loading weights:  80%|███████▉  | 159/199 [00:02<00:00, 66.21it/s]Loading weights:  85%|████████▍ | 169/199 [00:02<00:00, 65.28it/s]Loading weights: 100%|██████████| 199/199 [00:02<00:00, 71.25it/s]
+[dense] 0..50000 in 63s
+[dense] 50000..100000 in 60s
+[dense] 100000..101929 in 0s
+  200/2908  8s
+  400/2908  16s
+  600/2908  24s
+  800/2908  29s
+  1000/2908  37s
+  1200/2908  44s
+  1400/2908  51s
+  1600/2908  59s
+  1800/2908  64s
+  2000/2908  71s
+  2200/2908  78s
+  2400/2908  85s
+  2600/2908  90s
+  2800/2908  98s
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "unit": "randrow",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 101929,
+      "max_tokens": 125,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 2908,
+      "max_tokens": 78,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "budget_cells": 20,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 101929,
+  "corpus_text_sha256": "742551950deede4853233e232082817ce4d05212a0dbf30bfa9213d7c030c36c",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2871,
+  "n_excluded": 37,
+  "excluded_by_reason": {
+    "gold_in_header": 31,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "e45e77fe9ba42097660d7614179b066696ff87d626f6fc69c9f17d4dc574d610",
+  "by_layer": {
+    "ALL": {
+      "n": 2871,
+      "corpus": {
+        "accuracy_all": 0.1108,
+        "accuracy_any_DIAGNOSTIC": 0.2041,
+        "gold_doc_in_context": 0.2644,
+        "cells_delivered_mean": 21.5
+      },
+      "doc": {
+        "accuracy_all": 0.1087,
+        "accuracy_any_DIAGNOSTIC": 0.2919,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.9
+      },
+      "table": {
+        "accuracy_all": 0.3783,
+        "accuracy_any_DIAGNOSTIC": 0.6116,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 2.648,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.2254,
+        "accuracy_any_DIAGNOSTIC": 0.2254,
+        "gold_doc_in_context": 0.2676,
+        "cells_delivered_mean": 21.8
+      },
+      "doc": {
+        "accuracy_all": 0.2535,
+        "accuracy_any_DIAGNOSTIC": 0.2535,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.1
+      },
+      "table": {
+        "accuracy_all": 0.6479,
+        "accuracy_any_DIAGNOSTIC": 0.6479,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.4
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2224,
+      "corpus": {
+        "accuracy_all": 0.0989,
+        "accuracy_any_DIAGNOSTIC": 0.214,
+        "gold_doc_in_context": 0.2707,
+        "cells_delivered_mean": 21.5
+      },
+      "doc": {
+        "accuracy_all": 0.0989,
+        "accuracy_any_DIAGNOSTIC": 0.3152,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.9
+      },
+      "table": {
+        "accuracy_all": 0.3763,
+        "accuracy_any_DIAGNOSTIC": 0.6484,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.7
+      },
+      "mean_m": 2.733,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "corpus": {
+        "accuracy_all": 0.1517,
+        "accuracy_any_DIAGNOSTIC": 0.1517,
+        "gold_doc_in_context": 0.2417,
+        "cells_delivered_mean": 21.4
+      },
+      "doc": {
+        "accuracy_all": 0.1659,
+        "accuracy_any_DIAGNOSTIC": 0.1659,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.7
+      },
+      "table": {
+        "accuracy_all": 0.3744,
+        "accuracy_any_DIAGNOSTIC": 0.3744,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.3
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.137,
+        "accuracy_any_DIAGNOSTIC": 0.1699,
+        "gold_doc_in_context": 0.2384,
+        "cells_delivered_mean": 21.6
+      },
+      "doc": {
+        "accuracy_all": 0.1068,
+        "accuracy_any_DIAGNOSTIC": 0.2301,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.0
+      },
+      "table": {
+        "accuracy_all": 0.3397,
+        "accuracy_any_DIAGNOSTIC": 0.5178,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.3
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  }
+}

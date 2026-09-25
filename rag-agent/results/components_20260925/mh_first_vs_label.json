@@ -1,0 +1,44 @@
+{
+ "c": {
+  "judged": 531,
+  "first_is_max_label_sim": 312,
+  "excluded": {
+   "empty_label": 19,
+   "record_undetermined": 26,
+   "label_tie": 3,
+   "no_gold_table_in_top20": 3
+  }
+ },
+ "e": {
+  "judged": 554,
+  "first_is_max_label_sim": 370,
+  "excluded": {
+   "empty_label": 19,
+   "label_tie": 3,
+   "record_undetermined": 2,
+   "no_gold_table_in_top20": 4
+  }
+ },
+ "paired": {
+  "n": 529,
+  "c_yes": 310,
+  "e_yes": 352,
+  "b_c_only": 29,
+  "c_e_only": 71,
+  "p_exact": 3.2160015295666335e-05
+ },
+ "n_gold_tables_hist": {
+  "2": 575,
+  "3": 7
+ },
+ "encoder": {
+  "name": "BAAI/bge-base-en-v1.5",
+  "revision": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "passage_prefix": ""
+ },
+ "records": {
+  "c": "results/mh_arms/mh_cell_hv2_records.jsonl",
+  "e": "results/mh_arms/mh_cell_hv2_L1_records.jsonl"
+ }
+}

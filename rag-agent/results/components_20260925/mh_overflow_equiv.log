@@ -1,0 +1,108 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+corpora rebuilt, hashes match
+{
+ "tokenizer": "BAAI/bge-base-en-v1.5 (add_special_tokens=True, truncation=False, 문서 접두어 없음)",
+ "limit": 512,
+ "n_cells": 425870,
+ "cell_tokens": {
+  "median": 51.0,
+  "mean": 54.00664991664123,
+  "max": 244,
+  "p95": 89.0
+ },
+ "cells_over_limit": 0,
+ "cells_over_limit_ratio": 0.0,
+ "label_tokens_per_cell": {
+  "median": 18.0,
+  "mean": 21.161687839011904,
+  "max": 199,
+  "p95": 52.0
+ },
+ "label_tokens_per_table": {
+  "median": 21.0,
+  "mean": 23.001271940981937,
+  "max": 199,
+  "p95": 52.0
+ },
+ "cells_with_empty_label": 8403,
+ "n_tables": 11793,
+ "tables_with_empty_label": 150,
+ "label_share_of_cell_tokens_median": 0.35294117647058826,
+ "queries_gold_sentence_over_limit": 0,
+ "n_queries": 2878,
+ "layers_of_those": {},
+ "accuracy_on_those": {
+  "c": {
+   "doc": {
+    "correct": 0,
+    "n": 0,
+    "rate": null
+   },
+   "corpus": {
+    "correct": 0,
+    "n": 0,
+    "rate": null
+   }
+  },
+  "e": {
+   "doc": {
+    "correct": 0,
+    "n": 0,
+    "rate": null
+   },
+   "corpus": {
+    "correct": 0,
+    "n": 0,
+    "rate": null
+   }
+  }
+ }
+}
+doc groups {'raw_html': 1105, 'c_text': 1105, 'e_text': 1105}
+{
+ "doc_groups": {
+  "raw_html": 1105,
+  "c_text": 1105,
+  "e_text": 1105
+ },
+ "groups_same_raw_vs_text": true,
+ "docs_in_groups_of_size_ge2": 2603,
+ "n_queries": 2878,
+ "queries_whose_doc_has_copies": 2582,
+ "c": {
+  "original_correct": 766,
+  "rescored_yes": 795,
+  "undetermined": 6,
+  "no": 2077
+ },
+ "e": {
+  "original_correct": 654,
+  "rescored_yes": 674,
+  "undetermined": 1,
+  "no": 2203
+ },
+ "undetermined_as_wrong": {
+  "c": 795,
+  "e": 674,
+  "mcnemar": {
+   "c_only": 281,
+   "e_only": 160,
+   "p_exact": 8.955312778667638e-09
+  }
+ },
+ "undetermined_as_right": {
+  "c": 801,
+  "e": 675,
+  "mcnemar": {
+   "c_only": 285,
+   "e_only": 159,
+   "p_exact": 2.3516602174245035e-09
+  }
+ },
+ "original_mcnemar": {
+  "c_only": 272,
+  "e_only": 160,
+  "p_exact": 7.893717273882914e-08
+ }
+}

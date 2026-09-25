@@ -86,7 +86,9 @@ TEMPLATES = {"s3c": STRUCTURAL_COMPACT, "s3": STRUCTURAL, "sleaf": STRUCTURAL_LE
 # and (..., "S2"), so they stay comparable with the older numbers on disk.
 # ``s3frame`` keeps s3c's sentence frame but drops the label, so s3c vs s3frame
 # isolates the label and s3frame vs s2 isolates the frame (2026-09-23).
-ABLATIONS = ("flat", "s2", "s3frame")
+# ``value`` is the cell value alone; ``s3label`` is s3c with both paths dropped
+# (title + value only), so s3label vs s3c isolates the path (2026-09-25).
+ABLATIONS = ("flat", "s2", "s3frame", "value", "s3label")
 # cell/row/table are index-unit sizes of OUR sentence. chunk and tablerag are
 # representation adaptations and ignore --template. Neither `chunk` nor
 # `tablerag` is a reproduction of a published end-to-end system.
@@ -113,6 +115,10 @@ def cell_unit(title, row_path, col_path, value, template: str) -> str:
         return f"{path}: {value}" if path else str(value)
     if template == "s3frame":
         return caption_sentence("", row_path, col_path, value=value, template=STRUCTURAL)
+    if template == "value":
+        return str(value)
+    if template == "s3label":
+        return caption_sentence(title, [], [], value=value, template=STRUCTURAL_COMPACT)
     return caption_sentence(title, row_path, col_path, value=value,
                             template=TEMPLATES[template])
 

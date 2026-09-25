@@ -1,0 +1,114 @@
+{
+  "forms": {
+    "a": {
+      "template": "value",
+      "records": "results/components_20260925/value_records.jsonl",
+      "example": "52.1",
+      "n_queries": 991,
+      "correct": 11,
+      "gold_table_in_context": 65,
+      "corpus_cells": 67664,
+      "cells_with_duplicate_text": 60868,
+      "distinct_texts": 10174,
+      "queries_gold_text_duplicated": 797,
+      "queries_gold_dup_same_table": 224,
+      "queries_gold_dup_other_table_only": 573
+    },
+    "b": {
+      "template": "flat",
+      "records": "results/components_20260925/flat_records.jsonl",
+      "example": "food service french-language workers: 52.1",
+      "n_queries": 991,
+      "correct": 562,
+      "gold_table_in_context": 691,
+      "corpus_cells": 67664,
+      "cells_with_duplicate_text": 25679,
+      "distinct_texts": 47390,
+      "queries_gold_text_duplicated": 77,
+      "queries_gold_dup_same_table": 30,
+      "queries_gold_dup_other_table_only": 47
+    },
+    "c": {
+      "template": "s2",
+      "records": "results/retrieval_accuracy/t_s2_split_labelabl_records.jsonl",
+      "example": "percent > food service > eastern ontario > french-language workers: 52.1",
+      "n_queries": 991,
+      "correct": 792,
+      "gold_table_in_context": 882,
+      "corpus_cells": 67664,
+      "cells_with_duplicate_text": 3066,
+      "distinct_texts": 65983,
+      "queries_gold_text_duplicated": 20,
+      "queries_gold_dup_same_table": 1,
+      "queries_gold_dup_other_table_only": 19
+    },
+    "d": {
+      "template": "s3label",
+      "records": "results/components_20260925/s3label_records.jsonl",
+      "example": "In the table 'agri-food industry sub-groups for workers aged 15 years and over, two agricultural regions of ontario, 2011', the value is 52.1.",
+      "n_queries": 991,
+      "correct": 268,
+      "gold_table_in_context": 689,
+      "corpus_cells": 67664,
+      "cells_with_duplicate_text": 43393,
+      "distinct_texts": 32315,
+      "queries_gold_text_duplicated": 240,
+      "queries_gold_dup_same_table": 224,
+      "queries_gold_dup_other_table_only": 16
+    },
+    "e": {
+      "template": "s3c",
+      "records": "results/evaluation_v2/s3c_v2_records.jsonl",
+      "example": "In the table 'agri-food industry sub-groups for workers aged 15 years and over, two agricultural regions of ontario, 2011', among percent > food service, the value of eastern ontario > french-language workers is 52.1.",
+      "n_queries": 991,
+      "correct": 906,
+      "gold_table_in_context": 951,
+      "corpus_cells": 67664,
+      "cells_with_duplicate_text": 1886,
+      "distinct_texts": 66721,
+      "queries_gold_text_duplicated": 17,
+      "queries_gold_dup_same_table": 1,
+      "queries_gold_dup_other_table_only": 16
+    }
+  },
+  "mcnemar_vs_e": {
+    "a": {
+      "only_this_correct": 0,
+      "only_e_correct": 895,
+      "p_exact": 7.571533991467358e-270,
+      "p_holm": 3.0286135965869433e-269
+    },
+    "b": {
+      "only_this_correct": 21,
+      "only_e_correct": 365,
+      "p_exact": 3.1510208840509427e-82,
+      "p_holm": 6.302041768101885e-82
+    },
+    "c": {
+      "only_this_correct": 16,
+      "only_e_correct": 130,
+      "p_exact": 2.215016253400603e-23,
+      "p_holm": 2.215016253400603e-23
+    },
+    "d": {
+      "only_this_correct": 8,
+      "only_e_correct": 646,
+      "p_exact": 2.1539916299181407e-179,
+      "p_holm": 6.461974889754422e-179
+    }
+  },
+  "s3c_failures": {
+    "table_missed": {
+      "n": 40,
+      "gold_text_duplicated": 0,
+      "dup_same_table": 0,
+      "dup_other_table_only": 0
+    },
+    "table_found_cell_missed": {
+      "n": 45,
+      "gold_text_duplicated": 1,
+      "dup_same_table": 0,
+      "dup_other_table_only": 1
+    }
+  }
+}

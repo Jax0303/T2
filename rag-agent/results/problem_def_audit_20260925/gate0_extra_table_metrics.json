@@ -1,0 +1,40 @@
+{
+ "t_table_hybrid (f4e6865:rag-agent/results/retrieval_accuracy/t_table_hybrid_records.jsonl)": {
+  "scored": 1581,
+  "tables_in_context_hist": {
+   "1": 1472,
+   "2": 107,
+   "3": 2
+  },
+  "primary_991": {
+   "query_count": 991,
+   "correct": 839,
+   "accuracy": 0.8466,
+   "gold_table_in_context": 839
+  }
+ },
+ "mh_validation DTC (results/strict_fixed_budget/mh_validation_cell_hv3.3_none_doc_fixed_budget20_summary.json)": {
+  "dataset": "multihiertt",
+  "split": "validation",
+  "metric": "Strict Recall under a 20-cell context (fixed-budget baseline)",
+  "selector": {
+   "function": "budget_select",
+   "stop_after_distinct_cells": 20,
+   "last_unit_kept_whole": true,
+   "search_scope": "doc: tables of the question's own document"
+  },
+  "table_metric": "Derived Table Coverage: tables recovered from the selected cells; no separate table retrieval stage exists",
+  "header_rule": "v3.3",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "alpha": 0.7,
+  "n_docs": 929,
+  "n_tables": 3609,
+  "overall": {
+   "N": 911,
+   "strict_recall": 0.849615806805708,
+   "derived_table_strict_recall": 0.973655323819978,
+   "derived_table_recall": 0.9840834248079035,
+   "derived_table_precision": 0.7057811928283937
+  }
+ }
+}

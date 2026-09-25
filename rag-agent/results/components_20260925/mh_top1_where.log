@@ -1,0 +1,66 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+{
+ "records": {
+  "c": "results/mh_arms/mh_cell_hv2_records.jsonl",
+  "e": "results/mh_arms/mh_cell_hv2_L1_records.jsonl"
+ },
+ "c_right_e_wrong": {
+  "run_whose_top1": "e",
+  "n": 285,
+  "where": {
+   "ga_same_table": 15,
+   "ga_gold_cell_or_copy": 71,
+   "da_other_doc": 186,
+   "na_gold_doc_other_table": 7,
+   "undetermined": 6
+  },
+  "label": {
+   "same": 94,
+   "different": 183,
+   "gold_empty": 4,
+   "top1_empty": 4
+  },
+  "where_x_label": {
+   "ga_same_table|same": 15,
+   "ga_gold_cell_or_copy|same": 71,
+   "da_other_doc|different": 176,
+   "na_gold_doc_other_table|different": 7,
+   "da_other_doc|gold_empty": 4,
+   "undetermined|same": 6,
+   "da_other_doc|top1_empty": 4,
+   "da_other_doc|same": 2
+  }
+ },
+ "c_wrong_e_right": {
+  "run_whose_top1": "c",
+  "n": 159,
+  "where": {
+   "da_other_doc": 112,
+   "ga_same_table": 17,
+   "ga_gold_cell_or_copy": 19,
+   "undetermined": 7,
+   "na_gold_doc_other_table": 4
+  },
+  "label": {
+   "different": 109,
+   "same": 40,
+   "top1_empty": 3,
+   "both_empty": 1,
+   "undetermined": 4,
+   "gold_empty": 2
+  },
+  "where_x_label": {
+   "da_other_doc|different": 105,
+   "ga_same_table|same": 17,
+   "da_other_doc|top1_empty": 3,
+   "ga_gold_cell_or_copy|both_empty": 1,
+   "undetermined|undetermined": 4,
+   "ga_gold_cell_or_copy|same": 18,
+   "undetermined|same": 3,
+   "da_other_doc|gold_empty": 2,
+   "na_gold_doc_other_table|different": 4,
+   "da_other_doc|same": 2
+  }
+ }
+}

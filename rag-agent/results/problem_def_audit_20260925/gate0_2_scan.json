@@ -1,0 +1,3443 @@
+[
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/aitqa_dense_1024_s2.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2262,
+   "cell": 0.2816
+  }
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/corpus_dump_vs_cell_h2h_aitqa_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/corpus_dump_vs_cell_h2h_aitqa_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/corpus_dump_vs_cell_hyb_aitqa_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 256,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/corpus_dump_vs_cell_hyb_aitqa_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/hyb_aitqa_s3c_1024_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/hyb_aitqa_s3c_2048_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/hyb_aitqa_s3c_4096_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/hyb_aitqa_s3c_512_a50.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/aitqa_rowheader_fix/hyb_aitqa_s3c_512_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/arith_local_4bit_512_codegen.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0457,
+   "cell": 0.0857,
+   "row": 0.0629,
+   "flat": 0.0171
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/arith_local_4bit_512_direct.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0286,
+   "cell": 0.0514,
+   "row": 0.0457,
+   "flat": 0.0114
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/baseline_comparison_llm.json",
+  "experiment": "cell-sentence RAG vs whole-table-markdown and row-chunk table RAG, equal token budget, oracle table gate, official HiTab scorer",
+  "dataset": "hitab_dev",
+  "split": null,
+  "population": null,
+  "query_count": 300,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "openai:gpt-4o",
+  "budget_tokens": 1024,
+  "retriever": null,
+  "whole_arms": {
+   "table_md": "whole table as markdown, one block"
+  },
+  "answer_em": {
+   "table_md": 0.51,
+   "row_chunk": 0.3867,
+   "flat_cell": 0.2767,
+   "cell_sent": 0.5167
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/baseline_comparison_multihiertt.json",
+  "experiment": "cell-sentence RAG vs whole-document-markdown and row-chunk table RAG on MultiHiertt, equal token budget, pool = every table of the question's document",
+  "dataset": "multihiertt_train_table_only_evidence",
+  "split": null,
+  "population": null,
+  "query_count": 207,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "openai:claude-sonnet-5",
+  "budget_tokens": 1024,
+  "retriever": null,
+  "whole_arms": {
+   "table_md": "every table of the document as markdown"
+  },
+  "answer_em": {
+   "table_md": 0.4058,
+   "row_chunk": 0.3768,
+   "flat_cell": 0.3285,
+   "cell_sent": 0.3382
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/baseline_comparison_multihiertt_sonnet5.json",
+  "experiment": "cell-sentence RAG vs whole-document-markdown and row-chunk table RAG on MultiHiertt, equal token budget, pool = every table of the question's document",
+  "dataset": "multihiertt_train_table_only_evidence",
+  "split": null,
+  "population": null,
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "openai:claude-sonnet-5",
+  "budget_tokens": 1024,
+  "retriever": null,
+  "whole_arms": {
+   "table_md": "every table of the document as markdown"
+  },
+  "answer_em": {
+   "table_md": 0.38,
+   "row_chunk": 0.33,
+   "flat_cell": 0.3,
+   "cell_sent": 0.36
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/cap2_aitqa_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.2949
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/cap2_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5325
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/cap3_aitqa_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.3104
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/cap3_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5361
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/cap4_aitqa_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.306
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/cap4_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5241
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/ceil_rhb_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.214,
+   "goldcell": 0.6872
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/ceiling_hitab_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.6036,
+   "goldcell": 0.888
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_bm25_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": null,
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_bm25_128.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": null,
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 128,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_bm25_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": null,
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_bm25_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": null,
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 256,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_bm25_4096.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": null,
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_bm25_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": null,
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_capped_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.61,
+   "capped": 0.54
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_capped_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.57,
+   "capped": 0.52
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_capped_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.61,
+   "capped": 0.54
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_casc3_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.61,
+   "cascade": 0.56
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_casc3_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.57,
+   "cascade": 0.5
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_casc3_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.61,
+   "cascade": 0.56
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_cellrow_aitqa_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.286,
+   "cellrow": 0.3282
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_cellrow_hitab_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.57,
+   "cellrow": 0.31
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_dense_128.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 128,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_dense_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_dense_4096.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_group_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.61,
+   "group": 0.57
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_group_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.57,
+   "group": 0.57
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_group_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.61,
+   "group": 0.62
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_aitqa_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0776,
+   "cell": 0.286,
+   "cascade": 0.1131,
+   "cell2dump": 0.0998,
+   "row": 0.357,
+   "flat": 0.2306
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_aitqa_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0798,
+   "cell": 0.3038,
+   "cascade": 0.1131,
+   "cell2dump": 0.122,
+   "row": 0.3525,
+   "flat": 0.2284
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.47,
+   "cell": 0.42,
+   "cascade": 0.47,
+   "cell2dump": 0.43,
+   "row": 0.22,
+   "flat": 0.15
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_dense_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 2048,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.47,
+   "cell": 0.34,
+   "cascade": 0.46,
+   "cell2dump": 0.4,
+   "row": 0.2,
+   "flat": 0.17
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.09,
+   "cell": 0.48,
+   "cascade": 0.52,
+   "cell2dump": 0.07,
+   "row": 0.26,
+   "flat": 0.18
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.3,
+   "cell": 0.43,
+   "cascade": 0.51,
+   "cell2dump": 0.24,
+   "row": 0.21,
+   "flat": 0.16
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_mh_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0725,
+   "cell": 0.1125,
+   "cascade": 0.0425,
+   "cell2dump": 0.11,
+   "row": 0.075,
+   "flat": 0.0875
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_mh_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0225,
+   "cell": 0.1325,
+   "cascade": 0.0525,
+   "cell2dump": 0.045,
+   "row": 0.0725,
+   "flat": 0.09
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_h2h_mh_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.055,
+   "cell": 0.115,
+   "cascade": 0.05,
+   "cell2dump": 0.09,
+   "row": 0.08,
+   "flat": 0.0775
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_bm25_1024_headonly.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_bm25_2048_headonly.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_bm25_4096_headonly.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_bm25_512_headonly.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_dense_128.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 128,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_dense_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_dense_4096.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hitab_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hyb_aitqa_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.3215,
+   "dump": 0.102,
+   "row": 0.3659,
+   "flat": 0.2217,
+   "cell2dump": 0.1397,
+   "cascade": 0.1929
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hyb_hitab_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.55,
+   "dump": 0.09,
+   "row": 0.28,
+   "flat": 0.12,
+   "cell2dump": 0.09,
+   "cascade": 0.5
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hyb_hitab_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.56,
+   "dump": 0.27,
+   "row": 0.28,
+   "flat": 0.17,
+   "cell2dump": 0.25,
+   "cascade": 0.52
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_hyb_mh_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.11,
+   "dump": 0.0825,
+   "row": 0.075,
+   "flat": 0.0825,
+   "cell2dump": 0.1075,
+   "cascade": 0.0825
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_lookup_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.47,
+   "cell": 0.42,
+   "cascade": 0.47,
+   "cell2dump": 0.43
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_lookup_dense_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 2048,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.47,
+   "cell": 0.34,
+   "cascade": 0.46,
+   "cell2dump": 0.4
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_lookup_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.09,
+   "cell": 0.48,
+   "cascade": 0.52,
+   "cell2dump": 0.07
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_lookup_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.3,
+   "cell": 0.43,
+   "cascade": 0.51,
+   "cell2dump": 0.24
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_mt2net_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.16,
+   "cell": 0.54
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_multihiertt_bm25_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_multihiertt_bm25_128.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 128,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_multihiertt_bm25_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_multihiertt_bm25_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 256,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_multihiertt_bm25_4096.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_multihiertt_bm25_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "bm25",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_reader_dense_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 2048,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0343,
+   "cell": 0.0171,
+   "cascade": 0.0571,
+   "cell2dump": 0.0343
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_reader_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_corpus_arith",
+  "query_count": 175,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0229,
+   "cell": 0.04,
+   "cascade": 0.0514,
+   "cell2dump": 0.0229
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_aitqa_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.2461
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_aitqa_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.2439
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.15,
+   "cell": 0.61
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_dense_128.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 128,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.48
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_dense_192.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 192,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.57
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_dense_2048.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 2048,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.56
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.18,
+   "cell": 0.57
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.16,
+   "cell": 0.61
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_dense_96.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 96,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.47
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_mh_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.11
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3_mh_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 400,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.1075
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3nt_dense_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.43
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3nt_dense_256.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 256,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.41
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/corpus_dump_vs_cell_s3nt_dense_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_single",
+  "query_count": 100,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.46
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/fix_aitqa_s2_k10_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.2993
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/fix_aitqa_s2_k23_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.3038
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/fix_hitab_s2_k10_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.5145
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/fix_hitab_s2_k20_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.5217
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/grp_aitqa_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.3126
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/grp_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5373
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/grp_hitab_s3c_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.6012
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/gt_aitqa_s3g_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.2239,
+   "flat": 0.2195
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/h2h830_mt2net_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1518,
+   "cell": 0.4795
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/h2h830_mt2net_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1639,
+   "cell": 0.5181
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/h2h830_s3_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1518,
+   "cell": 0.5988
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/h2h830_s3_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1639,
+   "cell": 0.6
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/h2h_untitled_aitqa_S3_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.2373
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/h2h_untitled_aitqa_mt2net_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.306
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/h2h_untitled_rhb_mt2net_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1152,
+   "cell": 0.214
+  }
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_aitqa_s3c_1024_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_aitqa_s3c_2048_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_aitqa_s3c_4096_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_aitqa_s3c_512_a50.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_aitqa_s3c_512_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/hyb_hitab_mt2net_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1843,
+   "cell": 0.5084
+  }
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_hitab_s3c_1024_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_hitab_s3c_2048_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_hitab_s3c_4096_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/hyb_hitab_s3c_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1843,
+   "cell": 0.6542,
+   "dump": 0.2916,
+   "row": 0.2663
+  }
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_multihiertt_s3c_1024_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 399,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_multihiertt_s3c_2048_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 399,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_multihiertt_s3c_4096_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 399,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_multihiertt_s3c_512_1.0.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 399,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_multihiertt_s3c_512_a5.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 399,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_multihiertt_s3c_512_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "multihiertt",
+  "split": "dev",
+  "population": "multihiertt table-only, seed 42, n=400",
+  "query_count": 399,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_realhitbench_s3c_1024_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 231,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 1024,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_realhitbench_s3c_2048_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 231,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 2048,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_realhitbench_s3c_4096_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 231,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 4096,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_realhitbench_s3c_512_1.0.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 231,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_realhitbench_s3c_512_a5.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 231,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/hyb_realhitbench_s3c_512_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 231,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/orc_aitqa_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.4013
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/orc_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.6325
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/orc_hitab_s3c_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.6289
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/prd_aitqa_s2_m10_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.3215
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/prd_aitqa_s2_m20_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.3215
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/prd_hitab_s2_m20_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "cell": 0.5169
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/q3_hitab_mt2net_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1627,
+   "cell": 0.5024
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/q3_hitab_s3c_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1627,
+   "cell": 0.6108
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/realhitbench_tablemd_vs_s2_gptoss.json",
+  "experiment": null,
+  "dataset": null,
+  "split": null,
+  "population": "realhitbench_agg(Calculation+MultihopNR)",
+  "query_count": 2,
+  "encoder": null,
+  "reader": "groq:openai/gpt-oss-120b",
+  "budget_tokens": null,
+  "retriever": "dense",
+  "whole_arms": {
+   "base": "whole reconstructed table as one markdown block, NO retrieval — the literature's input format"
+  },
+  "answer_em": {
+   "base": 0.0,
+   "treat": 0.0
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_dense_1024_s2.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0988,
+   "cell": 0.2222,
+   "row": 0.1728,
+   "flat": 0.1111
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_dense_1024_s3.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0988,
+   "cell": 0.2099,
+   "row": 0.1728,
+   "flat": 0.1111
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_dense_1024_s3_casefix.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0988,
+   "cell": 0.2099,
+   "row": 0.1728,
+   "flat": 0.1111
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_dense_2048_s2.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 2048,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1152,
+   "cell": 0.2058
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_dense_512_s2.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0494,
+   "cell": 0.1975,
+   "row": 0.177,
+   "flat": 0.1152
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_dense_512_s3.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0494,
+   "cell": 0.2222,
+   "row": 0.177,
+   "flat": 0.1152
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_dense_512_s3_casefix.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "dump": 0.0494,
+   "cell": 0.214,
+   "row": 0.177,
+   "flat": 0.1152
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/rhb_hdrfix_512_s2.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 231,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1342,
+   "cell": 0.2294
+  }
+ },
+ {
+  "ref": "ba1e885^",
+  "path": "rag-agent/results/rhb_vm_s3c_512_a7.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench Value-Matching, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 114,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": null,
+  "budget_tokens": 512,
+  "retriever": "hybrid",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {}
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/s3_hitab_512_4bit.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.6
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/s3c_aitqa_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.3082
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/s3c_hitab_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.6036
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/s3c_rhb_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "realhitbench",
+  "split": "dev",
+  "population": "realhitbench , gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 243,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1152,
+   "cell": 0.214
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/scale113_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 195,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2154,
+   "cell": 0.6256
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/scale113_hitab_s3c_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 195,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2154,
+   "cell": 0.6513
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/scale212_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 377,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1751,
+   "cell": 0.5889
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/tag_aitqa_s2t_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.2993
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/tag_hitab_s2t_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5301
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/test_mt2net_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "test",
+  "population": "hitab_test_lookup_all",
+  "query_count": 769,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1925,
+   "cell": 0.4564
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/test_mt2net_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "test",
+  "population": "hitab_test_lookup_all",
+  "query_count": 769,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1951,
+   "cell": 0.4915
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/test_s3c_1024.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "test",
+  "population": "hitab_test_lookup_all",
+  "query_count": 769,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 1024,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1925,
+   "cell": 0.5891
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/test_s3c_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "test",
+  "population": "hitab_test_lookup_all",
+  "query_count": 769,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1951,
+   "cell": 0.5917,
+   "dump": 0.329,
+   "row": 0.3303
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/wo_aitqa_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.3104
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/wo_aitqa_s2r_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "aitqa",
+  "split": "dev",
+  "population": "aitqa, gold cells recovered by answer match, ambiguous dropped",
+  "query_count": 451,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.2195,
+   "cell": 0.3082
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/wo_hitab_mt2net_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5157
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/wo_hitab_s2_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5169
+  }
+ },
+ {
+  "ref": "54ed06e^",
+  "path": "rag-agent/results/wo_hitab_s2r_512.json",
+  "experiment": "corpus scale: retrieve-then-dump vs retrieve cells",
+  "dataset": "hitab",
+  "split": "dev",
+  "population": "hitab_dev_lookup_all",
+  "query_count": 830,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "reader": "local:Qwen/Qwen2.5-7B-Instruct",
+  "budget_tokens": 512,
+  "retriever": "dense",
+  "whole_arms": {
+   "cell2dump": "tables ranked by their best cell, dumped whole",
+   "dump": "table index -> whole tables in rank order while they fit"
+  },
+  "answer_em": {
+   "flat": 0.1602,
+   "cell": 0.5265
+  }
+ }
+]

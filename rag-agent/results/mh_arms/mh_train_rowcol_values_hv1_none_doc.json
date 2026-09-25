@@ -1,0 +1,221 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "unit": "rowcol",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "d8a23f045888ec4d184f43b0502d9aebaecdeb30",
+    "git_dirty": true,
+    "source_sha256": "eb8c0eab2efa8b356e92e2bcdbf7f57fecbff00ce6adc5758bbbca434b984088",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "rowcol",
+    "template": "s3c",
+    "row_text": "values",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v1",
+    "label_rule": "none",
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "truncate",
+    "alpha": 0.7,
+    "budget": 20,
+    "k_ladder": "",
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/mh_arms",
+    "out_dir": "results/mh_arms",
+    "tag": "mh_train_rowcol_values_hv1_none_doc",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 149362,
+      "max_tokens": 849,
+      "max_seq_length": 512,
+      "n_overflow": 4,
+      "overflow_ratio": 2.6780573372075897e-05,
+      "overflow_indices": [
+        69032,
+        120739,
+        136335,
+        136754
+      ],
+      "policy": "truncate"
+    },
+    "queries": {
+      "n": 2908,
+      "max_tokens": 78,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "truncate"
+    }
+  },
+  "budget_cells": 20,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 149362,
+  "corpus_text_sha256": "8ce5d2dd60bd1eeaa4ec78ed69a2ec5736434cef46cce6efa51f469bf556c0a0",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2871,
+  "n_excluded": 37,
+  "excluded_by_reason": {
+    "gold_in_header": 31,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "e45e77fe9ba42097660d7614179b066696ff87d626f6fc69c9f17d4dc574d610",
+  "by_layer": {
+    "ALL": {
+      "n": 2871,
+      "corpus": {
+        "accuracy_all": 0.0045,
+        "accuracy_any_DIAGNOSTIC": 0.0178,
+        "gold_doc_in_context": 0.0519,
+        "cells_delivered_mean": 12.5
+      },
+      "doc": {
+        "accuracy_all": 0.4413,
+        "accuracy_any_DIAGNOSTIC": 0.7673,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.5
+      },
+      "table": {
+        "accuracy_all": 0.7252,
+        "accuracy_any_DIAGNOSTIC": 0.9342,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.4
+      },
+      "mean_m": 2.648,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.0,
+        "accuracy_any_DIAGNOSTIC": 0.0,
+        "gold_doc_in_context": 0.0282,
+        "cells_delivered_mean": 14.0
+      },
+      "doc": {
+        "accuracy_all": 0.507,
+        "accuracy_any_DIAGNOSTIC": 0.507,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.0
+      },
+      "table": {
+        "accuracy_all": 0.8873,
+        "accuracy_any_DIAGNOSTIC": 0.8873,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2224,
+      "corpus": {
+        "accuracy_all": 0.0027,
+        "accuracy_any_DIAGNOSTIC": 0.0162,
+        "gold_doc_in_context": 0.0463,
+        "cells_delivered_mean": 12.5
+      },
+      "doc": {
+        "accuracy_all": 0.4186,
+        "accuracy_any_DIAGNOSTIC": 0.7783,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.5
+      },
+      "table": {
+        "accuracy_all": 0.7082,
+        "accuracy_any_DIAGNOSTIC": 0.9433,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.9
+      },
+      "mean_m": 2.733,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "corpus": {
+        "accuracy_all": 0.0095,
+        "accuracy_any_DIAGNOSTIC": 0.0095,
+        "gold_doc_in_context": 0.0616,
+        "cells_delivered_mean": 13.1
+      },
+      "doc": {
+        "accuracy_all": 0.6209,
+        "accuracy_any_DIAGNOSTIC": 0.6209,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.6
+      },
+      "table": {
+        "accuracy_all": 0.8436,
+        "accuracy_any_DIAGNOSTIC": 0.8436,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 23.4
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.0137,
+        "accuracy_any_DIAGNOSTIC": 0.0356,
+        "gold_doc_in_context": 0.0849,
+        "cells_delivered_mean": 11.7
+      },
+      "doc": {
+        "accuracy_all": 0.463,
+        "accuracy_any_DIAGNOSTIC": 0.8356,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.6
+      },
+      "table": {
+        "accuracy_all": 0.7288,
+        "accuracy_any_DIAGNOSTIC": 0.9397,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 23.1
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "be703f5b4d999a6f5f5da6561ebdc04ac2afc9da5f287b194ed3ccc8eb20a780"
+}

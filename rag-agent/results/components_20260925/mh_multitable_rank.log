@@ -1,0 +1,122 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  23%|██▎       | 45/199 [00:00<00:00, 419.75it/s]Loading weights:  44%|████▍     | 88/199 [00:00<00:00, 425.24it/s]Loading weights:  66%|██████▌   | 131/199 [00:00<00:00, 387.40it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 509.61it/s]
+{
+ "c": {
+  "n_queries": 582,
+  "determined": 556,
+  "undetermined": 26,
+  "queries_with_a_gold_table_at_21": 68,
+  "queries_all_gold_tables_at_21": 3,
+  "rank_spread": {
+   "n": 556,
+   "median": 4.0,
+   "mean": 6.181654676258993
+  },
+  "rank_spread_only_queries_without_21": {
+   "n": 488,
+   "median": 3.0,
+   "mean": 4.631147540983607
+  },
+  "first_table_cells_in_20": {
+   "n": 553,
+   "median": 12.0,
+   "mean": 11.641952983725135
+  },
+  "cos_question_label": {
+   "excluded": {
+    "empty_label": 19,
+    "latest_tied_at_21": 1,
+    "no_gold_table_in_top20": 3
+   },
+   "first": {
+    "n": 533,
+    "median": 0.520788848400116,
+    "mean": 0.5264155905533016
+   },
+   "last": {
+    "n": 533,
+    "median": 0.49619901180267334,
+    "mean": 0.4993281240870313
+   },
+   "first_minus_last": {
+    "n": 533,
+    "median": 0.026590496301651,
+    "mean": 0.02708746646627029
+   },
+   "wilcoxon_p": 5.085851578676871e-08
+  }
+ },
+ "e": {
+  "n_queries": 582,
+  "determined": 580,
+  "undetermined": 2,
+  "queries_with_a_gold_table_at_21": 129,
+  "queries_all_gold_tables_at_21": 4,
+  "rank_spread": {
+   "n": 580,
+   "median": 6.0,
+   "mean": 8.686206896551724
+  },
+  "rank_spread_only_queries_without_21": {
+   "n": 451,
+   "median": 4.0,
+   "mean": 6.039911308203991
+  },
+  "first_table_cells_in_20": {
+   "n": 576,
+   "median": 13.0,
+   "mean": 12.59375
+  },
+  "cos_question_label": {
+   "excluded": {
+    "empty_label": 19,
+    "latest_tied_at_21": 2,
+    "no_gold_table_in_top20": 4
+   },
+   "first": {
+    "n": 555,
+    "median": 0.5296800136566162,
+    "mean": 0.533709566496514
+   },
+   "last": {
+    "n": 555,
+    "median": 0.4893907308578491,
+    "mean": 0.4910465795714576
+   },
+   "first_minus_last": {
+    "n": 555,
+    "median": 0.03938645124435425,
+    "mean": 0.042662986925056386
+   },
+   "wilcoxon_p": 5.578295556663342e-20
+  }
+ },
+ "rank_spread_c_vs_e": {
+  "n_pairs": 556,
+  "zero_diff_pairs": 144,
+  "c_larger": 115,
+  "e_larger": 297,
+  "c": {
+   "n": 556,
+   "median": 4.0,
+   "mean": 6.181654676258993
+  },
+  "e": {
+   "n": 556,
+   "median": 6.0,
+   "mean": 8.679856115107913
+  },
+  "wilcoxon_p": 1.9533969565475192e-23
+ },
+ "encoder": {
+  "name": "BAAI/bge-base-en-v1.5",
+  "revision": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "passage_prefix": ""
+ },
+ "records": {
+  "c": "results/mh_arms/mh_cell_hv2_records.jsonl",
+  "e": "results/mh_arms/mh_cell_hv2_L1_records.jsonl"
+ }
+}

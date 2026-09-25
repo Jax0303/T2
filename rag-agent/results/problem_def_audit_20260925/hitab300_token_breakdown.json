@@ -1,0 +1,32 @@
+{
+ "query_count": 300,
+ "source": {
+  "rows": "results/fair_filter_20260921/rows.jsonl (arm=ours, reader_input_tokens)",
+  "records": "results/retrieval_accuracy/t_sleaf_gold_records.jsonl",
+  "tokenizer": "Qwen/Qwen2.5-7B-Instruct a09a35458c702b33eeacc393d103063234e8bc28, chat template 포함"
+ },
+ "checks": {
+  "sentences_byte_identical": true,
+  "token_total_equals_reader_input_tokens": true
+ },
+ "mean_tokens_per_query": {
+  "title": 502.8,
+  "header_path": 297.5,
+  "leaf_prefix": 129.3,
+  "value": 73.0,
+  "frame": 296.1,
+  "question": 24.3,
+  "rest": 74.1
+ },
+ "mean_total": 1397.1,
+ "mean_lines_per_query": 19.41,
+ "categories": {
+  "title": "표 제목(섹션 제목 + ToTTo 페이지 제목)",
+  "header_path": "행 경로 + 열 경로(' > ' 포함)",
+  "leaf_prefix": "문장 앞 행·열 잎 라벨",
+  "value": "셀 값",
+  "frame": "문장 틀 글자(In the table ', among, the value of, is, ., : , / )",
+  "question": "Question: + 질문",
+  "rest": "시스템 프롬프트·채팅 템플릿·Context:·줄바꿈·Answer:"
+ }
+}

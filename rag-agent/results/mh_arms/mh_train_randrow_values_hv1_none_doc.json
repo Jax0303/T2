@@ -1,0 +1,216 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "unit": "randrow",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "d8a23f045888ec4d184f43b0502d9aebaecdeb30",
+    "git_dirty": true,
+    "source_sha256": "eb8c0eab2efa8b356e92e2bcdbf7f57fecbff00ce6adc5758bbbca434b984088",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "randrow",
+    "template": "s3c",
+    "row_text": "values",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v1",
+    "label_rule": "none",
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "budget": 20,
+    "k_ladder": "",
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/mh_arms",
+    "out_dir": "results/mh_arms",
+    "tag": "mh_train_randrow_values_hv1_none_doc",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 101929,
+      "max_tokens": 125,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 2908,
+      "max_tokens": 78,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "budget_cells": 20,
+  "header_rule": "v1",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 101929,
+  "corpus_text_sha256": "742551950deede4853233e232082817ce4d05212a0dbf30bfa9213d7c030c36c",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2871,
+  "n_excluded": 37,
+  "excluded_by_reason": {
+    "gold_in_header": 31,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "e45e77fe9ba42097660d7614179b066696ff87d626f6fc69c9f17d4dc574d610",
+  "by_layer": {
+    "ALL": {
+      "n": 2871,
+      "corpus": {
+        "accuracy_all": 0.1108,
+        "accuracy_any_DIAGNOSTIC": 0.2041,
+        "gold_doc_in_context": 0.2644,
+        "cells_delivered_mean": 21.5
+      },
+      "doc": {
+        "accuracy_all": 0.1087,
+        "accuracy_any_DIAGNOSTIC": 0.2919,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.9
+      },
+      "table": {
+        "accuracy_all": 0.3783,
+        "accuracy_any_DIAGNOSTIC": 0.6116,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 2.648,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.2254,
+        "accuracy_any_DIAGNOSTIC": 0.2254,
+        "gold_doc_in_context": 0.2676,
+        "cells_delivered_mean": 21.8
+      },
+      "doc": {
+        "accuracy_all": 0.2535,
+        "accuracy_any_DIAGNOSTIC": 0.2535,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.1
+      },
+      "table": {
+        "accuracy_all": 0.6479,
+        "accuracy_any_DIAGNOSTIC": 0.6479,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.4
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2224,
+      "corpus": {
+        "accuracy_all": 0.0989,
+        "accuracy_any_DIAGNOSTIC": 0.214,
+        "gold_doc_in_context": 0.2707,
+        "cells_delivered_mean": 21.5
+      },
+      "doc": {
+        "accuracy_all": 0.0989,
+        "accuracy_any_DIAGNOSTIC": 0.3152,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.9
+      },
+      "table": {
+        "accuracy_all": 0.3763,
+        "accuracy_any_DIAGNOSTIC": 0.6484,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.7
+      },
+      "mean_m": 2.733,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "corpus": {
+        "accuracy_all": 0.1517,
+        "accuracy_any_DIAGNOSTIC": 0.1517,
+        "gold_doc_in_context": 0.2417,
+        "cells_delivered_mean": 21.4
+      },
+      "doc": {
+        "accuracy_all": 0.1659,
+        "accuracy_any_DIAGNOSTIC": 0.1659,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.7
+      },
+      "table": {
+        "accuracy_all": 0.3744,
+        "accuracy_any_DIAGNOSTIC": 0.3744,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.3
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 365,
+      "corpus": {
+        "accuracy_all": 0.137,
+        "accuracy_any_DIAGNOSTIC": 0.1699,
+        "gold_doc_in_context": 0.2384,
+        "cells_delivered_mean": 21.6
+      },
+      "doc": {
+        "accuracy_all": 0.1068,
+        "accuracy_any_DIAGNOSTIC": 0.2301,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 22.0
+      },
+      "table": {
+        "accuracy_all": 0.3397,
+        "accuracy_any_DIAGNOSTIC": 0.5178,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 21.3
+      },
+      "mean_m": 3.405,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "f4239f239512c3e03afc04baa847afb67f2b752270eec07c2bb8690974d5a5c2"
+}

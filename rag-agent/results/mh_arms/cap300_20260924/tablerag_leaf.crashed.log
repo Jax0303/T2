@@ -1,0 +1,80 @@
+[sample] arith_m1: 71 -> 71
+[sample] arith_m2+: 2224 -> 300
+[sample] lookup_m1: 211 -> 211
+[sample] lookup_m2+: 365 -> 300
+[scorer] gold 를 예측으로 넣었을 때 EM=0.9512471655328798 (n=882)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<04:09,  1.59it/s]Loading weights:   1%|          | 2/399 [00:01<03:42,  1.79it/s]Loading weights:   1%|          | 4/399 [00:01<01:42,  3.85it/s]Loading weights:   3%|▎         | 12/399 [00:01<00:25, 15.04it/s]Loading weights:   4%|▍         | 17/399 [00:01<00:18, 20.35it/s]Loading weights:   7%|▋         | 26/399 [00:01<00:11, 33.73it/s]Loading weights:   8%|▊         | 32/399 [00:01<00:09, 37.37it/s]Loading weights:  10%|▉         | 39/399 [00:01<00:08, 42.44it/s]Loading weights:  12%|█▏        | 49/399 [00:01<00:06, 54.31it/s]Loading weights:  15%|█▍        | 59/399 [00:02<00:05, 65.36it/s]Loading weights:  17%|█▋        | 67/399 [00:02<00:04, 68.52it/s]Loading weights:  19%|█▉        | 75/399 [00:02<00:04, 67.74it/s]Loading weights:  21%|██        | 83/399 [00:02<00:04, 63.87it/s]Loading weights:  24%|██▎       | 94/399 [00:02<00:04, 68.14it/s]Loading weights:  26%|██▌       | 104/399 [00:02<00:04, 73.14it/s]Loading weights:  29%|██▊       | 114/399 [00:02<00:03, 78.07it/s]Loading weights:  31%|███       | 123/399 [00:02<00:03, 78.74it/s]Loading weights:  33%|███▎      | 132/399 [00:03<00:03, 70.59it/s]Loading weights:  35%|███▌      | 140/399 [00:03<00:03, 65.31it/s]Loading weights:  37%|███▋      | 148/399 [00:03<00:03, 66.40it/s]Loading weights:  40%|███▉      | 158/399 [00:03<00:03, 73.69it/s]Loading weights:  42%|████▏     | 166/399 [00:03<00:03, 72.95it/s]Loading weights:  44%|████▎     | 174/399 [00:03<00:03, 71.35it/s]Loading weights:  46%|████▌     | 182/399 [00:03<00:03, 64.11it/s]Loading weights:  48%|████▊     | 192/399 [00:03<00:02, 70.41it/s]Loading weights:  51%|█████     | 203/399 [00:04<00:02, 73.98it/s]Loading weights:  53%|█████▎    | 213/399 [00:04<00:02, 76.42it/s]Loading weights:  55%|█████▌    | 221/399 [00:04<00:02, 74.82it/s]Loading weights:  57%|█████▋    | 229/399 [00:04<00:02, 72.02it/s]Loading weights:  59%|█████▉    | 237/399 [00:04<00:02, 63.02it/s]Loading weights:  62%|██████▏   | 247/399 [00:04<00:02, 70.51it/s]Loading weights:  64%|██████▍   | 257/399 [00:04<00:01, 75.11it/s]Loading weights:  67%|██████▋   | 266/399 [00:04<00:01, 78.47it/s]Loading weights:  69%|██████▉   | 275/399 [00:05<00:01, 77.00it/s]Loading weights:  71%|███████   | 283/399 [00:05<00:01, 70.89it/s]Loading weights:  73%|███████▎  | 291/399 [00:05<00:01, 70.42it/s]Loading weights:  75%|███████▌  | 301/399 [00:05<00:01, 74.35it/s]Loading weights:  77%|███████▋  | 309/399 [00:05<00:01, 73.59it/s]Loading weights:  79%|███████▉  | 317/399 [00:05<00:01, 71.07it/s]Loading weights:  81%|████████▏ | 325/399 [00:05<00:01, 63.76it/s]Loading weights:  84%|████████▍ | 335/399 [00:05<00:00, 67.81it/s]Loading weights:  86%|████████▋ | 345/399 [00:06<00:00, 73.03it/s]Loading weights:  88%|████████▊ | 353/399 [00:06<00:00, 74.71it/s]Loading weights:  90%|█████████ | 361/399 [00:06<00:00, 71.01it/s]Loading weights:  92%|█████████▏| 369/399 [00:06<00:00, 63.18it/s]Loading weights:  95%|█████████▍| 379/399 [00:06<00:00, 70.35it/s]Loading weights:  97%|█████████▋| 389/399 [00:06<00:00, 74.26it/s]Loading weights:  99%|█████████▉| 397/399 [00:06<00:00, 74.76it/s]Loading weights: 100%|██████████| 399/399 [00:06<00:00, 58.64it/s]
+2026-09-25 00:47:35,505 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-25 00:47:35,568 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.06s.
+2026-09-25 00:54:55,192 - ContinuousBatchingLogger - ERROR - Error in generation loop: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 902, in _run_generation_loop
+    self._generation_step()
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 945, in _generation_step
+    self.batch_processor._generation_step(self.model)
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 525, in _generation_step
+    self.inputs_and_outputs.retrieve_device_outputs()
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/input_outputs.py", line 325, in retrieve_device_outputs
+    self.compute_stream.synchronize()
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/cuda/streams.py", line 108, in synchronize
+    super().synchronize()
+torch.AcceleratorError: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+2026-09-25 00:54:56,552 - ContinuousBatchingLogger - ERROR - Generation thread terminated unexpectedly.
+Returning results of generate_batch despite unexpected termination.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 389, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 330, in main
+    for r, n_tok, raw, seconds in generate([r for r in scored if r["query_id"] not in done]):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 323, in generate
+    llm.complete_batch(PROMPTS[a.prompt], users, max_tokens=a.max_tokens))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 144, in complete_batch
+    out = self.model.generate_batch(inputs=ids, generation_config=cfg, progress_bar=False,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 1229, in generate_batch
+    with manager_cm as manager, logging_cm, pbar_cm as pbar:
+  File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+    next(self.gen)
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 61, in generator_context
+    response = gen.send(request)
+               ^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 1147, in continuous_batching_context_manager
+    manager.stop(block=block, timeout=timeout, keep_for_next_session=persistent_manager)
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 692, in stop
+    torch.cuda.empty_cache()
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/cuda/memory.py", line 227, in empty_cache
+    torch._C._cuda_emptyCache()
+torch.AcceleratorError: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+Exception ignored in: <function ContinuousBatchProcessor.__del__ at 0x7915111f0400>
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 297, in __del__
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/cuda/memory.py", line 227, in empty_cache
+torch.AcceleratorError: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

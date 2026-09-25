@@ -1,0 +1,123 @@
+{
+ "hitab_300": {
+  "fulltable": {
+   "file": "results/fulltable_20260924/hitab_rows.jsonl (reader_input_tokens, correct_base)",
+   "query_count": 300,
+   "reader_input_tokens": {
+    "mean": 1005.2,
+    "median": 771.5,
+    "max": 5289
+   },
+   "em": 0.79,
+   "correct": 237
+  },
+  "ours_t_sleaf_gold": {
+   "file": "results/fair_filter_20260921/rows.jsonl arm=ours (reader_input_tokens = 무필터 리더 프롬프트, scripts/fair_filter_eval.py:278-281,302; correct_base)",
+   "query_count": 300,
+   "reader_input_tokens": {
+    "mean": 1397.1,
+    "median": 1345.0,
+    "max": 3528
+   },
+   "em": 0.75,
+   "correct": 225
+  }
+ },
+ "mh_882": {
+  "fulltable": {
+   "file": "results/mh_arms/cap300_20260924/fulltable.jsonl (n_tok, answer_correct); 가중 EM = results/mh_arms/cap300_20260924/report.json",
+   "query_count": 882,
+   "reader_input_tokens(n_tok)": {
+    "mean": 1504.8,
+    "median": 1391.5,
+    "max": 4462
+   },
+   "em_unweighted": 0.4286,
+   "correct": 378,
+   "em_weighted": 0.2985,
+   "ci95": [
+    0.2611,
+    0.3369
+   ],
+   "em_by_group": {
+    "lookup_m1": 0.5592,
+    "lookup_m2+": 0.5633,
+    "arith_m1": 0.3099,
+    "arith_m2+": 0.23
+   }
+  },
+  "cell_uniq": {
+   "file": "results/mh_arms/cap300_20260924/cell_uniq.jsonl (n_tok, answer_correct); 가중 EM = results/mh_arms/cap300_20260924/report.json",
+   "query_count": 882,
+   "reader_input_tokens(n_tok)": {
+    "mean": 694.3,
+    "median": 677.0,
+    "max": 1255
+   },
+   "em_unweighted": 0.4626,
+   "correct": 408,
+   "em_weighted": 0.3375,
+   "ci95": [
+    0.2981,
+    0.3785
+   ],
+   "em_by_group": {
+    "lookup_m1": 0.5355,
+    "lookup_m2+": 0.64,
+    "arith_m1": 0.3099,
+    "arith_m2+": 0.27
+   }
+  },
+  "mcnemar_by_group": {
+   "lookup_m1": {
+    "query_count": 211,
+    "cell_uniq_only_correct": 24,
+    "fulltable_only_correct": 29,
+    "p_exact": 0.583132,
+    "report_json_says": {
+     "cell_only": 24,
+     "this_only": 29,
+     "p": 0.5831321542611763
+    },
+    "p_holm": 1.0
+   },
+   "lookup_m2+": {
+    "query_count": 300,
+    "cell_uniq_only_correct": 42,
+    "fulltable_only_correct": 19,
+    "p_exact": 0.004444,
+    "report_json_says": {
+     "cell_only": 42,
+     "this_only": 19,
+     "p": 0.004444019471066869
+    },
+    "p_holm": 0.017776
+   },
+   "arith_m1": {
+    "query_count": 71,
+    "cell_uniq_only_correct": 7,
+    "fulltable_only_correct": 7,
+    "p_exact": 1.0,
+    "report_json_says": {
+     "cell_only": 7,
+     "this_only": 7,
+     "p": 1.0
+    },
+    "p_holm": 1.0
+   },
+   "arith_m2+": {
+    "query_count": 300,
+    "cell_uniq_only_correct": 41,
+    "fulltable_only_correct": 29,
+    "p_exact": 0.188216,
+    "report_json_says": {
+     "cell_only": 41,
+     "this_only": 29,
+     "p": 0.18821620302302766
+    },
+    "p_holm": 0.564649
+   }
+  },
+  "mcnemar_note": "report.json 의 cell_only = 기준 arm REF=cell_uniq 만 맞힘, this_only = fulltable 만 맞힘 (scripts/mh_cap300_report.py:21,70-73)"
+ }
+}
