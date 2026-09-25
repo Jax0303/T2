@@ -11,7 +11,9 @@
 4) 판정용 judge40.csv = 2) 의 40건. 셀 경로 = 행 머리글 경로 > 열 머리글 경로(' > ' 로 이음).
    1위 셀 문장이 context_units[0] 문장과 바이트 같은지(cell_unit, s3c) 대조.
    같은 제목 test 표 수 = records 의 table_id 538개 중 색인 제목이 정답 표 제목과 문자열 일치하는 표 수(정답 표 포함).
-   판정 열 (가)(나)(다)는 비워 둔다.
+   판정 열 (가)(나)(다)는 비워 둔다. 정답 값 = records answer.
+   정답 표·1위 표 전체 = judge40_tables/<번호>_<query_id>_{gold,top1}.md (markdown_source, 즉 표 전체 비교군이
+   리더에 준 것과 같은 글에 첫 행 뒤 구분선 한 줄만 더함). CSV 에는 그 파일의 상대 경로.
 실행: .venv/bin/python results/hitab_e_miss_20260926/analyze.py   (rag-agent 에서)
 """
 import csv
@@ -28,6 +30,7 @@ sys.argv = sys.argv[:1]
 import retrieval_accuracy as ra                                       # noqa: E402
 from rag_agent.bench import hitab_grid as hg                          # noqa: E402
 from rag_agent.serialization.caption import with_page_title          # noqa: E402
+from rag_agent.serialization.chunks import markdown_source            # noqa: E402
 
 STEM = ROOT / "results/retrieval_accuracy/t_s3c_split_labelabl"
 pages = json.loads((ROOT / "results/tableconf/totto_page_titles.json").read_text())
@@ -108,10 +111,20 @@ def path(c):
     return " > ".join([*t.row_path(c[1]), *t.col_path(c[2])])
 
 
+def save_md(tid, name):
+    tab = table(tid)
+    head, *rows = markdown_source(tab, tab.table, title(tid))[0].split("\n")
+    ncol = len(tab.raw["texts"][0])
+    (TDIR / name).write_text("\n".join([head, "", rows[0], "|" + " --- |" * ncol, *rows[1:]]) + "\n", encoding="utf-8")
+    return f"{TDIR.name}/{name}"
+
+
+TDIR = OUT / "judge40_tables"
+TDIR.mkdir(exist_ok=True)
 with open(OUT / "judge40.csv", "w", newline="", encoding="utf-8-sig") as f:
     w = csv.writer(f)
-    w.writerow(["번호", "query_id", "질문 원문", "정답 표 제목", "정답 셀 경로(행 머리글 > 열 머리글)",
-                "1위 셀의 표 제목", "1위 셀 경로(행 머리글 > 열 머리글)",
+    w.writerow(["번호", "query_id", "질문 원문", "정답 값", "정답 표 제목", "정답 셀 경로(행 머리글 > 열 머리글)", "정답 표 파일",
+                "1위 셀의 표 제목", "1위 셀 경로(행 머리글 > 열 머리글)", "1위 표 파일",
                 "정답 표 제목과 같은 제목의 test 표 수(정답 표 포함)",
                 "(가) 질문만 보고 정답 표를 특정할 수 있는가(예/아니오)", "(나) 예라면 근거 단어",
                 "(다) 1위 표로도 질문에 답할 수 있는가(예/아니오)"])
@@ -120,8 +133,11 @@ with open(OUT / "judge40.csv", "w", newline="", encoding="utf-8-sig") as f:
         tt = table(t1[0]).table
         assert rec[x["query_id"]]["context_units"][0]["text"] == ra.cell_unit(
             title(t1[0]), tt.row_path(t1[1]), tt.col_path(t1[2]), tt.data[t1[1]][t1[2]], "s3c"), x["query_id"]
-        w.writerow([n, x["query_id"], x["question"], x["gold_table_title"], path(g),
-                    x["top1_table_title"], path(t1), n_title[x["gold_table_title"]], "", "", ""])
+        stem = f"{n:02d}_{x['query_id']}"
+        w.writerow([n, x["query_id"], x["question"], ", ".join(map(str, rec[x["query_id"]]["answer"])),
+                    x["gold_table_title"], path(g), save_md(g[0], f"{stem}_gold.md"),
+                    x["top1_table_title"], path(t1), save_md(t1[0], f"{stem}_top1.md"),
+                    n_title[x["gold_table_title"]], "", "", ""])
 out["judge40"] = {"rows": len(missed), "test_tables": len(test_tids),
                   "same_title_test_tables_hist": dict(sorted(Counter(n_title[x["gold_table_title"]] for x in missed).items())),
                   "gold_title_empty": sum(x["gold_table_title"] == "" for x in missed),
