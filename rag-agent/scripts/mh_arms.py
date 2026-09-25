@@ -383,7 +383,9 @@ def main() -> int:
                     choices=["cell", "row", "chunk", "trag_hetero", "tablerag",
                              "rowcol", "randrow"])
     ap.add_argument("--template", default="s3c")
-    ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"])
+    ap.add_argument("--row-text", default="values", choices=["sentence", "values"],
+                    help="--unit row/rowcol/randrow: values = 발표된 단위(값만), sentence = 우리 셀 문장을 이어 붙인 변형. "
+                         "2026-09-25 기본값을 values 로 — 09-18 MH 실행이 지정을 빠뜨려 sentence 로 돌았다")
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
     ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
     ap.add_argument("--header-rule", default=None, choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3", "v3.3u"],

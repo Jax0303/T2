@@ -171,3 +171,13 @@ tablerag_path .0460, tablerag_leaf .0396.
 - 표 전체 대 본 방법(방향 예측 없음): 가중 차이 CI 가 0 을 포함 — 유의하지 않음.
 - HiTab 표 전체(방향 예측 없음): .7900 대 본 방법 .7500, 31:43, p=.20 — 유의하지 않음.
 - 사후 기술(판정 아님): v1 에서 정답 셀 문장이 문맥의 다른 셀과 같았던 조회 90건 — v1 .278 → v3.3 .433 → v3.3u .444, chunk .411.
+
+## 정정 실행 — rowcol·randrow 를 발표된 단위(값만)로 (2026-09-25, 결과 보기 전 등록, 사용자 승인)
+
+- **원인:** `--row-text` 기본값이 `sentence`(우리 셀 문장을 이어 붙인 변형)였고, 2026-09-18 MH 실행이 `values` 지정을 빠뜨렸다.
+  HiTab·2026-09-13 MH 실행은 `values` 로 돌았다. 기본값을 `values` 로 바꿨다(`mh_arms.py`, `retrieval_accuracy.py`).
+- **실행:** `mh_arms.py --unit rowcol|randrow --row-text values --header-rule v1`(rowcol 은 `--embed-overflow truncate`, v1 실행과 같음),
+  tag `mh_train_{rowcol,randrow}_values_hv1_none_doc`. 답변은 같은 882건(`--same-queries-as cell.jsonl`) → `rowcol_values.jsonl`, `randrow_values.jsonl`.
+- **보고:** 논문 주 표의 RowCol·RandRow 는 이 결과로 바꾸고, `sentence` 결과는 "우리 문장을 행·열로 묶은 변형"으로 부록에 둔다.
+  머리글을 맞춘 비교(표 5-6)에서 rowcol 은 뺀다 — `values` 는 머리글 경로를 쓰지 않는다.
+- **예측:** rowcol 검색 정확도는 `sentence`(.7562)보다 낮다(2026-09-13 `values` 실행 .4413 은 머리글 규칙 등 조건이 달라 기준값으로 쓰지 않는다).

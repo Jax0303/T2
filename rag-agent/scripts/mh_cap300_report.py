@@ -20,7 +20,7 @@ POP = {"lookup_m1": 211, "lookup_m2+": 365, "arith_m1": 71, "arith_m2+": 2224}  
 W = {g: n / sum(POP.values()) for g, n in POP.items()}
 REF = "cell_uniq"   # 본 방법 주 조건(v3.3u, 2026-09-25 사용자 결정). v1 은 "cell"
 ORDER = ["cell_uniq", "cell", "cell_hv33r", "fulltable", "chunk", "rowcol", "trag_hetero", "tablerag_path", "tablerag_leaf",
-         "randrow", "rowcol_hv33", "tablerag_path_hv33", "tablerag_leaf_hv33"]   # _hv33 = 머리글 v3.3 사후 조건
+         "randrow", "rowcol_values", "randrow_values", "rowcol_hv33", "tablerag_path_hv33", "tablerag_leaf_hv33"]   # _hv33 = 머리글 v3.3 사후 조건
 REPS, SEED = 10_000, 0
 
 

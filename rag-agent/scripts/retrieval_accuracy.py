@@ -707,7 +707,7 @@ def main() -> int:
                     help="overlap in the same unit as the chunk size")
     ap.add_argument("--chunk-tokenizer", default="")
     ap.add_argument("--chunk-tokenizer-revision", default=None)
-    ap.add_argument("--row-text", default="sentence", choices=["sentence", "values"],
+    ap.add_argument("--row-text", default="values", choices=["sentence", "values"],   # 2026-09-25: 기본값을 발표된 단위로 — MH 09-18 실행이 지정을 빠뜨려 sentence 로 돌았다
                     help="--unit row/rowcol: 'values' is the published unit "
                          "(TableRAG build_row_corpus: bare values, no header "
                          "path); 'sentence' joins OUR cell sentences and is an "
