@@ -43,7 +43,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import numpy as np                                                    # noqa: E402
 
 from retrieval_accuracy import (budget_select, build_corpus,          # noqa: E402
-                                rowcol_select, threshold_select)
+                                mix_label_vectors, rowcol_select, threshold_select)
 from rag_agent.eval.artifacts import (Selection, digest, evidence_fields,  # noqa: E402
                                      provenance, write_pair)
 from rag_agent.eval import strict_recall as sr                        # noqa: E402
@@ -402,6 +402,9 @@ def main() -> int:
     ap.add_argument("--alpha", type=float, default=0.7,
                     help="HiTab arm 에 고정된 값을 그대로 쓴다 — 재선택하지 않는다")
     ap.add_argument("--budget", type=int, default=20)
+    ap.add_argument("--label-mix", type=float, default=None,
+                    help="셀 벡터 = normalize(α·셀 문장 벡터 + (1−α)·L1 표 라벨 벡터). 셀 문장·BM25 는 "
+                         "--label-rule 그대로 (2026-09-26)")
     ap.add_argument("--k-ladder", default="",
                     help="예: 1,5,10,20 — 같은 순위 목록을 셀 예산별로 재채점한다 "
                          "(§0.1 주지표와 같은 운영점 정의, 재검색 없음). ablation 전용")
@@ -432,6 +435,8 @@ def main() -> int:
         ap.error("--k-ladder: accuracy 모드 전용, 1..--budget 범위의 양수")
     if a.threshold_from and not no_k:
         ap.error("--threshold-from is only for strict_no_k")
+    if a.label_mix is not None and (no_k or a.unit != "cell" or not 0 <= a.label_mix <= 1):
+        ap.error("--label-mix: --unit cell, not strict_no_k, 0..1")
     if no_k and (a.unit == "rowcol" or (a.split == "test" and not a.threshold_from)):
         ap.error("strict_no_k: not rowcol, and the threshold is never selected on test")
     a.header_rule = a.header_rule or ("v3.3" if strict else "v1")
@@ -511,6 +516,14 @@ def main() -> int:
         else:
             emb[s:s + len(v)] = v
         del v
+    mix_info = None
+    if a.label_mix is not None:
+        labels = {}
+        for tid in tables:
+            uid, t = tid.split("::")
+            labels[tid] = table_labels(docs[uid][2] if len(docs[uid]) > 2 else [], "L1").get(int(t), NO_TITLE)
+        mix_info = mix_label_vectors(emb, unit_tids, labels, a.label_mix, enc, cache)
+        print(f"[label-mix] {mix_info}", flush=True)
 
     TOP = 2048            # 진단·선택에 충분한 상한. 전체 argsort 를 피한다.
     count, tok_info = sr.token_counter(a.context_tokenizer) if strict else (None, None)
@@ -723,7 +736,7 @@ def main() -> int:
         "hierarchy_source": "self-reconstructed",
         "provenance": provenance(ROOT), "arguments": vars(a),
         "encoder": enc.name, "query_prefix": enc.query_prefix, "alpha": a.alpha,
-        "embedding_input_audit": input_audit,
+        "embedding_input_audit": input_audit, "label_mix": mix_info,
         "budget_cells": a.budget, "header_rule": a.header_rule, "label_rule": a.label_rule,
         "n_tables_labelled": sum(1 for t in tables.values() if t.title),
         "context_version": 2 if a.dump_context else None,

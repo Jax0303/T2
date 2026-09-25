@@ -123,6 +123,29 @@ def cell_unit(title, row_path, col_path, value, template: str) -> str:
                             template=TEMPLATES[template])
 
 
+def mix_label_vectors(emb, unit_tids, labels: dict, alpha: float, enc, cache: Path) -> dict:
+    """셀 벡터를 제자리에서 normalize(α·셀 문장 벡터 + (1−α)·표 라벨 벡터) 로 바꾼다 (2026-09-26).
+
+    ``labels`` = {표 id: 라벨}. 표마다 하나씩 접두어 없이(``enc.encode``) 인코딩해 ``cache`` 에 저장한다.
+    라벨이 빈 표의 셀은 그대로 둔다 — s3c 도 제목이 비면 라벨 없는 문장(s2 꼴)이 된다.
+    """
+    tids = sorted(labels)
+    texts = [trag.fmt_value(labels[t]) for t in tids]
+    f = cache / f"labels_{len(tids)}_{digest({'labels': texts, 'encoder': enc.metadata()})[:16]}.npy"
+    if not f.exists():
+        np.save(f, enc.encode(texts))
+    lab = np.load(f)
+    row = {t: n for n, t in enumerate(tids)}
+    li = np.array([row[t] if texts[row[t]] else -1 for t in unit_tids])
+    for s in range(0, len(emb), 50000):
+        idx = s + np.flatnonzero(li[s:s + 50000] >= 0)
+        v = alpha * emb[idx] + (1 - alpha) * lab[li[idx]]
+        emb[idx] = v / np.linalg.norm(v, axis=1, keepdims=True)
+    return {"alpha": alpha, "label_embeddings": str(f), "n_tables": len(tids),
+            "n_tables_empty_label": sum(not x for x in texts), "labels_sha256": digest(texts),
+            "n_units_mixed": int((li >= 0).sum())}
+
+
 def raw_lines(tab, t):
     """The sheet as a reader of the .xlsx sees it — every raw row, headers included.
 
@@ -735,6 +758,9 @@ def main() -> int:
                          "phase and is not re-tuned here.")
     ap.add_argument("--budget", type=int, default=20,
                     help="stop after this many distinct cells; the last unit stays whole")
+    ap.add_argument("--label-mix", type=float, default=None,
+                    help="셀 벡터 = normalize(α·셀 문장 벡터 + (1−α)·표 제목 벡터). 제목 = s3c 문장에 들어가는 "
+                         "제목(페이지 제목 포함). 셀 문장·BM25 는 --template 그대로 (2026-09-26)")
     ap.add_argument("--no-query-prefix", action="store_true",
                     help="encode the question with no instruction prefix — what "
                          "the pipeline did before the fix, kept so the cost of "
@@ -782,6 +808,8 @@ def main() -> int:
         ap.error("--max-units is not a RowCol row/column-pair cap")
     if a.rowcol_max_pairs <= 0:
         ap.error("--rowcol-max-pairs must be positive")
+    if a.label_mix is not None and (a.unit != "cell" or a.alpha == 0 or not 0 <= a.label_mix <= 1):
+        ap.error("--label-mix: --unit cell, dense on (--alpha > 0), 0..1")
     if a.chunk_tokens and (a.unit != "trag_hetero" or not a.chunk_tokenizer):
         ap.error("--chunk-tokens requires --unit trag_hetero and --chunk-tokenizer")
     if not a.chunk_tokens and a.chunk_tokenizer:
@@ -858,6 +886,12 @@ def main() -> int:
                 raise ValueError("encoder produced invalid document vectors")
             np.save(f, emb)
             print(f"[dense] encoded {len(texts)} in {time.time() - t0:.0f}s", flush=True)
+    mix_info = None
+    if a.label_mix is not None:
+        labels = {tid: with_page_title(tab.title, page_titles.get(tid)) for tid in tids
+                  if (tab := hg.load_table(tid, a.data_dir)) is not None}
+        mix_info = mix_label_vectors(emb, unit_tids, labels, a.label_mix, enc, cache)
+        print(f"[label-mix] {mix_info}", flush=True)
 
     count, tok_info = sr.token_counter(a.context_tokenizer) if strict else (None, None)
     strict_rows, pending = [], []
@@ -1035,6 +1069,7 @@ def main() -> int:
         "corpus_text_sha256": digest(texts),
         "encoder_details": enc.metadata() if enc else None,
         "embedding_input_audit": input_audit,
+        "label_mix": mix_info,
         "chunk_measure": "tokens" if a.chunk_tokens else "characters",
         "chunk_size": size, "chunk_overlap": a.chunk_overlap if a.unit == "trag_hetero" else 0,
         "chunk_tokenizer": a.chunk_tokenizer or None,
