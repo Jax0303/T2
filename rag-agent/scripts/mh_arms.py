@@ -380,7 +380,7 @@ def main() -> int:
     ap.add_argument("--split", default="train",
                     help="MultiHiertt test 는 gold 를 공개하지 않는다.")
     ap.add_argument("--unit", default="cell",
-                    choices=["cell", "row", "chunk", "trag_hetero", "tablerag",
+                    choices=["cell", "row", "table", "chunk", "trag_hetero", "tablerag",
                              "rowcol", "randrow"])
     ap.add_argument("--template", default="s3c")
     ap.add_argument("--row-text", default="values", choices=["sentence", "values"],
@@ -394,6 +394,9 @@ def main() -> int:
                          "v3·v3.1·v3.2·v3.3 = PREREG-2026-09-14-header-v3.md")
     ap.add_argument("--label-rule", default="none", choices=["none", "L1", "L2"],
                     help="표 고유 라벨 규칙. PREREG-2026-09-13-table-label.md")
+    ap.add_argument("--keep-hybrid", action="store_true",
+                    help="accuracy 모드에서도 text_evidence 가 함께 있는 질의를 표 근거로 남긴다 "
+                         "(strict 모드는 항상 남김). MultiHiertt dev 929 (2026-09-26)")
     ap.add_argument("--chunk-chars", type=int, default=1000)
     ap.add_argument("--chunk-overlap", type=int, default=200)
     ap.add_argument("--embed-model", default="BAAI/bge-base-en-v1.5")
@@ -456,7 +459,7 @@ def main() -> int:
         ap.error("output exists; use a new tag")
 
     t0 = time.time()
-    queries, docs, skipped = load_population(a.split, keep_hybrid=strict)
+    queries, docs, skipped = load_population(a.split, keep_hybrid=strict or a.keep_hybrid)
     if a.max_docs:
         keep = set(sorted(docs)[:a.max_docs])
         queries = [q for q in queries if q["uid"] in keep]
