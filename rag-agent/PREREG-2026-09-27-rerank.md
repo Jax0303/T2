@@ -163,3 +163,6 @@ MultiHiertt `bucket_definitions` (그대로 옮김):
 - 2026-09-27 03:27 2회차 실행이 인코더 적재 직후(진행 0문항) Claude Code 세션 종료와 함께 멈춤. 결과 파일 없음.
   로그 `dev/run_crash2.{out,log}` 보존. 같은 스크립트·같은 설정으로 3회차 실행.
 - 2026-09-27 03:39 3회차 실행 완료(636.6초). dev 결과 = `dev/summary.json`, 문항별 `dev/{hitab_dev,mh_dev}.jsonl`. 채택 기준 충족(§7).
+- 2026-09-27 03:44–04:12 test 1회 적용 완료(1,667.8초, 중단 없음). 재정렬 전 955 / 906 / 2,491 일치, 재계산 상위 20 불일치 0.
+  결과 = `test/summary.json`, 문항별 `test/{hitab_intable,hitab_538,mh_indoc}.jsonl`. 실행 출력 `test/run.out`
+  (실행 중에는 `results/bottleneck_20260927/test_run.out` 에 쓰고 끝난 뒤 옮김).
