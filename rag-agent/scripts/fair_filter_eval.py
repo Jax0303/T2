@@ -41,6 +41,9 @@ ARMS = {  # 표시 이름 -> records stem (전부 --corpus gold, 예산 20)
     "tablerag_path": "t_tablerag_path_v2_gold",
     "tablerag_leaf": "t_tablerag_leaf_v2_gold",
 }
+# 사후 조건(2026-09-26, PREREG-2026-09-26-s3c-answer-hitab300.md): 기본 실행에는 안 들어가고
+# --arms 로 고를 때만 돈다.
+EXTRA_ARMS = {"s3c": "t_s3c_gold_labelabl"}
 # 산술(2단계): **2026-09-21 사용자 지시로 폐기**. 모집단 파일과 사전등록을 지웠으므로
 # --arith 경로는 지금 돌지 않는다. 폐기 사유는 모집단 결함 -- HiTab 의 aggregation 라벨이
 # 참조 셀 개수를 보지 않아 216건 중 60건이 m=1 이고, 그 60건에는 이 실험이 재려던 상황이
@@ -218,6 +221,8 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0, help="arm 당 질의 수 (스모크용)")
     ap.add_argument("--arms", default="", help="쉼표로 고른 arm만 (기본: 전부)")
     ap.add_argument("--max-tokens", type=int, default=64)
+    ap.add_argument("--no-filter", action="store_true",
+                    help="무필터 리더만 돌린다(필터 열은 null). 이 출력에는 --report 를 쓰지 않는다")
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--out", default="")
@@ -232,8 +237,8 @@ def main() -> int:
 
     all_arms, pop_file, filter_sys = ((ARMS_ARITH, POP_ARITH, FILTER_SYS_ARITH) if arith
                                       else (ARMS, POP, FILTER_SYS))
-    arms = {k: v for k, v in all_arms.items()
-            if not a.arms or k in {s.strip() for s in a.arms.split(",")}}
+    pick = {s.strip() for s in a.arms.split(",")} if a.arms else set(all_arms)
+    arms = {k: v for k, v in {**all_arms, **EXTRA_ARMS}.items() if k in pick}
     pop = json.load(open(pop_file))["query_ids"]
     if a.limit:
         pop = pop[:a.limit]
@@ -281,20 +286,26 @@ def main() -> int:
                 check_context_limit(n_tok_base, a.max_tokens, limit)
                 pred_base = llm.complete(PROMPTS["neutral"], base_user,
                                          max_tokens=a.max_tokens, temperature=0.0)
-                # 필터
-                numbered = "\n".join(f"{i}. {ln}" for i, ln in enumerate(lines, 1))
-                f_user = f"Question: {r['question']}\n\nLines:\n{numbered}\n\nLine numbers needed:"
-                n_tok_filter = (llm.n_prompt_tokens(filter_sys, f_user)
-                                if hasattr(llm, "n_prompt_tokens") else None)
-                check_context_limit(n_tok_filter, a.max_tokens, limit)
-                raw = llm.complete(filter_sys, f_user, max_tokens=a.max_tokens, temperature=0.0)
-                keep = parse_keep(raw, len(lines))
-                kept = [lines[i - 1] for i in keep] or lines
-                fallback = int(not keep)
-                # 필터 후 리더
-                f_read = "Context:\n" + "\n".join(kept) + f"\n\nQuestion: {r['question']}\nAnswer:"
-                pred_filt = llm.complete(PROMPTS["neutral"], f_read,
-                                         max_tokens=a.max_tokens, temperature=0.0)
+                if a.no_filter:
+                    n_tok_filter, raw, keep, kept, fallback, pred_filt = None, "", [], lines, 0, ""
+                else:
+                    # 필터
+                    numbered = "\n".join(f"{i}. {ln}" for i, ln in enumerate(lines, 1))
+                    f_user = (f"Question: {r['question']}\n\nLines:\n{numbered}"
+                              "\n\nLine numbers needed:")
+                    n_tok_filter = (llm.n_prompt_tokens(filter_sys, f_user)
+                                    if hasattr(llm, "n_prompt_tokens") else None)
+                    check_context_limit(n_tok_filter, a.max_tokens, limit)
+                    raw = llm.complete(filter_sys, f_user, max_tokens=a.max_tokens,
+                                       temperature=0.0)
+                    keep = parse_keep(raw, len(lines))
+                    kept = [lines[i - 1] for i in keep] or lines
+                    fallback = int(not keep)
+                    # 필터 후 리더
+                    f_read = ("Context:\n" + "\n".join(kept)
+                              + f"\n\nQuestion: {r['question']}\nAnswer:")
+                    pred_filt = llm.complete(PROMPTS["neutral"], f_read,
+                                             max_tokens=a.max_tokens, temperature=0.0)
                 row = {
                     "arm": name, "query_id": q, "question": r["question"],
                     "answer": r["answer"], "retrieval_correct": r["correct"],
@@ -310,6 +321,11 @@ def main() -> int:
                     "correct_base": int(hitab_exact_match_text(pred_base, r["answer"])),
                     "correct_filtered": int(hitab_exact_match_text(pred_filt, r["answer"])),
                 }
+                if a.no_filter:
+                    for k in ("n_kept", "filter_raw", "filter_kept_idx", "filter_fallback",
+                              "answer_in_filtered", "operands_in_filtered", "pred_filtered",
+                              "correct_filtered"):
+                        row[k] = None
                 stream.write(json.dumps(row, ensure_ascii=False) + "\n")
                 stream.flush()
                 n_done += 1
