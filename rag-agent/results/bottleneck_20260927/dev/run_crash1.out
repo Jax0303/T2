@@ -1,0 +1,31 @@
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2652.13it/s]
+[hitab dev] 1062 items, pre correct 1005, top20 check ok (36s)
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[mh dev] 911 items, pre correct 774, top20 check ok (71s)
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:  19%|█▉        | 74/393 [00:00<00:00, 723.60it/s]Loading weights:  37%|███▋      | 147/393 [00:00<00:00, 661.00it/s]Loading weights:  54%|█████▍    | 214/393 [00:00<00:00, 598.27it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 957.73it/s]
+  hitab_dev 200/1062 65s
+  hitab_dev 400/1062 133s
+  hitab_dev 600/1062 196s
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/results/bottleneck_20260927/rerank_dev.py", line 226, in <module>
+    s = np.asarray(ce.predict(pairs, batch_size=POOL, show_progress_bar=False), dtype=np.float64)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/sentence_transformers/util/decorators.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/sentence_transformers/util/decorators.py", line 185, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/sentence_transformers/cross_encoder/model.py", line 712, in predict
+    pred_scores = np.asarray([score.cpu().detach().float().numpy() for score in pred_scores])
+                              ^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

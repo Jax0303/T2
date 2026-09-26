@@ -1,0 +1,179 @@
+{
+ "hitab_dev": {
+  "meta": {
+   "records": "/home/user/T2-1/rag-agent/results/dev_alpha_20260926/hitab_dev/hitab_dev_gold_prefix_records.jsonl",
+   "embeddings": ".cache/dev_alpha_20260926/BAAI_bge-base-en-v1.5_67315_4b07d547cfb5fc069c1aa2c7.npy",
+   "n_units": 67315,
+   "n_tables": 540,
+   "corpus_text_sha256": "a5569a119474fbc6921f89706772deb01623c58b3c0cde743ffb57383435b4f9"
+  },
+  "pairs": 47270,
+  "truncated_pairs": 0,
+  "seconds": 322.9,
+  "mcnemar": {
+   "n": 1062,
+   "pre_correct": 1005,
+   "post_correct": 1014,
+   "b_pre_only": 19,
+   "c_post_only": 28,
+   "p_two_sided": 0.24296021728332556
+  },
+  "moves": {
+   "n": 1062,
+   "pre_le20_to_post_gt20": 19,
+   "pre_21_50": 40,
+   "pre_21_50_to_post_le20": 28,
+   "pre_gt50_unrecoverable": 17
+  },
+  "overlap_zero": {
+   "mcnemar": {
+    "n": 45,
+    "pre_correct": 29,
+    "post_correct": 32,
+    "b_pre_only": 4,
+    "c_post_only": 7,
+    "p_two_sided": 0.548828125
+   },
+   "moves": {
+    "n": 45,
+    "pre_le20_to_post_gt20": 4,
+    "pre_21_50": 10,
+    "pre_21_50_to_post_le20": 7,
+    "pre_gt50_unrecoverable": 6
+   }
+  }
+ },
+ "mh_dev": {
+  "meta": {
+   "records": "/home/user/T2-1/rag-agent/results/dev_alpha_20260926/mh_dev/mh_dev_a1.0_records.jsonl",
+   "embeddings": [
+    ".cache/dev_alpha_20260926/cell_135894_81f450bf084fe383_0.npy",
+    ".cache/dev_alpha_20260926/cell_135894_81f450bf084fe383_50000.npy",
+    ".cache/dev_alpha_20260926/cell_135894_81f450bf084fe383_100000.npy"
+   ],
+   "n_units": 135894,
+   "n_tables": 3609,
+   "corpus_text_sha256": "81f450bf084fe383eefa3e5deb7a208c1f9c92f53a61442db18af3261326e0c9",
+   "label_mix": "none (기준선 a1.0 의 α=1.0 섞기는 적용하지 않음 — 상위 20 대조로 확인)"
+  },
+  "pairs": 45450,
+  "truncated_pairs": 0,
+  "seconds": 238.6,
+  "mcnemar": {
+   "n": 911,
+   "pre_correct": 774,
+   "post_correct": 796,
+   "b_pre_only": 33,
+   "c_post_only": 55,
+   "p_two_sided": 0.024622831581791033
+  },
+  "moves": {
+   "n": 911,
+   "pre_le20_to_post_gt20": 33,
+   "pre_21_50": 94,
+   "pre_21_50_to_post_le20": 55,
+   "pre_gt50_unrecoverable": 43
+  },
+  "overlap_zero": {
+   "mcnemar": {
+    "n": 12,
+    "pre_correct": 3,
+    "post_correct": 3,
+    "b_pre_only": 0,
+    "c_post_only": 0,
+    "p_two_sided": 1.0
+   },
+   "moves": {
+    "n": 12,
+    "pre_le20_to_post_gt20": 0,
+    "pre_21_50": 1,
+    "pre_21_50_to_post_le20": 0,
+    "pre_gt50_unrecoverable": 8
+   }
+  },
+  "by_layer": {
+   "lookup_m1": {
+    "mcnemar": {
+     "n": 75,
+     "pre_correct": 70,
+     "post_correct": 73,
+     "b_pre_only": 0,
+     "c_post_only": 3,
+     "p_two_sided": 0.25
+    },
+    "moves": {
+     "n": 75,
+     "pre_le20_to_post_gt20": 0,
+     "pre_21_50": 3,
+     "pre_21_50_to_post_le20": 3,
+     "pre_gt50_unrecoverable": 2
+    }
+   },
+   "lookup_m2+": {
+    "mcnemar": {
+     "n": 123,
+     "pre_correct": 108,
+     "post_correct": 110,
+     "b_pre_only": 3,
+     "c_post_only": 5,
+     "p_two_sided": 0.7265625
+    },
+    "moves": {
+     "n": 123,
+     "pre_le20_to_post_gt20": 3,
+     "pre_21_50": 11,
+     "pre_21_50_to_post_le20": 5,
+     "pre_gt50_unrecoverable": 4
+    }
+   },
+   "arith_m1": {
+    "mcnemar": {
+     "n": 31,
+     "pre_correct": 29,
+     "post_correct": 28,
+     "b_pre_only": 1,
+     "c_post_only": 0,
+     "p_two_sided": 1.0
+    },
+    "moves": {
+     "n": 31,
+     "pre_le20_to_post_gt20": 1,
+     "pre_21_50": 1,
+     "pre_21_50_to_post_le20": 0,
+     "pre_gt50_unrecoverable": 1
+    }
+   },
+   "arith_m2+": {
+    "mcnemar": {
+     "n": 682,
+     "pre_correct": 567,
+     "post_correct": 585,
+     "b_pre_only": 29,
+     "c_post_only": 47,
+     "p_two_sided": 0.050452410247217666
+    },
+    "moves": {
+     "n": 682,
+     "pre_le20_to_post_gt20": 29,
+     "pre_21_50": 79,
+     "pre_21_50_to_post_le20": 47,
+     "pre_gt50_unrecoverable": 36
+    }
+   }
+  }
+ },
+ "acceptance": {
+  "rule": "두 dev 모두 post_correct >= pre_correct, 그리고 적어도 한 dev 에서 c > b 이고 McNemar 양측 p < .05",
+  "both_not_lower": true,
+  "one_sig_increase": true,
+  "met": true
+ },
+ "reranker": {
+  "model": "BAAI/bge-reranker-v2-m3",
+  "max_length": 512,
+  "batch_size": 50,
+  "dtype": "fp32",
+  "device": "cuda"
+ },
+ "elapsed_s_total": 636.6
+}

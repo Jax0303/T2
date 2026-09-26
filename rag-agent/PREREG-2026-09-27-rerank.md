@@ -142,6 +142,24 @@ MultiHiertt `bucket_definitions` (그대로 옮김):
 - 집계 `dev/summary.json`, 로그 `dev/run.log`, 처리량 `dev/throughput.json`, 재현 확인 `dev/check.json`.
 - 100MB 넘는 파일은 커밋하지 않는다. 대신 sha256 과 재생성 명령을 README 에 적는다.
 
+## 11a. 보고 범위 (2026-09-27 사용자 결정, test 실행 전)
+
+- 재정렬은 본 방법(s3c)에 포함하지 않는다. 결과는 병목 진단 절에 s3c 단독 전/후 비교로만 보고한다. 비교군에는 적용하지 않는다.
+  (§9 의 "비교군에도 적용" 규칙은 이 결정으로 쓰지 않는다.)
+- test 는 1회 적용한다. 설정은 dev 와 같다. 재정렬 전 맞힘이 955 / 906 / 2,491 과 다르면 멈춘다.
+- test 실행 로그에는 재정렬 전 기준선 확인과 처리 문항 수만 출력한다. 중간 정확도는 출력하지 않는다.
+- 보고: 범위별 전/후 맞힘, b:c, McNemar 양측 p, 3범위 Holm p; 이동 건수; GATE 1 버킷별 회복·새로 틀림; overlap_zero 별도;
+  MultiHiertt 4그룹별(탐색적 결과로 표기); 절단 건수; 실행 시간.
+- 스크립트 `results/bottleneck_20260927/rerank_test.py`, 출력 `results/bottleneck_20260927/test/`.
+
 ## 12. 이탈 기록
 
-(없음)
+- 2026-09-27 03:26 dev 전체 실행 1회차가 HiTab dev 600/1,062 문항 이후 `torch.AcceleratorError: CUDA error: unknown error`
+  (재정렬기 predict 중)로 멈춤. 결과 파일(jsonl·summary)은 쓰이지 않았다. 로그는 `dev/run_crash1.{out,log}` 로 보존.
+  `CLAUDE.md` §7(GPU 를 Windows 쪽과 공유, 같은 설정으로 이어 돌린다)대로 같은 스크립트·같은 설정으로 처음부터 다시 실행.
+  1회차 로그(`run_crash1.{out,log}`)에 출력된 값은 재정렬 **전** 기준선 확인 두 줄
+  (`[hitab dev] 1062 items, pre correct 1005, top20 check ok`, `[mh dev] 911 items, pre correct 774, top20 check ok`)과
+  처리 문항 수(`hitab_dev 200/1062`, `400/1062`, `600/1062`)뿐이다. 재정렬 **후** 정확도·맞힘 수는 출력되지 않았다.
+- 2026-09-27 03:27 2회차 실행이 인코더 적재 직후(진행 0문항) Claude Code 세션 종료와 함께 멈춤. 결과 파일 없음.
+  로그 `dev/run_crash2.{out,log}` 보존. 같은 스크립트·같은 설정으로 3회차 실행.
+- 2026-09-27 03:39 3회차 실행 완료(636.6초). dev 결과 = `dev/summary.json`, 문항별 `dev/{hitab_dev,mh_dev}.jsonl`. 채택 기준 충족(§7).
