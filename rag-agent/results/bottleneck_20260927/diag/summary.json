@@ -1,0 +1,312 @@
+{
+ "inputs": {
+  "hitab": {
+   "records": [
+    "/home/user/T2-1/rag-agent/results/rerun_20260926/hitab/hitab_test_gold_s3c_records.jsonl",
+    "/home/user/T2-1/rag-agent/results/rerun_20260926/hitab/hitab_test_split_s3c_records.jsonl"
+   ],
+   "embeddings": "/home/user/T2-1/rag-agent/.cache/rerun_20260926/BAAI_bge-base-en-v1.5_67664_ea0c705bc7d8831aa9f7db1a.npy",
+   "n_tables": 538,
+   "n_units": 67664,
+   "corpus_text_sha256": "ff6b0d2731df009d816d15e509c87a9e8278286a0f0a2a0862ea6756be1d7773",
+   "alpha": 0.7,
+   "budget": 20
+  },
+  "mh": {
+   "records": "/home/user/T2-1/rag-agent/results/rerun_20260926/mh/mh_train_s3c_records.jsonl",
+   "embeddings": [
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_0.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_50000.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_100000.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_150000.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_200000.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_250000.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_300000.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_350000.npy",
+    "/home/user/T2-1/rag-agent/.cache/rerun_20260926_mh/cell_423473_ccef1b9526bb259c_400000.npy"
+   ],
+   "n_docs": 2908,
+   "n_tables": 11793,
+   "n_units": 423473,
+   "corpus_text_sha256": "ccef1b9526bb259c744eb61ccf8944a89f5bd82c8ee81089f87a1a060c0b0258",
+   "alpha": 0.7,
+   "budget": 20,
+   "header_rule": "v3.3u"
+  }
+ },
+ "checks": {
+  "hitab_top20_mismatch": {
+   "intable": 0,
+   "t538": 0
+  },
+  "hitab_records_gold_rank_mismatch": {
+   "intable": 0,
+   "t538": 0
+  },
+  "mh_top20_mismatch": 0
+ },
+ "hitab_intable": {
+  "n": 991,
+  "correct": 955,
+  "fail": 36,
+  "fail_buckets": {
+   "B_rank21_50": 20,
+   "C_rank51plus": 16
+  },
+  "bucket_x_overlap_zero": {
+   "B_rank21_50": {
+    "overlap_zero": 3,
+    "overlap_nonzero": 17
+   },
+   "C_rank51plus": {
+    "overlap_zero": 5,
+    "overlap_nonzero": 11
+   },
+   "S_success": {
+    "overlap_zero": 20,
+    "overlap_nonzero": 935
+   }
+  },
+  "fail_rank_bins": {
+   "1-20": 0,
+   "21-30": 10,
+   "31-50": 10,
+   "51-100": 11,
+   "101-500": 5,
+   ">500": 0
+  },
+  "same_table_above": {
+   "fail": {
+    "n": 36,
+    "n_none": 0,
+    "mean": 57.6111,
+    "median": 40.0,
+    "zero": 0
+   },
+   "success": {
+    "n": 955,
+    "n_none": 0,
+    "mean": 1.3058,
+    "median": 0.0,
+    "zero": 639
+   }
+  },
+  "path_overlap": {
+   "fail": {
+    "n": 36,
+    "n_none": 0,
+    "mean": 0.1659,
+    "median": 0.1603,
+    "zero": 8
+   },
+   "success": {
+    "n": 955,
+    "n_none": 0,
+    "mean": 0.4156,
+    "median": 0.4,
+    "zero": 20
+   }
+  },
+  "upper_bound": {
+   "955_plus_B": "975/991"
+  }
+ },
+ "hitab_538": {
+  "n": 991,
+  "correct": 906,
+  "fail": 85,
+  "fail_buckets": {
+   "A_gold_table_not_in_top20": 40,
+   "B_rank21_50": 25,
+   "C_rank51plus": 20
+  },
+  "bucket_x_overlap_zero": {
+   "A_gold_table_not_in_top20": {
+    "overlap_zero": 7,
+    "overlap_nonzero": 33
+   },
+   "B_rank21_50": {
+    "overlap_zero": 3,
+    "overlap_nonzero": 22
+   },
+   "C_rank51plus": {
+    "overlap_zero": 6,
+    "overlap_nonzero": 14
+   },
+   "S_success": {
+    "overlap_zero": 12,
+    "overlap_nonzero": 894
+   }
+  },
+  "fail_rank_bins": {
+   "1-20": 0,
+   "21-30": 17,
+   "31-50": 24,
+   "51-100": 19,
+   "101-500": 19,
+   ">500": 6
+  },
+  "same_table_above": {
+   "fail": {
+    "n": 85,
+    "n_none": 0,
+    "mean": 26.1294,
+    "median": 8.0,
+    "zero": 24
+   },
+   "success": {
+    "n": 906,
+    "n_none": 0,
+    "mean": 1.2285,
+    "median": 0.0,
+    "zero": 616
+   }
+  },
+  "path_overlap": {
+   "fail": {
+    "n": 85,
+    "n_none": 0,
+    "mean": 0.2104,
+    "median": 0.25,
+    "zero": 16
+   },
+   "success": {
+    "n": 906,
+    "n_none": 0,
+    "mean": 0.4249,
+    "median": 0.4,
+    "zero": 12
+   }
+  },
+  "A_rank_bins": {
+   "21-50": 16,
+   "51-100": 9,
+   "101-500": 10,
+   ">500": 5
+  },
+  "A_same_table_above": {
+   "n": 40,
+   "n_none": 0,
+   "mean": 3.95,
+   "median": 0.0,
+   "zero": 24
+  },
+  "judge_rater_A": {
+   "n_with_judge": 40,
+   "n_judge_in_bucket_A": 40,
+   "ga": {
+    "아니오": 20,
+    "예": 20
+   },
+   "da": {
+    "판단불가": 10,
+    "아니오": 29,
+    "예": 1
+   },
+   "ga_x_da": {
+    "아니오|판단불가": 5,
+    "예|아니오": 15,
+    "아니오|아니오": 14,
+    "예|판단불가": 5,
+    "아니오|예": 1
+   }
+  },
+  "upper_bound": {
+   "906_plus_B": "931/991",
+   "906_plus_B_plus_A_rank_le50": "947/991",
+   "906_plus_B_plus_20": "951/991 (20 = 지시문의 '실제 실패 20', 파일에서 산출한 값이 아님)"
+  }
+ },
+ "mh_indoc": {
+  "n": 2885,
+  "correct": 2491,
+  "fail": 394,
+  "fail_buckets": {
+   "E_no_gold_table_cell": 12,
+   "F_partial_missing_same_table": 266,
+   "G_partial_missing_other_table": 51,
+   "H_all_gold_cells_missing": 65
+  },
+  "bucket_by_layer": {
+   "lookup_m1": {
+    "H_all_gold_cells_missing": 9
+   },
+   "lookup_m2+": {
+    "F_partial_missing_same_table": 39,
+    "H_all_gold_cells_missing": 6
+   },
+   "arith_m1": {
+    "H_all_gold_cells_missing": 3
+   },
+   "arith_m2+": {
+    "E_no_gold_table_cell": 12,
+    "F_partial_missing_same_table": 227,
+    "G_partial_missing_other_table": 51,
+    "H_all_gold_cells_missing": 47
+   }
+  },
+  "layer_n_fail": {
+   "lookup_m1": 9,
+   "lookup_m2+": 45,
+   "arith_m1": 3,
+   "arith_m2+": 337
+  },
+  "layer_n_all": {
+   "lookup_m1": 212,
+   "lookup_m2+": 367,
+   "arith_m1": 71,
+   "arith_m2+": 2235
+  },
+  "missing_cells_total": 739,
+  "missing_rank_bins": {
+   "<=30": 344,
+   "31-50": 232,
+   ">50": 163
+  },
+  "missing_rank_bins_by_bucket": {
+   "E_no_gold_table_cell": {
+    "<=30": 6,
+    "31-50": 13,
+    ">50": 13
+   },
+   "F_partial_missing_same_table": {
+    "<=30": 264,
+    "31-50": 151,
+    ">50": 81
+   },
+   "G_partial_missing_other_table": {
+    "<=30": 16,
+    "31-50": 21,
+    ">50": 27
+   },
+   "H_all_gold_cells_missing": {
+    "<=30": 58,
+    "31-50": 47,
+    ">50": 42
+   }
+  },
+  "fail_all_missing_rank_le50": 301,
+  "fail_all_missing_rank_le50_by_bucket": {
+   "E_no_gold_table_cell": 5,
+   "F_partial_missing_same_table": 220,
+   "G_partial_missing_other_table": 31,
+   "H_all_gold_cells_missing": 45
+  },
+  "fail_all_missing_rank_le50_by_layer": {
+   "lookup_m1": 8,
+   "lookup_m2+": 38,
+   "arith_m1": 3,
+   "arith_m2+": 252
+  },
+  "bucket_definitions": {
+   "E": "상위 20 셀 중 정답 표(들)의 셀이 0개",
+   "H": "정답 표 셀은 있으나 정답 셀은 0개 찾음",
+   "F": "정답 셀 일부 찾음, 누락 셀의 표가 모두 문맥에 다른 셀로 들어와 있음",
+   "G": "정답 셀 일부 찾음, 누락 셀 중 표가 문맥에 없는 것이 있음",
+   "missing rank": "문서 안 hybrid 순위(상위 2048 까지), 그 밖은 >50"
+  },
+  "upper_bound": {
+   "2491_plus_all_missing_le50": "2792/2885"
+  }
+ }
+}

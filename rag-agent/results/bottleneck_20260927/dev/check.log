@@ -1,0 +1,45 @@
+[hitab dev] 1062 items, pre correct 1005, top20 check ok (33s)
+[mh dev] 911 items, pre correct 774, top20 check ok (72s)
+{
+ "hitab_dev": {
+  "meta": {
+   "records": "/home/user/T2-1/rag-agent/results/dev_alpha_20260926/hitab_dev/hitab_dev_gold_prefix_records.jsonl",
+   "embeddings": ".cache/dev_alpha_20260926/BAAI_bge-base-en-v1.5_67315_4b07d547cfb5fc069c1aa2c7.npy",
+   "n_units": 67315,
+   "n_tables": 540,
+   "corpus_text_sha256": "a5569a119474fbc6921f89706772deb01623c58b3c0cde743ffb57383435b4f9"
+  },
+  "pairs": 47270,
+  "truncated_pairs": 0,
+  "seconds": 2.1
+ },
+ "mh_dev": {
+  "meta": {
+   "records": "/home/user/T2-1/rag-agent/results/dev_alpha_20260926/mh_dev/mh_dev_a1.0_records.jsonl",
+   "embeddings": [
+    ".cache/dev_alpha_20260926/cell_135894_81f450bf084fe383_0.npy",
+    ".cache/dev_alpha_20260926/cell_135894_81f450bf084fe383_50000.npy",
+    ".cache/dev_alpha_20260926/cell_135894_81f450bf084fe383_100000.npy"
+   ],
+   "n_units": 135894,
+   "n_tables": 3609,
+   "corpus_text_sha256": "81f450bf084fe383eefa3e5deb7a208c1f9c92f53a61442db18af3261326e0c9",
+   "label_mix": "none (기준선 a1.0 의 α=1.0 섞기는 적용하지 않음 — 상위 20 대조로 확인)"
+  },
+  "pairs": 45450,
+  "truncated_pairs": 0,
+  "seconds": 1.7
+ },
+ "pairs_total": 92720,
+ "truncated_total": 0,
+ "pre_correct": {
+  "hitab_dev": 1005,
+  "mh_dev": 774
+ },
+ "layers_mh": {
+  "lookup_m2+": 123,
+  "arith_m2+": 682,
+  "lookup_m1": 75,
+  "arith_m1": 31
+ }
+}
