@@ -301,7 +301,7 @@ def hitab_answer300():
     ours = {q: r['correct_base'] for q, r in by['ours'].items()}
     chunk = {q: r['correct_base'] for q, r in by['chunk'].items()}
     fa = sum(ft.values()) / len(ft)
-    out += [V('fulltable 답변 정확도', fa, SF), V('fulltable retrieval(정의상)', 1.0, SF),
+    out += [V('fulltable 답변 정확도', fa, SF),      # 2026-09-28: 'fulltable retrieval(정의상) 1.0' 상수 후보 제거 — 결과 파일에 없음
             V('fulltable reader_input_tokens 평균', sum(r['reader_input_tokens'] for r in full.values()) / len(full), SF),
             V('fulltable−본방법', fa - summ['ours']['answer_base'], SF, 'sleaf'),
             V('n', len(ft), SF)]
@@ -536,12 +536,7 @@ def mh_audit():
             cg = Counter(x['label'] for x in gs)
             out.append(V(f'{f} {g} 검토 수', len(gs), S))
             out += [V(f'{f} {g} {lab[k]}', cg.get(k, 0), S) for k in lab]
-    fm = sum(1 for x in rows if x['flag'] and x['label'] == 'missing')
-    fn = sum(1 for x in rows if x['flag'])
-    um = sum(1 for x in rows if not x['flag'] and x['label'] == 'missing')
-    un = sum(1 for x in rows if not x['flag'])
-    est = 888 * fm / fn + 1983 * um / un
-    out += [V('추정 누락 수 888×누락/검토 + 1,983×누락/검토', est, S), V('추정 누락 비율 /2,871', est / 2871, S)]
+    # 2026-09-28: 추정 누락 수·비율 후보 제거 — 층 크기 888·1,983 이 결과 파일에 없는 입력 상수였다
     return out + text_cands('THESIS-INTERIM-2026-09-23.md', [179, 181, 182])
 
 
@@ -635,7 +630,7 @@ def hitab_rerun():
     p, where = h['max_p_randrow_path_leaf_9']
     out += [Cand('p', f'RandRow·path·leaf 9칸 중 최대 p ({where})', p, S, 'ours'),
             V('s3c 셀 문장 최대 토큰', h['s3c_max_doc_tokens'], S, 'ours'), V('s3c 셀 문장 수', h['s3c_n_units'], S),
-            V('RandRow·path·leaf 비교 칸 수(3방법 × 3유형)', 9, S)]
+            V('RandRow·path·leaf 비교 칸 수(3방법 × 3유형)', sum(len(h['vs_s3c'][a]) for a in ('randrow', 'tablerag_path', 'tablerag_leaf')), S)]
     out += [V(f's3c 단일 셀 recall@{k}', v, S, 'ours') for k, v in h['s3c_recall_at_k_single_cell'].items()]
     out += [V(f'{t}.n', n, S) for t, n in h['n'].items()]
     return out
@@ -711,7 +706,8 @@ def mh_rerun():
             out += _p_of(f's3c만:{arm}만 {g}', v, S, 'ours') + [V(f's3c−{arm} {g}', v['diff_s3c_minus_this'], S, 'ours')]
     x = m['six_baselines_24_cells']
     out += [Cand('p', f's3c 대 비교군 24칸 중 최대 p ({x["max_p"][1]})', x['max_p'][0], S, 'ours'),
-            V('24칸 중 p<.05 칸 수', x['n_p_lt_05'], S, 'ours'), V('비교 칸 수', 24, S)]
+            V('24칸 중 p<.05 칸 수', x['n_p_lt_05'], S, 'ours'),
+            V('비교 칸 수', sum(1 for a, byg in m['vs_s3c'].items() if a != 'sleaf' for g in byg if g != 'ALL'), S)]
     out += [V(f'{g} n', n, S) for g, n in m['n'].items()]
     return out
 
@@ -1298,7 +1294,6 @@ EX('05_results.md', '결과는 예측과 반대였다.', '.8301', 'mh_label', 'L
 EX('05_results.md', '결과는 예측과 반대였다.', '.2662', 'mh_label', '라벨 없음(v2) by_layer.ALL.corpus')
 EX('05_results.md', '결과는 예측과 반대였다.', '.2272', 'mh_label', 'L1 by_layer.ALL.corpus')
 EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', '10.4', 'batchcheck', 'b1_20 generation_seconds/n')
-EX('05_results.md', '| 표 전체 (검색 없음) | — | (1.0)', '1.0', 'hitab_answer300', 'fulltable retrieval(정의상)')
 EX('09_appendix.md', 'sleaf(이전 조건)는 필터 후', '2', 'hitab_answer300', 'ours 그중 1번 줄')
 EX('05_results.md', '본 방법은 .7900 =', '0', HANS, 's3c.answer_given_miss')
 EX('09_appendix.md', '| continuous batching 대', '35', 'batchcheck', 'cb_120 정답 수(기존', 2)
@@ -1382,6 +1377,13 @@ EX('07_conclusion.md', '3. **답변 정확도.**', '.2359', 'fix0928', '산술·
 
 # 원천을 못 찾은 수치의 사유(자동 대조 실패 시 적는다)
 NOTFOUND = {}
+# 2026-09-28 A: 결과 파일에 없는 입력 상수를 지운 뒤 원천이 없어진 수치(글 기록·우연히 같은 값으로 다시 맞추지 않는다)
+_C = '입력 상수 제거(888·1,983: 부록 D 정규식 층 크기, 결과 파일 없음)'
+NOTFOUND[('01_intro.md', AT('01_intro.md', '4. **한계를 수치로'), '23.5%')] = _C
+NOTFOUND[('06_discussion.md', AT('06_discussion.md', '**조건 셀 누락.**'), '23.5%')] = _C
+NOTFOUND[('09_appendix.md', AT('09_appendix.md', '추정 누락 문항 수는'), '675')] = _C
+NOTFOUND[('09_appendix.md', AT('09_appendix.md', '추정 누락 문항 수는'), '23.5%')] = _C
+NOTFOUND[('05_results.md', AT('05_results.md', '| 표 전체 (검색 없음) | — | (1.0) |'), '1.0')] = '입력 상수 제거(표 전체 검색 정확도 1.0 "정의상", 결과 파일 없음)'
 
 # =============================================================== 2. kind (자동 규칙 + ===== MANUAL: KO)
 K_RES, K_N, K_ST, K_SEC, K_CITE, K_SET, K_ETC = ('결과수치', '표본·개수', '통계(p·불일치쌍·CI)', '절·표·그림 번호',
