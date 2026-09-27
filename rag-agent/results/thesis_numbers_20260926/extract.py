@@ -4,7 +4,8 @@
 입력:  thesis/src/*.md, results/ 아래 기존 결과 파일, PREREG-*.md·THESIS-INTERIM 본문(결과 절)
        .jsonl 은 한 줄씩 읽는다. .npy·데이터셋·모델은 읽지 않는다.
 출력:  numbers.csv (UTF-8 BOM), summary.json  — 이 파일과 같은 폴더.
-       text_only 열: 결과 파일(json·jsonl·csv)이 아니라 글 기록(md 등)에서 찾은 수치에, 그 줄의 원천 집합 안 결과 파일로 같은 값이 나오는지.
+       text_only 열: 결과 파일(json·jsonl·csv)이 아니라 글 기록(md 등)에서만 찾은 수치와 그 사유(HOLD). 같은 줄의 결과 파일에서도
+       같은 값이 나오면 결과 파일을 출처로 적는다(2026-09-28).
 
 구성
   1. 토큰화: 수치 토큰(줄여 쓴 sha256 앞8…끝4, p값, 불일치 쌍 a:b, 날짜, 식별자 v3.3u·Qwen3-8B, 표 번호, 일반 수)
@@ -970,6 +971,19 @@ def mh_test():
     return [V('n_questions', d['n_questions'], S), Cand('h', 'sha256', d['sha256'], S, None)] + [V(f'n_with_key.{k}', v, S) for k, v in d['n_with_key'].items()]
 
 
+@src
+def recheck():
+    """2026-09-28 글 기록 출처 수치 재계산(scripts/recheck_20260928): 셀 문장 중복(v1·v3.3, train 색인), MultiHiertt 사본 대조."""
+    r, q = 'results/recheck_20260928/uniq_stats.json', 'results/recheck_20260928/mh_release_compare.json'
+    u, c, S, SQ = jload(r)['train_index'], jload(q), R(r), R(q)
+    k = c['sig_digits_k_matching_all_differing_numeric']
+    return [V('train 색인 v1 셀 수', u['v1']['n_cells'], S), V('train 색인 v1 중복 비율', u['v1']['dup_rate'], S),
+            V('train 색인 v3.3 셀 수', u['v3.3']['n_cells'], S), V('train 색인 v3.3 중복 비율', u['v3.3']['dup_rate'], S),
+            V('공식·재포장 train 대조 uid 수', c['n_compared_common_uid'], SQ),
+            *([V('정답 유효숫자 자릿수(차이 난 수치 정답 전부에서 성립)', k[0], SQ)] if len(k) == 1 else []),
+            V('question_type 일치율(채점 2,885)', c['question_type_agreement']['rate'], SQ)]
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -1001,7 +1015,7 @@ L('01_intro.md', '2. **셀 단위 검색을 발표된', 'rerun_cmp', 'mh_rerun',
 L('01_intro.md', '3. **답변 정확도까지', *CLAIM, 'mh_sample')
 L('01_intro.md', '4. **한계를 수치로', 'mh_label', 'mh_audit')
 L('01_intro.md', '모든 비교는 실행 전에 사전등록했다.', HANS)
-L('03_method.md', '같은 문서 안에 값을 뺀 문장이 똑같은', 'prereg_uniq', 'mh_meta')
+L('03_method.md', '같은 문서 안에 값을 뺀 문장이 똑같은', 'prereg_uniq', 'mh_meta', 'recheck')
 L('03_method.md', '이 규칙으로 train 분할에서 문장이 바뀐 셀은', 'prereg_uniq')
 L('03_method.md', '**고유 라벨(HiTab).**', 'alpha_dev', 'mh_dev_pop')
 L('03_method.md', '잎 라벨 머리말의 유무는', 'hitab_sleaf_vs_s3c', 'hitab_sleaf', 'hitab_labelabl', HANS, 'hitab_answer300')
@@ -1009,8 +1023,8 @@ L('03_method.md', '**임베딩.** 셀 문장과 질문을', HRE, HMETA)
 L('03_method.md', 'MultiHiertt 리더 설정은 validation 분할 60건', 'reader_pilot')
 L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모집단 |', '| 답변 정확도 표본 |'], HMETA, 'mh_pop', 'mh_sample', 'interim_meta')
 L('04_setup.md', '**HiTab.** test 분할 1,584 질의', HMETA)
-L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', 'mh_test', 'mh_pop', 'interim_meta')
-L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta')
+L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', 'mh_test', 'mh_pop', 'interim_meta', 'recheck')
+L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta', 'recheck')
 L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
 L('04_setup.md', '공식 규칙상 정답이 음수인 산술 문항은', 'mh_ans', 'mh_sample')
 L('04_setup.md', '**MultiHiertt 전체 정확도.**', 'mh_pop')
@@ -1241,6 +1255,36 @@ def EX(f, anchor, tok, setname, pat, occ=None):
 
 # 쓰인 수치가 가리키는 원천 필드(안 맞으면 불일치로 적는다)
 EXPECT = {}
+# 2026-09-28 재계산으로 연결한 글 기록 출처 수치
+_U = '같은 문서 안에 값을 뺀 문장이 똑같은'
+EX('03_method.md', _U, '27.6%', 'recheck', 'train 색인 v1 중복 비율')
+EX('03_method.md', _U, '429,048', 'recheck', 'train 색인 v1 셀 수')
+EX('03_method.md', _U, '11.8%', 'recheck', 'train 색인 v3.3 중복 비율')
+EX('03_method.md', _U, '423,473', 'recheck', 'train 색인 v3.3 셀 수')
+EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '100%', 'recheck', 'question_type 일치율(채점 2,885)')
+EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '7,830', 'recheck', '공식·재포장 train 대조 uid 수')
+EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '6', 'recheck', '정답 유효숫자 자릿수')
+
+# 재계산으로 연결하지 않은 글 기록 출처 수치 — CSV text_only 열에 사유를 적는다 (2026-09-28)
+HOLD = {}
+
+
+def HD(f, anchor, toks, why):
+    for t in toks:
+        HOLD[f, AT(f, anchor), t] = why
+
+
+_MULTI = '해석 복수(연결 안 함): 문장만으로 범위가 정해지지 않음, 해석별 값은 results/recheck_20260928/uniq_stats.json'
+HD('03_method.md', '이 규칙으로 train 분할에서 문장이 바뀐 셀은', ['14.4%', '2.7%', '6.3%', '6.8%', '0'], _MULTI)
+HD('06_discussion.md', '**문장 고유화의 식별자.**', ['6.3%', '6.8%', '2.7%'], _MULTI)
+HD('04_setup.md', 'MultiHiertt 리더는 두 번의 사전등록 파일럿으로', ['169.8'],
+   '삭제 보류(계산 불가: 생각 모드 실행의 시작·중단 시각 기록 없음): 뒤 문장 "같은 60건"과 6.2절 "시간 한도 때문에 시험하지 못했다"가 전제')
+_D = '삭제 보류(계산 불가: 부록 D 정규식이 결과 파일로 남지 않음)'
+HD('06_discussion.md', '**조건 셀 누락.**', ['15', '36%'], _D + ': 같은 문장의 23.5%를 1장 기여 4가 전제')
+HD('09_appendix.md', 'MultiHiertt의 정답 근거 주석(table evidence)이', ['888', '1,983'], _D + ': 표 D-1과 추정식이 전제')
+HD('09_appendix.md', '| 정규식 표시 |', ['888'], _D + ': 표 D-1 행, 추정식이 전제')
+HD('09_appendix.md', '| 정규식 미표시 |', ['1,983'], _D + ': 표 D-1 행, 추정식이 전제')
+HD('09_appendix.md', '추정 누락 문항 수는', ['888', '1,983', '15', '36%'], _D + ': 6.5절 조건 셀 누락 문단과 1장 기여 4가 전제')
 EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p<.0001', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
 EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p=7.6×10⁻⁶', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
 EX('05_results.md', '결과는 예측과 반대였다.', '.8492', 'mh_label', '라벨 없음(v2) by_layer.ALL.doc')
@@ -1277,7 +1321,7 @@ EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', '99:29', 'mh_
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', 'p=3.8×10⁻¹⁰', 'mh_rules', '공통 2,871 v33u만:v1만 p')
 EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.008', 'mh_rules', 'v1 top1 조회1 대 산술1 Fisher p')
 EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.77', 'mh_rules', 'v1 budget20 조회1 대 산술1 Fisher p')
-P11 = 'PREREG-2026-09-24-mh-answer-cap300.md:11 본문'
+P11 = 'v1 n_scored'      # 2026-09-28: 사전등록 11줄 글 대신 처음 규칙 검색 결과 파일의 채점 수
 EX('04_setup.md', '**MultiHiertt 답변 표본.**', '2,871', 'mh_pop', P11, 1)
 EX('04_setup.md', '**데이터 사용 이력.**', '2,871', 'mh_pop', P11)
 EX('06_discussion.md', '**표본 평가.**', '2,871', 'mh_pop', P11)
@@ -1681,14 +1725,14 @@ def main():
                                    match='일치' if ok else f'불일치(원천 값 {fmt(ec)})')
                         row['sleaf_as_ours'] = {'sleaf': '예', 'ours': '아니오'}.get(ec.tag, '')
                     elif c:
+                        if not c.src.endswith(RESULT_EXT):     # 글 기록에서 찾은 값: 이 줄의 원천 집합 안 결과 파일에서 같은 값이 나오면 그쪽이 출처
+                            c, note = next((m for m in [match(s_eval, [x for x in cands if x.src.endswith(RESULT_EXT)])] if m[0]), (c, note))
                         row.update(source_file=c.src, source_field_or_value=f'{c.field} = {fmt(c)}{note}', match='일치')
                         row['sleaf_as_ours'] = {'sleaf': '예', 'ours': '아니오'}.get(c.tag, '')
                     else:
                         row.update(match='출처 못 찾음', source_field_or_value=nf or '')
                     if row['match'] == '일치' and not row['source_file'].endswith(RESULT_EXT):
-                        # 글 기록에서 찾은 수치: 이 줄의 원천 집합 안 결과 파일 후보로 같은 값이 나오는지
-                        alt, _ = match(s_eval, [x for x in cands if x.src.endswith(RESULT_EXT)])
-                        row['text_only'] = (f'재계산 가능: {alt.src} [{alt.field}]' if alt else '재계산 불가(글 기록에만 있음)')
+                        row['text_only'] = HOLD.get((f, ln, s), '글 기록에만 있음')
                     if row['sleaf_as_ours'] == '예' and (f, ln) in SLEAF_NAMED:
                         row['sleaf_as_ours'] = '아니오(sleaf로 표기)'
                 rows.append(row)
@@ -1712,8 +1756,8 @@ def write(rows):
         sleaf_as_ours_yes=[f"{r['file']}:{r['line']}:{r['number']}" for r in rows if r['sleaf_as_ours'] == '예'],
         text_sourced=dict(
             n=sum(1 for r in rows if r['text_only']),
-            recomputable=sum(1 for r in rows if r['text_only'].startswith('재계산 가능')),
-            not_recomputable=[f"{r['file']}:{r['line']}:{r['number']} [{r['source_file']}]" for r in rows if r['text_only'].startswith('재계산 불가')]),
+            by_reason=dict(Counter(r['text_only'].split(':')[0] for r in rows if r['text_only'])),
+            rows=[f"{r['file']}:{r['line']}:{r['number']} [{r['source_file']}] {r['text_only'].split(':')[0]}" for r in rows if r['text_only']]),
     )
     with open(os.path.join(HERE, 'summary.json'), 'w', encoding='utf-8') as fh:
         json.dump(summary, fh, ensure_ascii=False, indent=1)

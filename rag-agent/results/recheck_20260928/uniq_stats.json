@@ -1,0 +1,174 @@
+{
+  "conditions": "- 데이터: bevaya/MultiHiertt (캐시 snapshot ae21d2d, 검색 실행과 같음), 표 제목 없음(label none), 템플릿 s3c.\n- 데이터 셀: 색인의 셀 단위(비어 있지 않은 데이터 칸) — build_corpus 와 같은 정의.\n- \"값을 뺀 문장\": 색인 문장 렌더러에 값 없이(value=None) 넣은 문장 = 머리글 경로 문자열.\n- \"같은 문서\": 같은 uid.\n- train 범위: 검색 평가 색인(표 근거만 필요한 2,908 질의의 문서, keep_hybrid 없음). 원고 39줄이 분모를\n  429,048(v1)·423,473(v3.3)으로 적어 이 색인으로 정해진다.\n- 47줄 \"train 분할에서 문장이 바뀐 셀\"은 분모가 없어 문장만으로 범위가 정해지지 않는다(train 문서 전체 / 표 근거만 /\n  표 근거+혼합). 06_discussion.md 97줄은 분할도 적지 않는다(\"MultiHiertt에서\"). 처음에는 47줄을 39줄과 같은 색인으로\n  고정했으나(첫 실행), 규칙에 따라 범위 해석 여섯 개(train·validation × 셋)를 모두 세고 어느 것도 출처로 연결하지 않는다.\n- 39줄 비율 = 같은 문서 안에 값을 뺀 문장이 같은 다른 셀이 있는 셀 수 / 셀 수. 규칙 v1, v3.3.\n- 47줄 \"문장이 바뀐 셀\" = v3.3 대 v3.3u 에서 값을 뺀 문장이 다른 셀. 세 종류(겹침 허용):\n    표 안의 글 = 단계 1이 더한 경로 요소, 행·열 번호 = 경로 끝의 'row N'/'column N'(단계 2),\n    표 번호 = 행 경로 앞의 'Table k'(단계 3).\n  분모는 전체 셀(423,473). \"그중 … 2.7%\"를 바뀐 셀 대비로 읽으면 세 비율의 합이 100% 이상이어야 하는데\n  (바뀐 셀은 적어도 하나가 더해짐) 원고 합은 15.8%라 성립하지 않으므로 전체 셀 대비 하나로 고정했다.\n  바뀐 셀 대비 값은 참고로만 함께 적는다.\n- 47줄 \"적용 후 같은 문장인 셀 0개(train·validation)\": validation 범위가 원고에 정해져 있지 않다\n  (dev 911·929·332 질의 색인이 모두 쓰였다). 해석 셋을 모두 센다: 분할 전체 문서, 표 근거만(keep_hybrid 없음),\n  표 근거+혼합(keep_hybrid). train 도 같은 셋을 센다. 문장은 값을 뺀 문장과 값까지 넣은 문장 둘 다 센다.",
+  "train_index": {
+    "n_docs": 2908,
+    "v1": {
+      "n_cells": 429048,
+      "dup_cells": 118259,
+      "dup_rate": 0.2756311648113964
+    },
+    "v3.3": {
+      "n_cells": 423473,
+      "dup_cells": 49838,
+      "dup_rate": 0.11768873104070389
+    },
+    "v3.3_to_v3.3u": {
+      "n_cells": 423473,
+      "changed": 61165,
+      "changed_rate": 0.1444365992637075,
+      "table_text_rate_of_all_cells": 0.027201261945861956,
+      "row_col_number_rate_of_all_cells": 0.06331454425665863,
+      "table_number_rate_of_all_cells": 0.06802322698259393,
+      "table_text": 11519,
+      "row_col_number": 26812,
+      "table_number": 28806,
+      "참고_바뀐_셀_대비": {
+        "table_text": 0.18832665740210905,
+        "row_col_number": 0.43835526853592743,
+        "table_number": 0.4709556118695332
+      }
+    }
+  },
+  "residual_after_v3.3u": {
+    "train.split_all_docs": {
+      "n_docs": 7830,
+      "n_cells": 1085461,
+      "docs_stopped_by_code_check": 0,
+      "dup_cells_novalue": 0,
+      "dup_cells_with_value": 0
+    },
+    "train.table_evidence_only": {
+      "n_docs": 2908,
+      "n_cells": 423473,
+      "docs_stopped_by_code_check": 0,
+      "dup_cells_novalue": 0,
+      "dup_cells_with_value": 0
+    },
+    "train.table_evidence_plus_hybrid": {
+      "n_docs": 7117,
+      "n_cells": 994405,
+      "docs_stopped_by_code_check": 0,
+      "dup_cells_novalue": 0,
+      "dup_cells_with_value": 0
+    },
+    "validation.split_all_docs": {
+      "n_docs": 1044,
+      "n_cells": 151460,
+      "docs_stopped_by_code_check": 0,
+      "dup_cells_novalue": 0,
+      "dup_cells_with_value": 0
+    },
+    "validation.table_evidence_only": {
+      "n_docs": 338,
+      "n_cells": 53778,
+      "docs_stopped_by_code_check": 0,
+      "dup_cells_novalue": 0,
+      "dup_cells_with_value": 0
+    },
+    "validation.table_evidence_plus_hybrid": {
+      "n_docs": 929,
+      "n_cells": 135894,
+      "docs_stopped_by_code_check": 0,
+      "dup_cells_novalue": 0,
+      "dup_cells_with_value": 0
+    }
+  },
+  "change_by_scope": {
+    "train.split_all_docs": {
+      "n_cells": 1085461,
+      "changed": 155169,
+      "changed_rate": 0.14295216502481434,
+      "table_text_rate_of_all_cells": 0.027089872413656502,
+      "row_col_number_rate_of_all_cells": 0.07570516121721554,
+      "table_number_rate_of_all_cells": 0.05649857525972835,
+      "table_text": 29405,
+      "row_col_number": 82175,
+      "table_number": 61327,
+      "참고_바뀐_셀_대비": {
+        "table_text": 0.18950305795616393,
+        "row_col_number": 0.5295838730674297,
+        "table_number": 0.39522713944151217
+      }
+    },
+    "train.table_evidence_only": {
+      "n_cells": 423473,
+      "changed": 61165,
+      "changed_rate": 0.1444365992637075,
+      "table_text_rate_of_all_cells": 0.027201261945861956,
+      "row_col_number_rate_of_all_cells": 0.06331454425665863,
+      "table_number_rate_of_all_cells": 0.06802322698259393,
+      "table_text": 11519,
+      "row_col_number": 26812,
+      "table_number": 28806,
+      "참고_바뀐_셀_대비": {
+        "table_text": 0.18832665740210905,
+        "row_col_number": 0.43835526853592743,
+        "table_number": 0.4709556118695332
+      }
+    },
+    "train.table_evidence_plus_hybrid": {
+      "n_cells": 994405,
+      "changed": 141034,
+      "changed_rate": 0.14182752500238835,
+      "table_text_rate_of_all_cells": 0.02674363061328131,
+      "row_col_number_rate_of_all_cells": 0.07297026865311418,
+      "table_number_rate_of_all_cells": 0.05752082903847024,
+      "table_text": 26594,
+      "row_col_number": 72562,
+      "table_number": 57199,
+      "참고_바뀐_셀_대비": {
+        "table_text": 0.18856445963384716,
+        "row_col_number": 0.5145000496334218,
+        "table_number": 0.40556886991789215
+      }
+    },
+    "validation.split_all_docs": {
+      "n_cells": 151460,
+      "changed": 21274,
+      "changed_rate": 0.14045952726792552,
+      "table_text_rate_of_all_cells": 0.02217747260002641,
+      "row_col_number_rate_of_all_cells": 0.0767331308596329,
+      "table_number_rate_of_all_cells": 0.06728509177340553,
+      "table_text": 3359,
+      "row_col_number": 11622,
+      "table_number": 10191,
+      "참고_바뀐_셀_대비": {
+        "table_text": 0.15789226285606844,
+        "row_col_number": 0.5463006486791389,
+        "table_number": 0.4790354423239635
+      }
+    },
+    "validation.table_evidence_only": {
+      "n_cells": 53778,
+      "changed": 7189,
+      "changed_rate": 0.13367919967272862,
+      "table_text_rate_of_all_cells": 0.017981330655658448,
+      "row_col_number_rate_of_all_cells": 0.053237383316597865,
+      "table_number_rate_of_all_cells": 0.08380750492766559,
+      "table_text": 967,
+      "row_col_number": 2863,
+      "table_number": 4507,
+      "참고_바뀐_셀_대비": {
+        "table_text": 0.13451105856169146,
+        "row_col_number": 0.39824732229795523,
+        "table_number": 0.6269300319933231
+      }
+    },
+    "validation.table_evidence_plus_hybrid": {
+      "n_cells": 135894,
+      "changed": 18741,
+      "changed_rate": 0.13790895845291182,
+      "table_text_rate_of_all_cells": 0.02058221849382607,
+      "row_col_number_rate_of_all_cells": 0.0719016292110027,
+      "table_number_rate_of_all_cells": 0.06819285619674158,
+      "table_text": 2797,
+      "row_col_number": 9771,
+      "table_number": 9267,
+      "참고_바뀐_셀_대비": {
+        "table_text": 0.14924497091937464,
+        "row_col_number": 0.5213702577237074,
+        "table_number": 0.49447734912758123
+      }
+    }
+  }
+}

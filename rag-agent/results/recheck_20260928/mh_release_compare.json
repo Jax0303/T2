@@ -1,0 +1,50 @@
+{
+  "conditions": "- 재포장본: bevaya/MultiHiertt train (캐시 snapshot ae21d2d, 검색 실행과 같음).\n- 공식 릴리스: yilunzhao/MultiHiertt@f18473d multihiertt_data/train.json (scripts/mh_arms.py OFFICIAL_REV).\n- 23줄 \"train 7,830건 전수를 대조\": 두 파일에 함께 있는 uid 수. 비교 필드 — 표(tables), 문단(paragraphs),\n  근거(table_evidence, text_evidence), 프로그램(program). 값이 같은지(==)로 센다. 질문·table_description 은 참고.\n- 23줄 \"정답 값만 유효숫자 6자리로 잘려\": 정답이 다른 문항에서, 재포장본 정답(수)이 공식 정답을 유효숫자 k자리로\n  반올림한 값(Python '{:.kg}')과 같은 k 를 1~15 에서 찾는다. 모든 수치 정답 쌍에서 성립하는 k 의 집합을 보고한다.\n  정답 비교: 공식 정답이 수면 float 로, 문자열이면 문자열 그대로 비교.\n- 21줄 \"프로그램 주석 유무 구분이 공식 question_type 과 100% 일치\": 대상은 원고가 같은 문장에서 네 그룹\n  (212·367·71·2,235)으로 나누는 채점 2,885 질의 = 최종 규칙 재실행 레코드(results/rerun_20260926/mh/\n  mh_train_s3c_records.jsonl)에서 excluded 가 없는 질의. 대응: kind arith ↔ arithmetic, lookup ↔ span_selection\n  (공식 train 의 question_type 값은 이 둘뿐). 같은 문단이 앞 문장에서 7,830 → 2,908 → 2,885 로 좁히므로 \"질의\"는 2,885 로\n  고정한다. 참고로 2,908(제외 전)과 7,830(train 전체, 공식 program 유무로 구분)도 센다.",
+  "n_official_train": 7830,
+  "n_bevaya_train": 7830,
+  "n_compared_common_uid": 7830,
+  "fields_equal": {
+    "tables": 7830,
+    "paragraphs": 7830,
+    "table_evidence": 7830,
+    "text_evidence": 7830,
+    "program": 7830,
+    "question(참고)": 7830,
+    "table_description(참고)": 7830
+  },
+  "fields_all_equal": {
+    "tables": true,
+    "paragraphs": true,
+    "table_evidence": true,
+    "text_evidence": true,
+    "program": true,
+    "question(참고)": true,
+    "table_description(참고)": true
+  },
+  "answer_differs": 993,
+  "answer_differs_numeric_pairs": 993,
+  "sig_digits_k_matching_all_differing_numeric": [
+    6
+  ],
+  "example_346930.6": [
+    [
+      "df6d547f7c974bf2b07c2c4c3ca4e4e7",
+      346930.6,
+      "346931"
+    ]
+  ],
+  "question_type_agreement": {
+    "records": "results/rerun_20260926/mh/mh_train_s3c_records.jsonl",
+    "n_scored": 2885,
+    "agree": 2885,
+    "rate": 1.0,
+    "question_type_values_official_train": [
+      "arithmetic",
+      "span_selection"
+    ]
+  },
+  "question_type_agreement_참고": {
+    "records_2908_제외_전": 1.0,
+    "train_7830": 1.0
+  }
+}
