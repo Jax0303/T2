@@ -984,6 +984,43 @@ def tdesc():
                   V('tdesc 같은 문장 비율 본 방법', dup['ours_rate'], SG, 'ours')]
 
 
+@src
+def lookup_arith_posthoc():
+    """2026-09-28 5.7절 조회 대 산술 1위 적중 사후 분석(최종 버전, PREREG-2026-09-28-lookup-arith-posthoc.md, T4b·T9 는 그 뒤 추가):
+    rank1.json(예산 20), posthoc/posthoc.json(T2·T3·T8), posthoc/posthoc_t4b_t9.json(T4b·T9), analyze.json(path overlap)."""
+    d = 'results/lookup_vs_arith_20260928'
+    r1 = jload(f'{d}/rank1.json')['multihiertt']['최종_버전_v3.3u']
+    ph, x = jload(f'{d}/posthoc/posthoc.json'), jload(f'{d}/posthoc/posthoc_t4b_t9.json')
+    an = jload(f'{d}/analyze.json')['multihiertt']['groups']
+    S1, SP, SX, SA = R(f'{d}/rank1.json'), R(f'{d}/posthoc/posthoc.json'), R(f'{d}/posthoc/posthoc_t4b_t9.json'), R(f'{d}/analyze.json')
+    out = []
+    for g in ('조회1', '산술1'):
+        b = r1[g]['budget20']
+        out += [V(f'최종 {g} 예산20 정확도', b['rate'], S1, 'ours'), V(f'최종 {g} 예산20 맞힘', b['hit'], S1, 'ours'),
+                V(f'최종 {g} n', b['n'], S1)]
+    i = ph['final']['T2']['i_산술_대_조회']
+    for k, g in (('a', '산술1'), ('b', '조회1')):
+        out += [V(f'T2 {g} 1위 비율', i[k]['rate'], SP, 'ours'), V(f'T2 {g} 1위 적중', i[k]['hit'], SP, 'ours'), V(f'T2 {g} n', i[k]['n'], SP)]
+    out.append(Cand('p', 'T2 1위 산술 대 조회 Fisher p', i['fisher_p'], SP, 'ours'))
+    m1 = ph['final']['T3']['m층_1위']
+    for tp in ('조회', '산술'):
+        out += [V(f'T3 {tp} m=1 1위 비율', m1[tp]['m1']['rate'], SP, 'ours'), V(f'T3 {tp} m=1 1위 적중', m1[tp]['m1']['hit'], SP, 'ours'),
+                V(f'T3 {tp} m=1 n', m1[tp]['m1']['n'], SP)]
+    out.append(Cand('p', 'T3 m=1 조회 대 산술 Fisher p', m1['fisher_p_m1'], SP, 'ours'))
+    out += [V(f'T8 {g} m=1 비율', ph['T8'][g]['전체']['m1_share'], SP, 'ours') for g in ('조회1', '산술1')]
+    t = x['final']['T4b']
+    out += [V('T4b 조회 비교있음 n', t['조회_비교있음_n'], SX), V('T4b 대상 n', t['대상_n'], SX),
+            V('T4b 관측 1위 적중', t['hit'], SX, 'ours'), V('T4b 1/m 합', t['sum_1_over_m'], SX),
+            Cand('p', 'T4b 푸아송 이항 p', t['poisson_binomial_p'], SX, 'ours')]
+    for k in ('m_le20', 'm_gt20'):
+        c = x['final']['T9']['조회'][k]
+        out += [V(f'T9 조회 {k} 예산20 비율', c['rate'], SX, 'ours'), V(f'T9 조회 {k} 성공', c['b20_success'], SX, 'ours'),
+                V(f'T9 조회 {k} n', c['n'], SX)]
+    out += [V(f'{g} path overlap 평균', an[g]['path_overlap']['ratio_mean'], SA, 'ours') for g in ('조회1', '산술1')]
+    # 정의 상수: 그룹 '정답 셀 1개', m=1 층, T9 경계 m≤20 / m>20
+    return out + [V('정답 셀 1개 그룹·m=1 층', 1, SP), V('T9 m 경계', 20, SX)]
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -1068,7 +1105,7 @@ L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 
   'mh_ans', 'mh_sample')
 L('05_results.md', '**머리글 규칙에 대한 민감도.**', 'stats3b', 'step4', 'reader_test')
 L('05_results.md', '결과는 예측과 반대였다.', 'mh_label', 'mh_label_pop', 'mh_pop')
-L('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'mh_rules', 'mh_pop')
+L('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'lookup_arith_posthoc')   # 2026-09-28 5.7절 최종 버전 교체
 T61 = ['| HiTab (300) | 셀 문장 |', '| HiTab (300) | 고정 청크 |', '| MultiHiertt (882) | 셀 문장 |', '| MultiHiertt (882) | 고정 청크 |']
 L('06_discussion.md', T61, 'decomp', 'reader_test', 'mh_sample', HANS)
 L('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'], 'decomp', 'reader_test')
@@ -1176,7 +1213,6 @@ for _a, _c in TG2:
     PF('09_appendix.md', _a, rf'^decomp mh {_c} ')
 for _a, _c in TH1:
     PF('09_appendix.md', _a, rf'^α {re.escape(_c)} ')
-PF('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', r'^v1 top1', r'^v1 budget20')
 PF('05_results.md', 'v1에서 v3.3으로 머리글을 고치면', r'^diff_v33_minus_v1 ALL', r'^diff_v33u_minus_v33 ALL', r'^v33만:v1만', r'^v33u만:v33만')
 PF('05_results.md', '**머리글 규칙에 대한 민감도.**', r'item3b_mh882_pooled cell ', r'기준만:cell만', r'chunk 최종만:처음만', r'^chunk_v1', r'^chunk_final 맞힘')
 PF('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', r'^test ', r'chunk_final', r'cell−chunk_final')
@@ -1302,8 +1338,11 @@ EX('09_appendix.md', '| TableRAG(Yu) 청크 | .6000', '<10⁻⁵', 'hitab_answer
 EX('09_appendix.md', '| RowCol | .4700', '<10⁻⁵', 'hitab_answer300', 'rowcol.mcnemar_base_vs_filtered.p_value')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', '99:29', 'mh_rules', '공통 2,871 v33u만:v1만')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', 'p=3.8×10⁻¹⁰', 'mh_rules', '공통 2,871 v33u만:v1만 p')
-EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.008', 'mh_rules', 'v1 top1 조회1 대 산술1 Fisher p')
-EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.77', 'mh_rules', 'v1 budget20 조회1 대 산술1 Fisher p')
+EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=8.8×10⁻⁵', 'lookup_arith_posthoc', 'T2 1위 산술 대 조회 Fisher p')
+EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=1', 'lookup_arith_posthoc', 'T3 m=1 조회 대 산술 Fisher p')
+EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=.48', 'lookup_arith_posthoc', 'T4b 푸아송 이항 p')
+EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', '95.8%', 'lookup_arith_posthoc', '최종 산술1 예산20 정확도', 2)
+EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', '32', 'lookup_arith_posthoc', 'T4b 관측 1위 적중', 2)
 P11 = 'v1 n_scored'      # 2026-09-28: 사전등록 11줄 글 대신 처음 규칙 검색 결과 파일의 채점 수
 EX('04_setup.md', '**MultiHiertt 답변 표본.**', '2,871', 'mh_pop', P11, 1)
 EX('04_setup.md', '**데이터 사용 이력.**', '2,871', 'mh_pop', P11)
