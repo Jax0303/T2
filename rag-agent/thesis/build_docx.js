@@ -18,7 +18,7 @@ const font = (name) => ({ ascii: name, hAnsi: name, eastAsia: name });
 const PAGE_W = 11906, PAGE_H = 16838, MARGIN = 2268, HF = 567;   // A4, 여백 사방 40mm, 머리말·꼬리말 10mm
 const TEXT_W = PAGE_W - 2 * MARGIN;                               // 본문 폭 130mm
 const LAND_W = PAGE_H - 2 * MARGIN;                               // 가로 쪽 본문 폭 217mm
-const LANDSCAPE = new Set(["5-7"]);                               // 가로 쪽 구역에 넣는 표
+const LANDSCAPE = new Set(["5-8"]);                               // 가로 쪽 구역에 넣는 표
 const LAND = { orientation: PageOrientation.LANDSCAPE }, PORT = { orientation: PageOrientation.PORTRAIT };   // 구역 나눔 표시
 
 function runs(text, base = {}) {
@@ -232,7 +232,7 @@ files.forEach((f, k) => {
   body.push(...convert(mds[k]));
 });
 
-// 표 5-7 앞뒤에서 구역을 나눈다(가로 쪽). 쪽 번호는 이어진다
+// 표 5-8 앞뒤에서 구역을 나눈다(가로 쪽). 쪽 번호는 이어진다
 const pageProps = ({ orientation }) => ({ page: { size: { orientation },
   margin: { top: MARGIN, bottom: MARGIN, left: MARGIN, right: MARGIN, header: HF, footer: HF } } });
 const sections = [{ properties: { ...pageProps(PORT), page: { ...pageProps(PORT).page, pageNumbers: { start: 1 } } },

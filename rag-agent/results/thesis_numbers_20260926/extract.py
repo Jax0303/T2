@@ -966,6 +966,24 @@ def recheck():
               res['train.table_evidence_only']['dup_cells_novalue'] + res['validation.split_all_docs']['dup_cells_novalue'], S)]
 
 
+@src
+def tdesc():
+    """2026-09-28 table_description 셀 문장 대 본 방법 검색(사전등록 b4187a0): compare.json(그룹별 정확도·불일치·Holm), gold_dup.json."""
+    r, g = 'results/table_description_20260928/compare.json', 'results/table_description_20260928/gold_dup.json'
+    d, u, S, SG = jload(r)['groups'], jload(g), R(r), R(g)
+    out = []
+    for k, v in d.items():
+        out += [V(f'tdesc {k} n', v['n'], S), V(f'tdesc {k} 본 방법', v['ours_acc'], S, 'ours'),
+                V(f'tdesc {k} table_description', v['table_description_acc'], S),
+                *MC(f'tdesc {k} 본 방법만:table_description만', v['b_ours_only'], v['c_desc_only'], S)]
+        if 'p_holm_4groups' in v:
+            out.append(Cand('p', f'tdesc {k} Holm p(4그룹)', v['p_holm_4groups'], S, None))
+    dup = u['same_sentence_without_value_in_doc']
+    return out + [V('tdesc 정답 셀 수', u['gold_cells'], SG), V('tdesc 채점 문항', u['scored_queries'], SG),
+                  V('tdesc 같은 문장 비율 table_description', dup['table_description_rate'], SG),
+                  V('tdesc 같은 문장 비율 본 방법', dup['ours_rate'], SG, 'ours')]
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -1035,12 +1053,15 @@ L('05_results.md', ['표 5-5는 MultiHiertt train', '표 5-5. MultiHiertt 그룹
   'mh_rerun', 'step4', 'rerun_cmp', 'mh_pop', 'mh_meta')
 L('05_results.md', ['표 5-6은 본 방법의 머리글 규칙만', '| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623',
                     '| **v3.3u (+ 문장 고유화', '처음 규칙(v1)은 14건의 정답 셀을', 'v1에서 v3.3으로 머리글을 고치면'], 'mh_rules', 'mh_pop')
+L('05_results.md', ['MultiHiertt가 함께 제공하는 셀 문장(table_description', '표 5-7. 본 방법과 table_description',
+                    '| 조회·셀 1개 | 212 |', '| 조회·셀 2개+ | 367 |', '| 산술·셀 1개 | 71 |', '| 산술·셀 2개+ | 2,235 |', '| 전체 | 2,885 | .8634',
+                    'Holm p는 네 그룹을 한 묶음으로', '전체 검색 정확도는 본 방법 86.34%'], 'tdesc', 'mh_meta', 'mh_pop')
 T56 = ['| **본 방법 (셀 문장, 최종 규칙)** |', '| 고정 청크 (최종 규칙) |', '| 표 전체 (검색 없음) | .5592', '| TableRAG(Yu) 청크 | .5545']
-L('05_results.md', ['표 5-7은 네 그룹 882건에서', '표 5-7. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)', *T56,
+L('05_results.md', ['표 5-8은 네 그룹 882건에서', '표 5-8. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)', *T56,
                     '그룹별 값은 탐색적 결과다. Holm p는', '**주 비교: 고정 청크(최종 규칙).**', '**표 전체와 TableRAG(Yu) 청크.**'],
   'mh_ans', 'reader_test', 'step4', 'stats3b', 'decomp', 'mh_sample')
 L('05_results.md', '**나머지 비교군.**', 'v1cmp')
-L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 5-8. 본 방법의 머리글 규칙별 답변',
+L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 5-9. 본 방법의 머리글 규칙별 답변',
                     '| v1 (사전등록 당시) | .5024', '| v3.3 (머리글 수정) | .5355', '| **v3.3u (주 조건)** |', 'v1에서 v3.3u로 바꾸면 가중 전체가'],
   'mh_ans', 'mh_sample')
 L('05_results.md', '**머리글 규칙에 대한 민감도.**', 'stats3b', 'step4', 'reader_test')
@@ -1203,6 +1224,10 @@ CP('05_results.md', T53, {2: ['cells'], 3: ['retrieval', '검색 정확도'], 4:
                           5: ['만:', 'Holm', r' p$'], 6: ['given_hit', 'given_retrieval_hit', 'retrieval_hits', '검색 성공 수'], 7: ['tokens']})
 MHR = {2: [r' lookup_m1( |$)'], 3: [r' lookup_m2\+( |$)'], 4: [r' arith_m1( |$)'], 5: [r' arith_m2\+( |$)'], 6: [r' ALL( |$)'], 7: ['전달']}
 CP('05_results.md', T54, MHR)
+for _a, _g in (('| 조회·셀 1개 | 212 |', 'lookup_m1'), ('| 조회·셀 2개+ | 367 |', r'lookup_m2\+'), ('| 산술·셀 1개 | 71 |', 'arith_m1'),
+               ('| 산술·셀 2개+ | 2,235 |', r'arith_m2\+'), ('| 전체 | 2,885 | .8634', 'ALL')):
+    CP('05_results.md', [_a], {2: [rf'tdesc {_g} n$'], 3: [rf'tdesc {_g} 본 방법$'], 4: [rf'tdesc {_g} table_description$'],
+                               5: [rf'tdesc {_g} 본 방법만'], 6: [rf'tdesc {_g} Holm']})
 CP('05_results.md', ['| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623', '| **v3.3u (+ 문장 고유화'], MHR)
 CP('05_results.md', ['| 방법 | 조회·셀 1개 (211)'], {2: [r'lookup_m1'], 3: [r'lookup_m2\+'], 4: [r'arith_m1'], 5: [r'arith_m2\+'], 6: [r'^test cell n']})
 CP('05_results.md', T56, {2: [r'lookup_m1'], 3: [r'lookup_m2\+'], 4: [r'arith_m1'], 5: [r'arith_m2\+'], 6: ['correct', '맞힘'],
@@ -1540,6 +1565,7 @@ KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_ETC, ['1', 
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3', 1)])             # 자주 나오는 값 3개
 KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, ['8'])                    # Holm 묶음 크기
 KOA('05_results.md', '**나머지 비교군.**', K_SET, ['12', '9'])
+KOA('05_results.md', 'MultiHiertt가 함께 제공하는 셀 문장(table_description', K_ETC, ['1'])   # 1회 실행
 KOA('09_appendix.md', 'RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', K_SET, ['12'])
 KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])                     # 인용 위치 Table 2
 # 2026-09-28 인용 대조 반영: 선행 논문이 보고한 값·인용 쪽 번호(원고 줄 전체)
