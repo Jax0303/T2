@@ -4,6 +4,7 @@
 입력:  thesis/src/*.md, results/ 아래 기존 결과 파일, PREREG-*.md·THESIS-INTERIM 본문(결과 절)
        .jsonl 은 한 줄씩 읽는다. .npy·데이터셋·모델은 읽지 않는다.
 출력:  numbers.csv (UTF-8 BOM), summary.json  — 이 파일과 같은 폴더.
+       text_only 열: 결과 파일(json·jsonl·csv)이 아니라 글 기록(md 등)에서 찾은 수치에, 그 줄의 원천 집합 안 결과 파일로 같은 값이 나오는지.
 
 구성
   1. 토큰화: 수치 토큰(p값, 불일치 쌍 a:b, 날짜, 식별자 v3.3u·Qwen3-8B, 표 번호, 일반 수)
@@ -569,11 +570,6 @@ def prereg_uniq():
 
 
 @src
-def prereg_discovery():
-    return text_cands('PREREG-2026-09-24-mh-answer-cap300.md', [116, 117, 169, 173], 'ours')
-
-
-@src
 def reader_pilot():
     out = text_cands('PREREG-2026-09-13-reader-qwen3.md', [12, 64, 72]) + text_cands('PREREG-2026-09-23-reader-thinking-pilot.md', [77, 80])
     r = f'{MA}/reader_pilot_cot_rerun_20260923_validation.jsonl'
@@ -928,22 +924,15 @@ def bottleneck():
 
 @src
 def fix0928():
-    """2026-09-28 원고 점검 반영: values.json(기존 기록에서 다시 셈), 판정 (나) 자동 검증, 순손실(기존 불일치 쌍에서 계산)."""
+    """2026-09-28 원고 점검 반영: values.json(기존 기록에서 다시 셈), 판정 (나) 자동 검증."""
     r = 'results/thesis_fix_20260928/values.json'
     d, S = jload(r), R(r)
     out = [V(f'hitab_split {a} 전달 셀 평균(단일 셀 991)', v, S, _sl(a)) for a, v in d['hitab_split_cells_delivered_991'].items()]
-    m = d['lookup_final_vs_chunk_final']
-    out += MC('cell_uniq만:chunk_final만 (조회 두 그룹)', m['b'], m['c'], S, 'ours')
     a = d['arith_m2plus_both_retrieved_final']
     out += [V('산술·셀 2개+ 둘 다 검색 성공(최종 대 최종) n', a['n'], S), V('산술·셀 2개+ 둘 다 검색 성공 cell_acc', a['cell_acc'], S, 'ours'),
             V('산술·셀 2개+ 둘 다 검색 성공 chunk_acc', a['chunk_acc'], S)]
     c = d['chunk_v1_vs_final_context']
     out += [V(f'chunk 처음 대 최종 {k}', v, S) for k, v in c.items()]
-    out.append(V('처음 규칙 조회 두 그룹 순손실(chunk만−cell만)', d['v1_lookup_net_loss']['all_lookup']['net_loss'], S, 'ours'))
-    # 90건: 문항 목록이 저장되지 않아 values.json 에서 재현되지 않는다(같은 정의로 110건). 기록된 5:17 에서 순손실을 계산
-    doc = 'PREREG-2026-09-24-mh-answer-cap300.md'
-    b90, c90 = next(x.value for x in text_cands(doc, [116]) if x.typ == 'r' and x.value == (5, 17))
-    out.append(V(f'90건 순손실 {doc}:116 5:17 → c−b', c90 - b90, R(doc), 'ours'))
     j = 'results/judge_verify_20260926/hitab_A_phrase.json'
     jv, SJ = jload(j), R(j)
     out += [V('판정 (나) 자동 검증 아니오 ((가)=예 전체)', jv['yes_all']['아니오'], SJ), V('판정 (나) 자동 검증 아니오 (기간 있는 예)', jv['yes_with_period']['아니오'], SJ),
@@ -1001,7 +990,7 @@ L('00b_abstract_en.md', 'On HiTab and MultiHiertt', *CLAIM)
 L('01_intro.md', '1. **고유 라벨의 기여', 'hitab_labelabl', HMETA)
 L('01_intro.md', '2. **셀 단위 검색을 발표된', 'rerun_cmp', 'mh_rerun', HMETA)
 L('01_intro.md', '3. **답변 정확도까지', *CLAIM, 'mh_sample')
-L('01_intro.md', '5. **한계를 수치로', 'mh_label', 'mh_audit')
+L('01_intro.md', '4. **한계를 수치로', 'mh_label', 'mh_audit')
 L('01_intro.md', '모든 비교는 실행 전에 사전등록했다.', HANS)
 L('03_method.md', '같은 문서 안에 값을 뺀 문장이 똑같은', 'prereg_uniq', 'mh_meta')
 L('03_method.md', '이 규칙으로 train 분할에서 문장이 바뀐 셀은', 'prereg_uniq')
@@ -1011,7 +1000,7 @@ L('03_method.md', '**임베딩.** 셀 문장과 질문을', HRE, HMETA)
 L('03_method.md', 'MultiHiertt 리더 설정은 validation 분할 60건', 'reader_pilot')
 L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모집단 |', '| 답변 정확도 표본 |'], HMETA, 'mh_pop', 'mh_sample', 'interim_meta')
 L('04_setup.md', '**HiTab.** test 분할 1,584 질의', HMETA)
-L('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', 'mh_pop', 'interim_meta')
+L('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', 'mh_pop', 'interim_meta')
 L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta')
 L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
 L('04_setup.md', '공식 규칙상 정답이 음수인 산술 문항은', 'mh_ans', 'mh_sample')
@@ -1049,7 +1038,6 @@ L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 
                     '| v1 (사전등록 당시) | .5024', '| v3.3 (머리글 수정) | .5355', '| **v3.3u (주 조건)** |', 'v1에서 v3.3u로 바꾸면 가중 전체가'],
   'mh_ans', 'mh_sample')
 L('05_results.md', '**머리글 규칙에 대한 민감도.**', 'stats3b', 'step4', 'reader_test')
-L('05_results.md', '**발견 경위(사후 분석).**', 'mh_ans', 'prereg_discovery')
 L('05_results.md', '결과는 예측과 반대였다.', 'mh_label', 'mh_label_pop', 'mh_pop')
 L('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'mh_rules', 'mh_pop')
 T61 = ['| HiTab (300) | 셀 문장 |', '| HiTab (300) | 고정 청크 |', '| MultiHiertt (882) | 셀 문장 |', '| MultiHiertt (882) | 고정 청크 |']
@@ -1075,7 +1063,7 @@ L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_sam
 L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'hitab_dup', HMETA)
 L('06_discussion.md', '**생성 방식.**', 'batchcheck')
 L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', HRE, 'mh_rerun', HMETA)
-L('07_conclusion.md', '4. **답변 정확도.**', *CLAIM)
+L('07_conclusion.md', '3. **답변 정확도.**', *CLAIM)
 L('07_conclusion.md', '남은 과제는 다음과 같다.', 'mh_sample', 'hitab_dup')
 TA1 = ['| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) 청크 | .6000', '| RowCol | .4700', '| RandRow | .1533',
        '| TableRAG 셀 검색 재구현(path) | .1433', '| TableRAG 셀 검색 재구현(leaf) | .0800']
@@ -1104,11 +1092,10 @@ T53S = ['| **본 방법** | 20.0 |', '| sleaf (잎 라벨 머리말 변형) | 20
         '| TableRAG(Yu) 청크 | 54.4', '| TableRAG 셀 검색 재구현(path) | 20.5', '| TableRAG 셀 검색 재구현(leaf) | 20.8', '| RowCol | 22.9']
 L('05_results.md', ['**538개 표를 한 색인에 넣은 조건.**', '표 5-3. HiTab 538개 표를', *T53S, 'b는 본 방법만 맞힌 문항 수', '이 범위에서 본 방법(.9142)은'],
   'rerun_cmp', 'fix0928', HMETA)
-L('05_results.md', '**발견 경위(사후 분석).**', 'fix0928')
 L('06_discussion.md', '셋째, **색인 단위의 크기**', HRE)
-L('06_discussion.md', ['**셀 문장이 서로 같으면 리더가 틀린다.**', '고정 청크(최종 규칙)의 검색 성공 687건은'], 'fix0928')
+L('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', 'fix0928')
 L('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', 'fix0928')
-L('07_conclusion.md', '4. **답변 정확도.**', 'fix0928')
+L('07_conclusion.md', '3. **답변 정확도.**', 'fix0928')
 _D_ROWS = [i for i, x in enumerate(_lines('06_discussion.md'), 1) if x.startswith('| | | D: ')]   # 표 6-3 D 행: 두 범위에서 글자가 같아 줄 번호로
 assert len(_D_ROWS) == 2
 for _i in _D_ROWS:
@@ -1191,15 +1178,14 @@ for _a, _arm in zip(T53S, ['s3c', 'sleaf', 'table', 'row', 'chunk', 'trag_hetero
 PF('05_results.md', '이 범위에서 본 방법(.9142)은', r'^hitab_split ')
 for _a in ('**538개 표를 한 색인에 넣은 조건.**', 'b는 본 방법만 맞힌 문항 수'):
     PF('05_results.md', _a, r'^type_accuracy\.single_cell\.n$', r'^n_tables$')
-PF('05_results.md', '**발견 경위(사후 분석).**', r'^cell_uniq만:chunk_final만', r'cell만:chunk만 \(조회', r'PREREG')
 PF('06_discussion.md', '셋째, **색인 단위의 크기**', r'^chunk\.arithmetic', r'^s3c\.arithmetic')
 PF('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', r'^chunk 처음 대 최종')
 for _i, _scope in zip(_D_ROWS, ('hitab_intable', 'hitab_538')):   # 표 6-3 순서: 질문의 표 안, 538개 표 한 색인
     PREFER['06_discussion.md', _i] = [rf'^{_scope} D']
-PF('07_conclusion.md', '4. **답변 정확도.**', r'^s3c\.answer_correct$', r'^item3b_hitab300 chunk correct$', r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ',
+PF('07_conclusion.md', '3. **답변 정확도.**', r'^s3c\.answer_correct$', r'^item3b_hitab300 chunk correct$', r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ',
    r'accuracy', r'^산술·셀 2개\+')
 for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('00b_abstract_en.md', 'On HiTab and MultiHiertt'),
-               ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '4. **답변 정확도.**')]:
+               ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '3. **답변 정확도.**')]:
     PF(_f, _a, r'^s3c\.answer_correct$', r'^item3b_hitab300 chunk correct$', r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ', r'accuracy')
 
 # 표 행의 열 번호(줄 앞의 '|' 개수) -> 먼저 볼 필드 정규식
@@ -1254,7 +1240,6 @@ EX('05_results.md', '결과는 예측과 반대였다.', '.2662', 'mh_label', '�
 EX('05_results.md', '결과는 예측과 반대였다.', '.2272', 'mh_label', 'L1 by_layer.ALL.corpus')
 EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', '10.4', 'batchcheck', 'b1_20 generation_seconds/n')
 EX('05_results.md', '| 표 전체 (검색 없음) | — | (1.0)', '1.0', 'hitab_answer300', 'fulltable retrieval(정의상)')
-EX('05_results.md', '**발견 경위(사후 분석).**', 'p=.025', 'mh_ans', 'cell만:chunk만 (조회 두 그룹) p')
 EX('09_appendix.md', 'sleaf(이전 조건)는 필터 후', '2', 'hitab_answer300', 'ours 그중 1번 줄')
 EX('05_results.md', '본 방법은 .7900 =', '0', HANS, 's3c.answer_given_miss')
 EX('09_appendix.md', '| continuous batching 대', '35', 'batchcheck', 'cb_120 정답 수(기존', 2)
@@ -1288,10 +1273,10 @@ EX('04_setup.md', '**MultiHiertt 답변 표본.**', '2,871', 'mh_pop', P11, 1)
 EX('04_setup.md', '**데이터 사용 이력.**', '2,871', 'mh_pop', P11)
 EX('06_discussion.md', '**표본 평가.**', '2,871', 'mh_pop', P11)
 # 주장 문장의 검정값(초록·1장·7장·5장·6장)
-for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '4. **답변 정확도.**')]:
+for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '3. **답변 정확도.**')]:
     EX(_f, _a, 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
     EX(_f, _a, 'p=.86', 'reader_test', 'inter ALL cell만:chunk만 p')
-for _f, _a in [('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '4. **답변 정확도.**')]:
+for _f, _a in [('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '3. **답변 정확도.**')]:
     EX(_f, _a, 'p=.0019', 'stats3b', 'item3b_hitab300 chunk Holm p')
 EX('01_intro.md', '3. **답변 정확도까지', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
 EX('01_intro.md', '2. **셀 단위 검색을 발표된', 'p=.0040', 'rerun_cmp', 'mh_doc s3c만:sleaf만 Holm p')
@@ -1324,11 +1309,7 @@ EX('09_appendix.md', '332건 기준에서도 β=1.0이 1위다.', '2', 'alpha_de
 EX('01_intro.md', '3. **답변 정확도까지', '237', 'stats3b', 'item3b_hitab300 fulltable correct', 3)
 EX('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', '237', HANS, 's3c.answer_correct', 1)
 EX('05_results.md', '이 범위에서 본 방법(.9142)은', '2.9×10⁻⁸', 'rerun_cmp', 'hitab_split s3c만:table만 Holm p')
-EX('05_results.md', '**발견 경위(사후 분석).**', '67:55', 'fix0928', 'cell_uniq만:chunk_final만 (조회 두 그룹)')
-EX('05_results.md', '**발견 경위(사후 분석).**', 'p=.32', 'fix0928', 'cell_uniq만:chunk_final만 (조회 두 그룹) p')
 EX('06_discussion.md', '셋째, **색인 단위의 크기**', 'p=.88', HRE, 'chunk.arithmetic s3c만:상대만 p')
-EX('06_discussion.md', '**셀 문장이 서로 같으면 리더가 틀린다.**', '25', 'fix0928', '처음 규칙 조회 두 그룹 순손실')
-EX('06_discussion.md', '**셀 문장이 서로 같으면 리더가 틀린다.**', '12', 'fix0928', '90건 순손실')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '57', 'fix0928', 'chunk 처음 대 최종 context_differs')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '12', 'fix0928', 'chunk 처음 대 최종 retrieval_differs')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '6', 'fix0928', 'chunk 처음 대 최종 retrieval_final_only')
@@ -1336,9 +1317,9 @@ EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '7', 'fi
 EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'bottleneck', '판정 (가) 예', 3)
 EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'fix0928', '판정 (나) 자동 검증 아니오 ((가)=예 전체)', 4)
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '687', 'fix0928', 'chunk 처음 대 최종 retrieval_success_final')
-EX('07_conclusion.md', '4. **답변 정확도.**', '195', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공(최종 대 최종) n')
-EX('07_conclusion.md', '4. **답변 정확도.**', '.2667', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공 cell_acc')
-EX('07_conclusion.md', '4. **답변 정확도.**', '.2359', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공 chunk_acc')
+EX('07_conclusion.md', '3. **답변 정확도.**', '195', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공(최종 대 최종) n')
+EX('07_conclusion.md', '3. **답변 정확도.**', '.2667', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공 cell_acc')
+EX('07_conclusion.md', '3. **답변 정확도.**', '.2359', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공 chunk_acc')
 
 # 원천을 못 찾은 수치의 사유(자동 대조 실패 시 적는다)
 NOTFOUND = {}
@@ -1543,9 +1524,9 @@ def KOA(f, anchor, kind, toks=None):
     KO(f, AT(f, anchor), kind, toks)
 
 
-KOA('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', K_SEC, ['5.4'])
-KOA('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', K_N, [('2', 1)])      # 정답 셀이 빈 칸으로 파싱된 2건
-KOA('05_results.md', '**발견 경위(사후 분석).**', K_ETC, ['2015', '222', '1,767', '813', '732'])
+KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', K_SEC, ['5.4'])
+KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', K_N, [('2', 1)])
+KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', K_CITE, ['2022'])   # Zhao et al., 2022      # 정답 셀이 빈 칸으로 파싱된 2건
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_ETC, ['1', '2', ('3', 2)])   # (1)(2)(3) 항목 번호
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3', 1)])             # 자주 나오는 값 3개
 KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, ['8'])                    # Holm 묶음 크기
@@ -1574,7 +1555,7 @@ KOA('09_appendix.md', '"머리글 규칙 영향"은 두 규칙에서', K_SET, ['
 KOA('04_setup.md', '**HiTab 답변 표본.**', K_ETC, ['8'])                            # 검색 방법 수
 KOA('03_method.md', "> In the table 'agri-food industry sub-groups … 2011'", K_ETC)   # 표 3-1 예시 텍스트
 KOA('03_method.md', '> food service / french-language workers:', K_ETC)
-KOA('07_conclusion.md', '4. **답변 정확도.**', K_SET, [('4', 2)])                  # 4비트
+KOA('07_conclusion.md', '3. **답변 정확도.**', K_SET, ['4'])                       # 4비트
 for _i, _line in enumerate(_lines('06_discussion.md'), 1):
     if _line.startswith('| | | D: '):
         KO('06_discussion.md', _i, K_SET, ['20'])                                   # 버킷 정의
@@ -1644,6 +1625,7 @@ def match(s, cands):
 
 
 MATCHABLE = {K_RES, K_N, K_ST}
+RESULT_EXT = ('.json', '.jsonl', '.csv')            # 코드가 만든 결과 파일. 그 밖(.md 등)은 글로 된 기록
 
 
 def _pref_score(c, lp, cp):
@@ -1670,7 +1652,7 @@ def main():
                 rng = re.match(r'[~–][+−]?[\d.,]+(%p|%)', line[b:]) if typ == 'num' else None
                 s_eval = s + rng.group(1) if rng else s      # "1.2~1.4%p" 의 1.2 → 1.2%p 로 대조
                 row = dict(file=f, line=ln, number=s, context=context(line, a, b), kind=kind,
-                           source_file='', source_field_or_value='', match='해당 없음', sleaf_as_ours='')
+                           source_file='', source_field_or_value='', match='해당 없음', sleaf_as_ours='', text_only='')
                 if kind in MATCHABLE:
                     exp = EXPECT.get((f, ln, s, occ)) or EXPECT.get((f, ln, s))
                     nf = NOTFOUND.get((f, ln, s)) or NOTFOUND.get((f, ln, '*'))
@@ -1690,6 +1672,10 @@ def main():
                         row['sleaf_as_ours'] = {'sleaf': '예', 'ours': '아니오'}.get(c.tag, '')
                     else:
                         row.update(match='출처 못 찾음', source_field_or_value=nf or '')
+                    if row['match'] == '일치' and not row['source_file'].endswith(RESULT_EXT):
+                        # 글 기록에서 찾은 수치: 이 줄의 원천 집합 안 결과 파일 후보로 같은 값이 나오는지
+                        alt, _ = match(s_eval, [x for x in cands if x.src.endswith(RESULT_EXT)])
+                        row['text_only'] = (f'재계산 가능: {alt.src} [{alt.field}]' if alt else '재계산 불가(글 기록에만 있음)')
                     if row['sleaf_as_ours'] == '예' and (f, ln) in SLEAF_NAMED:
                         row['sleaf_as_ours'] = '아니오(sleaf로 표기)'
                 rows.append(row)
@@ -1697,7 +1683,7 @@ def main():
 
 
 def write(rows):
-    cols = ['file', 'line', 'number', 'context', 'kind', 'source_file', 'source_field_or_value', 'match', 'sleaf_as_ours']
+    cols = ['file', 'line', 'number', 'context', 'kind', 'source_file', 'source_field_or_value', 'match', 'sleaf_as_ours', 'text_only']
     with open(os.path.join(HERE, 'numbers.csv'), 'w', encoding='utf-8-sig', newline='') as fh:
         w = csv.DictWriter(fh, fieldnames=cols)
         w.writeheader()
@@ -1711,6 +1697,10 @@ def write(rows):
         mismatch=[f"{r['file']}:{r['line']}:{r['number']} → {r['match']} [{r['source_file']}]" for r in rows if mk(r) == '불일치'],
         not_found=[f"{r['file']}:{r['line']}:{r['number']} ({r['source_field_or_value']})" for r in rows if r['match'] == '출처 못 찾음'],
         sleaf_as_ours_yes=[f"{r['file']}:{r['line']}:{r['number']}" for r in rows if r['sleaf_as_ours'] == '예'],
+        text_sourced=dict(
+            n=sum(1 for r in rows if r['text_only']),
+            recomputable=sum(1 for r in rows if r['text_only'].startswith('재계산 가능')),
+            not_recomputable=[f"{r['file']}:{r['line']}:{r['number']} [{r['source_file']}]" for r in rows if r['text_only'].startswith('재계산 불가')]),
     )
     with open(os.path.join(HERE, 'summary.json'), 'w', encoding='utf-8') as fh:
         json.dump(summary, fh, ensure_ascii=False, indent=1)

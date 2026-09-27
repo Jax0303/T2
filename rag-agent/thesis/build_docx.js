@@ -7,7 +7,7 @@ const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell,
   WidthType, BorderStyle, ShadingType, PageBreak, Footer, PageNumber, TableOfContents,
-  LevelFormat, ImageRun, VerticalAlign, StyleLevel, PageOrientation,
+  LevelFormat, ImageRun, VerticalAlign, StyleLevel, PageOrientation, TableLayoutType,
 } = require("docx");
 
 const DIR = __dirname;
@@ -53,22 +53,39 @@ function splitRow(line) {
   return parts.map(cellText);
 }
 
-function table(lines, textW) {
+// 글자 폭(em): HY신명조(한양신명조 계열, Windows H2MJSM.TTF) 실측. ASCII 32~126 은 아래 표, 그 밖(한글·위첨자·×·−·—)은 1
+const ASCII_EM = (".33,.42,.42,.83,.62,.92,.83,.25,.5,.5,.5,.83,.29,.83,.29,.38,.62,.62,.62,.62,.62,.62,.62,.62,.62,.62,.33,.33,.6,.83,.6,.5,1,"
+  + ".79,.71,.71,.75,.71,.67,.75,.79,.38,.5,.79,.67,.92,.79,.75,.67,.75,.71,.67,.79,.79,.75,1,.71,.71,.67,.5,.38,.5,.5,.5,.25,"
+  + ".54,.58,.54,.58,.58,.38,.58,.58,.29,.33,.58,.29,.88,.58,.58,.58,.58,.46,.54,.38,.58,.58,.83,.62,.62,.5,.58,.58,.58,.75").split(",").map(Number);
+const em = (ch) => (ch >= " " && ch <= "~" ? ASCII_EM[ch.charCodeAt(0) - 32] : 1);
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+
+function minColWidth(cells, size) {
+  // 칸 안에서 줄을 바꿀 수 없는 가장 긴 단어의 폭(twip, 굵게는 1.05배) + 칸 좌우 여백 160
+  const word = (c, bold) => Math.max(0, ...c.replace(/\*\*|`/g, "").split(/\s+/).map((w) => sum([...w].map(em))))
+    * size * 10 * (bold ? 1.05 : 1);
+  return Math.ceil(Math.max(...cells.map(([c, bold]) => word(c, bold)))) + 160;
+}
+
+function table(lines, textW, name) {
   const rows = lines.filter((l, i) => !(i === 1 && /^\|?\s*:?-{2,}/.test(l.trim()))).map(splitRow);
   const align = splitRow(lines[1]).map((a) => (a.endsWith(":") ? AlignmentType.RIGHT : AlignmentType.LEFT));
   const n = rows[0].length;
-  // 열 너비: 글자 수에 비례, 최소 폭 보장
-  const len = Array.from({ length: n }, (_, j) => Math.max(...rows.map((r) => Math.min((r[j] || "").length, 60)), 4));
-  const tot = len.reduce((a, b) => a + b, 0);
-  let widths = len.map((l) => Math.max(900, Math.round((textW * l) / tot)));
-  const scale = textW / widths.reduce((a, b) => a + b, 0);
-  widths = widths.map((w) => Math.floor(w * scale));
-  widths[n - 1] += textW - widths.reduce((a, b) => a + b, 0);
   const size = 17;
+  // 열 너비(고정): 가장 긴 단어 폭을 먼저 주고, 남는 폭은 글자 수에 비례해 나눈다. HWP로 옮겨도 이 폭이 유지되게 고정 배치
+  let need = Array.from({ length: n }, (_, j) => minColWidth(rows.map((r, i) => [r[j] || "", i === 0 || (r[j] || "").includes("**")]), size));
+  if (sum(need) + 40 * n <= textW) need = need.map((w) => w + 40);      // 글꼴 차이에 대비한 여유 — 본문 폭을 넘기면 넣지 않는다
+  const len = Array.from({ length: n }, (_, j) => Math.max(...rows.map((r) => Math.min((r[j] || "").length, 60)), 4));
+  const extra = textW - sum(need);
+  if (extra < 0) console.warn(`${name}: 열 최소 폭 합 ${(sum(need) / 56.7).toFixed(1)}mm > 본문 폭 ${(textW / 56.7).toFixed(1)}mm`);
+  const tableW = Math.max(textW, sum(need));
+  const widths = need.map((w, j) => Math.floor(w + (Math.max(0, extra) * len[j]) / sum(len)));
+  widths[n - 1] += tableW - sum(widths);
   const border = { style: BorderStyle.SINGLE, size: 4, color: "808080" };
   const borders = { top: border, bottom: border, left: border, right: border };
   return new Table({
-    width: { size: textW, type: WidthType.DXA },
+    width: { size: tableW, type: WidthType.DXA },
+    layout: TableLayoutType.FIXED,
     columnWidths: widths,
     rows: rows.map((r, i) => new TableRow({
       tableHeader: i === 0,
@@ -96,7 +113,7 @@ function caption(text, style) {
 function convert(md) {
   const out = [];
   const lines = md.split(/\r?\n/);
-  let para = [], wide = false;
+  let para = [], wide = false, capId = "";
   const flush = () => {
     if (!para.length) return;
     out.push(new Paragraph({
@@ -137,13 +154,14 @@ function convert(md) {
       const block = [];
       while (i < lines.length && lines[i].trim().startsWith("|")) block.push(lines[i++]);
       i--;
-      out.push(table(block, wide ? LAND_W : TEXT_W));
+      out.push(table(block, wide ? LAND_W : TEXT_W, `표 ${capId}`));
       out.push(new Paragraph({ spacing: { after: 120 }, children: [] }));
       if (wide) { out.push(PORT); wide = false; }
       continue;
     }
     if ((m = /^표 ([A-Z\d]+-\d+)\./.exec(t))) {
       flush();
+      capId = m[1];
       if (LANDSCAPE.has(m[1])) { out.push(LAND); wide = true; }
       out.push(caption(t, "TableCaption"));
       continue;
