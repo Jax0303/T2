@@ -962,7 +962,6 @@ def recheck():
             V('question_type 일치율(채점 2,885)', c['question_type_agreement']['rate'], SQ),
             V('v3.3→v3.3u 바뀐 셀 비율(train 색인)', ch['changed_rate'], S),
             *[V(f'v3.3→v3.3u {a} 비율(train 색인 전체 셀 대비)', ch[f'{a}_rate_of_all_cells'], S) for a in KINDS],
-            V('v3.3→v3.3u 세 비율의 합(train 색인 전체 셀 대비)', sum(ch[f'{a}_rate_of_all_cells'] for a in KINDS), S),
             V('v3.3u 적용 후 같은 문장 셀 수(train 색인 + validation 문서 전체)',
               res['train.table_evidence_only']['dup_cells_novalue'] + res['validation.split_all_docs']['dup_cells_novalue'], S)]
 
@@ -1024,7 +1023,7 @@ T52 = ['| **본 방법** | .9637', '| sleaf (잎 라벨 머리말 변형) | .958
 L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', *T52, 'RandRow·path·leaf와의 비교는 9칸', '주 모집단인 단일 셀 조회에서', '**산술 216건에서는'],
   HRE, 'step4', HMETA)
 T53 = ['| **본 방법** | 19.41', '| sleaf (잎 라벨 머리말 변형) | 19.41', '| 고정 청크 | 69.06', '| TableRAG(Yu) 청크 | 52.09', '| RowCol | 22.52',
-       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.47', '| TableRAG 셀 검색 재구현(leaf) | 14.42', '| 표 전체 (검색 없음) | — | (1.0)']
+       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.47', '| TableRAG 셀 검색 재구현(leaf) | 14.42', '| 표 전체 (검색 없음) | — | — | .7900']
 L('05_results.md', ['표 5-4는 단일 셀 조회 300건에서', '표 5-4. HiTab 답변 정확도', *T53, '괄호 안은 검색에 성공한 질의 수다.',
                     '본 방법의 답변 정확도는 .7900이다.', '본 방법은 .7900 =', '**표 전체와의 비교.** 검색 없이 질문의 표'],
   HANS, 'decomp', 'stats3b', HOTH, 'hitab_answer300')
@@ -1247,7 +1246,6 @@ EX('03_method.md', _R, '14.4%', 'recheck', '바뀐 셀 비율(train 색인)')
 for _t, _k in (('2.7%', 'table_text'), ('6.3%', 'row_col_number'), ('6.8%', 'table_number')):
     EX('03_method.md', _R, _t, 'recheck', f'{_k} 비율(train 색인')
     EX('06_discussion.md', '**문장 고유화의 식별자.**', _t, 'recheck', f'{_k} 비율(train 색인')
-EX('03_method.md', _R, '15.9%', 'recheck', '세 비율의 합')
 EX('03_method.md', _R, '0', 'recheck', '적용 후 같은 문장 셀 수')
 EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '1,566', 'mh_test', 'n_questions')
 EX('04_setup.md', '[^1]: test.json의 sha256은', '15bfe9cc1241e29050a5bcaf7b9639d6907e7895cd07a1f1b874c2fda905ad01', 'mh_test', 'sha256')
@@ -1335,7 +1333,11 @@ EX('07_conclusion.md', '3. **답변 정확도.**', '.2359', 'fix0928', '산술·
 # 원천을 못 찾은 수치의 사유(자동 대조 실패 시 적는다)
 NOTFOUND = {}
 # 2026-09-28 A: 결과 파일에 없는 입력 상수를 지운 뒤 원천이 없어진 수치(글 기록·우연히 같은 값으로 다시 맞추지 않는다)
-NOTFOUND[('05_results.md', AT('05_results.md', '| 표 전체 (검색 없음) | — | (1.0) |'), '1.0')] = '입력 상수 제거(표 전체 검색 정확도 1.0 "정의상", 결과 파일 없음)'
+# 다른 논문이 보고한 값 — 결과 파일과 대조하지 않고 '외부 문헌' 출처로 적는다 (2026-09-28)
+EXTERNAL = {}
+_Z = '외부 문헌: Zhao et al. (2022) MultiHiertt, Table 2 (arXiv:2206.01347)'
+for _t in ('100', '4', '84.9%'):
+    EXTERNAL['06_discussion.md', AT('06_discussion.md', '**정답 근거 주석의 범위.**'), _t] = _Z
 
 # =============================================================== 2. kind (자동 규칙 + ===== MANUAL: KO)
 K_RES, K_N, K_ST, K_SEC, K_CITE, K_SET, K_ETC = ('결과수치', '표본·개수', '통계(p·불일치쌍·CI)', '절·표·그림 번호',
@@ -1539,6 +1541,7 @@ KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3',
 KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, ['8'])                    # Holm 묶음 크기
 KOA('05_results.md', '**나머지 비교군.**', K_SET, ['12', '9'])
 KOA('09_appendix.md', 'RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', K_SET, ['12'])
+KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])                     # 인용 위치 Table 2
 KOA('06_discussion.md', '**가설은 지지되지 않았다.**', K_ETC, ['1'])                      # 정답 셀이 1개인
 KOA('06_discussion.md', '| HiTab 질문의 표 안 | 36 |', K_SET, ['21', '50'])               # 버킷 정의
 KOA('06_discussion.md', '| | | B: 정답 셀 순위 21~50 | 25 |', K_SET, ['21', '50'])
@@ -1662,7 +1665,9 @@ def main():
                 s_eval = s + rng.group(1) if rng else s      # "1.2~1.4%p" 의 1.2 → 1.2%p 로 대조
                 row = dict(file=f, line=ln, number=s, context=context(line, a, b), kind=kind,
                            source_file='', source_field_or_value='', match='해당 없음', sleaf_as_ours='', text_only='')
-                if kind in MATCHABLE:
+                if (f, ln, s) in EXTERNAL:
+                    row.update(source_file=EXTERNAL[f, ln, s], match='외부 문헌')
+                elif kind in MATCHABLE:
                     exp = EXPECT.get((f, ln, s, occ)) or EXPECT.get((f, ln, s))
                     nf = NOTFOUND.get((f, ln, s)) or NOTFOUND.get((f, ln, '*'))
                     top = [x for x in cands if _pref_score(x, lp, cp) == _pref_score(cands[0], lp, cp)] if (lp or cp) and cands else []
