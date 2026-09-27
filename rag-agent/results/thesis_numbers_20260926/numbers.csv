@@ -3,27 +3,29 @@
 00a_abstract_ko.md,5,538,"답 셀 포함률이 이 비교군들보다 높았다(HiTab 538개 표를 한 색인에 넣은 조건 .9142, Multi",표본·개수,rag-agent/results/rerun_20260926/hitab/hitab_test_gold_s3c.json,n_tables = 538,일치,
 00a_abstract_ko.md,5,.9142,"(HiTab 538개 표를 한 색인에 넣은 조건 .9142, MultiHiertt .8634). HiTab에",결과수치,rag-agent/results/rerun_20260926/compare.json,hitab_split s3c accuracy = 0.9142,일치,아니오
 00a_abstract_ko.md,5,.8634,"에 넣은 조건 .9142, MultiHiertt .8634). HiTab에서 데이터셋이 준 표 제목을 라벨로",결과수치,rag-agent/results/rerun_20260926/compare.json,mh_doc s3c accuracy = 0.8634,일치,아니오
-00a_abstract_ko.md,5,237,"서 답변 정확도는 고정 청크보다 높았고(HiTab 237 대 206/300, MultiHiertt 408 대",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
-00a_abstract_ko.md,5,206,"확도는 고정 청크보다 높았고(HiTab 237 대 206/300, MultiHiertt 408 대 368/8",결과수치,rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk correct = 206,일치,
-00a_abstract_ko.md,5,300,"고정 청크보다 높았고(HiTab 237 대 206/300, MultiHiertt 408 대 368/882,",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
-00a_abstract_ko.md,5,408,"237 대 206/300, MultiHiertt 408 대 368/882, p=.0052), 두 방법이 모",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
-00a_abstract_ko.md,5,368,"206/300, MultiHiertt 408 대 368/882, p=.0052), 두 방법이 모두 정답 셀",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
-00a_abstract_ko.md,5,882,"/300, MultiHiertt 408 대 368/882, p=.0052), 두 방법이 모두 정답 셀을 찾은",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell n = 882,일치,
-00a_abstract_ko.md,5,p=.0052,"ultiHiertt 408 대 368/882, p=.0052), 두 방법이 모두 정답 셀을 찾은 문항에서는",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk p = 0.0052,일치,아니오
-00a_abstract_ko.md,5,29:20,"답 셀을 찾은 문항에서는 차이가 없어(HiTab 29:20 p=.25, MultiHiertt 59:62 p=",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 = 29:20,일치,아니오
-00a_abstract_ko.md,5,p=.25,"은 문항에서는 차이가 없어(HiTab 29:20 p=.25, MultiHiertt 59:62 p=.86) 답",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 p = 0.2529,일치,아니오
-00a_abstract_ko.md,5,59:62,"b 29:20 p=.25, MultiHiertt 59:62 p=.86) 답변 차이는 한쪽 방법만 정답 셀을",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 = 59:62,일치,아니오
-00a_abstract_ko.md,5,p=.86,"0 p=.25, MultiHiertt 59:62 p=.86) 답변 차이는 한쪽 방법만 정답 셀을 찾은 문항에",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 p = 0.8558,일치,아니오
+00a_abstract_ko.md,5,237,"서 답변 정확도는 고정 청크보다 높았고(HiTab 237 대 206/300(Holm p=.0019), Mul",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
+00a_abstract_ko.md,5,206,"확도는 고정 청크보다 높았고(HiTab 237 대 206/300(Holm p=.0019), MultiHier",결과수치,rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk correct = 206,일치,
+00a_abstract_ko.md,5,300,"고정 청크보다 높았고(HiTab 237 대 206/300(Holm p=.0019), MultiHiertt 4",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
+00a_abstract_ko.md,5,p=.0019,"(HiTab 237 대 206/300(Holm p=.0019), MultiHiertt 408 대 368/88",통계(p·불일치쌍·CI),rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk Holm p = 0.0019,일치,아니오
+00a_abstract_ko.md,5,408,"(Holm p=.0019), MultiHiertt 408 대 368/882(p=.0052)), 두 방법 모두",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
+00a_abstract_ko.md,5,368,"p=.0019), MultiHiertt 408 대 368/882(p=.0052)), 두 방법 모두 정답 셀",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
+00a_abstract_ko.md,5,882,"019), MultiHiertt 408 대 368/882(p=.0052)), 두 방법 모두 정답 셀 전부를",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell n = 882,일치,
+00a_abstract_ko.md,5,p=.0052,"MultiHiertt 408 대 368/882(p=.0052)), 두 방법 모두 정답 셀 전부를 문맥에 포함",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk p = 0.0052,일치,아니오
+00a_abstract_ko.md,5,29:20,"문맥에 포함한 문항에서는 차이가 없어(HiTab 29:20 p=.25, MultiHiertt 59:62 p=",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 = 29:20,일치,아니오
+00a_abstract_ko.md,5,p=.25,"한 문항에서는 차이가 없어(HiTab 29:20 p=.25, MultiHiertt 59:62 p=.86) 답",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 p = 0.2529,일치,아니오
+00a_abstract_ko.md,5,59:62,"b 29:20 p=.25, MultiHiertt 59:62 p=.86) 답변 차이는 한쪽 방법만 정답 셀 전",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 = 59:62,일치,아니오
+00a_abstract_ko.md,5,p=.86,"0 p=.25, MultiHiertt 59:62 p=.86) 답변 차이는 한쪽 방법만 정답 셀 전부를 문맥에",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 p = 0.8558,일치,아니오
 00b_abstract_en.md,5,20,riever and cell-budget rule (20 cells). Cell-level retrieval,설정값,,,해당 없음,
 00b_abstract_en.md,5,.9142,aselines on both datasets (.9142 on HiTab with all 538 table,결과수치,rag-agent/results/rerun_20260926/compare.json,hitab_split s3c accuracy = 0.9142,일치,아니오
 00b_abstract_en.md,5,538,"ts (.9142 on HiTab with all 538 tables in one index, .8634 o",결과수치,rag-agent/results/rerun_20260926/hitab/hitab_test_gold_s3c.json,n_tables = 538,일치,
 00b_abstract_en.md,5,.8634,"l 538 tables in one index, .8634 on MultiHiertt). On HiTab,",결과수치,rag-agent/results/rerun_20260926/compare.json,mh_doc s3c accuracy = 0.8634,일치,아니오
-00b_abstract_en.md,5,237,"an with fixed chunks (HiTab 237 vs 206 of 300, MultiHiertt 4",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
-00b_abstract_en.md,5,206,"fixed chunks (HiTab 237 vs 206 of 300, MultiHiertt 408 vs 3",결과수치,rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk correct = 206,일치,
-00b_abstract_en.md,5,300,"chunks (HiTab 237 vs 206 of 300, MultiHiertt 408 vs 368 of 8",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
-00b_abstract_en.md,5,408,"vs 206 of 300, MultiHiertt 408 vs 368 of 882, p=.0052); on",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
-00b_abstract_en.md,5,368,"of 300, MultiHiertt 408 vs 368 of 882, p=.0052); on questio",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
-00b_abstract_en.md,5,882,", MultiHiertt 408 vs 368 of 882, p=.0052); on questions wher",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell n = 882,일치,
+00b_abstract_en.md,5,237,"an with fixed chunks (HiTab 237 vs 206 of 300, Holm p=.0019;",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
+00b_abstract_en.md,5,206,"fixed chunks (HiTab 237 vs 206 of 300, Holm p=.0019; MultiH",결과수치,rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk correct = 206,일치,
+00b_abstract_en.md,5,300,"chunks (HiTab 237 vs 206 of 300, Holm p=.0019; MultiHiertt 4",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
+00b_abstract_en.md,5,p=.0019,"b 237 vs 206 of 300, Holm p=.0019; MultiHiertt 408 vs 368 of",통계(p·불일치쌍·CI),rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk Holm p = 0.0019,일치,아니오
+00b_abstract_en.md,5,408,", Holm p=.0019; MultiHiertt 408 vs 368 of 882, p=.0052); on",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
+00b_abstract_en.md,5,368,"p=.0019; MultiHiertt 408 vs 368 of 882, p=.0052); on questio",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
+00b_abstract_en.md,5,882,"; MultiHiertt 408 vs 368 of 882, p=.0052); on questions wher",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell n = 882,일치,
 00b_abstract_en.md,5,p=.0052,"Hiertt 408 vs 368 of 882, p=.0052); on questions where both",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk p = 0.0052,일치,아니오
 00b_abstract_en.md,5,29:20,"re is no difference (HiTab 29:20, p=.25; MultiHiertt 59:62,",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 = 29:20,일치,아니오
 00b_abstract_en.md,5,p=.25,"o difference (HiTab 29:20, p=.25; MultiHiertt 59:62, p=.86),",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 p = 0.2529,일치,아니오
@@ -71,13 +73,13 @@
 01_intro.md,29,55:24,"청크보다 높았다(HiTab 237 대 206, 55:24, Holm p=.0019; MultiHiertt",통계(p·불일치쌍·CI),rag-agent/results/stats_20260926/stats.json,item3b_hitab300 기준만:chunk만 = 55:24,일치,아니오
 01_intro.md,29,p=.0019,"ab 237 대 206, 55:24, Holm p=.0019; MultiHiertt 408 대 368, 11",통계(p·불일치쌍·CI),rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk Holm p = 0.0019,일치,아니오
 01_intro.md,29,408,", Holm p=.0019; MultiHiertt 408 대 368, 118:78, p=.0052). 두 방",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
-01_intro.md,29,368,"p=.0019; MultiHiertt 408 대 368, 118:78, p=.0052). 두 방법이 모두",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
-01_intro.md,29,118:78,"19; MultiHiertt 408 대 368, 118:78, p=.0052). 두 방법이 모두 정답 셀을",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk = 118:78,일치,아니오
-01_intro.md,29,p=.0052,"Hiertt 408 대 368, 118:78, p=.0052). 두 방법이 모두 정답 셀을 찾은 문항에서는",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk p = 0.0052,일치,아니오
-01_intro.md,29,29:20,"답 셀을 찾은 문항에서는 차이가 없어(HiTab 29:20, p=.25; MultiHiertt 59:62,",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 = 29:20,일치,아니오
+01_intro.md,29,368,"p=.0019; MultiHiertt 408 대 368, 118:78, p=.0052). 두 방법 모두 정",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
+01_intro.md,29,118:78,"19; MultiHiertt 408 대 368, 118:78, p=.0052). 두 방법 모두 정답 셀 전부",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk = 118:78,일치,아니오
+01_intro.md,29,p=.0052,"Hiertt 408 대 368, 118:78, p=.0052). 두 방법 모두 정답 셀 전부를 문맥에 포함한",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk p = 0.0052,일치,아니오
+01_intro.md,29,29:20,"문맥에 포함한 문항에서는 차이가 없어(HiTab 29:20, p=.25; MultiHiertt 59:62,",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 = 29:20,일치,아니오
 01_intro.md,29,p=.25,"문항에서는 차이가 없어(HiTab 29:20, p=.25; MultiHiertt 59:62, p=.86)",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 p = 0.2529,일치,아니오
-01_intro.md,29,59:62,"29:20, p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀을",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 = 59:62,일치,아니오
-01_intro.md,29,p=.86,"p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀을 찾은 문항에",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 p = 0.8558,일치,아니오
+01_intro.md,29,59:62,"29:20, p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 = 59:62,일치,아니오
+01_intro.md,29,p=.86,"p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀 전부를 문맥에",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 p = 0.8558,일치,아니오
 01_intro.md,29,237,를 넣는 조건과는 유의한 차이가 없었다(HiTab 237 대 237; MultiHiertt 408 대 378,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
 01_intro.md,29,237,"건과는 유의한 차이가 없었다(HiTab 237 대 237; MultiHiertt 408 대 378, Holm",결과수치,rag-agent/results/stats_20260926/stats.json,item3b_hitab300 fulltable correct = 237,일치,
 01_intro.md,29,408,"iTab 237 대 237; MultiHiertt 408 대 378, Holm p=.078; 5장, 6.2절",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
@@ -1245,7 +1247,7 @@
 06_discussion.md,11,5-2,"b 산술에서 고정 청크와 본 방법이 동률인 것(표 5-2)은 이 두 방향이 상쇄된 결과일 수 있으나, 본 연",절·표·그림 번호,,,해당 없음,
 06_discussion.md,13,6.2,## 6.2 검색 정확도와 답변 정확도,절·표·그림 번호,,,해당 없음,
 06_discussion.md,15,6-1,"문맥으로 리더가 맞히는가""로 나눌 수 있다. 표 6-1은 셀 문장(본 방법)과 고정 청크의 답변 정확도를",절·표·그림 번호,,,해당 없음,
-06_discussion.md,15,6-2,"답변 정확도를 검색 성공 여부로 나눈 것이고, 표 6-2는 두 방법이 모두 검색에 성공한 문항만 모아 비교한",절·표·그림 번호,,,해당 없음,
+06_discussion.md,15,6-2,"답변 정확도를 검색 성공 여부로 나눈 것이고, 표 6-2는 두 방법 모두 정답 셀 전부를 문맥에 포함한 문항",절·표·그림 번호,,,해당 없음,
 06_discussion.md,17,6-1,"표 6-1. 검색 성공 여부로 나눈 답변 정확도 (셀 예산 비통제, 전달 셀 평균 열 참조)",절·표·그림 번호,,,해당 없음,
 06_discussion.md,21,300,| HiTab (300) | 셀 문장 | 19.41 | .9567 (287) | .8258 (237/287),표본·개수,rag-agent/results/answer_decomp_20260927/answer_decomp.json,decomp hitab s3c retrieval_success n = 300,일치,아니오
 06_discussion.md,21,19.41,| HiTab (300) | 셀 문장 | 19.41 | .9567 (287) | .8258 (237/287),결과수치,rag-agent/results/answer_decomp_20260927/answer_decomp.json,decomp hitab s3c cells = 19.41,일치,아니오
@@ -1295,7 +1297,7 @@
 06_discussion.md,24,195,789 (687) | .4978 (342/687) | .1333 (26/195) | .4172 (368) |,결과수치,rag-agent/results/reader_format_20260927/test.json,decomp ALL chunk answer_given_miss n = 195,일치,
 06_discussion.md,24,.4172,789 (687) | .4978 (342/687) | .1333 (26/195) | .4172 (368) |,결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk answer rate = 0.4172,일치,
 06_discussion.md,24,368,789 (687) | .4978 (342/687) | .1333 (26/195) | .4172 (368) |,표본·개수,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
-06_discussion.md,26,6-2,표 6-2. 두 방법이 모두 정답 셀을 찾은 문항의 답변 정확도,절·표·그림 번호,,,해당 없음,
+06_discussion.md,26,6-2,표 6-2. 두 방법 모두 정답 셀 전부를 문맥에 포함한 문항의 답변 정확도,절·표·그림 번호,,,해당 없음,
 06_discussion.md,30,256,| HiTab | 256 | .8242 (211) | .7891 (202) | 29:20 | .25 | 31,결과수치,rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk both n = 256,일치,
 06_discussion.md,30,.8242,| HiTab | 256 | .8242 (211) | .7891 (202) | 29:20 | .25 | 31,결과수치,rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours rate = 0.8242,일치,아니오
 06_discussion.md,30,211,| HiTab | 256 | .8242 (211) | .7891 (202) | 29:20 | .25 | 31,표본·개수,rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours k = 211,일치,아니오
@@ -1315,7 +1317,7 @@
 06_discussion.md,31,148,| 642 | .5016 (322) | .5062 (325) | 59:62 | .86 | 148 | 45 |,결과수치,rag-agent/results/answer_decomp_20260927/intersection.json,inter mh cell_uniq_vs_chunk only ours = 148,일치,
 06_discussion.md,31,45,| 642 | .5016 (322) | .5062 (325) | 59:62 | .86 | 148 | 45 |,결과수치,rag-agent/results/answer_decomp_20260927/intersection.json,inter mh cell_uniq_vs_chunk only other = 45,일치,
 06_discussion.md,35,31,"도에 차이가 없었다. 답변 정확도의 차이(HiTab 31건, MultiHiertt 40건)는 한쪽 방법만 정",표본·개수,rag-agent/results/thesis_fix_20260927/step4_values.json,hitab300_s3c_vs_chunk only_ours_retrieved n = 31,일치,
-06_discussion.md,35,40,"도의 차이(HiTab 31건, MultiHiertt 40건)는 한쪽 방법만 정답 셀을 찾은 문항에서 나왔다.",표본·개수,rag-agent/results/thesis_fix_20260927/step4_values.json,mh882_final_vs_chunk_final total_diff = 40,일치,아니오
+06_discussion.md,35,40,"도의 차이(HiTab 31건, MultiHiertt 40건)는 한쪽 방법만 정답 셀 전부를 문맥에 포함한 문",표본·개수,rag-agent/results/thesis_fix_20260927/step4_values.json,mh882_final_vs_chunk_final total_diff = 40,일치,아니오
 06_discussion.md,35,31,"서 나왔다. HiTab에서 셀 문장만 검색에 성공한 31건은 셀 문장이 26건, 고정 청크가 0건을 맞혔고,",표본·개수,rag-agent/results/thesis_fix_20260927/step4_values.json,hitab300_s3c_vs_chunk only_ours_retrieved n = 31,일치,
 06_discussion.md,35,26,"b에서 셀 문장만 검색에 성공한 31건은 셀 문장이 26건, 고정 청크가 0건을 맞혔고, 고정 청크만 성공한",표본·개수,rag-agent/results/thesis_fix_20260927/step4_values.json,hitab300_s3c_vs_chunk only_ours_retrieved ours_correct = 26,일치,아니오
 06_discussion.md,35,0,"에 성공한 31건은 셀 문장이 26건, 고정 청크가 0건을 맞혔고, 고정 청크만 성공한 7건은 셀 문장 0건",표본·개수,rag-agent/results/thesis_fix_20260927/step4_values.json,hitab300_s3c_vs_chunk only_ours_retrieved other_correct = 0,일치,
@@ -1335,7 +1337,7 @@
 06_discussion.md,35,.7833,"HiTab에서 셀 문장이 .8258로 고정 청크(.7833)보다 높고, MultiHiertt에서는 두 방법이",결과수치,rag-agent/results/answer_decomp_20260927/answer_decomp.json,decomp hitab chunk answer_given_hit rate = 0.7833,일치,
 06_discussion.md,35,.4987,"청크(.7833)보다 높고, MultiHiertt에서는 두 방법이 같은 수준이다(.4987 대 .4978).",결과수치,rag-agent/results/answer_decomp_20260927/answer_decomp.json,decomp mh cell_uniq answer_given_hit rate = 0.4987,일치,아니오
 06_discussion.md,35,.4978,"청크(.7833)보다 높고, MultiHiertt에서는 두 방법이 같은 수준이다(.4987 대 .4978).",결과수치,rag-agent/results/reader_format_20260927/test.json,decomp ALL chunk answer_given_hit rate = 0.4978,일치,
-06_discussion.md,37,628,규칙의 본 방법은 두 방법이 모두 검색에 성공한 628건에서도 고정 청크(처음 규칙)보다 낮았다(280 대,표본·개수,rag-agent/results/answer_decomp_20260927/intersection.json,inter mh cell_vs_chunk both n = 628,일치,
+06_discussion.md,37,628,법은 두 방법 모두 정답 셀 전부를 문맥에 포함한 628건에서도 고정 청크(처음 규칙)보다 낮았다(280 대,표본·개수,rag-agent/results/answer_decomp_20260927/intersection.json,inter mh cell_vs_chunk both n = 628,일치,
 06_discussion.md,37,280,"628건에서도 고정 청크(처음 규칙)보다 낮았다(280 대 318, 38:76, p=.00048). 머리글",표본·개수,rag-agent/results/answer_decomp_20260927/intersection.json,inter mh cell_vs_chunk ours k = 280,일치,아니오
 06_discussion.md,37,318,"서도 고정 청크(처음 규칙)보다 낮았다(280 대 318, 38:76, p=.00048). 머리글 규칙을 맞",결과수치,rag-agent/results/answer_decomp_20260927/intersection.json,inter mh cell_vs_chunk other k = 318,일치,
 06_discussion.md,37,38:76,"청크(처음 규칙)보다 낮았다(280 대 318, 38:76, p=.00048). 머리글 규칙을 맞추면(최종",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter mh cell_vs_chunk ours만:other만 = 38:76,일치,아니오
@@ -1520,14 +1522,14 @@
 07_conclusion.md,10,206,"확도는 고정 청크보다 높았다(HiTab 237 대 206/300, Holm p=.0019; MultiHier",결과수치,rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk correct = 206,일치,
 07_conclusion.md,10,300,"고정 청크보다 높았다(HiTab 237 대 206/300, Holm p=.0019; MultiHiertt 4",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
 07_conclusion.md,10,p=.0019,"HiTab 237 대 206/300, Holm p=.0019; MultiHiertt 408 대 368/882",통계(p·불일치쌍·CI),rag-agent/results/stats_20260926/stats.json,item3b_hitab300 chunk Holm p = 0.0019,일치,아니오
-07_conclusion.md,10,408,", Holm p=.0019; MultiHiertt 408 대 368/882, p=.0052). 두 방법이 모",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
-07_conclusion.md,10,368,"p=.0019; MultiHiertt 408 대 368/882, p=.0052). 두 방법이 모두 정답 셀",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
-07_conclusion.md,10,882,"0019; MultiHiertt 408 대 368/882, p=.0052). 두 방법이 모두 정답 셀을 찾은",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell n = 882,일치,
-07_conclusion.md,10,p=.0052,"ultiHiertt 408 대 368/882, p=.0052). 두 방법이 모두 정답 셀을 찾은 문항에서는",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk p = 0.0052,일치,아니오
-07_conclusion.md,10,29:20,"답 셀을 찾은 문항에서는 차이가 없어(HiTab 29:20, p=.25; MultiHiertt 59:62,",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 = 29:20,일치,아니오
+07_conclusion.md,10,408,", Holm p=.0019; MultiHiertt 408 대 368/882, p=.0052). 두 방법 모두",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell correct = 408,일치,아니오
+07_conclusion.md,10,368,"p=.0019; MultiHiertt 408 대 368/882, p=.0052). 두 방법 모두 정답 셀",결과수치,rag-agent/results/reader_format_20260927/test.json,test chunk correct = 368,일치,
+07_conclusion.md,10,882,"0019; MultiHiertt 408 대 368/882, p=.0052). 두 방법 모두 정답 셀 전부를",결과수치,rag-agent/results/reader_format_20260927/test.json,test cell n = 882,일치,
+07_conclusion.md,10,p=.0052,"ultiHiertt 408 대 368/882, p=.0052). 두 방법 모두 정답 셀 전부를 문맥에 포함한",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,test cell_vs_chunk p = 0.0052,일치,아니오
+07_conclusion.md,10,29:20,"문맥에 포함한 문항에서는 차이가 없어(HiTab 29:20, p=.25; MultiHiertt 59:62,",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 = 29:20,일치,아니오
 07_conclusion.md,10,p=.25,"문항에서는 차이가 없어(HiTab 29:20, p=.25; MultiHiertt 59:62, p=.86)",통계(p·불일치쌍·CI),rag-agent/results/answer_decomp_20260927/intersection.json,inter hitab s3c_vs_chunk ours만:other만 p = 0.2529,일치,아니오
-07_conclusion.md,10,59:62,"29:20, p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀을",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 = 59:62,일치,아니오
-07_conclusion.md,10,p=.86,"p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀을 찾은 문항에",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 p = 0.8558,일치,아니오
+07_conclusion.md,10,59:62,"29:20, p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 = 59:62,일치,아니오
+07_conclusion.md,10,p=.86,"p=.25; MultiHiertt 59:62, p=.86) 답변 차이는 한쪽 방법만 정답 셀 전부를 문맥에",통계(p·불일치쌍·CI),rag-agent/results/reader_format_20260927/test.json,inter ALL cell만:chunk만 p = 0.8558,일치,아니오
 07_conclusion.md,10,6.3,는 형식은 dev에서 답변 정확도를 높이지 않았다(6.3절). MultiHiertt 산술에서는 정보를 모두,절·표·그림 번호,,,해당 없음,
 07_conclusion.md,12,882,". 첫째, MultiHiertt의 주 조건은 같은 882건의 결과를 본 뒤 바꾼 것이므로, 겹치지 않는 문항",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
 07_conclusion.md,12,3.2%,"HiTab에도 같은 표 안에서 문장이 같은 셀이 3.2% 있어 같은 점검이 필요하다. 셋째, 정답 근거 주",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c 같은 표 안 값 뺀 문장이 같은 셀 비율 = 0.0316,일치,아니오

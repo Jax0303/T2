@@ -59,6 +59,7 @@ function table(lines) {
   const scale = TEXT_W / widths.reduce((a, b) => a + b, 0);
   widths = widths.map((w) => Math.floor(w * scale));
   widths[n - 1] += TEXT_W - widths.reduce((a, b) => a + b, 0);
+  const size = n >= 10 ? 14 : 17;                 // 10열 이상(표 5-6)은 7pt 로 줄여 A4 세로 폭에 맞춘다
   const border = { style: BorderStyle.SINGLE, size: 4, color: "808080" };
   const borders = { top: border, bottom: border, left: border, right: border };
   return new Table({
@@ -75,7 +76,7 @@ function table(lines) {
         children: [new Paragraph({
           alignment: i === 0 ? AlignmentType.CENTER : align[j] || AlignmentType.LEFT,
           spacing: { line: 260, before: 0, after: 0 },
-          children: runs(c, { size: 17, bold: i === 0 ? true : undefined }),
+          children: runs(c, { size, bold: i === 0 ? true : undefined }),
         })],
       })),
     })),
