@@ -1,0 +1,119 @@
+# 조회 대 산술 1위 적중 사후 분석 — 결과 표
+
+정의: `rag-agent/PREREG-2026-09-28-lookup-arith-posthoc.md`. 모든 키의 파일은 표마다 적었다.
+
+## 최종 버전(v3.3u)
+
+### T1 조회: 머리글 답 × 비교 단어 (1위 적중 수 / 문항 수)
+
+| 머리글 답 | 비교 있음 | 비교 없음 |
+|---|---|---|
+| 예 | 15/64 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T1.머리글_예.비교_있음.{hit,n}` | 2/4 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T1.머리글_예.비교_없음.{hit,n}` |
+| 아니오 | 17/77 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T1.머리글_아니오.비교_있음.{hit,n}` | 42/67 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T1.머리글_아니오.비교_없음.{hit,n}` |
+
+### T2 통계
+
+| 항목 | a | b | a − b | Newcombe 95% CI | Fisher p | 키 |
+|---|---|---|---|---|---|---|
+| i_산술_대_조회 | 45/71 (0.6338) | 76/212 (0.3585) | 0.2753 | [0.1414, 0.3948] | 8.79e-05 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T2.i_산술_대_조회` |
+| ii_조회_비교있음_대_비교없음 | 32/141 (0.2270) | 44/71 (0.6197) | -0.3928 | [-0.5135, -0.2539] | 2.98e-08 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T2.ii_조회_비교있음_대_비교없음` |
+| iii_비교없음_산술_대_조회 | 43/67 (0.6418) | 44/71 (0.6197) | 0.0221 | [-0.1364, 0.1782] | 0.861 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T2.iii_비교없음_산술_대_조회` |
+
+| (iv) 표준화 | 값 | 부트스트랩 95% CI | p | 키 |
+|---|---|---|---|---|
+| 가중치 w_비교 / w_없음 | 0.0563 / 0.9437 | | | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T2.iv_표준화.{w_비교,w_없음}` |
+| 조회 표준화 1위 | 0.5976 | [0.4905, 0.7035] | | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T2.iv_표준화.{조회_표준화,조회_표준화_boot95}` |
+| 산술 전체 1위 | 0.6338 | | | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T2.iv_표준화.산술_전체` |
+| 잔차 (산술 − 조회 표준화) | 0.0362 | [-0.1163, 0.1883] | 0.661 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T2.iv_표준화.{잔차,잔차_boot95,잔차_boot_p}` |
+
+### T3 m 분포
+
+| 유형 | 비교 단어 | 문항 수 | m=1 수 | m=1 비율 | m 중앙값 | 키 |
+|---|---|---|---|---|---|---|
+| 조회 | 있음 | 141 | 5 | 0.0355 | 5 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T3.m분포.조회.비교_있음` |
+| 조회 | 없음 | 71 | 35 | 0.4930 | 2 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T3.m분포.조회.비교_없음` |
+| 산술 | 있음 | 4 | 1 | 0.2500 | 5 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T3.m분포.산술.비교_있음` |
+| 산술 | 없음 | 67 | 35 | 0.5224 | 1 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T3.m분포.산술.비교_없음` |
+
+| 유형 | m=1 층 1위 | m>1 층 1위 | 키 |
+|---|---|---|---|
+| 조회 | 35/40 (0.8750) | 41/172 (0.2384) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T3.m층_1위.조회.{m1,m_gt1}` |
+| 산술 | 32/36 (0.8889) | 13/35 (0.3714) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T3.m층_1위.산술.{m1,m_gt1}` |
+
+### T4 조회 비교 있음: 관측 1위 대 1/m 평균
+
+| 대상 | 관측 1위 | Wilson 95% CI | 1/m 평균 | 기대 적중 수 | 푸아송 이항 p | 키 |
+|---|---|---|---|---|---|---|
+| 비교_있음_전체 | 32/141 (0.2270) | [0.1656, 0.3028] | 0.2346 | 33.07 | 0.911 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T4.비교_있음_전체` |
+| 비교_있음_m_gt1 | 28/136 (0.2059) | [0.1465, 0.2815] | 0.2064 | 28.07 | 1 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T4.비교_있음_m_gt1` |
+
+### T5 1위 실패 문항의 1위 칸 위치 (최종 버전)
+
+| 유형 | 비교 단어 | 실패 수 | (가) 후보 집합 안 | (나) 같은 표 집합 밖 | (다) 다른 표 | 키 |
+|---|---|---|---|---|---|---|
+| 조회 | 있음 | 109 | 91 (0.8349) | 7 (0.0642) | 11 (0.1009) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T5.조회.비교_있음` |
+| 조회 | 없음 | 27 | 18 (0.6667) | 3 (0.1111) | 6 (0.2222) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T5.조회.비교_없음` |
+| 산술 | 있음 | 2 | 1 (0.5000) | 1 (0.5000) | 0 (0.0000) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T5.산술.비교_있음` |
+| 산술 | 없음 | 24 | 8 (0.3333) | 9 (0.3750) | 7 (0.2917) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:final.T5.산술.비교_없음` |
+
+## 처음 버전(v1), T7
+
+### T1 조회: 머리글 답 × 비교 단어 (1위 적중 수 / 문항 수)
+
+| 머리글 답 | 비교 있음 | 비교 없음 |
+|---|---|---|
+| 예 | 12/61 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T1.머리글_예.비교_있음.{hit,n}` | 2/4 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T1.머리글_예.비교_없음.{hit,n}` |
+| 아니오 | 17/79 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T1.머리글_아니오.비교_있음.{hit,n}` | 44/67 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T1.머리글_아니오.비교_없음.{hit,n}` |
+
+### T2 통계
+
+| 항목 | a | b | a − b | Newcombe 95% CI | Fisher p | 키 |
+|---|---|---|---|---|---|---|
+| i_산술_대_조회 | 38/71 (0.5352) | 75/211 (0.3555) | 0.1798 | [0.0470, 0.3068] | 0.0114 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T2.i_산술_대_조회` |
+| ii_조회_비교있음_대_비교없음 | 29/140 (0.2071) | 46/71 (0.6479) | -0.4407 | [-0.5575, -0.3028] | 4.58e-10 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T2.ii_조회_비교있음_대_비교없음` |
+| iii_비교없음_산술_대_조회 | 37/67 (0.5522) | 46/71 (0.6479) | -0.0956 | [-0.2514, 0.0663] | 0.298 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T2.iii_비교없음_산술_대_조회` |
+
+| (iv) 표준화 | 값 | 부트스트랩 95% CI | p | 키 |
+|---|---|---|---|---|
+| 가중치 w_비교 / w_없음 | 0.0563 / 0.9437 | | | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T2.iv_표준화.{w_비교,w_없음}` |
+| 조회 표준화 1위 | 0.6231 | [0.5163, 0.7286] | | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T2.iv_표준화.{조회_표준화,조회_표준화_boot95}` |
+| 산술 전체 1위 | 0.5352 | | | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T2.iv_표준화.산술_전체` |
+| 잔차 (산술 − 조회 표준화) | -0.0878 | [-0.2408, 0.0699] | 0.268 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T2.iv_표준화.{잔차,잔차_boot95,잔차_boot_p}` |
+
+### T3 m 분포
+
+| 유형 | 비교 단어 | 문항 수 | m=1 수 | m=1 비율 | m 중앙값 | 키 |
+|---|---|---|---|---|---|---|
+| 조회 | 있음 | 140 | 3 | 0.0214 | 6 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T3.m분포.조회.비교_있음` |
+| 조회 | 없음 | 71 | 32 | 0.4507 | 2 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T3.m분포.조회.비교_없음` |
+| 산술 | 있음 | 4 | 1 | 0.2500 | 4 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T3.m분포.산술.비교_있음` |
+| 산술 | 없음 | 67 | 33 | 0.4925 | 2 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T3.m분포.산술.비교_없음` |
+
+| 유형 | m=1 층 1위 | m>1 층 1위 | 키 |
+|---|---|---|---|
+| 조회 | 32/35 (0.9143) | 43/176 (0.2443) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T3.m층_1위.조회.{m1,m_gt1}` |
+| 산술 | 30/34 (0.8824) | 8/37 (0.2162) | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T3.m층_1위.산술.{m1,m_gt1}` |
+
+### T4 조회 비교 있음: 관측 1위 대 1/m 평균
+
+| 대상 | 관측 1위 | Wilson 95% CI | 1/m 평균 | 기대 적중 수 | 푸아송 이항 p | 키 |
+|---|---|---|---|---|---|---|
+| 비교_있음_전체 | 29/140 (0.2071) | [0.1483, 0.2817] | 0.2092 | 29.29 | 1 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T4.비교_있음_전체` |
+| 비교_있음_m_gt1 | 26/137 (0.1898) | [0.1329, 0.2636] | 0.1919 | 26.29 | 1 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:v1.T4.비교_있음_m_gt1` |
+
+## T6
+
+283행 `results/lookup_vs_arith_20260928/posthoc/posthoc.json:T6.{file,rows}`
+
+## T8 path overlap(기존) 대 m (최종 버전)
+
+path overlap 값의 파일은 `results/lookup_vs_arith_20260928/analyze.json`, m 값의 파일은 `results/lookup_vs_arith_20260928/posthoc/posthoc.json`.
+
+| 그룹 | 대상 | 문항 수 | path overlap 평균 | path overlap 중앙값 | path overlap 키 | m 중앙값 | m 평균 | m=1 비율 | m 키 |
+|---|---|---|---|---|---|---|---|---|---|
+| 조회1 | 전체 | 212 | 0.5451 | 0.5385 | `results/lookup_vs_arith_20260928/analyze.json:multihiertt.groups.조회1.path_overlap.{n,ratio_mean,ratio_median}` | 5 | 7.08 | 0.1887 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:T8.조회1.전체.{m_median,m_mean,m1_share}` |
+| 조회1 | 예산20_성공 | 203 | 0.5543 | 0.5455 | `results/lookup_vs_arith_20260928/analyze.json:multihiertt.groups.조회1.path_overlap_success.{n,ratio_mean,ratio_median}` | 5 | 5.47 | 0.1970 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:T8.조회1.예산20_성공.{m_median,m_mean,m1_share}` |
+| 조회1 | 예산20_실패 | 9 | 0.3389 | 0.3636 | `results/lookup_vs_arith_20260928/analyze.json:multihiertt.groups.조회1.path_overlap_fail.{n,ratio_mean,ratio_median}` | 35 | 43.56 | 0.0000 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:T8.조회1.예산20_실패.{m_median,m_mean,m1_share}` |
+| 산술1 | 전체 | 71 | 0.4015 | 0.3750 | `results/lookup_vs_arith_20260928/analyze.json:multihiertt.groups.산술1.path_overlap.{n,ratio_mean,ratio_median}` | 1 | 4.75 | 0.5070 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:T8.산술1.전체.{m_median,m_mean,m1_share}` |
+| 산술1 | 예산20_성공 | 68 | 0.4094 | 0.3875 | `results/lookup_vs_arith_20260928/analyze.json:multihiertt.groups.산술1.path_overlap_success.{n,ratio_mean,ratio_median}` | 1 | 4.66 | 0.5294 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:T8.산술1.예산20_성공.{m_median,m_mean,m1_share}` |
+| 산술1 | 예산20_실패 | 3 | 0.2242 | 0.2000 | `results/lookup_vs_arith_20260928/analyze.json:multihiertt.groups.산술1.path_overlap_fail.{n,ratio_mean,ratio_median}` | 7 | 6.67 | 0.0000 | `results/lookup_vs_arith_20260928/posthoc/posthoc.json:T8.산술1.예산20_실패.{m_median,m_mean,m1_share}` |
