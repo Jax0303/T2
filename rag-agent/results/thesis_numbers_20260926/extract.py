@@ -1011,6 +1011,8 @@ CLAIM = ['rerun_cmp', 'mh_rerun', 'reader_test', 'decomp', 'stats3b', HANS, HMET
 L('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서', *CLAIM)
 L('00b_abstract_en.md', 'On HiTab and MultiHiertt', *CLAIM)
 L('01_intro.md', '1. **고유 라벨의 기여', 'hitab_labelabl', HMETA)
+L('01_intro.md', '본 연구가 MT2Net과 다른 점은 네 가지다.', 'hitab_labelabl', HMETA)
+L('02_related.md', '**MT2Net(Zhao et al., 2022).**', 'hitab_labelabl', HMETA)
 L('01_intro.md', '2. **셀 단위 검색을 발표된', 'rerun_cmp', 'mh_rerun', HMETA)
 L('01_intro.md', '3. **답변 정확도까지', *CLAIM, 'mh_sample')
 L('01_intro.md', '4. **한계를 수치로', 'mh_label')
@@ -1566,6 +1568,11 @@ KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3',
 KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, ['8'])                    # Holm 묶음 크기
 KOA('05_results.md', '**나머지 비교군.**', K_SET, ['12', '9'])
 KOA('05_results.md', 'MultiHiertt가 함께 제공하는 셀 문장(table_description', K_ETC, ['1'])   # 1회 실행
+KOA('01_intro.md', '본 연구가 MT2Net과 다른 점은 네 가지다.', K_ETC, ['1', '2', '3', '4'])       # (1)~(4) 항목 번호
+KOA('02_related.md', '**MT2Net(Zhao et al., 2022).**', K_ETC, ['1', '2', '3', '4'])
+KOA('01_intro.md', '2. **셀 단위 검색을 발표된', K_SET, ['1,000'])                         # 고정 청크 설정
+KOA('02_related.md', '**MixRAG.** Zhang et al.(2026)은', K_CITE)                          # 선행 논문이 보고한 값
+KOA('02_related.md', '| MT2Net (Zhao et al., 2022) |', K_CITE)
 KOA('09_appendix.md', 'RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', K_SET, ['12'])
 KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])                     # 인용 위치 Table 2
 # 2026-09-28 인용 대조 반영: 선행 논문이 보고한 값·인용 쪽 번호(원고 줄 전체)
