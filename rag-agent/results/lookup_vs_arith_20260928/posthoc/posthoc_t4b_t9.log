@@ -1,0 +1,21 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+# T4b · T9 (2026-09-28 추가, 사후)
+
+## T4b 조회 비교 있음, 1위 칸이 후보 집합 안(정답 포함)인 문항
+
+| 버전 | 조회 비교 있음 | 제외: 1위 칸 집합 밖 | 제외: 판정불가 | 대상 | 관측 1위 적중 | Σ(1/m) | 푸아송 이항 p | 키 |
+|---|---|---|---|---|---|---|---|---|
+| final | 141 | 18 | 0 | 123 | 32 | 29.05 | 0.479 | `results/lookup_vs_arith_20260928/posthoc/posthoc_t4b_t9.json:final.T4b` |
+| v1 | 140 | 19 | 1 | 120 | 29 | 25.77 | 0.46 | `results/lookup_vs_arith_20260928/posthoc/posthoc_t4b_t9.json:v1.T4b` |
+
+## T9 예산 20 성공(전부 포함), m≤20 / m>20
+
+| 버전 | 유형 | m≤20 성공/n (비율) | m>20 성공/n (비율) | 키 |
+|---|---|---|---|---|
+| final | 조회 | 199/201 (0.9900) | 4/11 (0.3636) | `results/lookup_vs_arith_20260928/posthoc/posthoc_t4b_t9.json:final.T9.조회.{m_le20,m_gt20}` |
+| final | 산술 | 67/70 (0.9571) | 1/1 (1.0000) | `results/lookup_vs_arith_20260928/posthoc/posthoc_t4b_t9.json:final.T9.산술.{m_le20,m_gt20}` |
+| v1 | 조회 | 190/193 (0.9845) | 10/18 (0.5556) | `results/lookup_vs_arith_20260928/posthoc/posthoc_t4b_t9.json:v1.T9.조회.{m_le20,m_gt20}` |
+| v1 | 산술 | 67/70 (0.9571) | 1/1 (1.0000) | `results/lookup_vs_arith_20260928/posthoc/posthoc_t4b_t9.json:v1.T9.산술.{m_le20,m_gt20}` |

@@ -1,6 +1,7 @@
 """GATE 2: T1~T8. 정의는 rag-agent/PREREG-2026-09-28-lookup-arith-posthoc.md (83408b3) 그대로. 새 검색·임베딩 없음.
 출력: posthoc.json, posthoc_rows_v3.3u.jsonl, posthoc_rows_v1.jsonl, t6_manual_judgement.csv, REPORT.md
 실행: HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH=. .venv/bin/python results/lookup_vs_arith_20260928/posthoc/posthoc.py
+T4b·T9(2026-09-28 추가, 사후, PREREG 에 없음): 같은 명령에 --extra → posthoc_t4b_t9.json, REPORT_t4b_t9.md, posthoc_t4b_t9.log
 """
 import csv
 import json
@@ -133,6 +134,64 @@ def t8(rs):
     return out
 
 
+def t4b(rs):
+    """(2026-09-28 추가, 사후) 조회 비교 있음 중 1위 칸이 후보 집합 안(정답 포함)인 문항: 관측 1위 적중 수 vs Σ(1/m)."""
+    L = [x for x in rs if x["type"] == "조회" and cmp_(x)]
+    ys = [x for x in L if x["top1_where"] in ("정답", "가_후보_집합_안")]
+    ps = [1 / x["m"] for x in ys]
+    return {"조회_비교있음_n": len(L), "대상_n": len(ys), "hit": hit(ys), "sum_1_over_m": sum(ps),
+            "poisson_binomial_p": poisson_binomial_p(ps, hit(ys)),
+            "제외_1위칸_집합밖_n": sum(x["top1_where"] in ("나_같은_표_집합_밖", "다_다른_표") for x in L),
+            "제외_판정불가_n": sum(x["top1_where"] == "판정불가" for x in L),
+            "판정불가_query_ids": sorted(x["query_id"] for x in L if x["top1_where"] == "판정불가")}
+
+
+def t9(rs):
+    """(2026-09-28 추가, 사후) 예산 20 성공(전부 포함) 비율을 m≤20 / m>20 로 나눠 유형별로."""
+    out = {}
+    for tp in ("조회", "산술"):
+        out[tp] = {}
+        for name, sel in (("m_le20", lambda m: m <= 20), ("m_gt20", lambda m: m > 20)):
+            ys = [x for x in rs if x["type"] == tp and sel(x["m"])]
+            s = sum(x["b20"] for x in ys)
+            out[tp][name] = {"n": len(ys), "b20_success": s, "rate": s / len(ys) if ys else None}
+    return out
+
+
+def extra():
+    """T4b·T9 만 계산해 posthoc_t4b_t9.json, REPORT_t4b_t9.md 에 쓴다. 기존 출력은 건드리지 않는다.
+    문항별 행이 커밋된 posthoc_rows_*.jsonl 과 같은지(rank1·m·b20·비교 분류, 최종은 top1_where 도) 먼저 확인한다."""
+    G = "results/lookup_vs_arith_20260928/posthoc/posthoc_t4b_t9.json"
+    res = {}
+    for ver, key in (("v3.3u", "final"), ("v1", "v1")):
+        rs = rows(ver)
+        old = {x["query_id"]: x for x in map(json.loads, open(HERE / f"posthoc_rows_{ver}.jsonl"))}
+        assert set(old) == {x["query_id"] for x in rs}
+        for x in rs:
+            fields = ("rank1", "m", "b20", "comparison", "header_answer") + (("top1_where",) if ver == "v3.3u" else ())
+            assert all(x[f] == old[x["query_id"]][f] for f in fields), x["query_id"]
+        res[key] = {"T4b": t4b(rs), "T9": t9(rs)}
+    (HERE / "posthoc_t4b_t9.json").write_text(json.dumps(res, ensure_ascii=False, indent=1))
+    f3 = lambda v: "—" if v is None else f"{v:.4f}"
+    k = lambda key: f"`{G}:{key}`"
+    L = ["# T4b · T9 (2026-09-28 추가, 사후)", "", "## T4b 조회 비교 있음, 1위 칸이 후보 집합 안(정답 포함)인 문항", "",
+         "| 버전 | 조회 비교 있음 | 제외: 1위 칸 집합 밖 | 제외: 판정불가 | 대상 | 관측 1위 적중 | Σ(1/m) | 푸아송 이항 p | 키 |",
+         "|---|---|---|---|---|---|---|---|---|"]
+    for key in ("final", "v1"):
+        d = res[key]["T4b"]
+        L.append(f"| {key} | {d['조회_비교있음_n']} | {d['제외_1위칸_집합밖_n']} | {d['제외_판정불가_n']} | {d['대상_n']} | {d['hit']} | "
+                 f"{d['sum_1_over_m']:.2f} | {d['poisson_binomial_p']:.3g} | {k(f'{key}.T4b')} |")
+    L += ["", "## T9 예산 20 성공(전부 포함), m≤20 / m>20", "",
+          "| 버전 | 유형 | m≤20 성공/n (비율) | m>20 성공/n (비율) | 키 |", "|---|---|---|---|---|"]
+    for key in ("final", "v1"):
+        for tp in ("조회", "산술"):
+            d = res[key]["T9"][tp]
+            c = lambda s: f"{d[s]['b20_success']}/{d[s]['n']} ({f3(d[s]['rate'])})"
+            L.append(f"| {key} | {tp} | {c('m_le20')} | {c('m_gt20')} | {k(f'{key}.T9.{tp}.{{m_le20,m_gt20}}')} |")
+    (HERE / "REPORT_t4b_t9.md").write_text("\n".join(L) + "\n")
+    print("\n".join(L))
+
+
 def report(res):
     f3 = lambda v: "—" if v is None else f"{v:.4f}"
     k = lambda key: f"`{F}:{key}`"
@@ -198,6 +257,10 @@ def report(res):
 
 
 if __name__ == "__main__":
+    import sys
+    if "--extra" in sys.argv:
+        extra()
+        sys.exit(0)
     res = {}
     for ver, key in (("v3.3u", "final"), ("v1", "v1")):
         rs = rows(ver)
@@ -207,6 +270,10 @@ if __name__ == "__main__":
         assert n == ((212, 71) if ver == "v3.3u" else (211, 71)), n
         res[key] = t1_to_t4(rs)
         if ver == "v3.3u":
+            # 2026-09-28 추가(사후): m=1 층 조회 대 산술 1위 적중 Fisher 정확 검정 양측
+            m1 = res[key]["T3"]["m층_1위"]
+            a, b = m1["조회"]["m1"], m1["산술"]["m1"]
+            m1["fisher_p_m1"] = float(fisher_exact([[a["hit"], a["n"] - a["hit"]], [b["hit"], b["n"] - b["hit"]]])[1])
             res[key]["T5"] = t5(rs)
             res["T6"] = t6(rs)
             res["T8"] = t8(rs)

@@ -5,6 +5,8 @@
     (rank1.py 와 같은 판정). 1위 칸 = 같은 문서에서 그 문장을 가진 색인 칸(최종 버전은 문서 안 문장이 서로 다름).
   처음(v1) = results/mh_arms/mh_train_cell_hv1_none_doc_kladder_records.jsonl 의 correct_at.doc['1'].
     처음 버전이 채점하지 못한 조회 1문항은 행을 만들지 않는다(경로가 없다).
+    처음 버전 1위 칸 위치(2026-09-28 T4b 추가) = doc.context[0] 문장을 가진 같은 문서의 색인 칸(정답 칸 제외)의 위치.
+    그 칸들의 위치가 갈리면 '판정불가'.
 머리글 답 = rank1.py(aac902b) 의 is_header(정답, 정답 칸 행 경로 + 열 경로) 그대로.
 비교 단어 분류 = CATS 를 위에서부터 보고 처음 맞는 분류. 어느 것에도 안 맞으면 '비교 없음'.
   단어 목록은 why_rank1.py 의 VC 와 합집합이 같다(2026-09-28 결과를 본 뒤 만든 목록).
@@ -66,12 +68,11 @@ def rows(version):
     by_table = defaultdict(list)
     for c in cells:
         by_table[c[0]].append(c)
-    cell_of = {}                                   # (문서, 문장) -> 칸, 최종 버전에서만 씀
+    cells_of = defaultdict(list)                   # (문서, 문장) -> 칸들. 최종 버전은 1개씩, 처음 버전은 같은 문장이 여럿일 수 있다
+    for c, x in zip(cells, texts):
+        cells_of[(c[0].split("::")[0], x)].append(c)
     if version == "v3.3u":
-        for c, x in zip(cells, texts):
-            k = (c[0].split("::")[0], x)
-            assert k not in cell_of, k
-            cell_of[k] = c
+        assert all(len(v) == 1 for v in cells_of.values())
     pw = {}
     out = []
     for r in jl(SRC[version]):
@@ -88,12 +89,13 @@ def rows(version):
              "header_answer": is_header([r["answer"]], [*rp, *cp]),
              "comparison": comparison_class(r["question"]),
              "b20": r["doc"]["correct"], "Q": sorted(Q), "m": len(cand), "table_cells": len(by_table[g[0]])}
-        if version == "v1":
-            x["rank1"] = r["correct_at"]["doc"]["1"]
-        else:
-            top = cell_of[(g[0].split("::")[0], r["doc"]["context"][0])]
-            x["rank1"] = int(top == g)
-            x["top1_where"] = ("정답" if top == g else "가_후보_집합_안" if top in set(cand)
-                               else "나_같은_표_집합_밖" if top[0] == g[0] else "다_다른_표")
+        tops = cells_of[(g[0].split("::")[0], r["doc"]["context"][0])]
+        x["rank1"] = r["correct_at"]["doc"]["1"] if version == "v1" else int(tops == [g])
+        # 1위 칸 위치. 처음 버전에서 1위 문장을 가진 칸(정답 칸 제외)이 여럿이고 위치가 갈리면 '판정불가'.
+        cs = set(cand)
+        ws = {"가_후보_집합_안" if c in cs else "나_같은_표_집합_밖" if c[0] == g[0] else "다_다른_표"
+              for c in tops if c != g}
+        assert x["rank1"] or ws
+        x["top1_where"] = "정답" if x["rank1"] else ws.pop() if len(ws) == 1 else "판정불가"
         out.append(x)
     return out
