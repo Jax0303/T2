@@ -386,6 +386,9 @@ def main() -> int:
     ap.add_argument("--row-text", default="values", choices=["sentence", "values"],
                     help="--unit row/rowcol/randrow: values = 발표된 단위(값만), sentence = 우리 셀 문장을 이어 붙인 변형. "
                          "2026-09-25 기본값을 values 로 — 09-18 MH 실행이 지정을 빠뜨려 sentence 로 돌았다")
+    ap.add_argument("--cell-text", default="ours", choices=["ours", "table_description"],
+                    help="--unit cell: table_description = 셀 문장을 데이터셋의 table_description 문장으로 바꾼다. "
+                         "그 문장이 없는 셀은 --template 문장 그대로 (PREREG-2026-09-28-table-description.md)")
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
     ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
     ap.add_argument("--header-rule", default=None, choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3", "v3.3u"],
@@ -438,6 +441,8 @@ def main() -> int:
         ap.error("--k-ladder: accuracy 모드 전용, 1..--budget 범위의 양수")
     if a.threshold_from and not no_k:
         ap.error("--threshold-from is only for strict_no_k")
+    if a.cell_text != "ours" and (a.unit != "cell" or a.label_mix is not None):
+        ap.error("--cell-text table_description: --unit cell only, without --label-mix")
     if a.label_mix is not None and (no_k or a.unit != "cell" or not 0 <= a.label_mix <= 1):
         ap.error("--label-mix: --unit cell, not strict_no_k, 0..1")
     if no_k and (a.unit == "rowcol" or (a.split == "test" and not a.threshold_from)):
@@ -473,6 +478,18 @@ def main() -> int:
         "", sorted(tables), a.template, "row" if a.unit == "randrow" else a.unit,
         {}, a.chunk_chars, a.tablerag_colmode, a.row_text, a.chunk_overlap, None,
         load=lambda tid, _d: tables.get(tid), trag_dtype=a.tablerag_dtype)
+    n_desc = None
+    if a.cell_text == "table_description":
+        # 키 "{표}-{행}-{열}" = 펼친 격자 좌표 = cell_id 의 '::' 뒤. 색인 셀 집합(covers)은 그대로다.
+        descs = {u: json.loads(d[1]) if isinstance(d[1], str) else d[1] for u, d in docs.items()}
+        n_desc = 0
+        for p, cov in enumerate(covers):
+            (cell,) = cov
+            uid, key = cell_id(cell, hdr).split("::")
+            if key in descs[uid]:
+                texts[p] = descs[uid][key]
+                n_desc += 1
+        print(f"[cell-text] table_description {n_desc}/{len(texts)}", flush=True)
     # gold 해석은 arm 과 무관해야 한다. 이 arm 이 배달할 수 있는 셀(covers)로
     # 가르면, 숫자 열을 min/max 로 접는 TableRAG 처럼 셀을 못 담는 arm 은 그 질의가
     # '오답'이 아니라 '제외'가 되어 분모가 줄고 정확도가 부푼다 (2026-09-13 실측:
@@ -734,6 +751,7 @@ def main() -> int:
         "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from " + f"{OFFICIAL_REPO}@{OFFICIAL_REV}",
         "split": a.split, "unit": a.unit, "template": a.template,
         "row_text": a.row_text, "tablerag_colmode": a.tablerag_colmode,
+        "cell_text": a.cell_text, "n_units_table_description": n_desc,
         "chunk_chars": a.chunk_chars, "chunk_overlap": a.chunk_overlap,
         "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
         "hierarchy_source": "self-reconstructed",
