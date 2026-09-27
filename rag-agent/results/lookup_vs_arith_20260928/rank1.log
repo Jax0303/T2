@@ -1,0 +1,487 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+{
+ "multihiertt": {
+  "방법_점검_v1_첫문맥문장_대_correct_at1": {
+   "n": 282,
+   "agree": 282,
+   "disagree_gold_text_duplicated_in_doc": 0,
+   "disagree_other": 0
+  },
+  "처음_버전_v1": {
+   "records": "results/mh_arms/mh_train_cell_hv1_none_doc_kladder_records.jsonl",
+   "조회1": {
+    "rank1": {
+     "n": 212,
+     "hit": 75,
+     "rate": 0.35377358490566035
+    },
+    "budget20": {
+     "n": 212,
+     "hit": 200,
+     "rate": 0.9433962264150944
+    }
+   },
+   "산술1": {
+    "rank1": {
+     "n": 71,
+     "hit": 38,
+     "rate": 0.5352112676056338
+    },
+    "budget20": {
+     "n": 71,
+     "hit": 68,
+     "rate": 0.9577464788732394
+    }
+   },
+   "fisher_rank1_산술1_대_조회1": {
+    "table_hit_miss": [
+     [
+      38,
+      33
+     ],
+     [
+      75,
+      137
+     ]
+    ],
+    "p": 0.007959024907302334
+   },
+   "fisher_budget20_산술1_대_조회1": {
+    "table_hit_miss": [
+     [
+      68,
+      3
+     ],
+     [
+      200,
+      12
+     ]
+    ],
+    "p": 0.7681936177498789
+   },
+   "조회1_split": {
+    "가_정답이_머리글": {
+     "n": 65,
+     "rank1": {
+      "n": 65,
+      "hit": 14,
+      "rate": 0.2153846153846154
+     },
+     "budget20": {
+      "n": 65,
+      "hit": 64,
+      "rate": 0.9846153846153847
+     },
+     "query_ids": [
+      "04e25e10791e4329bb6a6a046b7a6620",
+      "0784493f496347a9a4f613bbd5335a0c",
+      "079b792646e644b1a8788bfb38e5c828",
+      "095fb4d3fba945bea87cde0fd6ce7f37",
+      "119635595c584fe1b0f9d5d8cc70a84b",
+      "1239551a6d67495dbf39c3baaafa2f5b",
+      "1281e54b9f3f40fa9b25d238b760e028",
+      "16b1154d3c9c44c4b53e5f79aa6c40fc",
+      "18b3fdd83c824f508d3ed22164584903",
+      "194a68f15e6c450195c13e322bd90ce4",
+      "194ef4214d4d4e328c1b7dda10197499",
+      "1d9f779df01d4eecb319477ef4dcbd60",
+      "21a72ef1b7b24780ae9ad830583a9931",
+      "2505bc4ea54b4319aadc04e480e6d5e1",
+      "289a3673886942acb52446b04c70431d",
+      "292d96599c514665920567823bfb2402",
+      "35a33cbb233f4f61bebd3c21f8c59d43",
+      "3cee30b835c54114afddecf06ea28ff4",
+      "43b7151a946f4d529cc71a8bdeb55ddc",
+      "4b48ccc20ef44293afedfac0086bc24c",
+      "4b90118aba6a4ca4a711b9b640d4af77",
+      "4d78640799c84b2d870bb8984232049d",
+      "5c0f3d66b4674516bc63f255e013369b",
+      "62b8d513ba734ee3a8ffb16478e6b714",
+      "63200feb5aad4d8391e6cb5563f7ae71",
+      "67f30b06433648658b634bd81a8f71eb",
+      "6b6c414a7b7944edbec3f53394552ba9",
+      "6b9975639cce4ebdbb7084d633cdb3f3",
+      "6bd7b4899e44465db05af7c4afcc9f0c",
+      "6bfa697662104c16ac9c602529ddec92",
+      "6d9cc621e1b247c2ba014a317bf7cc82",
+      "7146e8d76f784e4da80b5ed44af6a347",
+      "7535166ea3a64bd4bf9a4b75529bd8dd",
+      "75edcfb846ba4cbba6a112729985c7cd",
+      "778cc0b38cd9481a83cdaec6204359a2",
+      "79bb6ce8e7f44867a36c88fea6201b57",
+      "7bc8364b07a2478a96484ad3922d700b",
+      "95c8e255e1bb4b79a7187c3f16c78b80",
+      "96a4042c5c9842d880790f78c12a78e9",
+      "9b21c3f39adc46c6b6ebba9c867fcdf6",
+      "a22f3e0a94b84d34a18aaec702cce8a9",
+      "a44aa93481d742cb90c179ecfdd510dc",
+      "a9455d493640400b987e6621011a9c4a",
+      "b1de67552b6d4565a955cd9f1dfd44de",
+      "b59ae9e8f22349cb9f58aa93248cfc7c",
+      "bae25480b80f4a029816fde70ae2d34d",
+      "bc406ef254f64e2c94e1e62834dc8923",
+      "c8ecc9d08c51485681a832ff1673e992",
+      "cc935a72bd8344358fc732c30d1230ac",
+      "cfe0155213b046febb1ba35db1407452",
+      "d06c4f0832d345a38b9bd96c9886bac1",
+      "d0a0aee479bd494f80db1f320da8646b",
+      "d3db779262064ae7b0b469e2dcc7feb9",
+      "d7f36abec9c74cefb5d8d74ba174e1f4",
+      "db2a4a610c26446f85b39b984599cc0c",
+      "dd10ae0acafd48169e2017b8d8ade6f5",
+      "df10cf666965437e84c8a56c7b639695",
+      "e11155e2d36646e8bf0567223938aa3c",
+      "e66b6f10e3e34f16a4ad48d331c5fd1c",
+      "ee7144258eb74757bbe4dc86feef7fc1",
+      "ee9cbbf283fc44a9bf709705fd220d24",
+      "f4dff18e510e4053ab0c03c2ff399cbe",
+      "f657ff950c4c49688e6e0f28446452e2",
+      "f734f84583db4eef842a587e74b9dd5d",
+      "f764f2131b974219829a1742df7e229c"
+     ]
+    },
+    "나_나머지": {
+     "n": 147,
+     "rank1": {
+      "n": 147,
+      "hit": 61,
+      "rate": 0.41496598639455784
+     },
+     "budget20": {
+      "n": 147,
+      "hit": 136,
+      "rate": 0.9251700680272109
+     },
+     "query_ids": null
+    }
+   },
+   "v1_채점_문항만": {
+    "조회1_rank1": {
+     "n": 211,
+     "hit": 75,
+     "rate": 0.35545023696682465
+    },
+    "조회1_budget20": {
+     "n": 211,
+     "hit": 200,
+     "rate": 0.9478672985781991
+    },
+    "fisher_rank1_산술1_대_조회1": {
+     "table_hit_miss": [
+      [
+       38,
+       33
+      ],
+      [
+       75,
+       136
+      ]
+     ],
+     "p": 0.011399837586789828
+    },
+    "조회1_split": {
+     "가_정답이_머리글": {
+      "n": 65,
+      "rank1": {
+       "n": 65,
+       "hit": 14,
+       "rate": 0.2153846153846154
+      },
+      "budget20": {
+       "n": 65,
+       "hit": 64,
+       "rate": 0.9846153846153847
+      },
+      "query_ids": [
+       "04e25e10791e4329bb6a6a046b7a6620",
+       "0784493f496347a9a4f613bbd5335a0c",
+       "079b792646e644b1a8788bfb38e5c828",
+       "095fb4d3fba945bea87cde0fd6ce7f37",
+       "119635595c584fe1b0f9d5d8cc70a84b",
+       "1239551a6d67495dbf39c3baaafa2f5b",
+       "1281e54b9f3f40fa9b25d238b760e028",
+       "16b1154d3c9c44c4b53e5f79aa6c40fc",
+       "18b3fdd83c824f508d3ed22164584903",
+       "194a68f15e6c450195c13e322bd90ce4",
+       "194ef4214d4d4e328c1b7dda10197499",
+       "1d9f779df01d4eecb319477ef4dcbd60",
+       "21a72ef1b7b24780ae9ad830583a9931",
+       "2505bc4ea54b4319aadc04e480e6d5e1",
+       "289a3673886942acb52446b04c70431d",
+       "292d96599c514665920567823bfb2402",
+       "35a33cbb233f4f61bebd3c21f8c59d43",
+       "3cee30b835c54114afddecf06ea28ff4",
+       "43b7151a946f4d529cc71a8bdeb55ddc",
+       "4b48ccc20ef44293afedfac0086bc24c",
+       "4b90118aba6a4ca4a711b9b640d4af77",
+       "4d78640799c84b2d870bb8984232049d",
+       "5c0f3d66b4674516bc63f255e013369b",
+       "62b8d513ba734ee3a8ffb16478e6b714",
+       "63200feb5aad4d8391e6cb5563f7ae71",
+       "67f30b06433648658b634bd81a8f71eb",
+       "6b6c414a7b7944edbec3f53394552ba9",
+       "6b9975639cce4ebdbb7084d633cdb3f3",
+       "6bd7b4899e44465db05af7c4afcc9f0c",
+       "6bfa697662104c16ac9c602529ddec92",
+       "6d9cc621e1b247c2ba014a317bf7cc82",
+       "7146e8d76f784e4da80b5ed44af6a347",
+       "7535166ea3a64bd4bf9a4b75529bd8dd",
+       "75edcfb846ba4cbba6a112729985c7cd",
+       "778cc0b38cd9481a83cdaec6204359a2",
+       "79bb6ce8e7f44867a36c88fea6201b57",
+       "7bc8364b07a2478a96484ad3922d700b",
+       "95c8e255e1bb4b79a7187c3f16c78b80",
+       "96a4042c5c9842d880790f78c12a78e9",
+       "9b21c3f39adc46c6b6ebba9c867fcdf6",
+       "a22f3e0a94b84d34a18aaec702cce8a9",
+       "a44aa93481d742cb90c179ecfdd510dc",
+       "a9455d493640400b987e6621011a9c4a",
+       "b1de67552b6d4565a955cd9f1dfd44de",
+       "b59ae9e8f22349cb9f58aa93248cfc7c",
+       "bae25480b80f4a029816fde70ae2d34d",
+       "bc406ef254f64e2c94e1e62834dc8923",
+       "c8ecc9d08c51485681a832ff1673e992",
+       "cc935a72bd8344358fc732c30d1230ac",
+       "cfe0155213b046febb1ba35db1407452",
+       "d06c4f0832d345a38b9bd96c9886bac1",
+       "d0a0aee479bd494f80db1f320da8646b",
+       "d3db779262064ae7b0b469e2dcc7feb9",
+       "d7f36abec9c74cefb5d8d74ba174e1f4",
+       "db2a4a610c26446f85b39b984599cc0c",
+       "dd10ae0acafd48169e2017b8d8ade6f5",
+       "df10cf666965437e84c8a56c7b639695",
+       "e11155e2d36646e8bf0567223938aa3c",
+       "e66b6f10e3e34f16a4ad48d331c5fd1c",
+       "ee7144258eb74757bbe4dc86feef7fc1",
+       "ee9cbbf283fc44a9bf709705fd220d24",
+       "f4dff18e510e4053ab0c03c2ff399cbe",
+       "f657ff950c4c49688e6e0f28446452e2",
+       "f734f84583db4eef842a587e74b9dd5d",
+       "f764f2131b974219829a1742df7e229c"
+      ]
+     },
+     "나_나머지": {
+      "n": 146,
+      "rank1": {
+       "n": 146,
+       "hit": 61,
+       "rate": 0.4178082191780822
+      },
+      "budget20": {
+       "n": 146,
+       "hit": 136,
+       "rate": 0.9315068493150684
+      },
+      "query_ids": null
+     }
+    }
+   },
+   "v1_미채점_문항": [
+    {
+     "query_id": "9631214aea0f414ebe6e3763979862f5",
+     "layer": "lookup_m1",
+     "header": false,
+     "v1_excluded": "gold_in_header"
+    }
+   ]
+  },
+  "최종_버전_v3.3u": {
+   "records": "results/rerun_20260926/mh/mh_train_s3c_records.jsonl",
+   "조회1": {
+    "rank1": {
+     "n": 212,
+     "hit": 76,
+     "rate": 0.3584905660377358
+    },
+    "budget20": {
+     "n": 212,
+     "hit": 203,
+     "rate": 0.9575471698113207
+    }
+   },
+   "산술1": {
+    "rank1": {
+     "n": 71,
+     "hit": 45,
+     "rate": 0.6338028169014085
+    },
+    "budget20": {
+     "n": 71,
+     "hit": 68,
+     "rate": 0.9577464788732394
+    }
+   },
+   "fisher_rank1_산술1_대_조회1": {
+    "table_hit_miss": [
+     [
+      45,
+      26
+     ],
+     [
+      76,
+      136
+     ]
+    ],
+    "p": 8.786515439792371e-05
+   },
+   "fisher_budget20_산술1_대_조회1": {
+    "table_hit_miss": [
+     [
+      68,
+      3
+     ],
+     [
+      203,
+      9
+     ]
+    ],
+    "p": 1.0
+   },
+   "조회1_split": {
+    "가_정답이_머리글": {
+     "n": 68,
+     "rank1": {
+      "n": 68,
+      "hit": 17,
+      "rate": 0.25
+     },
+     "budget20": {
+      "n": 68,
+      "hit": 67,
+      "rate": 0.9852941176470589
+     },
+     "query_ids": [
+      "04e25e10791e4329bb6a6a046b7a6620",
+      "0784493f496347a9a4f613bbd5335a0c",
+      "079b792646e644b1a8788bfb38e5c828",
+      "095fb4d3fba945bea87cde0fd6ce7f37",
+      "119635595c584fe1b0f9d5d8cc70a84b",
+      "1239551a6d67495dbf39c3baaafa2f5b",
+      "1281e54b9f3f40fa9b25d238b760e028",
+      "16b1154d3c9c44c4b53e5f79aa6c40fc",
+      "18b3fdd83c824f508d3ed22164584903",
+      "194a68f15e6c450195c13e322bd90ce4",
+      "194ef4214d4d4e328c1b7dda10197499",
+      "1d9f779df01d4eecb319477ef4dcbd60",
+      "21a72ef1b7b24780ae9ad830583a9931",
+      "2505bc4ea54b4319aadc04e480e6d5e1",
+      "289a3673886942acb52446b04c70431d",
+      "292d96599c514665920567823bfb2402",
+      "35a33cbb233f4f61bebd3c21f8c59d43",
+      "3cee30b835c54114afddecf06ea28ff4",
+      "43b7151a946f4d529cc71a8bdeb55ddc",
+      "481f8c9e4e12426791a7e222bcc8878d",
+      "4b48ccc20ef44293afedfac0086bc24c",
+      "4b90118aba6a4ca4a711b9b640d4af77",
+      "4d78640799c84b2d870bb8984232049d",
+      "5c0f3d66b4674516bc63f255e013369b",
+      "62b8d513ba734ee3a8ffb16478e6b714",
+      "63200feb5aad4d8391e6cb5563f7ae71",
+      "67f30b06433648658b634bd81a8f71eb",
+      "6b6c414a7b7944edbec3f53394552ba9",
+      "6b9975639cce4ebdbb7084d633cdb3f3",
+      "6bd7b4899e44465db05af7c4afcc9f0c",
+      "6bfa697662104c16ac9c602529ddec92",
+      "6d9cc621e1b247c2ba014a317bf7cc82",
+      "7146e8d76f784e4da80b5ed44af6a347",
+      "7535166ea3a64bd4bf9a4b75529bd8dd",
+      "75edcfb846ba4cbba6a112729985c7cd",
+      "778cc0b38cd9481a83cdaec6204359a2",
+      "79bb6ce8e7f44867a36c88fea6201b57",
+      "7bc8364b07a2478a96484ad3922d700b",
+      "95c8e255e1bb4b79a7187c3f16c78b80",
+      "96a4042c5c9842d880790f78c12a78e9",
+      "9b21c3f39adc46c6b6ebba9c867fcdf6",
+      "a22f3e0a94b84d34a18aaec702cce8a9",
+      "a44aa93481d742cb90c179ecfdd510dc",
+      "a9455d493640400b987e6621011a9c4a",
+      "af8e28467d864f81bca17deaac7cbdc5",
+      "b1de67552b6d4565a955cd9f1dfd44de",
+      "b59ae9e8f22349cb9f58aa93248cfc7c",
+      "bae25480b80f4a029816fde70ae2d34d",
+      "bc406ef254f64e2c94e1e62834dc8923",
+      "c8ecc9d08c51485681a832ff1673e992",
+      "cc935a72bd8344358fc732c30d1230ac",
+      "cfe0155213b046febb1ba35db1407452",
+      "d06c4f0832d345a38b9bd96c9886bac1",
+      "d0a0aee479bd494f80db1f320da8646b",
+      "d3db779262064ae7b0b469e2dcc7feb9",
+      "d7f36abec9c74cefb5d8d74ba174e1f4",
+      "db2a4a610c26446f85b39b984599cc0c",
+      "dd10ae0acafd48169e2017b8d8ade6f5",
+      "df10cf666965437e84c8a56c7b639695",
+      "e11155e2d36646e8bf0567223938aa3c",
+      "e66b6f10e3e34f16a4ad48d331c5fd1c",
+      "ee7144258eb74757bbe4dc86feef7fc1",
+      "ee9cbbf283fc44a9bf709705fd220d24",
+      "f176662f264a4d57b723f8c64e95eb40",
+      "f4dff18e510e4053ab0c03c2ff399cbe",
+      "f657ff950c4c49688e6e0f28446452e2",
+      "f734f84583db4eef842a587e74b9dd5d",
+      "f764f2131b974219829a1742df7e229c"
+     ]
+    },
+    "나_나머지": {
+     "n": 144,
+     "rank1": {
+      "n": 144,
+      "hit": 59,
+      "rate": 0.4097222222222222
+     },
+     "budget20": {
+      "n": 144,
+      "hit": 136,
+      "rate": 0.9444444444444444
+     },
+     "query_ids": null
+    }
+   }
+  }
+ },
+ "hitab": {
+  "records": "results/rerun_20260926/hitab/hitab_test_gold_s3c_records.jsonl",
+  "조회1": {
+   "rank1": {
+    "n": 991,
+    "hit": 639,
+    "rate": 0.644803229061554
+   },
+   "budget20": {
+    "n": 991,
+    "hit": 955,
+    "rate": 0.963673057517659
+   }
+  },
+  "조회1_split": {
+   "가_정답이_머리글": {
+    "n": 0,
+    "rank1": {
+     "n": 0,
+     "hit": 0,
+     "rate": null
+    },
+    "budget20": {
+     "n": 0,
+     "hit": 0,
+     "rate": null
+    },
+    "query_ids": []
+   },
+   "나_나머지": {
+    "n": 991,
+    "rank1": {
+     "n": 991,
+     "hit": 639,
+     "rate": 0.644803229061554
+    },
+    "budget20": {
+     "n": 991,
+     "hit": 955,
+     "rate": 0.963673057517659
+    },
+    "query_ids": null
+   }
+  }
+ }
+}
