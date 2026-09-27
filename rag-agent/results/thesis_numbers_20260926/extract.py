@@ -7,7 +7,7 @@
        text_only 열: 결과 파일(json·jsonl·csv)이 아니라 글 기록(md 등)에서 찾은 수치에, 그 줄의 원천 집합 안 결과 파일로 같은 값이 나오는지.
 
 구성
-  1. 토큰화: 수치 토큰(p값, 불일치 쌍 a:b, 날짜, 식별자 v3.3u·Qwen3-8B, 표 번호, 일반 수)
+  1. 토큰화: 수치 토큰(줄여 쓴 sha256 앞8…끝4, p값, 불일치 쌍 a:b, 날짜, 식별자 v3.3u·Qwen3-8B, 표 번호, 일반 수)
   2. 종류(kind) 자동 규칙 + KIND_OVERRIDE(수동)
   3. 원천 후보 집합(SETS): 결과 파일에서 읽거나 레코드에서 다시 센 값. 후보마다 tag
      ('sleaf' = HiTab sleaf 결과, 'ours' = sleaf 가 아닌 본 방법 결과)
@@ -34,7 +34,8 @@ INT = r'(?:\d{1,3}(?:,\d{3})+|\d+)'
 NUM = rf'(?:{INT}(?:\.\d+)?|\.\d+)'
 SCI = rf'(?:\d+(?:\.\d+)?×)?10[{SUP}]+'
 TOKEN = re.compile(rf'''
- (?P<p>(?<![A-Za-z])p\s?[=<>≥≤]\s?(?:{SCI}|{NUM}))
+ (?P<sha>[0-9a-f]{{8}}…[0-9a-f]{{4}})
+|(?P<p>(?<![A-Za-z])p\s?[=<>≥≤]\s?(?:{SCI}|{NUM}))
 |(?P<cmp>[<>≤≥](?:{SCI}))
 |(?P<ratio>(?<![\w.]){INT}:{INT}(?!\d))
 |(?P<date>\d{{4}}-\d{{2}}-\d{{2}})
@@ -95,7 +96,7 @@ def parse(s):
 
 
 # =============================================================== helpers
-Cand = namedtuple('Cand', 'typ field value src tag')     # typ: v(값) r(쌍) p(p값)
+Cand = namedtuple('Cand', 'typ field value src tag')     # typ: v(값) r(쌍) p(p값) h(sha256 전체 문자열)
 
 
 def V(field, value, src, tag=None):
@@ -961,6 +962,14 @@ def alpha_dev():
     return out
 
 
+@src
+def mh_test():
+    """2026-09-28 MultiHiertt 공개 test 파일 확인(check.py): 문항 수, qa 키별 문항 수."""
+    r = 'results/mh_test_check_20260928/result.json'
+    d, S = jload(r), R(r)
+    return [V('n_questions', d['n_questions'], S), Cand('h', 'sha256', d['sha256'], S, None)] + [V(f'n_with_key.{k}', v, S) for k, v in d['n_with_key'].items()]
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -1000,7 +1009,7 @@ L('03_method.md', '**임베딩.** 셀 문장과 질문을', HRE, HMETA)
 L('03_method.md', 'MultiHiertt 리더 설정은 validation 분할 60건', 'reader_pilot')
 L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모집단 |', '| 답변 정확도 표본 |'], HMETA, 'mh_pop', 'mh_sample', 'interim_meta')
 L('04_setup.md', '**HiTab.** test 분할 1,584 질의', HMETA)
-L('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', 'mh_pop', 'interim_meta')
+L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', 'mh_test', 'mh_pop', 'interim_meta')
 L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta')
 L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
 L('04_setup.md', '공식 규칙상 정답이 음수인 산술 문항은', 'mh_ans', 'mh_sample')
@@ -1059,7 +1068,7 @@ L('06_discussion.md', '**표 단위 색인의 입력 절단.**', 'truncation')
 L('06_discussion.md', '**템플릿 선택에 test 표본 사용.**', HANS, 'hitab_answer300')
 L('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'reader_test')
 L('06_discussion.md', '**표본 평가.**', HANS, HRE, HMETA, 'mh_pop', 'mh_sample')
-L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_sample')
+L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_test', 'mh_sample')
 L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'hitab_dup', HMETA)
 L('06_discussion.md', '**생성 방식.**', 'batchcheck')
 L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', HRE, 'mh_rerun', HMETA)
@@ -1349,6 +1358,8 @@ def auto_kind(f, line, typ, s, a, b):
         return K_CITE
     if typ in ('p', 'cmp', 'ratio'):
         return K_ST
+    if typ == 'sha':
+        return K_RES
     if typ == 'date':
         return K_ETC
     if typ == 'arxiv':
@@ -1524,9 +1535,8 @@ def KOA(f, anchor, kind, toks=None):
     KO(f, AT(f, anchor), kind, toks)
 
 
-KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', K_SEC, ['5.4'])
-KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', K_N, [('2', 1)])
-KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 test 데이터는 비공개이며', K_CITE, ['2022'])   # Zhao et al., 2022      # 정답 셀이 빈 칸으로 파싱된 2건
+KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', K_SEC, ['5.4'])
+KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', K_N, [('2', 1)])      # 정답 셀이 빈 칸으로 파싱된 2건
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_ETC, ['1', '2', ('3', 2)])   # (1)(2)(3) 항목 번호
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3', 1)])             # 자주 나오는 값 3개
 KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, ['8'])                    # Holm 묶음 크기
@@ -1602,6 +1612,9 @@ def fmt(c):
 
 
 def match(s, cands):
+    m = re.fullmatch(r'([0-9a-f]{8})…([0-9a-f]{4})', s)      # 앞 8자리…끝 4자리로 줄여 쓴 sha256
+    if m:
+        return next(((c, '') for c in cands if c.typ == 'h' and c.value.startswith(m[1]) and c.value.endswith(m[2])), (None, ''))
     q = parse(s)
     for c in cands:
         if q['k'] == 'ratio':
