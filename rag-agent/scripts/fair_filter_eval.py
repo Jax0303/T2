@@ -226,6 +226,11 @@ def main() -> int:
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--out", default="")
+    # 2026-09-27 PREREG-2026-09-27-reader-format.md: 다른 표본·검색 레코드, 리더 입력 형식 '행 확장'
+    ap.add_argument("--pop-file", default="", help="query_ids 목록 JSON (기본: 단일 셀 조회 300건)")
+    ap.add_argument("--records", default="", help="고른 arm 하나의 검색 레코드 경로 (기본: results/retrieval_accuracy/<stem>)")
+    ap.add_argument("--context", default="cell", choices=["cell", "rowexp"],
+                    help="rowexp = 검색된 셀이 속한 행 전체 + 열·행 머리글 경로(retrieval_accuracy.row_expand_context)")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
@@ -239,18 +244,40 @@ def main() -> int:
                                       else (ARMS, POP, FILTER_SYS))
     pick = {s.strip() for s in a.arms.split(",")} if a.arms else set(all_arms)
     arms = {k: v for k, v in {**all_arms, **EXTRA_ARMS}.items() if k in pick}
+    if a.pop_file:
+        pop_file = Path(a.pop_file)
     pop = json.load(open(pop_file))["query_ids"]
     if a.limit:
         pop = pop[:a.limit]
 
-    loaded = {}
+    if (a.records or a.context == "rowexp") and (len(arms) != 1 or not a.no_filter or arith):
+        raise SystemExit("--records / --context rowexp 는 arm 하나, --no-filter, 단일 조회에서만 쓴다")
+    loaded, rec_paths = {}, {}
     for name, stem in arms.items():
-        recs, meta = load_evidence(RECORDS / f"{stem}_records.jsonl")
+        rec_paths[name] = Path(a.records) if a.records else RECORDS / f"{stem}_records.jsonl"
+        recs, meta = load_evidence(rec_paths[name])
         missing = [q for q in pop if q not in recs]
         if missing:
             raise SystemExit(f"{name}: 모집단 {len(missing)}건이 records 에 없다")
         loaded[name] = (recs, meta)
     print(f"[pop] n={len(pop)} × arm {len(loaded)}개 = {len(pop) * len(loaded)}행", flush=True)
+    rowctx = {}
+    if a.context == "rowexp":
+        from scripts import retrieval_accuracy as ra
+        (name, (recs, meta)), = loaded.items()
+        if (meta.get("unit"), meta.get("template"), meta.get("corpus")) != ("cell", "s3c", "gold"):
+            raise SystemExit("rowexp: s3c 셀, 질문의 표 안 검색 레코드에서만 쓴다")
+        ta = rec_paths[name].with_name(rec_paths[name].name.removesuffix("_records.jsonl") + "_type_accuracy.jsonl")
+        cells = {x["query_id"]: [tuple(c) for c in x["retrieved_cell_ids"]]
+                 for x in map(json.loads, open(ta, encoding="utf-8")) if x["query_id"] in set(pop)}
+        titles = json.loads(ra.PAGE_TITLES.read_text()) if ra.PAGE_TITLES.exists() else {}
+        data_dir, tabs = str(ROOT / meta["arguments"]["data_dir"]), {}
+        for q in pop:
+            if len(cells[q]) != recs[q]["cells_in_context"]:
+                raise SystemExit(f"rowexp: {q} 검색 셀 좌표 수가 레코드와 다르다")
+            for tid in {c[0] for c in cells[q]}:
+                tabs.setdefault(tid, ra.hg.load_table(tid, data_dir))
+            rowctx[q] = ra.row_expand_context(cells[q], tabs, titles)
 
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -277,7 +304,7 @@ def main() -> int:
                 if (name, q) in done:
                     continue
                 r = recs[q]
-                lines = split_lines(r.get("context"))
+                lines = rowctx[q][0] if rowctx else split_lines(r.get("context"))
                 ops = operand_values(r, tabs) if arith else []
                 # 무필터 리더
                 base_user = "Context:\n" + "\n".join(lines) + f"\n\nQuestion: {r['question']}\nAnswer:"
@@ -309,7 +336,8 @@ def main() -> int:
                 row = {
                     "arm": name, "query_id": q, "question": r["question"],
                     "answer": r["answer"], "retrieval_correct": r["correct"],
-                    "n_lines": len(lines), "n_kept": len(kept),
+                    "n_lines": len(lines), "n_kept": len(kept), "context_format": a.context,
+                    "cells_delivered": rowctx[q][1] if rowctx else r.get("cells_in_context"),
                     "filter_input_tokens": n_tok_filter, "reader_input_tokens": n_tok_base,
                     "filter_raw": raw, "filter_kept_idx": keep, "filter_fallback": fallback,
                     "answer_in_base": answer_in(lines, r["answer"]),

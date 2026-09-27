@@ -1,0 +1,194 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] 929 queries / 929 docs (제외: {'text_only': 115}) 2s
+[corpus] 3609 tables / 135894 cell units (4s)
+[bm25] 10303 terms in 1s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2183.21it/s]
+[dense] 0..50000 in 54s
+[dense] 50000..100000 in 53s
+[dense] 100000..135894 in 39s
+[label-mix] {'alpha': 1.0, 'label_embeddings': '.cache/dev_alpha_20260926/labels_3609_8ccbbaab0271fd50.npy', 'n_tables': 3609, 'n_tables_empty_label': 17, 'labels_sha256': '61757f1900f433c390a3e84e7ab9d290c52685ad3b7c0beb36a98bd3b1c3ef24', 'n_units_mixed': 134782}
+  200/929  8s
+  400/929  18s
+  600/929  30s
+  800/929  37s
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "validation",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 135894,
+      "max_tokens": 137,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 929,
+      "max_tokens": 67,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": {
+    "alpha": 1.0,
+    "label_embeddings": ".cache/dev_alpha_20260926/labels_3609_8ccbbaab0271fd50.npy",
+    "n_tables": 3609,
+    "n_tables_empty_label": 17,
+    "labels_sha256": "61757f1900f433c390a3e84e7ab9d290c52685ad3b7c0beb36a98bd3b1c3ef24",
+    "n_units_mixed": 134782
+  },
+  "budget_cells": 20,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 929,
+  "n_tables": 3609,
+  "n_units": 135894,
+  "corpus_text_sha256": "81f450bf084fe383eefa3e5deb7a208c1f9c92f53a61442db18af3261326e0c9",
+  "population_skipped_upstream": {
+    "text_only": 115
+  },
+  "n_queries": 929,
+  "n_scored": 911,
+  "n_excluded": 18,
+  "excluded_by_reason": {
+    "gold_in_header": 13,
+    "gold_table_unparsed": 5
+  },
+  "query_ids_sha256": "5d1c992cef38176d3ab47a5209c9b0a6a31a48e832d3202b827d5c431e4cdaea",
+  "by_layer": {
+    "ALL": {
+      "n": 911,
+      "corpus": {
+        "accuracy_all": 0.3216,
+        "accuracy_any_DIAGNOSTIC": 0.6619,
+        "gold_doc_in_context": 0.798,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8496,
+        "accuracy_any_DIAGNOSTIC": 0.9737,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9034,
+        "accuracy_any_DIAGNOSTIC": 0.9857,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.0
+      },
+      "mean_m": 2.802,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 31,
+      "corpus": {
+        "accuracy_all": 0.3871,
+        "accuracy_any_DIAGNOSTIC": 0.3871,
+        "gold_doc_in_context": 0.5484,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9355,
+        "accuracy_any_DIAGNOSTIC": 0.9355,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 14.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 682,
+      "corpus": {
+        "accuracy_all": 0.2639,
+        "accuracy_any_DIAGNOSTIC": 0.6701,
+        "gold_doc_in_context": 0.7991,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8314,
+        "accuracy_any_DIAGNOSTIC": 0.978,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.8944,
+        "accuracy_any_DIAGNOSTIC": 0.9883,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.0
+      },
+      "mean_m": 2.922,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 75,
+      "corpus": {
+        "accuracy_all": 0.5467,
+        "accuracy_any_DIAGNOSTIC": 0.5467,
+        "gold_doc_in_context": 0.7467,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9333,
+        "accuracy_any_DIAGNOSTIC": 0.9333,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9333,
+        "accuracy_any_DIAGNOSTIC": 0.9333,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 123,
+      "corpus": {
+        "accuracy_all": 0.4878,
+        "accuracy_any_DIAGNOSTIC": 0.7561,
+        "gold_doc_in_context": 0.8862,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.878,
+        "accuracy_any_DIAGNOSTIC": 0.9837,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9106,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.9
+      },
+      "mean_m": 3.691,
+      "m_over_budget": 0
+    }
+  }
+}

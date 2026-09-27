@@ -599,6 +599,18 @@ def subtable_context(cells, tabs, data_dir, page_titles, header_mode="path"):
     return units
 
 
+def row_expand_context(cells, tabs, page_titles):
+    """리더 입력 형식 '행 확장'(PREREG-2026-09-27-reader-format.md): 검색된 셀이 속한 행의 비어 있지 않은
+    데이터 셀 전부를 subtable_context(열·행 머리글 전체 경로)로 그린 줄들과 그 셀 수. 표 순서·행 순서는 표 안의 위치다.
+    제목이 없는 표(MultiHiertt)의 빈 제목 줄은 뺀다."""
+    full = set()
+    for tid, i, _ in cells:
+        t = tabs[tid].table
+        full |= {(tid, i, j) for j in range(t.n_cols) if str(t.data[i][j]).strip()}
+    units = subtable_context(sorted(full), tabs, "", page_titles, header_mode="path")
+    return [ln for u in units for ln in u["text"].split("\n") if ln.strip() != "#"], len(full)
+
+
 def load_queries(data_dir: str, split: str, tabs, strict: bool = False):
     """Every question in the split, with its gold target and why it is excluded.
 

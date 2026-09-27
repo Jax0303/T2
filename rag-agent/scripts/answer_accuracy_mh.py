@@ -9,9 +9,12 @@
 채점기는 MultiHiertt 공식 것을 옮긴 `rag_agent/eval/multihiertt_em.py` 하나뿐이다.
 HiTab 쪽 EM 과 **섞어 평균 내지 않는다** — 채점기가 다르다.
 
-조건 둘:
+조건:
   retrieved  검색이 고른 셀. 운영 수치.
   gold       주석된 근거 셀만. 리더 천장이지 수학적 상한이 아니다.
+  fulltable  검색 없이 문서의 표 전부.
+  rowexp     검색이 고른 셀이 속한 행 전체 + 열 머리글 경로(리더 입력 형식 조건, PREREG-2026-09-27-reader-format.md).
+             검색은 retrieved 와 같다. 셀 문장이 문서 안에서 유일한 레코드(s3c 셀, 머리글 v3.3u)에서만 쓴다.
 
 저장과 재개: 문항마다 결과 행을 즉시 쓰고, 실행 조건(질의 id·순서, 문맥 해시, 모델 revision, 프롬프트,
 생성 설정, 코드 해시)을 `<out>.run.json` 에 남긴다. 중단되면 같은 명령에 --resume 을 붙여 남은 문항만
@@ -101,6 +104,24 @@ def full_tables(split, header_rule="v1", label_rule="none"):
     return out
 
 
+def rowexp_contexts(scored, scope, split, header_rule, label_rule, keep_hybrid):
+    """{질의: (행 확장 줄, 셀 수)} — 레코드의 셀 문장을 다시 만든 셀 문장과 맞춰 셀 좌표를 찾는다(문서 안 유일)."""
+    from types import SimpleNamespace
+    from retrieval_accuracy import build_corpus, row_expand_context
+    _q, docs, _ = load_population(split, keep_hybrid=keep_hybrid)
+    tables, _ = build_tables({u: docs[u] for u in {r["query_id"] for r in scored}}, header_rule, label_rule)
+    texts, covers, _, unit_tids, _ = build_corpus("", sorted(tables), "s3c", "cell", {}, load=lambda t, _d: tables.get(t))
+    where = {}
+    for txt, cov, tid in zip(texts, covers, unit_tids):
+        key = (tid.split("::")[0], txt)
+        if key in where:
+            raise SystemExit(f"rowexp: 문서 안에 같은 셀 문장이 있다 ({key[0]})")
+        where[key] = next(iter(cov))
+    tabs = {t: SimpleNamespace(table=v.table, title="") for t, v in tables.items()}
+    return {r["query_id"]: row_expand_context([where[(r["query_id"], s)] for s in r[scope]["context"]], tabs, {})
+            for r in scored}
+
+
 def summarize(rows, limit=0):
     def acc(v):
         return round(sum(v) / len(v), 4) if v else None
@@ -181,7 +202,7 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--records", required=True)
     ap.add_argument("--scope", default="doc", choices=["doc", "corpus", "table"])
-    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold", "fulltable"])
+    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold", "fulltable", "rowexp"])
     # 기본값 = 채택 설정 (PREREG-2026-09-13-reader-qwen3.md, 재확인 PREREG-2026-09-23-reader-thinking-pilot.md).
     # 2026-09-21 실행 15개가 옛 기본값(neutral, 64)으로 돌아 채택 설정이 아닌 수치를 낸 전례가 있다.
     ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit")
@@ -214,6 +235,8 @@ def main() -> int:
     ap.add_argument("--header-rule", default="v1", choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3", "v3.3u"])
     ap.add_argument("--label-rule", default="none", choices=["none", "L1", "L2"])
     ap.add_argument("--out", default="")
+    ap.add_argument("--quiet-accuracy", action="store_true",
+                    help="로그에 정확도·맞힘 수를 쓰지 않는다(진행 문항 수만). 결과 파일에는 그대로 남는다.")
     a = ap.parse_args()
     if a.same_contexts_as:
         if a.same_queries_as:
@@ -275,11 +298,20 @@ def main() -> int:
     for r in scored:
         r["answer"] = answers[r["query_id"]]
     check = self_check([r["answer"] for r in scored], [r["kind"] == "arith" for r in scored])
-    print(f"[scorer] gold 를 예측으로 넣었을 때 EM={check['em']} (n={check['n']})", flush=True)
+    if not a.quiet_accuracy:
+        print(f"[scorer] gold 를 예측으로 넣었을 때 EM={check['em']} (n={check['n']})", flush=True)
 
     full = full_tables(a.split, a.header_rule, a.label_rule) if a.condition == "fulltable" else None
+    rowexp = None
+    if a.condition == "rowexp":
+        args = meta.get("arguments", {})
+        if (meta.get("unit"), meta.get("template"), args.get("header_rule"), args.get("label_rule")) != \
+                ("cell", "s3c", a.header_rule, a.label_rule):
+            raise SystemExit("rowexp: 레코드가 s3c 셀 검색이 아니거나 머리글·라벨 규칙이 --header-rule/--label-rule 과 다르다")
+        rowexp = rowexp_contexts(scored, a.scope, a.split, a.header_rule, a.label_rule, bool(args.get("keep_hybrid")))
     ctxs = {r["query_id"]: (gold_context(gold[r["query_id"]], tables) if a.condition == "gold"
                             else full[r["query_id"]] if full is not None
+                            else rowexp[r["query_id"]][0] if rowexp is not None
                             else r[a.scope].get("context") or []) for r in scored}
     if a.same_contexts_as:
         ref = {x["query_id"]: x["context_sha256"]
@@ -337,7 +369,8 @@ def main() -> int:
                    "answer_correct": int(mh_exact_match(pred, r["answer"], r["kind"] == "arith")),
                    "answer_correct_docmath": int(docmath_match(pred, r["answer"], r["kind"] == "arith")),
                    "n_ctx": len(ctx), "n_tok": n_tok,
-                   "cells_in_context": None if full is not None else r[a.scope]["cells_in_context"],
+                   "cells_in_context": (None if full is not None else rowexp[r["query_id"]][1] if rowexp is not None
+                                        else r[a.scope]["cells_in_context"]),
                    "context_sha256": digest(ctx),
                    "source_context_sha256": r[a.scope].get("context_sha256"),
                    "context_condition": a.condition,
@@ -350,8 +383,9 @@ def main() -> int:
             os.fsync(stream.fileno())
             rows.append(row)
             if len(rows) % 100 == 0:
-                print(f"  {len(rows)}/{len(scored)}  {time.time() - t0:.0f}s  "
-                      f"em={sum(x['answer_correct'] for x in rows) / len(rows):.4f}", flush=True)
+                print(f"  {len(rows)}/{len(scored)}  {time.time() - t0:.0f}s"
+                      + ("" if a.quiet_accuracy else f"  em={sum(x['answer_correct'] for x in rows) / len(rows):.4f}"),
+                      flush=True)
     if [x["query_id"] for x in rows] != order:
         raise SystemExit("저장된 행이 실행 계획과 다르다 — 누락 또는 중복")
 
@@ -380,8 +414,11 @@ def main() -> int:
     summary["records_sha256"] = file_digest(out)
     with out.with_suffix(".json").open("x", encoding="utf-8", newline="\n") as stream:
         json.dump(summary, stream, ensure_ascii=False, indent=2, allow_nan=False)
-    print(json.dumps({k: v for k, v in summary.items() if k != "provenance"},
-                     indent=2, ensure_ascii=False))
+    if a.quiet_accuracy:
+        print(f"[done] {len(rows)}행 -> {out.with_suffix('.json')}", flush=True)
+    else:
+        print(json.dumps({k: v for k, v in summary.items() if k != "provenance"},
+                         indent=2, ensure_ascii=False))
     return 0
 
 
