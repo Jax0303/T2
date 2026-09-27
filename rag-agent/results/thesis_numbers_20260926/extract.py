@@ -740,6 +740,15 @@ def mh_rules():
 
 
 @src
+def mh_dev_pop():
+    """α 선택에 쓴 MultiHiertt dev(validation) 911건과 표 근거만 필요한 332건(2026-09-27)."""
+    a, b = 'results/dev_alpha_20260926/mh_dev/mh_dev_a1.0.json', 'results/reader_format_20260927/mh_dev_pop332.jsonl'
+    n911, n332 = jload(a)['n_scored'], sum(1 for _ in jl(b))
+    return [V('α 선택 MH dev 채점 문항', n911, R(a)), V('표 근거만 필요한 문항', n332, R(b)),
+            V('본문 근거 필요 문항 = 911 − 332', n911 - n332, R(a) + ' − ' + R(b))]
+
+
+@src
 def mh_label_pop():
     r = f'{MA}/mh_cell_hv2.json'
     return [V('라벨 실험(v2) n_scored', jload(r)['n_scored'], R(r))]
@@ -783,7 +792,7 @@ L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모
 L('04_setup.md', '**HiTab.** test 분할 1,584 질의', HMETA)
 L('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', 'mh_pop', 'interim_meta')
 L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta')
-L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample')
+L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
 L('04_setup.md', '공식 규칙상 정답이 음수인 산술 문항은', 'mh_ans', 'mh_sample')
 L('04_setup.md', '**MultiHiertt 전체 정확도.**', 'mh_pop')
 L('04_setup.md', 'MultiHiertt 리더는 두 번의 사전등록 파일럿으로', 'reader_pilot')
