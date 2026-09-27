@@ -4,7 +4,8 @@
   python3 results/reader_format_20260927/analyze.py test   -> test.json
 
 조건마다 문항 수, 맞힘, 전달 셀 평균, 리더 입력 토큰 평균. 쌍마다 정확 McNemar(양측 이항, b = 앞 조건만 맞힘,
-c = 뒤 조건만 맞힘). test 는 데이터셋마다 비교 4개를 한 묶음으로 Holm. MultiHiertt 그룹별 값은 탐색적.
+c = 뒤 조건만 맞힘). MultiHiertt 그룹별 값은 탐색적.
+test 는 §9 변경(2026-09-27)대로 MultiHiertt 882 셀 문장(최종) 대 고정 청크(최종) 비교 1개(Holm 없음) + 정답률 분해·교집합.
 """
 import json
 import sys
@@ -87,19 +88,34 @@ if mode == "dev":
                                "cell": hitab_rows(f"{D}/dev/hitab_cell.jsonl")},
                               [("rowexp", "cell")], False, False)}
 elif mode == "test":
+    # §9 test 비교 묶음 변경(2026-09-27): 4개 → 1개(셀 문장 최종 대 고정 청크 최종), Holm 없음. 행 확장 test 는 하지 않는다.
     CAP = "results/mh_arms/cap300_20260924"
-    TEST_PAIRS = [("rowexp", "cell"), ("rowexp", "fulltable"), ("rowexp", "chunk"), ("cell", "chunk")]
-    res = {"multihiertt_test": block({"rowexp": mh_rows(f"{D}/test/mh_rowexp.jsonl"),
-                                      "cell": mh_rows(f"{CAP}/cell_uniq.jsonl"),
-                                      "fulltable": mh_rows(f"{CAP}/fulltable.jsonl"),
-                                      "chunk": mh_rows(f"{D}/test/mh_chunk_final.jsonl")}, TEST_PAIRS, True, True),
-           "hitab_test": block({"rowexp": hitab_rows(f"{D}/test/hitab_rowexp.jsonl"),
-                                "cell": hitab_rows("results/s3c_answer_hitab300_20260926/rows.jsonl",
-                                                   cells_from="results/retrieval_accuracy/t_s3c_gold_labelabl_records.jsonl"),
-                                "fulltable": hitab_rows("results/fulltable_20260924/hitab_rows.jsonl"),
-                                "chunk": hitab_rows("results/fair_filter_20260921/rows.jsonl", arm="chunk",
-                                                    cells_from="results/retrieval_accuracy/t_chunk_s3c_gold_v2_records.jsonl")},
-                               TEST_PAIRS, True, False)}
+    raw = {"cell": {x["query_id"]: x for x in jl(f"{CAP}/cell_uniq.jsonl")},
+           "chunk": {x["query_id"]: x for x in jl(f"{D}/test/mh_chunk_final.jsonl")}}
+    conds = {k: mh_rows(p_) for k, p_ in (("cell", f"{CAP}/cell_uniq.jsonl"), ("chunk", f"{D}/test/mh_chunk_final.jsonl"))}
+    res = {"multihiertt_test": block(conds, [("cell", "chunk")], False, True)}
+    ids = sorted(raw["cell"])
+
+    def frac(k, n):
+        return {"k": k, "n": n, "rate": round(k / n, 4) if n else None}
+
+    def decomp(qs):
+        out = {}
+        for k, rows in raw.items():
+            hit = [q for q in qs if rows[q]["retrieval_correct"]]
+            miss = [q for q in qs if not rows[q]["retrieval_correct"]]
+            out[k] = {"retrieval_success": frac(len(hit), len(qs)),
+                      "answer_given_hit": frac(sum(rows[q]["answer_correct"] for q in hit), len(hit)),
+                      "answer_given_miss": frac(sum(rows[q]["answer_correct"] for q in miss), len(miss))}
+        both = [q for q in qs if raw["cell"][q]["retrieval_correct"] and raw["chunk"][q]["retrieval_correct"]]
+        out["intersection_both_retrieved"] = {
+            "n": len(both), "cell": frac(sum(raw["cell"][q]["answer_correct"] for q in both), len(both)),
+            "chunk": frac(sum(raw["chunk"][q]["answer_correct"] for q in both), len(both)),
+            "mcnemar_cell_vs_chunk": mcnemar(conds["cell"], conds["chunk"], both)}
+        return out
+
+    res["decomposition"] = {"ALL": decomp(ids)} | {g: decomp([q for q in ids if raw["cell"][q]["layer"] == g]) for g in GROUPS}
+    res["note"] = "그룹별 값은 탐색적 결과. 셀 문장 = 기존 본 방법 최종 규칙 답변(cell_uniq), 고정 청크 = 최종 머리글 규칙 검색 기록으로 새로 생성."
 else:
     raise SystemExit("dev 또는 test")
 (HERE / f"{mode}.json").write_text(json.dumps(res, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
