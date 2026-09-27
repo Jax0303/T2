@@ -77,6 +77,31 @@ def _is_numeric_column(table: TableView, c: int) -> bool:
     return seen
 
 
+def official_frame(table: TableView, mode: str = "leaf"):
+    """Upstream ``utils/utils.py: infer_dtype`` (google-research 08a8d67, lines 49–68) run verbatim on the flat
+    frame this port indexes: column names from ``_col_name``, cells rendered by ``fmt_value``. Returns the
+    converted DataFrame; a column is numeric or datetime when pandas leaves it non-object.
+
+    Duplicate column names make ``df[col]`` a DataFrame; the conversion raises and upstream's bare ``except``
+    leaves those columns object. ``errors='ignore'`` is deprecated in pandas 2.2+ but still works (FutureWarning
+    is silenced as upstream's ``table_text_to_df`` does).
+    """
+    import warnings
+    import pandas as pd
+    df = pd.DataFrame({c: [fmt_value(table.cell(r, c)) for r in range(table.n_rows)] for c in range(table.n_cols)})
+    df.columns = [_col_name(table, c, mode) for c in range(table.n_cols)]
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for col in df.columns:
+            try:
+                df[col] = pd.to_numeric(df[col], errors='ignore')
+                if df[col].dtype == 'object':
+                    df[col] = pd.to_datetime(df[col], errors='raise')
+            except:  # noqa: E722 — upstream's bare except
+                pass
+    return df
+
+
 def schema_doc(table: TableView, c: int, mode: str = "leaf") -> str:
     """The one summary doc a numeric column contributes."""
     name = _col_name(table, c, mode)

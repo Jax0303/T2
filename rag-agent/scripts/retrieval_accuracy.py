@@ -278,8 +278,18 @@ def tablerag_units(tab, t, mode: str, dtype: str = "infer"):
     # 받아 예외를 내고 `errors='ignore'` 가 그것을 삼킨다 -- 그 열은 object 로 남아
     # **셀마다 색인된다.** 즉 이 데이터에서 원본이 실제로 타는 분기는 `all_object`
     # 쪽에 가깝고, `infer` 는 그만큼 이 비교군을 과소평가한다. 둘 다 보고한다.
-    numeric = ([] if dtype == "all_object"
-               else [c for c in range(t.n_cols) if trag._is_numeric_column(t, c)])
+    #   official   원본 infer_dtype 를 이 펼친 프레임에 그대로 적용(trag.official_frame). pandas 가 숫자 dtype 으로
+    #              바꾼 열은 숫자 열, 날짜 dtype 으로 바꾼 열은 원본처럼 요약 문서 하나(dtype·min·max, 셀 매핑은
+    #              min·max 행). 나머지는 범주형 (PREREG-2026-09-28-tablerag-official-dtype.md).
+    dates = {}
+    if dtype == "official":
+        df = trag.official_frame(t, mode)
+        kinds = [str(df.iloc[:, c].dtype) for c in range(t.n_cols)]
+        numeric = [c for c, k in enumerate(kinds) if k != "object" and not k.startswith("datetime")]
+        dates = {c: df.iloc[:, c] for c, k in enumerate(kinds) if k.startswith("datetime")}
+    else:
+        numeric = ([] if dtype == "all_object"
+                   else [c for c in range(t.n_cols) if trag._is_numeric_column(t, c)])
     for c in numeric:
         vals = {}
         for r in range(t.n_rows):
@@ -292,6 +302,13 @@ def tablerag_units(tab, t, mode: str, dtype: str = "infer"):
         rows = {vals[min(vals)], vals[max(vals)]} if vals else set()
         out.append((trag.schema_doc(t, c, mode),
                     [(r, c) for r in sorted(rows)]))
+    for c, col in dates.items():
+        # 원본 build_cell_corpus 의 요약 문서 글 그대로(pandas dtype·min·max). 셀 매핑은 숫자 열과 같은 규칙.
+        vals = {x: r for r, x in enumerate(col) if x == x}          # NaT 제외, 같은 값은 마지막 행
+        rows = {vals[min(vals)], vals[max(vals)]} if vals else set()
+        out.append((f'{{"column_name": "{trag._col_name(t, c, mode)}", "dtype": "{col.dtype}", '
+                    f'"min": {col.min()}, "max": {col.max()}}}', [(r, c) for r in sorted(rows)]))
+    numeric = [*numeric, *dates]
     seen: dict = {}
     for c in range(t.n_cols):
         if c in numeric:
@@ -753,7 +770,7 @@ def main() -> int:
                          "(TableRAG build_row_corpus: bare values, no header "
                          "path); 'sentence' joins OUR cell sentences and is an "
                          "ablation of our own granularity, not a baseline.")
-    ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"],
+    ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object", "official"],
                     help="--unit tablerag: 어느 열을 숫자 열로 접을지. 'all_object' 는 "
                          "숫자 셀도 개별 색인하는 가장 유리한 읽기 (tablerag_units 주석)")
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"],

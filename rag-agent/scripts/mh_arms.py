@@ -390,7 +390,8 @@ def main() -> int:
                     help="--unit cell: table_description = 셀 문장을 데이터셋의 table_description 문장으로 바꾼다. "
                          "그 문장이 없는 셀은 --template 문장 그대로 (PREREG-2026-09-28-table-description.md)")
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
-    ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object"])
+    ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object", "official"],
+                    help="official = 원본 utils.infer_dtype 를 펼친 프레임에 적용 (PREREG-2026-09-28-tablerag-official-dtype.md)")
     ap.add_argument("--header-rule", default=None, choices=["v1", "v2", "v3", "v3.1", "v3.2", "v3.3", "v3.3u"],
                     help="헤더 행 추정 규칙. v3.3u = v3.3 + 문서 안 셀 문장 고유화. 기본 v1, strict_no_k 는 채택 규칙 v3.3 "
                          "(PREREG-2026-09-14-header-v3.md 정정 4). v2 = PREREG-2026-09-13-header-units-note.md, "
