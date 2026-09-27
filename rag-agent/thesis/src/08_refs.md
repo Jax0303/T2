@@ -5,6 +5,7 @@
 - Cheng, Z., Dong, H., Wang, Z., et al. (2022). HiTab: A Hierarchical Table Dataset for Question Answering and Natural Language Generation. In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022)*, pp. 1094–1110.
 - Cuconasu, F., Trappolini, G., Siciliano, F., et al. (2024). The Power of Noise: Redefining Retrieval for RAG Systems. In *Proceedings of SIGIR 2024*, pp. 719–729.
 - Deng, N., Sun, Z., He, R., et al. (2024). Tables as Texts or Images: Evaluating the Table Reasoning Ability of LLMs and MLLMs. In *Findings of ACL 2024*. arXiv:2402.12424.
+- Holm, S. (1979). A Simple Sequentially Rejective Multiple Test Procedure. *Scandinavian Journal of Statistics*, 6(2), 65–70.
 - Lin, W., Blloshmi, R., Byrne, B., de Gispert, A., & Iglesias, G. (2023). An Inner Table Retriever for Robust Table Question Answering. In *Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (ACL 2023)*, pp. 9909–9926.
 - Liu, N. F., Lin, K., Hewitt, J., et al. (2024). Lost in the Middle: How Language Models Use Long Contexts. *Transactions of the Association for Computational Linguistics*, 12, 157–173.
 - McNemar, Q. (1947). Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages. *Psychometrika*, 12(2), 153–157.
@@ -21,5 +22,4 @@
 - Zhang, C., Chen, Q., & Zhang, M. (2026). Mixture-of-RAG: Integrating Text and Tables with Large Language Models. In *Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD 2026)*, pp. 1880–1891.
 - Zhang, T., Yue, X., Li, Y., & Sun, H. (2024). TableLlama: Towards Open Large Generalist Models for Tables. In *Proceedings of NAACL 2024*. arXiv:2311.09206.
 - Zhao, Y., Li, Y., Li, C., & Zhang, R. (2022). MultiHiertt: Numerical Reasoning over Multi Hierarchical Tabular and Textual Data. In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022)*, pp. 6588–6600.
-- Zhao, Y., Long, Y., Liu, H., et al. (2024). DocMath-Eval: Evaluating Math Reasoning Capabilities of LLMs in Understanding Long and Specialized Documents. In *Proceedings of ACL 2024*. arXiv:2311.09805.
 - Zhou, W., Ma, B., Friedrich, A., & Mesgar, M. (2026). Table Question Answering in the Era of Large Language Models: A Comprehensive Survey of Tasks, Methods, and Evaluation. In *Proceedings of ACL 2026*. arXiv:2510.09671.

@@ -8,7 +8,7 @@
 
 ## 2.2 표 안 검색과 표 RAG
 
-**부분 표 선택.** Lin et al.(2023)은 표 안 검색기(Inner Table Retriever, ITR)를 제안했다. ITR은 질문에 답하는 데 필요한 정보를 가장 많이 담은 부분 표를 원래 표에서 찾고, 그 부분 표가 원래 표 대신 기존의 어떤 표 질의응답 시스템에도 입력으로 쓰일 수 있게 했다. 본 연구의 과제 설정(표 안에서 셀을 골라 리더 입력을 대신함)은 이 정의와 같다. 표 안 셀을 고르는 단계는 논문마다 이름이 다르다. TableRAG(Chen et al., 2024)는 "cell retrieval", ITR은 "inner table retriever", TAP4LLM은 "table sampling"이라 부른다.
+**부분 표 선택.** Lin et al.(2023)은 표 안 검색기(Inner Table Retriever, ITR)를 제안했다. ITR은 질문에 답하는 데 필요한 정보를 가장 많이 담은 부분 표를 원래 표에서 찾고, 그 부분 표가 원래 표 대신 기존의 어떤 표 질의응답 시스템에도 입력으로 쓰일 수 있게 했다. 본 연구의 과제 설정(표 안에서 셀을 골라 리더 입력을 대신함)은 이 정의와 같다. 표 안 셀을 고르는 단계는 논문마다 이름이 다르다. TableRAG(Chen et al., 2024)는 "cell retrieval", ITR은 "inner table retriever", TAP4LLM(Sui et al., 2024)은 "table sampling"이라 부른다.
 
 **TableRAG(Chen et al., 2024).** 백만 토큰 규모의 큰 표를 LLM이 다루도록, 표 전체 대신 스키마(열 이름과 자료형·값 범위 요약)와 셀(열 이름과 셀 값의 쌍)을 따로 검색해 프롬프트를 만든다. 주 실험은 토큰 예산 B=10,000, 검색 개수 K=5로 설정했고, 비교군인 RandRowSampling과 RowColRetrieval은 K=30으로 늘렸다. 이 논문은 검색 품질을 재현율·정밀도로 따로 보고한다. 본 연구는 TableRAG의 셀·스키마 텍스트 표현을 공식 코드와 대조해 이식하고(leaf, path 두 변형), 논문의 비교군 둘을 함께 구현했다. 다만 검색기는 본 방법과 같은 것을 쓴다(4.2절).
 
