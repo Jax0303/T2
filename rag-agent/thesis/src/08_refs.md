@@ -1,13 +1,13 @@
 # 참고문헌
 
 - Cao, B., Lu, H., Ma, C., Wang, T., Li, R., & Fan, J. (2026). Orthogonal Hierarchical Decomposition for Structure-Aware Table Understanding with Large Language Models. In *Proceedings of ICML 2026*. arXiv:2602.01969.
-- Chen, S.-A., Miculicich, L., Eisenschlos, J. M., et al. (2024). TableRAG: Million-Token Table Understanding with Language Models. In *Advances in Neural Information Processing Systems (NeurIPS 2024)*. arXiv:2410.04739.
+- Chen, S.-A., Miculicich, L., Eisenschlos, J. M., et al. (2024). TableRAG: Million-Token Table Understanding with Language Models. In *Advances in Neural Information Processing Systems 37 (NeurIPS 2024)*, pp. 74899–74921. arXiv:2410.04739.
 - Cheng, Z., Dong, H., Wang, Z., et al. (2022). HiTab: A Hierarchical Table Dataset for Question Answering and Natural Language Generation. In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022)*, pp. 1094–1110.
 - Cuconasu, F., Trappolini, G., Siciliano, F., et al. (2024). The Power of Noise: Redefining Retrieval for RAG Systems. In *Proceedings of SIGIR 2024*, pp. 719–729.
 - Deng, N., Sun, Z., He, R., et al. (2024). Tables as Texts or Images: Evaluating the Table Reasoning Ability of LLMs and MLLMs. In *Findings of ACL 2024*. arXiv:2402.12424.
 - Holm, S. (1979). A Simple Sequentially Rejective Multiple Test Procedure. *Scandinavian Journal of Statistics*, 6(2), 65–70.
 - Lewis, P., Perez, E., Piktus, A., et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. In *Advances in Neural Information Processing Systems (NeurIPS 2020)*, 33, pp. 9459–9474.
-- Lin, W., Blloshmi, R., Byrne, B., de Gispert, A., & Iglesias, G. (2023). An Inner Table Retriever for Robust Table Question Answering. In *Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (ACL 2023)*, pp. 9909–9926.
+- Lin, W., Blloshmi, R., Byrne, B., de Gispert, A., & Iglesias, G. (2023). An Inner Table Retriever for Robust Table Question Answering. In *Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) (ACL 2023)*, pp. 9909–9926.
 - Liu, N. F., Lin, K., Hewitt, J., et al. (2024). Lost in the Middle: How Language Models Use Long Contexts. *Transactions of the Association for Computational Linguistics*, 12, 157–173.
 - McNemar, Q. (1947). Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages. *Psychometrika*, 12(2), 153–157.
 - Patnaik, S., Changwal, H., Aggarwal, M., Bhatia, S., Kumar, Y., & Krishnamurthy, B. (2024). CABINET: Content Relevance based Noise Reduction for Table Question Answering. In *Proceedings of ICLR 2024*. arXiv:2402.01155.
@@ -20,7 +20,7 @@
 - Wu, X., Yang, J., Chai, L., et al. (2025b). TableBench: A Comprehensive and Complex Benchmark for Table Question Answering. In *Proceedings of AAAI 2025*, 39(24), pp. 25497–25506.
 - Xiao, S., Liu, Z., Zhang, P., Muennighoff, N., Lian, D., & Nie, J.-Y. (2024). C-Pack: Packed Resources For General Chinese Embeddings. In *Proceedings of SIGIR 2024*. arXiv:2309.07597.
 - Yu, X., Jian, P., & Chen, C. (2025). TableRAG: A Retrieval Augmented Generation Framework for Heterogeneous Document Reasoning. In *Proceedings of EMNLP 2025*. arXiv:2506.10380.
-- Zhang, C., Chen, Q., & Zhang, M. (2026). Mixture-of-RAG: Integrating Text and Tables with Large Language Models. In *Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD 2026)*, pp. 1880–1891.
+- Zhang, C., Chen, Q., & Zhang, M. (2026). Mixture-of-RAG: Integrating Text and Tables with Large Language Models. In *Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.1 (KDD 2026)*, pp. 1880–1891.
 - Zhang, T., Yue, X., Li, Y., & Sun, H. (2024). TableLlama: Towards Open Large Generalist Models for Tables. In *Proceedings of NAACL 2024*. arXiv:2311.09206.
 - Zhao, Y., Li, Y., Li, C., & Zhang, R. (2022). MultiHiertt: Numerical Reasoning over Multi Hierarchical Tabular and Textual Data. In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022)*, pp. 6588–6600.
-- Zhou, W., Ma, B., Friedrich, A., & Mesgar, M. (2026). Table Question Answering in the Era of Large Language Models: A Comprehensive Survey of Tasks, Methods, and Evaluation. In *Proceedings of ACL 2026*. arXiv:2510.09671.
+- Zhou, W., Ma, B., Friedrich, A., & Mesgar, M. (2026). Table Question Answering in the Era of Large Language Models: A Comprehensive Survey of Tasks, Methods, and Evaluation. In *Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, pp. 12161–12189. arXiv:2510.09671.

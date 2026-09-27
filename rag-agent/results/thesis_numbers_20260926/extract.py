@@ -1009,7 +1009,7 @@ L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', 'mh_test'
 L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta', 'recheck')
 L('04_setup.md', '[^1]: test.json의 sha256은', 'mh_test')
 L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
-L('04_setup.md', '공식 규칙상 정답이 음수인 산술 문항은', 'mh_ans', 'mh_sample')
+L('04_setup.md', '정답이 음수인 산술 문항은 숫자 형태의 답으로는', 'mh_ans', 'mh_sample')
 L('04_setup.md', '**MultiHiertt 전체 정확도.**', 'mh_pop')
 L('04_setup.md', 'MultiHiertt 리더는 두 번의 사전등록 파일럿으로', 'reader_pilot')
 L('04_setup.md', '**HiTab 답변 표본.**', HANS, HRE, HMETA)
@@ -1542,6 +1542,16 @@ KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, 
 KOA('05_results.md', '**나머지 비교군.**', K_SET, ['12', '9'])
 KOA('09_appendix.md', 'RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', K_SET, ['12'])
 KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])                     # 인용 위치 Table 2
+# 2026-09-28 인용 대조 반영: 선행 논문이 보고한 값·인용 쪽 번호(원고 줄 전체)
+KOA('01_intro.md', '표 RAG에서 흔한 방식은', K_CITE)
+KOA('02_related.md', '**HiTab.** Cheng et al.(2022)은', K_CITE)
+KOA('02_related.md', '검색된 문맥에 질문과 관련은 있으나', K_CITE)
+KOA('02_related.md', '**유형별 보고.**', K_CITE)
+for _a in ('| HiTab 채점기 |', '| TableRAG(Chen) | 스키마 문서 내용 |', '| TableRAG(Chen) | 스키마 검색 |', '| TableRAG(Chen) | 행 라벨 문서 |',
+           '| TableRAG(Chen) | 숫자 열 판정 |', '| TableRAG(Chen) | 셀 인코딩 예산 B |', '| TableRAG(Chen) | 질의 확장과 검색 개수 K |',
+           '| RowCol | 색인 텍스트 |', '| RandRow | 색인·검색 |', '| RandRow | 리더 입력 |', '| TableRAG(Yu) | 청크 크기·겹침 단위 |',
+           '| TableRAG(Yu) | 마크다운 변환 |', '| TableRAG(Yu) | 머리말 이름 |'):
+    KOA('09_appendix.md', _a, K_CITE)                                                   # 부록 H: 원 논문·코드 설정값
 KOA('06_discussion.md', '**가설은 지지되지 않았다.**', K_ETC, ['1'])                      # 정답 셀이 1개인
 KOA('06_discussion.md', '| HiTab 질문의 표 안 | 36 |', K_SET, ['21', '50'])               # 버킷 정의
 KOA('06_discussion.md', '| | | B: 정답 셀 순위 21~50 | 25 |', K_SET, ['21', '50'])
