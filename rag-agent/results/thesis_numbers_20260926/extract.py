@@ -8,7 +8,7 @@
        같은 값이 나오면 결과 파일을 출처로 적는다(2026-09-28).
 
 구성
-  1. 토큰화: 수치 토큰(줄여 쓴 sha256 앞8…끝4, p값, 불일치 쌍 a:b, 날짜, 식별자 v3.3u·Qwen3-8B, 표 번호, 일반 수)
+  1. 토큰화: 수치 토큰(sha256·커밋 해시 16진 64·40자, p값, 불일치 쌍 a:b, 날짜, 식별자 v3.3u·Qwen3-8B, 표 번호, 일반 수)
   2. 종류(kind) 자동 규칙 + KIND_OVERRIDE(수동)
   3. 원천 후보 집합(SETS): 결과 파일에서 읽거나 레코드에서 다시 센 값. 후보마다 tag
      ('sleaf' = HiTab sleaf 결과, 'ours' = sleaf 가 아닌 본 방법 결과)
@@ -35,7 +35,8 @@ INT = r'(?:\d{1,3}(?:,\d{3})+|\d+)'
 NUM = rf'(?:{INT}(?:\.\d+)?|\.\d+)'
 SCI = rf'(?:\d+(?:\.\d+)?×)?10[{SUP}]+'
 TOKEN = re.compile(rf'''
- (?P<sha>[0-9a-f]{{8}}…[0-9a-f]{{4}})
+ (?P<sha>(?<![0-9a-f])(?:[0-9a-f]{{64}}|[0-9a-f]{{40}})(?![0-9a-f]))
+|(?P<fn>\[\^\d+\])
 |(?P<p>(?<![A-Za-z])p\s?[=<>≥≤]\s?(?:{SCI}|{NUM}))
 |(?P<cmp>[<>≤≥](?:{SCI}))
 |(?P<ratio>(?<![\w.]){INT}:{INT}(?!\d))
@@ -97,7 +98,7 @@ def parse(s):
 
 
 # =============================================================== helpers
-Cand = namedtuple('Cand', 'typ field value src tag')     # typ: v(값) r(쌍) p(p값) h(sha256 전체 문자열)
+Cand = namedtuple('Cand', 'typ field value src tag')     # typ: v(값) r(쌍) p(p값) h(해시 문자열)
 
 
 def V(field, value, src, tag=None):
@@ -965,10 +966,11 @@ def alpha_dev():
 
 @src
 def mh_test():
-    """2026-09-28 MultiHiertt 공개 test 파일 확인(check.py): 문항 수, qa 키별 문항 수."""
-    r = 'results/mh_test_check_20260928/result.json'
+    """2026-09-28 MultiHiertt 공개 test 파일 확인(scripts/check_mh_test.py): 문항 수, qa 키별 문항 수, sha256, HF 커밋."""
+    r = 'results/mh_test_check_20260928/summary.json'
     d, S = jload(r), R(r)
-    return [V('n_questions', d['n_questions'], S), Cand('h', 'sha256', d['sha256'], S, None)] + [V(f'n_with_key.{k}', v, S) for k, v in d['n_with_key'].items()]
+    return [V('n_questions', d['n_questions'], S), Cand('h', 'sha256', d['sha256'], S, None),
+            Cand('h', 'hf_commit', d['hf_commit'], S, None)] + [V(f'n_with_key.{k}', v, S) for k, v in d['n_with_key'].items()]
 
 
 @src
@@ -1025,6 +1027,7 @@ L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모
 L('04_setup.md', '**HiTab.** test 분할 1,584 질의', HMETA)
 L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', 'mh_test', 'mh_pop', 'interim_meta', 'recheck')
 L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta', 'recheck')
+L('04_setup.md', '[^1]: test.json의 sha256은', 'mh_test')
 L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
 L('04_setup.md', '공식 규칙상 정답이 음수인 산술 문항은', 'mh_ans', 'mh_sample')
 L('04_setup.md', '**MultiHiertt 전체 정확도.**', 'mh_pop')
@@ -1082,7 +1085,7 @@ L('06_discussion.md', '**표 단위 색인의 입력 절단.**', 'truncation')
 L('06_discussion.md', '**템플릿 선택에 test 표본 사용.**', HANS, 'hitab_answer300')
 L('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'reader_test')
 L('06_discussion.md', '**표본 평가.**', HANS, HRE, HMETA, 'mh_pop', 'mh_sample')
-L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_test', 'mh_sample')
+L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_sample')
 L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'hitab_dup', HMETA)
 L('06_discussion.md', '**생성 방식.**', 'batchcheck')
 L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', HRE, 'mh_rerun', HMETA)
@@ -1264,6 +1267,9 @@ EX('03_method.md', _U, '423,473', 'recheck', 'train 색인 v3.3 셀 수')
 EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '100%', 'recheck', 'question_type 일치율(채점 2,885)')
 EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '7,830', 'recheck', '공식·재포장 train 대조 uid 수')
 EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '6', 'recheck', '정답 유효숫자 자릿수')
+EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '1,566', 'mh_test', 'n_questions')
+EX('04_setup.md', '[^1]: test.json의 sha256은', '15bfe9cc1241e29050a5bcaf7b9639d6907e7895cd07a1f1b874c2fda905ad01', 'mh_test', 'sha256')
+EX('04_setup.md', '[^1]: test.json의 sha256은', 'f18473da528dede3d9ce2274366d9ee8102ea0fd', 'mh_test', 'hf_commit')
 
 # 재계산으로 연결하지 않은 글 기록 출처 수치 — CSV text_only 열에 사유를 적는다 (2026-09-28)
 HOLD = {}
@@ -1404,7 +1410,7 @@ def auto_kind(f, line, typ, s, a, b):
         return K_ST
     if typ == 'sha':
         return K_RES
-    if typ == 'date':
+    if typ in ('date', 'fn'):          # fn = 각주 표시 [^N]
         return K_ETC
     if typ == 'arxiv':
         return K_CITE
@@ -1656,9 +1662,8 @@ def fmt(c):
 
 
 def match(s, cands):
-    m = re.fullmatch(r'([0-9a-f]{8})…([0-9a-f]{4})', s)      # 앞 8자리…끝 4자리로 줄여 쓴 sha256
-    if m:
-        return next(((c, '') for c in cands if c.typ == 'h' and c.value.startswith(m[1]) and c.value.endswith(m[2])), (None, ''))
+    if re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', s):          # sha256·커밋 해시
+        return next(((c, '') for c in cands if c.typ == 'h' and c.value == s), (None, ''))
     q = parse(s)
     for c in cands:
         if q['k'] == 'ratio':

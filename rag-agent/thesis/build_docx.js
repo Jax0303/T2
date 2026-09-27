@@ -1,13 +1,14 @@
 // thesis/src/*.md -> thesis/thesis.docx  (학교 학위논문양식틀(국문, A4) 서식, 표지·제출서·인준서는 HWP 양식에서 가져온다)
 // 지원하는 Markdown: # ## ### 제목, 문단, "- " 목록, "1. " 번호 목록, "> " 들여쓴 문단,
-// 파이프 표(바로 앞 줄 "표 X-Y. ..."는 표 제목), ![그림 X-Y. 설명](경로), **굵게**, *기울임*, `코드`.
+// 파이프 표(바로 앞 줄 "표 X-Y. ..."는 표 제목), ![그림 X-Y. 설명](경로), **굵게**, *기울임*, `코드`,
+// 각주 [^N](본문 표시)과 "[^N]: 내용"(한 줄 정의).
 //   NODE_PATH=<docx 가 설치된 node_modules> node thesis/build_docx.js
 const fs = require("fs");
 const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell,
   WidthType, BorderStyle, ShadingType, PageBreak, Footer, PageNumber, TableOfContents,
-  LevelFormat, ImageRun, VerticalAlign, StyleLevel, PageOrientation, TableLayoutType,
+  LevelFormat, ImageRun, VerticalAlign, StyleLevel, PageOrientation, TableLayoutType, FootnoteReferenceRun,
 } = require("docx");
 
 const DIR = __dirname;
@@ -21,14 +22,15 @@ const LANDSCAPE = new Set(["5-7"]);                               // 가로 쪽 
 const LAND = { orientation: PageOrientation.LANDSCAPE }, PORT = { orientation: PageOrientation.PORTRAIT };   // 구역 나눔 표시
 
 function runs(text, base = {}) {
-  // **굵게**, *기울임*, `코드` 만 해석한다
+  // **굵게**, *기울임*, `코드`, 각주 표시 [^N] 만 해석한다
   const out = [];
-  const re = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g;
+  const re = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[\^\d+\])/g;
   let last = 0, m;
   while ((m = re.exec(text))) {
     if (m.index > last) out.push(new TextRun({ text: text.slice(last, m.index), ...base }));
     const t = m[0];
-    if (t.startsWith("**")) out.push(new TextRun({ text: t.slice(2, -2), bold: true, ...base }));
+    if (t.startsWith("[^")) out.push(new FootnoteReferenceRun(Number(t.slice(2, -1))));
+    else if (t.startsWith("**")) out.push(new TextRun({ text: t.slice(2, -2), bold: true, ...base }));
     else if (t.startsWith("*")) out.push(new TextRun({ text: t.slice(1, -1), italics: true, ...base }));
     else out.push(new TextRun({ text: t.slice(1, -1), font: { ascii: "Consolas", hAnsi: "Consolas", eastAsia: MYEONG }, ...base }));
     last = m.index + t.length;
@@ -110,6 +112,8 @@ function caption(text, style) {
   return new Paragraph({ style, children: runs(text.replace(/^(표|그림) ([A-Z\d]+-\d+)\. /, "[$1 $2] ")) });
 }
 
+const footnotes = {};   // [^N]: 정의 → Document 각주
+
 function convert(md) {
   const out = [];
   const lines = md.split(/\r?\n/);
@@ -126,6 +130,8 @@ function convert(md) {
     const line = lines[i];
     const t = line.trim();
     if (!t) { flush(); continue; }
+    const fn = /^\[\^(\d+)\]: (.*)$/.exec(t);      // 각주 정의 줄은 본문에 넣지 않는다
+    if (fn) { footnotes[fn[1]] = { children: [new Paragraph({ children: runs(fn[2], { size: 18 }) })] }; continue; }
     if (t === "<!-- pagebreak -->") { flush(); out.push(new Paragraph({ children: [new PageBreak()] })); continue; }
     let m;
     if ((m = /^(#{1,3}) (.*)$/.exec(t))) {
@@ -243,6 +249,7 @@ const captionStyle = { basedOn: "Normal", next: "Normal", run: { size: 20, bold:
 const toc = (n, run, left = 0) => ({ id: `TOC${n}`, name: `toc ${n}`, basedOn: "Normal", next: "Normal", run, paragraph: { indent: { left } } });
 const doc = new Document({
   features: { updateFields: true },
+  footnotes,
   styles: {
     default: { document: { run: { font: font(MYEONG), size: 22 },
                            paragraph: { spacing: { line: 480, after: 60 } } } },   // 11pt, 줄간격 배수 2.0
