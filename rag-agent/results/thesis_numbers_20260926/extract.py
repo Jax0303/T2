@@ -4,7 +4,7 @@
 입력:  thesis/src/*.md, results/ 아래 기존 결과 파일, PREREG-*.md·THESIS-INTERIM 본문(결과 절)
        .jsonl 은 한 줄씩 읽는다. .npy·데이터셋·모델은 읽지 않는다.
 출력:  numbers.csv (UTF-8 BOM), summary.json  — 이 파일과 같은 폴더.
-       text_only 열: 결과 파일(json·jsonl·csv)이 아니라 글 기록(md 등)에서만 찾은 수치와 그 사유(HOLD). 같은 줄의 결과 파일에서도
+       text_only 열: 결과 파일(json·jsonl·csv)이 아니라 글 기록(md 등)에서만 찾은 수치. 같은 줄의 결과 파일에서도
        같은 값이 나오면 결과 파일을 출처로 적는다(2026-09-28).
 
 구성
@@ -194,7 +194,7 @@ def hitab_sleaf():
 
 @src
 def hitab_kladder():
-    """부록 F: sleaf 단일 셀 조회 recall@k — 레코드 gold_rank 로 다시 셈 + SUMMARY_TABLES 표."""
+    """부록 E: sleaf 단일 셀 조회 recall@k — 레코드 gold_rank 로 다시 셈 + SUMMARY_TABLES 표."""
     single = {r['query_id'] for r in jl(f'{RA}/t_sleaf_gold_type_accuracy.jsonl') if r['query_type'] == 'single_cell'}
     ranks = [r['gold_rank'] for r in jl(f'{RA}/t_sleaf_gold_records.jsonl') if r['query_id'] in single]
     S = R(f'{RA}/t_sleaf_gold_records.jsonl')
@@ -519,28 +519,6 @@ def mh_b1():
 
 
 @src
-def mh_audit():
-    r = 'results/mh_condition_cell_audit_20260924.jsonl'
-    S = R(r)
-    rows = list(jl(r))
-    out = []
-    lab = {'missing': '누락', 'complete': '누락 아님', 'none': '조건 없음', 'unclear': '판정 불가'}
-    for flag in (True, False):
-        sub = [x for x in rows if x['flag'] == flag]
-        f = '표시' if flag else '미표시'
-        out.append(V(f'{f} 검토 수', len(sub), S))
-        c = Counter(x['label'] for x in sub)
-        out += [V(f'{f} {lab[k]}', c.get(k, 0), S) for k in lab]
-        for g in GROUPS:
-            gs = [x for x in sub if x['layer'] == g]
-            cg = Counter(x['label'] for x in gs)
-            out.append(V(f'{f} {g} 검토 수', len(gs), S))
-            out += [V(f'{f} {g} {lab[k]}', cg.get(k, 0), S) for k in lab]
-    # 2026-09-28: 추정 누락 수·비율 후보 제거 — 층 크기 888·1,983 이 결과 파일에 없는 입력 상수였다
-    return out + text_cands('THESIS-INTERIM-2026-09-23.md', [179, 181, 182])
-
-
-@src
 def batchcheck():
     base = {x['query_id']: x for x in jl(f'{MA}/mh_train_cell_hv1_none_doc_answer_doc_retrieved_fulln_cot384.jsonl')}
     out = []
@@ -569,7 +547,7 @@ def prereg_uniq():
 
 @src
 def reader_pilot():
-    out = text_cands('PREREG-2026-09-13-reader-qwen3.md', [12, 64, 72]) + text_cands('PREREG-2026-09-23-reader-thinking-pilot.md', [77, 80])
+    out = text_cands('PREREG-2026-09-13-reader-qwen3.md', [12, 64, 72]) + text_cands('PREREG-2026-09-23-reader-thinking-pilot.md', [77])
     r = f'{MA}/reader_pilot_cot_rerun_20260923_validation.jsonl'
     rows = list(jl(r))
     ok = sum(1 for x in rows if x.get('answer_correct', x.get('em', 0)))
@@ -971,15 +949,22 @@ def mh_test():
 
 @src
 def recheck():
-    """2026-09-28 글 기록 출처 수치 재계산(scripts/recheck_20260928): 셀 문장 중복(v1·v3.3, train 색인), MultiHiertt 사본 대조."""
+    """2026-09-28 글 기록 출처 수치 재계산(scripts/recheck_20260928): 셀 문장 중복(v1·v3.3)·고유화 변화(train 검색 색인), MultiHiertt 사본 대조."""
     r, q = 'results/recheck_20260928/uniq_stats.json', 'results/recheck_20260928/mh_release_compare.json'
-    u, c, S, SQ = jload(r)['train_index'], jload(q), R(r), R(q)
+    ur, c, S, SQ = jload(r), jload(q), R(r), R(q)
+    u, res = ur['train_index'], ur['residual_after_v3.3u']
+    ch, KINDS = u['v3.3_to_v3.3u'], ('table_text', 'row_col_number', 'table_number')
     k = c['sig_digits_k_matching_all_differing_numeric']
     return [V('train 색인 v1 셀 수', u['v1']['n_cells'], S), V('train 색인 v1 중복 비율', u['v1']['dup_rate'], S),
             V('train 색인 v3.3 셀 수', u['v3.3']['n_cells'], S), V('train 색인 v3.3 중복 비율', u['v3.3']['dup_rate'], S),
             V('공식·재포장 train 대조 uid 수', c['n_compared_common_uid'], SQ),
             *([V('정답 유효숫자 자릿수(차이 난 수치 정답 전부에서 성립)', k[0], SQ)] if len(k) == 1 else []),
-            V('question_type 일치율(채점 2,885)', c['question_type_agreement']['rate'], SQ)]
+            V('question_type 일치율(채점 2,885)', c['question_type_agreement']['rate'], SQ),
+            V('v3.3→v3.3u 바뀐 셀 비율(train 색인)', ch['changed_rate'], S),
+            *[V(f'v3.3→v3.3u {a} 비율(train 색인 전체 셀 대비)', ch[f'{a}_rate_of_all_cells'], S) for a in KINDS],
+            V('v3.3→v3.3u 세 비율의 합(train 색인 전체 셀 대비)', sum(ch[f'{a}_rate_of_all_cells'] for a in KINDS), S),
+            V('v3.3u 적용 후 같은 문장 셀 수(train 색인 + validation 문서 전체)',
+              res['train.table_evidence_only']['dup_cells_novalue'] + res['validation.split_all_docs']['dup_cells_novalue'], S)]
 
 
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
@@ -1011,10 +996,10 @@ L('00b_abstract_en.md', 'On HiTab and MultiHiertt', *CLAIM)
 L('01_intro.md', '1. **고유 라벨의 기여', 'hitab_labelabl', HMETA)
 L('01_intro.md', '2. **셀 단위 검색을 발표된', 'rerun_cmp', 'mh_rerun', HMETA)
 L('01_intro.md', '3. **답변 정확도까지', *CLAIM, 'mh_sample')
-L('01_intro.md', '4. **한계를 수치로', 'mh_label', 'mh_audit')
+L('01_intro.md', '4. **한계를 수치로', 'mh_label')
 L('01_intro.md', '모든 비교는 실행 전에 사전등록했다.', HANS)
 L('03_method.md', '같은 문서 안에 값을 뺀 문장이 똑같은', 'prereg_uniq', 'mh_meta', 'recheck')
-L('03_method.md', '이 규칙으로 train 분할에서 문장이 바뀐 셀은', 'prereg_uniq')
+L('03_method.md', '이 규칙을 머리글 고친 규칙(v3.3)의 train 검색 색인', 'prereg_uniq', 'recheck')
 L('03_method.md', '**고유 라벨(HiTab).**', 'alpha_dev', 'mh_dev_pop')
 L('03_method.md', '잎 라벨 머리말의 유무는', 'hitab_sleaf_vs_s3c', 'hitab_sleaf', 'hitab_labelabl', HANS, 'hitab_answer300')
 L('03_method.md', '**임베딩.** 셀 문장과 질문을', HRE, HMETA)
@@ -1076,13 +1061,12 @@ T63 = ['| HiTab 질문의 표 안 | 36 |', '| | | C: 정답 셀 순위 51 이하
        '| | | F: 정답 셀 일부 누락, 누락 셀의 표는', '| | | G: 정답 셀 일부 누락, 누락 셀 중', '| | | H: 정답 표의 셀은 있으나']
 L('06_discussion.md', ['표 6-3. 검색 실패 문항의 분류', *T63, 'MultiHiertt 실패 394건 중', '**재정렬 진단.**', '**정답 표를 못 찾은 40건의 판정.**'],
   'bottleneck', HMETA)
-L('06_discussion.md', '**조건 셀 누락.**', 'mh_audit')
 L('06_discussion.md', '**표 단위 색인의 입력 절단.**', 'truncation')
 L('06_discussion.md', '**템플릿 선택에 test 표본 사용.**', HANS, 'hitab_answer300')
 L('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'reader_test')
 L('06_discussion.md', '**표본 평가.**', HANS, HRE, HMETA, 'mh_pop', 'mh_sample')
 L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_sample')
-L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'hitab_dup', HMETA)
+L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'hitab_dup', HMETA, 'recheck')
 L('06_discussion.md', '**생성 방식.**', 'batchcheck')
 L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', HRE, 'mh_rerun', HMETA)
 L('07_conclusion.md', '3. **답변 정확도.**', *CLAIM)
@@ -1092,8 +1076,6 @@ TA1 = ['| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) �
 L('09_appendix.md', ['검색 문맥에서 필요한 줄만 LLM이', '표 A-1.', *TA1, 'sleaf(이전 조건)는 필터 후'], 'hitab_answer300')
 L('09_appendix.md', 'HiTab 단일 셀 조회 991건에서 이 조건의', 'hitab_oracle', HMETA)
 L('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대', '한 건씩 생성하는 방식은 재실행해도'], 'batchcheck')
-L('09_appendix.md', ['MultiHiertt의 정답 근거 주석(table evidence)이', '| 정규식 표시 |', '| 정규식 미표시 |', '추정 누락 문항 수는'],
-  'mh_audit', 'mh_pop')
 L('09_appendix.md', '본 방법의 HiTab 단일 셀 조회 991건 검색 정확도는', HRE)
 TG1 = [('| 표 전체 | 검색 없음 |', 'fulltable'), ('| 고정 청크 | 처음 규칙 검색 |', 'chunk'), ('| TableRAG(Yu) 청크 | 처음 규칙 검색 |', 'trag_hetero'),
        ('| RowCol (셀 문장을 이은 변형, 4.2절) |', 'rowcol'), ('| RowCol (값만) |', 'rowcol_values'),
@@ -1101,10 +1083,10 @@ TG1 = [('| 표 전체 | 검색 없음 |', 'fulltable'), ('| 고정 청크 | 처�
        ('| RandRow (값만) |', 'randrow_values'), ('| TableRAG 셀 검색 재구현(path) | 처음 규칙 검색', 'tablerag_path'),
        ('| TableRAG 셀 검색 재구현(path) | 머리글 고친', 'tablerag_path_hv33'), ('| TableRAG 셀 검색 재구현(leaf) | 처음 규칙 검색', 'tablerag_leaf'),
        ('| TableRAG 셀 검색 재구현(leaf) | 머리글 고친', 'tablerag_leaf_hv33')]
-L('09_appendix.md', ['RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', '표 G-1. 처음 규칙의 본 방법', *[a for a, _ in TG1]], 'v1cmp', 'mh_sample')
+L('09_appendix.md', ['RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', '표 F-1. 처음 규칙의 본 방법', *[a for a, _ in TG1]], 'v1cmp', 'mh_sample')
 TG2 = [('| 본 방법 | 20.00 | .8776', 'cell'), ('| 고정 청크 | 51.25', 'chunk'), ('| TableRAG(Yu) 청크 | 46.93', 'trag_hetero')]
-L('09_appendix.md', ['표 G-2. 처음 규칙의 정답률 분해', *[a for a, _ in TG2], '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의'], 'decomp', 'reader_test', 'mh_sample')
-L('09_appendix.md', ['β 선택에 쓴 MultiHiertt dev(validation) 911건은', '표 H-1.', '| 후보 | 911건 맞힘', '332건 기준에서도 β=1.0이 1위다.'], 'alpha_dev', 'mh_dev_pop')
+L('09_appendix.md', ['표 F-2. 처음 규칙의 정답률 분해', *[a for a, _ in TG2], '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의'], 'decomp', 'reader_test', 'mh_sample')
+L('09_appendix.md', ['β 선택에 쓴 MultiHiertt dev(validation) 911건은', '표 G-1.', '| 후보 | 911건 맞힘', '332건 기준에서도 β=1.0이 1위다.'], 'alpha_dev', 'mh_dev_pop')
 TH1 = [('| β=1.0 (라벨 없음) |', '1.0'), ('| β=0.9 |', '0.9'), ('| β=0.8 |', '0.8'), ('| β=0.7 |', '0.7'), ('| β=0.6 |', '0.6'),
        ('| β=0.5 |', '0.5'), ('| β=0.4 |', '0.4'), ('| β=0.3 |', '0.3'), ('| β=0.2 |', '0.2'), ('| β=0.1 |', '0.1'), ('| 접두어 |', 'prefix')]
 L('09_appendix.md', [a for a, _ in TH1], 'alpha_dev')
@@ -1187,8 +1169,6 @@ for _a in T63[5:]:
 PF('09_appendix.md', '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의', r'^inter mh ')
 PF('03_method.md', '**고유 라벨(HiTab).**', r'^α 1\.0 n911', r'^α prefix n911', r'채점 문항', r'표 근거만')
 PF('09_appendix.md', '| continuous batching 대', r'^cb_120')
-PF('09_appendix.md', '| 정규식 표시 |', r'^표시 ')
-PF('09_appendix.md', '| 정규식 미표시 |', r'^미표시 ')
 PF('05_results.md', '본 방법은 .7900 =', r'^s3c\.')
 PF('05_results.md', '주 모집단인 단일 셀 조회에서', r'^chunk\.', r'^s3c\.', r'^sleaf\.')
 PF('06_discussion.md', '두 방법 모두 정답 셀 전부를 문맥에 포함한 문항에서는 답변 정확도에 차이가 없었다.', r'^hitab300', r'^mh882', r'answer_given_hit rate')
@@ -1239,8 +1219,6 @@ CP('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'],
 CP('09_appendix.md', TA1, {2: ['answer_base'], 3: ['answer_filtered'], 4: [r'\.delta'], 5: ['p_value'], 6: ['lines_mean', 'lines_kept_mean']})
 CP('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대'],
    {2: [r' n$'], 3: ['출력 문자열 일치 수'], 4: ['추출 답 일치 수'], 5: ['정답 수'], 6: ['정오 불일치'], 7: [r'정오 불일치.* p$']})
-CP('09_appendix.md', ['| 정규식 표시 |', '| 정규식 미표시 |'],
-   {2: ['THESIS'], 3: ['검토 수'], 4: [r'[가-힣] 누락$'], 5: ['누락 아님'], 6: ['조건 없음'], 7: ['판정 불가']})
 CP('09_appendix.md', [a for a, _ in TG1], {4: ['correct'], 5: ['만:'], 6: [r'\d p$|[a-z] p$'], 7: ['Holm']})
 CP('09_appendix.md', [a for a, _ in TG2], {2: ['cells'], 3: ['retrieval_success'], 4: ['answer_given_hit'], 5: ['answer_given_miss'], 6: ['answer ']})
 CP('09_appendix.md', [a for a, _ in TH1], {2: ['n911'], 3: ['rank911'], 4: ['n332'], 5: ['rank332']})
@@ -1263,30 +1241,18 @@ EX('03_method.md', _U, '423,473', 'recheck', 'train 색인 v3.3 셀 수')
 EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '100%', 'recheck', 'question_type 일치율(채점 2,885)')
 EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '7,830', 'recheck', '공식·재포장 train 대조 uid 수')
 EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '6', 'recheck', '정답 유효숫자 자릿수')
+_R = '이 규칙을 머리글 고친 규칙(v3.3)의 train 검색 색인'
+EX('03_method.md', _R, '423,473', 'recheck', 'train 색인 v3.3 셀 수')
+EX('03_method.md', _R, '14.4%', 'recheck', '바뀐 셀 비율(train 색인)')
+for _t, _k in (('2.7%', 'table_text'), ('6.3%', 'row_col_number'), ('6.8%', 'table_number')):
+    EX('03_method.md', _R, _t, 'recheck', f'{_k} 비율(train 색인')
+    EX('06_discussion.md', '**문장 고유화의 식별자.**', _t, 'recheck', f'{_k} 비율(train 색인')
+EX('03_method.md', _R, '15.9%', 'recheck', '세 비율의 합')
+EX('03_method.md', _R, '0', 'recheck', '적용 후 같은 문장 셀 수')
 EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '1,566', 'mh_test', 'n_questions')
 EX('04_setup.md', '[^1]: test.json의 sha256은', '15bfe9cc1241e29050a5bcaf7b9639d6907e7895cd07a1f1b874c2fda905ad01', 'mh_test', 'sha256')
 EX('04_setup.md', '[^1]: test.json의 sha256은', 'f18473da528dede3d9ce2274366d9ee8102ea0fd', 'mh_test', 'hf_commit')
 
-# 재계산으로 연결하지 않은 글 기록 출처 수치 — CSV text_only 열에 사유를 적는다 (2026-09-28)
-HOLD = {}
-
-
-def HD(f, anchor, toks, why):
-    for t in toks:
-        HOLD[f, AT(f, anchor), t] = why
-
-
-_MULTI = '해석 복수(연결 안 함): 문장만으로 범위가 정해지지 않음, 해석별 값은 results/recheck_20260928/uniq_stats.json'
-HD('03_method.md', '이 규칙으로 train 분할에서 문장이 바뀐 셀은', ['14.4%', '2.7%', '6.3%', '6.8%', '0'], _MULTI)
-HD('06_discussion.md', '**문장 고유화의 식별자.**', ['6.3%', '6.8%', '2.7%'], _MULTI)
-HD('04_setup.md', 'MultiHiertt 리더는 두 번의 사전등록 파일럿으로', ['169.8'],
-   '삭제 보류(계산 불가: 생각 모드 실행의 시작·중단 시각 기록 없음): 뒤 문장 "같은 60건"과 6.2절 "시간 한도 때문에 시험하지 못했다"가 전제')
-_D = '삭제 보류(계산 불가: 부록 D 정규식이 결과 파일로 남지 않음)'
-HD('06_discussion.md', '**조건 셀 누락.**', ['15', '36%'], _D + ': 같은 문장의 23.5%를 1장 기여 4가 전제')
-HD('09_appendix.md', 'MultiHiertt의 정답 근거 주석(table evidence)이', ['888', '1,983'], _D + ': 표 D-1과 추정식이 전제')
-HD('09_appendix.md', '| 정규식 표시 |', ['888'], _D + ': 표 D-1 행, 추정식이 전제')
-HD('09_appendix.md', '| 정규식 미표시 |', ['1,983'], _D + ': 표 D-1 행, 추정식이 전제')
-HD('09_appendix.md', '추정 누락 문항 수는', ['888', '1,983', '15', '36%'], _D + ': 6.5절 조건 셀 누락 문단과 1장 기여 4가 전제')
 EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p<.0001', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
 EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p=7.6×10⁻⁶', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
 EX('05_results.md', '결과는 예측과 반대였다.', '.8492', 'mh_label', '라벨 없음(v2) by_layer.ALL.doc')
@@ -1298,15 +1264,6 @@ EX('09_appendix.md', 'sleaf(이전 조건)는 필터 후', '2', 'hitab_answer300
 EX('05_results.md', '본 방법은 .7900 =', '0', HANS, 's3c.answer_given_miss')
 EX('09_appendix.md', '| continuous batching 대', '35', 'batchcheck', 'cb_120 정답 수(기존', 2)
 EX('09_appendix.md', '| continuous batching 대', '1.0', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만) p')
-EX('09_appendix.md', '| 정규식 미표시 |', '0', 'mh_audit', '미표시 판정 불가')
-EX('09_appendix.md', '추정 누락 문항 수는', '6', 'mh_audit', '표시 lookup_m1 검토 수')
-EX('09_appendix.md', '추정 누락 문항 수는', '2', 'mh_audit', '표시 lookup_m2+ 누락', 2)
-EX('09_appendix.md', '추정 누락 문항 수는', '16', 'mh_audit', '표시 lookup_m2+ 검토 수')
-EX('09_appendix.md', '추정 누락 문항 수는', '3', 'mh_audit', '표시 lookup_m2+ 판정 불가')
-EX('09_appendix.md', '추정 누락 문항 수는', '18', 'mh_audit', '표시 arith_m2+ 검토 수')
-EX('09_appendix.md', '추정 누락 문항 수는', '12', 'mh_audit', '표시 arith_m2+ 누락')
-EX('09_appendix.md', '추정 누락 문항 수는', '56', 'mh_audit', '미표시 arith_m2+ 검토 수')
-EX('09_appendix.md', '추정 누락 문항 수는', '7', 'mh_audit', '미표시 arith_m2+ 누락', 2)
 EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', 'p=1.0', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만) p')
 EX('06_discussion.md', '**생성 방식.**', '1:1', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만)')
 EX('05_results.md', '| 질문이 속한 표 안 | **.9637**', 'p=.81', 'hitab_labelabl', 'gold 문장 틀 효과 s3frame만:s2만 p')
@@ -1378,11 +1335,6 @@ EX('07_conclusion.md', '3. **답변 정확도.**', '.2359', 'fix0928', '산술·
 # 원천을 못 찾은 수치의 사유(자동 대조 실패 시 적는다)
 NOTFOUND = {}
 # 2026-09-28 A: 결과 파일에 없는 입력 상수를 지운 뒤 원천이 없어진 수치(글 기록·우연히 같은 값으로 다시 맞추지 않는다)
-_C = '입력 상수 제거(888·1,983: 부록 D 정규식 층 크기, 결과 파일 없음)'
-NOTFOUND[('01_intro.md', AT('01_intro.md', '4. **한계를 수치로'), '23.5%')] = _C
-NOTFOUND[('06_discussion.md', AT('06_discussion.md', '**조건 셀 누락.**'), '23.5%')] = _C
-NOTFOUND[('09_appendix.md', AT('09_appendix.md', '추정 누락 문항 수는'), '675')] = _C
-NOTFOUND[('09_appendix.md', AT('09_appendix.md', '추정 누락 문항 수는'), '23.5%')] = _C
 NOTFOUND[('05_results.md', AT('05_results.md', '| 표 전체 (검색 없음) | — | (1.0) |'), '1.0')] = '입력 상수 제거(표 전체 검색 정확도 1.0 "정의상", 결과 파일 없음)'
 
 # =============================================================== 2. kind (자동 규칙 + ===== MANUAL: KO)
@@ -1551,15 +1503,8 @@ KO('09_appendix.md', 23, K_SET, ['4'])
 KO('09_appendix.md', [33, 34], K_N)
 KO('09_appendix.md', 36, K_SET, ['5', 'p≥.05'])
 KO('09_appendix.md', 36, K_ETC, ['1'])
-KO('09_appendix.md', 40, K_N)
-KO('09_appendix.md', 40, K_ETC, ['40', '60'])
-KO('09_appendix.md', 40, K_N, ['40', '60'])
-KO('09_appendix.md', [46, 47], K_N)
-KO('09_appendix.md', 49, K_N, ['888', '20', '40', '1,983', '7', '60', '675', '6', '211', '138', '16', ('2', 2), '3', '18', '12', '59'])
-KO('09_appendix.md', 49, K_ETC, [('1', 1), ('2', 1), ('2', 3)])
 KO('09_appendix.md', 19, K_N, ['88', '95', '76', '77', '43', '52', '2', '22'])
 KO('09_appendix.md', 34, K_ST, ['1.0'])
-KO('09_appendix.md', 49, K_SET, ['95%'])
 KO('09_appendix.md', 65, K_SET, ['1', '5', '10', '20'])
 
 
@@ -1739,7 +1684,7 @@ def main():
                     else:
                         row.update(match='출처 못 찾음', source_field_or_value=nf or '')
                     if row['match'] == '일치' and not row['source_file'].endswith(RESULT_EXT):
-                        row['text_only'] = HOLD.get((f, ln, s), '글 기록에만 있음')
+                        row['text_only'] = '글 기록에만 있음'
                     if row['sleaf_as_ours'] == '예' and (f, ln) in SLEAF_NAMED:
                         row['sleaf_as_ours'] = '아니오(sleaf로 표기)'
                 rows.append(row)
