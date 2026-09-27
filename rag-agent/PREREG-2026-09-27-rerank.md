@@ -166,3 +166,9 @@ MultiHiertt `bucket_definitions` (그대로 옮김):
 - 2026-09-27 03:44–04:12 test 1회 적용 완료(1,667.8초, 중단 없음). 재정렬 전 955 / 906 / 2,491 일치, 재계산 상위 20 불일치 0.
   결과 = `test/summary.json`, 문항별 `test/{hitab_intable,hitab_538,mh_indoc}.jsonl`. 실행 출력 `test/run.out`
   (실행 중에는 `results/bottleneck_20260927/test_run.out` 에 쓰고 끝난 뒤 옮김).
+- 2026-09-27 푸시 전 커밋 다시 쓰기(사용자 지시). `bd5add5` 에 든 114.06MB 파일
+  (`results/mh_arms/mh_train_tablerag_leaf_hv3.3_none_doc_records.jsonl`)이 GitHub 100MB 한도를 넘어 기록에서 뺐다
+  (`git filter-branch --index-filter`, 작성·커밋 시각과 메시지 유지). sha256·백업 경로·재생성 명령은 `results/mh_arms/README-large-files.md`.
+  옛 해시 → 새 해시: `410c3dc` → `410c3dc`(바뀌지 않음), `bd5add5` → `6998304`, `378db41` → `726dc13`,
+  `5f7ac77` → `ff75bd4`, `4a46e20` → `4db5ec1`, `7be1579` → `3b8b31a`.
+  이 문서 앞부분·대화 보고에 나온 옛 해시는 이 대응으로 읽는다.
