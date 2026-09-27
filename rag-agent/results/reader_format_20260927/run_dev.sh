@@ -8,7 +8,8 @@ echo "[start] $(date -Is) commit $(git rev-parse --short HEAD) dirty=$(git statu
 HREC=results/dev_alpha_20260926/hitab_dev/hitab_dev_gold_prefix_records.jsonl
 HPOP=results/reader_format_20260927/hitab_dev_pop300.json
 MREC=results/dev_alpha_20260926/mh_dev/mh_dev_a1.0_records.jsonl
-MH="--records $MREC --split validation --header-rule v3.3u --batch-size 128 --quiet-accuracy"
+MPOP=results/reader_format_20260927/mh_dev_pop332.jsonl   # 판정 집합 332건(표 근거만 필요한 문항), 911건은 돌리지 않는다
+MH="--records $MREC --split validation --header-rule v3.3u --same-queries-as $MPOP --batch-size 128 --quiet-accuracy"
 for c in cell rowexp; do
   [ -e $D/hitab_$c.jsonl ] || $PY scripts/fair_filter_eval.py --arms s3c --no-filter --records $HREC --pop-file $HPOP \
     --context $c --out $D/hitab_$c.jsonl; echo "[end] $(date -Is) hitab_$c rc=$?"

@@ -10,7 +10,7 @@ test 882건 교집합 결과(본 방법 처음 규칙 대 고정 청크, 38:76, 
 ## 2. 가설과 판정
 
 - **주 가설:** 리더 입력을 셀 문장 20줄 대신 "검색된 20셀이 속한 행 전체 + 열 머리글 경로"로 주면 답변 정확도가 오른다.
-- **판정은 MultiHiertt dev 결과로만 한다.** 행 확장 대 셀 문장, 정확 McNemar 양측. 행 확장의 맞힘이 더 많고 p < .05 이면 지지,
+- **판정은 MultiHiertt dev 332건(§5) 결과로만 한다.** 행 확장 대 셀 문장, 정확 McNemar 양측. 행 확장의 맞힘이 더 많고 p < .05 이면 지지,
   그 밖은 지지하지 않음. HiTab dev 는 같은 방식으로 보고하되 판정에 쓰지 않는다.
 - 본 방법(검색)은 바뀌지 않는다. 행 확장은 리더 입력 형식 조건이며 논문의 기여로 서술하지 않는다.
 
@@ -28,7 +28,7 @@ test 882건 교집합 결과(본 방법 처음 규칙 대 고정 청크, 38:76, 
 - 셀 좌표: HiTab 은 검색 레코드 옆 `*_type_accuracy.jsonl` 의 `retrieved_cell_ids`, MultiHiertt 는 레코드의 셀 문장을 같은 코드로
   다시 만든 셀 문장과 맞춰 찾는다(문서 안에서 셀 문장이 유일하다는 v3.3u 성질, 하나라도 겹치면 코드가 멈춘다).
 - 검색 결과는 두 조건이 같다: s3c, 하이브리드 α=.7, 예산 20셀, HiTab 은 질문의 표 안, MultiHiertt 는 문서 안·최종 머리글 규칙 v3.3u·라벨 없음.
-- 실행 전 확인(리더 없이 문맥만 생성): 좌표 대응 실패 0. 행 확장의 전달 셀 평균은 MultiHiertt dev 44.22, test 44.40, HiTab dev 61.67, test 59.64.
+- 실행 전 확인(리더 없이 문맥만 생성): 좌표 대응 실패 0. 행 확장의 전달 셀 평균은 MultiHiertt dev(911건 기준) 44.22, test 44.40, HiTab dev 61.67, test 59.64.
   (셀 문장 조건은 20.)
 
 ## 4. 리더 (기존 실험과 같다)
@@ -48,9 +48,12 @@ test 882건 교집합 결과(본 방법 처음 규칙 대 고정 청크, 38:76, 
 ## 5. 데이터
 
 **dev (두 조건 모두 실행)**
-- MultiHiertt dev(validation) 911건: `results/dev_alpha_20260926/mh_dev/mh_dev_a1.0_records.jsonl`(sha256 47f715f9…, 라벨 섞기 α=1.0 = 라벨 없는 s3c
-  셀 벡터, 머리글 v3.3u, `--keep-hybrid`). 그룹: 조회 셀 1개 75, 조회 셀 2개+ 123, 산술 셀 1개 31, 산술 셀 2개+ 682.
-  **911건 중 579건은 표 근거와 함께 본문 문장 근거도 있는 문항이다**(train test 모집단은 이런 문항을 뺐다). 두 조건 모두 본문 문장을 받지 않는다.
+- MultiHiertt dev(validation): 검색 레코드 `results/dev_alpha_20260926/mh_dev/mh_dev_a1.0_records.jsonl`(sha256 47f715f9…, 라벨 섞기 α=1.0 =
+  라벨 없는 s3c 셀 벡터, 머리글 v3.3u, `--keep-hybrid`). 이 레코드의 채점 문항 911건 중 579건은 표 근거와 함께 본문 문장 근거도 필요한 문항이다.
+  **주 판정 집합 = 332건:** 911건에 test 모집단과 같은 규칙(본문 문장 근거가 필요한 문항 제외 = `mh_arms.load_population(keep_hybrid=False)`)을
+  적용한 것. 911 = 579(본문 근거 필요) + 332. 표 근거만 필요한 validation 문항 338건 중 정답 셀 규칙으로 6건이 빠진 수다.
+  id 목록 `results/reader_format_20260927/mh_dev_pop332.jsonl`(파일 sha256 bc7baad0959199a847dbf146cc39b8caa0840c8f74e0d028fed43ab5472a87d0).
+  그룹: 조회 셀 1개 20, 조회 셀 2개+ 48, 산술 셀 1개 10, 산술 셀 2개+ 254. **911건은 실행하지 않는다.**
 - HiTab dev 300건: dev 단일 셀 조회 1,062건(`results/dev_alpha_20260926/hitab_dev/hitab_dev_gold_prefix_type_accuracy.jsonl`)에서
   `random.Random(20260927).sample(정렬한 id, 300)` 후 정렬 → `results/reader_format_20260927/hitab_dev_pop300.json`
   (id 목록 sha256 ddce1059…). 검색 레코드 `hitab_dev_gold_prefix_records.jsonl`(sha256 dfcd75d0…, s3c, 질문의 표 안).
@@ -69,7 +72,7 @@ test 882건 교집합 결과(본 방법 처음 규칙 대 고정 청크, 38:76, 
 
 ## 6. 비교와 보고
 
-- **dev:** 행 확장 대 셀 문장(MultiHiertt = 주 판정, HiTab = 보고만). 보정 없음.
+- **dev:** 행 확장 대 셀 문장(MultiHiertt 332건 = 주 판정, HiTab 300건 = 보고만). 보정 없음.
 - **test:** 데이터셋마다 네 비교를 한 묶음으로 Holm.
   행 확장 대 셀 문장 / 행 확장 대 표 전체 / 행 확장 대 고정 청크 / 셀 문장 대 고정 청크.
   고정 청크는 MultiHiertt 에서는 최종 머리글 규칙 검색 기록으로 새로 돌린 답변, HiTab 에서는 기존 답변(HiTab 에는 머리글 규칙 구분이 없다).
@@ -88,7 +91,7 @@ test 882건 교집합 결과(본 방법 처음 규칙 대 고정 청크, 38:76, 
 - `scripts/answer_accuracy_mh.py`: `--condition rowexp`(셀 문장 → 셀 좌표 → 행 확장, 레코드가 s3c 셀·같은 머리글·라벨 규칙이 아니면 멈춤),
   `--quiet-accuracy`. 기본 동작 변화 없음.
 - `scripts/fair_filter_eval.py`: `--pop-file`, `--records`(arm 하나), `--context cell|rowexp`, 행에 `context_format`·`cells_delivered` 필드. 기본 동작 변화 없음.
-- `results/reader_format_20260927/`: `hitab_dev_pop300.json`, `analyze.py`, `run_dev.sh`, `run_test.sh`.
+- `results/reader_format_20260927/`: `hitab_dev_pop300.json`, `mh_dev_pop332.jsonl`(실행 전 수정 커밋), `analyze.py`, `run_dev.sh`, `run_test.sh`.
 - dev 검색 입력(그동안 미커밋): `results/dev_alpha_20260926/hitab_dev/hitab_dev_gold_prefix.*`, `results/dev_alpha_20260926/mh_dev/mh_dev_a1.0.*`.
 
 ## 명령
@@ -100,7 +103,8 @@ test 882건 교집합 결과(본 방법 처음 규칙 대 고정 청크, 38:76, 
 
 ## 9. 이탈 기록
 
-(실행 후 기록)
+- 실행 전 수정(2026-09-27): 판정 집합 911 → 332, 사유: test 모집단 정의와 일치. `run_dev.sh` 의 MultiHiertt 두 실행에
+  `--same-queries-as results/reader_format_20260927/mh_dev_pop332.jsonl` 을 더했다. 첫 사전등록 커밋 c869675 뒤, dev 실행 전.
 
 ## 결과
 
