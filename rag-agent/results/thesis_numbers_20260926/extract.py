@@ -779,22 +779,12 @@ def rerun_cmp():
 
 
 @src
-def hitab_cells1581():
-    out = []
-    for arm in ['s3c', 'sleaf', 'table', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf']:
-        r = f'results/rerun_20260926/hitab/hitab_test_gold_{arm}.json'
-        d = jload(r)
-        out.append(V(f'{arm} 전달 셀 평균(채점 {d["n_scored"]})', d['cells_delivered_mean'], R(r), _sl(arm)))
-    return out + [V('HiTab 채점 문항', d['n_scored'], R(r))]
-
-
-@src
 def step4():
     r = f'{FX}/step4_values.json'
     d, S = jload(r), R(r)
     out = [V(f'MH {a} 전달 셀 평균(2,885)', v, S, _sl(a)) for a, v in d['mh_cells_delivered_2885'].items()]
     out += [V(f'HiTab 표 단위 {t}', v, S) for t, v in d['hitab_table_unit_gold']['type_accuracy'].items()]
-    out.append(V('HiTab 표 단위 전달 셀 평균(채점 문항)', d['hitab_table_unit_gold']['cells_delivered_mean_all_scored'], S))
+    out += [V(f'{a} 전달 셀 평균(단일 셀 991)', v, S, _sl(a)) for a, v in d['hitab_cells_delivered_single991'].items()]
     w = d['mh882_weighted']
     out += [V('chunk_final weighted_em', w['chunk_final']['weighted_em'], S), V('chunk_final ci95[0]', w['chunk_final']['ci95'][0], S),
             V('chunk_final ci95[1]', w['chunk_final']['ci95'][1], S),
@@ -1009,7 +999,7 @@ L('05_results.md', ['| 질문이 속한 표 안 | **.9637**', '| 538개 표를 �
 T52 = ['| **본 방법** | .9637', '| sleaf (잎 라벨 머리말 변형) | .9586', '| 고정 청크 | .8789', '| TableRAG(Yu) 청크 | .7881', '| RowCol | .7639',
        '| RandRow | .3744', '| TableRAG 셀 검색 재구현(path) | .2916', '| TableRAG 셀 검색 재구현(leaf) | .2775', '| 표 단위 (상한) |']
 L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', *T52, 'RandRow·path·leaf와의 비교는 9칸', '주 모집단인 단일 셀 조회에서', '**산술 216건에서는'],
-  HRE, 'hitab_cells1581', 'step4', HMETA)
+  HRE, 'step4', HMETA)
 T53 = ['| **본 방법** | 19.41', '| sleaf (잎 라벨 머리말 변형) | 19.41', '| 고정 청크 | 69.06', '| TableRAG(Yu) 청크 | 52.09', '| RowCol | 22.52',
        '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.47', '| TableRAG 셀 검색 재구현(leaf) | 14.42', '| 표 전체 (검색 없음) | — | (1.0)']
 L('05_results.md', ['표 5-3은 단일 셀 조회 300건에서', '표 5-3. HiTab 답변 정확도', *T53, '괄호 안은 검색에 성공한 질의 수다.',

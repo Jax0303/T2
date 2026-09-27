@@ -43,7 +43,7 @@ single = [x["query_id"] for x in jl(f"{RH}/hitab_test_gold_s3c_type_accuracy.jso
 out["hitab_cells_delivered_single991"] = {}
 for arm in ["s3c", "sleaf", "table", "chunk", "trag_hetero", "rowcol", "randrow", "tablerag_path", "tablerag_leaf"]:
     rec = {x["query_id"]: x for x in jl(f"{RH}/hitab_test_gold_{arm}_records.jsonl")}
-    out["hitab_cells_delivered_single991"][arm] = round(sum(rec[q]["cells_in_context"] for q in single) / len(single), 2)
+    out["hitab_cells_delivered_single991"][arm] = round(sum(rec[q]["cells_in_context"] for q in single) / len(single), 4)
 tbl = json.loads((ROOT / f"{RH}/hitab_test_gold_table.json").read_text())
 out["hitab_table_unit_gold"] = {"type_accuracy": {t: tbl["type_accuracy"][t]["accuracy"] for t in ("single_cell", "multi_cell", "arithmetic")},
                                 "cells_delivered_mean_all_scored": round(tbl["cells_delivered_mean"], 1)}
