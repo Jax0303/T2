@@ -1,14 +1,14 @@
 ﻿file,line,number,context,kind,source_file,source_field_or_value,match,sleaf_as_ours
 00a_abstract_ko.md,5,20,고정 길이 청크와 같은 임베딩 모델·검색기·셀 예산(20셀)으로 비교했다. 본 방법의 검색 정확도는 HiTa,설정값,,,해당 없음,
-00a_abstract_ko.md,5,.9637,"방법의 검색 정확도는 HiTab 단일 셀 조회 .9637, MultiHiertt 전체 .8634로 모든 비",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
-00a_abstract_ko.md,5,.8634,"셀 조회 .9637, MultiHiertt 전체 .8634로 모든 비교군보다 높았다(HiTab 산술은 고정",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c ALL 정확도 = 0.8634,일치,아니오
-00a_abstract_ko.md,5,.7900,"색 방법 중 본 방법이 가장 높았으나(HiTab .7900, MultiHiertt 가중 .3376), 표 전",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
-00a_abstract_ko.md,5,.3376,"iTab .7900, MultiHiertt 가중 .3376), 표 전체를 넣는 조건과는 유의한 차이가 없었다",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
+00a_abstract_ko.md,5,.9637,"방법의 검색 정확도는 HiTab 단일 셀 조회 .9637, MultiHiertt 전체 .8634였다. Hi",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
+00a_abstract_ko.md,5,.8634,"셀 조회 .9637, MultiHiertt 전체 .8634였다. HiTab에서 데이터셋이 준 표 제목을 라벨",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c ALL 정확도 = 0.8634,일치,아니오
+00a_abstract_ko.md,5,.7900,"을 고치자 회복되었다. 답변 정확도는 HiTab .7900, MultiHiertt 가중 .3376이었고, 표",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
+00a_abstract_ko.md,5,.3376,"iTab .7900, MultiHiertt 가중 .3376이었고, 표 전체를 넣는 조건과는 유의한 차이가 없",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
 00b_abstract_en.md,5,20,", retriever and cell budget (20 cells). Retrieval accuracy i",설정값,,,해당 없음,
 00b_abstract_en.md,5,.9637,ls). Retrieval accuracy is .9637 on HiTab single-cell lookup,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
-00b_abstract_en.md,5,.8634,"Tab single-cell lookup and .8634 on MultiHiertt overall, hig",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c ALL 정확도 = 0.8634,일치,아니오
-00b_abstract_en.md,5,.7900,"ds on both datasets (HiTab .7900, MultiHiertt weighted .3376",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
-00b_abstract_en.md,5,.3376,"7900, MultiHiertt weighted .3376), but not significantly dif",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
+00b_abstract_en.md,5,.8634,Tab single-cell lookup and .8634 on MultiHiertt overall. On,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c ALL 정확도 = 0.8634,일치,아니오
+00b_abstract_en.md,5,.7900,stions. Answer accuracy is .7900 on HiTab and .3376 (weighte,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
+00b_abstract_en.md,5,.3376,"racy is .7900 on HiTab and .3376 (weighted) on MultiHiertt,",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
 01_intro.md,1,1,# 제1장 서론,절·표·그림 번호,,,해당 없음,
 01_intro.md,3,1.1,## 1.1 연구 배경,절·표·그림 번호,,,해당 없음,
 01_intro.md,7,52.1,"정해진다. 예를 들어 통계 보고서의 표에서 값 `52.1`은 ""지역 = 동부 온타리오 > 프랑스어 사용 노",기타,,,해당 없음,
@@ -35,22 +35,20 @@
 01_intro.md,28,2,2. **두 계층형 표 데이터셋에서 발표된 표 표현들과 같은 조건으로 비교했다.** TableRAG(Chen,기타,,,해당 없음,
 01_intro.md,28,2024,"했다.** TableRAG(Chen et al., 2024)의 셀·스키마 표현 두 가지와 이 논문이 비교군으",연도·인용,,,해당 없음,
 01_intro.md,28,2025,"이종 문서용 TableRAG(Yu et al., 2025)의 청크 표현, 업계 관행인 고정 길이 청크를 구",연도·인용,,,해당 없음,
-01_intro.md,28,20,"을 같은 임베딩 모델, 같은 검색기, 같은 셀 예산(20셀)에 놓았다. 검색 정확도에서 본 방법은 HiTab",설정값,,,해당 없음,
-01_intro.md,28,.9637,정확도에서 본 방법은 HiTab 단일 셀 조회(.9637)와 MultiHiertt 네 질의 그룹 모두에서,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
-01_intro.md,28,1,7)와 MultiHiertt 네 질의 그룹 모두에서 1위다. 짝지은 McNemar 검정에서 비교 칸 대부분이,기타,,,해당 없음,
-01_intro.md,28,5,iertt 네 질의 그룹 모두에서 1위다. 짝지은 McNemar 검정에서 비교 칸 대부분이 유의했다(5장).,절·표·그림 번호,,,해당 없음,
+01_intro.md,28,20,"을 같은 임베딩 모델, 같은 검색기, 같은 셀 예산(20셀)에 놓았다. 본 방법의 검색 정확도는 HiTab",설정값,,,해당 없음,
+01_intro.md,28,.9637,"방법의 검색 정확도는 HiTab 단일 셀 조회 .9637, MultiHiertt 전체 .8634다. 짝지은",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
+01_intro.md,28,.8634,"셀 조회 .9637, MultiHiertt 전체 .8634다. 짝지은 McNemar 검정에서 비교 칸 대부분",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c ALL 정확도 = 0.8634,일치,아니오
+01_intro.md,28,5,MultiHiertt 전체 .8634다. 짝지은 McNemar 검정에서 비교 칸 대부분이 유의했다(5장).,절·표·그림 번호,,,해당 없음,
 01_intro.md,29,3,3. **답변 정확도까지 같은 질의로 측정했다.** 검색 결과를 그대로 로컬 리더에 넣어 HiTab 300건,기타,,,해당 없음,
 01_intro.md,29,300,"검색 결과를 그대로 로컬 리더에 넣어 HiTab 300건, MultiHiertt 882건의 답변 정확도를",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
-01_intro.md,29,882,"넣어 HiTab 300건, MultiHiertt 882건의 답변 정확도를 쟀다. 본 방법은 두 데이터셋 모",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
-01_intro.md,29,.7900,"방법 중 답변 정확도가 가장 높았지만(HiTab .7900, MultiHiertt 가중 .3376), 검색",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
-01_intro.md,29,.3376,"iTab .7900, MultiHiertt 가중 .3376), 검색 없이 표 전체를 넣는 조건과는 두 데이터",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
-01_intro.md,29,5,"tt 가중 .3376), 검색 없이 표 전체를 넣는 조건과는 두 데이터셋 모두 유의한 차이가 없었다(5장).",절·표·그림 번호,,,해당 없음,
+01_intro.md,29,882,"넣어 HiTab 300건, MultiHiertt 882건의 답변 정확도를 쟀다. 본 방법의 답변 정확도는",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
+01_intro.md,29,.7900,"도를 쟀다. 본 방법의 답변 정확도는 HiTab .7900, MultiHiertt 가중 .3376이었고, 검",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
+01_intro.md,29,.3376,"iTab .7900, MultiHiertt 가중 .3376이었고, 검색 없이 표 전체를 넣는 조건과는 두 데",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
+01_intro.md,29,5,"가중 .3376이었고, 검색 없이 표 전체를 넣는 조건과는 두 데이터셋 모두 유의한 차이가 없었다(5장).",절·표·그림 번호,,,해당 없음,
 01_intro.md,30,4,4. **셀 문장이 서로 같으면 답변이 틀린다는 것을 확인했다.** MultiHiertt에서 머리글 추정이,기타,,,해당 없음,
 01_intro.md,30,5.5.1,"만 빼고 같아진 문항에서 본 방법의 답변 정확도가 크게 떨어졌고, 머리글을 고치자 회복되었다(5.5.1절).",절·표·그림 번호,,,해당 없음,
 01_intro.md,31,5,5. **한계를 수치로 밝혔다.** 표 직전 문단을 라벨로 쓰면(MultiHiertt) 검색 정확도가 오히려,기타,,,해당 없음,
-01_intro.md,31,.8492,"tiHiertt) 검색 정확도가 오히려 떨어진다(.8492→.8301, p=.0014). 또 MultiHie",결과수치,rag-agent/results/mh_arms/mh_cell_hv2.json,라벨 없음(v2) by_layer.ALL.doc.accuracy_all = 0.8492,일치,아니오
-01_intro.md,31,.8301,"tt) 검색 정확도가 오히려 떨어진다(.8492→.8301, p=.0014). 또 MultiHiertt의 정",결과수치,rag-agent/results/mh_arms/mh_cell_hv2_L1.json,L1 by_layer.ALL.doc.accuracy_all = 0.8301,일치,아니오
-01_intro.md,31,p=.0014,"확도가 오히려 떨어진다(.8492→.8301, p=.0014). 또 MultiHiertt의 정답 근거 주석은",통계(p·불일치쌍·CI),rag-agent/results/components_20260925/mh_layers.json,doc ALL p_exact = 0.0014,일치,아니오
+01_intro.md,31,5.6,ltiHiertt) 검색 정확도가 오히려 떨어진다(5.6절 참조). 또 MultiHiertt의 정답 근거 주,절·표·그림 번호,,,해당 없음,
 01_intro.md,31,23.5%,ertt의 정답 근거 주석은 조건 판정에 필요한 셀을 빠뜨리는 문항이 약 23.5% 있다고 추정했다(6장).,결과수치,rag-agent/results/mh_condition_cell_audit_20260924.jsonl,"추정 누락 비율 /2,871 = 0.2352",일치,
 01_intro.md,31,6,ertt의 정답 근거 주석은 조건 판정에 필요한 셀을 빠뜨리는 문항이 약 23.5% 있다고 추정했다(6장).,절·표·그림 번호,,,해당 없음,
 01_intro.md,33,v1,방법의 머리글 규칙은 답변 결과를 본 뒤 바꾸었다(v1 → v3.3u). 바꾸기 전에 예측과 함께 등록했고,기타,,,해당 없음,
@@ -305,7 +303,7 @@
 04_setup.md,25,"2,885","색 정확도의 비교는 모두 최종 규칙의 채점 문항 2,885건으로 하며, 처음 규칙이 채점하지 못하는 14건은",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,n_scored = 2885,일치,
 04_setup.md,25,14,"2,885건으로 하며, 처음 규칙이 채점하지 못하는 14건은 처음 규칙의 결과에서 검색 실패로 센다. 답변",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,최종 n_scored − v1 n_scored = 14,일치,
 04_setup.md,25,882,"의 결과에서 검색 실패로 센다. 답변 정확도 표본 882건은 처음 규칙으로 채점한 2,871건(2,885건의",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
-04_setup.md,25,"2,871","변 정확도 표본 882건은 처음 규칙으로 채점한 2,871건(2,885건의 부분집합)에서 뽑았다(4.5절).",표본·개수,rag-agent/results/mh_arms/mh_train_cell_hv1_none_doc.json,v1 n_scored = 2871,일치,
+04_setup.md,25,"2,871","변 정확도 표본 882건은 처음 규칙으로 채점한 2,871건(2,885건의 부분집합)에서 뽑았다(4.5절).",표본·개수,rag-agent/PREREG-2026-09-24-mh-answer-cap300.md,"PREREG-2026-09-24-mh-answer-cap300.md:11 본문 ""2,871"" = 2871.0",일치,
 04_setup.md,25,"2,885","본 882건은 처음 규칙으로 채점한 2,871건(2,885건의 부분집합)에서 뽑았다(4.5절). 리더 설정과",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,n_scored = 2885,일치,
 04_setup.md,25,4.5,"2,871건(2,885건의 부분집합)에서 뽑았다(4.5절). 리더 설정과 라벨 규칙의 선택에는 valida",절·표·그림 번호,,,해당 없음,
 04_setup.md,27,4.2,## 4.2 비교군,절·표·그림 번호,,,해당 없음,
@@ -364,9 +362,10 @@
 04_setup.md,63,0.7%p,"쓴다. 이 표본에서 본 방법의 검색 정확도는 .9567로, 991건 전수의 .9637과 0.7%p 차이다.",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,991건 전수 − 300건 표본 검색 정확도(s3c) = 0.007,일치,아니오
 04_setup.md,65,882,"**MultiHiertt 답변 표본.** 882건은 처음 머리글 규칙(v1)으로 채점한 2,871건(2,88",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
 04_setup.md,65,v1,"rtt 답변 표본.** 882건은 처음 머리글 규칙(v1)으로 채점한 2,871건(2,885건의 부분집합)에",기타,,,해당 없음,
-04_setup.md,65,"2,871","882건은 처음 머리글 규칙(v1)으로 채점한 2,871건(2,885건의 부분집합)에서 뽑았다. 그룹마다",표본·개수,rag-agent/results/mh_arms/mh_train_cell_hv1_none_doc.json,v1 n_scored = 2871,일치,
-04_setup.md,65,"2,885","처음 머리글 규칙(v1)으로 채점한 2,871건(2,885건의 부분집합)에서 뽑았다. 그룹마다 질의 id를",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,n_scored = 2885,일치,
-04_setup.md,65,20260913,다. 그룹마다 질의 id를 정렬한 뒤 seed 20260913으로 최대 300건을 비복원 추출했다. 조회·셀,설정값,,,해당 없음,
+04_setup.md,65,"2,871","882건은 처음 머리글 규칙(v1)으로 채점한 2,871건(2,885건의 부분집합)에서 뽑았다(사전등록 2",표본·개수,rag-agent/PREREG-2026-09-24-mh-answer-cap300.md,"PREREG-2026-09-24-mh-answer-cap300.md:11 본문 ""2,871"" = 2871.0",일치,
+04_setup.md,65,"2,885","처음 머리글 규칙(v1)으로 채점한 2,871건(2,885건의 부분집합)에서 뽑았다(사전등록 2026-09-",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,n_scored = 2885,일치,
+04_setup.md,65,2026-09-24,"2,885건의 부분집합)에서 뽑았다(사전등록 2026-09-24). 그룹마다 질의 id를 정렬한 뒤 seed",기타,,,해당 없음,
+04_setup.md,65,20260913,). 그룹마다 질의 id를 정렬한 뒤 seed 20260913으로 최대 300건을 비복원 추출했다. 조회·셀,설정값,,,해당 없음,
 04_setup.md,65,300,d를 정렬한 뒤 seed 20260913으로 최대 300건을 비복원 추출했다. 조회·셀 1개 211건과 산술,설정값,,,해당 없음,
 04_setup.md,65,1,"13으로 최대 300건을 비복원 추출했다. 조회·셀 1개 211건과 산술·셀 1개 71건은 전부, 조회·셀",기타,,,해당 없음,
 04_setup.md,65,211,"최대 300건을 비복원 추출했다. 조회·셀 1개 211건과 산술·셀 1개 71건은 전부, 조회·셀 2개 이",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,lookup_m1 표본 수 = 211,일치,
@@ -502,8 +501,8 @@
 05_results.md,42,9,값이다. RandRow·path·leaf와의 비교는 9칸 모두 p<.0001이다(가장 큰 값은 RandRow,표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,RandRow·path·leaf 비교 칸 수(3방법 × 3유형) = 9,일치,
 05_results.md,42,p<.0001,Row·path·leaf와의 비교는 9칸 모두 p<.0001이다(가장 큰 값은 RandRow 다중 셀 조회의,통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,RandRow·path·leaf 9칸 중 최대 p (randrow.multi_cell) = 7.63e-06,일치,아니오
 05_results.md,42,p=7.6×10⁻⁶,와의 비교는 9칸 모두 p<.0001이다(가장 큰 값은 RandRow 다중 셀 조회의 p=7.6×10⁻⁶).,통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,RandRow·path·leaf 9칸 중 최대 p (randrow.multi_cell) = 7.63e-06,일치,아니오
-05_results.md,44,.9637,주 모집단인 단일 셀 조회에서 본 방법은 .9637로 모든 비교군보다 유의하게 높다. 가장 가까운 고정 청크,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
-05_results.md,44,8.5%p,"의하게 높다. 가장 가까운 고정 청크와의 차이는 8.5%p다(109:25, p=1.1×10⁻¹³). 다중 셀",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,chunk.single_cell s3c−상대 = 0.0848,일치,아니오
+05_results.md,44,.9637,주 모집단인 단일 셀 조회에서 본 방법은 .9637이다. 가장 가까운 고정 청크와의 차이는 8.5%p다(10,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
+05_results.md,44,8.5%p,"9637이다. 가장 가까운 고정 청크와의 차이는 8.5%p다(109:25, p=1.1×10⁻¹³). 다중 셀",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,chunk.single_cell s3c−상대 = 0.0848,일치,아니오
 05_results.md,44,109:25,"가장 가까운 고정 청크와의 차이는 8.5%p다(109:25, p=1.1×10⁻¹³). 다중 셀 조회(38건",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,chunk.single_cell s3c만:상대만 = 109:25,일치,아니오
 05_results.md,44,p=1.1×10⁻¹³,"청크와의 차이는 8.5%p다(109:25, p=1.1×10⁻¹³). 다중 셀 조회(38건)에서는 본 방법과",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,chunk.single_cell s3c만:상대만 p = 1.05e-13,일치,아니오
 05_results.md,44,38,"09:25, p=1.1×10⁻¹³). 다중 셀 조회(38건)에서는 본 방법과 고정 청크가 .9211로 같다(",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,multi_cell.n = 38,일치,
@@ -580,12 +579,10 @@
 05_results.md,65,32:32,"표 전체 (검색 없음) | (1.0) | **.7900** | 32:32, p=1 | — | 1,005 |",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) = 32:32,일치,아니오
 05_results.md,65,p=1,"표 전체 (검색 없음) | (1.0) | **.7900** | 32:32, p=1 | — | 1,005 |",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) p = 1,일치,아니오
 05_results.md,65,"1,005","표 전체 (검색 없음) | (1.0) | **.7900** | 32:32, p=1 | — | 1,005 |",결과수치,rag-agent/results/fulltable_20260924/hitab_rows.jsonl,fulltable reader_input_tokens 평균 = 1005.2,일치,
-05_results.md,69,.7900,"본 방법은 답변 정확도 .7900으로 검색 방법 7개 중 가장 높고, 나머지 검색 방법 6개보다 모두 유의하",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
-05_results.md,69,7,"본 방법은 답변 정확도 .7900으로 검색 방법 7개 중 가장 높고, 나머지 검색 방법 6개보다 모두 유의하",기타,,,해당 없음,
-05_results.md,69,6,"검색 방법 7개 중 가장 높고, 나머지 검색 방법 6개보다 모두 유의하게 높다. 가장 가까운 고정 청크와의",기타,,,해당 없음,
-05_results.md,69,10.3%p,"다 모두 유의하게 높다. 가장 가까운 고정 청크와의 차이는 10.3%p다(55:24, p=6.4×10⁻⁴).",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c−chunk 답변 = 0.1033,일치,아니오
-05_results.md,69,55:24,"다 모두 유의하게 높다. 가장 가까운 고정 청크와의 차이는 10.3%p다(55:24, p=6.4×10⁻⁴).",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:chunk만 (답변) = 55:24,일치,아니오
-05_results.md,69,p=6.4×10⁻⁴,"다 모두 유의하게 높다. 가장 가까운 고정 청크와의 차이는 10.3%p다(55:24, p=6.4×10⁻⁴).",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:chunk만 (답변) p = 6.39e-04,일치,아니오
+05_results.md,69,.7900,"본 방법의 답변 정확도는 .7900이다. 가장 가까운 고정 청크와의 차이는 10.3%p다(55:24, p=6",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
+05_results.md,69,10.3%p,"정확도는 .7900이다. 가장 가까운 고정 청크와의 차이는 10.3%p다(55:24, p=6.4×10⁻⁴).",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c−chunk 답변 = 0.1033,일치,아니오
+05_results.md,69,55:24,"정확도는 .7900이다. 가장 가까운 고정 청크와의 차이는 10.3%p다(55:24, p=6.4×10⁻⁴).",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:chunk만 (답변) = 55:24,일치,아니오
+05_results.md,69,p=6.4×10⁻⁴,"정확도는 .7900이다. 가장 가까운 고정 청크와의 차이는 10.3%p다(55:24, p=6.4×10⁻⁴).",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:chunk만 (답변) p = 6.39e-04,일치,아니오
 05_results.md,75,.7900,본 방법은 .7900 = .9567 × .8258 + .0433 × 0이다. 검색에 실패한 질의(13건)는,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
 05_results.md,75,.9567,본 방법은 .7900 = .9567 × .8258 + .0433 × 0이다. 검색에 실패한 질의(13건)는,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.retrieval = 0.9567,일치,아니오
 05_results.md,75,.8258,본 방법은 .7900 = .9567 × .8258 + .0433 × 0이다. 검색에 실패한 질의(13건)는,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_given_hit = 0.8258,일치,아니오
@@ -608,12 +605,11 @@
 05_results.md,79,.7900,"마크다운으로 리더에 넣은 조건의 답변 정확도는 .7900으로, 본 방법(.7900)과 같다(237 대 23",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
 05_results.md,79,.7900,"조건의 답변 정확도는 .7900으로, 본 방법(.7900)과 같다(237 대 237, 불일치 32:32,",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer = 0.79,일치,아니오
 05_results.md,79,237,"도는 .7900으로, 본 방법(.7900)과 같다(237 대 237, 불일치 32:32, p=1). 표 전체",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
-05_results.md,79,237,"00으로, 본 방법(.7900)과 같다(237 대 237, 불일치 32:32, p=1). 표 전체 조건은 다",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
-05_results.md,79,32:32,"(.7900)과 같다(237 대 237, 불일치 32:32, p=1). 표 전체 조건은 다른 검색 방법 6개",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) = 32:32,일치,아니오
-05_results.md,79,p=1,")과 같다(237 대 237, 불일치 32:32, p=1). 표 전체 조건은 다른 검색 방법 6개보다는 모두",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) p = 1,일치,아니오
-05_results.md,79,6,":32, p=1). 표 전체 조건은 다른 검색 방법 6개보다는 모두 유의하게 높다(고정 청크 대비 39:8,",기타,,,해당 없음,
-05_results.md,79,39:8,"법 6개보다는 모두 유의하게 높다(고정 청크 대비 39:8, p=5.5×10⁻⁶). 표 전체 입력은 평균 1",통계(p·불일치쌍·CI),rag-agent/results/fulltable_20260924/hitab_rows.jsonl,fulltable만:chunk만 = 39:8,일치,
-05_results.md,79,p=5.5×10⁻⁶,"두 유의하게 높다(고정 청크 대비 39:8, p=5.5×10⁻⁶). 표 전체 입력은 평균 1,005토큰으로",통계(p·불일치쌍·CI),rag-agent/results/fulltable_20260924/hitab_rows.jsonl,fulltable만:chunk만 p = 5.54e-06,일치,
+05_results.md,79,237,"00으로, 본 방법(.7900)과 같다(237 대 237, 불일치 32:32, p=1). 표 전체 조건은 고",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
+05_results.md,79,32:32,"(.7900)과 같다(237 대 237, 불일치 32:32, p=1). 표 전체 조건은 고정 청크보다 유의하",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) = 32:32,일치,아니오
+05_results.md,79,p=1,")과 같다(237 대 237, 불일치 32:32, p=1). 표 전체 조건은 고정 청크보다 유의하게 높다(3",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) p = 1,일치,아니오
+05_results.md,79,39:8,"). 표 전체 조건은 고정 청크보다 유의하게 높다(39:8, p=5.5×10⁻⁶). 표 전체 입력은 평균 1",통계(p·불일치쌍·CI),rag-agent/results/fulltable_20260924/hitab_rows.jsonl,fulltable만:chunk만 = 39:8,일치,
+05_results.md,79,p=5.5×10⁻⁶,"건은 고정 청크보다 유의하게 높다(39:8, p=5.5×10⁻⁶). 표 전체 입력은 평균 1,005토큰으로",통계(p·불일치쌍·CI),rag-agent/results/fulltable_20260924/hitab_rows.jsonl,fulltable만:chunk만 p = 5.54e-06,일치,
 05_results.md,79,"1,005",", p=5.5×10⁻⁶). 표 전체 입력은 평균 1,005토큰으로 본 방법 20셀 문맥(1,230토큰)보다",결과수치,rag-agent/results/fulltable_20260924/hitab_rows.jsonl,fulltable reader_input_tokens 평균 = 1005.2,일치,
 05_results.md,79,20,". 표 전체 입력은 평균 1,005토큰으로 본 방법 20셀 문맥(1,230토큰)보다 짧다. 따라서 HiTab",설정값,,,해당 없음,
 05_results.md,79,"1,230","은 평균 1,005토큰으로 본 방법 20셀 문맥(1,230토큰)보다 짧다. 따라서 HiTab 단일 셀 조회에",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.reader_input_tokens_mean = 1229.7,일치,아니오
@@ -708,8 +704,7 @@
 05_results.md,97,p<.05,": 상대만""이다. p값을 적지 않은 칸은 모두 p<.05다(가장 큰 값은 TableRAG(Yu) 청크 산술",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c 대 비교군 24칸 중 최대 p (trag_hetero arith_m1) = 0.0215,일치,아니오
 05_results.md,97,1,적지 않은 칸은 모두 p<.05다(가장 큰 값은 TableRAG(Yu) 청크 산술·셀 1개의 p=.021).,기타,,,해당 없음,
 05_results.md,97,p=.021,적지 않은 칸은 모두 p<.05다(가장 큰 값은 TableRAG(Yu) 청크 산술·셀 1개의 p=.021).,통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c 대 비교군 24칸 중 최대 p (trag_hetero arith_m1) = 0.0215,일치,아니오
-05_results.md,99,1,"본 방법은 네 그룹 모두에서 1위이고, 24개 비교 칸 모두에서 차이가 유의하다. 전체 2,885건에서 가장",기타,,,해당 없음,
-05_results.md,99,24,"본 방법은 네 그룹 모두에서 1위이고, 24개 비교 칸 모두에서 차이가 유의하다. 전체 2,885건에서 가장",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,24칸 중 p<.05 칸 수 = 24,일치,아니오
+05_results.md,99,24,"24개 비교 칸 모두에서 차이가 유의하다. 전체 2,885건에서 가장 가까운 비교군인 고정 청크보다 14.5",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,24칸 중 p<.05 칸 수 = 24,일치,아니오
 05_results.md,99,"2,885","24개 비교 칸 모두에서 차이가 유의하다. 전체 2,885건에서 가장 가까운 비교군인 고정 청크보다 14.5",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,ALL n = 2885,일치,
 05_results.md,99,14.5%p,",885건에서 가장 가까운 비교군인 고정 청크보다 14.5%p 높다(618:201, p=4.4×10⁻⁵⁰).",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c−chunk ALL = 0.1445,일치,아니오
 05_results.md,99,618:201,",885건에서 가장 가까운 비교군인 고정 청크보다 14.5%p 높다(618:201, p=4.4×10⁻⁵⁰).",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:chunk만 ALL = 618:201,일치,아니오
@@ -908,9 +903,11 @@
 05_results.md,134,882,규칙상 정답을 그대로 넣어도 맞힐 수 없는 문항이 있어 이 882건의 채점 상한은 .9512다(4.3절).,표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
 05_results.md,134,.9512,규칙상 정답을 그대로 넣어도 맞힐 수 없는 문항이 있어 이 882건의 채점 상한은 .9512다(4.3절).,결과수치,rag-agent/results/mh_arms/cap300_20260924/cell_uniq.json,cell_uniq.scorer_self_check.em (채점 상한) = 0.9512,일치,
 05_results.md,134,4.3,규칙상 정답을 그대로 넣어도 맞힐 수 없는 문항이 있어 이 882건의 채점 상한은 .9512다(4.3절).,절·표·그림 번호,,,해당 없음,
-05_results.md,136,.3376,"본 방법의 가중 전체 답변 정확도는 .3376으로, 검색을 하는 방법 중 가장 높다. 모든 검색 비교군과의",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
-05_results.md,136,95%,중 가장 높다. 모든 검색 비교군과의 가중 차이는 95% 신뢰구간이 0을 포함하지 않는다. 가장 가까운 Ta,설정값,,,해당 없음,
-05_results.md,136,0,모든 검색 비교군과의 가중 차이는 95% 신뢰구간이 0을 포함하지 않는다. 가장 가까운 TableRAG(Yu,기타,,,해당 없음,
+05_results.md,136,.3376,본 방법의 가중 전체 답변 정확도는 .3376이다. 표 5-6의 검색 비교군 6개와의 가중 차이는 95% 신,결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
+05_results.md,136,5-6,법의 가중 전체 답변 정확도는 .3376이다. 표 5-6의 검색 비교군 6개와의 가중 차이는 95% 신뢰구간,절·표·그림 번호,,,해당 없음,
+05_results.md,136,6,정확도는 .3376이다. 표 5-6의 검색 비교군 6개와의 가중 차이는 95% 신뢰구간이 0을 포함하지 않,기타,,,해당 없음,
+05_results.md,136,95%,. 표 5-6의 검색 비교군 6개와의 가중 차이는 95% 신뢰구간이 0을 포함하지 않는다. 가장 가까운 Ta,설정값,,,해당 없음,
+05_results.md,136,0,검색 비교군 6개와의 가중 차이는 95% 신뢰구간이 0을 포함하지 않는다. 가장 가까운 TableRAG(Yu,기타,,,해당 없음,
 05_results.md,136,7.0%p,". 가장 가까운 TableRAG(Yu) 청크보다 7.0%p, 고정 청크보다 8.5%p 높다. 그룹별로 보면",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,trag_hetero.vs_cell.weighted_diff = 0.0697,일치,아니오
 05_results.md,136,8.5%p,"AG(Yu) 청크보다 7.0%p, 고정 청크보다 8.5%p 높다. 그룹별로 보면 조회·셀 2개 이상과 산술·",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,chunk.vs_cell.weighted_diff = 0.0852,일치,아니오
 05_results.md,136,2,청크보다 8.5%p 높다. 그룹별로 보면 조회·셀 2개 이상과 산술·셀 2개 이상에서 본 방법이 고정 청크,기타,,,해당 없음,
@@ -1055,19 +1052,20 @@
 05_results.md,158,5.6,## 5.6 MultiHiertt에서 표 직전 문단을 라벨로 쓴 결과,절·표·그림 번호,,,해당 없음,
 05_results.md,160,2026-09-13,단을 라벨로 쓰는 규칙을 사전등록해 시험했다(2026-09-13). 라벨 후보 규칙은 validation 분,기타,,,해당 없음,
 05_results.md,160,L1,"뺀 문장이 다른 셀과 겹치는 비율)으로 골랐고, 표 직전 문단 문장을 그대로 쓰는 규칙(L1)이 선택되었다.",기타,,,해당 없음,
-05_results.md,162,.8492,였다. 질문의 문서 안 검색 정확도는 라벨 없음 .8492에서 L1 라벨 .8301로 **떨어졌다**(117,결과수치,rag-agent/results/mh_arms/mh_cell_hv2.json,라벨 없음(v2) by_layer.ALL.doc.accuracy_all = 0.8492,일치,아니오
+05_results.md,162,"2,878","결과는 예측과 반대였다. 이 실험의 모집단은 2,878건, 두 번째 머리글 규칙(v2)이다. 질문의 문서 안",표본·개수,rag-agent/results/mh_arms/mh_cell_hv2.json,라벨 실험(v2) n_scored = 2878,일치,
+05_results.md,162,v2,"실험의 모집단은 2,878건, 두 번째 머리글 규칙(v2)이다. 질문의 문서 안 검색 정확도는 라벨 없음 .",기타,,,해당 없음,
+05_results.md,162,.8492,이다. 질문의 문서 안 검색 정확도는 라벨 없음 .8492에서 L1 라벨 .8301로 **떨어졌다**(117,결과수치,rag-agent/results/mh_arms/mh_cell_hv2.json,라벨 없음(v2) by_layer.ALL.doc.accuracy_all = 0.8492,일치,아니오
 05_results.md,162,L1,"의 문서 안 검색 정확도는 라벨 없음 .8492에서 L1 라벨 .8301로 **떨어졌다**(117:172,",기타,,,해당 없음,
 05_results.md,162,.8301,"색 정확도는 라벨 없음 .8492에서 L1 라벨 .8301로 **떨어졌다**(117:172, p=.0014)",결과수치,rag-agent/results/mh_arms/mh_cell_hv2_L1.json,L1 by_layer.ALL.doc.accuracy_all = 0.8301,일치,아니오
 05_results.md,162,117:172,"2에서 L1 라벨 .8301로 **떨어졌다**(117:172, p=.0014). 여러 문서의 표를 한 색인에",통계(p·불일치쌍·CI),rag-agent/results/components_20260925/mh_layers.json,doc ALL c_only:e_only(라벨없음만:L1만) = 172:117 (순서 반대로 기록된 쌍),일치,아니오
 05_results.md,162,p=.0014,".8301로 **떨어졌다**(117:172, p=.0014). 여러 문서의 표를 한 색인에 넣은 조건에서도",통계(p·불일치쌍·CI),rag-agent/results/components_20260925/mh_layers.json,doc ALL p_exact = 0.0014,일치,아니오
 05_results.md,162,.2662,". 여러 문서의 표를 한 색인에 넣은 조건에서도 .2662에서 .2272로 떨어졌다(160:272, p=7.",결과수치,rag-agent/results/mh_arms/mh_cell_hv2.json,라벨 없음(v2) by_layer.ALL.corpus.accuracy_all = 0.2662,일치,아니오
 05_results.md,162,.2272,"표를 한 색인에 넣은 조건에서도 .2662에서 .2272로 떨어졌다(160:272, p=7.9×10⁻⁸).",결과수치,rag-agent/results/mh_arms/mh_cell_hv2_L1.json,L1 by_layer.ALL.corpus.accuracy_all = 0.2272,일치,아니오
-05_results.md,162,160:272,"조건에서도 .2662에서 .2272로 떨어졌다(160:272, p=7.9×10⁻⁸). 이 비교는 머리글 규칙",통계(p·불일치쌍·CI),rag-agent/results/components_20260925/mh_layers.json,corpus ALL c_only:e_only(라벨없음만:L1만) = 272:160 (순서 반대로 기록된 쌍),일치,아니오
-05_results.md,162,p=7.9×10⁻⁸,"2에서 .2272로 떨어졌다(160:272, p=7.9×10⁻⁸). 이 비교는 머리글 규칙 v2를 쓴 사전등",통계(p·불일치쌍·CI),rag-agent/results/components_20260925/mh_layers.json,corpus ALL p_exact = 7.89e-08,일치,아니오
-05_results.md,162,v2,"2, p=7.9×10⁻⁸). 이 비교는 머리글 규칙 v2를 쓴 사전등록 실험의 값(채점 2,878건)이며,",기타,,,해당 없음,
-05_results.md,162,"2,878","머리글 규칙 v2를 쓴 사전등록 실험의 값(채점 2,878건)이며, 본 논문의 주 비교(v3.3u, 2,88",표본·개수,rag-agent/results/mh_arms/mh_cell_hv2.json,라벨 실험(v2) n_scored = 2878,일치,
-05_results.md,162,v3.3u,"사전등록 실험의 값(채점 2,878건)이며, 본 논문의 주 비교(v3.3u, 2,885건)와 규칙이 다르다.",기타,,,해당 없음,
-05_results.md,162,"2,885","사전등록 실험의 값(채점 2,878건)이며, 본 논문의 주 비교(v3.3u, 2,885건)와 규칙이 다르다.",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,n_scored = 2885,일치,
+05_results.md,162,160:272,"조건에서도 .2662에서 .2272로 떨어졌다(160:272, p=7.9×10⁻⁸). 이 비교는 사전등록 실",통계(p·불일치쌍·CI),rag-agent/results/components_20260925/mh_layers.json,corpus ALL c_only:e_only(라벨없음만:L1만) = 272:160 (순서 반대로 기록된 쌍),일치,아니오
+05_results.md,162,p=7.9×10⁻⁸,"2에서 .2272로 떨어졌다(160:272, p=7.9×10⁻⁸). 이 비교는 사전등록 실험(2,878건,",통계(p·불일치쌍·CI),rag-agent/results/components_20260925/mh_layers.json,corpus ALL p_exact = 7.89e-08,일치,아니오
+05_results.md,162,"2,878","p=7.9×10⁻⁸). 이 비교는 사전등록 실험(2,878건, 두 번째 머리글 규칙)의 값이며, 본 논문의",표본·개수,rag-agent/results/mh_arms/mh_cell_hv2.json,라벨 실험(v2) n_scored = 2878,일치,
+05_results.md,162,v3.3u,"규칙)의 값이며, 본 논문의 주 비교(최종 머리글 규칙 v3.3u, 2,885건)와 모집단·규칙이 다르다.",기타,,,해당 없음,
+05_results.md,162,"2,885","규칙)의 값이며, 본 논문의 주 비교(최종 머리글 규칙 v3.3u, 2,885건)와 모집단·규칙이 다르다.",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,n_scored = 2885,일치,
 05_results.md,164,5.1,"다만 이 원인은 따로 측정하지 않았다. 이 결과는 5.1절의 결론과 같은 방향이다. 라벨의 효과는 ""이름이",절·표·그림 번호,,,해당 없음,
 05_results.md,166,5.7,## 5.7 질의 그룹 간 차이,절·표·그림 번호,,,해당 없음,
 05_results.md,168,v1,"이 절의 값은 사전등록 당시 조건(v1)의 검색 순위다(2,885건, v1이 채점하지 못하는 14건은 실패로",기타,,,해당 없음,
@@ -1110,7 +1108,7 @@
 06_discussion.md,17,237,"조건은 .7900으로 본 방법과 같았다(237 대 237, 32:32, p=1). 따라서 HiTab 단일 셀",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.answer_correct = 237,일치,아니오
 06_discussion.md,17,32:32,"900으로 본 방법과 같았다(237 대 237, 32:32, p=1). 따라서 HiTab 단일 셀 조회에서",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) = 32:32,일치,아니오
 06_discussion.md,17,p=1,"본 방법과 같았다(237 대 237, 32:32, p=1). 따라서 HiTab 단일 셀 조회에서 본 방법의",통계(p·불일치쌍·CI),rag-agent/results/thesis_fix_20260927/derive.json,s3c만:fulltable만 (답변) p = 1,일치,아니오
-06_discussion.md,19,.3376,"법은 검색하는 방법 중 답변 정확도가 가장 높고(.3376), 표 전체와는 유의한 차이가 없다. 검색 정확도",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
+06_discussion.md,19,.3376,"ltiHiertt.** 본 방법의 답변 정확도는 .3376이고, 표 전체와는 유의한 차이가 없다. 검색 정확",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.weighted_em = 0.3376,일치,아니오
 06_discussion.md,19,.85,표 전체와는 유의한 차이가 없다. 검색 정확도가 .85 이상인 산술·셀 2개 이상 그룹에서도 답변 정확도는,결과수치,rag-agent/results/mh_arms/cap300_20260924/cell_uniq.json,cell_uniq.by_layer.arith_m2+.retrieval_accuracy_here = 0.8533,일치,아니오
 06_discussion.md,19,2,"차이가 없다. 검색 정확도가 .85 이상인 산술·셀 2개 이상 그룹에서도 답변 정확도는 .27이며, 정보를",기타,,,해당 없음,
 06_discussion.md,19,.27,"상인 산술·셀 2개 이상 그룹에서도 답변 정확도는 .27이며, 정보를 모두 주는 표 전체 조건도 .23이다.",결과수치,rag-agent/results/thesis_fix_20260927/mh_answer_2885/report.json,cell_uniq.groups.arith_m2+.em = 0.27,일치,아니오
@@ -1134,7 +1132,7 @@
 06_discussion.md,31,300,"평가.** HiTab 답변 정확도는 991건 중 300건, MultiHiertt 답변 정확도는 2,885건",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
 06_discussion.md,31,"2,885","300건, MultiHiertt 답변 정확도는 2,885건 중 882건(처음 머리글 규칙의 2,871건에서",표본·개수,rag-agent/results/rerun_20260926/mh/mh_train_s3c.json,n_scored = 2885,일치,
 06_discussion.md,31,882,"ultiHiertt 답변 정확도는 2,885건 중 882건(처음 머리글 규칙의 2,871건에서 추출)의 표본",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
-06_discussion.md,31,"2,871","는 2,885건 중 882건(처음 머리글 규칙의 2,871건에서 추출)의 표본으로 쟀다. 표본은 결과를 보기",표본·개수,rag-agent/results/mh_arms/mh_train_cell_hv1_none_doc.json,v1 n_scored = 2871,일치,
+06_discussion.md,31,"2,871","는 2,885건 중 882건(처음 머리글 규칙의 2,871건에서 추출)의 표본으로 쟀다. 표본은 결과를 보기",표본·개수,rag-agent/PREREG-2026-09-24-mh-answer-cap300.md,"PREREG-2026-09-24-mh-answer-cap300.md:11 본문 ""2,871"" = 2871.0",일치,
 06_discussion.md,31,300,"했고, 검색 정확도는 전수로 보고했다. HiTab 300건의 본 방법 검색 정확도(.9567)는 전수(.96",표본·개수,rag-agent/results/thesis_fix_20260927/derive.json,n = 300,일치,
 06_discussion.md,31,.9567,보고했다. HiTab 300건의 본 방법 검색 정확도(.9567)는 전수(.9637)와 0.7%p 차이다.,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.retrieval = 0.9567,일치,아니오
 06_discussion.md,31,.9637,보고했다. HiTab 300건의 본 방법 검색 정확도(.9567)는 전수(.9637)와 0.7%p 차이다.,결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
@@ -1164,12 +1162,12 @@
 07_conclusion.md,1,7,# 제7장 결론,절·표·그림 번호,,,해당 없음,
 07_conclusion.md,3,BM25,"고, 그 문장을 학습하지 않은 기성 임베딩 모델과 BM25로 색인해 질문과 짝지어진 표·문서 안에서 상위 2",기타,,,해당 없음,
 07_conclusion.md,3,20,습하지 않은 기성 임베딩 모델과 BM25로 색인해 질문과 짝지어진 표·문서 안에서 상위 20개 셀을 고른다.,설정값,,,해당 없음,
-07_conclusion.md,7,1,"1. **검색 정확도.** 본 방법은 HiTab 단일 셀 조회에서 .9637, MultiHiertt 전체에서",기타,,,해당 없음,
-07_conclusion.md,7,.9637,"도.** 본 방법은 HiTab 단일 셀 조회에서 .9637, MultiHiertt 전체에서 .8634로, T",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
-07_conclusion.md,7,.8634,"에서 .9637, MultiHiertt 전체에서 .8634로, TableRAG(Chen)의 표현들과 그 비교",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c ALL 정확도 = 0.8634,일치,아니오
+07_conclusion.md,7,1,"1. **검색 정확도.** 본 방법의 검색 정확도는 HiTab 단일 셀 조회에서 .9637, MultiHie",기타,,,해당 없음,
+07_conclusion.md,7,.9637,"법의 검색 정확도는 HiTab 단일 셀 조회에서 .9637, MultiHiertt 전체에서 .8634였다.",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c.single_cell.accuracy = 0.9637,일치,아니오
+07_conclusion.md,7,.8634,"에서 .9637, MultiHiertt 전체에서 .8634였다. HiTab 산술에서는 고정 청크와 차이가 없",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c ALL 정확도 = 0.8634,일치,아니오
 07_conclusion.md,8,2,2. **고유 라벨.** HiTab에서 데이터셋이 준 표 제목을 라벨로 넣으면 검색 정확도가 유의하게 올랐고,기타,,,해당 없음,
 07_conclusion.md,9,3,"3. **셀 문장의 고유성.** 머리글 추정이 한 층을 놓쳐 셀 문장이 값만 빼고 같아지면, 정답 셀을 검색",기타,,,해당 없음,
-07_conclusion.md,10,4,"4. **답변 정확도.** 본 방법은 두 데이터셋 모두에서 검색 방법 중 답변 정확도가 가장 높았으나, 검색",기타,,,해당 없음,
+07_conclusion.md,10,4,4. **답변 정확도.** 본 방법의 답변 정확도는 검색 없이 표 전체를 넣는 조건과 두 데이터셋 모두 유의,기타,,,해당 없음,
 07_conclusion.md,12,882,". 첫째, MultiHiertt의 주 조건은 같은 882건의 결과를 본 뒤 바꾼 것이므로, 겹치지 않는 문항",표본·개수,rag-agent/results/mh_arms/sample_cap300_seed20260913.json,표본 합계 = 882,일치,
 07_conclusion.md,12,3.2%,"HiTab에도 같은 표 안에서 문장이 같은 셀이 3.2% 있어 같은 점검이 필요하다. 셋째, 정답 근거 주",결과수치,rag-agent/results/thesis_fix_20260927/derive.json,s3c 같은 표 안 값 뺀 문장이 같은 셀 비율 = 0.0316,일치,아니오
 08_refs.md,3,2026,"ang, T., Li, R., & Fan, J. (2026). Orthogonal Hierarchical D",연도·인용,,,해당 없음,

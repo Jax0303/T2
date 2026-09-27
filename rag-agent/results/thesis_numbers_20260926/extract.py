@@ -771,7 +771,7 @@ HMETA, HRE, HANS, HOTH = 'hitab_meta', 'hitab_rerun', 'hitab_s3c_answer', 'hitab
 L('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서', HRE, 'mh_rerun', HANS, 'mh_ans')
 L('00b_abstract_en.md', 'On HiTab and MultiHiertt', HRE, 'mh_rerun', HANS, 'mh_ans')
 L('01_intro.md', '1. **고유 라벨의 기여', 'hitab_labelabl', HMETA)
-L('01_intro.md', '2. **두 계층형 표 데이터셋', HRE)
+L('01_intro.md', '2. **두 계층형 표 데이터셋', HRE, 'mh_rerun')
 L('01_intro.md', '3. **답변 정확도까지', HANS, 'mh_ans', 'mh_sample')
 L('01_intro.md', '5. **한계를 수치로', 'mh_label', 'mh_audit')
 L('03_method.md', '같은 문서 안에 값을 뺀 문장이 똑같은', 'prereg_uniq', 'mh_meta')
@@ -799,13 +799,13 @@ L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', '| **본 방법** | **
 L('05_results.md', ['표 5-3은 단일 셀 조회 300건에서', '표 5-3. HiTab 답변 정확도', '| **본 방법** | **.9567**', '| 고정 청크 | .8767',
                     '| TableRAG(Yu) 청크 | .7767', '| TableRAG(Chen) RowCol | .7467', '| TableRAG(Chen) RandRow | .3367',
                     '| TableRAG(Chen) path | .3067', '| TableRAG(Chen) leaf | .2967', '| 표 전체 (검색 없음) | (1.0)',
-                    '괄호 안은 검색에 성공한 질의 수다.', '본 방법은 답변 정확도 .7900으로', '본 방법은 .7900 =',
+                    '괄호 안은 검색에 성공한 질의 수다.', '본 방법의 답변 정확도는 .7900이다.', '본 방법은 .7900 =',
                     '**표 전체와의 비교.** 검색 없이 질문의 표'], HANS, HOTH)
 L('05_results.md', '검색에 성공해도 정답률은', HANS, HOTH, 'hitab_oracle')
 L('05_results.md', ['표 5-4는 MultiHiertt train', '표 5-4. MultiHiertt 그룹별', '| 방법 | 조회·셀 1개 (212)', '| **본 방법** | **.9575**',
                     '| 고정 청크 | .8255', '| TableRAG(Yu) 청크 | .8019', '| TableRAG(Chen) RowCol | .6179', '| TableRAG(Chen) path | .6132',
                     '| TableRAG(Chen) leaf | .4953', '| TableRAG(Chen) RandRow | .1698', 'p값을 적지 않은 칸은 모두',
-                    '본 방법은 네 그룹 모두에서 1위', 'HiTab 산술(표 5-2)과 달리'], 'mh_rerun', 'mh_pop', 'mh_meta')
+                    '24개 비교 칸 모두에서 차이가 유의하다.', 'HiTab 산술(표 5-2)과 달리'], 'mh_rerun', 'mh_pop', 'mh_meta')
 L('05_results.md', ['표 5-5는 본 방법의 머리글 규칙만', '| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623',
                     '| **v3.3u (+ 문장 고유화', '처음 규칙(v1)은 14건의 정답 셀을', 'v1에서 v3.3으로 머리글을 고치면'], 'mh_rules', 'mh_pop')
 L('05_results.md', ['표 5-6은 네 그룹 882건에서', '표 5-6. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)',
@@ -819,7 +819,7 @@ L('05_results.md', '**발견 경위(사후 분석).**', 'mh_ans', 'prereg_discov
 L('05_results.md', '결과는 예측과 반대였다.', 'mh_label', 'mh_label_pop', 'mh_pop')
 L('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'mh_rules', 'mh_pop')
 L('06_discussion.md', '**HiTab.** 본 방법은 검색에 실패한', HANS, 'hitab_oracle')
-L('06_discussion.md', '**MultiHiertt.** 본 방법은 검색하는 방법 중', 'mh_ans')
+L('06_discussion.md', '**MultiHiertt.** 본 방법의 답변 정확도는 .3376이고', 'mh_ans')
 L('06_discussion.md', '**조건 셀 누락.**', 'mh_audit')
 L('06_discussion.md', '**표본 평가.**', HANS, HRE, HMETA, 'mh_pop', 'mh_sample')
 L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_sample')
@@ -960,7 +960,7 @@ EX('05_results.md', '| 질문이 속한 표 안 | **.9637**', 'p=.81', 'hitab_la
 EX('05_results.md', '| 538개 표를 한 색인에 |', 'p=.085', 'hitab_labelabl', 'split 문장 틀 효과 s3frame만:s2만 p')
 EX('05_results.md', 'p값을 적지 않은 칸은 모두', 'p<.05', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
 EX('05_results.md', 'p값을 적지 않은 칸은 모두', 'p=.021', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
-EX('05_results.md', '본 방법은 네 그룹 모두에서 1위', 'p=4.4×10⁻⁵⁰', 'mh_rerun', 's3c만:chunk만 ALL p')
+EX('05_results.md', '24개 비교 칸 모두에서 차이가 유의하다.', 'p=4.4×10⁻⁵⁰', 'mh_rerun', 's3c만:chunk만 ALL p')
 EX('05_results.md', 'RandRow·leaf·path와의 비교는 모든 칸에서 p<.01', 'p<.01', 'mh_ans', 'RandRow·leaf·path 12칸 중 최대 p')
 EX('09_appendix.md', '| 고정 청크 | .6867', '<10⁻⁵', 'hitab_answer300', 'chunk.mcnemar_base_vs_filtered.p_value')
 EX('09_appendix.md', '| TableRAG(Yu) 청크 | .6000', '<10⁻⁵', 'hitab_answer300', 'trag_hetero.mcnemar_base_vs_filtered.p_value')
@@ -969,6 +969,11 @@ EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', '99:29', 'mh_
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', 'p=3.8×10⁻¹⁰', 'mh_rules', '공통 2,871 v33u만:v1만 p')
 EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.008', 'mh_rules', 'v1 top1 조회1 대 산술1 Fisher p')
 EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.77', 'mh_rules', 'v1 budget20 조회1 대 산술1 Fisher p')
+# 882건 표본의 추출 틀(처음 규칙 2,871건) — 출처는 사전등록 PREREG-2026-09-24 11행 (2026-09-27 사용자 지시)
+P11 = 'PREREG-2026-09-24-mh-answer-cap300.md:11 본문'
+EX('04_setup.md', '**MultiHiertt 답변 표본.**', '2,871', 'mh_pop', P11, 1)
+EX('04_setup.md', '**데이터 사용 이력.**', '2,871', 'mh_pop', P11)
+EX('06_discussion.md', '**표본 평가.**', '2,871', 'mh_pop', P11)
 
 # 원천을 못 찾은 수치의 사유(자동 대조 실패 시 적는다)
 NOTFOUND = {}
@@ -1175,7 +1180,7 @@ def KOA(f, anchor, kind, toks=None):
 
 KOA('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', K_SEC, ['5.4'])
 KOA('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', K_N, [('2', 1)])      # 정답 셀이 빈 칸으로 파싱된 2건
-KOA('05_results.md', '본 방법은 답변 정확도 .7900으로', K_ETC, ['7', '6'])
+KOA('05_results.md', '본 방법의 가중 전체 답변 정확도는', K_ETC, ['6'])
 KOA('05_results.md', '**발견 경위(사후 분석).**', K_ETC, ['2015', '222', '1,767', '813', '732'])
 
 
