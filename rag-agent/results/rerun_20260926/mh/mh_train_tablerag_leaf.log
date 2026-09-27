@@ -1,0 +1,205 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] 2908 queries / 2908 docs (제외: {'needs_text_evidence': 4922}) 3s
+[corpus] 11793 tables / 510810 tablerag units (9s)
+[bm25] 20356 terms in 2s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2157.06it/s]
+[dense] 0..50000 in 56s
+[dense] 50000..100000 in 55s
+[dense] 100000..150000 in 58s
+[dense] 150000..200000 in 56s
+[dense] 200000..250000 in 56s
+[dense] 250000..300000 in 56s
+[dense] 300000..350000 in 56s
+[dense] 350000..400000 in 56s
+[dense] 400000..450000 in 53s
+[dense] 450000..500000 in 57s
+[dense] 500000..510810 in 10s
+  200/2908  20s
+  400/2908  38s
+  600/2908  53s
+  800/2908  71s
+  1000/2908  87s
+  1200/2908  106s
+  1400/2908  122s
+  1600/2908  141s
+  1800/2908  157s
+  2000/2908  173s
+  2200/2908  192s
+  2400/2908  210s
+  2600/2908  229s
+  2800/2908  247s
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "unit": "tablerag",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 510810,
+      "max_tokens": 281,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 2908,
+      "max_tokens": 78,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": null,
+  "budget_cells": 20,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 510810,
+  "corpus_text_sha256": "5445bea83d6acde465493bac2bdd035644e8afd374be7d34fc2a93b6c2a52293",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2885,
+  "n_excluded": 23,
+  "excluded_by_reason": {
+    "gold_in_header": 17,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "ed462b6d1380fd6c95f06f0d6c77fde8c239f02d5cf44288d14014b6634d6ceb",
+  "by_layer": {
+    "ALL": {
+      "n": 2885,
+      "corpus": {
+        "accuracy_all": 0.0097,
+        "accuracy_any_DIAGNOSTIC": 0.044,
+        "gold_doc_in_context": 0.1016,
+        "cells_delivered_mean": 20.1
+      },
+      "doc": {
+        "accuracy_all": 0.3328,
+        "accuracy_any_DIAGNOSTIC": 0.6388,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.2
+      },
+      "table": {
+        "accuracy_all": 0.5203,
+        "accuracy_any_DIAGNOSTIC": 0.8201,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.6
+      },
+      "mean_m": 2.652,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.0282,
+        "accuracy_any_DIAGNOSTIC": 0.0282,
+        "gold_doc_in_context": 0.0986,
+        "cells_delivered_mean": 20.1
+      },
+      "doc": {
+        "accuracy_all": 0.6761,
+        "accuracy_any_DIAGNOSTIC": 0.6761,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.2
+      },
+      "table": {
+        "accuracy_all": 0.8169,
+        "accuracy_any_DIAGNOSTIC": 0.8169,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.1
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2235,
+      "corpus": {
+        "accuracy_all": 0.0076,
+        "accuracy_any_DIAGNOSTIC": 0.0443,
+        "gold_doc_in_context": 0.1002,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.3195,
+        "accuracy_any_DIAGNOSTIC": 0.655,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.2
+      },
+      "table": {
+        "accuracy_all": 0.5136,
+        "accuracy_any_DIAGNOSTIC": 0.834,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.3
+      },
+      "mean_m": 2.738,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 212,
+      "corpus": {
+        "accuracy_all": 0.0377,
+        "accuracy_any_DIAGNOSTIC": 0.0377,
+        "gold_doc_in_context": 0.0991,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.4953,
+        "accuracy_any_DIAGNOSTIC": 0.4953,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.2
+      },
+      "table": {
+        "accuracy_all": 0.6792,
+        "accuracy_any_DIAGNOSTIC": 0.6792,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.9
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 367,
+      "corpus": {
+        "accuracy_all": 0.0027,
+        "accuracy_any_DIAGNOSTIC": 0.049,
+        "gold_doc_in_context": 0.1117,
+        "cells_delivered_mean": 20.1
+      },
+      "doc": {
+        "accuracy_all": 0.2534,
+        "accuracy_any_DIAGNOSTIC": 0.6158,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.2
+      },
+      "table": {
+        "accuracy_all": 0.4114,
+        "accuracy_any_DIAGNOSTIC": 0.8174,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.8
+      },
+      "mean_m": 3.401,
+      "m_over_budget": 0
+    }
+  }
+}
