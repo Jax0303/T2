@@ -475,6 +475,8 @@ def mh_ans():
     out.append(V('cell_uniq.scorer_self_check.em (채점 상한)', cu['scorer_self_check']['em'], SU))
     ft = jload(f'{CAP}/fulltable.json')
     out.append(V('fulltable.by_layer.ALL.input_tokens_mean', ft['by_layer']['ALL']['input_tokens_mean'], R(f'{CAP}/fulltable.json')))
+    th = jload(f'{CAP}/trag_hetero.json')
+    out.append(V('trag_hetero.by_layer.ALL.input_tokens_mean', th['by_layer']['ALL']['input_tokens_mean'], R(f'{CAP}/trag_hetero.json')))
     # 짝지은 정오(합친 882건 또는 조회 두 그룹) — jsonl 에서 다시 셈
     def ac(name, layers=None):
         return {q: x['answer_correct'] for q, x in cap_rows(name).items() if layers is None or x['layer'] in layers}
@@ -754,6 +756,205 @@ def mh_label_pop():
     return [V('라벨 실험(v2) n_scored', jload(r)['n_scored'], R(r))]
 
 
+# ------------------------------------------------------------------ 2026-09-27 4단계: 새 원천
+def _sl(arm):
+    return {'s3c': 'ours', 'cell_uniq': 'ours', 'sleaf': 'sleaf'}.get(arm)
+
+
+@src
+def rerun_cmp():
+    """재실행 비교(compare.json): 범위별 정확도·맞힘, s3c 대비 b:c·p·Holm p."""
+    r = 'results/rerun_20260926/compare.json'
+    d, S = jload(r)['item1'], R(r)
+    out = []
+    for scope, rows in d.items():
+        for x in rows:
+            out += [V(f'{scope} {x["arm"]} accuracy', x['accuracy'], S, _sl(x['arm'])), V(f'{scope} {x["arm"]} correct', x['correct'], S, _sl(x['arm']))]
+            v = x.get('vs_s3c')
+            if v:
+                out += [Cand('r', f'{scope} s3c만:{x["arm"]}만', (v['b'], v['c']), S, 'ours'),
+                        Cand('p', f'{scope} s3c만:{x["arm"]}만 p', v['p'], S, 'ours'),
+                        Cand('p', f'{scope} s3c만:{x["arm"]}만 Holm p', v['p_holm'], S, 'ours')]
+    return out
+
+
+@src
+def hitab_cells1581():
+    out = []
+    for arm in ['s3c', 'sleaf', 'table', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf']:
+        r = f'results/rerun_20260926/hitab/hitab_test_gold_{arm}.json'
+        d = jload(r)
+        out.append(V(f'{arm} 전달 셀 평균(채점 {d["n_scored"]})', d['cells_delivered_mean'], R(r), _sl(arm)))
+    return out + [V('HiTab 채점 문항', d['n_scored'], R(r))]
+
+
+@src
+def step4():
+    r = f'{FX}/step4_values.json'
+    d, S = jload(r), R(r)
+    out = [V(f'MH {a} 전달 셀 평균(2,885)', v, S, _sl(a)) for a, v in d['mh_cells_delivered_2885'].items()]
+    out += [V(f'HiTab 표 단위 {t}', v, S) for t, v in d['hitab_table_unit_gold']['type_accuracy'].items()]
+    out.append(V('HiTab 표 단위 전달 셀 평균(채점 문항)', d['hitab_table_unit_gold']['cells_delivered_mean_all_scored'], S))
+    w = d['mh882_weighted']
+    out += [V('chunk_final weighted_em', w['chunk_final']['weighted_em'], S), V('chunk_final ci95[0]', w['chunk_final']['ci95'][0], S),
+            V('chunk_final ci95[1]', w['chunk_final']['ci95'][1], S),
+            V('cell−chunk_final weighted_diff', w['cell_minus_chunk_final']['weighted_diff'], S, 'ours'),
+            V('cell−chunk_final ci95[0]', w['cell_minus_chunk_final']['ci95'][0], S, 'ours'),
+            V('cell−chunk_final ci95[1]', w['cell_minus_chunk_final']['ci95'][1], S, 'ours')]
+    out += [V(f'chunk_final group {g} em', v, S) for g, v in w['groups_em_chunk_final'].items()]
+    for k, sp in d['diff_split'].items():
+        for part, v in sp.items():
+            if isinstance(v, dict):
+                out += [V(f'{k} {part} n', v['n'], S), V(f'{k} {part} ours_correct', v['ours_correct'], S, 'ours'),
+                        V(f'{k} {part} other_correct', v['other_correct'], S), V(f'{k} {part} diff', v['diff'], S, 'ours')]
+            else:
+                out.append(V(f'{k} {part}', v, S, 'ours'))
+    c = d['mh882_chunk_v1_vs_final']
+    m = c['mcnemar_final_vs_v1']
+    out += [V('chunk_v1 맞힘', c['chunk_v1'], S), V('chunk_final 맞힘', c['chunk_final'], S),
+            Cand('r', 'chunk 최종만:처음만', (m['b'], m['c']), S, None), Cand('p', 'chunk 최종만:처음만 p', m['p'], S, None)]
+    return out
+
+
+@src
+def stats3b():
+    r = 'results/stats_20260926/stats.json'
+    s, S = jload(r), R(r)
+    out = []
+    for fam in ('item3b_hitab300', 'item3b_mh882_pooled'):
+        for k, v in s[fam].items():
+            out += [V(f'{fam} {k} correct', v['correct'], S, _sl(k)), Cand('r', f'{fam} 기준만:{k}만', (v['b'], v['c']), S, 'ours'),
+                    Cand('p', f'{fam} {k} p', v['p'], S, 'ours'), Cand('p', f'{fam} {k} Holm p', v['p_holm'], S, 'ours')]
+    c = s['item3b_mh882_pooled']['cell']            # 기준 = 최종 규칙 셀 문장, cell = 처음 규칙 셀 문장
+    out += [V('item3b_mh882_pooled 처음 규칙만 맞힘(c)', c['c'], S, 'ours'), V('item3b_mh882_pooled 최종 규칙만 맞힘(b)', c['b'], S, 'ours')]
+    return out
+
+
+@src
+def reader_test():
+    r = 'results/reader_format_20260927/test.json'
+    d, S = jload(r), R(r)
+    b = d['multihiertt_test']
+    out = []
+    for c, v in b['conditions'].items():
+        out += [V(f'test {c} correct', v['correct'], S, _sl(c) or ('ours' if c == 'cell' else None)), V(f'test {c} n', v['n'], S),
+                V(f'test {c} cells', v['cells_delivered_mean'], S), V(f'test {c} tokens', v['input_tokens_mean'], S),
+                V(f'test {c} answer rate', v['correct'] / v['n'], S, _sl(c) or ('ours' if c == 'cell' else None))]
+    for p, v in b['pairs'].items():
+        out += [Cand('r', f'test {p}', (v['b'], v['c']), S, 'ours'), Cand('p', f'test {p} p', v['p'], S, 'ours')]
+    for g, x in b['groups_exploratory'].items():
+        for p, v in x['pairs'].items():
+            out += [Cand('r', f'test {g} {p}', (v['b'], v['c']), S, 'ours'), Cand('p', f'test {g} {p} p', v['p'], S, 'ours')]
+    for g, x in d['decomposition'].items():
+        for k in ('cell', 'chunk'):
+            v = x[k]
+            for f in ('retrieval_success', 'answer_given_hit', 'answer_given_miss'):
+                out += [V(f'decomp {g} {k} {f} rate', v[f]['rate'], S), V(f'decomp {g} {k} {f} k', v[f]['k'], S), V(f'decomp {g} {k} {f} n', v[f]['n'], S)]
+        i = x['intersection_both_retrieved']
+        out += [V(f'inter {g} n', i['n'], S), V(f'inter {g} cell rate', i['cell']['rate'], S, 'ours'), V(f'inter {g} cell k', i['cell']['k'], S, 'ours'),
+                V(f'inter {g} chunk rate', i['chunk']['rate'], S), V(f'inter {g} chunk k', i['chunk']['k'], S),
+                Cand('r', f'inter {g} cell만:chunk만', (i['mcnemar_cell_vs_chunk']['b'], i['mcnemar_cell_vs_chunk']['c']), S, 'ours'),
+                Cand('p', f'inter {g} cell만:chunk만 p', i['mcnemar_cell_vs_chunk']['p'], S, 'ours')]
+    return out
+
+
+@src
+def reader_dev():
+    r = 'results/reader_format_20260927/dev.json'
+    d, S = jload(r), R(r)
+    out = []
+    for blk, b in d.items():
+        for c, v in b['conditions'].items():
+            out += [V(f'dev {blk} {c} correct', v['correct'], S), V(f'dev {blk} {c} n', v['n'], S),
+                    V(f'dev {blk} {c} cells', v['cells_delivered_mean'], S), V(f'dev {blk} {c} tokens', v['input_tokens_mean'], S)]
+        for p, v in b['pairs'].items():
+            out += [Cand('r', f'dev {blk} {p}', (v['b'], v['c']), S, None), Cand('p', f'dev {blk} {p} p', v['p'], S, None)]
+        for g, x in b.get('groups_exploratory', {}).items():
+            out.append(V(f'dev {blk} {g} n', x['conditions']['cell']['n'], S))
+    g = d['multihiertt_dev_primary']['groups_exploratory']
+    out.append(V('dev 정답 셀 1개 문항(조회 1 + 산술 1)', g['lookup_m1']['conditions']['cell']['n'] + g['arith_m1']['conditions']['cell']['n'], S))
+    return out
+
+
+@src
+def decomp():
+    ra_, ri = f'results/answer_decomp_20260927/answer_decomp.json', 'results/answer_decomp_20260927/intersection.json'
+    a, i, SA, SI = jload(ra_), jload(ri), R(ra_), R(ri)
+    out = []
+    for blk, conds in (('hitab', a['hitab_300']), ('mh', {k: v['ALL'] for k, v in a['mh_882'].items()})):
+        for c, v in conds.items():
+            tag = _sl(c)
+            if 'cells_delivered_mean' in v:
+                out.append(V(f'decomp {blk} {c} cells', v['cells_delivered_mean'], SA, tag))
+                for f in ('retrieval_success', 'answer_given_hit', 'answer_given_miss'):
+                    out += [V(f'decomp {blk} {c} {f} rate', v[f]['rate'], SA, tag), V(f'decomp {blk} {c} {f} k', v[f]['k'], SA, tag),
+                            V(f'decomp {blk} {c} {f} n', v[f]['n'], SA, tag)]
+            out += [V(f'decomp {blk} {c} answer rate', v['answer']['rate'], SA, tag), V(f'decomp {blk} {c} answer k', v['answer']['k'], SA, tag)]
+    pairs = {'hitab s3c_vs_chunk': i['hitab_300']['s3c_vs_chunk']} | {f'mh {k}': v['ALL'] for k, v in i['mh_882'].items() if isinstance(v, dict) and 'ALL' in v}
+    for k, x in pairs.items():
+        m = x['mcnemar_on_both']
+        out += [V(f'inter {k} both n', x['both_retrieved'], SI), V(f'inter {k} ours rate', x['ours_answer_on_both']['rate'], SI, 'ours'),
+                V(f'inter {k} ours k', x['ours_answer_on_both']['k'], SI, 'ours'), V(f'inter {k} other rate', x['other_answer_on_both']['rate'], SI),
+                V(f'inter {k} other k', x['other_answer_on_both']['k'], SI),
+                Cand('r', f'inter {k} ours만:other만', (m['b_ours_only'], m['c_other_only']), SI, 'ours'),
+                Cand('p', f'inter {k} ours만:other만 p', m['p'], SI, 'ours'),
+                V(f'inter {k} only ours', x['only_ours_retrieved'], SI), V(f'inter {k} only other', x['only_other_retrieved'], SI)]
+    return out
+
+
+@src
+def v1cmp():
+    r = f'{FX}/mh_answer_v1_compare.json'
+    c, S = jload(r), R(r)
+    out = [V('v1 본 방법 맞힘', c['reference']['correct'], S, 'ours')]
+    for n, v in c['comparisons'].items():
+        p = v['pooled']
+        out += [V(f'v1cmp {n} correct', v['correct'], S), Cand('r', f'v1cmp v1만:{n}만', (p['b'], p['c']), S, 'ours'),
+                Cand('p', f'v1cmp {n} p', p['p'], S, 'ours'), Cand('p', f'v1cmp {n} Holm p', p['p_holm'], S, 'ours')]
+    mx = max((v['pooled']['p_holm'], n) for n, v in c['comparisons'].items() if n not in ('fulltable', 'chunk', 'trag_hetero'))
+    out.append(Cand('p', f'v1cmp 셀 표현 비교군 9개 중 최대 Holm p ({mx[1]})', mx[0], S, 'ours'))
+    return out
+
+
+@src
+def bottleneck():
+    rd, rt = 'results/bottleneck_20260927/diag/summary.json', 'results/bottleneck_20260927/test/summary.json'
+    d, t, SD, ST = jload(rd), jload(rt), R(rd), R(rt)
+    out = []
+    for scope in ('hitab_intable', 'hitab_538', 'mh_indoc'):
+        out.append(V(f'{scope} fail', d[scope]['fail'], SD))
+        out += [V(f'{scope} {b}', n, SD) for b, n in d[scope]['fail_buckets'].items()]
+        m = t[scope]['mcnemar']
+        out += [V(f'rerank {scope} pre', m['pre_correct'], ST, 'ours'), V(f'rerank {scope} post', m['post_correct'], ST),
+                Cand('r', f'rerank {scope} 전만:후만', (m['b_pre_only'], m['c_post_only']), ST, None), Cand('p', f'rerank {scope} Holm p', m['p_holm_3scopes'], ST, None)]
+    out.append(V('MH 누락 셀 전부 50위 이내 실패', d['mh_indoc']['fail_all_missing_rank_le50'], SD))
+    j = d['hitab_538']['judge_rater_A']
+    out += [V(f'판정 (가) {k}', v, SD) for k, v in j['ga'].items()] + [V(f'판정 (다) {k}', v, SD) for k, v in j['da'].items()]
+    out.append(V('판정 문항 수', j['n_with_judge'], SD))
+    return out
+
+
+@src
+def truncation():
+    out = []
+    for name, r in (('HiTab', 'results/rerun_20260926/hitab/hitab_test_gold_table.json'), ('MultiHiertt', 'results/rerun_20260926/mh/mh_train_table.json')):
+        a = jload(r)['embedding_input_audit']['documents']
+        out += [V(f'{name} 표 단위 문서 수', a['n'], R(r)), V(f'{name} 표 단위 512 초과', a['n_overflow'], R(r)), V(f'{name} max_seq_length', a['max_seq_length'], R(r))]
+    return out
+
+
+@src
+def alpha_dev():
+    r = 'results/dev_alpha_20260926/sensitivity_332.json'
+    d, S = jload(r), R(r)
+    out = []
+    for c, v in d['candidates'].items():
+        out += [V(f'α {c} {k}', v[k], S) for k in ('n911_correct', 'n911_accuracy', 'rank911', 'rank911_tied', 'n332_correct', 'n332_accuracy', 'rank332', 'rank332_tied')]
+    top5 = [d['candidates'][a]['n332_correct'] for a in ('1.0', '0.9', '0.8', '0.7', '0.6')]
+    out.append(V('α 1.0~0.6 n332_correct 최대−최소', max(top5) - min(top5), S))
+    return out
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -777,15 +978,18 @@ def L(f, anchors, *sets):
 
 
 HMETA, HRE, HANS, HOTH = 'hitab_meta', 'hitab_rerun', 'hitab_s3c_answer', 'hitab_answer300_others'
-L('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서', HRE, 'mh_rerun', HANS, 'mh_ans')
-L('00b_abstract_en.md', 'On HiTab and MultiHiertt', HRE, 'mh_rerun', HANS, 'mh_ans')
+CLAIM = ['rerun_cmp', 'mh_rerun', 'reader_test', 'decomp', 'stats3b', HANS, HMETA]
+L('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서', *CLAIM)
+L('00b_abstract_en.md', 'On HiTab and MultiHiertt', *CLAIM)
 L('01_intro.md', '1. **고유 라벨의 기여', 'hitab_labelabl', HMETA)
-L('01_intro.md', '2. **두 계층형 표 데이터셋', HRE, 'mh_rerun')
-L('01_intro.md', '3. **답변 정확도까지', HANS, 'mh_ans', 'mh_sample')
+L('01_intro.md', '2. **셀 단위 검색을 발표된', 'rerun_cmp', 'mh_rerun', HMETA)
+L('01_intro.md', '3. **답변 정확도까지', *CLAIM, 'mh_sample')
 L('01_intro.md', '5. **한계를 수치로', 'mh_label', 'mh_audit')
+L('01_intro.md', '모든 비교는 실행 전에 사전등록했다.', HANS)
 L('03_method.md', '같은 문서 안에 값을 뺀 문장이 똑같은', 'prereg_uniq', 'mh_meta')
 L('03_method.md', '이 규칙으로 train 분할에서 문장이 바뀐 셀은', 'prereg_uniq')
-L('03_method.md', '잎 라벨 머리말의 유무는', 'hitab_sleaf_vs_s3c', 'hitab_sleaf', 'hitab_labelabl')
+L('03_method.md', '**고유 라벨(HiTab).**', 'alpha_dev', 'mh_dev_pop')
+L('03_method.md', '잎 라벨 머리말의 유무는', 'hitab_sleaf_vs_s3c', 'hitab_sleaf', 'hitab_labelabl', HANS, 'hitab_answer300')
 L('03_method.md', '**임베딩.** 셀 문장과 질문을', HRE, HMETA)
 L('03_method.md', 'MultiHiertt 리더 설정은 validation 분할 60건', 'reader_pilot')
 L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모집단 |', '| 답변 정확도 표본 |'], HMETA, 'mh_pop', 'mh_sample', 'interim_meta')
@@ -798,56 +1002,93 @@ L('04_setup.md', '**MultiHiertt 전체 정확도.**', 'mh_pop')
 L('04_setup.md', 'MultiHiertt 리더는 두 번의 사전등록 파일럿으로', 'reader_pilot')
 L('04_setup.md', '**HiTab 답변 표본.**', HANS, HRE, HMETA)
 L('04_setup.md', '**MultiHiertt 답변 표본.**', 'mh_sample', 'mh_pop')
+L('04_setup.md', '**검정.**', 'stats3b', HANS, 'mh_sample')
 L('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', 'batchcheck')
 L('05_results.md', ['HiTab 단일 셀 조회 991건에서 세 가지 문장을', 'test 분할의 538개 표를 한 색인에', '표 5-1. 고유 라벨과'], HMETA)
 L('05_results.md', ['| 질문이 속한 표 안 | **.9637**', '| 538개 표를 한 색인에 |', '라벨은 두 범위 모두에서 검색 정확도를'], 'hitab_labelabl', HMETA)
-L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', '| **본 방법** | **.9637**', '| 고정 청크 | .8789', '| TableRAG(Yu) 청크 | .7881',
-                    '| TableRAG(Chen) RowCol | .7639', '| TableRAG(Chen) RandRow | .3744', '| TableRAG(Chen) path | .2916',
-                    '| TableRAG(Chen) leaf | .2775', 'RandRow·path·leaf와의 비교는 9칸', '주 모집단인 단일 셀 조회에서',
-                    '**산술 216건에서는'], HRE)
-L('05_results.md', ['표 5-3은 단일 셀 조회 300건에서', '표 5-3. HiTab 답변 정확도', '| **본 방법** | **.9567**', '| 고정 청크 | .8767',
-                    '| TableRAG(Yu) 청크 | .7767', '| TableRAG(Chen) RowCol | .7467', '| TableRAG(Chen) RandRow | .3367',
-                    '| TableRAG(Chen) path | .3067', '| TableRAG(Chen) leaf | .2967', '| 표 전체 (검색 없음) | (1.0)',
-                    '괄호 안은 검색에 성공한 질의 수다.', '본 방법의 답변 정확도는 .7900이다.', '본 방법은 .7900 =',
-                    '**표 전체와의 비교.** 검색 없이 질문의 표'], HANS, HOTH)
+T52 = ['| **본 방법** | .9637', '| sleaf (잎 라벨 머리말 변형) | .9586', '| 고정 청크 | .8789', '| TableRAG(Yu) 청크 | .7881', '| RowCol | .7639',
+       '| RandRow | .3744', '| TableRAG 셀 검색 재구현(path) | .2916', '| TableRAG 셀 검색 재구현(leaf) | .2775', '| 표 단위 (상한) |']
+L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', *T52, 'RandRow·path·leaf와의 비교는 9칸', '주 모집단인 단일 셀 조회에서', '**산술 216건에서는'],
+  HRE, 'hitab_cells1581', 'step4', HMETA)
+T53 = ['| **본 방법** | 19.41', '| sleaf (잎 라벨 머리말 변형) | 19.41', '| 고정 청크 | 69.06', '| TableRAG(Yu) 청크 | 52.09', '| RowCol | 22.52',
+       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.47', '| TableRAG 셀 검색 재구현(leaf) | 14.42', '| 표 전체 (검색 없음) | — | (1.0)']
+L('05_results.md', ['표 5-3은 단일 셀 조회 300건에서', '표 5-3. HiTab 답변 정확도', *T53, '괄호 안은 검색에 성공한 질의 수다.',
+                    '본 방법의 답변 정확도는 .7900이다.', '본 방법은 .7900 =', '**표 전체와의 비교.** 검색 없이 질문의 표'],
+  HANS, 'decomp', 'stats3b', HOTH, 'hitab_answer300')
 L('05_results.md', '검색에 성공해도 정답률은', HANS, HOTH, 'hitab_oracle')
-L('05_results.md', ['표 5-4는 MultiHiertt train', '표 5-4. MultiHiertt 그룹별', '| 방법 | 조회·셀 1개 (212)', '| **본 방법** | **.9575**',
-                    '| 고정 청크 | .8255', '| TableRAG(Yu) 청크 | .8019', '| TableRAG(Chen) RowCol | .6179', '| TableRAG(Chen) path | .6132',
-                    '| TableRAG(Chen) leaf | .4953', '| TableRAG(Chen) RandRow | .1698', 'p값을 적지 않은 칸은 모두',
-                    '24개 비교 칸 모두에서 차이가 유의하다.', 'HiTab 산술(표 5-2)과 달리'], 'mh_rerun', 'mh_pop', 'mh_meta')
+T54 = ['| **본 방법** | .9575', '| sleaf (잎 라벨 머리말 변형) | .9528', '| 고정 청크 | .8255', '| TableRAG(Yu) 청크 | .8019', '| RowCol | .6179',
+       '| TableRAG 셀 검색 재구현(path) | .6132', '| TableRAG 셀 검색 재구현(leaf) | .4953', '| RandRow | .1698']
+L('05_results.md', ['표 5-4는 MultiHiertt train', '표 5-4. MultiHiertt 그룹별', '| 방법 | 조회·셀 1개 (212)', *T54,
+                    'sleaf를 뺀 비교군 6개의 24칸은 모두', 'sleaf를 뺀 비교군 6개와의 24개', 'HiTab 산술(표 5-2)과 달리'],
+  'mh_rerun', 'step4', 'rerun_cmp', 'mh_pop', 'mh_meta')
 L('05_results.md', ['표 5-5는 본 방법의 머리글 규칙만', '| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623',
                     '| **v3.3u (+ 문장 고유화', '처음 규칙(v1)은 14건의 정답 셀을', 'v1에서 v3.3으로 머리글을 고치면'], 'mh_rules', 'mh_pop')
-L('05_results.md', ['표 5-6은 네 그룹 882건에서', '표 5-6. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)',
-                    '| **본 방법 (v3.3u)** | .5355', '| 표 전체 (검색 없음) | .5592', '| TableRAG(Yu) 청크 | .5545', '| 고정 청크 | **.5735**',
-                    '| TableRAG(Chen) RowCol | .3223', '| TableRAG(Chen) leaf | .1043', '| TableRAG(Chen) path | .1232',
-                    '| TableRAG(Chen) RandRow | .0758', 'RandRow·leaf·path와의 비교는 모든 칸에서 p<.01', '본 방법의 가중 전체 답변 정확도는',
-                    '**표 전체와의 비교.** 검색 없이 문서의', '**검색 정확도와 답변 정확도의 차이.**', '표 5-7. 본 방법의 머리글 규칙별 답변',
+T56 = ['| **본 방법 (셀 문장, 최종 규칙)** |', '| 고정 청크 (최종 규칙) |', '| 표 전체 (검색 없음) | .5592', '| TableRAG(Yu) 청크 | .5545']
+L('05_results.md', ['표 5-6은 네 그룹 882건에서', '표 5-6. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)', *T56,
+                    '그룹별 값은 탐색적 결과다. Holm p는', '**주 비교: 고정 청크(최종 규칙).**', '**표 전체와 TableRAG(Yu) 청크.**'],
+  'mh_ans', 'reader_test', 'step4', 'stats3b', 'decomp', 'mh_sample')
+L('05_results.md', '**나머지 비교군.**', 'v1cmp')
+L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 5-7. 본 방법의 머리글 규칙별 답변',
                     '| v1 (사전등록 당시) | .5024', '| v3.3 (머리글 수정) | .5355', '| **v3.3u (주 조건)** |', 'v1에서 v3.3u로 바꾸면 가중 전체가'],
   'mh_ans', 'mh_sample')
+L('05_results.md', '**머리글 규칙에 대한 민감도.**', 'stats3b', 'step4', 'reader_test')
 L('05_results.md', '**발견 경위(사후 분석).**', 'mh_ans', 'prereg_discovery')
 L('05_results.md', '결과는 예측과 반대였다.', 'mh_label', 'mh_label_pop', 'mh_pop')
 L('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'mh_rules', 'mh_pop')
-L('06_discussion.md', '**HiTab.** 본 방법은 검색에 실패한', HANS, 'hitab_oracle')
-L('06_discussion.md', '**MultiHiertt.** 본 방법의 답변 정확도는 .3376이고', 'mh_ans')
+T61 = ['| HiTab (300) | 셀 문장 |', '| HiTab (300) | 고정 청크 |', '| MultiHiertt (882) | 셀 문장 |', '| MultiHiertt (882) | 고정 청크 |']
+L('06_discussion.md', T61, 'decomp', 'reader_test', 'mh_sample', HANS)
+L('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'], 'decomp', 'reader_test')
+L('06_discussion.md', '두 방법이 모두 정답 셀을 찾은 문항에서는 답변 정확도에 차이가 없었다.', 'step4', 'decomp', 'reader_test')
+L('06_discussion.md', 'MultiHiertt를 처음 머리글 규칙으로 비교하면', 'decomp', 'reader_test')
+L('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', 'stats3b', 'hitab_oracle', HANS, 'reader_test')
+L('06_discussion.md', '**MultiHiertt 산술.**', 'mh_ans')
+L('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', 'decomp', 'reader_dev', 'mh_sample', 'alpha_dev')
+L('06_discussion.md', '**가설은 지지되지 않았다.**', 'reader_dev')
+T63 = ['| HiTab 질문의 표 안 | 36 |', '| | | C: 정답 셀 순위 51 이하 | 16 |', '| HiTab 538개 표를 한 색인에 | 85 |',
+       '| | | B: 정답 셀 순위 21~50 | 25 |', '| | | C: 정답 셀 순위 51 이하 | 20 |', '| MultiHiertt 문서 안 | 394 |',
+       '| | | F: 정답 셀 일부 누락, 누락 셀의 표는', '| | | G: 정답 셀 일부 누락, 누락 셀 중', '| | | H: 정답 표의 셀은 있으나']
+L('06_discussion.md', ['표 6-3. 검색 실패 문항의 분류', *T63, 'MultiHiertt 실패 394건 중', '**재정렬 진단.**', '**정답 표를 못 찾은 40건의 판정.**'],
+  'bottleneck', HMETA)
 L('06_discussion.md', '**조건 셀 누락.**', 'mh_audit')
+L('06_discussion.md', '**표 단위 색인의 입력 절단.**', 'truncation')
+L('06_discussion.md', '**템플릿 선택에 test 표본 사용.**', HANS, 'hitab_answer300')
+L('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'reader_test')
 L('06_discussion.md', '**표본 평가.**', HANS, HRE, HMETA, 'mh_pop', 'mh_sample')
 L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_sample')
 L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'hitab_dup', HMETA)
 L('06_discussion.md', '**생성 방식.**', 'batchcheck')
-L('07_conclusion.md', '1. **검색 정확도.**', HRE, 'mh_rerun')
+L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', HRE, 'mh_rerun', HMETA)
+L('07_conclusion.md', '4. **답변 정확도.**', *CLAIM)
 L('07_conclusion.md', '남은 과제는 다음과 같다.', 'mh_sample', 'hitab_dup')
-L('09_appendix.md', ['검색 문맥에서 필요한 줄만 LLM이', '표 A-1.', '| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) 청크 | .6000',
-                     '| TableRAG(Chen) RowCol | .4700', '| TableRAG(Chen) RandRow | .1533', '| TableRAG(Chen) path | .1433',
-                     '| TableRAG(Chen) leaf | .0800', 'sleaf(이전 조건)는 필터 후'], 'hitab_answer300')
+TA1 = ['| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) 청크 | .6000', '| RowCol | .4700', '| RandRow | .1533',
+       '| TableRAG 셀 검색 재구현(path) | .1433', '| TableRAG 셀 검색 재구현(leaf) | .0800']
+L('09_appendix.md', ['검색 문맥에서 필요한 줄만 LLM이', '표 A-1.', *TA1, 'sleaf(이전 조건)는 필터 후'], 'hitab_answer300')
 L('09_appendix.md', 'HiTab 단일 셀 조회 991건에서 이 조건의', 'hitab_oracle', HMETA)
 L('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대', '한 건씩 생성하는 방식은 재실행해도'], 'batchcheck')
 L('09_appendix.md', ['MultiHiertt의 정답 근거 주석(table evidence)이', '| 정규식 표시 |', '| 정규식 미표시 |', '추정 누락 문항 수는'],
   'mh_audit', 'mh_pop')
 L('09_appendix.md', '본 방법의 HiTab 단일 셀 조회 991건 검색 재현율은', HRE)
+TG1 = [('| 표 전체 | 검색 없음 |', 'fulltable'), ('| 고정 청크 | 처음 규칙 검색 |', 'chunk'), ('| TableRAG(Yu) 청크 | 처음 규칙 검색 |', 'trag_hetero'),
+       ('| RowCol (셀 문장을 이은 변형, 4.2절) |', 'rowcol'), ('| RowCol (값만) |', 'rowcol_values'),
+       ('| RowCol (셀 문장을 이은 변형) | 머리글 고친', 'rowcol_hv33'), ('| RandRow (셀 문장을 이은 변형) |', 'randrow'),
+       ('| RandRow (값만) |', 'randrow_values'), ('| TableRAG 셀 검색 재구현(path) | 처음 규칙 검색', 'tablerag_path'),
+       ('| TableRAG 셀 검색 재구현(path) | 머리글 고친', 'tablerag_path_hv33'), ('| TableRAG 셀 검색 재구현(leaf) | 처음 규칙 검색', 'tablerag_leaf'),
+       ('| TableRAG 셀 검색 재구현(leaf) | 머리글 고친', 'tablerag_leaf_hv33')]
+L('09_appendix.md', ['RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', '표 G-1. 처음 규칙의 본 방법', *[a for a, _ in TG1]], 'v1cmp', 'mh_sample')
+TG2 = [('| 본 방법 | 20.00 | .8776', 'cell'), ('| 고정 청크 | 51.25', 'chunk'), ('| TableRAG(Yu) 청크 | 46.93', 'trag_hetero')]
+L('09_appendix.md', ['표 G-2. 처음 규칙의 정답률 분해', *[a for a, _ in TG2], '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의'], 'decomp', 'reader_test', 'mh_sample')
+L('09_appendix.md', ['α 선택에 쓴 MultiHiertt dev(validation) 911건은', '표 H-1.', '| 후보 | 911건 맞힘', '332건 기준에서도 α=1.0이 1위다.'], 'alpha_dev', 'mh_dev_pop')
+TH1 = [('| α=1.0 (라벨 없음) |', '1.0'), ('| α=0.9 |', '0.9'), ('| α=0.8 |', '0.8'), ('| α=0.7 |', '0.7'), ('| α=0.6 |', '0.6'),
+       ('| α=0.5 |', '0.5'), ('| α=0.4 |', '0.4'), ('| α=0.3 |', '0.3'), ('| α=0.2 |', '0.2'), ('| α=0.1 |', '0.1'), ('| 접두어 |', 'prefix')]
+L('09_appendix.md', [a for a, _ in TH1], 'alpha_dev')
 
 # 원고에 sleaf 로 이름을 밝혀 쓴 줄 — 이 줄의 sleaf 값은 '본 방법으로 쓴 sleaf' 가 아니다
 SLEAF_NAMED = {(f, AT(f, a)) for f, a in [
-    ('03_method.md', '잎 라벨 머리말의 유무는'),
+    ('01_intro.md', '2. **셀 단위 검색을 발표된'), ('03_method.md', '잎 라벨 머리말의 유무는'),
+    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9586'), ('05_results.md', '주 모집단인 단일 셀 조회에서'),
+    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | 19.41'), ('05_results.md', '본 방법의 답변 정확도는 .7900이다.'),
+    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9528'), ('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개'),
+    ('06_discussion.md', '**템플릿 선택에 test 표본 사용.**'),
     ('09_appendix.md', '검색 문맥에서 필요한 줄만 LLM이'), ('09_appendix.md', '| sleaf(이전 조건) |'),
     ('09_appendix.md', 'sleaf(이전 조건)는 필터 후')]}
 
@@ -859,40 +1100,62 @@ def PF(f, anchor, *pats):
     PREFER[f, AT(f, anchor)] = list(pats)
 
 
-for _a, _arm in [('| **본 방법** | **.9637**', 's3c'), ('| 고정 청크 | .8789', 'chunk'), ('| TableRAG(Yu) 청크 | .7881', 'trag_hetero'),
-                 ('| TableRAG(Chen) RowCol | .7639', 'rowcol'), ('| TableRAG(Chen) RandRow | .3744', 'randrow'),
-                 ('| TableRAG(Chen) path | .2916', 'tablerag_path'), ('| TableRAG(Chen) leaf | .2775', 'tablerag_leaf')]:
-    PF('05_results.md', _a, rf'^{_arm}\.')
-for _a, _arm in [('| **본 방법** | **.9567**', 's3c'), ('| 고정 청크 | .8767', 'chunk'), ('| TableRAG(Yu) 청크 | .7767', 'trag_hetero'),
-                 ('| TableRAG(Chen) RowCol | .7467', 'rowcol'), ('| TableRAG(Chen) RandRow | .3367', 'randrow'),
-                 ('| TableRAG(Chen) path | .3067', 'tablerag_path'), ('| TableRAG(Chen) leaf | .2967', 'tablerag_leaf'),
-                 ('| 표 전체 (검색 없음) | (1.0)', 'fulltable')]:
-    PF('05_results.md', _a, rf'(^|:){_arm}(\.| |만)', rf'^{_arm} ')
-for _a, _arm in [('| **본 방법** | **.9575**', 's3c'), ('| 고정 청크 | .8255', 'chunk'), ('| TableRAG(Yu) 청크 | .8019', 'trag_hetero'),
-                 ('| TableRAG(Chen) RowCol | .6179', 'rowcol'), ('| TableRAG(Chen) path | .6132', 'tablerag_path'),
-                 ('| TableRAG(Chen) leaf | .4953', 'tablerag_leaf'), ('| TableRAG(Chen) RandRow | .1698', 'randrow')]:
-    PF('05_results.md', _a, rf'^{_arm} ', rf's3c만:{_arm}만 ')
+for _a, _arm in zip(T52, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf', 'table']):
+    PF('05_results.md', _a, rf'^{_arm}\.', rf'^{_arm} 전달', rf'표 단위' if _arm == 'table' else rf'^{_arm}\.')
+for _a, _arm in zip(T53, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf', 'fulltable']):
+    _o = 'ours' if _arm == 'sleaf' else _arm
+    PF('05_results.md', _a, rf'^decomp hitab {_arm} ', rf'^item3b_hitab300 {_arm} ', rf'기준만:{_arm}만', rf'^{_arm}\.', rf'^{_o}[\. ]', rf':{_arm}만')
+for _a, _arm in zip(T54, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'tablerag_path', 'tablerag_leaf', 'randrow']):
+    PF('05_results.md', _a, rf'^{_arm} ', rf's3c만:{_arm}만 ', rf'^MH {_arm} 전달')
+for _a, _c in zip(T56, ['cell_uniq', 'chunk_final', 'fulltable', 'trag_hetero']):
+    _t = {'cell_uniq': 'cell', 'chunk_final': 'chunk'}.get(_c, _c)
+    PF('05_results.md', _a, '^' + re.escape(_c), rf'^test {_t} ', rf'^test \S+ cell_vs_chunk' if _c == 'chunk_final' else rf'item3b_mh882_pooled {_c} ',
+       rf'기준만:{_c}만', rf'^decomp mh {_c} ', rf'^MH {_c} ')
+for _a, _c in [('| v1 (사전등록 당시) | .5024', 'cell.'), ('| v3.3 (머리글 수정) | .5355', 'cell_hv33r'), ('| **v3.3u (주 조건)** |', 'cell_uniq')]:
+    PF('05_results.md', _a, '^' + re.escape(_c))
 for _a, _r in [('| v1 (사전등록 당시) | .9434', 'v1'), ('| v3.3 (머리글 수정) | .9623', 'v33'), ('| **v3.3u (+ 문장 고유화', 'v33u')]:
     PF('05_results.md', _a, rf'^{_r} ')
-for _a, _c in [('| **본 방법 (v3.3u)** | .5355', 'cell_uniq'), ('| 표 전체 (검색 없음) | .5592', 'fulltable'),
-               ('| TableRAG(Yu) 청크 | .5545', 'trag_hetero'), ('| 고정 청크 | **.5735**', 'chunk'),
-               ('| TableRAG(Chen) RowCol | .3223', 'rowcol_values'), ('| TableRAG(Chen) leaf | .1043', 'tablerag_leaf.'),
-               ('| TableRAG(Chen) path | .1232', 'tablerag_path.'), ('| TableRAG(Chen) RandRow | .0758', 'randrow_values'),
-               ('| v1 (사전등록 당시) | .5024', 'cell.'), ('| v3.3 (머리글 수정) | .5355', 'cell_hv33r'), ('| **v3.3u (주 조건)** |', 'cell_uniq')]:
-    PF('05_results.md', _a, '^' + re.escape(_c))
-for _a, _arm in [('| sleaf(이전 조건) |', 'ours'), ('| 고정 청크 | .6867', 'chunk'), ('| TableRAG(Yu) 청크 | .6000', 'trag_hetero'),
-                 ('| TableRAG(Chen) RowCol | .4700', 'rowcol'), ('| TableRAG(Chen) RandRow | .1533', 'randrow'),
-                 ('| TableRAG(Chen) path | .1433', 'tablerag_path'), ('| TableRAG(Chen) leaf | .0800', 'tablerag_leaf')]:
+for _a, (_blk, _arm) in zip(T61, [('hitab', 's3c'), ('hitab', 'chunk'), ('mh', 'cell_uniq'), ('test', 'chunk')]):
+    if _blk == 'test':
+        PF('06_discussion.md', _a, r'^decomp ALL chunk ', r'^test chunk ')
+    else:
+        PF('06_discussion.md', _a, rf'^decomp {_blk} {_arm} ')
+PF('06_discussion.md', '| HiTab | 256 |', r'^inter hitab ')
+PF('06_discussion.md', '| MultiHiertt | 642 |', r'^inter ALL ')
+for _a, _arm in zip(TA1, ['ours', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf']):
     PF('09_appendix.md', _a, '^' + re.escape(_arm))
+for _a, _n in TG1:
+    PF('09_appendix.md', _a, rf'^v1cmp {_n} ', rf'v1만:{_n}만$')
+for _a, _c in TG2:
+    PF('09_appendix.md', _a, rf'^decomp mh {_c} ')
+for _a, _c in TH1:
+    PF('09_appendix.md', _a, rf'^α {re.escape(_c)} ')
 PF('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', r'^v1 top1', r'^v1 budget20')
 PF('05_results.md', 'v1에서 v3.3으로 머리글을 고치면', r'^diff_v33_minus_v1 ALL', r'^diff_v33u_minus_v33 ALL', r'^v33만:v1만', r'^v33u만:v33만')
+PF('05_results.md', '**머리글 규칙에 대한 민감도.**', r'item3b_mh882_pooled cell ', r'기준만:cell만', r'chunk 최종만:처음만', r'^chunk_v1', r'^chunk_final 맞힘')
+PF('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', r'^test ', r'chunk_final', r'cell−chunk_final')
+PF('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', r'fulltable', r'trag_hetero')
 PF('09_appendix.md', '| 한 건씩 재실행 대', r'^b1_20')
+for _a in T63[:2]:
+    PF('06_discussion.md', _a, r'^hitab_intable ')
+for _a in T63[2:5]:
+    PF('06_discussion.md', _a, r'^hitab_538 ', r'^n_tables')
+for _a in T63[5:]:
+    PF('06_discussion.md', _a, r'^mh_indoc ')
+PF('09_appendix.md', '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의', r'^inter mh ')
+PF('03_method.md', '**고유 라벨(HiTab).**', r'^α 1\.0 n911', r'^α prefix n911', r'채점 문항', r'표 근거만')
 PF('09_appendix.md', '| continuous batching 대', r'^cb_120')
 PF('09_appendix.md', '| 정규식 표시 |', r'^표시 ')
 PF('09_appendix.md', '| 정규식 미표시 |', r'^미표시 ')
 PF('05_results.md', '본 방법은 .7900 =', r'^s3c\.')
-PF('05_results.md', '주 모집단인 단일 셀 조회에서', r'^chunk\.', r'^s3c\.')
-PF('05_results.md', '**표 전체와의 비교.** 검색 없이 문서의', r'^fulltable\.')
+PF('05_results.md', '주 모집단인 단일 셀 조회에서', r'^chunk\.', r'^s3c\.', r'^sleaf\.')
+PF('06_discussion.md', '두 방법이 모두 정답 셀을 찾은 문항에서는 답변 정확도에 차이가 없었다.', r'^hitab300', r'^mh882', r'answer_given_hit rate')
+PF('06_discussion.md', '**가설은 지지되지 않았다.**', r'^dev multihiertt', r'^dev hitab')
+PF('06_discussion.md', '**재정렬 진단.**', r'^rerank')
+PF('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', r'판정', r'hitab_538 A')
+for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('00b_abstract_en.md', 'On HiTab and MultiHiertt'),
+               ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '4. **답변 정확도.**')]:
+    PF(_f, _a, r'^s3c\.answer_correct$', r'^item3b_hitab300 chunk correct$', r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ', r'accuracy')
 
 # 표 행의 열 번호(줄 앞의 '|' 개수) -> 먼저 볼 필드 정규식
 COLPREF = {}
@@ -903,33 +1166,31 @@ def CP(f, anchors, cols):
         COLPREF[f, AT(f, a)] = cols
 
 
-CP('05_results.md', ['| **본 방법** | **.9637**', '| 고정 청크 | .8789', '| TableRAG(Yu) 청크 | .7881', '| TableRAG(Chen) RowCol | .7639',
-                     '| TableRAG(Chen) RandRow | .3744', '| TableRAG(Chen) path | .2916', '| TableRAG(Chen) leaf | .2775'],
-   {2: ['single_cell'], 3: ['multi_cell'], 4: ['arithmetic']})
-CP('05_results.md', ['| **본 방법** | **.9567**', '| 고정 청크 | .8767', '| TableRAG(Yu) 청크 | .7767', '| TableRAG(Chen) RowCol | .7467',
-                     '| TableRAG(Chen) RandRow | .3367', '| TableRAG(Chen) path | .3067', '| TableRAG(Chen) leaf | .2967',
-                     '| 표 전체 (검색 없음) | (1.0)'],
-   {2: ['retrieval', '검색 정확도'], 3: [r'\.answer$', r'answer_base$', '답변 정확도$'], 4: ['만:'],
-    5: ['given_hit', 'given_retrieval_hit', 'retrieval_hits', '검색 성공 수'], 6: ['tokens']})
-MHR = {2: [r' lookup_m1( |$)'], 3: [r' lookup_m2\+( |$)'], 4: [r' arith_m1( |$)'], 5: [r' arith_m2\+( |$)'], 6: [r' ALL( |$)']}
-CP('05_results.md', ['| **본 방법** | **.9575**', '| 고정 청크 | .8255', '| TableRAG(Yu) 청크 | .8019', '| TableRAG(Chen) RowCol | .6179',
-                     '| TableRAG(Chen) path | .6132', '| TableRAG(Chen) leaf | .4953', '| TableRAG(Chen) RandRow | .1698',
-                     '| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623', '| **v3.3u (+ 문장 고유화'], MHR)
+CP('05_results.md', T52, {2: ['single_cell'], 3: ['multi_cell'], 4: ['arithmetic'], 5: ['전달']})
+CP('05_results.md', T53, {2: ['cells'], 3: ['retrieval', '검색 정확도'], 4: [r'answer rate', r'\.answer$', r'answer_base$', r'correct$', '답변 정확도$'],
+                          5: ['만:', 'Holm', r' p$'], 6: ['given_hit', 'given_retrieval_hit', 'retrieval_hits', '검색 성공 수'], 7: ['tokens']})
+MHR = {2: [r' lookup_m1( |$)'], 3: [r' lookup_m2\+( |$)'], 4: [r' arith_m1( |$)'], 5: [r' arith_m2\+( |$)'], 6: [r' ALL( |$)'], 7: ['전달']}
+CP('05_results.md', T54, MHR)
+CP('05_results.md', ['| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623', '| **v3.3u (+ 문장 고유화'], MHR)
+CP('05_results.md', ['| 방법 | 조회·셀 1개 (211)'], {2: [r'lookup_m1'], 3: [r'lookup_m2\+'], 4: [r'arith_m1'], 5: [r'arith_m2\+'], 6: [r'^test cell n']})
+CP('05_results.md', T56, {2: [r'lookup_m1'], 3: [r'lookup_m2\+'], 4: [r'arith_m1'], 5: [r'arith_m2\+'], 6: ['correct', '맞힘'],
+                          7: [r'cell_vs_chunk', '기준만', r' p$', 'Holm'], 8: [r'weighted_em', r'ci95'], 9: ['cells', '전달'], 10: ['tokens', 'input_tokens']})
 MHA = {2: [r'\.lookup_m1'], 3: [r'\.lookup_m2\+'], 4: [r'\.arith_m1'], 5: [r'\.arith_m2\+'],
        6: [r'^\w+\.weighted_em', r'^\w+\.ci95'], 7: [r'vs_cell\.(weighted|ci95)']}
-CP('05_results.md', ['| **본 방법 (v3.3u)** | .5355', '| 표 전체 (검색 없음) | .5592', '| TableRAG(Yu) 청크 | .5545', '| 고정 청크 | **.5735**',
-                     '| TableRAG(Chen) RowCol | .3223', '| TableRAG(Chen) leaf | .1043', '| TableRAG(Chen) path | .1232',
-                     '| TableRAG(Chen) RandRow | .0758', '| v1 (사전등록 당시) | .5024', '| v3.3 (머리글 수정) | .5355',
-                     '| **v3.3u (주 조건)** |'], MHA)
+CP('05_results.md', ['| v1 (사전등록 당시) | .5024', '| v3.3 (머리글 수정) | .5355', '| **v3.3u (주 조건)** |'], MHA)
 CP('05_results.md', ['| 질문이 속한 표 안 | **.9637**', '| 538개 표를 한 색인에 |'],
    {2: ['t_s3c_'], 3: ['t_s3frame_'], 4: ['t_s2_'], 5: ['라벨 효과'], 6: ['문장 틀 효과']})
-CP('09_appendix.md', ['| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) 청크 | .6000', '| TableRAG(Chen) RowCol | .4700',
-                      '| TableRAG(Chen) RandRow | .1533', '| TableRAG(Chen) path | .1433', '| TableRAG(Chen) leaf | .0800'],
-   {2: ['answer_base'], 3: ['answer_filtered'], 4: [r'\.delta'], 5: ['p_value'], 6: ['lines_mean', 'lines_kept_mean']})
+CP('06_discussion.md', T61, {3: ['cells'], 4: ['retrieval_success'], 5: ['answer_given_hit'], 6: ['answer_given_miss'], 7: ['answer ', 'correct', 'answer rate']})
+CP('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'],
+   {2: [r'both n', r' n$'], 3: ['ours', 'cell'], 4: ['other', 'chunk'], 5: ['만:'], 6: [r' p$'], 7: ['only ours'], 8: ['only other']})
+CP('09_appendix.md', TA1, {2: ['answer_base'], 3: ['answer_filtered'], 4: [r'\.delta'], 5: ['p_value'], 6: ['lines_mean', 'lines_kept_mean']})
 CP('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대'],
    {2: [r' n$'], 3: ['출력 문자열 일치 수'], 4: ['추출 답 일치 수'], 5: ['정답 수'], 6: ['정오 불일치'], 7: [r'정오 불일치.* p$']})
 CP('09_appendix.md', ['| 정규식 표시 |', '| 정규식 미표시 |'],
    {2: ['THESIS'], 3: ['검토 수'], 4: [r'[가-힣] 누락$'], 5: ['누락 아님'], 6: ['조건 없음'], 7: ['판정 불가']})
+CP('09_appendix.md', [a for a, _ in TG1], {4: ['correct'], 5: ['만:'], 6: [r'\d p$|[a-z] p$'], 7: ['Holm']})
+CP('09_appendix.md', [a for a, _ in TG2], {2: ['cells'], 3: ['retrieval_success'], 4: ['answer_given_hit'], 5: ['answer_given_miss'], 6: ['answer ']})
+CP('09_appendix.md', [a for a, _ in TH1], {2: ['n911'], 3: ['rank911'], 4: ['n332'], 5: ['rank332']})
 
 
 def EX(f, anchor, tok, setname, pat, occ=None):
@@ -941,14 +1202,12 @@ def EX(f, anchor, tok, setname, pat, occ=None):
 EXPECT = {}
 EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p<.0001', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
 EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p=7.6×10⁻⁶', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
-EX('01_intro.md', '5. **한계를 수치로', '.8492', 'mh_label', '라벨 없음(v2) by_layer.ALL.doc')
-EX('01_intro.md', '5. **한계를 수치로', '.8301', 'mh_label', 'L1 by_layer.ALL.doc')
 EX('05_results.md', '결과는 예측과 반대였다.', '.8492', 'mh_label', '라벨 없음(v2) by_layer.ALL.doc')
 EX('05_results.md', '결과는 예측과 반대였다.', '.8301', 'mh_label', 'L1 by_layer.ALL.doc')
 EX('05_results.md', '결과는 예측과 반대였다.', '.2662', 'mh_label', '라벨 없음(v2) by_layer.ALL.corpus')
 EX('05_results.md', '결과는 예측과 반대였다.', '.2272', 'mh_label', 'L1 by_layer.ALL.corpus')
 EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', '10.4', 'batchcheck', 'b1_20 generation_seconds/n')
-EX('05_results.md', '| 표 전체 (검색 없음) | (1.0)', '1.0', 'hitab_answer300', 'fulltable retrieval(정의상)')
+EX('05_results.md', '| 표 전체 (검색 없음) | — | (1.0)', '1.0', 'hitab_answer300', 'fulltable retrieval(정의상)')
 EX('05_results.md', '**발견 경위(사후 분석).**', 'p=.025', 'mh_ans', 'cell만:chunk만 (조회 두 그룹) p')
 EX('09_appendix.md', 'sleaf(이전 조건)는 필터 후', '2', 'hitab_answer300', 'ours 그중 1번 줄')
 EX('05_results.md', '본 방법은 .7900 =', '0', HANS, 's3c.answer_given_miss')
@@ -967,22 +1226,55 @@ EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batch
 EX('06_discussion.md', '**생성 방식.**', '1:1', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만)')
 EX('05_results.md', '| 질문이 속한 표 안 | **.9637**', 'p=.81', 'hitab_labelabl', 'gold 문장 틀 효과 s3frame만:s2만 p')
 EX('05_results.md', '| 538개 표를 한 색인에 |', 'p=.085', 'hitab_labelabl', 'split 문장 틀 효과 s3frame만:s2만 p')
-EX('05_results.md', 'p값을 적지 않은 칸은 모두', 'p<.05', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
-EX('05_results.md', 'p값을 적지 않은 칸은 모두', 'p=.021', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
-EX('05_results.md', '24개 비교 칸 모두에서 차이가 유의하다.', 'p=4.4×10⁻⁵⁰', 'mh_rerun', 's3c만:chunk만 ALL p')
-EX('05_results.md', 'RandRow·leaf·path와의 비교는 모든 칸에서 p<.01', 'p<.01', 'mh_ans', 'RandRow·leaf·path 12칸 중 최대 p')
+EX('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', 'p<.05', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
+EX('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', 'p=.021', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
+EX('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', 'p=4.4×10⁻⁵⁰', 'mh_rerun', 's3c만:chunk만 ALL p')
+EX('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', 'p=.0040', 'rerun_cmp', 'mh_doc s3c만:sleaf만 Holm p')
 EX('09_appendix.md', '| 고정 청크 | .6867', '<10⁻⁵', 'hitab_answer300', 'chunk.mcnemar_base_vs_filtered.p_value')
 EX('09_appendix.md', '| TableRAG(Yu) 청크 | .6000', '<10⁻⁵', 'hitab_answer300', 'trag_hetero.mcnemar_base_vs_filtered.p_value')
-EX('09_appendix.md', '| TableRAG(Chen) RowCol | .4700', '<10⁻⁵', 'hitab_answer300', 'rowcol.mcnemar_base_vs_filtered.p_value')
+EX('09_appendix.md', '| RowCol | .4700', '<10⁻⁵', 'hitab_answer300', 'rowcol.mcnemar_base_vs_filtered.p_value')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', '99:29', 'mh_rules', '공통 2,871 v33u만:v1만')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', 'p=3.8×10⁻¹⁰', 'mh_rules', '공통 2,871 v33u만:v1만 p')
 EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.008', 'mh_rules', 'v1 top1 조회1 대 산술1 Fisher p')
 EX('05_results.md', '이 절의 값은 사전등록 당시 조건(v1)', 'p=.77', 'mh_rules', 'v1 budget20 조회1 대 산술1 Fisher p')
-# 882건 표본의 추출 틀(처음 규칙 2,871건) — 출처는 사전등록 PREREG-2026-09-24 11행 (2026-09-27 사용자 지시)
 P11 = 'PREREG-2026-09-24-mh-answer-cap300.md:11 본문'
 EX('04_setup.md', '**MultiHiertt 답변 표본.**', '2,871', 'mh_pop', P11, 1)
 EX('04_setup.md', '**데이터 사용 이력.**', '2,871', 'mh_pop', P11)
 EX('06_discussion.md', '**표본 평가.**', '2,871', 'mh_pop', P11)
+# 주장 문장의 검정값(초록·1장·7장·5장·6장)
+for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '4. **답변 정확도.**')]:
+    EX(_f, _a, 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
+    EX(_f, _a, 'p=.86', 'reader_test', 'inter ALL cell만:chunk만 p')
+for _f, _a in [('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '4. **답변 정확도.**')]:
+    EX(_f, _a, 'p=.0019', 'stats3b', 'item3b_hitab300 chunk Holm p')
+EX('01_intro.md', '3. **답변 정확도까지', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
+EX('01_intro.md', '2. **셀 단위 검색을 발표된', 'p=.0040', 'rerun_cmp', 'mh_doc s3c만:sleaf만 Holm p')
+EX('05_results.md', '| 고정 청크 (최종 규칙) |', 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
+EX('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
+EX('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', 'p=.0005', 'reader_test', 'test arith_m2+ cell_vs_chunk p')
+EX('05_results.md', '| 표 전체 (검색 없음) | .5592', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
+EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.039', 'stats3b', 'item3b_mh882_pooled fulltable p')
+EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
+EX('05_results.md', '| TableRAG(Yu) 청크 | .5545', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
+EX('05_results.md', '**나머지 비교군.**', 'p=2.1×10⁻⁶', 'v1cmp', 'v1cmp 셀 표현 비교군 9개 중 최대 Holm p')
+EX('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
+EX('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'p=.0005', 'reader_test', 'test arith_m2+ cell_vs_chunk p')
+
+EX('05_results.md', '주 모집단인 단일 셀 조회에서', '3:3', HRE, 'chunk.multi_cell s3c만:상대만')
+EX('05_results.md', '주 모집단인 단일 셀 조회에서', 'p=1', HRE, 'chunk.multi_cell s3c만:상대만 p')
+EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', '.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
+EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', '882', 'reader_test', 'test cell n')
+EX('06_discussion.md', '두 방법이 모두 정답 셀을 찾은 문항에서는 답변 정확도에 차이가 없었다.', '0', 'step4', 'hitab300_s3c_vs_chunk only_other_retrieved ours_correct', 2)
+EX('06_discussion.md', '두 방법이 모두 정답 셀을 찾은 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final only_other_retrieved ours_correct', 2)
+EX('06_discussion.md', '두 방법이 모두 정답 셀을 찾은 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final neither_retrieved ours_correct', 3)
+EX('06_discussion.md', '**가설은 지지되지 않았다.**', '20', 'reader_dev', 'dev multihiertt_dev_primary lookup_m1 n', 1)
+EX('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 20 |', '20', 'bottleneck', 'hitab_538 C_rank51plus')
+EX('06_discussion.md', '**재정렬 진단.**', 'p=.0104', 'bottleneck', 'rerank mh_indoc Holm p', 2)
+EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'bottleneck', '판정 (가) 예', 1)
+EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'bottleneck', '판정 (가) 아니오', 2)
+EX('09_appendix.md', '332건 기준에서도 α=1.0이 1위다.', '2', 'alpha_dev', 'α 1.0~0.6 n332_correct 최대−최소')
+EX('01_intro.md', '3. **답변 정확도까지', '237', 'stats3b', 'item3b_hitab300 fulltable correct', 3)
+EX('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', '237', HANS, 's3c.answer_correct', 1)
 
 # 원천을 못 찾은 수치의 사유(자동 대조 실패 시 적는다)
 NOTFOUND = {}
@@ -1189,8 +1481,29 @@ def KOA(f, anchor, kind, toks=None):
 
 KOA('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', K_SEC, ['5.4'])
 KOA('04_setup.md', '**MultiHiertt.** 공개 test 분할에는', K_N, [('2', 1)])      # 정답 셀이 빈 칸으로 파싱된 2건
-KOA('05_results.md', '본 방법의 가중 전체 답변 정확도는', K_ETC, ['6'])
 KOA('05_results.md', '**발견 경위(사후 분석).**', K_ETC, ['2015', '222', '1,767', '813', '732'])
+KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_ETC, ['1', '2', ('3', 2)])   # (1)(2)(3) 항목 번호
+KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3', 1)])             # 자주 나오는 값 3개
+KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, ['8'])                    # Holm 묶음 크기
+KOA('05_results.md', '**나머지 비교군.**', K_SET, ['12', '9'])
+KOA('09_appendix.md', 'RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', K_SET, ['12'])
+KOA('06_discussion.md', '**가설은 지지되지 않았다.**', K_ETC, ['1'])                      # 정답 셀이 1개인
+KOA('06_discussion.md', '| HiTab 질문의 표 안 | 36 |', K_SET, ['21', '50'])               # 버킷 정의
+KOA('06_discussion.md', '| | | B: 정답 셀 순위 21~50 | 25 |', K_SET, ['21', '50'])
+KOA('06_discussion.md', '| | | H: 정답 표의 셀은 있으나', K_ETC, ['0'])
+KOA('06_discussion.md', 'MultiHiertt 실패 394건 중', K_SET, ['50'])
+KOA('06_discussion.md', '**재정렬 진단.**', K_SET, ['50'])
+KOA('09_appendix.md', 'α 선택에 쓴 MultiHiertt dev(validation) 911건은', K_SET, ['1.0', '0.1', '0.9', '11'])
+KOA('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', K_SET, ['6'])
+KOA('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', K_SET, ['6'])
+KOA('05_results.md', '그룹별 값은 탐색적 결과다. Holm p는', K_SET, ['14'])
+KOA('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', K_SEC, ['9'])
+KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_SET, ['14'])
+KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_ETC, ['0'])
+KOA('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', K_SET, ['20'])
+KOA('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 16 |', K_SET, ['51'])
+KOA('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 20 |', K_SET, ['51'])   # α 후보 범위
+KOA('09_appendix.md', '332건 기준에서도 α=1.0이 1위다.', K_SET, ['1.0', '0.6'])
 
 
 def kind_of(f, ln, line, typ, s, a, b, occ=1):
@@ -1287,7 +1600,8 @@ def main():
                 if kind in MATCHABLE:
                     exp = EXPECT.get((f, ln, s, occ)) or EXPECT.get((f, ln, s))
                     nf = NOTFOUND.get((f, ln, s)) or NOTFOUND.get((f, ln, '*'))
-                    c, note = (None, '') if nf else match(s_eval, cands)
+                    top = [x for x in cands if _pref_score(x, lp, cp) == _pref_score(cands[0], lp, cp)] if (lp or cp) and cands else []
+                    c, note = (None, '') if nf else ((match(s_eval, top) if top else (None, '')) if (top and match(s_eval, top)[0]) else match(s_eval, cands))
                     if exp:
                         pat = exp[1]
                         ec = next(x for x in SETS[exp[0]]() if (re.search(pat[3:], x.field) if pat.startswith('re:') else pat in x.field))

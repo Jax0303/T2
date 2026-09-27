@@ -1,0 +1,121 @@
+{
+ "hitab_cells_delivered_single991": {
+  "s3c": 19.47,
+  "sleaf": 19.47,
+  "table": 117.18,
+  "chunk": 66.05,
+  "trag_hetero": 52.01,
+  "rowcol": 22.64,
+  "randrow": 22.02,
+  "tablerag_path": 13.82,
+  "tablerag_leaf": 13.93
+ },
+ "hitab_table_unit_gold": {
+  "type_accuracy": {
+   "single_cell": 1.0,
+   "multi_cell": 1.0,
+   "arithmetic": 1.0
+  },
+  "cells_delivered_mean_all_scored": 121.6
+ },
+ "mh_cells_delivered_2885": {
+  "s3c": 20.0,
+  "sleaf": 20.0,
+  "chunk": 49.7,
+  "trag_hetero": 45.6,
+  "rowcol": 22.5,
+  "tablerag_path": 20.2,
+  "tablerag_leaf": 20.2,
+  "randrow": 21.9
+ },
+ "mh882_weighted": {
+  "note": "가중 = 최종 머리글 규칙 그룹 크기 212/367/71/2,235, 층화 부트스트랩 10,000회 seed 0(이 파일에서 새로 뽑음)",
+  "chunk_final": {
+   "weighted_em": 0.2601,
+   "ci95": [
+    0.2266,
+    0.296
+   ]
+  },
+  "cell_minus_chunk_final": {
+   "weighted_diff": 0.0775,
+   "ci95": [
+    0.0379,
+    0.1181
+   ]
+  },
+  "groups_em_chunk_final": {
+   "lookup_m1": 0.5403,
+   "lookup_m2+": 0.5967,
+   "arith_m1": 0.3099,
+   "arith_m2+": 0.1767
+  }
+ },
+ "diff_split": {
+  "hitab300_s3c_vs_chunk": {
+   "both_retrieved": {
+    "n": 256,
+    "ours_correct": 211,
+    "other_correct": 202,
+    "diff": 9
+   },
+   "only_ours_retrieved": {
+    "n": 31,
+    "ours_correct": 26,
+    "other_correct": 0,
+    "diff": 26
+   },
+   "only_other_retrieved": {
+    "n": 7,
+    "ours_correct": 0,
+    "other_correct": 4,
+    "diff": -4
+   },
+   "neither_retrieved": {
+    "n": 6,
+    "ours_correct": 0,
+    "other_correct": 0,
+    "diff": 0
+   },
+   "total_diff": 31,
+   "diff_outside_both": 22
+  },
+  "mh882_final_vs_chunk_final": {
+   "both_retrieved": {
+    "n": 642,
+    "ours_correct": 322,
+    "other_correct": 325,
+    "diff": -3
+   },
+   "only_ours_retrieved": {
+    "n": 148,
+    "ours_correct": 72,
+    "other_correct": 18,
+    "diff": 54
+   },
+   "only_other_retrieved": {
+    "n": 45,
+    "ours_correct": 7,
+    "other_correct": 17,
+    "diff": -10
+   },
+   "neither_retrieved": {
+    "n": 47,
+    "ours_correct": 7,
+    "other_correct": 8,
+    "diff": -1
+   },
+   "total_diff": 40,
+   "diff_outside_both": 43
+  }
+ },
+ "mh882_chunk_v1_vs_final": {
+  "chunk_v1": 366,
+  "chunk_final": 368,
+  "mcnemar_final_vs_v1": {
+   "b": 17,
+   "c": 15,
+   "p": 0.860050065908581
+  }
+ }
+}

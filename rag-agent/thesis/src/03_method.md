@@ -30,7 +30,7 @@
 
 > {행 경로} > {열 경로}: {값}
 
-**고유 라벨.** 고유 라벨은 셀이 속한 표를 다른 표와 구별해 주는 자연어 데이터다. HiTab에서는 데이터셋이 준 표의 절 제목 앞에, 표의 원 출처인 위키백과 페이지의 제목(ToTTo 페이지 제목)이 있으면 그것을 붙인다. 표 번호나 문서 id처럼 질문이 부를 수 없는 인위적 식별자는 라벨로 쓰지 않는다. 표에 제목이 주어지지 않는 MultiHiertt에서는 라벨을 쓰지 않는다. 표 직전 문단을 라벨로 쓰는 변형을 사전등록해 시험했으나 검색 정확도가 떨어졌기 때문이다(5.6절).
+**고유 라벨(HiTab).** 고유 라벨은 셀이 속한 표를 다른 표와 구별해 주는 자연어 데이터이며, 본 연구에서는 HiTab의 표 제목에 한정한다. HiTab에서는 데이터셋이 준 표의 절 제목 앞에, 표의 원 출처인 위키백과 페이지의 제목(ToTTo 페이지 제목)이 있으면 그것을 붙인다. 표 번호나 문서 id처럼 질문이 부를 수 없는 인위적 식별자는 라벨로 쓰지 않는다. MultiHiertt는 표 제목이 없으므로 고유 라벨 없이 머리글 경로와 값만 쓴다. 표 제목 대신 표 직전 문단을 라벨로 쓰는 방식은 두 번 시험했으나 이득이 없었다. train에서 사전등록한 실험에서는 검색 정확도가 떨어졌고(5.6절), validation(dev) 911건에서 라벨 벡터를 셀 벡터에 섞는 비율 α를 고를 때도 라벨을 쓰지 않은 α=1.0(.8496)이 표 직전 문단을 문장 앞에 붙인 접두어 방식(.8288)보다 높아 α=1.0이 선택되었다. 표 근거만 필요한 332건으로 다시 센 민감도 결과는 부록 H에 싣는다.
 
 **셀 문장의 고유성.** 본 방법은 셀마다 서로 다른 문장을 만든다는 전제에 선다. 두 셀의 문장이 값만 빼고 같으면 임베딩과 BM25는 두 셀을 머리글로 구별할 수 없고, 리더도 문맥에서 어느 값이 무엇인지 알 수 없다. 그런데 추정한 머리글 경로만으로는 이 전제가 깨질 수 있다. MultiHiertt train 분할에서 같은 문서 안에 값을 뺀 문장이 똑같은 다른 셀이 있는 데이터 셀의 비율은 v1 규칙에서 27.6%(429,048개 중), v3.3 규칙에서 11.8%(423,473개 중)였다. 예를 들어 한 표에서 네 열의 윗층 머리글이 빠지면 네 셀이 모두 "Recoveries of loans and leases previously charged off > 2015: 값"이라는 같은 문장이 된다.
 
@@ -40,13 +40,13 @@
 2. **위치.** 그래도 같으면 행 번호("row N") 또는 열 번호("column N")를 더한다.
 3. **표 번호.** 문서 안의 다른 표와 같은 문장이 있는 표는 모든 행 경로 앞에 "Table k"(문서 안 순서)를 붙인다.
 
-2와 3은 질문이 부를 수 없는 식별자이므로 고유 라벨이 아니며, 같은 문장을 가르는 마지막 수단이다. 이 규칙으로 train 분할에서 문장이 바뀐 셀은 14.4%다. 그중 표 안의 글이 더해진 셀이 2.7%, 행·열 번호가 더해진 셀이 6.3%, 표 번호가 붙은 셀이 6.8%다(한 셀에 둘 이상이 더해질 수 있다). 적용 후 같은 문서 안에 같은 문장인 셀은 train과 validation 모두 0개이며, 구현은 중복이 하나라도 남으면 멈추도록 했다. 규칙은 정답이나 답변 결과를 보지 않고 중복 개수만으로 정했다. 다만 이 문제를 발견한 계기는 답변 결과의 사후 분석이다(5.5절). HiTab에는 이 고유화를 적용하지 않았다(6.3절).
+2와 3은 질문이 부를 수 없는 식별자이므로 고유 라벨이 아니며, 같은 문장을 가르는 마지막 수단이다. 이 규칙으로 train 분할에서 문장이 바뀐 셀은 14.4%다. 그중 표 안의 글이 더해진 셀이 2.7%, 행·열 번호가 더해진 셀이 6.3%, 표 번호가 붙은 셀이 6.8%다(한 셀에 둘 이상이 더해질 수 있다). 적용 후 같은 문서 안에 같은 문장인 셀은 train과 validation 모두 0개이며, 구현은 중복이 하나라도 남으면 멈추도록 했다. 규칙은 정답이나 답변 결과를 보지 않고 중복 개수만으로 정했다. 다만 이 문제를 발견한 계기는 답변 결과의 사후 분석이다(5.5절). HiTab에는 이 고유화를 적용하지 않았다(6.5절).
 
 **잎 라벨 머리말(HiTab 비교 변형 sleaf).** 위 문장 앞에 행 경로와 열 경로의 마지막 층(잎 라벨)을 한 번 더 붙인 변형(sleaf)을 비교로 함께 실었다. 본 방법은 이 머리말을 쓰지 않는다.
 
 > {행 잎} / {열 잎}: In the table '{고유 라벨}', among {행 경로}, the value of {열 경로} is {값}.
 
-같은 표 안에서 두 셀의 문장은 잎 라벨 몇 단어만 다르므로, 그 단어를 문장 앞에 한 번 더 둔 변형이다. 잎 라벨 머리말의 유무는 질문이 속한 표 안 검색에서 구별되지 않았다(sleaf .9586 대 본 방법 .9637, 7:12, p=.36, query count=991). 라벨 효과 실험(5.1절)도 본 방법과 같은 머리말 없는 틀로 수행했다.
+같은 표 안에서 두 셀의 문장은 잎 라벨 몇 단어만 다르므로, 그 단어를 문장 앞에 한 번 더 둔 변형이다. 잎 라벨 머리말의 유무는 질문이 속한 표 안 검색에서 구별되지 않았다(sleaf .9586 대 본 방법 .9637, 7:12, p=.36, query count=991). 라벨 효과 실험(5.1절)도 본 방법과 같은 머리말 없는 틀로 수행했다. 본 방법의 템플릿을 sleaf가 아닌 s3c로 정한 결정은 같은 HiTab test 300건의 답변 결과(s3c 79.0%, sleaf 75.0%)가 보고된 뒤에 내려졌으며, 결정 사유는 기록되어 있지 않다(6.5절). MultiHiertt 검색에서는 sleaf가 본 방법보다 유의하게 높았다(5.4절).
 
 표 3-1은 HiTab의 한 질문에 대해 본 방법과 비교군이 색인하는 단위의 실제 텍스트를 보인다.
 
@@ -57,10 +57,10 @@
 | 본 방법 | In the table 'agri-food industry sub-groups for workers aged 15 years and over, two agricultural regions of ontario, 2011', among percent > food service, the value of eastern ontario > french-language workers is 52.1. |
 | 고정 청크 | # agri-food industry sub-groups … 2011 / \| sub-groups of the agri-food industry \| eastern ontario \| \| northern ontario \| \| … |
 | TableRAG(Yu) 청크 | File name: agri-food industry sub-groups … 2011 / Table name: … / \| sub-groups of the agri-food industry \| eastern ontario \| … |
-| TableRAG(Chen) RowCol | # agri-food industry … / \| row \| french-language workers \| other workers \| … \| / \| input and service supply \| 2.9 \| 2.1 \| 2.9 \| 1.3 \| … |
-| TableRAG(Chen) RandRow | agri-food industry … 2011 \| food, beverage, and tobacco processing\|9.7\|6.0\|3.0\|3.3 |
-| TableRAG(Chen) leaf | {"column_name": "sub-groups of the agri-food industry", "cell_value": "food, beverage, and tobacco processing"} |
-| TableRAG(Chen) path | {"column_name": "eastern ontario > french-language workers", "dtype": "float64", "min": 2.9, "max": 52.1} |
+| RowCol | # agri-food industry … / \| row \| french-language workers \| other workers \| … \| / \| input and service supply \| 2.9 \| 2.1 \| 2.9 \| 1.3 \| … |
+| RandRow | agri-food industry … 2011 \| food, beverage, and tobacco processing\|9.7\|6.0\|3.0\|3.3 |
+| TableRAG 셀 검색 재구현(leaf) | {"column_name": "sub-groups of the agri-food industry", "cell_value": "food, beverage, and tobacco processing"} |
+| TableRAG 셀 검색 재구현(path) | {"column_name": "eastern ontario > french-language workers", "dtype": "float64", "min": 2.9, "max": 52.1} |
 
 본 방법의 문장은 값 `52.1` 하나에 표 제목과 두 머리글 경로를 모두 붙인다. 반면 청크와 행 단위 표현은 여러 값을 한 단위에 담고, 상위 머리글은 첫 청크나 첫 줄에만 있다.
 
