@@ -42,11 +42,11 @@
 
 2와 3은 질문이 부를 수 없는 식별자이므로 고유 라벨이 아니며, 같은 문장을 가르는 마지막 수단이다. 이 규칙으로 train 분할에서 문장이 바뀐 셀은 14.4%다. 그중 표 안의 글이 더해진 셀이 2.7%, 행·열 번호가 더해진 셀이 6.3%, 표 번호가 붙은 셀이 6.8%다(한 셀에 둘 이상이 더해질 수 있다). 적용 후 같은 문서 안에 같은 문장인 셀은 train과 validation 모두 0개이며, 구현은 중복이 하나라도 남으면 멈추도록 했다. 규칙은 정답이나 답변 결과를 보지 않고 중복 개수만으로 정했다. 다만 이 문제를 발견한 계기는 답변 결과의 사후 분석이다(5.5절). HiTab에는 이 고유화를 적용하지 않았다(6.3절).
 
-**잎 라벨 머리말(HiTab).** HiTab의 본 방법은 위 문장 앞에 행 경로와 열 경로의 마지막 층(잎 라벨)을 한 번 더 붙인다.
+**잎 라벨 머리말(HiTab 비교 변형 sleaf).** 위 문장 앞에 행 경로와 열 경로의 마지막 층(잎 라벨)을 한 번 더 붙인 변형(sleaf)을 비교로 함께 실었다. 본 방법은 이 머리말을 쓰지 않는다.
 
 > {행 잎} / {열 잎}: In the table '{고유 라벨}', among {행 경로}, the value of {열 경로} is {값}.
 
-같은 표 안에서 두 셀의 문장은 잎 라벨 몇 단어만 다르므로, 그 단어를 문장 앞에 한 번 더 둔 변형이다. 잎 라벨 머리말의 유무는 질문이 속한 표 안 검색에서 구별되지 않았다(.9586 대 .9637, 7:12, p=.36, query count=991). 라벨 효과 실험(5.1절)은 머리말 없는 틀을 기준으로 수행했다.
+같은 표 안에서 두 셀의 문장은 잎 라벨 몇 단어만 다르므로, 그 단어를 문장 앞에 한 번 더 둔 변형이다. 잎 라벨 머리말의 유무는 질문이 속한 표 안 검색에서 구별되지 않았다(sleaf .9586 대 본 방법 .9637, 7:12, p=.36, query count=991). 라벨 효과 실험(5.1절)도 본 방법과 같은 머리말 없는 틀로 수행했다.
 
 표 3-1은 HiTab의 한 질문에 대해 본 방법과 비교군이 색인하는 단위의 실제 텍스트를 보인다.
 
@@ -54,7 +54,7 @@
 
 | 표현 | 색인 단위 텍스트(앞부분) |
 |---|---|
-| 본 방법 | food service / french-language workers: In the table 'agri-food industry sub-groups for workers aged 15 years and over, two agricultural regions of ontario, 2011', among percent > food service, the value of eastern ontario > french-language workers is 52.1. |
+| 본 방법 | In the table 'agri-food industry sub-groups for workers aged 15 years and over, two agricultural regions of ontario, 2011', among percent > food service, the value of eastern ontario > french-language workers is 52.1. |
 | 고정 청크 | # agri-food industry sub-groups … 2011 / \| sub-groups of the agri-food industry \| eastern ontario \| \| northern ontario \| \| … |
 | TableRAG(Yu) 청크 | File name: agri-food industry sub-groups … 2011 / Table name: … / \| sub-groups of the agri-food industry \| eastern ontario \| … |
 | TableRAG(Chen) RowCol | # agri-food industry … / \| row \| french-language workers \| other workers \| … \| / \| input and service supply \| 2.9 \| 2.1 \| 2.9 \| 1.3 \| … |
@@ -66,7 +66,7 @@
 
 ## 3.4 임베딩과 하이브리드 검색
 
-**임베딩.** 셀 문장과 질문을 `BAAI/bge-base-en-v1.5`(Xiao et al., 2024)로 임베딩한다. 이 모델의 사용법대로 질문 앞에만 검색용 지시문("Represent this sentence for searching relevant passages: ")을 붙이고 문장에는 붙이지 않는다. 벡터는 정규화해 코사인 유사도를 쓴다. 입력 한도(512토큰)를 넘는 셀 문장은 없었다(HiTab 67,664문장 중 최대 159토큰).
+**임베딩.** 셀 문장과 질문을 `BAAI/bge-base-en-v1.5`(Xiao et al., 2024)로 임베딩한다. 이 모델의 사용법대로 질문 앞에만 검색용 지시문("Represent this sentence for searching relevant passages: ")을 붙이고 문장에는 붙이지 않는다. 벡터는 정규화해 코사인 유사도를 쓴다. 입력 한도(512토큰)를 넘는 셀 문장은 없었다(HiTab 67,664문장 중 최대 144토큰).
 
 **BM25.** 같은 셀 문장으로 BM25(Robertson and Zaragoza, 2009) 색인을 만든다.
 

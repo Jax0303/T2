@@ -4,9 +4,11 @@
 그룹 층화 부트스트랩 95% CI(10,000회, seed 0), 본 방법 대 각 조건 정확 McNemar(그룹별) 와 가중 차이 CI.
 
   .venv/bin/python scripts/mh_cap300_report.py            # results/mh_arms/cap300_20260924/*.jsonl
+  .venv/bin/python scripts/mh_cap300_report.py --pop 2885 --out-dir <새 폴더>   # 가중치 = 최종 머리글 규칙의 그룹 크기
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -16,7 +18,9 @@ from scipy.stats import binomtest
 
 ROOT = Path(__file__).resolve().parent.parent
 D = ROOT / "results" / "mh_arms" / "cap300_20260924"
-POP = {"lookup_m1": 211, "lookup_m2+": 365, "arith_m1": 71, "arith_m2+": 2224}   # 채점 2,871 의 그룹 크기
+POPS = {"2871": {"lookup_m1": 211, "lookup_m2+": 365, "arith_m1": 71, "arith_m2+": 2224},    # 처음 머리글 규칙의 채점 2,871
+        "2885": {"lookup_m1": 212, "lookup_m2+": 367, "arith_m1": 71, "arith_m2+": 2235}}    # 최종 머리글 규칙의 채점 2,885
+POP = POPS["2871"]
 W = {g: n / sum(POP.values()) for g, n in POP.items()}
 REF = "cell_uniq"   # 본 방법 주 조건(v3.3u, 2026-09-25 사용자 결정). v1 은 "cell"
 ORDER = ["cell_uniq", "cell", "cell_hv33r", "fulltable", "chunk", "rowcol", "trag_hetero", "tablerag_path", "tablerag_leaf",
@@ -42,6 +46,14 @@ def boot(ids_by_group, f, rng):
 
 
 def main() -> int:
+    global POP, W
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pop", choices=POPS, default="2871")
+    ap.add_argument("--out-dir", type=Path, default=D)
+    a = ap.parse_args()
+    POP = POPS[a.pop]
+    W = {g: n / sum(POP.values()) for g, n in POP.items()}
+    a.out_dir.mkdir(parents=True, exist_ok=True)
     names = [n for n in ORDER if (D / f"{n}.jsonl").exists()]
     data = {n: load(n) for n in names}
     ref = data[REF]
@@ -72,7 +84,7 @@ def main() -> int:
                 c = int(sum(rows[q]["answer_correct"] and not ref[q]["answer_correct"] for q in ids))
                 res[n]["vs_cell"]["mcnemar"][g] = {"cell_only": b, "this_only": c,
                                                   "p": float(binomtest(b, b + c).pvalue) if b + c else 1.0}
-    (D / "report.json").write_text(json.dumps(res, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    (a.out_dir / "report.json").write_text(json.dumps(res, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     lines = ["| 조건 | 조회 1 | 조회 2+ | 산술 1 | 산술 2+ | 가중 전체 [95% CI] | 본 방법 − 이 조건 [95% CI] |",
              "|---|---:|---:|---:|---:|---|---|"]
     for n, r in res.items():
@@ -83,7 +95,7 @@ def main() -> int:
         v = r.get("vs_cell")
         lines.append(f"| {n} | " + " | ".join(cells) + f" | {r['weighted_em']:.4f} [{r['ci95'][0]:.4f}, {r['ci95'][1]:.4f}] | "
                      + (f"{v['weighted_diff_cell_minus_this']:+.4f} [{v['ci95'][0]:+.4f}, {v['ci95'][1]:+.4f}]" if v else "—") + " |")
-    (D / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (a.out_dir / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0
 
