@@ -1103,6 +1103,26 @@ def lookup_arith_posthoc():
     return out + [V('정답 셀 1개 그룹·m=1 층', 1, SP), V('T9 m 경계', 20, SX)]
 
 
+@src
+def mh_lookup1_evidence():
+    """2026-09-28 6.5절·부록 I: MultiHiertt 답변 표본 조회·셀 1개 211문항의 근거 셀 판정(labels.csv 를 analyze.py 로 집계)."""
+    r = 'results/mh_lookup1_evidence_20260928/summary.json'
+    d, S = jload(r), R(r)
+    nd, ne = d['not_determined_by_one_cell'], d['answer_ne_cell']
+    out = [V('n_lookup_m1', d['n_lookup_m1'], S), V('answer_ne_cell.n', ne['n'], S),
+           V('answer_ne_cell.A_keyword.n', ne['A_keyword']['n'], S), V('answer_ne_cell.B_rest.n', ne['B_rest']['n'], S),
+           V('answer_eq_cell.n', d['answer_eq_cell']['n'], S), V('eq_cell_not_determined', d['eq_cell_not_determined'], S),
+           V('not_determined.n', nd['n'], S), V('not_determined.share', nd['share'], S),
+           V('not_determined.S', nd['S_superlative_compare'], S), V('not_determined.R', nd['R_rank'], S),
+           V('not_determined.C', nd['C_count_trend_sum'], S),
+           V('determined_by_one_cell.n', d['exploratory_answer']['determined_by_one_cell']['n'], S)]
+    for g, t in d['table_I1'].items():
+        out += [V(f'table_I1.{g}.{k}', t.get(k, 0), S) for k in ('n', 'S', 'R', 'C', 'N')]
+    out += [V(f'note_counts.{k}', v, S) for k, v in d['note_counts'].items()]
+    out += [V(f'example_percent_same_value[{i}]', float(v), S) for i, v in enumerate(d['example_percent_same_value'])]
+    return out
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -1145,6 +1165,7 @@ L('03_method.md', 'MultiHiertt 리더 설정은 validation 분할 60건', 'reade
 L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모집단 |', '| 답변 정확도 표본 |'], HMETA, 'mh_pop', 'mh_sample', 'interim_meta')
 L('04_setup.md', '**HiTab.** test 분할 1,584 질의', HMETA)
 L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', 'mh_test', 'mh_pop', 'interim_meta', 'recheck')
+L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', HMETA)                     # 2026-09-28 HiTab 머리글 답 336 대비 문장
 L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta', 'recheck')
 L('04_setup.md', '[^1]: test.json의 sha256은', 'mh_test')
 L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
@@ -1232,6 +1253,11 @@ L('09_appendix.md', ['β 선택에 쓴 MultiHiertt dev(validation) 911건은', '
 TH1 = [('| β=1.0 (라벨 없음) |', '1.0'), ('| β=0.9 |', '0.9'), ('| β=0.8 |', '0.8'), ('| β=0.7 |', '0.7'), ('| β=0.6 |', '0.6'),
        ('| β=0.5 |', '0.5'), ('| β=0.4 |', '0.4'), ('| β=0.3 |', '0.3'), ('| β=0.2 |', '0.2'), ('| β=0.1 |', '0.1'), ('| 접두어 |', 'prefix')]
 L('09_appendix.md', [a for a, _ in TH1], 'alpha_dev')
+L('06_discussion.md', '**정답 근거 주석의 범위.**', 'mh_lookup1_evidence')
+L('09_appendix.md', ['6.5절의 수치는 MultiHiertt 답변 표본 882건 중', '1. 정답과 근거 셀 값을 비교했다.', '2. 이 102문항을 분류 전에',
+                     '3. 211문항 전부를 읽고', '표 I-1. 조회·셀 1개 211문항의 판정', '| 정답 ≠ 근거 셀 값, 키워드 있음 |',
+                     '| 정답 ≠ 근거 셀 값, 키워드 없음 |', '| 정답 = 근거 셀 값 |', '| 합계 | 211 |', '키워드가 있는 91문항은 모두'],
+  'mh_lookup1_evidence', 'mh_sample')
 
 # 2026-09-28 원고 점검 반영
 T53S = ['| **본 방법** | 20.0 |', '| sleaf (잎 라벨 머리말 변형) | 20.0', '| 표 단위 | 118.1', '| 행 단위 | 22.8', '| 고정 청크 | 67.3',
@@ -1721,7 +1747,8 @@ KOA('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', K_ET
 KOA('02_related.md', '**MixRAG.** Zhang et al.(2026)은', K_CITE)                          # 선행 논문이 보고한 값
 KOA('02_related.md', '| MT2Net (Zhao et al., 2022) |', K_CITE)
 KOA('09_appendix.md', 'RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', K_SET, ['12'])
-KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])                     # 인용 위치 Table 2
+KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])
+KOA('09_appendix.md', '키워드가 있는 91문항은 모두', K_ETC, ['12'])                          # 질문 인용 "less than 12 months"                     # 인용 위치 Table 2
 # 2026-09-28 인용 대조 반영: 선행 논문이 보고한 값·인용 쪽 번호(원고 줄 전체)
 KOA('01_intro.md', '표 RAG에서 흔한 방식은', K_CITE)
 KOA('02_related.md', '**HiTab.** Cheng et al.(2022)은', K_CITE)
