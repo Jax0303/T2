@@ -168,7 +168,7 @@ def answers():
     old = json.loads((ROOT / "results/stats_20260926/stats.json").read_text())["item3b_hitab300"]
     h = {"family": fam, "verdict_changes_vs_stats_item3b": verdict_changes({k: v["p_holm"] for k, v in old.items()}, fam),
          "other_rows_holm_changed": {a: [old[a]["p_holm"], fam[a]["p_holm"]] for a in fam
-                                     if a not in TR and abs(old[a]["p_holm"] - fam[a]["p_holm"]) > 1e-12 * max(1, old[a]["p_holm"])},
+                                     if a not in TR and abs(old[a]["p_holm"] - fam[a]["p_holm"]) > 1e-9 * old[a]["p_holm"]},
          "tablerag": {}}
     for a in TR:
         rec = {r["query_id"]: r for r in jl(f"{OF}/hitab/hitab_test_gold_{a}_official_records.jsonl")}
@@ -220,7 +220,7 @@ def answers():
     res["mh882_final"] = {"reference": {"name": "cell_uniq", "correct": sum(em(ref).values())}, "family": fam,
                           "verdict_changes_vs_stats_item3b": verdict_changes({k: v["p_holm"] for k, v in old.items()}, fam),
                           "other_rows_holm_changed": {k: [old[k]["p_holm"], fam[k]["p_holm"]] for k in fam
-                                                      if k in old and abs(old[k]["p_holm"] - fam[k]["p_holm"]) > 1e-12 * max(1, old[k]["p_holm"])},
+                                                      if k in old and abs(old[k]["p_holm"] - fam[k]["p_holm"]) > 1e-9 * old[k]["p_holm"]},
                           "tablerag_groups": {f"{a}_official": {g: mc(em(ref), em(mh[f"{a}_official"]), v)
                                                                  | {"correct": sum(em(mh[f"{a}_official"])[q] for q in v), "n": len(v)}
                                                                  for g, v in grp.items()} for a in TR}}

@@ -18,7 +18,7 @@ const font = (name) => ({ ascii: name, hAnsi: name, eastAsia: name });
 const PAGE_W = 11906, PAGE_H = 16838, MARGIN = 2268, HF = 567;   // A4, 여백 사방 40mm, 머리말·꼬리말 10mm
 const TEXT_W = PAGE_W - 2 * MARGIN;                               // 본문 폭 130mm
 const LAND_W = PAGE_H - 2 * MARGIN;                               // 가로 쪽 본문 폭 217mm
-const LANDSCAPE = new Set(["5-8"]);                               // 가로 쪽 구역에 넣는 표
+const LANDSCAPE = new Set(["5-8", "F-3"]);                               // 가로 쪽 구역에 넣는 표
 const LAND = { orientation: PageOrientation.LANDSCAPE }, PORT = { orientation: PageOrientation.PORTRAIT };   // 구역 나눔 표시
 
 function runs(text, base = {}) {

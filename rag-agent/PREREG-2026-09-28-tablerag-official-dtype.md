@@ -120,3 +120,11 @@ MultiHiertt 그룹별(원본 규칙 대 원고 규칙): leaf 조회1 .5047 대 .
   `scripts/fair_filter_eval.py --arms tablerag_{leaf,path} --records <공식 규칙 records>` (필터 포함; 이를 위해 `--records` 를 필터와
   함께 쓸 수 있게 조건 한 줄을 풀었다, rowexp 는 그대로). 출력 `results/tablerag_official_20260928/answers/hitab_tablerag_{leaf,path}_official_filter_rows.jsonl`.
   이 실행의 무필터 답은 위 무필터 실행과 같아야 한다(같은 리더·temperature 0) — 다르면 보고한다.
+
+### 사후 추가 결과 (2026-09-28 10:33~12:53, `results/tablerag_official_20260928/answers/`, 집계 `replace/values.{py,json}`)
+
+- HiTab 300 무필터: leaf 25건(.0833), path 42건(.1400) (이전 문맥 24건·43건). 본 방법 대비 214:2, 198:3. 표 5-4 Holm 8개 묶음의 .05 판정 변경 0, 다른 행의 Holm 값 변화 0.
+- 부록 A 필터 실행의 무필터 답은 무필터 실행과 300건 모두 같았다. 필터 후 leaf .0633(13:7, p=.26), path .1033(21:10, p=.071).
+- MultiHiertt 882(최종 머리글 규칙 문맥): leaf 79건, path 114건. 최종 규칙 본 방법(408) 대비 343:14, 316:22. 12개 묶음의 .05 판정 변경 0
+  (Holm 값이 바뀐 다른 행은 RandRow 두 행뿐이며 원고에 쓰이지 않는다). 부록 F 처음 규칙 8개 묶음: 판정 변경 0, RandRow(값만) Holm 3.9×10⁻⁷⁰ → 2.6×10⁻⁷⁰.
+- 검색 가족(HiTab 표 안·538표·MultiHiertt)도 판정 변경 0. 원고에 쓰인 다른 행의 Holm 값 변화 0.
