@@ -422,6 +422,8 @@ def main() -> int:
                     help="JSON {uid: 말}: 질문 뒤에 붙인다 (PREREG-2026-09-28-mh-name-append.md 진단용)")
     ap.add_argument("--shard", type=int, default=50000)
     ap.add_argument("--dump-context", type=int, default=1)
+    ap.add_argument("--dump-ranked", type=int, default=20,
+                    help="doc 기록에 남길 순위 순 상위 단위 수(셀 좌표 ranked_units·단위 토큰 수 ranked_tokens; PREREG-2026-09-28-mh-only.md §3)")
     ap.add_argument("--cache-dir", default=".cache/mh_arms")
     ap.add_argument("--out-dir", default=None,
                     help="기본 results/mh_arms, results/strict_fixed_budget, results/strict_no_k")
@@ -558,6 +560,9 @@ def main() -> int:
         print(f"[label-mix] {mix_info}", flush=True)
 
     TOP = 2048            # 진단·선택에 충분한 상한. 전체 argsort 를 피한다.
+    from transformers import AutoTokenizer
+    _tok = AutoTokenizer.from_pretrained(a.context_tokenizer)
+    n_tok = lambda t: len(_tok(t, add_special_tokens=False)["input_ids"])
     count, tok_info = sr.token_counter(a.context_tokenizer) if strict else (None, None)
     strict_rows, pending = [], []
     ids = lambda cells: {cell_id(c, hdr) for c in cells}
@@ -643,7 +648,9 @@ def main() -> int:
                 # 각 단위가 담은 셀 좌표(문서 안 짧은 id "표-행-열", 펼친 격자 좌표), 정답 셀 좌표.
                 short = lambda c: cell_id(c, hdr).split("::", 1)[1]
                 r["gold_ids"] = sorted(short(c) for c in q["gold"])
-                r[scope]["ranked_units"] = [sorted(short(c) for c in covers[p]) for p in order[:20]]
+                r[scope]["ranked_units"] = [sorted(short(c) for c in covers[p]) for p in order[:a.dump_ranked]]
+                # 단위 텍스트만의 토큰 수(--context-tokenizer, 기본 Qwen3-8B) — 토큰 예산 표용
+                r[scope]["ranked_tokens"] = [n_tok(texts[p]) for p in order[:a.dump_ranked]]
             if a.dump_context:
                 r[scope]["context"] = ctx
                 r[scope]["context_sha256"] = digest(ctx)
