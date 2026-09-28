@@ -1223,7 +1223,7 @@ L('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 �
 T61 = ['| HiTab (300) | 셀 문장 |', '| HiTab (300) | 고정 청크 |', '| MultiHiertt (882) | 셀 문장 |', '| MultiHiertt (882) | 고정 청크 |']
 L('06_discussion.md', T61, 'decomp', 'reader_test', 'mh_sample', HANS)
 L('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'], 'decomp', 'reader_test')
-L('06_discussion.md', '두 방법 모두 정답 셀 전부를 문맥에 포함한 문항에서는 답변 정확도에 차이가 없었다.', 'step4', 'decomp', 'reader_test')
+L('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', 'step4', 'decomp', 'reader_test')
 L('06_discussion.md', 'MultiHiertt를 처음 머리글 규칙으로 비교하면', 'decomp', 'reader_test')
 L('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', 'stats3b', 'hitab_oracle', HANS, 'reader_test')
 L('05_results.md', '**참고 조건의 해석.**', 'stats3b', HANS, 'reader_test', 'token_totals')
@@ -1247,7 +1247,7 @@ L('07_conclusion.md', '3. **답변 정확도.**', *CLAIM)
 L('07_conclusion.md', '남은 과제는 다음과 같다.', 'mh_sample', 'hitab_dup')
 TA1 = ['| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) 청크 | .6000', '| RowCol | .4700', '| RandRow | .1533',
        '| TableRAG 셀 검색 재구현(path) | .1400', '| TableRAG 셀 검색 재구현(leaf) | .0833']
-L('09_appendix.md', ['검색 문맥에서 필요한 줄만 LLM이', '표 A-1.', *TA1, 'sleaf(이전 조건)는 필터 후'], 'hitab_answer300')
+L('09_appendix.md', ['검색 결과에서 필요한 줄만 LLM이', '표 A-1.', *TA1, 'sleaf(이전 조건)는 필터 후'], 'hitab_answer300')
 L('09_appendix.md', 'HiTab 단일 셀 조회 991건에서 이 조건의', 'hitab_oracle', HMETA)
 L('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대', '한 건씩 생성하는 방식은 재실행해도'], 'batchcheck')
 L('09_appendix.md', '본 방법의 HiTab 단일 셀 조회 991건 검색 정확도는', HRE)
@@ -1291,7 +1291,7 @@ SLEAF_NAMED = {(f, AT(f, a)) for f, a in [
     ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | 19.41'), ('05_results.md', '본 방법의 답변 정확도는 .7900이다.'),
     ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9528'), ('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개'),
     ('06_discussion.md', '**템플릿 선택에 test 표본 사용.**'),
-    ('09_appendix.md', '검색 문맥에서 필요한 줄만 LLM이'), ('09_appendix.md', '| sleaf(이전 조건) |'),
+    ('09_appendix.md', '검색 결과에서 필요한 줄만 LLM이'), ('09_appendix.md', '| sleaf(이전 조건) |'),
     ('09_appendix.md', 'sleaf(이전 조건)는 필터 후'),
     ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | 20.0'), ('05_results.md', '이 범위에서 본 방법(.9142)은')]}
 
@@ -1349,7 +1349,7 @@ PF('03_method.md', '**고유 라벨(HiTab).**', r'^α 1\.0 n911', r'^α prefix n
 PF('09_appendix.md', '| continuous batching 대', r'^cb_120')
 PF('05_results.md', '본 방법은 .7900 =', r'^s3c\.')
 PF('05_results.md', '주 모집단인 단일 셀 조회에서', r'^chunk\.', r'^s3c\.', r'^sleaf\.')
-PF('06_discussion.md', '두 방법 모두 정답 셀 전부를 문맥에 포함한 문항에서는 답변 정확도에 차이가 없었다.', r'^hitab300', r'^mh882', r'answer_given_hit rate')
+PF('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', r'^hitab300', r'^mh882', r'answer_given_hit rate')
 PF('06_discussion.md', '**가설은 지지되지 않았다.**', r'^dev multihiertt', r'^dev hitab')
 PF('06_discussion.md', '**재정렬 진단.**', r'^rerank')
 PF('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', r'판정', r'hitab_538 A', r'^n_tables$')
@@ -1513,9 +1513,9 @@ EX('05_results.md', '주 모집단인 단일 셀 조회에서', '3:3', HRE, 'chu
 EX('05_results.md', '주 모집단인 단일 셀 조회에서', 'p=1', HRE, 'chunk.multi_cell s3c만:상대만 p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', '.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', '882', 'reader_test', 'test cell n')
-EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 문맥에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '0', 'step4', 'hitab300_s3c_vs_chunk only_other_retrieved ours_correct', 2)
-EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 문맥에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final only_other_retrieved ours_correct', 2)
-EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 문맥에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final neither_retrieved ours_correct', 3)
+EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '0', 'step4', 'hitab300_s3c_vs_chunk only_other_retrieved ours_correct', 2)
+EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final only_other_retrieved ours_correct', 2)
+EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final neither_retrieved ours_correct', 3)
 EX('06_discussion.md', '**가설은 지지되지 않았다.**', '20', 'reader_dev', 'dev multihiertt_dev_primary lookup_m1 n', 1)
 EX('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 20 |', '20', 'bottleneck', 'hitab_538 C_rank51plus')
 EX('06_discussion.md', '**재정렬 진단.**', 'p=.0104', 'bottleneck', 'rerank mh_indoc Holm p', 2)
@@ -1765,7 +1765,7 @@ KOA('09_appendix.md', '키워드가 있는 91문항은 모두', K_ETC, ['12'])  
 # 2026-09-28 인용 대조 반영: 선행 논문이 보고한 값·인용 쪽 번호(원고 줄 전체)
 KOA('01_intro.md', '표 RAG에서 흔한 방식은', K_CITE)
 KOA('02_related.md', '**HiTab.** Cheng et al.(2022)은', K_CITE)
-KOA('02_related.md', '검색된 문맥에 질문과 관련은 있으나', K_CITE)
+KOA('02_related.md', '검색 결과에 질문과 관련은 있으나', K_CITE)
 KOA('02_related.md', '**유형별 보고.**', K_CITE)
 for _a in ('| HiTab 채점기 |', '| TableRAG(Chen) | 스키마 문서 내용 |', '| TableRAG(Chen) | 스키마 검색 |', '| TableRAG(Chen) | 행 라벨 문서 |',
            '| TableRAG(Chen) | 셀 인코딩 예산 B |', '| TableRAG(Chen) | 질의 확장과 검색 개수 K |',   # 숫자 열 판정 행은 2026-09-28 결과값이 들어가 대조한다
