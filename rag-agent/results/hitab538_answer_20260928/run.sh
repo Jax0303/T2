@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# PREREG-2026-09-28-hitab538-answer.md: 다른 세션 run_rest.sh(PID 10604) 와 GPU 작업이 끝난 뒤 조건마다 1회
+# PREREG-2026-09-28-hitab538-answer.md: 다른 세션의 MultiHiertt 답변 두 실행과 GPU 작업이 끝난 뒤 조건마다 1회
 cd "$(dirname "$0")/../.." || exit 1
 export PYTHONPATH=. HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1
 D=results/hitab538_answer_20260928; R=results/rerun_20260926/hitab
-while kill -0 10604 2>/dev/null || pgrep -f '^\.venv/bin/python scripts/(fair_filter_eval|answer_accuracy|hitab_fulltable)' >/dev/null; do sleep 30; done
+# 대기 조건: run_rest.sh 종료, MultiHiertt 답변 두 실행(leaf·path)의 완료 요약 파일 존재(끝날 때만 쓰임), GPU 답변 프로세스 없음
+O=results/tablerag_official_20260928/answers
+while kill -0 10604 2>/dev/null || [ ! -f $O/mh_tablerag_leaf_official.json ] || [ ! -f $O/mh_tablerag_path_official.json ] \
+      || pgrep -f '^\.venv/bin/python scripts/(fair_filter_eval|answer_accuracy|hitab_fulltable)' >/dev/null; do sleep 30; done
 echo "[start] $(date -Is) commit $(git rev-parse --short HEAD)"
 for arm in s3c chunk; do
   .venv/bin/python scripts/fair_filter_eval.py --arms $arm --no-filter \

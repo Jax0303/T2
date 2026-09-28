@@ -1047,17 +1047,26 @@ def tro():
     return out
 
 
+# 문헌 상수(원 출처의 값, 원고에서 옮긴 값이 아님). Qwen2.5-7B-Instruct 모델 카드: "config.json is set for context length up to
+# 32,768 tokens", "Full 131,072 tokens"(YaRN); Qwen2.5 Technical Report(arXiv:2412.15115): "other models to process up to 131,072 tokens".
+QWEN25_LIMIT, QWEN25_YARN_MAX = 32768, 131072
+
+
 @src
 def token_totals():
-    """2026-09-25 표 전체 토큰 집계(Qwen2.5-7B-Instruct 토크나이저, results/problem_def_audit_20260925/corpus_token_totals.json)."""
+    """2026-09-25 표 전체 토큰 집계(Qwen2.5-7B-Instruct 토크나이저, results/problem_def_audit_20260925/corpus_token_totals.json).
+    배수는 집계 파일의 토큰 합(427,228)을 문헌 상수로 나눠 여기서 계산한다(집계 파일의 times_limit_concat·원고 값은 쓰지 않는다)."""
     r = 'results/problem_def_audit_20260925/corpus_token_totals.json'
     d, S = jload(r), R(r)
     h = d['hitab_test_tables']
-    return [V('HiTab test 표 수', h['n_units'], S), V('HiTab test 표 토큰 합', h['tokens_concatenated_with_sep'], S),
-            V('리더 입력 한도', d['limit'], S), V('HiTab test 표 토큰 합 / 입력 한도', h['times_limit_concat'], S),
-            V('HiTab test 표 토큰 합 / 입력 한도 (정수 부분, 원고 "13배")', h['tokens_concatenated_with_sep'] // d['limit'], S),
-            # 131,072 = YaRN 적용 최대 문맥(외부 문헌, 5.5 참고 조건의 해석)
-            V('HiTab test 표 토큰 합 / 131,072', h['tokens_concatenated_with_sep'] / 131072, S + ' + 외부 문헌 131,072')]
+    tok = h['tokens_concatenated_with_sep']
+    assert d['limit'] == QWEN25_LIMIT, '집계 파일의 한도가 문헌 값과 다르다'
+    L = S + ' 토큰 합 ÷ 문헌 상수'
+    return [V('HiTab test 표 수', h['n_units'], S), V('HiTab test 표 토큰 합', tok, S),
+            V('리더 입력 한도 (집계 파일, 문헌 값과 같음)', d['limit'], S),
+            V('HiTab test 표 토큰 합 / 32,768', tok / QWEN25_LIMIT, L),
+            V('HiTab test 표 토큰 합 / 32,768 (정수 부분, 원고 "약 13배")', tok // QWEN25_LIMIT, L),
+            V('HiTab test 표 토큰 합 / 131,072', tok / QWEN25_YARN_MAX, L)]
 
 
 @src
