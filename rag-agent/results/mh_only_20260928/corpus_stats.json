@@ -1,0 +1,106 @@
+{
+ "n_docs": 2885,
+ "n_tables_per_doc": {
+  "mean": 4.05,
+  "median": 4,
+  "max": 7,
+  "min": 2,
+  "<=20 비율": 1.0,
+  "<=5 비율": 0.8711
+ },
+ "n_cells_per_doc": {
+  "mean": 145.66,
+  "median": 134,
+  "max": 557,
+  "min": 36,
+  "<=20 비율": 0.0,
+  "<=5 비율": 0.0
+ },
+ "chunk": {
+  "name": "1,000자 청크",
+  "문서당 단위 수": {
+   "mean": 4.77,
+   "median": 5,
+   "max": 12,
+   "min": 2,
+   "<=20 비율": 1.0,
+   "<=5 비율": 0.7276
+  },
+  "색인 단위 총수": 13891,
+  "본문 단락 포함": "아니오 — 색인은 표 markdown 만(build_corpus 는 tables 만 받음)",
+  "셀 커버율(어느 단위에도 온전히 담기지 않은 셀 = 경계에서 잘림)": {
+   "cells_total": 420236,
+   "cells_covered": 420236,
+   "uncovered_ratio": 0.0
+  },
+  "단위 예시(첫 단위 앞 200자)": "# \n|  | Change in long-term rateof return on plan assets |  |\n| Increase (decrease) in expense | Increase | Decrease |\n| U.S. plans | $-14 | $14 |\n| U.K. plans | -35 | 35 |\n| The Netherlands plan | -5"
+ },
+ "trag_hetero": {
+  "name": "TableRAG(Yu) 청킹",
+  "문서당 단위 수": {
+   "mean": 5.16,
+   "median": 5,
+   "max": 14,
+   "min": 2,
+   "<=20 비율": 1.0,
+   "<=5 비율": 0.6288
+  },
+  "색인 단위 총수": 14989,
+  "본문 단락 포함": "아니오 — 색인은 표 markdown 만(build_corpus 는 tables 만 받음)",
+  "셀 커버율(어느 단위에도 온전히 담기지 않은 셀 = 경계에서 잘림)": {
+   "cells_total": 420236,
+   "cells_covered": 420236,
+   "uncovered_ratio": 0.0
+  },
+  "단위 예시(첫 단위 앞 200자)": "File name: \nTable name: \n|  | Change in long-term rateof return on plan assets |  |\n| Increase (decrease) in expense | Increase | Decrease |\n| U.S. plans | $-14 | $14 |\n| U.K. plans | -35 | 35 |\n| The"
+ },
+ "row": {
+  "name": "행 단위",
+  "문서당 단위 수": {
+   "mean": 34.57,
+   "median": 32,
+   "max": 121,
+   "min": 11,
+   "<=20 비율": 0.1217,
+   "<=5 비율": 0.0
+  },
+  "색인 단위 총수": 100546,
+  "본문 단락 포함": "아니오 — 색인은 표 markdown 만(build_corpus 는 tables 만 받음)",
+  "셀 커버율(어느 단위에도 온전히 담기지 않은 셀 = 경계에서 잘림)": {
+   "cells_total": 420236,
+   "cells_covered": 420236,
+   "uncovered_ratio": 0.0
+  },
+  "단위 예시(첫 단위 앞 200자)": "U.S. plans|$-14|$14"
+ },
+ "table": {
+  "name": "표 단위",
+  "문서당 단위 수": {
+   "mean": 4.05,
+   "median": 4,
+   "max": 7,
+   "min": 2,
+   "<=20 비율": 1.0,
+   "<=5 비율": 0.8711
+  },
+  "색인 단위 총수": 11793,
+  "본문 단락 포함": "아니오 — 색인은 표 markdown 만(build_corpus 는 tables 만 받음)",
+  "셀 커버율(어느 단위에도 온전히 담기지 않은 셀 = 경계에서 잘림)": {
+   "cells_total": 420236,
+   "cells_covered": 420236,
+   "uncovered_ratio": 0.0
+  },
+  "단위 예시(첫 단위 앞 200자)": "U.S. plans > Change in long-term rateof return on plan assets > Increase: $-14 | U.S. plans > Change in long-term rateof return on plan assets > Decrease: $14 | U.K. plans > Change in long-term rateof"
+ },
+ "rowcol": {
+  "name": "행·열 단위",
+  "문서당 행+열 수": {
+   "mean": 54.66,
+   "median": 52,
+   "max": 166,
+   "min": 23,
+   "<=20 비율": 0.0,
+   "<=5 비율": 0.0
+  }
+ }
+}
