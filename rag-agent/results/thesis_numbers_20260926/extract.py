@@ -1048,6 +1048,17 @@ def tro():
 
 
 @src
+def token_totals():
+    """2026-09-25 표 전체 토큰 집계(Qwen2.5-7B-Instruct 토크나이저, results/problem_def_audit_20260925/corpus_token_totals.json)."""
+    r = 'results/problem_def_audit_20260925/corpus_token_totals.json'
+    d, S = jload(r), R(r)
+    h = d['hitab_test_tables']
+    return [V('HiTab test 표 수', h['n_units'], S), V('HiTab test 표 토큰 합', h['tokens_concatenated_with_sep'], S),
+            V('리더 입력 한도', d['limit'], S), V('HiTab test 표 토큰 합 / 입력 한도', h['times_limit_concat'], S),
+            V('HiTab test 표 토큰 합 / 입력 한도 (정수 부분, 원고 "13배")', h['tokens_concatenated_with_sep'] // d['limit'], S)]
+
+
+@src
 def header_history():
     """2026-09-28 4.1·6.5 머리글 규칙 수정 이력 수치(results/header_history_20260928/values.json)."""
     r = 'results/header_history_20260928/values.json'
@@ -1151,7 +1162,7 @@ T52 = ['| **본 방법** | .9637', '| sleaf (잎 라벨 머리말 변형) | .958
 L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', *T52, 'RandRow·path·leaf와의 비교는 9칸', '주 모집단인 단일 셀 조회에서', '**산술 216건에서는'],
   HRE, 'step4', HMETA)
 T53 = ['| **본 방법** | 19.41', '| sleaf (잎 라벨 머리말 변형) | 19.41', '| 고정 청크 | 69.06', '| TableRAG(Yu) 청크 | 52.09', '| RowCol | 22.52',
-       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.48', '| TableRAG 셀 검색 재구현(leaf) | 17.71', '| 표 전체 (검색 없음) | — | — | .7900']
+       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.48', '| TableRAG 셀 검색 재구현(leaf) | 17.71', '| 참고: 검색 없이 정답 표 전체 입력 | — | — | .7900']
 L('05_results.md', ['표 5-4는 단일 셀 조회 300건에서', '표 5-4. HiTab 답변 정확도', *T53, '괄호 안은 검색에 성공한 질의 수다.',
                     '본 방법의 답변 정확도는 .7900이다.', '본 방법은 .7900 =', '**표 전체와의 비교.** 검색 없이 질문의 표'],
   HANS, 'decomp', 'stats3b', HOTH, 'hitab_answer300')
@@ -1166,7 +1177,7 @@ L('05_results.md', ['표 5-6은 본 방법의 머리글 규칙만', '| v1 (사�
 L('05_results.md', ['MultiHiertt가 함께 제공하는 셀 문장(table_description', '표 5-7. 본 방법과 table_description',
                     '| 조회·셀 1개 | 212 |', '| 조회·셀 2개+ | 367 |', '| 산술·셀 1개 | 71 |', '| 산술·셀 2개+ | 2,235 |', '| 전체 | 2,885 | .8634',
                     'Holm p는 네 그룹을 한 묶음으로', '전체 검색 정확도는 본 방법 86.34%'], 'tdesc', 'mh_meta', 'mh_pop')
-T56 = ['| **본 방법 (셀 문장, 최종 규칙)** |', '| 고정 청크 (최종 규칙) |', '| 표 전체 (검색 없음) | .5592', '| TableRAG(Yu) 청크 | .5545']
+T56 = ['| **본 방법 (셀 문장, 최종 규칙)** |', '| 고정 청크 (최종 규칙) |', '| 참고: 검색 없이 문서 표 전체 입력 | .5592', '| TableRAG(Yu) 청크 | .5545']
 L('05_results.md', ['표 5-8은 네 그룹 882건에서', '표 5-8. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)', *T56,
                     '그룹별 값은 탐색적 결과다. Holm p는', '**주 비교: 고정 청크(최종 규칙).**', '**표 전체와 TableRAG(Yu) 청크.**'],
   'mh_ans', 'reader_test', 'step4', 'stats3b', 'decomp', 'mh_sample')
@@ -1183,6 +1194,7 @@ L('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'], 'decomp', 'r
 L('06_discussion.md', '두 방법 모두 정답 셀 전부를 문맥에 포함한 문항에서는 답변 정확도에 차이가 없었다.', 'step4', 'decomp', 'reader_test')
 L('06_discussion.md', 'MultiHiertt를 처음 머리글 규칙으로 비교하면', 'decomp', 'reader_test')
 L('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', 'stats3b', 'hitab_oracle', HANS, 'reader_test')
+L('05_results.md', '**참고 조건의 해석.**', 'stats3b', HANS, 'reader_test', 'token_totals')
 L('06_discussion.md', '**MultiHiertt 산술.**', 'mh_ans')
 L('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', 'decomp', 'reader_dev', 'mh_sample', 'alpha_dev')
 L('06_discussion.md', '**가설은 지지되지 않았다.**', 'reader_dev')
@@ -1207,7 +1219,7 @@ L('09_appendix.md', ['검색 문맥에서 필요한 줄만 LLM이', '표 A-1.', 
 L('09_appendix.md', 'HiTab 단일 셀 조회 991건에서 이 조건의', 'hitab_oracle', HMETA)
 L('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대', '한 건씩 생성하는 방식은 재실행해도'], 'batchcheck')
 L('09_appendix.md', '본 방법의 HiTab 단일 셀 조회 991건 검색 정확도는', HRE)
-TG1 = [('| 표 전체 | 검색 없음 |', 'fulltable'), ('| 고정 청크 | 처음 규칙 검색 |', 'chunk'), ('| TableRAG(Yu) 청크 | 처음 규칙 검색 |', 'trag_hetero'),
+TG1 = [('| 참고: 검색 없이 문서 표 전체 입력 | 검색 없음 |', 'fulltable'), ('| 고정 청크 | 처음 규칙 검색 |', 'chunk'), ('| TableRAG(Yu) 청크 | 처음 규칙 검색 |', 'trag_hetero'),
        ('| RowCol (셀 문장을 이은 변형, 4.2절) |', 'rowcol'), ('| RowCol (값만) |', 'rowcol_values'),
        ('| RowCol (셀 문장을 이은 변형) | 머리글 고친', 'rowcol_hv33'), ('| RandRow (셀 문장을 이은 변형) |', 'randrow'),
        ('| RandRow (값만) |', 'randrow_values'), ('| TableRAG 셀 검색 재구현(path) | 처음 규칙 검색', 'tablerag_path'),
@@ -1452,7 +1464,7 @@ for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('00b_abstr
 EX('05_results.md', '| 고정 청크 (최종 규칙) |', 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
 EX('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
 EX('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', 'p=.0005', 'reader_test', 'test arith_m2+ cell_vs_chunk p')
-EX('05_results.md', '| 표 전체 (검색 없음) | .5592', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
+EX('05_results.md', '| 참고: 검색 없이 문서 표 전체 입력 | .5592', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.039', 'stats3b', 'item3b_mh882_pooled fulltable p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
 EX('05_results.md', '| TableRAG(Yu) 청크 | .5545', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
@@ -1475,6 +1487,8 @@ EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'b
 EX('09_appendix.md', '332건 기준에서도 β=1.0이 1위다.', '2', 'alpha_dev', 'α 1.0~0.6 n332_correct 최대−최소')
 EX('01_intro.md', '3. **답변 정확도까지', '237', 'stats3b', 'item3b_hitab300 fulltable correct', 3)
 EX('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', '237', HANS, 's3c.answer_correct', 1)
+EX('05_results.md', '**참고 조건의 해석.**', '237', HANS, 's3c.answer_correct', 1)
+EX('05_results.md', '**참고 조건의 해석.**', '13', 'token_totals', '(정수 부분')
 EX('05_results.md', '이 범위에서 본 방법(.9142)은', '2.9×10⁻⁸', 'rerun_cmp', 'hitab_split s3c만:table만 Holm p')
 EX('06_discussion.md', '셋째, **색인 단위의 크기**', 'p=.88', HRE, 'chunk.arithmetic s3c만:상대만 p')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '57', 'fix0928', 'chunk 처음 대 최종 context_differs')

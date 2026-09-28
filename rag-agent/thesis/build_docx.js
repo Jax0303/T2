@@ -70,7 +70,12 @@ function minColWidth(cells, size) {
 }
 
 function table(lines, textW, name) {
-  const rows = lines.filter((l, i) => !(i === 1 && /^\|?\s*:?-{2,}/.test(l.trim()))).map(splitRow);
+  // 머리 행 뒤의 |---| 줄은 구분선: 줄은 빼고 다음 행 위에 이중선을 긋는다(참고 조건 행 분리)
+  const rows = [], sepBefore = new Set();
+  lines.forEach((l, i) => {
+    if (i >= 1 && /^\|?\s*:?-{2,}/.test(l.trim())) { if (i > 1) sepBefore.add(rows.length); return; }
+    rows.push(splitRow(l));
+  });
   const align = splitRow(lines[1]).map((a) => (a.endsWith(":") ? AlignmentType.RIGHT : AlignmentType.LEFT));
   const n = rows[0].length;
   const size = 17;
@@ -93,7 +98,7 @@ function table(lines, textW, name) {
       tableHeader: i === 0,
       children: r.map((c, j) => new TableCell({
         width: { size: widths[j], type: WidthType.DXA },
-        borders,
+        borders: sepBefore.has(i) ? { ...borders, top: { style: BorderStyle.DOUBLE, size: 6, color: "808080" } } : borders,
         verticalAlign: VerticalAlign.CENTER,
         shading: i === 0 ? { type: ShadingType.CLEAR, fill: "E7E6E6", color: "auto" } : undefined,
         margins: { top: 40, bottom: 40, left: 80, right: 80 },
