@@ -1170,6 +1170,33 @@ def mh_lookup1_evidence():
     return out
 
 
+@src
+def mh_only_metrics():
+    """2026-09-28 표 5-4: 분리 검색 지표(PREREG-2026-09-28-mh-only.md §3, results/mh_only_20260928/metrics.json 의 2885 블록)."""
+    r = 'results/mh_only_20260928/metrics.json'
+    d, S = jload(r), R(r)
+    out = []
+    for arm in ('s3c', 'chunk', 'trag_hetero', 'table', 'rowcol', 'tablerag_leaf', 'tablerag_path'):
+        b = d[arm]['2885']
+        out += [V(f'mhonly {arm}.{k}', v, S, 'ours' if arm == 's3c' else None) for k, v in b.items() if isinstance(v, (int, float))]
+        out.append(V(f'mhonly {arm} n', d[arm]['n'], S))
+    return out
+
+
+@src
+def corpus_stats():
+    """2026-09-28 5.2절: 문서당 청크·표 수(results/mh_only_20260928/corpus_stats.json)."""
+    r = 'results/mh_only_20260928/corpus_stats.json'
+    d, S = jload(r), R(r)
+    out = [V('n_docs', d['n_docs'], S)]
+    for k, v in d['n_tables_per_doc'].items():
+        out.append(V(f'표 문서당 {k}', v, S))
+    for u in ('chunk', 'trag_hetero', 'table'):
+        for k, v in d[u]['문서당 단위 수'].items():
+            out.append(V(f'{u} 문서당 단위 수 {k}', v, S))
+    return out
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -1193,143 +1220,105 @@ def L(f, anchors, *sets):
 
 
 HMETA, HRE, HANS, HOTH = 'hitab_meta', 'hitab_rerun', 'hitab_s3c_answer', 'hitab_answer300_others'
-CLAIM = ['rerun_cmp', 'mh_rerun', 'reader_test', 'decomp', 'stats3b', HANS, HMETA]
-L('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서', *CLAIM)
-L('00b_abstract_en.md', 'On HiTab and MultiHiertt', *CLAIM)
-L('01_intro.md', '1. **고유 라벨의 기여', 'hitab_labelabl', HMETA)
-L('01_intro.md', '본 연구가 MT2Net과 다른 점은 네 가지다.', 'hitab_labelabl', HMETA)
-L('02_related.md', '**MT2Net(Zhao et al., 2022).**', 'hitab_labelabl', HMETA)
-L('01_intro.md', '2. **셀 단위 검색을 발표된', 'rerun_cmp', 'mh_rerun', HMETA)
-L('01_intro.md', '3. **답변 정확도까지', *CLAIM, 'mh_sample')
+# 2026-09-28 MultiHiertt 단독 원고: HiTab 절·표·부록 삭제(HiTab 원천 함수는 남겨 둔다)
+CLAIM = ['rerun_cmp', 'mh_rerun', 'reader_test', 'decomp', 'stats3b', 'tro']
+AB_KO, AB_EN = 'MultiHiertt에서 TableRAG 셀 검색 재구현과', 'On MultiHiertt, we compare'
+L('00a_abstract_ko.md', AB_KO, *CLAIM)
+L('00b_abstract_en.md', AB_EN, *CLAIM)
+L('01_intro.md', '1. **셀 단위 검색을 발표된', 'rerun_cmp', 'mh_rerun')
+L('01_intro.md', '2. **답변 정확도까지', *CLAIM, 'mh_sample')
+L('01_intro.md', '3. **전달 셀 수 k를 dev에서', 'mh_dev_pop')
 L('01_intro.md', '4. **한계를 수치로', 'mh_label')
-L('01_intro.md', '모든 비교는 실행 전에 사전등록했다.', HANS)
 L('03_method.md', '같은 문서 안에 값을 뺀 문장이 똑같은', 'prereg_uniq', 'mh_meta', 'recheck')
 L('03_method.md', '이 규칙을 머리글 고친 규칙(v3.3)의 train 검색 색인', 'prereg_uniq', 'recheck')
-L('03_method.md', '**고유 라벨(HiTab).**', 'alpha_dev', 'mh_dev_pop')
-L('03_method.md', '잎 라벨 머리말의 유무는', 'hitab_sleaf_vs_s3c', 'hitab_sleaf', 'hitab_labelabl', HANS, 'hitab_answer300')
-L('03_method.md', '**임베딩.** 셀 문장과 질문을', HRE, HMETA)
-L('03_method.md', 'MultiHiertt 리더 설정은 validation 분할 60건', 'reader_pilot')
-L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모집단 |', '| 답변 정확도 표본 |'], HMETA, 'mh_pop', 'mh_sample', 'interim_meta')
-L('04_setup.md', '**HiTab.** test 분할 1,584 질의', HMETA)
-L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', 'mh_test', 'mh_pop', 'interim_meta', 'recheck')
-L('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', HMETA)                     # 2026-09-28 HiTab 머리글 답 336 대비 문장
+L('03_method.md', '**고유 라벨.** 고유 라벨은', 'alpha_dev', 'mh_dev_pop')
+L('03_method.md', '리더 설정은 validation 분할 60건의 파일럿에서', 'reader_pilot')
+L('04_setup.md', ['| 질의 수 |', '| 검색 범위 |', '| 검색 정확도 모집단 |', '| 답변 정확도 표본 |', '| 전달 셀 수 k 선택 |'],
+  'mh_pop', 'mh_sample', 'interim_meta', 'mh_dev_pop')
+MH41 = 'MultiHiertt의 공개 test 파일(test.json'
+L('04_setup.md', MH41, 'mh_test', 'mh_pop', 'interim_meta', 'recheck')
 L('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', 'interim_meta', 'recheck')
 L('04_setup.md', '[^1]: test.json의 sha256은', 'mh_test')
 L('04_setup.md', '**데이터 사용 이력.**', 'mh_pop', 'mh_sample', 'mh_dev_pop')
+L('04_setup.md', '**전달 셀 수 k의 선택.**', 'mh_dev_pop')
 L('04_setup.md', '정답이 음수인 산술 문항은 숫자 형태의 답으로는', 'mh_ans', 'mh_sample')
 L('04_setup.md', '**MultiHiertt 전체 정확도.**', 'mh_pop')
 L('04_setup.md', 'MultiHiertt 리더는 두 번의 사전등록 파일럿으로', 'reader_pilot')
-L('04_setup.md', '**HiTab 답변 표본.**', HANS, HRE, HMETA)
 L('04_setup.md', '**MultiHiertt 답변 표본.**', 'mh_sample', 'mh_pop')
-L('04_setup.md', '**검정.**', 'stats3b', HANS, 'mh_sample')
+L('04_setup.md', '**검정.**', 'stats3b', 'mh_sample')
 L('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', 'batchcheck')
-L('05_results.md', ['HiTab 단일 셀 조회 991건에서 세 가지 문장을', 'test 분할의 538개 표를 한 색인에', '표 5-1. 고유 라벨과'], HMETA)
-L('05_results.md', ['| 질문이 속한 표 안 | **.9637**', '| 538개 표를 한 색인에 |', '라벨은 두 범위 모두에서 검색 정확도를'], 'hitab_labelabl', HMETA)
-T52 = ['| **본 방법** | .9637', '| sleaf (잎 라벨 머리말 변형) | .9586', '| 고정 청크 | .8789', '| TableRAG(Yu) 청크 | .7881', '| RowCol | .7639',
-       '| RandRow | .3744', '| TableRAG 셀 검색 재구현(path) | .2896', '| TableRAG 셀 검색 재구현(leaf) | .4067', '| 표 단위 (상한) |']
-L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', *T52, 'RandRow·path·leaf와의 비교는 9칸', '주 모집단인 단일 셀 조회에서', '**산술 216건에서는'],
-  HRE, 'step4', HMETA)
-T53 = ['| **본 방법** | 19.41', '| sleaf (잎 라벨 머리말 변형) | 19.41', '| 고정 청크 | 69.06', '| TableRAG(Yu) 청크 | 52.09', '| RowCol | 22.52',
-       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.48', '| TableRAG 셀 검색 재구현(leaf) | 17.71', '| 참고: 검색 없이 정답 표 전체 입력 | — | — | .7900']
-L('05_results.md', ['표 5-4는 단일 셀 조회 300건에서', '표 5-4. HiTab 답변 정확도', *T53, '괄호 안은 검색에 성공한 질의 수다.',
-                    '본 방법의 답변 정확도는 .7900이다.', '본 방법은 .7900 =', '**표 전체와의 비교.** 검색 없이 질문의 표'],
-  HANS, 'decomp', 'stats3b', HOTH, 'hitab_answer300')
-L('05_results.md', '검색에 성공해도 정답률은', HANS, HOTH, 'hitab_oracle')
 T54 = ['| **본 방법** | .9575', '| sleaf (잎 라벨 머리말 변형) | .9528', '| 고정 청크 | .8255', '| TableRAG(Yu) 청크 | .8019', '| RowCol | .6179',
        '| TableRAG 셀 검색 재구현(path) | .6274', '| TableRAG 셀 검색 재구현(leaf) | .5047', '| RandRow | .1698']
-L('05_results.md', ['표 5-5는 MultiHiertt train', '표 5-5. MultiHiertt 그룹별', '| 방법 | 조회·셀 1개 (212)', *T54,
-                    'sleaf를 뺀 비교군 6개의 24칸은 모두', 'sleaf를 뺀 비교군 6개와의 24개', 'HiTab 산술(표 5-2)과 달리'],
+L('05_results.md', ['표 5-1은 MultiHiertt train', '표 5-1. MultiHiertt 그룹별', '| 방법 | 조회·셀 1개 (212)', *T54,
+                    'sleaf를 뺀 비교군 6개의 24칸은 모두', 'sleaf를 뺀 비교군 6개와의 24개', '산술·셀 2개 이상(2,235건) 그룹에서도 본 방법이'],
   'mh_rerun', 'step4', 'rerun_cmp', 'mh_pop', 'mh_meta')
-L('05_results.md', ['표 5-6은 본 방법의 머리글 규칙만', '| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623',
+L('05_results.md', ['표 5-2는 본 방법의 머리글 규칙만', '| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623',
                     '| **v3.3u (+ 문장 고유화', '처음 규칙(v1)은 14건의 정답 셀을', 'v1에서 v3.3으로 머리글을 고치면'], 'mh_rules', 'mh_pop')
-L('05_results.md', ['MultiHiertt가 함께 제공하는 셀 문장(table_description', '표 5-7. 본 방법과 table_description',
+L('05_results.md', ['MultiHiertt가 함께 제공하는 셀 문장(table_description', '표 5-3. 본 방법과 table_description',
                     '| 조회·셀 1개 | 212 |', '| 조회·셀 2개+ | 367 |', '| 산술·셀 1개 | 71 |', '| 산술·셀 2개+ | 2,235 |', '| 전체 | 2,885 | .8634',
                     'Holm p는 네 그룹을 한 묶음으로', '전체 검색 정확도는 본 방법 86.34%'], 'tdesc', 'mh_meta', 'mh_pop')
+T5_4 = [('| **본 방법** | 셀 | .278', 's3c'), ('| 고정 청크 | 청크 | .728', 'chunk'), ('| TableRAG(Yu) 청크 | 청크 |', 'trag_hetero'),
+        ('| 표 단위 | 표 |', 'table'), ('| RowCol | 행·열 |', 'rowcol'), ('| TableRAG 셀 검색 재구현(leaf) | 셀 |', 'tablerag_leaf'),
+        ('| TableRAG 셀 검색 재구현(path) | 셀 |', 'tablerag_path')]
+L('05_results.md', ['표 5-4는 같은 2,885건에서', '표 5-4. 재현율·정밀도·MRR', *[a for a, _ in T5_4], '청크와 표 단위의 R@20이 1.000인 것은'],
+  'mh_only_metrics', 'corpus_stats', 'mh_pop')
 T56 = ['| **본 방법 (셀 문장, 최종 규칙)** |', '| 고정 청크 (최종 규칙) |', '| 참고: 검색 없이 문서 표 전체 입력 | .5592', '| TableRAG(Yu) 청크 | .5545']
-L('05_results.md', ['표 5-8은 네 그룹 882건에서', '표 5-8. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)', *T56,
+L('05_results.md', ['표 5-6은 네 그룹 882건에서', '표 5-6. MultiHiertt 답변 정확도', '| 방법 | 조회·셀 1개 (211)', *T56,
                     '그룹별 값은 탐색적 결과다. Holm p는', '**주 비교: 고정 청크(최종 규칙).**', '**표 전체와 TableRAG(Yu) 청크.**'],
   'mh_ans', 'reader_test', 'step4', 'stats3b', 'decomp', 'mh_sample')
 L('05_results.md', '**나머지 비교군.**', 'v1cmp')
-L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 5-9. 본 방법의 머리글 규칙별 답변',
+L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 5-7. 본 방법의 머리글 규칙별 답변',
                     '| v1 (사전등록 당시) | .5024', '| v3.3 (머리글 수정) | .5355', '| **v3.3u (주 조건)** |', 'v1에서 v3.3u로 바꾸면 가중 전체가'],
   'mh_ans', 'mh_sample')
 L('05_results.md', '**머리글 규칙에 대한 민감도.**', 'stats3b', 'step4', 'reader_test')
 L('05_results.md', '결과는 예측과 반대였다.', 'mh_label', 'mh_label_pop', 'mh_pop')
-L('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'lookup_arith_posthoc')   # 2026-09-28 5.7절 최종 버전 교체
-T61 = ['| HiTab (300) | 셀 문장 |', '| HiTab (300) | 고정 청크 |', '| MultiHiertt (882) | 셀 문장 |', '| MultiHiertt (882) | 고정 청크 |']
-L('06_discussion.md', T61, 'decomp', 'reader_test', 'mh_sample', HANS)
-L('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'], 'decomp', 'reader_test')
+L('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'lookup_arith_posthoc')
+L('05_results.md', '**참고 조건의 해석.**', 'stats3b', 'reader_test', 'tro')
+T61 = ['| MultiHiertt (882) | 셀 문장 |', '| MultiHiertt (882) | 고정 청크 |']
+L('06_discussion.md', T61, 'decomp', 'reader_test', 'mh_sample')
+L('06_discussion.md', ['| MultiHiertt | 642 |'], 'decomp', 'reader_test')
 L('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', 'step4', 'decomp', 'reader_test')
 L('06_discussion.md', 'MultiHiertt를 처음 머리글 규칙으로 비교하면', 'decomp', 'reader_test')
-L('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', 'stats3b', 'hitab_oracle', HANS, 'reader_test')
-L('05_results.md', '**참고 조건의 해석.**', 'stats3b', HANS, 'reader_test', 'token_totals')
-L('05_results.md', '**538표 한 색인 조건.**', 'hitab538', 'token_totals')
-L('06_discussion.md', '**답변 실험의 검색 범위.**', 'token_totals')
+TFULL6 = '**표 전체와의 비교.** 검색 없이 문서의 표 전체를'
+L('06_discussion.md', TFULL6, 'stats3b', 'reader_test', 'tro')
 L('06_discussion.md', '**MultiHiertt 산술.**', 'mh_ans')
 L('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', 'decomp', 'reader_dev', 'mh_sample', 'alpha_dev')
 L('06_discussion.md', '**가설은 지지되지 않았다.**', 'reader_dev')
-T63 = ['| HiTab 질문의 표 안 | 36 |', '| | | C: 정답 셀 순위 51 이하 | 16 |', '| HiTab 538개 표를 한 색인에 | 85 |',
-       '| | | B: 정답 셀 순위 21~50 | 25 |', '| | | C: 정답 셀 순위 51 이하 | 20 |', '| MultiHiertt 문서 안 | 394 |',
-       '| | | F: 정답 셀 일부 누락, 누락 셀의 표는', '| | | G: 정답 셀 일부 누락, 누락 셀 중', '| | | H: 정답 표의 셀은 있으나']
-L('06_discussion.md', ['표 6-3. 검색 실패 문항의 분류', *T63, 'MultiHiertt 실패 394건 중', '**재정렬 진단.**', '**정답 표를 못 찾은 40건의 판정.**'],
-  'bottleneck', HMETA)
+T63 = ['| MultiHiertt 문서 안 | 394 |', '| | | F: 정답 셀 일부 누락, 누락 셀의 표는',
+       '| | | G: 정답 셀 일부 누락, 누락 셀 중', '| | | H: 정답 표의 셀은 있으나']
+L('06_discussion.md', ['표 6-3. 검색 실패 문항의 분류', *T63, 'MultiHiertt 실패 394건 중', '**재정렬 진단.**'], 'bottleneck')
 L('06_discussion.md', '**표 단위 색인의 입력 절단.**', 'truncation')
-L('06_discussion.md', '**템플릿 선택에 test 표본 사용.**', HANS, 'hitab_answer300')
 L('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'reader_test')
-L('06_discussion.md', '**표본 평가.**', HANS, HRE, HMETA, 'mh_pop', 'mh_sample')
+L('06_discussion.md', '**표본 평가.**', 'mh_pop', 'mh_sample')
 L('06_discussion.md', '**MultiHiertt 평가 분할과 사후 변경.**', 'mh_sample')
-L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'hitab_dup', HMETA, 'recheck')
+L('06_discussion.md', '**문장 고유화의 식별자.**', 'prereg_uniq', 'recheck')
 L('06_discussion.md', '**생성 방식.**', 'batchcheck')
-L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', HRE, 'mh_rerun', HMETA)
-L('07_conclusion.md', '3. **답변 정확도.**', *CLAIM)
-L('07_conclusion.md', '남은 과제는 다음과 같다.', 'mh_sample', 'hitab_dup')
-TA1 = ['| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) 청크 | .6000', '| RowCol | .4700', '| RandRow | .1533',
-       '| TableRAG 셀 검색 재구현(path) | .1400', '| TableRAG 셀 검색 재구현(leaf) | .0833']
-L('09_appendix.md', ['검색 결과에서 필요한 줄만 LLM이', '표 A-1.', *TA1, 'sleaf(이전 조건)는 필터 후'], 'hitab_answer300')
-L('09_appendix.md', 'HiTab 단일 셀 조회 991건에서 이 조건의', 'hitab_oracle', HMETA)
+L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', 'mh_rerun')
+L('07_conclusion.md', '3. **답변 정확도.**', *CLAIM, 'fix0928')
+L('07_conclusion.md', '남은 과제는 다음과 같다.', 'mh_sample')
 L('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대', '한 건씩 생성하는 방식은 재실행해도'], 'batchcheck')
-L('09_appendix.md', '본 방법의 HiTab 단일 셀 조회 991건 검색 정확도는', HRE)
 TG1 = [('| 참고: 검색 없이 문서 표 전체 입력 | 검색 없음 |', 'fulltable'), ('| 고정 청크 | 처음 규칙 검색 |', 'chunk'), ('| TableRAG(Yu) 청크 | 처음 규칙 검색 |', 'trag_hetero'),
        ('| RowCol (셀 문장을 이은 변형, 4.2절) |', 'rowcol'), ('| RowCol (값만) |', 'rowcol_values'),
        ('| RowCol (셀 문장을 이은 변형) | 머리글 고친', 'rowcol_hv33'), ('| RandRow (셀 문장을 이은 변형) |', 'randrow'),
        ('| RandRow (값만) |', 'randrow_values')]
-L('09_appendix.md', ['RowCol·RandRow의 882건 답변은', '표 F-1. 처음 규칙의 본 방법', *[a for a, _ in TG1]], 'v1cmp', 'mh_sample', 'tro')
+L('09_appendix.md', ['RowCol·RandRow의 882건 답변은', '표 C-1. 처음 규칙의 본 방법', *[a for a, _ in TG1]], 'v1cmp', 'mh_sample', 'tro')
 TG2 = [('| 본 방법 | 20.00 | .8776', 'cell'), ('| 고정 청크 | 51.25', 'chunk'), ('| TableRAG(Yu) 청크 | 46.93', 'trag_hetero')]
-L('09_appendix.md', ['표 F-2. 처음 규칙의 정답률 분해', *[a for a, _ in TG2], '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의'], 'decomp', 'reader_test', 'mh_sample')
-L('09_appendix.md', ['β 선택에 쓴 MultiHiertt dev(validation) 911건은', '표 G-1.', '| 후보 | 911건 맞힘', '332건 기준에서도 β=1.0이 1위다.'], 'alpha_dev', 'mh_dev_pop')
+L('09_appendix.md', ['표 C-2. 처음 규칙의 정답률 분해', *[a for a, _ in TG2], '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의'], 'decomp', 'reader_test', 'mh_sample')
+L('09_appendix.md', ['β 선택에 쓴 MultiHiertt dev(validation) 911건은', '표 D-1.', '| 후보 | 911건 맞힘', '332건 기준에서도 β=1.0이 1위다.'], 'alpha_dev', 'mh_dev_pop')
 TH1 = [('| β=1.0 (라벨 없음) |', '1.0'), ('| β=0.9 |', '0.9'), ('| β=0.8 |', '0.8'), ('| β=0.7 |', '0.7'), ('| β=0.6 |', '0.6'),
        ('| β=0.5 |', '0.5'), ('| β=0.4 |', '0.4'), ('| β=0.3 |', '0.3'), ('| β=0.2 |', '0.2'), ('| β=0.1 |', '0.1'), ('| 접두어 |', 'prefix')]
 L('09_appendix.md', [a for a, _ in TH1], 'alpha_dev')
 L('06_discussion.md', '**정답 근거 주석의 범위.**', 'mh_lookup1_evidence')
 L('09_appendix.md', ['6.5절의 수치는 MultiHiertt 답변 표본 882건 중', '1. 정답과 근거 셀 값을 비교했다.', '2. 이 102문항을 분류 전에',
-                     '3. 211문항 전부를 읽고', '표 I-1. 조회·셀 1개 211문항의 판정', '| 정답 ≠ 근거 셀 값, 키워드 있음 |',
+                     '3. 211문항 전부를 읽고', '표 F-1. 조회·셀 1개 211문항의 판정', '| 정답 ≠ 근거 셀 값, 키워드 있음 |',
                      '| 정답 ≠ 근거 셀 값, 키워드 없음 |', '| 정답 = 근거 셀 값 |', '| 합계 | 211 |', '키워드가 있는 91문항은 모두'],
   'mh_lookup1_evidence', 'mh_sample')
-
-# 2026-09-28 원고 점검 반영
-T53S = ['| **본 방법** | 20.0 |', '| sleaf (잎 라벨 머리말 변형) | 20.0', '| 표 단위 | 118.1', '| 행 단위 | 22.8', '| 고정 청크 | 67.3',
-        '| TableRAG(Yu) 청크 | 54.4', '| TableRAG 셀 검색 재구현(path) | 20.5', '| TableRAG 셀 검색 재구현(leaf) | 20.8', '| RowCol | 22.9']
-L('05_results.md', ['**538개 표를 한 색인에 넣은 조건.**', '표 5-3. HiTab 538개 표를', *T53S, 'b는 본 방법만 맞힌 문항 수', '이 범위에서 본 방법(.9142)은'],
-  'rerun_cmp', 'fix0928', HMETA)
-L('06_discussion.md', '셋째, **색인 단위의 크기**', HRE)
 L('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', 'fix0928')
-L('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', 'fix0928')
-L('07_conclusion.md', '3. **답변 정확도.**', 'fix0928')
-_D_ROWS = [i for i, x in enumerate(_lines('06_discussion.md'), 1) if x.startswith('| | | D: ')]   # 표 6-3 D 행: 두 범위에서 글자가 같아 줄 번호로
-assert len(_D_ROWS) == 2
-for _i in _D_ROWS:
-    LS.setdefault(('06_discussion.md', _i), []).append('bottleneck')
 
 # 원고에 sleaf 로 이름을 밝혀 쓴 줄 — 이 줄의 sleaf 값은 '본 방법으로 쓴 sleaf' 가 아니다
 SLEAF_NAMED = {(f, AT(f, a)) for f, a in [
-    ('01_intro.md', '2. **셀 단위 검색을 발표된'), ('03_method.md', '잎 라벨 머리말의 유무는'),
-    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9586'), ('05_results.md', '주 모집단인 단일 셀 조회에서'),
-    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | 19.41'), ('05_results.md', '본 방법의 답변 정확도는 .7900이다.'),
-    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9528'), ('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개'),
-    ('06_discussion.md', '**템플릿 선택에 test 표본 사용.**'),
-    ('09_appendix.md', '검색 결과에서 필요한 줄만 LLM이'), ('09_appendix.md', '| sleaf(이전 조건) |'),
-    ('09_appendix.md', 'sleaf(이전 조건)는 필터 후'),
-    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | 20.0'), ('05_results.md', '이 범위에서 본 방법(.9142)은')]}
+    ('00a_abstract_ko.md', AB_KO), ('00b_abstract_en.md', AB_EN), ('01_intro.md', '1. **셀 단위 검색을 발표된'),
+    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9528'), ('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개')]}
 
 # 표 행처럼 한 줄이 한 조건일 때 먼저 볼 필드(정규식)
 PREFER = {}
@@ -1339,13 +1328,10 @@ def PF(f, anchor, *pats):
     PREFER[f, AT(f, anchor)] = list(pats)
 
 
-for _a, _arm in zip(T52, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf', 'table']):
-    PF('05_results.md', _a, rf'^{_arm}\.', rf'^{_arm} 전달', rf'표 단위' if _arm == 'table' else rf'^{_arm}\.')
-for _a, _arm in zip(T53, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf', 'fulltable']):
-    _o = 'ours' if _arm == 'sleaf' else _arm
-    PF('05_results.md', _a, rf'^decomp hitab {_arm} ', rf'^item3b_hitab300 {_arm} ', rf'기준만:{_arm}만', rf'^{_arm}\.', rf'^{_o}[\. ]', rf':{_arm}만')
 for _a, _arm in zip(T54, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'tablerag_path', 'tablerag_leaf', 'randrow']):
     PF('05_results.md', _a, rf'^{_arm} ', rf's3c만:{_arm}만 ', rf'^MH {_arm} 전달')
+for _a, _arm in T5_4:
+    PF('05_results.md', _a, rf'^mhonly {_arm}\.')
 for _a, _c in zip(T56, ['cell_uniq', 'chunk_final', 'fulltable', 'trag_hetero']):
     _t = {'cell_uniq': 'cell', 'chunk_final': 'chunk'}.get(_c, _c)
     PF('05_results.md', _a, '^' + re.escape(_c), rf'^test {_t} ', rf'^test \S+ cell_vs_chunk' if _c == 'chunk_final' else rf'item3b_mh882_pooled {_c} ',
@@ -1354,19 +1340,13 @@ for _a, _c in [('| v1 (사전등록 당시) | .5024', 'cell.'), ('| v3.3 (머리
     PF('05_results.md', _a, '^' + re.escape(_c))
 for _a, _r in [('| v1 (사전등록 당시) | .9434', 'v1'), ('| v3.3 (머리글 수정) | .9623', 'v33'), ('| **v3.3u (+ 문장 고유화', 'v33u')]:
     PF('05_results.md', _a, rf'^{_r} ')
-for _a, (_blk, _arm) in zip(T61, [('hitab', 's3c'), ('hitab', 'chunk'), ('mh', 'cell_uniq'), ('test', 'chunk')]):
-    if _blk == 'test':
-        PF('06_discussion.md', _a, r'^decomp ALL chunk ', r'^test chunk ')
-    else:
-        PF('06_discussion.md', _a, rf'^decomp {_blk} {_arm} ')
-PF('06_discussion.md', '| HiTab | 256 |', r'^inter hitab ')
+PF('06_discussion.md', T61[0], r'^decomp mh cell_uniq ')
+PF('06_discussion.md', T61[1], r'^decomp ALL chunk ', r'^test chunk ')
 PF('06_discussion.md', '| MultiHiertt | 642 |', r'^inter ALL ')
-for _a, _arm in zip(TA1, ['ours', 'chunk', 'trag_hetero', 'rowcol', 'randrow', 'tablerag_path', 'tablerag_leaf']):
-    PF('09_appendix.md', _a, '^' + re.escape(_arm))
 for _a, _n in TG1:
     PF('09_appendix.md', _a, rf'^TRO F8 {_n} ', rf'^v1cmp {_n} ', rf'v1만:{_n}만$')   # Holm 은 2026-09-28 8개 묶음(TRO F8)
 TF3 = [('| TableRAG 셀 검색 재구현(path) | .1280', 'tablerag_path_official'), ('| TableRAG 셀 검색 재구현(leaf) | .0900', 'tablerag_leaf_official')]
-L('09_appendix.md', ['표 F-3. 최종 규칙의 본 방법', '| 비교군 | 조회·셀 1개 (211)', *[a for a, _ in TF3], 'TableRAG 셀 검색 재구현의 답변은 숫자·날짜 열 판정을'], 'tro')
+L('09_appendix.md', ['표 C-3. 최종 규칙의 본 방법', '| 비교군 | 조회·셀 1개 (211)', *[a for a, _ in TF3], 'TableRAG 셀 검색 재구현의 답변은 숫자·날짜 열 판정을'], 'tro')
 for _a, _n in TF3:
     PF('09_appendix.md', _a, rf'^TRO mh882 (기준만:)?{_n}')
 for _a, _c in TG2:
@@ -1378,35 +1358,18 @@ PF('05_results.md', '**머리글 규칙에 대한 민감도.**', r'item3b_mh882_
 PF('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', r'^test ', r'chunk_final', r'cell−chunk_final')
 PF('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', r'fulltable', r'trag_hetero')
 PF('09_appendix.md', '| 한 건씩 재실행 대', r'^b1_20')
-for _a in T63[:2]:
-    PF('06_discussion.md', _a, r'^hitab_intable ')
-for _a in T63[2:5]:
-    PF('06_discussion.md', _a, r'^hitab_538 ', r'^n_tables')
-for _a in T63[5:]:
+for _a in T63:
     PF('06_discussion.md', _a, r'^mh_indoc ')
 PF('09_appendix.md', '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의', r'^inter mh ')
-PF('03_method.md', '**고유 라벨(HiTab).**', r'^α 1\.0 n911', r'^α prefix n911', r'채점 문항', r'표 근거만')
+PF('03_method.md', '**고유 라벨.** 고유 라벨은', r'^α 1\.0 n911', r'^α prefix n911', r'채점 문항', r'표 근거만')
 PF('09_appendix.md', '| continuous batching 대', r'^cb_120')
-PF('05_results.md', '본 방법은 .7900 =', r'^s3c\.')
-PF('05_results.md', '주 모집단인 단일 셀 조회에서', r'^chunk\.', r'^s3c\.', r'^sleaf\.')
-PF('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', r'^hitab300', r'^mh882', r'answer_given_hit rate')
-PF('06_discussion.md', '**가설은 지지되지 않았다.**', r'^dev multihiertt', r'^dev hitab')
+PF('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', r'^mh882', r'answer_given_hit rate')
+PF('06_discussion.md', '**가설은 지지되지 않았다.**', r'^dev multihiertt')
 PF('06_discussion.md', '**재정렬 진단.**', r'^rerank')
-PF('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', r'판정', r'hitab_538 A', r'^n_tables$')
-for _a, _arm in zip(T53S, ['s3c', 'sleaf', 'table', 'row', 'chunk', 'trag_hetero', 'tablerag_path', 'tablerag_leaf', 'rowcol']):
-    PF('05_results.md', _a, rf'^hitab_split {_arm} ', rf'^hitab_split s3c만:{_arm}만', rf'\(대 {_arm}\)$', rf'^hitab_split {_arm}만 맞힘')
-PF('05_results.md', '이 범위에서 본 방법(.9142)은', r'^hitab_split ')
-for _a in ('**538개 표를 한 색인에 넣은 조건.**', 'b는 본 방법만 맞힌 문항 수'):
-    PF('05_results.md', _a, r'^type_accuracy\.single_cell\.n$', r'^n_tables$')
-PF('06_discussion.md', '셋째, **색인 단위의 크기**', r'^chunk\.arithmetic', r'^s3c\.arithmetic')
 PF('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', r'^chunk 처음 대 최종')
-for _i, _scope in zip(_D_ROWS, ('hitab_intable', 'hitab_538')):   # 표 6-3 순서: 질문의 표 안, 538개 표 한 색인
-    PREFER['06_discussion.md', _i] = [rf'^{_scope} D']
-PF('07_conclusion.md', '3. **답변 정확도.**', r'^s3c\.answer_correct$', r'^item3b_hitab300 chunk correct$', r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ',
-   r'accuracy', r'^산술·셀 2개\+')
-for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('00b_abstract_en.md', 'On HiTab and MultiHiertt'),
-               ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '3. **답변 정확도.**')]:
-    PF(_f, _a, r'^s3c\.answer_correct$', r'^item3b_hitab300 chunk correct$', r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ', r'accuracy')
+PF('07_conclusion.md', '3. **답변 정확도.**', r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ', r'accuracy', r'^산술·셀 2개\+')
+for _f, _a in [('00a_abstract_ko.md', AB_KO), ('00b_abstract_en.md', AB_EN), ('01_intro.md', '2. **답변 정확도까지')]:
+    PF(_f, _a, r'^n$', r'^test cell(_vs_chunk)? ', r'^test chunk ', r'^inter ', r'accuracy', r'^mh_doc sleaf', r'^sleaf ALL')
 
 # 표 행의 열 번호(줄 앞의 '|' 개수) -> 먼저 볼 필드 정규식
 COLPREF = {}
@@ -1417,9 +1380,6 @@ def CP(f, anchors, cols):
         COLPREF[f, AT(f, a)] = cols
 
 
-CP('05_results.md', T52, {2: ['single_cell'], 3: ['multi_cell'], 4: ['arithmetic'], 5: ['전달']})
-CP('05_results.md', T53, {2: ['cells'], 3: ['retrieval', '검색 정확도'], 4: [r'answer rate', r'\.answer$', r'answer_base$', r'correct$', '답변 정확도$'],
-                          5: ['만:', 'Holm', r' p$'], 6: ['given_hit', 'given_retrieval_hit', 'retrieval_hits', '검색 성공 수'], 7: ['tokens']})
 MHR = {2: [r' lookup_m1( |$)'], 3: [r' lookup_m2\+( |$)'], 4: [r' arith_m1( |$)'], 5: [r' arith_m2\+( |$)'], 6: [r' ALL( |$)'], 7: ['전달']}
 CP('05_results.md', T54, MHR)
 for _a, _g in (('| 조회·셀 1개 | 212 |', 'lookup_m1'), ('| 조회·셀 2개+ | 367 |', r'lookup_m2\+'), ('| 산술·셀 1개 | 71 |', 'arith_m1'),
@@ -1427,45 +1387,28 @@ for _a, _g in (('| 조회·셀 1개 | 212 |', 'lookup_m1'), ('| 조회·셀 2개
     CP('05_results.md', [_a], {2: [rf'tdesc {_g} n$'], 3: [rf'tdesc {_g} 본 방법$'], 4: [rf'tdesc {_g} table_description$'],
                                5: [rf'tdesc {_g} 본 방법만'], 6: [rf'tdesc {_g} Holm']})
 CP('05_results.md', ['| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623', '| **v3.3u (+ 문장 고유화'], MHR)
+CP('05_results.md', [a for a, _ in T5_4], {3: [r'\.Recall@1$'], 4: [r'\.Recall@5$'], 5: [r'\.Recall@10$'], 6: [r'\.Recall@20$'], 7: [r'\.MRR$'],
+                                           8: [r'\.Precision@5$'], 9: [r'\.Precision@10$'], 10: [r'\.Precision@20$'], 11: [r'Recall@20=1\.0 비율'], 12: ['기존 correct']})
 CP('05_results.md', ['| 방법 | 조회·셀 1개 (211)'], {2: [r'lookup_m1'], 3: [r'lookup_m2\+'], 4: [r'arith_m1'], 5: [r'arith_m2\+'], 6: [r'^test cell n']})
 CP('05_results.md', T56, {2: [r'lookup_m1'], 3: [r'lookup_m2\+'], 4: [r'arith_m1'], 5: [r'arith_m2\+'], 6: ['correct', '맞힘'],
                           7: [r'cell_vs_chunk', '기준만', r' p$', 'Holm'], 8: [r'weighted_em', r'ci95'], 9: ['cells', '전달'], 10: ['tokens', 'input_tokens']})
 MHA = {2: [r'\.lookup_m1'], 3: [r'\.lookup_m2\+'], 4: [r'\.arith_m1'], 5: [r'\.arith_m2\+'],
        6: [r'^\w+\.weighted_em', r'^\w+\.ci95'], 7: [r'vs_cell\.(weighted|ci95)']}
 CP('05_results.md', ['| v1 (사전등록 당시) | .5024', '| v3.3 (머리글 수정) | .5355', '| **v3.3u (주 조건)** |'], MHA)
-CP('05_results.md', ['| 질문이 속한 표 안 | **.9637**', '| 538개 표를 한 색인에 |'],
-   {2: ['t_s3c_'], 3: ['t_s3frame_'], 4: ['t_s2_'], 5: ['라벨 효과'], 6: ['문장 틀 효과']})
 CP('06_discussion.md', T61, {3: ['cells'], 4: ['retrieval_success'], 5: ['answer_given_hit'], 6: ['answer_given_miss'], 7: ['answer ', 'correct', 'answer rate']})
-CP('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'],
+CP('06_discussion.md', ['| MultiHiertt | 642 |'],
    {2: [r'both n', r' n$'], 3: ['ours', 'cell'], 4: ['other', 'chunk'], 5: ['만:'], 6: [r' p$'], 7: ['only ours'], 8: ['only other']})
-CP('09_appendix.md', TA1, {2: ['answer_base'], 3: ['answer_filtered'], 4: [r'\.delta'], 5: ['p_value'], 6: ['lines_mean', 'lines_kept_mean']})
 CP('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대'],
    {2: [r' n$'], 3: ['출력 문자열 일치 수'], 4: ['추출 답 일치 수'], 5: ['정답 수'], 6: ['정오 불일치'], 7: [r'정오 불일치.* p$']})
 CP('09_appendix.md', [a for a, _ in TG1], {4: ['correct'], 5: ['만:'], 6: [r'\d p$|[a-z] p$'], 7: ['Holm']})
 CP('09_appendix.md', [a for a, _ in TG2], {2: ['cells'], 3: ['retrieval_success'], 4: ['answer_given_hit'], 5: ['answer_given_miss'], 6: ['answer ']})
 CP('09_appendix.md', [a for a, _ in TH1], {2: ['n911'], 3: ['rank911'], 4: ['n332'], 5: ['rank332']})
-CP('05_results.md', T53S, {2: ['전달'], 3: [' correct$'], 4: [' accuracy$'], 5: [r'맞힘 b'], 6: [r'만 맞힘 c'], 7: [r'만 p$'], 8: ['Holm p$']})
-# 2026-09-28 TableRAG(Chen) 공식 숫자 열 규칙 대체: 표 5-2·5-3·5-5 의 TableRAG 행, 낮은 이유, 부록 H 는 원천 tro
-for _a, _arm in ((T52[6], 'tablerag_path'), (T52[7], 'tablerag_leaf')):
-    L('05_results.md', _a, 'tro')
-    PF('05_results.md', _a, rf'^TRO {_arm}\.', rf'^TRO {_arm} 전달')
-for _a, _arm in ((T53S[6], 'tablerag_path'), (T53S[7], 'tablerag_leaf')):
-    L('05_results.md', _a, 'tro')
-    PF('05_results.md', _a, rf'^TRO split (s3c만:)?{_arm}', rf'^TRO split s3c만 맞힘 b \(대 {_arm}\)')
+# 2026-09-28 TableRAG(Chen) 공식 숫자 열 규칙 대체: 표 5-1 의 TableRAG 행, 부록 E 는 원천 tro
 for _a, _arm in ((T54[5], 'tablerag_path'), (T54[6], 'tablerag_leaf')):
     L('05_results.md', _a, 'tro')
     PF('05_results.md', _a, rf'^TRO {_arm} ', rf'^TRO s3c만:{_arm}만 ', rf'^TRO MH {_arm} 전달')
-L('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', 'tro')
-PF('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', r'^TRO 상한')
-L('09_appendix.md', '| TableRAG(Chen) | 숫자 열 판정 |', 'tro', HMETA)
+L('09_appendix.md', '| TableRAG(Chen) | 숫자 열 판정 |', 'tro')
 L('06_discussion.md', '**머리글 규칙 수정 이력.**', 'header_history')
-for _a, _arm in ((T53[6], 'tablerag_path'), (T53[7], 'tablerag_leaf')):
-    L('05_results.md', _a, 'tro')
-    PF('05_results.md', _a, rf'^TRO hitab300 (s3c만:)?{_arm}')
-L('09_appendix.md', 'TableRAG 셀 검색 재구현 두 행은 숫자·날짜 열 판정을', 'tro')
-for _a, _arm in ((TA1[5], 'tablerag_path'), (TA1[6], 'tablerag_leaf')):
-    L('09_appendix.md', _a, 'tro')
-    PF('09_appendix.md', _a, rf'^TRO A {_arm}\.')
 
 
 def EX(f, anchor, tok, setname, pat, occ=None):
@@ -1481,7 +1424,7 @@ EX('03_method.md', _U, '27.6%', 'recheck', 'train 색인 v1 중복 비율')
 EX('03_method.md', _U, '429,048', 'recheck', 'train 색인 v1 셀 수')
 EX('03_method.md', _U, '11.8%', 'recheck', 'train 색인 v3.3 중복 비율')
 EX('03_method.md', _U, '423,473', 'recheck', 'train 색인 v3.3 셀 수')
-EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '100%', 'recheck', 'question_type 일치율(채점 2,885)')
+EX('04_setup.md', MH41, '100%', 'recheck', 'question_type 일치율(채점 2,885)')
 EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '7,830', 'recheck', '공식·재포장 train 대조 uid 수')
 EX('04_setup.md', '본 연구가 쓴 MultiHiertt 사본은', '6', 'recheck', '정답 유효숫자 자릿수')
 _R = '이 규칙을 머리글 고친 규칙(v3.3)의 train 검색 색인'
@@ -1491,32 +1434,23 @@ for _t, _k in (('2.7%', 'table_text'), ('6.3%', 'row_col_number'), ('6.8%', 'tab
     EX('03_method.md', _R, _t, 'recheck', f'{_k} 비율(train 색인')
     EX('06_discussion.md', '**문장 고유화의 식별자.**', _t, 'recheck', f'{_k} 비율(train 색인')
 EX('03_method.md', _R, '0', 'recheck', '적용 후 같은 문장 셀 수')
-EX('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', '1,566', 'mh_test', 'n_questions')
+EX('04_setup.md', MH41, '1,566', 'mh_test', 'n_questions')
 EX('04_setup.md', '[^1]: test.json의 sha256은', '15bfe9cc1241e29050a5bcaf7b9639d6907e7895cd07a1f1b874c2fda905ad01', 'mh_test', 'sha256')
 EX('04_setup.md', '[^1]: test.json의 sha256은', 'f18473da528dede3d9ce2274366d9ee8102ea0fd', 'mh_test', 'hf_commit')
 
-EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p<.0001', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
-EX('05_results.md', 'RandRow·path·leaf와의 비교는 9칸', 'p=7.6×10⁻⁶', HRE, 'RandRow·path·leaf 9칸 중 최대 p')
 EX('05_results.md', '결과는 예측과 반대였다.', '.8492', 'mh_label', '라벨 없음(v2) by_layer.ALL.doc')
 EX('05_results.md', '결과는 예측과 반대였다.', '.8301', 'mh_label', 'L1 by_layer.ALL.doc')
 EX('05_results.md', '결과는 예측과 반대였다.', '.2662', 'mh_label', '라벨 없음(v2) by_layer.ALL.corpus')
 EX('05_results.md', '결과는 예측과 반대였다.', '.2272', 'mh_label', 'L1 by_layer.ALL.corpus')
 EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', '10.4', 'batchcheck', 'b1_20 generation_seconds/n')
-EX('09_appendix.md', 'sleaf(이전 조건)는 필터 후', '2', 'hitab_answer300', 'ours 그중 1번 줄')
-EX('05_results.md', '본 방법은 .7900 =', '0', HANS, 's3c.answer_given_miss')
 EX('09_appendix.md', '| continuous batching 대', '35', 'batchcheck', 'cb_120 정답 수(기존', 2)
 EX('09_appendix.md', '| continuous batching 대', '1.0', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만) p')
 EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', 'p=1.0', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만) p')
 EX('06_discussion.md', '**생성 방식.**', '1:1', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만)')
-EX('05_results.md', '| 질문이 속한 표 안 | **.9637**', 'p=.81', 'hitab_labelabl', 'gold 문장 틀 효과 s3frame만:s2만 p')
-EX('05_results.md', '| 538개 표를 한 색인에 |', 'p=.085', 'hitab_labelabl', 'split 문장 틀 효과 s3frame만:s2만 p')
 EX('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', 'p<.05', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
 EX('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', 'p=.021', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
 EX('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', 'p=4.4×10⁻⁵⁰', 'mh_rerun', 's3c만:chunk만 ALL p')
 EX('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', 'p=.0040', 'rerun_cmp', 'mh_doc s3c만:sleaf만 Holm p')
-EX('09_appendix.md', '| 고정 청크 | .6867', '<10⁻⁵', 'hitab_answer300', 'chunk.mcnemar_base_vs_filtered.p_value')
-EX('09_appendix.md', '| TableRAG(Yu) 청크 | .6000', '<10⁻⁵', 'hitab_answer300', 'trag_hetero.mcnemar_base_vs_filtered.p_value')
-EX('09_appendix.md', '| RowCol | .4700', '<10⁻⁵', 'hitab_answer300', 'rowcol.mcnemar_base_vs_filtered.p_value')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', '99:29', 'mh_rules', '공통 2,871 v33u만:v1만')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', 'p=3.8×10⁻¹⁰', 'mh_rules', '공통 2,871 v33u만:v1만 p')
 EX('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=8.8×10⁻⁵', 'lookup_arith_posthoc', 'T2 1위 산술 대 조회 Fisher p')
@@ -1529,15 +1463,12 @@ EX('04_setup.md', '**MultiHiertt 답변 표본.**', '2,871', 'mh_pop', P11, 1)
 EX('04_setup.md', '**데이터 사용 이력.**', '2,871', 'mh_pop', P11)
 EX('06_discussion.md', '**표본 평가.**', '2,871', 'mh_pop', P11)
 # 주장 문장의 검정값(초록·1장·7장·5장·6장)
-for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '3. **답변 정확도.**')]:
+for _f, _a in [('00a_abstract_ko.md', AB_KO), ('00b_abstract_en.md', AB_EN), ('01_intro.md', '2. **답변 정확도까지'), ('07_conclusion.md', '3. **답변 정확도.**')]:
     EX(_f, _a, 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
     EX(_f, _a, 'p=.86', 'reader_test', 'inter ALL cell만:chunk만 p')
-for _f, _a in [('01_intro.md', '3. **답변 정확도까지'), ('07_conclusion.md', '3. **답변 정확도.**')]:
-    EX(_f, _a, 'p=.0019', 'stats3b', 'item3b_hitab300 chunk Holm p')
-EX('01_intro.md', '3. **답변 정확도까지', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
-EX('01_intro.md', '2. **셀 단위 검색을 발표된', 'p=.0040', 'rerun_cmp', 'mh_doc s3c만:sleaf만 Holm p')
-for _f, _a in [('00a_abstract_ko.md', 'HiTab과 MultiHiertt에서'), ('00b_abstract_en.md', 'On HiTab and MultiHiertt')]:
-    EX(_f, _a, 'p=.0019', 'stats3b', 'item3b_hitab300 chunk Holm p')
+for _f, _a in [('00a_abstract_ko.md', AB_KO), ('00b_abstract_en.md', AB_EN), ('01_intro.md', '2. **답변 정확도까지')]:
+    EX(_f, _a, 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
+EX('01_intro.md', '1. **셀 단위 검색을 발표된', 'p=.0040', 'rerun_cmp', 'mh_doc s3c만:sleaf만 Holm p')
 EX('05_results.md', '| 고정 청크 (최종 규칙) |', 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
 EX('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', 'p=.0052', 'reader_test', 'test cell_vs_chunk p')
 EX('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', 'p=.0005', 'reader_test', 'test arith_m2+ cell_vs_chunk p')
@@ -1546,39 +1477,31 @@ EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.039', 'stats3b
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
 EX('05_results.md', '| TableRAG(Yu) 청크 | .5545', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
 EX('05_results.md', '**나머지 비교군.**', 'p=2.1×10⁻⁶', 'v1cmp', 'v1cmp 셀 표현 비교군 9개 중 최대 Holm p')
-EX('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
+EX('06_discussion.md', TFULL6, 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
 EX('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'p=.0005', 'reader_test', 'test arith_m2+ cell_vs_chunk p')
 
-EX('05_results.md', '주 모집단인 단일 셀 조회에서', '3:3', HRE, 'chunk.multi_cell s3c만:상대만')
-EX('05_results.md', '주 모집단인 단일 셀 조회에서', 'p=1', HRE, 'chunk.multi_cell s3c만:상대만 p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', '.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', '882', 'reader_test', 'test cell n')
-EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '0', 'step4', 'hitab300_s3c_vs_chunk only_other_retrieved ours_correct', 2)
-EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final only_other_retrieved ours_correct', 2)
-EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final neither_retrieved ours_correct', 3)
+EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final only_other_retrieved ours_correct', 1)
+EX('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 포함한 문항에서는 답변 정확도에 차이가 없었다.', '7', 'step4', 'mh882_final_vs_chunk_final neither_retrieved ours_correct', 2)
 EX('06_discussion.md', '**가설은 지지되지 않았다.**', '20', 'reader_dev', 'dev multihiertt_dev_primary lookup_m1 n', 1)
-EX('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 20 |', '20', 'bottleneck', 'hitab_538 C_rank51plus')
-EX('06_discussion.md', '**재정렬 진단.**', 'p=.0104', 'bottleneck', 'rerank mh_indoc Holm p', 2)
-EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'bottleneck', '판정 (가) 예', 1)
-EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'bottleneck', '판정 (가) 아니오', 2)
+EX('06_discussion.md', '**재정렬 진단.**', 'p=.0104', 'bottleneck', 'rerank mh_indoc Holm p', 1)
 EX('09_appendix.md', '332건 기준에서도 β=1.0이 1위다.', '2', 'alpha_dev', 'α 1.0~0.6 n332_correct 최대−최소')
-EX('01_intro.md', '3. **답변 정확도까지', '237', 'stats3b', 'item3b_hitab300 fulltable correct', 3)
-EX('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', '237', HANS, 's3c.answer_correct', 1)
-EX('05_results.md', '**참고 조건의 해석.**', '237', HANS, 's3c.answer_correct', 1)
-EX('05_results.md', '**참고 조건의 해석.**', '13', 'token_totals', '(정수 부분')
-EX('05_results.md', '**538표 한 색인 조건.**', 'p=.82', 'hitab538', '538 s3c_vs_table_top1 Holm p', 2)
-EX('05_results.md', '이 범위에서 본 방법(.9142)은', '2.9×10⁻⁸', 'rerun_cmp', 'hitab_split s3c만:table만 Holm p')
-EX('06_discussion.md', '셋째, **색인 단위의 크기**', 'p=.88', HRE, 'chunk.arithmetic s3c만:상대만 p')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '57', 'fix0928', 'chunk 처음 대 최종 context_differs')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '12', 'fix0928', 'chunk 처음 대 최종 retrieval_differs')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '6', 'fix0928', 'chunk 처음 대 최종 retrieval_final_only')
-EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '7', 'fix0928', '판정 (나) 자동 검증 아니오 (기간 있는 예)')
-EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'bottleneck', '판정 (가) 예', 3)
-EX('06_discussion.md', '**정답 표를 못 찾은 40건의 판정.**', '20', 'fix0928', '판정 (나) 자동 검증 아니오 ((가)=예 전체)', 4)
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '687', 'fix0928', 'chunk 처음 대 최종 retrieval_success_final')
 EX('07_conclusion.md', '3. **답변 정확도.**', '195', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공(최종 대 최종) n')
 EX('07_conclusion.md', '3. **답변 정확도.**', '.2667', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공 cell_acc')
 EX('07_conclusion.md', '3. **답변 정확도.**', '.2359', 'fix0928', '산술·셀 2개+ 둘 다 검색 성공 chunk_acc')
+# 2026-09-28 표 5-4 옆 문단: 문서당 청크·표 수
+_C = '청크와 표 단위의 R@20이 1.000인 것은'
+EX('05_results.md', _C, '5', 'corpus_stats', 'chunk 문서당 단위 수 median', 1)
+EX('05_results.md', _C, '12', 'corpus_stats', 'chunk 문서당 단위 수 max')
+EX('05_results.md', _C, '5', 'corpus_stats', 'trag_hetero 문서당 단위 수 median', 2)
+EX('05_results.md', _C, '14', 'corpus_stats', 'trag_hetero 문서당 단위 수 max')
+EX('05_results.md', _C, '4', 'corpus_stats', 'table 문서당 단위 수 median')
+EX('05_results.md', _C, '7', 'corpus_stats', 'table 문서당 단위 수 max')
 
 # 원천을 못 찾은 수치의 사유(자동 대조 실패 시 적는다)
 NOTFOUND = {}
@@ -1586,8 +1509,6 @@ NOTFOUND = {}
 # 다른 논문이 보고한 값 — 결과 파일과 대조하지 않고 '외부 문헌' 출처로 적는다 (2026-09-28)
 EXTERNAL = {}
 _Z = '외부 문헌: Zhao et al. (2022) MultiHiertt, Table 2 (arXiv:2206.01347)'
-_Q = '외부 문헌: Qwen2.5 Technical Report (arXiv:2412.15115) 본문 "other models to process up to 131,072 tokens"(YaRN·DCA), Hugging Face Qwen/Qwen2.5-7B-Instruct 모델 카드 "Full 131,072 tokens" (2026-09-28 확인)'
-EXTERNAL['05_results.md', AT('05_results.md', '**참고 조건의 해석.**'), '131,072'] = _Q
 for _t in ('100', '4', '84.9%'):
     EXTERNAL['06_discussion.md', AT('06_discussion.md', '**정답 근거 주석의 범위.**'), _t] = _Z
 
@@ -1787,16 +1708,15 @@ def KOA(f, anchor, kind, toks=None):
 KOA('04_setup.md', '그룹마다 표본 크기가 다르므로(상한 300)', K_SET, ['300'])   # 2026-09-28 용어 교체 뒤 줄 대응(difflib)이 끊겨 앵커로 고정
 
 
-KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', K_SEC, ['5.4'])
-KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', K_N, [('2', 1)])      # 정답 셀이 빈 칸으로 파싱된 2건
+KOA('04_setup.md', MH41, K_SEC, ['5.1'])
+KOA('04_setup.md', MH41, K_N, [('2', 1)])      # 정답 셀이 빈 칸으로 파싱된 2건
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_ETC, ['1', '2', ('3', 2)])   # (1)(2)(3) 항목 번호
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3', 1)])             # 자주 나오는 값 3개
-KOA('05_results.md', '괄호 안은 검색에 성공한 질의 수다.', K_SET, ['8'])                    # Holm 묶음 크기
 KOA('05_results.md', '**나머지 비교군.**', K_SET, ['8', '5'])
 KOA('05_results.md', 'MultiHiertt가 함께 제공하는 셀 문장(table_description', K_ETC, ['1'])   # 1회 실행
-KOA('01_intro.md', '본 연구가 MT2Net과 다른 점은 네 가지다.', K_ETC, ['1', '2', '3', '4'])       # (1)~(4) 항목 번호
-KOA('02_related.md', '**MT2Net(Zhao et al., 2022).**', K_ETC, ['1', '2', '3', '4'])
-KOA('01_intro.md', '2. **셀 단위 검색을 발표된', K_SET, ['1,000'])                         # 고정 청크 설정
+KOA('01_intro.md', '본 연구가 MT2Net과 다른 점은 세 가지다.', K_ETC, ['1', '2', '3'])       # (1)~(4) 항목 번호
+KOA('02_related.md', '**MT2Net(Zhao et al., 2022).**', K_ETC, ['1', '2', '3'])
+KOA('01_intro.md', '1. **셀 단위 검색을 발표된', K_SET, ['1,000'])                         # 고정 청크 설정
 KOA('06_discussion.md', '**머리글 규칙 수정 이력.**', K_SET, ['1,000'])                        # 고정 청크 설정(1,000자)
 KOA('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', K_ETC, ['1'])                 # "상한이 1보다 낮다"의 비교 기준
 KOA('02_related.md', '**MixRAG.** Zhang et al.(2026)은', K_CITE)                          # 선행 논문이 보고한 값
@@ -1806,17 +1726,15 @@ KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])
 KOA('09_appendix.md', '키워드가 있는 91문항은 모두', K_ETC, ['12'])                          # 질문 인용 "less than 12 months"                     # 인용 위치 Table 2
 # 2026-09-28 인용 대조 반영: 선행 논문이 보고한 값·인용 쪽 번호(원고 줄 전체)
 KOA('01_intro.md', '표 RAG에서 흔한 방식은', K_CITE)
-KOA('02_related.md', '**HiTab.** Cheng et al.(2022)은', K_CITE)
+KOA('02_related.md', '**HiTab.** Cheng et al.(2022)의 HiTab은', K_CITE)
 KOA('02_related.md', '검색 결과에 질문과 관련은 있으나', K_CITE)
 KOA('02_related.md', '**유형별 보고.**', K_CITE)
-for _a in ('| HiTab 채점기 |', '| TableRAG(Chen) | 스키마 문서 내용 |', '| TableRAG(Chen) | 스키마 검색 |', '| TableRAG(Chen) | 행 라벨 문서 |',
+for _a in ('| TableRAG(Chen) | 스키마 문서 내용 |', '| TableRAG(Chen) | 스키마 검색 |', '| TableRAG(Chen) | 행 라벨 문서 |',
            '| TableRAG(Chen) | 셀 인코딩 예산 B |', '| TableRAG(Chen) | 질의 확장과 검색 개수 K |',   # 숫자 열 판정 행은 2026-09-28 결과값이 들어가 대조한다
            '| RowCol | 색인 텍스트 |', '| RandRow | 색인·검색 |', '| RandRow | 리더 입력 |', '| TableRAG(Yu) | 청크 크기·겹침 단위 |',
            '| TableRAG(Yu) | 마크다운 변환 |', '| TableRAG(Yu) | 머리말 이름 |'):
     KOA('09_appendix.md', _a, K_CITE)                                                   # 부록 H: 원 논문·코드 설정값
 KOA('06_discussion.md', '**가설은 지지되지 않았다.**', K_ETC, ['1'])                      # 정답 셀이 1개인
-KOA('06_discussion.md', '| HiTab 질문의 표 안 | 36 |', K_SET, ['21', '50'])               # 버킷 정의
-KOA('06_discussion.md', '| | | B: 정답 셀 순위 21~50 | 25 |', K_SET, ['21', '50'])
 KOA('06_discussion.md', '| | | H: 정답 표의 셀은 있으나', K_ETC, ['0'])
 KOA('06_discussion.md', 'MultiHiertt 실패 394건 중', K_SET, ['50'])
 KOA('06_discussion.md', '**재정렬 진단.**', K_SET, ['50'])
@@ -1826,19 +1744,29 @@ KOA('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', K_SET, ['6'])
 KOA('05_results.md', '그룹별 값은 탐색적 결과다. Holm p는', K_SET, ['12'])
 KOA('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', K_SEC, ['9'])
 KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_SET, ['12'])
-KOA('05_results.md', '**538표 한 색인 조건.**', K_SET, ['1,000'])
 KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_ETC, ['0'])
 KOA('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', K_SET, ['20'])
-KOA('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 16 |', K_SET, ['51'])
-KOA('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 20 |', K_SET, ['51'])   # α 후보 범위
 KOA('09_appendix.md', '332건 기준에서도 β=1.0이 1위다.', K_SET, ['1.0', '0.6'])
-KOA('05_results.md', 'b는 본 방법만 맞힌 문항 수', K_SET, ['8'])                    # Holm 묶음 크기
-KOA('05_results.md', '이 범위에서 본 방법(.9142)은', K_SET, ['7'])                   # 비교군 수
 KOA('09_appendix.md', '"머리글 규칙 영향"은 두 규칙에서', K_SET, ['1', '8', '4'])    # 규칙 불일치 행 수, Holm 묶음 크기, 옮긴 행 수
-KOA('04_setup.md', '**HiTab 답변 표본.**', K_ETC, ['8'])                            # 검색 방법 수
-KOA('03_method.md', "> In the table 'agri-food industry sub-groups … 2011'", K_ETC)   # 표 3-1 예시 텍스트
-KOA('03_method.md', '> food service / french-language workers:', K_ETC)
 KOA('07_conclusion.md', '3. **답변 정확도.**', K_SET, ['4'])                       # 4비트
+# 2026-09-28 MultiHiertt 단독 원고: 사전등록한 k 후보·설정값
+for _f, _a in (('04_setup.md', '**전달 셀 수 k의 선택.**'), ('05_results.md', '【대기: 표 5-5. 전달 셀 수 k별 dev 답변 정확도')):
+    KOA(_f, _a, K_SET, ['5', '10', '15', '20', '30', '50', '75', '100'])
+KOA('01_intro.md', '예를 들어 재무 보고서의 표에서 한 값은', K_ETC)
+KOA('03_method.md', '**임베딩.** 셀 문장과 질문을', K_SET, ['512'])
+KOA('05_results.md', '표 5-4는 같은 2,885건에서', K_SET, ['20'])
+KOA('05_results.md', 'R@k는 Recall@k, P@k는 Precision@k다.', K_SET, ['20'])
+KOA('03_method.md', '리더는 `Qwen3-8B`(Qwen Team, 2025) 4비트', K_SET, ['4'])
+KOA('04_setup.md', 'TableRAG(Yu)의 원 논문 본문은 청크 크기를', K_CITE, ['1,000', '200'])
+KOA('04_setup.md', '**재현율·정밀도·MRR.**', K_ETC, ['1', '0'])                        # MRR 정의식의 1, 없으면 0
+KOA('04_setup.md', '**검정.**', K_SET, ['.05', '10,000'])
+KOA('05_results.md', '【대기: 같은 입력 길이에서의 재현율 비교', K_SET, ['100'])
+KOA('05_results.md', '【대기: 표 5-5. 전달 셀 수 k별 dev 답변 정확도', K_SET, ['+75'])
+KOA('05_results.md', '**선택된 k의 답변.**', K_SET, ['20'])
+L('05_results.md', '【대기: 표 5-5. 전달 셀 수 k별 dev 답변 정확도', 'mh_dev_pop')
+L('05_results.md', ['**표 단위 검색의 답변.**', '**선택된 k의 답변.**'], 'mh_sample')
+L('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', 'tro', 'mh_pop')
+PF('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', r'^TRO 상한', r' n$')
 for _i, _line in enumerate(_lines('06_discussion.md'), 1):
     if _line.startswith('| | | D: '):
         KO('06_discussion.md', _i, K_SET, ['20'])                                   # 버킷 정의
