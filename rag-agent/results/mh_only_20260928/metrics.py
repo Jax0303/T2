@@ -8,7 +8,8 @@
     (rowcol 은 순위 목록이 행·열 단위이고 실제 전달은 행∩열 교집합이라, 이 표의 값은 "행 또는 열 단위가 정답 셀을 포함"으로 읽는다.)
   다중 정답 셀은 부분 회수를 그대로 점수로. 기존 "전부 포함" = Recall@20 = 1.0 인 문항 비율(열 하나).
   (b) 토큰 예산 표: 순위 순으로 단위를 더해 누적 토큰(단위 텍스트만, Qwen3-8B 토크나이저)이 1,500 을 넘기 직전까지의 집합.
-     Precision 분모 = 넣은 단위 수. 저장 순위 20 단위 안에 1,500 이 안 차면 20 단위 전부(그 문항 수를 적는다).
+     Precision 분모 = 넣은 단위 수. 저장 순위 안에 1,500 이 안 차면 저장 순위 전부(그 문항 수를 적는다).
+     retrieval_r100/ 에 순위 100 기록이 있는 arm 은 (b) 표만 그 기록으로 계산한다(GATE 1 보완, (a) 표는 retrieval/ 그대로).
 실행:  .venv/bin/python results/mh_only_20260928/metrics.py
 """
 import csv
@@ -19,6 +20,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 R = HERE / "retrieval"
+R100 = HERE / "retrieval_r100"
 BUDGET = 1500
 KS = (1, 5, 10, 20)
 ARMS = [("s3c", "본 방법(셀 문장)", "cell"), ("chunk", "1,000자 청크", "unit"), ("trag_hetero", "TableRAG(Yu) 청킹 이식", "unit"),
@@ -64,7 +66,7 @@ def budget_set(gold, units, toks, kind):
         rec = len({g for g in gold if any(g in u for u in top)}) / len(gold)
         prec = sum(1 for u in top if gold & set(u)) / n
     return {"recall": rec, "precision": prec, "n_units": n, "n_cells": len({c for u in top for c in u}), "tokens": cum,
-            "capped_at_20": int(n == len(units) and len(units) == 20 and cum + (toks[19] if len(toks) > 19 else 0) <= BUDGET and False) or int(n == 20 and cum <= BUDGET),
+            "capped": int(n == len(toks) and cum <= BUDGET),
             "first_unit_over": int(first_over)}
 
 
@@ -78,7 +80,9 @@ for arm, name, kind in ARMS:
     if not f.exists():
         out[arm] = "미실행"; continue
     recs = [r for r in map(json.loads, open(f, encoding="utf-8")) if "excluded" not in r and "doc" in r and r.get("gold_ids")]
-    res = {"name": name, "kind": kind, "n": len(recs), "source": str(f)}
+    f100 = R100 / f"mh_train_{arm}_records.jsonl"
+    r100 = {r["query_id"]: r for r in map(json.loads, open(f100, encoding="utf-8")) if "excluded" not in r and "doc" in r and r.get("gold_ids")} if f100.exists() else None
+    res = {"name": name, "kind": kind, "n": len(recs), "source": str(f), "source_b": str(f100 if r100 else f)}
     for pop, sel in (("2885", recs), ("882", [r for r in recs if r["query_id"] in POP882])):
         block = {}
         pq = {k: [per_query(r["gold_ids"], r["doc"]["ranked_units"], kind, k) for r in sel] for k in KS}
@@ -89,11 +93,12 @@ for arm, name, kind in ARMS:
             block[f"Precision@{k}"] = mean([x[1] for x in pq[k]])
         block["Recall@20=1.0 비율(기존 전부 포함)"] = mean([int(x[0] == 1.0) for x in pq[20]])
         block["기존 correct(예산20 문맥) 비율"] = mean([r["doc"]["correct"] for r in sel])
-        bs = [budget_set(r["gold_ids"], r["doc"]["ranked_units"], r["doc"]["ranked_tokens"], kind) for r in sel]
+        bsel = [r100[r["query_id"]] for r in sel] if r100 else sel
+        bs = [budget_set(r["gold_ids"], r["doc"]["ranked_units"], r["doc"]["ranked_tokens"], kind) for r in bsel]
         block[f"토큰예산{BUDGET}"] = {"Recall": mean([b["recall"] for b in bs]), "Precision(분모=단위 수)": mean([b["precision"] for b in bs]),
                                    "단위 수 평균": mean([b["n_units"] for b in bs]), "셀 수 평균": mean([b["n_cells"] for b in bs]),
                                    "누적 토큰 평균": mean([b["tokens"] for b in bs]),
-                                   "20단위에서 잘린 문항 수(예산 미달)": sum(b["capped_at_20"] for b in bs),
+                                   "저장 순위 끝에서 잘린 문항 수(예산 미달)": sum(b["capped"] for b in bs), "저장 순위": len(bsel[0]["doc"]["ranked_tokens"]) if r100 else 20,
                                    "첫 단위가 예산 초과인 문항 수": sum(b["first_unit_over"] for b in bs)}
         block["층별 Recall@20"] = {L: mean([x[0] for x, r in zip(pq[20], sel) if r["layer"] == L]) for L in sorted({r["layer"] for r in sel})}
         block["층별 MRR"] = {L: mean([x[2] for x, r in zip(pq[20], sel) if r["layer"] == L]) for L in sorted({r["layer"] for r in sel})}
@@ -102,7 +107,7 @@ for arm, name, kind in ARMS:
             if isinstance(v, float):
                 csv_rows.append({"arm": name, "population": pop, "metric": key, "value": v, "source_file": str(f)})
         for key, v in block[f"토큰예산{BUDGET}"].items():
-            csv_rows.append({"arm": name, "population": pop, "metric": f"토큰예산{BUDGET} {key}", "value": v, "source_file": str(f)})
+            csv_rows.append({"arm": name, "population": pop, "metric": f"토큰예산{BUDGET} {key}", "value": v, "source_file": res["source_b"]})
     out[arm] = res
 
 for pop in ("2885", "882"):
@@ -113,12 +118,12 @@ for pop in ("2885", "882"):
         b = out[arm][pop]
         md.append(f"| {name} | {'셀' if kind == 'cell' else '단위'} | {b['Recall@1']:.3f} | {b['Recall@5']:.3f} | {b['Recall@10']:.3f} | {b['Recall@20']:.3f} | {b['MRR']:.3f} | "
                   f"{b['Precision@5']:.3f} | {b['Precision@10']:.3f} | {b['Precision@20']:.3f} | {b['Recall@20=1.0 비율(기존 전부 포함)']:.3f} | {b['기존 correct(예산20 문맥) 비율']:.3f} |")
-    md.append(f"\n## (b) 토큰 예산 ≤{BUDGET} 표 — {pop}\n\n| arm | Recall | Precision(단위) | 단위 수 | 셀 수 | 누적 토큰 | 20단위에서 잘림 | 첫 단위 초과 |\n|---|---|---|---|---|---|---|---|")
+    md.append(f"\n## (b) 토큰 예산 ≤{BUDGET} 표 — {pop}\n\n| arm | Recall | Precision(단위) | 단위 수 | 셀 수 | 누적 토큰 | 저장 순위 끝에서 잘림 | 첫 단위 초과 |\n|---|---|---|---|---|---|---|---|")
     for arm, name, kind in ARMS:
         if out[arm] == "미실행":
             continue
         t = out[arm][pop][f"토큰예산{BUDGET}"]
-        md.append(f"| {name} | {t['Recall']:.3f} | {t['Precision(분모=단위 수)']:.3f} | {t['단위 수 평균']:.1f} | {t['셀 수 평균']:.1f} | {t['누적 토큰 평균']:.0f} | {t['20단위에서 잘린 문항 수(예산 미달)']} | {t['첫 단위가 예산 초과인 문항 수']} |")
+        md.append(f"| {name} | {t['Recall']:.3f} | {t['Precision(분모=단위 수)']:.3f} | {t['단위 수 평균']:.1f} | {t['셀 수 평균']:.1f} | {t['누적 토큰 평균']:.0f} | {t['저장 순위 끝에서 잘린 문항 수(예산 미달)']}(순위 {t['저장 순위']}) | {t['첫 단위가 예산 초과인 문항 수']} |")
 
 # §3.5 dev 332 본 방법: |G| 분포, Recall@k·MRR 곡선, 누적 토큰
 dev_f = R / "mh_dev_s3c_b50_records.jsonl"
