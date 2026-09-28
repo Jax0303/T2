@@ -250,8 +250,9 @@ def main() -> int:
     if a.limit:
         pop = pop[:a.limit]
 
-    if (a.records or a.context == "rowexp") and (len(arms) != 1 or not a.no_filter or arith):
-        raise SystemExit("--records / --context rowexp 는 arm 하나, --no-filter, 단일 조회에서만 쓴다")
+    # 2026-09-28: --records 는 필터와 함께 써도 된다(부록 A TableRAG 공식 규칙 재실행). rowexp 는 여전히 --no-filter 만.
+    if (a.records and (len(arms) != 1 or arith)) or (a.context == "rowexp" and (len(arms) != 1 or not a.no_filter or arith)):
+        raise SystemExit("--records 는 arm 하나·단일 조회, --context rowexp 는 여기에 --no-filter 까지 필요하다")
     loaded, rec_paths = {}, {}
     for name, stem in arms.items():
         rec_paths[name] = Path(a.records) if a.records else RECORDS / f"{stem}_records.jsonl"

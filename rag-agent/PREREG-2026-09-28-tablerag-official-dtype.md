@@ -111,4 +111,12 @@ MultiHiertt 그룹별(원본 규칙 대 원고 규칙): leaf 조회1 .5047 대 .
   본 방법(s3c) 행을 만든 것과 같은 리더(Qwen2.5-7B-Instruct 4bit, neutral, 64토큰, temperature 0)·채점. 출력
   `results/tablerag_official_20260928/answers/hitab_tablerag_{leaf,path}_official_rows.jsonl`. 표 5-4 의 본 방법 대비 McNemar 와
   8개 비교 Holm 을 다시 계산한다.
-- MultiHiertt 882: 공식 규칙 검색은 최종 머리글 규칙으로만 있다. 어떤 문맥으로 답변을 만들지는 사용자 결정 뒤 이 절에 적는다.
+- MultiHiertt 882 (사용자 결정 2026-09-28): 이미 돌린 공식 규칙 검색(최종 머리글 규칙 v3.3u)의 문맥으로 답변 2회(leaf, path).
+  `scripts/answer_accuracy_mh.py --scope doc --batch-size 128 --header-rule v3.3u --same-queries-as results/mh_arms/cap300_20260924/cell.jsonl
+  --condition retrieved --records <공식 규칙 records>` (리더 Qwen3-8B 4bit 비생각, cot, 384토큰 — 표 5-8 의 조건과 같음). 출력
+  `results/tablerag_official_20260928/answers/mh_tablerag_{leaf,path}_official.jsonl`. 짝은 최종 규칙 본 방법(`cell_uniq`, 408/882).
+  부록 F 의 옛 TableRAG 4행(처음 규칙·v3.3 문맥, 원고 숫자 열 규칙)은 빼고, 새 2행을 최종 규칙 본 방법과 짝지어 싣는다.
+- 부록 A (사용자 결정 2026-09-28): 같은 300건에서 필터 실험도 공식 규칙 문맥으로 다시 돈다.
+  `scripts/fair_filter_eval.py --arms tablerag_{leaf,path} --records <공식 규칙 records>` (필터 포함; 이를 위해 `--records` 를 필터와
+  함께 쓸 수 있게 조건 한 줄을 풀었다, rowexp 는 그대로). 출력 `results/tablerag_official_20260928/answers/hitab_tablerag_{leaf,path}_official_filter_rows.jsonl`.
+  이 실행의 무필터 답은 위 무필터 실행과 같아야 한다(같은 리더·temperature 0) — 다르면 보고한다.
