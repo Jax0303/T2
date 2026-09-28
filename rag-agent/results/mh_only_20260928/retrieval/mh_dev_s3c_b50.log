@@ -1,0 +1,334 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] 338 queries / 338 docs (제외: {'needs_text_evidence': 706}) -6s
+[corpus] 1369 tables / 53778 cell units (1s)
+[bm25] 7901 terms in 0s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  67%|██████▋   | 134/199 [00:00<00:00, 1327.09it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1655.55it/s]
+[dense] 0..50000 in 38s
+[dense] 50000..53778 in 3s
+  200/338  12s
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "validation",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "cell_text": "ours",
+  "n_units_table_description": null,
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 53778,
+      "max_tokens": 137,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 338,
+      "max_tokens": 55,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": null,
+  "budget_cells": 50,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 338,
+  "n_tables": 1369,
+  "n_units": 53778,
+  "corpus_text_sha256": "8685130bc233aab2dd1ffacd3905952db38df349f33d16e002de6758c27d867b",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 706
+  },
+  "n_queries": 338,
+  "n_scored": 332,
+  "n_excluded": 6,
+  "excluded_by_reason": {
+    "gold_in_header": 3,
+    "gold_table_unparsed": 3
+  },
+  "query_ids_sha256": "9ee3c716b405f41c5fe93b54536e74c73753dbced6d5a24c7aaff61ed814e90f",
+  "by_layer": {
+    "ALL": {
+      "n": 332,
+      "corpus": {
+        "accuracy_all": 0.5873,
+        "accuracy_any_DIAGNOSTIC": 0.8012,
+        "gold_doc_in_context": 0.8976,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.012,
+          "3": 0.0873,
+          "5": 0.1717,
+          "10": 0.2982,
+          "15": 0.3675,
+          "20": 0.4307,
+          "30": 0.509,
+          "50": 0.5873
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9759,
+        "accuracy_any_DIAGNOSTIC": 0.997,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.0331,
+          "3": 0.3765,
+          "5": 0.5361,
+          "10": 0.7349,
+          "15": 0.8313,
+          "20": 0.8735,
+          "30": 0.9458,
+          "50": 0.9759
+        }
+      },
+      "table": {
+        "accuracy_all": 0.991,
+        "accuracy_any_DIAGNOSTIC": 0.997,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 38.8,
+        "accuracy_all_at_k": {
+          "1": 0.0331,
+          "3": 0.4006,
+          "5": 0.5783,
+          "10": 0.7771,
+          "15": 0.8825,
+          "20": 0.9157,
+          "30": 0.9669,
+          "50": 0.991
+        }
+      },
+      "mean_m": 2.768,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 10,
+      "corpus": {
+        "accuracy_all": 0.8,
+        "accuracy_any_DIAGNOSTIC": 0.8,
+        "gold_doc_in_context": 0.9,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.4,
+          "3": 0.5,
+          "5": 0.8,
+          "10": 0.8,
+          "15": 0.8,
+          "20": 0.8,
+          "30": 0.8,
+          "50": 0.8
+        }
+      },
+      "doc": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.6,
+          "3": 0.9,
+          "5": 0.9,
+          "10": 1.0,
+          "15": 1.0,
+          "20": 1.0,
+          "30": 1.0,
+          "50": 1.0
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 27.9,
+        "accuracy_all_at_k": {
+          "1": 0.6,
+          "3": 0.9,
+          "5": 1.0,
+          "10": 1.0,
+          "15": 1.0,
+          "20": 1.0,
+          "30": 1.0,
+          "50": 1.0
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 254,
+      "corpus": {
+        "accuracy_all": 0.5551,
+        "accuracy_any_DIAGNOSTIC": 0.7953,
+        "gold_doc_in_context": 0.8976,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "3": 0.0787,
+          "5": 0.1457,
+          "10": 0.2598,
+          "15": 0.3307,
+          "20": 0.4055,
+          "30": 0.4882,
+          "50": 0.5551
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9803,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "3": 0.3465,
+          "5": 0.5,
+          "10": 0.7087,
+          "15": 0.8307,
+          "20": 0.8819,
+          "30": 0.9528,
+          "50": 0.9803
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9921,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 37.2,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "3": 0.3661,
+          "5": 0.5394,
+          "10": 0.7598,
+          "15": 0.8898,
+          "20": 0.9291,
+          "30": 0.9724,
+          "50": 0.9921
+        }
+      },
+      "mean_m": 2.736,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 20,
+      "corpus": {
+        "accuracy_all": 0.7,
+        "accuracy_any_DIAGNOSTIC": 0.7,
+        "gold_doc_in_context": 0.85,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "3": 0.1,
+          "5": 0.2,
+          "10": 0.4,
+          "15": 0.55,
+          "20": 0.55,
+          "30": 0.6,
+          "50": 0.7
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.95,
+        "accuracy_any_DIAGNOSTIC": 0.95,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.25,
+          "3": 0.55,
+          "5": 0.8,
+          "10": 0.8,
+          "15": 0.8,
+          "20": 0.85,
+          "30": 0.95,
+          "50": 0.95
+        }
+      },
+      "table": {
+        "accuracy_all": 0.95,
+        "accuracy_any_DIAGNOSTIC": 0.95,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 46.5,
+        "accuracy_all_at_k": {
+          "1": 0.25,
+          "3": 0.55,
+          "5": 0.8,
+          "10": 0.8,
+          "15": 0.85,
+          "20": 0.85,
+          "30": 0.95,
+          "50": 0.95
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 48,
+      "corpus": {
+        "accuracy_all": 0.6667,
+        "accuracy_any_DIAGNOSTIC": 0.875,
+        "gold_doc_in_context": 0.9167,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "3": 0.0417,
+          "5": 0.1667,
+          "10": 0.3542,
+          "15": 0.3958,
+          "20": 0.4375,
+          "30": 0.5208,
+          "50": 0.6667
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9583,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 50.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "3": 0.3542,
+          "5": 0.5417,
+          "10": 0.7917,
+          "15": 0.8125,
+          "20": 0.8125,
+          "30": 0.8958,
+          "50": 0.9583
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 46.2,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "3": 0.4167,
+          "5": 0.6042,
+          "10": 0.8125,
+          "15": 0.8333,
+          "20": 0.8542,
+          "30": 0.9375,
+          "50": 1.0
+        }
+      },
+      "mean_m": 4.042,
+      "m_over_budget": 0
+    }
+  }
+}
