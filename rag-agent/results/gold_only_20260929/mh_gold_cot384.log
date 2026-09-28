@@ -1,0 +1,147 @@
+[same-queries] 882 요청 -> 882 (새 레코드에 없음 0)
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[scorer] gold 를 예측으로 넣었을 때 EM=0.9512471655328798 (n=882)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:04<27:23,  4.13s/it]Loading weights:   1%|          | 2/399 [00:09<31:01,  4.69s/it]Loading weights:   1%|          | 4/399 [00:09<12:39,  1.92s/it]Loading weights:   1%|▏         | 5/399 [00:10<09:21,  1.42s/it]Loading weights:   2%|▏         | 6/399 [00:10<07:08,  1.09s/it]Loading weights:   3%|▎         | 10/399 [00:10<02:47,  2.32it/s]Loading weights:   3%|▎         | 12/399 [00:10<02:02,  3.15it/s]Loading weights:   4%|▍         | 15/399 [00:10<01:23,  4.59it/s]Loading weights:   4%|▍         | 17/399 [00:11<01:13,  5.21it/s]Loading weights:   7%|▋         | 26/399 [00:11<00:29, 12.66it/s]Loading weights:   8%|▊         | 31/399 [00:11<00:21, 16.79it/s]Loading weights:   9%|▉         | 37/399 [00:11<00:16, 22.56it/s]Loading weights:  11%|█         | 42/399 [00:11<00:13, 26.82it/s]Loading weights:  12%|█▏        | 49/399 [00:11<00:10, 32.55it/s]Loading weights:  14%|█▎        | 54/399 [00:18<02:17,  2.52it/s]Loading weights:  15%|█▌        | 60/399 [00:18<01:33,  3.63it/s]Loading weights:  81%|████████  | 324/399 [00:23<00:02, 32.82it/s]Loading weights:  83%|████████▎ | 332/399 [00:23<00:01, 33.57it/s]Loading weights: 100%|██████████| 399/399 [00:17<00:00, 22.63it/s]
+2026-09-29 07:02:18,662 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 07:02:18,716 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.05s.
+  100/882  88s  em=0.5600
+2026-09-29 07:03:47,063 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 07:03:47,092 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  200/882  191s  em=0.5800
+2026-09-29 07:05:29,693 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 07:05:29,720 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  300/882  281s  em=0.6000
+2026-09-29 07:06:59,406 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 07:06:59,436 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  400/882  381s  em=0.6025
+  500/882  381s  em=0.5800
+2026-09-29 07:08:32,693 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 07:08:32,724 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  600/882  474s  em=0.5733
+2026-09-29 07:10:19,733 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 07:10:19,753 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  700/882  562s  em=0.5829
+2026-09-29 07:11:40,456 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 07:11:40,477 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  800/882  642s  em=0.5813
+{
+  "records": "results/mh_arms/mh_train_cell_hv3.3u_none_doc_records.jsonl",
+  "scope": "doc",
+  "condition": "gold",
+  "context_version": 2,
+  "retrieval_records_sha256": "7394c2b1c181c98a5e5028b3689dd5fa6ed66be08f502be3fdb1f9a13e62e7a3",
+  "retrieval_unit": "cell",
+  "retrieval_template": "s3c",
+  "query_ids_sha256": "a424e4863a3ff705644b31cd8ac6ed9eb48e59a483c50d32ff0f173855bc182a",
+  "reader_details": {
+    "name": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "revision_requested": null,
+    "revision_resolved": "b968826d9c46dd6066d109eabc6255188de91218",
+    "quantization": "4bit",
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 40960,
+    "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0].role == 'system' %}\n        {{- messages[0].content + '\\n\\n' }}\n    {%- endif %}\n    {{- \"# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0].content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" and message.content is string and not(message.content.startswith('<tool_response>') and message.content.endswith('</tool_response>')) %}\n        {%- set ns.multi_step_tool = false %}\n        {%- set ns.last_query_index = index %}\n    {%- endif %}\n{%- endfor %}\n{%- for message in messages %}\n    {%- if message.content is string %}\n        {%- set content = message.content %}\n    {%- else %}\n        {%- set content = '' %}\n    {%- endif %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        {%- if loop.index0 > ns.last_query_index %}\n            {%- if loop.last or (not loop.last and reasoning_content) %}\n                {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content.strip('\\n') + '\\n</think>\\n\\n' + content.lstrip('\\n') }}\n            {%- else %}\n                {{- '<|im_start|>' + message.role + '\\n' + content }}\n            {%- endif %}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if (loop.first and content) or (not loop.first) %}\n                    {{- '\\n' }}\n                {%- endif %}\n                {%- if tool_call.function %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {{- '<tool_call>\\n{\"name\": \"' }}\n                {{- tool_call.name }}\n                {{- '\", \"arguments\": ' }}\n                {%- if tool_call.arguments is string %}\n                    {{- tool_call.arguments }}\n                {%- else %}\n                    {{- tool_call.arguments | tojson }}\n                {%- endif %}\n                {{- '}\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is false %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}",
+    "enable_thinking": false
+  },
+  "prompt_sha256": "1f5ae3c04b4bc1b7f9409a3877a851db59b00c25ab06cc67725bcd1ee93b6d30",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "scorer": "multihiertt_em.mh_exact_match (공식 포팅, 문항 유형 갈래)",
+  "scorer_secondary": "multihiertt_em.docmath_match (DocMath-Eval compare_two_numbers)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.9512471655328798,
+    "n": 882,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 43
+  },
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt": "cot",
+  "seed": 42,
+  "max_new_tokens": 384,
+  "batch_size": 128,
+  "stratum_cap": 0,
+  "sample_seed": 20260913,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "same_queries_as": "results/mh_arms/cap300_20260924/cell_uniq.jsonl",
+  "same_contexts_as": null,
+  "n_missing_from_same_queries": 0,
+  "generation_seconds": 640.4,
+  "resumed_rows": 0,
+  "run_config_sha256": "79e74fbcb811491d001459c22ed16858ade86f6b47de68f772b3c4306bd3dde9",
+  "marker_missing": 2,
+  "context_limit": 40960,
+  "n_over_context_limit": 0,
+  "by_layer": {
+    "ALL": {
+      "n": 882,
+      "retrieval_accuracy_here": 0.8957,
+      "answer_em": 0.5839,
+      "answer_em_docmath": 0.6576,
+      "answer_given_retrieval_hit": 0.6,
+      "n_retrieval_hit": 790,
+      "answer_given_retrieval_miss": 0.4457,
+      "n_retrieval_miss": 92,
+      "context_lines_mean": 2.4,
+      "input_tokens_mean": 171.8
+    },
+    "arith_m1": {
+      "n": 71,
+      "retrieval_accuracy_here": 0.9577,
+      "answer_em": 0.338,
+      "answer_em_docmath": 0.3944,
+      "answer_given_retrieval_hit": 0.3382,
+      "n_retrieval_hit": 68,
+      "answer_given_retrieval_miss": 0.3333,
+      "n_retrieval_miss": 3,
+      "context_lines_mean": 1.0,
+      "input_tokens_mean": 131.1
+    },
+    "arith_m2+": {
+      "n": 300,
+      "retrieval_accuracy_here": 0.8533,
+      "answer_em": 0.4,
+      "answer_em_docmath": 0.6033,
+      "answer_given_retrieval_hit": 0.4023,
+      "n_retrieval_hit": 256,
+      "answer_given_retrieval_miss": 0.3864,
+      "n_retrieval_miss": 44,
+      "context_lines_mean": 2.8,
+      "input_tokens_mean": 183.0
+    },
+    "lookup_m1": {
+      "n": 211,
+      "retrieval_accuracy_here": 0.9573,
+      "answer_em": 0.7488,
+      "answer_em_docmath": 0.7488,
+      "answer_given_retrieval_hit": 0.7475,
+      "n_retrieval_hit": 202,
+      "answer_given_retrieval_miss": 0.7778,
+      "n_retrieval_miss": 9,
+      "context_lines_mean": 1.0,
+      "input_tokens_mean": 129.2
+    },
+    "lookup_m2+": {
+      "n": 300,
+      "retrieval_accuracy_here": 0.88,
+      "answer_em": 0.71,
+      "answer_em_docmath": 0.71,
+      "answer_given_retrieval_hit": 0.7462,
+      "n_retrieval_hit": 264,
+      "answer_given_retrieval_miss": 0.4444,
+      "n_retrieval_miss": 36,
+      "context_lines_mean": 3.4,
+      "input_tokens_mean": 200.1
+    }
+  },
+  "records_sha256": "86fe309e6bfc085da4c91e3003384858747a62c49433bdf2e3f09cc63fd665ef"
+}
