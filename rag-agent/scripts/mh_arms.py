@@ -417,6 +417,9 @@ def main() -> int:
                          "(§0.1 주지표와 같은 운영점 정의, 재검색 없음). ablation 전용")
     ap.add_argument("--rowcol-max-pairs", type=int, default=200)
     ap.add_argument("--max-docs", type=int, default=0, help="배관 점검용. 보고용은 0")
+    ap.add_argument("--only-uids", default="", help="JSON 목록: 이 문항만 검색한다(색인·BM25 는 전체 그대로)")
+    ap.add_argument("--question-suffix", default="",
+                    help="JSON {uid: 말}: 질문 뒤에 붙인다 (PREREG-2026-09-28-mh-name-append.md 진단용)")
     ap.add_argument("--shard", type=int, default=50000)
     ap.add_argument("--dump-context", type=int, default=1)
     ap.add_argument("--cache-dir", default=".cache/mh_arms")
@@ -500,6 +503,14 @@ def main() -> int:
             for i, row in enumerate(tab.table.data)
             for j, v in enumerate(row) if str(v).strip()}
     queries = resolve_gold(queries, tables, hdr, live)
+    if a.only_uids:
+        only = set(json.loads(Path(a.only_uids).read_text()))
+        queries = [q for q in queries if q["uid"] in only]
+        assert len(queries) == len(only), "--only-uids 에 모집단에 없는 uid 가 있다"
+    if a.question_suffix:
+        suffix = json.loads(Path(a.question_suffix).read_text())
+        for q in queries:
+            q["question"] = (q["question"] + " " + suffix.get(q["uid"], "")).rstrip()
     uid_arr = np.array([t.split("::")[0] for t in unit_tids])
     tid_arr = np.array(unit_tids)
     assert len(uid_arr) == len(texts), "unit->doc map lost a unit"
