@@ -638,6 +638,12 @@ def main() -> int:
                         "cells_in_context": n_cells,
                         "gold_doc_in_context": int(any(c[0].split("::")[0] == q["uid"]
                                                        for c in got))}
+            if scope == "doc" and a.dump_context:
+                # 2026-09-28 분리 지표(Recall/Precision/F1/Hit/All-Evidence@k)용: 순위 순서의 상위 20 단위와
+                # 각 단위가 담은 셀 좌표(문서 안 짧은 id "표-행-열", 펼친 격자 좌표), 정답 셀 좌표.
+                short = lambda c: cell_id(c, hdr).split("::", 1)[1]
+                r["gold_ids"] = sorted(short(c) for c in q["gold"])
+                r[scope]["ranked_units"] = [sorted(short(c) for c in covers[p]) for p in order[:20]]
             if a.dump_context:
                 r[scope]["context"] = ctx
                 r[scope]["context_sha256"] = digest(ctx)
