@@ -1,0 +1,210 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "cell_text": "ours",
+  "n_units_table_description": null,
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "057b5e2d0df0bb5759033fa6c537e3a528ad4765",
+    "git_dirty": false,
+    "source_sha256": "ebf844314e39c3a7210812cd39dda4c1b9c0306d3264ea8a1ac67b60af4d4118",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "cell",
+    "template": "s3c",
+    "row_text": "values",
+    "cell_text": "ours",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v3.3u",
+    "label_rule": "none",
+    "keep_hybrid": false,
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "budget": 20,
+    "label_mix": null,
+    "k_ladder": "1,20",
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "only_uids": "results/mh_name_append_20260928/uids.json",
+    "question_suffix": "results/mh_name_append_20260928/suffix.json",
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/rerun_20260926_mh",
+    "out_dir": "results/mh_name_append_20260928",
+    "tag": "s3c_append",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 423473,
+      "max_tokens": 188,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 283,
+      "max_tokens": 67,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": null,
+  "budget_cells": 20,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 423473,
+  "corpus_text_sha256": "ccef1b9526bb259c744eb61ccf8944a89f5bd82c8ee81089f87a1a060c0b0258",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 283,
+  "n_scored": 283,
+  "n_excluded": 0,
+  "excluded_by_reason": {},
+  "query_ids_sha256": "c1b91f48277cd3ba08e3b117fff9c899b0905ff49c1d931519766907fb17b3e6",
+  "by_layer": {
+    "ALL": {
+      "n": 283,
+      "corpus": {
+        "accuracy_all": 0.7774,
+        "accuracy_any_DIAGNOSTIC": 0.7774,
+        "gold_doc_in_context": 0.8905,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.2297,
+          "20": 0.7774
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9717,
+        "accuracy_any_DIAGNOSTIC": 0.9717,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.6961,
+          "20": 0.9717
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9788,
+        "accuracy_any_DIAGNOSTIC": 0.9788,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.7,
+        "accuracy_all_at_k": {
+          "1": 0.7173,
+          "20": 0.9788
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.8028,
+        "accuracy_any_DIAGNOSTIC": 0.8028,
+        "gold_doc_in_context": 0.8732,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.338,
+          "20": 0.8028
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9718,
+        "accuracy_any_DIAGNOSTIC": 0.9718,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.8169,
+          "20": 0.9718
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.0,
+        "accuracy_all_at_k": {
+          "1": 0.831,
+          "20": 1.0
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 212,
+      "corpus": {
+        "accuracy_all": 0.7689,
+        "accuracy_any_DIAGNOSTIC": 0.7689,
+        "gold_doc_in_context": 0.8962,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.1934,
+          "20": 0.7689
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9717,
+        "accuracy_any_DIAGNOSTIC": 0.9717,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.6557,
+          "20": 0.9717
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9717,
+        "accuracy_any_DIAGNOSTIC": 0.9717,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.9,
+        "accuracy_all_at_k": {
+          "1": 0.6792,
+          "20": 0.9717
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "01294e27630225774a90c9deac0b8c6243a4023a5c5c25a2970dc363ebd7c103"
+}
