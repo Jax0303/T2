@@ -94,7 +94,8 @@ def main() -> int:
     cell_arm = meta.get("unit") == "cell"
     gv = None if cell_arm else gold_values(a.split, a.header_rule, a.label_rule)
     out = Path(a.out)
-    if out.exists() or out.with_suffix(".json").exists():
+    meta_out = out.with_name(out.stem.removesuffix("_records") + ".json")   # answer_accuracy_mh 가 찾는 이름
+    if out.exists() or meta_out.exists():
         raise SystemExit(f"{out} 있음 — 덮어쓰지 않는다")
     out.parent.mkdir(parents=True, exist_ok=True)
 
@@ -158,7 +159,7 @@ def main() -> int:
                "correct_is_proxy": None if cell_arm else "gold value string present in kept lines",
                "seconds": round(time.time() - t0, 1)}
     summary["records_sha256"] = file_digest(out)
-    out.with_suffix(".json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    meta_out.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({k: v for k, v in summary.items() if k not in ("provenance", "filter_details", "arguments")},
                      ensure_ascii=False, indent=1), flush=True)
     return 0
