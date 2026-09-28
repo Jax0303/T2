@@ -1,0 +1,3451 @@
+{
+ "s3c": {
+  "n_scored": 2885,
+  "n_excluded_records": 23,
+  "n_empty_gold": 0,
+  "check_all_at20_equals_correct": {
+   "n_mismatch_cell_rank20_vs_correct": 0,
+   "note": "셀 arm 은 0 이어야 함; 청크·표·행 arm 은 단위 통째 예산이라 다를 수 있음"
+  },
+  "2885 셀순위": {
+   "1": {
+    "recall": 0.2784,
+    "precision": 0.6062,
+    "f1": 0.3687,
+    "hit": 0.6062,
+    "all": 0.0419,
+    "n_delivered": 1.0,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.6338,
+     "precision": 0.6338,
+     "f1": 0.6338,
+     "hit": 0.6338,
+     "all": 0.6338,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.264,
+     "precision": 0.6134,
+     "f1": 0.3627,
+     "hit": 0.6134,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.3585,
+     "precision": 0.3585,
+     "f1": 0.3585,
+     "hit": 0.3585,
+     "all": 0.3585,
+     "n_delivered": 1.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.2512,
+     "precision": 0.7003,
+     "f1": 0.36,
+     "hit": 0.7003,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.6939,
+    "precision": 0.3341,
+    "f1": 0.4308,
+    "hit": 0.869,
+    "all": 0.5307,
+    "n_delivered": 5.0,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.1662,
+     "f1": 0.277,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.6718,
+     "precision": 0.3349,
+     "f1": 0.432,
+     "hit": 0.8734,
+     "all": 0.4837,
+     "n_delivered": 5.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7453,
+     "precision": 0.1491,
+     "f1": 0.2484,
+     "hit": 0.7453,
+     "all": 0.7453,
+     "n_delivered": 5.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7721,
+     "precision": 0.4681,
+     "f1": 0.5588,
+     "hit": 0.921,
+     "all": 0.6349,
+     "n_delivered": 5.0,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 0.8397,
+    "precision": 0.2112,
+    "f1": 0.3238,
+    "hit": 0.9386,
+    "all": 0.7293,
+    "n_delivered": 10.0,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.9155,
+     "precision": 0.0915,
+     "f1": 0.1665,
+     "hit": 0.9155,
+     "all": 0.9155,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.8235,
+     "precision": 0.2141,
+     "f1": 0.3288,
+     "hit": 0.9383,
+     "all": 0.6957,
+     "n_delivered": 10.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.8962,
+     "precision": 0.0896,
+     "f1": 0.163,
+     "hit": 0.8962,
+     "all": 0.8962,
+     "n_delivered": 10.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.891,
+     "precision": 0.2869,
+     "f1": 0.4166,
+     "hit": 0.97,
+     "all": 0.8011,
+     "n_delivered": 10.0,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 0.9244,
+    "precision": 0.1198,
+    "f1": 0.2055,
+    "hit": 0.9733,
+    "all": 0.8634,
+    "n_delivered": 20.0,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.9577,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9577,
+     "all": 0.9577,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.917,
+     "precision": 0.1227,
+     "f1": 0.2108,
+     "hit": 0.9736,
+     "all": 0.8492,
+     "n_delivered": 20.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.9575,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9575,
+     "all": 0.9575,
+     "n_delivered": 20.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.9437,
+     "precision": 0.1576,
+     "f1": 0.2615,
+     "hit": 0.9837,
+     "all": 0.8774,
+     "n_delivered": 20.0,
+     "n": 367
+    }
+   }
+  },
+  "2885 단위순위": {
+   "1": {
+    "recall": 0.2784,
+    "precision": 0.6062,
+    "f1": 0.3687,
+    "hit": 0.6062,
+    "all": 0.0419,
+    "n_delivered": 1.0,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.6338,
+     "precision": 0.6338,
+     "f1": 0.6338,
+     "hit": 0.6338,
+     "all": 0.6338,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.264,
+     "precision": 0.6134,
+     "f1": 0.3627,
+     "hit": 0.6134,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.3585,
+     "precision": 0.3585,
+     "f1": 0.3585,
+     "hit": 0.3585,
+     "all": 0.3585,
+     "n_delivered": 1.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.2512,
+     "precision": 0.7003,
+     "f1": 0.36,
+     "hit": 0.7003,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.6939,
+    "precision": 0.3341,
+    "f1": 0.4308,
+    "hit": 0.869,
+    "all": 0.5307,
+    "n_delivered": 5.0,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.1662,
+     "f1": 0.277,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.6718,
+     "precision": 0.3349,
+     "f1": 0.432,
+     "hit": 0.8734,
+     "all": 0.4837,
+     "n_delivered": 5.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7453,
+     "precision": 0.1491,
+     "f1": 0.2484,
+     "hit": 0.7453,
+     "all": 0.7453,
+     "n_delivered": 5.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7721,
+     "precision": 0.4681,
+     "f1": 0.5588,
+     "hit": 0.921,
+     "all": 0.6349,
+     "n_delivered": 5.0,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 0.8397,
+    "precision": 0.2112,
+    "f1": 0.3238,
+    "hit": 0.9386,
+    "all": 0.7293,
+    "n_delivered": 10.0,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.9155,
+     "precision": 0.0915,
+     "f1": 0.1665,
+     "hit": 0.9155,
+     "all": 0.9155,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.8235,
+     "precision": 0.2141,
+     "f1": 0.3288,
+     "hit": 0.9383,
+     "all": 0.6957,
+     "n_delivered": 10.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.8962,
+     "precision": 0.0896,
+     "f1": 0.163,
+     "hit": 0.8962,
+     "all": 0.8962,
+     "n_delivered": 10.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.891,
+     "precision": 0.2869,
+     "f1": 0.4166,
+     "hit": 0.97,
+     "all": 0.8011,
+     "n_delivered": 10.0,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 0.9244,
+    "precision": 0.1198,
+    "f1": 0.2055,
+    "hit": 0.9733,
+    "all": 0.8634,
+    "n_delivered": 20.0,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.9577,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9577,
+     "all": 0.9577,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.917,
+     "precision": 0.1227,
+     "f1": 0.2108,
+     "hit": 0.9736,
+     "all": 0.8492,
+     "n_delivered": 20.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.9575,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9575,
+     "all": 0.9575,
+     "n_delivered": 20.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.9437,
+     "precision": 0.1576,
+     "f1": 0.2615,
+     "hit": 0.9837,
+     "all": 0.8774,
+     "n_delivered": 20.0,
+     "n": 367
+    }
+   }
+  },
+  "2885 예산20전달집합": {
+   "1": {
+    "recall": 0.2784,
+    "precision": 0.6062,
+    "f1": 0.3687,
+    "hit": 0.6062,
+    "all": 0.0419,
+    "n_delivered": 1.0,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.6338,
+     "precision": 0.6338,
+     "f1": 0.6338,
+     "hit": 0.6338,
+     "all": 0.6338,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.264,
+     "precision": 0.6134,
+     "f1": 0.3627,
+     "hit": 0.6134,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.3585,
+     "precision": 0.3585,
+     "f1": 0.3585,
+     "hit": 0.3585,
+     "all": 0.3585,
+     "n_delivered": 1.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.2512,
+     "precision": 0.7003,
+     "f1": 0.36,
+     "hit": 0.7003,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.6939,
+    "precision": 0.3341,
+    "f1": 0.4308,
+    "hit": 0.869,
+    "all": 0.5307,
+    "n_delivered": 5.0,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.1662,
+     "f1": 0.277,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.6718,
+     "precision": 0.3349,
+     "f1": 0.432,
+     "hit": 0.8734,
+     "all": 0.4837,
+     "n_delivered": 5.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7453,
+     "precision": 0.1491,
+     "f1": 0.2484,
+     "hit": 0.7453,
+     "all": 0.7453,
+     "n_delivered": 5.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7721,
+     "precision": 0.4681,
+     "f1": 0.5588,
+     "hit": 0.921,
+     "all": 0.6349,
+     "n_delivered": 5.0,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 0.8397,
+    "precision": 0.2112,
+    "f1": 0.3238,
+    "hit": 0.9386,
+    "all": 0.7293,
+    "n_delivered": 10.0,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.9155,
+     "precision": 0.0915,
+     "f1": 0.1665,
+     "hit": 0.9155,
+     "all": 0.9155,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.8235,
+     "precision": 0.2141,
+     "f1": 0.3288,
+     "hit": 0.9383,
+     "all": 0.6957,
+     "n_delivered": 10.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.8962,
+     "precision": 0.0896,
+     "f1": 0.163,
+     "hit": 0.8962,
+     "all": 0.8962,
+     "n_delivered": 10.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.891,
+     "precision": 0.2869,
+     "f1": 0.4166,
+     "hit": 0.97,
+     "all": 0.8011,
+     "n_delivered": 10.0,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 0.9244,
+    "precision": 0.1198,
+    "f1": 0.2055,
+    "hit": 0.9733,
+    "all": 0.8634,
+    "n_delivered": 20.0,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.9577,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9577,
+     "all": 0.9577,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.917,
+     "precision": 0.1227,
+     "f1": 0.2108,
+     "hit": 0.9736,
+     "all": 0.8492,
+     "n_delivered": 20.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.9575,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9575,
+     "all": 0.9575,
+     "n_delivered": 20.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.9437,
+     "precision": 0.1576,
+     "f1": 0.2615,
+     "hit": 0.9837,
+     "all": 0.8774,
+     "n_delivered": 20.0,
+     "n": 367
+    }
+   }
+  },
+  "882 셀순위": {
+   "1": {
+    "recall": 0.3042,
+    "precision": 0.5635,
+    "f1": 0.3716,
+    "hit": 0.5635,
+    "all": 0.1372,
+    "n_delivered": 1.0,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.6338,
+     "precision": 0.6338,
+     "f1": 0.6338,
+     "hit": 0.6338,
+     "all": 0.6338,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.2393,
+     "precision": 0.5633,
+     "f1": 0.3299,
+     "hit": 0.5633,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.3602,
+     "precision": 0.3602,
+     "f1": 0.3602,
+     "hit": 0.3602,
+     "all": 0.3602,
+     "n_delivered": 1.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.2516,
+     "precision": 0.69,
+     "f1": 0.3592,
+     "hit": 0.69,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.7244,
+    "precision": 0.3181,
+    "f1": 0.4125,
+    "hit": 0.8447,
+    "all": 0.6122,
+    "n_delivered": 5.0,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.1662,
+     "f1": 0.277,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.6364,
+     "precision": 0.326,
+     "f1": 0.4155,
+     "hit": 0.84,
+     "all": 0.4433,
+     "n_delivered": 5.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7441,
+     "precision": 0.1488,
+     "f1": 0.248,
+     "hit": 0.7441,
+     "all": 0.7441,
+     "n_delivered": 5.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7733,
+     "precision": 0.4653,
+     "f1": 0.5573,
+     "hit": 0.9233,
+     "all": 0.6367,
+     "n_delivered": 5.0,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 0.8682,
+    "precision": 0.2,
+    "f1": 0.3067,
+    "hit": 0.9354,
+    "all": 0.7914,
+    "n_delivered": 10.0,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.9155,
+     "precision": 0.0915,
+     "f1": 0.1665,
+     "hit": 0.9155,
+     "all": 0.9155,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.8108,
+     "precision": 0.218,
+     "f1": 0.332,
+     "hit": 0.93,
+     "all": 0.6667,
+     "n_delivered": 10.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.8957,
+     "precision": 0.0896,
+     "f1": 0.1629,
+     "hit": 0.8957,
+     "all": 0.8957,
+     "n_delivered": 10.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.8952,
+     "precision": 0.2853,
+     "f1": 0.4158,
+     "hit": 0.9733,
+     "all": 0.8133,
+     "n_delivered": 10.0,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 0.9378,
+    "precision": 0.1114,
+    "f1": 0.191,
+    "hit": 0.9705,
+    "all": 0.8957,
+    "n_delivered": 20.0,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.9577,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9577,
+     "all": 0.9577,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.914,
+     "precision": 0.1265,
+     "f1": 0.2165,
+     "hit": 0.97,
+     "all": 0.8533,
+     "n_delivered": 20.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.9573,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9573,
+     "all": 0.9573,
+     "n_delivered": 20.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.9432,
+     "precision": 0.156,
+     "f1": 0.2594,
+     "hit": 0.9833,
+     "all": 0.88,
+     "n_delivered": 20.0,
+     "n": 300
+    }
+   }
+  },
+  "882 단위순위": {
+   "1": {
+    "recall": 0.3042,
+    "precision": 0.5635,
+    "f1": 0.3716,
+    "hit": 0.5635,
+    "all": 0.1372,
+    "n_delivered": 1.0,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.6338,
+     "precision": 0.6338,
+     "f1": 0.6338,
+     "hit": 0.6338,
+     "all": 0.6338,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.2393,
+     "precision": 0.5633,
+     "f1": 0.3299,
+     "hit": 0.5633,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.3602,
+     "precision": 0.3602,
+     "f1": 0.3602,
+     "hit": 0.3602,
+     "all": 0.3602,
+     "n_delivered": 1.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.2516,
+     "precision": 0.69,
+     "f1": 0.3592,
+     "hit": 0.69,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.7244,
+    "precision": 0.3181,
+    "f1": 0.4125,
+    "hit": 0.8447,
+    "all": 0.6122,
+    "n_delivered": 5.0,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.1662,
+     "f1": 0.277,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.6364,
+     "precision": 0.326,
+     "f1": 0.4155,
+     "hit": 0.84,
+     "all": 0.4433,
+     "n_delivered": 5.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7441,
+     "precision": 0.1488,
+     "f1": 0.248,
+     "hit": 0.7441,
+     "all": 0.7441,
+     "n_delivered": 5.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7733,
+     "precision": 0.4653,
+     "f1": 0.5573,
+     "hit": 0.9233,
+     "all": 0.6367,
+     "n_delivered": 5.0,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 0.8682,
+    "precision": 0.2,
+    "f1": 0.3067,
+    "hit": 0.9354,
+    "all": 0.7914,
+    "n_delivered": 10.0,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.9155,
+     "precision": 0.0915,
+     "f1": 0.1665,
+     "hit": 0.9155,
+     "all": 0.9155,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.8108,
+     "precision": 0.218,
+     "f1": 0.332,
+     "hit": 0.93,
+     "all": 0.6667,
+     "n_delivered": 10.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.8957,
+     "precision": 0.0896,
+     "f1": 0.1629,
+     "hit": 0.8957,
+     "all": 0.8957,
+     "n_delivered": 10.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.8952,
+     "precision": 0.2853,
+     "f1": 0.4158,
+     "hit": 0.9733,
+     "all": 0.8133,
+     "n_delivered": 10.0,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 0.9378,
+    "precision": 0.1114,
+    "f1": 0.191,
+    "hit": 0.9705,
+    "all": 0.8957,
+    "n_delivered": 20.0,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.9577,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9577,
+     "all": 0.9577,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.914,
+     "precision": 0.1265,
+     "f1": 0.2165,
+     "hit": 0.97,
+     "all": 0.8533,
+     "n_delivered": 20.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.9573,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9573,
+     "all": 0.9573,
+     "n_delivered": 20.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.9432,
+     "precision": 0.156,
+     "f1": 0.2594,
+     "hit": 0.9833,
+     "all": 0.88,
+     "n_delivered": 20.0,
+     "n": 300
+    }
+   }
+  },
+  "882 예산20전달집합": {
+   "1": {
+    "recall": 0.3042,
+    "precision": 0.5635,
+    "f1": 0.3716,
+    "hit": 0.5635,
+    "all": 0.1372,
+    "n_delivered": 1.0,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.6338,
+     "precision": 0.6338,
+     "f1": 0.6338,
+     "hit": 0.6338,
+     "all": 0.6338,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.2393,
+     "precision": 0.5633,
+     "f1": 0.3299,
+     "hit": 0.5633,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.3602,
+     "precision": 0.3602,
+     "f1": 0.3602,
+     "hit": 0.3602,
+     "all": 0.3602,
+     "n_delivered": 1.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.2516,
+     "precision": 0.69,
+     "f1": 0.3592,
+     "hit": 0.69,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.7244,
+    "precision": 0.3181,
+    "f1": 0.4125,
+    "hit": 0.8447,
+    "all": 0.6122,
+    "n_delivered": 5.0,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.1662,
+     "f1": 0.277,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.6364,
+     "precision": 0.326,
+     "f1": 0.4155,
+     "hit": 0.84,
+     "all": 0.4433,
+     "n_delivered": 5.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7441,
+     "precision": 0.1488,
+     "f1": 0.248,
+     "hit": 0.7441,
+     "all": 0.7441,
+     "n_delivered": 5.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7733,
+     "precision": 0.4653,
+     "f1": 0.5573,
+     "hit": 0.9233,
+     "all": 0.6367,
+     "n_delivered": 5.0,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 0.8682,
+    "precision": 0.2,
+    "f1": 0.3067,
+    "hit": 0.9354,
+    "all": 0.7914,
+    "n_delivered": 10.0,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.9155,
+     "precision": 0.0915,
+     "f1": 0.1665,
+     "hit": 0.9155,
+     "all": 0.9155,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.8108,
+     "precision": 0.218,
+     "f1": 0.332,
+     "hit": 0.93,
+     "all": 0.6667,
+     "n_delivered": 10.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.8957,
+     "precision": 0.0896,
+     "f1": 0.1629,
+     "hit": 0.8957,
+     "all": 0.8957,
+     "n_delivered": 10.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.8952,
+     "precision": 0.2853,
+     "f1": 0.4158,
+     "hit": 0.9733,
+     "all": 0.8133,
+     "n_delivered": 10.0,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 0.9378,
+    "precision": 0.1114,
+    "f1": 0.191,
+    "hit": 0.9705,
+    "all": 0.8957,
+    "n_delivered": 20.0,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.9577,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9577,
+     "all": 0.9577,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.914,
+     "precision": 0.1265,
+     "f1": 0.2165,
+     "hit": 0.97,
+     "all": 0.8533,
+     "n_delivered": 20.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.9573,
+     "precision": 0.0479,
+     "f1": 0.0912,
+     "hit": 0.9573,
+     "all": 0.9573,
+     "n_delivered": 20.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.9432,
+     "precision": 0.156,
+     "f1": 0.2594,
+     "hit": 0.9833,
+     "all": 0.88,
+     "n_delivered": 20.0,
+     "n": 300
+    }
+   }
+  }
+ },
+ "chunk": {
+  "n_scored": 2885,
+  "n_excluded_records": 23,
+  "n_empty_gold": 0,
+  "check_all_at20_equals_correct": {
+   "n_mismatch_cell_rank20_vs_correct": 1084,
+   "note": "셀 arm 은 0 이어야 함; 청크·표·행 arm 은 단위 통째 예산이라 다를 수 있음"
+  },
+  "2885 셀순위": {
+   "1": {
+    "recall": 0.0609,
+    "precision": 0.1473,
+    "f1": 0.0834,
+    "hit": 0.1473,
+    "all": 0.0035,
+    "n_delivered": 1.0,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.0,
+     "precision": 0.0,
+     "f1": 0.0,
+     "hit": 0.0,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.0685,
+     "precision": 0.1687,
+     "f1": 0.0952,
+     "hit": 0.1687,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.0472,
+     "precision": 0.0472,
+     "f1": 0.0472,
+     "hit": 0.0472,
+     "all": 0.0472,
+     "n_delivered": 1.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.0338,
+     "precision": 0.1035,
+     "f1": 0.049,
+     "hit": 0.1035,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.1802,
+    "precision": 0.0858,
+    "f1": 0.1116,
+    "hit": 0.2804,
+    "all": 0.0998,
+    "n_delivered": 5.0,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.1268,
+     "precision": 0.0254,
+     "f1": 0.0423,
+     "hit": 0.1268,
+     "all": 0.1268,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.1972,
+     "precision": 0.0964,
+     "f1": 0.1254,
+     "hit": 0.3163,
+     "all": 0.0998,
+     "n_delivered": 5.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.1462,
+     "precision": 0.0292,
+     "f1": 0.0487,
+     "hit": 0.1462,
+     "all": 0.1462,
+     "n_delivered": 5.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.1071,
+     "precision": 0.0654,
+     "f1": 0.0775,
+     "hit": 0.1689,
+     "all": 0.0681,
+     "n_delivered": 5.0,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 0.2977,
+    "precision": 0.0709,
+    "f1": 0.1107,
+    "hit": 0.4087,
+    "all": 0.201,
+    "n_delivered": 10.0,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.4366,
+     "precision": 0.0437,
+     "f1": 0.0794,
+     "hit": 0.4366,
+     "all": 0.4366,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.3232,
+     "precision": 0.0797,
+     "f1": 0.1244,
+     "hit": 0.455,
+     "all": 0.2054,
+     "n_delivered": 10.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.2123,
+     "precision": 0.0212,
+     "f1": 0.0386,
+     "hit": 0.2123,
+     "all": 0.2123,
+     "n_delivered": 10.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.1644,
+     "precision": 0.0512,
+     "f1": 0.0747,
+     "hit": 0.2343,
+     "all": 0.1226,
+     "n_delivered": 10.0,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 0.4561,
+    "precision": 0.0558,
+    "f1": 0.0969,
+    "hit": 0.5764,
+    "all": 0.3432,
+    "n_delivered": 20.0,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.6479,
+     "precision": 0.0324,
+     "f1": 0.0617,
+     "hit": 0.6479,
+     "all": 0.6479,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.4785,
+     "precision": 0.061,
+     "f1": 0.1059,
+     "hit": 0.621,
+     "all": 0.3441,
+     "n_delivered": 20.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.3821,
+     "precision": 0.0191,
+     "f1": 0.0364,
+     "hit": 0.3821,
+     "all": 0.3821,
+     "n_delivered": 20.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.325,
+     "precision": 0.0497,
+     "f1": 0.0839,
+     "hit": 0.4033,
+     "all": 0.2561,
+     "n_delivered": 20.0,
+     "n": 367
+    }
+   }
+  },
+  "2885 단위순위": {
+   "1": {
+    "recall": 0.7284,
+    "precision": 0.0746,
+    "f1": 0.126,
+    "hit": 0.834,
+    "all": 0.6225,
+    "n_delivered": 38.269,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.8169,
+     "precision": 0.0345,
+     "f1": 0.0658,
+     "hit": 0.8169,
+     "all": 0.8169,
+     "n_delivered": 31.7887,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7177,
+     "precision": 0.0837,
+     "f1": 0.1396,
+     "hit": 0.8515,
+     "all": 0.5834,
+     "n_delivered": 36.5436,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7594,
+     "precision": 0.0205,
+     "f1": 0.0393,
+     "hit": 0.7594,
+     "all": 0.7594,
+     "n_delivered": 43.717,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7584,
+     "precision": 0.0585,
+     "f1": 0.1048,
+     "hit": 0.7738,
+     "all": 0.7439,
+     "n_delivered": 46.8828,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.9971,
+    "precision": 0.0225,
+    "f1": 0.0436,
+    "hit": 0.9983,
+    "all": 0.9958,
+    "n_delivered": 135.7508,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0089,
+     "f1": 0.0177,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 128.8028,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.9972,
+     "precision": 0.0234,
+     "f1": 0.0452,
+     "hit": 0.9987,
+     "all": 0.9955,
+     "n_delivered": 134.8394,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0085,
+     "f1": 0.0169,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 136.066,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.9946,
+     "precision": 0.028,
+     "f1": 0.0538,
+     "hit": 0.9946,
+     "all": 0.9946,
+     "n_delivered": 142.4632,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 1.0,
+    "precision": 0.0217,
+    "f1": 0.0421,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 145.6,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0225,
+     "f1": 0.0437,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 144.706,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0083,
+     "f1": 0.0164,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.3396,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0271,
+     "f1": 0.0522,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 153.4332,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 1.0,
+    "precision": 0.0217,
+    "f1": 0.0421,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 145.6624,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0225,
+     "f1": 0.0437,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 144.7606,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0083,
+     "f1": 0.0164,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.3396,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0271,
+     "f1": 0.0522,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 153.5913,
+     "n": 367
+    }
+   }
+  },
+  "2885 예산20전달집합": {
+   "1": {
+    "recall": 0.7287,
+    "precision": 0.0747,
+    "f1": 0.1261,
+    "hit": 0.8343,
+    "all": 0.6229,
+    "n_delivered": 38.2846,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.8169,
+     "precision": 0.0345,
+     "f1": 0.0658,
+     "hit": 0.8169,
+     "all": 0.8169,
+     "n_delivered": 31.7887,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7177,
+     "precision": 0.0837,
+     "f1": 0.1396,
+     "hit": 0.8515,
+     "all": 0.5834,
+     "n_delivered": 36.5436,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7594,
+     "precision": 0.0205,
+     "f1": 0.0393,
+     "hit": 0.7594,
+     "all": 0.7594,
+     "n_delivered": 43.717,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7611,
+     "precision": 0.0591,
+     "f1": 0.1058,
+     "hit": 0.7766,
+     "all": 0.7466,
+     "n_delivered": 47.0054,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.7329,
+    "precision": 0.0725,
+    "f1": 0.1238,
+    "hit": 0.8374,
+    "all": 0.6281,
+    "n_delivered": 38.6724,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.035,
+     "f1": 0.0667,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 32.1831,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7226,
+     "precision": 0.0808,
+     "f1": 0.1366,
+     "hit": 0.855,
+     "all": 0.5897,
+     "n_delivered": 36.9942,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7594,
+     "precision": 0.0205,
+     "f1": 0.0393,
+     "hit": 0.7594,
+     "all": 0.7594,
+     "n_delivered": 44.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7611,
+     "precision": 0.0591,
+     "f1": 0.1058,
+     "hit": 0.7766,
+     "all": 0.7466,
+     "n_delivered": 47.0708,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 0.7561,
+    "precision": 0.0602,
+    "f1": 0.1074,
+    "hit": 0.8534,
+    "all": 0.6575,
+    "n_delivered": 42.1726,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.035,
+     "f1": 0.0667,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 32.3944,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.747,
+     "precision": 0.0652,
+     "f1": 0.1156,
+     "hit": 0.8694,
+     "all": 0.6228,
+     "n_delivered": 40.8998,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7736,
+     "precision": 0.0194,
+     "f1": 0.0375,
+     "hit": 0.7736,
+     "all": 0.7736,
+     "n_delivered": 46.6415,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7868,
+     "precision": 0.0584,
+     "f1": 0.1059,
+     "hit": 0.8065,
+     "all": 0.7684,
+     "n_delivered": 49.2343,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 0.7992,
+    "precision": 0.0481,
+    "f1": 0.0885,
+    "hit": 0.8773,
+    "all": 0.7189,
+    "n_delivered": 49.7099,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.0229,
+     "f1": 0.0443,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 44.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7916,
+     "precision": 0.0503,
+     "f1": 0.0924,
+     "hit": 0.8895,
+     "all": 0.6908,
+     "n_delivered": 49.1087,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.8255,
+     "precision": 0.018,
+     "f1": 0.035,
+     "hit": 0.8255,
+     "all": 0.8255,
+     "n_delivered": 51.684,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.8244,
+     "precision": 0.0569,
+     "f1": 0.1039,
+     "hit": 0.842,
+     "all": 0.8065,
+     "n_delivered": 53.3297,
+     "n": 367
+    }
+   }
+  },
+  "882 셀순위": {
+   "1": {
+    "recall": 0.048,
+    "precision": 0.1066,
+    "f1": 0.0628,
+    "hit": 0.1066,
+    "all": 0.0113,
+    "n_delivered": 1.0,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.0,
+     "precision": 0.0,
+     "f1": 0.0,
+     "hit": 0.0,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.0753,
+     "precision": 0.1867,
+     "f1": 0.1049,
+     "hit": 0.1867,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.0474,
+     "precision": 0.0474,
+     "f1": 0.0474,
+     "hit": 0.0474,
+     "all": 0.0474,
+     "n_delivered": 1.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.0325,
+     "precision": 0.0933,
+     "f1": 0.0465,
+     "hit": 0.0933,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.1481,
+    "precision": 0.0646,
+    "f1": 0.0843,
+    "hit": 0.1995,
+    "all": 0.1054,
+    "n_delivered": 5.0,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.1268,
+     "precision": 0.0254,
+     "f1": 0.0423,
+     "hit": 0.1268,
+     "all": 0.1268,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.1982,
+     "precision": 0.1007,
+     "f1": 0.1286,
+     "hit": 0.3033,
+     "all": 0.1033,
+     "n_delivered": 5.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.1469,
+     "precision": 0.0294,
+     "f1": 0.049,
+     "hit": 0.1469,
+     "all": 0.1469,
+     "n_delivered": 5.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.104,
+     "precision": 0.0627,
+     "f1": 0.0747,
+     "hit": 0.15,
+     "all": 0.0733,
+     "n_delivered": 5.0,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 0.2555,
+    "precision": 0.0542,
+    "f1": 0.085,
+    "hit": 0.3129,
+    "all": 0.2098,
+    "n_delivered": 10.0,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.4366,
+     "precision": 0.0437,
+     "f1": 0.0794,
+     "hit": 0.4366,
+     "all": 0.4366,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.3406,
+     "precision": 0.0853,
+     "f1": 0.1326,
+     "hit": 0.45,
+     "all": 0.24,
+     "n_delivered": 10.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.2133,
+     "precision": 0.0213,
+     "f1": 0.0388,
+     "hit": 0.2133,
+     "all": 0.2133,
+     "n_delivered": 10.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.1572,
+     "precision": 0.0487,
+     "f1": 0.0712,
+     "hit": 0.2167,
+     "all": 0.1233,
+     "n_delivered": 10.0,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 0.4103,
+    "precision": 0.044,
+    "f1": 0.0768,
+    "hit": 0.4773,
+    "all": 0.3503,
+    "n_delivered": 20.0,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.6479,
+     "precision": 0.0324,
+     "f1": 0.0617,
+     "hit": 0.6479,
+     "all": 0.6479,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.4737,
+     "precision": 0.0618,
+     "f1": 0.107,
+     "hit": 0.6033,
+     "all": 0.3567,
+     "n_delivered": 20.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.3839,
+     "precision": 0.0192,
+     "f1": 0.0366,
+     "hit": 0.3839,
+     "all": 0.3839,
+     "n_delivered": 20.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.3094,
+     "precision": 0.0463,
+     "f1": 0.0784,
+     "hit": 0.3767,
+     "all": 0.25,
+     "n_delivered": 20.0,
+     "n": 300
+    }
+   }
+  },
+  "882 단위순위": {
+   "1": {
+    "recall": 0.7528,
+    "precision": 0.0559,
+    "f1": 0.0978,
+    "hit": 0.7937,
+    "all": 0.7109,
+    "n_delivered": 41.9796,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.8169,
+     "precision": 0.0345,
+     "f1": 0.0658,
+     "hit": 0.8169,
+     "all": 0.8169,
+     "n_delivered": 31.7887,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7485,
+     "precision": 0.086,
+     "f1": 0.144,
+     "hit": 0.8533,
+     "all": 0.64,
+     "n_delivered": 38.3233,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7583,
+     "precision": 0.0205,
+     "f1": 0.0393,
+     "hit": 0.7583,
+     "all": 0.7583,
+     "n_delivered": 43.6872,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.738,
+     "precision": 0.0559,
+     "f1": 0.1003,
+     "hit": 0.7533,
+     "all": 0.7233,
+     "n_delivered": 46.8467,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.9977,
+    "precision": 0.0203,
+    "f1": 0.0393,
+    "hit": 0.9977,
+    "all": 0.9977,
+    "n_delivered": 137.2721,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0089,
+     "f1": 0.0177,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 128.8028,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0241,
+     "f1": 0.0467,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 133.0867,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0085,
+     "f1": 0.0169,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 136.3318,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.9933,
+     "precision": 0.0274,
+     "f1": 0.0527,
+     "hit": 0.9933,
+     "all": 0.9933,
+     "n_delivered": 144.1233,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 1.0,
+    "precision": 0.0197,
+    "f1": 0.0381,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 146.8231,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0234,
+     "f1": 0.0453,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 142.2467,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0082,
+     "f1": 0.0163,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.6493,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0265,
+     "f1": 0.051,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 155.2533,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 1.0,
+    "precision": 0.0197,
+    "f1": 0.0381,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 146.8889,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0234,
+     "f1": 0.0453,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 142.2467,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0082,
+     "f1": 0.0163,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.6493,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0265,
+     "f1": 0.051,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 155.4467,
+     "n": 300
+    }
+   }
+  },
+  "882 예산20전달집합": {
+   "1": {
+    "recall": 0.7539,
+    "precision": 0.0562,
+    "f1": 0.0982,
+    "hit": 0.7948,
+    "all": 0.712,
+    "n_delivered": 42.0306,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.8169,
+     "precision": 0.0345,
+     "f1": 0.0658,
+     "hit": 0.8169,
+     "all": 0.8169,
+     "n_delivered": 31.7887,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7485,
+     "precision": 0.086,
+     "f1": 0.144,
+     "hit": 0.8533,
+     "all": 0.64,
+     "n_delivered": 38.3233,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7583,
+     "precision": 0.0205,
+     "f1": 0.0393,
+     "hit": 0.7583,
+     "all": 0.7583,
+     "n_delivered": 43.6872,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7413,
+     "precision": 0.0566,
+     "f1": 0.1015,
+     "hit": 0.7567,
+     "all": 0.7267,
+     "n_delivered": 46.9967,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.7573,
+    "precision": 0.0554,
+    "f1": 0.0973,
+    "hit": 0.7982,
+    "all": 0.7154,
+    "n_delivered": 42.3265,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.035,
+     "f1": 0.0667,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 32.1831,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7552,
+     "precision": 0.0835,
+     "f1": 0.1412,
+     "hit": 0.86,
+     "all": 0.6467,
+     "n_delivered": 38.82,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7583,
+     "precision": 0.0205,
+     "f1": 0.0393,
+     "hit": 0.7583,
+     "all": 0.7583,
+     "n_delivered": 43.9716,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7413,
+     "precision": 0.0566,
+     "f1": 0.1015,
+     "hit": 0.7567,
+     "all": 0.7267,
+     "n_delivered": 47.0767,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 0.7784,
+    "precision": 0.0489,
+    "f1": 0.0889,
+    "hit": 0.8163,
+    "all": 0.7392,
+    "n_delivered": 45.0578,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.035,
+     "f1": 0.0667,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 32.3944,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7785,
+     "precision": 0.0655,
+     "f1": 0.1167,
+     "hit": 0.8733,
+     "all": 0.68,
+     "n_delivered": 42.69,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7725,
+     "precision": 0.0194,
+     "f1": 0.0375,
+     "hit": 0.7725,
+     "all": 0.7725,
+     "n_delivered": 46.6256,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7701,
+     "precision": 0.0565,
+     "f1": 0.1024,
+     "hit": 0.7867,
+     "all": 0.7533,
+     "n_delivered": 49.32,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 0.8149,
+    "precision": 0.0423,
+    "f1": 0.0783,
+    "hit": 0.8492,
+    "all": 0.7789,
+    "n_delivered": 51.0113,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.0229,
+     "f1": 0.0443,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 44.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.8091,
+     "precision": 0.0515,
+     "f1": 0.095,
+     "hit": 0.8933,
+     "all": 0.72,
+     "n_delivered": 49.5667,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.8246,
+     "precision": 0.0179,
+     "f1": 0.035,
+     "hit": 0.8246,
+     "all": 0.8246,
+     "n_delivered": 51.6919,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.8101,
+     "precision": 0.0547,
+     "f1": 0.1001,
+     "hit": 0.8267,
+     "all": 0.7933,
+     "n_delivered": 53.63,
+     "n": 300
+    }
+   }
+  }
+ },
+ "trag_hetero": {
+  "n_scored": 2885,
+  "n_excluded_records": 23,
+  "n_empty_gold": 0,
+  "check_all_at20_equals_correct": {
+   "n_mismatch_cell_rank20_vs_correct": 971,
+   "note": "셀 arm 은 0 이어야 함; 청크·표·행 arm 은 단위 통째 예산이라 다를 수 있음"
+  },
+  "2885 셀순위": {
+   "1": {
+    "recall": 0.0633,
+    "precision": 0.1542,
+    "f1": 0.0868,
+    "hit": 0.1542,
+    "all": 0.0042,
+    "n_delivered": 1.0,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.0141,
+     "precision": 0.0141,
+     "f1": 0.0141,
+     "hit": 0.0141,
+     "all": 0.0141,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.0695,
+     "precision": 0.1718,
+     "f1": 0.0966,
+     "hit": 0.1718,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.0519,
+     "precision": 0.0519,
+     "f1": 0.0519,
+     "hit": 0.0519,
+     "all": 0.0519,
+     "n_delivered": 1.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.0418,
+     "precision": 0.1335,
+     "f1": 0.0611,
+     "hit": 0.1335,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.1831,
+    "precision": 0.0884,
+    "f1": 0.1144,
+    "hit": 0.2856,
+    "all": 0.1005,
+    "n_delivered": 5.0,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.1549,
+     "precision": 0.031,
+     "f1": 0.0516,
+     "hit": 0.1549,
+     "all": 0.1549,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.1998,
+     "precision": 0.0979,
+     "f1": 0.1273,
+     "hit": 0.3217,
+     "all": 0.1007,
+     "n_delivered": 5.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.1179,
+     "precision": 0.0236,
+     "f1": 0.0393,
+     "hit": 0.1179,
+     "all": 0.1179,
+     "n_delivered": 5.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.1242,
+     "precision": 0.079,
+     "f1": 0.0918,
+     "hit": 0.188,
+     "all": 0.079,
+     "n_delivered": 5.0,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 0.3054,
+    "precision": 0.0737,
+    "f1": 0.1145,
+    "hit": 0.4229,
+    "all": 0.2042,
+    "n_delivered": 10.0,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.507,
+     "precision": 0.0507,
+     "f1": 0.0922,
+     "hit": 0.507,
+     "all": 0.507,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.3245,
+     "precision": 0.0811,
+     "f1": 0.1261,
+     "hit": 0.4635,
+     "all": 0.2022,
+     "n_delivered": 10.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.2264,
+     "precision": 0.0226,
+     "f1": 0.0412,
+     "hit": 0.2264,
+     "all": 0.2264,
+     "n_delivered": 10.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.1955,
+     "precision": 0.0621,
+     "f1": 0.09,
+     "hit": 0.2725,
+     "all": 0.1444,
+     "n_delivered": 10.0,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 0.4829,
+    "precision": 0.0598,
+    "f1": 0.1036,
+    "hit": 0.6083,
+    "all": 0.3619,
+    "n_delivered": 20.0,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.7183,
+     "precision": 0.0359,
+     "f1": 0.0684,
+     "hit": 0.7183,
+     "all": 0.7183,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.4931,
+     "precision": 0.0635,
+     "f1": 0.11,
+     "hit": 0.6416,
+     "all": 0.3503,
+     "n_delivered": 20.0,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.434,
+     "precision": 0.0217,
+     "f1": 0.0413,
+     "hit": 0.434,
+     "all": 0.434,
+     "n_delivered": 20.0,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.4036,
+     "precision": 0.0643,
+     "f1": 0.1076,
+     "hit": 0.485,
+     "all": 0.3215,
+     "n_delivered": 20.0,
+     "n": 367
+    }
+   }
+  },
+  "2885 단위순위": {
+   "1": {
+    "recall": 0.7305,
+    "precision": 0.0768,
+    "f1": 0.1298,
+    "hit": 0.8392,
+    "all": 0.6194,
+    "n_delivered": 36.5255,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.0399,
+     "f1": 0.0746,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 29.0141,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7208,
+     "precision": 0.085,
+     "f1": 0.1423,
+     "hit": 0.8568,
+     "all": 0.5821,
+     "n_delivered": 34.8591,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7689,
+     "precision": 0.0193,
+     "f1": 0.0374,
+     "hit": 0.7689,
+     "all": 0.7689,
+     "n_delivered": 44.2642,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7483,
+     "precision": 0.0677,
+     "f1": 0.1172,
+     "hit": 0.7738,
+     "all": 0.7193,
+     "n_delivered": 43.6567,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.993,
+    "precision": 0.023,
+    "f1": 0.0444,
+    "hit": 0.9969,
+    "all": 0.9875,
+    "n_delivered": 129.8735,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.9718,
+     "precision": 0.0089,
+     "f1": 0.0177,
+     "hit": 0.9718,
+     "all": 0.9718,
+     "n_delivered": 123.7887,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.9937,
+     "precision": 0.0238,
+     "f1": 0.046,
+     "hit": 0.9978,
+     "all": 0.9888,
+     "n_delivered": 129.3244,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.9953,
+     "precision": 0.0087,
+     "f1": 0.0171,
+     "hit": 0.9953,
+     "all": 0.9953,
+     "n_delivered": 131.7877,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.9915,
+     "precision": 0.0289,
+     "f1": 0.0555,
+     "hit": 0.9973,
+     "all": 0.9782,
+     "n_delivered": 133.2888,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 1.0,
+    "precision": 0.0217,
+    "f1": 0.0421,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 145.3622,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0225,
+     "f1": 0.0437,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 144.5105,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0083,
+     "f1": 0.0164,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.2642,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0272,
+     "f1": 0.0522,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 152.7984,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 1.0,
+    "precision": 0.0217,
+    "f1": 0.0421,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 145.6624,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0225,
+     "f1": 0.0437,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 144.7606,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0083,
+     "f1": 0.0164,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.3396,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0271,
+     "f1": 0.0522,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 153.5913,
+     "n": 367
+    }
+   }
+  },
+  "2885 예산20전달집합": {
+   "1": {
+    "recall": 0.7305,
+    "precision": 0.0768,
+    "f1": 0.1298,
+    "hit": 0.8392,
+    "all": 0.6194,
+    "n_delivered": 36.5255,
+    "n": 2885
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.0399,
+     "f1": 0.0746,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 29.0141,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7208,
+     "precision": 0.085,
+     "f1": 0.1423,
+     "hit": 0.8568,
+     "all": 0.5821,
+     "n_delivered": 34.8591,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7689,
+     "precision": 0.0193,
+     "f1": 0.0374,
+     "hit": 0.7689,
+     "all": 0.7689,
+     "n_delivered": 44.2642,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7483,
+     "precision": 0.0677,
+     "f1": 0.1172,
+     "hit": 0.7738,
+     "all": 0.7193,
+     "n_delivered": 43.6567,
+     "n": 367
+    }
+   },
+   "5": {
+    "recall": 0.7329,
+    "precision": 0.0741,
+    "f1": 0.1268,
+    "hit": 0.8406,
+    "all": 0.6229,
+    "n_delivered": 36.8541,
+    "n": 2885
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.8451,
+     "precision": 0.0371,
+     "f1": 0.0704,
+     "hit": 0.8451,
+     "all": 0.8451,
+     "n_delivered": 30.0986,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7235,
+     "precision": 0.0819,
+     "f1": 0.139,
+     "hit": 0.8582,
+     "all": 0.5861,
+     "n_delivered": 35.2273,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7689,
+     "precision": 0.0193,
+     "f1": 0.0374,
+     "hit": 0.7689,
+     "all": 0.7689,
+     "n_delivered": 44.2642,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7483,
+     "precision": 0.0653,
+     "f1": 0.1152,
+     "hit": 0.7738,
+     "all": 0.7193,
+     "n_delivered": 43.7875,
+     "n": 367
+    }
+   },
+   "10": {
+    "recall": 0.7484,
+    "precision": 0.0615,
+    "f1": 0.1098,
+    "hit": 0.8489,
+    "all": 0.6451,
+    "n_delivered": 39.4797,
+    "n": 2885
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.8451,
+     "precision": 0.035,
+     "f1": 0.0667,
+     "hit": 0.8451,
+     "all": 0.8451,
+     "n_delivered": 31.2817,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7402,
+     "precision": 0.0661,
+     "f1": 0.1173,
+     "hit": 0.8658,
+     "all": 0.6116,
+     "n_delivered": 38.3767,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.7736,
+     "precision": 0.0194,
+     "f1": 0.0376,
+     "hit": 0.7736,
+     "all": 0.7736,
+     "n_delivered": 44.4434,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7647,
+     "precision": 0.0635,
+     "f1": 0.1135,
+     "hit": 0.7902,
+     "all": 0.7357,
+     "n_delivered": 44.9155,
+     "n": 367
+    }
+   },
+   "20": {
+    "recall": 0.7833,
+    "precision": 0.0499,
+    "f1": 0.0916,
+    "hit": 0.8648,
+    "all": 0.6984,
+    "n_delivered": 45.591,
+    "n": 2885
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.8451,
+     "precision": 0.0235,
+     "f1": 0.0455,
+     "hit": 0.8451,
+     "all": 0.8451,
+     "n_delivered": 42.4507,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7795,
+     "precision": 0.052,
+     "f1": 0.0953,
+     "hit": 0.8805,
+     "all": 0.6747,
+     "n_delivered": 45.3007,
+     "n": 2235
+    },
+    "lookup_m1": {
+     "recall": 0.8019,
+     "precision": 0.0187,
+     "f1": 0.0364,
+     "hit": 0.8019,
+     "all": 0.8019,
+     "n_delivered": 46.3538,
+     "n": 212
+    },
+    "lookup_m2+": {
+     "recall": 0.7837,
+     "precision": 0.0606,
+     "f1": 0.1097,
+     "hit": 0.8093,
+     "all": 0.7548,
+     "n_delivered": 47.5259,
+     "n": 367
+    }
+   }
+  },
+  "882 셀순위": {
+   "1": {
+    "recall": 0.0535,
+    "precision": 0.1202,
+    "f1": 0.0699,
+    "hit": 0.1202,
+    "all": 0.0136,
+    "n_delivered": 1.0,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.0141,
+     "precision": 0.0141,
+     "f1": 0.0141,
+     "hit": 0.0141,
+     "all": 0.0141,
+     "n_delivered": 1.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.0782,
+     "precision": 0.1967,
+     "f1": 0.1092,
+     "hit": 0.1967,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.0521,
+     "precision": 0.0521,
+     "f1": 0.0521,
+     "hit": 0.0521,
+     "all": 0.0521,
+     "n_delivered": 1.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.039,
+     "precision": 0.1167,
+     "f1": 0.0563,
+     "hit": 0.1167,
+     "all": 0.0,
+     "n_delivered": 1.0,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.1521,
+    "precision": 0.0698,
+    "f1": 0.0895,
+    "hit": 0.2041,
+    "all": 0.1077,
+    "n_delivered": 5.0,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.1549,
+     "precision": 0.031,
+     "f1": 0.0516,
+     "hit": 0.1549,
+     "all": 0.1549,
+     "n_delivered": 5.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.2082,
+     "precision": 0.1067,
+     "f1": 0.1358,
+     "hit": 0.3167,
+     "all": 0.11,
+     "n_delivered": 5.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.1185,
+     "precision": 0.0237,
+     "f1": 0.0395,
+     "hit": 0.1185,
+     "all": 0.1185,
+     "n_delivered": 5.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.1191,
+     "precision": 0.0747,
+     "f1": 0.0874,
+     "hit": 0.1633,
+     "all": 0.0867,
+     "n_delivered": 5.0,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 0.2762,
+    "precision": 0.0594,
+    "f1": 0.0927,
+    "hit": 0.3379,
+    "all": 0.2245,
+    "n_delivered": 10.0,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.507,
+     "precision": 0.0507,
+     "f1": 0.0922,
+     "hit": 0.507,
+     "all": 0.507,
+     "n_delivered": 10.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.3463,
+     "precision": 0.0883,
+     "f1": 0.1367,
+     "hit": 0.4633,
+     "all": 0.2367,
+     "n_delivered": 10.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.2275,
+     "precision": 0.0227,
+     "f1": 0.0414,
+     "hit": 0.2275,
+     "all": 0.2275,
+     "n_delivered": 10.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.1856,
+     "precision": 0.0583,
+     "f1": 0.0848,
+     "hit": 0.25,
+     "all": 0.1433,
+     "n_delivered": 10.0,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 0.4612,
+    "precision": 0.051,
+    "f1": 0.0886,
+    "hit": 0.5363,
+    "all": 0.3889,
+    "n_delivered": 20.0,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.7183,
+     "precision": 0.0359,
+     "f1": 0.0684,
+     "hit": 0.7183,
+     "all": 0.7183,
+     "n_delivered": 20.0,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.4949,
+     "precision": 0.0652,
+     "f1": 0.1127,
+     "hit": 0.6433,
+     "all": 0.3567,
+     "n_delivered": 20.0,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.436,
+     "precision": 0.0218,
+     "f1": 0.0415,
+     "hit": 0.436,
+     "all": 0.436,
+     "n_delivered": 20.0,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.3843,
+     "precision": 0.061,
+     "f1": 0.1022,
+     "hit": 0.4567,
+     "all": 0.31,
+     "n_delivered": 20.0,
+     "n": 300
+    }
+   }
+  },
+  "882 단위순위": {
+   "1": {
+    "recall": 0.7511,
+    "precision": 0.0596,
+    "f1": 0.1026,
+    "hit": 0.7971,
+    "all": 0.7018,
+    "n_delivered": 40.0249,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.0399,
+     "f1": 0.0746,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 29.0141,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.732,
+     "precision": 0.0859,
+     "f1": 0.1436,
+     "hit": 0.8433,
+     "all": 0.6133,
+     "n_delivered": 35.6833,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7678,
+     "precision": 0.0193,
+     "f1": 0.0373,
+     "hit": 0.7678,
+     "all": 0.7678,
+     "n_delivered": 44.237,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7395,
+     "precision": 0.0663,
+     "f1": 0.1141,
+     "hit": 0.7633,
+     "all": 0.7133,
+     "n_delivered": 44.01,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.9926,
+    "precision": 0.0207,
+    "f1": 0.0401,
+    "hit": 0.9943,
+    "all": 0.9898,
+    "n_delivered": 131.2143,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.9718,
+     "precision": 0.0089,
+     "f1": 0.0177,
+     "hit": 0.9718,
+     "all": 0.9718,
+     "n_delivered": 123.7887,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.9956,
+     "precision": 0.0245,
+     "f1": 0.0473,
+     "hit": 0.9967,
+     "all": 0.9933,
+     "n_delivered": 128.5167,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.9953,
+     "precision": 0.0086,
+     "f1": 0.0171,
+     "hit": 0.9953,
+     "all": 0.9953,
+     "n_delivered": 132.0332,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.9928,
+     "precision": 0.0283,
+     "f1": 0.0544,
+     "hit": 0.9967,
+     "all": 0.9867,
+     "n_delivered": 135.0933,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 1.0,
+    "precision": 0.0197,
+    "f1": 0.0381,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 146.5408,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0234,
+     "f1": 0.0453,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 142.2467,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0083,
+     "f1": 0.0163,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.5735,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0266,
+     "f1": 0.0511,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 154.4767,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 1.0,
+    "precision": 0.0197,
+    "f1": 0.0381,
+    "hit": 1.0,
+    "all": 1.0,
+    "n_delivered": 146.8889,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 1.0,
+     "precision": 0.0087,
+     "f1": 0.0173,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 134.0282,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 1.0,
+     "precision": 0.0234,
+     "f1": 0.0453,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 142.2467,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 1.0,
+     "precision": 0.0082,
+     "f1": 0.0163,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 145.6493,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 1.0,
+     "precision": 0.0265,
+     "f1": 0.051,
+     "hit": 1.0,
+     "all": 1.0,
+     "n_delivered": 155.4467,
+     "n": 300
+    }
+   }
+  },
+  "882 예산20전달집합": {
+   "1": {
+    "recall": 0.7511,
+    "precision": 0.0596,
+    "f1": 0.1026,
+    "hit": 0.7971,
+    "all": 0.7018,
+    "n_delivered": 40.0249,
+    "n": 882
+   },
+   "1_by_layer": {
+    "arith_m1": {
+     "recall": 0.831,
+     "precision": 0.0399,
+     "f1": 0.0746,
+     "hit": 0.831,
+     "all": 0.831,
+     "n_delivered": 29.0141,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.732,
+     "precision": 0.0859,
+     "f1": 0.1436,
+     "hit": 0.8433,
+     "all": 0.6133,
+     "n_delivered": 35.6833,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7678,
+     "precision": 0.0193,
+     "f1": 0.0373,
+     "hit": 0.7678,
+     "all": 0.7678,
+     "n_delivered": 44.237,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7395,
+     "precision": 0.0663,
+     "f1": 0.1141,
+     "hit": 0.7633,
+     "all": 0.7133,
+     "n_delivered": 44.01,
+     "n": 300
+    }
+   },
+   "5": {
+    "recall": 0.7534,
+    "precision": 0.0572,
+    "f1": 0.0999,
+    "hit": 0.7993,
+    "all": 0.7041,
+    "n_delivered": 40.3991,
+    "n": 882
+   },
+   "5_by_layer": {
+    "arith_m1": {
+     "recall": 0.8451,
+     "precision": 0.0371,
+     "f1": 0.0704,
+     "hit": 0.8451,
+     "all": 0.8451,
+     "n_delivered": 30.0986,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7354,
+     "precision": 0.0823,
+     "f1": 0.1391,
+     "hit": 0.8467,
+     "all": 0.6167,
+     "n_delivered": 36.3667,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7678,
+     "precision": 0.0193,
+     "f1": 0.0373,
+     "hit": 0.7678,
+     "all": 0.7678,
+     "n_delivered": 44.237,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7395,
+     "precision": 0.0634,
+     "f1": 0.1116,
+     "hit": 0.7633,
+     "all": 0.7133,
+     "n_delivered": 44.17,
+     "n": 300
+    }
+   },
+   "10": {
+    "recall": 0.7664,
+    "precision": 0.0505,
+    "f1": 0.0911,
+    "hit": 0.8095,
+    "all": 0.72,
+    "n_delivered": 42.0215,
+    "n": 882
+   },
+   "10_by_layer": {
+    "arith_m1": {
+     "recall": 0.8451,
+     "precision": 0.035,
+     "f1": 0.0667,
+     "hit": 0.8451,
+     "all": 0.8451,
+     "n_delivered": 31.2817,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7504,
+     "precision": 0.0646,
+     "f1": 0.115,
+     "hit": 0.8533,
+     "all": 0.64,
+     "n_delivered": 39.4367,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.7725,
+     "precision": 0.0194,
+     "f1": 0.0375,
+     "hit": 0.7725,
+     "all": 0.7725,
+     "n_delivered": 44.4171,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7595,
+     "precision": 0.0619,
+     "f1": 0.1106,
+     "hit": 0.7833,
+     "all": 0.7333,
+     "n_delivered": 45.4633,
+     "n": 300
+    }
+   },
+   "20": {
+    "recall": 0.7938,
+    "precision": 0.0444,
+    "f1": 0.0818,
+    "hit": 0.8322,
+    "all": 0.7517,
+    "n_delivered": 46.2404,
+    "n": 882
+   },
+   "20_by_layer": {
+    "arith_m1": {
+     "recall": 0.8451,
+     "precision": 0.0235,
+     "f1": 0.0455,
+     "hit": 0.8451,
+     "all": 0.8451,
+     "n_delivered": 42.4507,
+     "n": 71
+    },
+    "arith_m2+": {
+     "recall": 0.7876,
+     "precision": 0.0532,
+     "f1": 0.0979,
+     "hit": 0.8767,
+     "all": 0.69,
+     "n_delivered": 44.87,
+     "n": 300
+    },
+    "lookup_m1": {
+     "recall": 0.8009,
+     "precision": 0.0187,
+     "f1": 0.0364,
+     "hit": 0.8009,
+     "all": 0.8009,
+     "n_delivered": 46.3365,
+     "n": 211
+    },
+    "lookup_m2+": {
+     "recall": 0.7828,
+     "precision": 0.0587,
+     "f1": 0.1064,
+     "hit": 0.8067,
+     "all": 0.7567,
+     "n_delivered": 48.44,
+     "n": 300
+    }
+   }
+  }
+ },
+ "table": "미실행",
+ "row": "미실행"
+}

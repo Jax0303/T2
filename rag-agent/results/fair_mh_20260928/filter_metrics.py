@@ -88,5 +88,27 @@ g = load(HERE / "answer" / "gold_answer.jsonl")
 if g is not None:
     out["gold_condition_answer"] = {"correct": sum(x["answer_correct"] for x in g.values()), "n": len(g),
                                     "by_layer": {L: sum(x["answer_correct"] for x in g.values() if x["layer"] == L) for L in sorted({x["layer"] for x in g.values()})}}
+# 문서 군집 부트스트랩(10,000회, seed 0): 같은 문서(표 내용 해시)의 문항을 한 군집으로 복원 추출, 정답 수 차이의 95% 구간
+cl = json.load(open(HERE / "doc_clusters.json"))["cluster_of_query_882"]
+
+
+def cluster_boot(a, b, n=10000, seed=0):
+    import random
+    rng = random.Random(seed)
+    groups = {}
+    for q in a:
+        groups.setdefault(cl[q], []).append(a[q]["answer_correct"] - b[q]["answer_correct"])
+    G = list(groups.values()); diffs = []
+    for _ in range(n):
+        diffs.append(sum(sum(groups_i) for groups_i in (G[rng.randrange(len(G))] for _ in G)))
+    diffs.sort()
+    return {"n_clusters": len(G), "diff": sum(map(sum, G)), "ci95": [diffs[int(.025 * n)], diffs[int(.975 * n) - 1]]}
+
+
+if "s3c" in answers and "chunk" in answers:
+    out["s3c_filtered_vs_chunk_filtered"]["cluster_bootstrap"] = cluster_boot(answers["s3c"], answers["chunk"])
+if "s3c" in answers and load(NOFILTER["s3c"]) is not None:
+    nof = load(NOFILTER["s3c"]); a_ = {q: answers["s3c"][q] for q in answers["s3c"] if q in nof}
+    out["s3c"]["nofilter_vs_filtered"]["cluster_bootstrap(filtered − nofilter)"] = cluster_boot(a_, {q: nof[q] for q in a_})
 (HERE / "filter_metrics.json").write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 print(json.dumps(out, ensure_ascii=False, indent=1))

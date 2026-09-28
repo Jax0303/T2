@@ -24,7 +24,14 @@ POP882 = {json.loads(l)["query_id"] for l in open("results/mh_arms/cap300_202609
 
 
 def metrics(gold, ranked, k, by_unit):
-    if by_unit:
+    if by_unit == "budget":      # 예산 20 전달 집합: 서로 다른 셀 20개에 이를 때까지 단위를 통째로 (기존 correct 의 문맥)
+        got = []
+        for u in ranked:
+            got += [c for c in u if c not in got]
+            if len(got) >= k:
+                break
+        denom = len(got)
+    elif by_unit:
         got = []
         for u in ranked[:k]:
             got += [c for c in u if c not in got]
@@ -66,8 +73,8 @@ for arm in ARMS:
     mism = 0
     for pop_name, pop in (("2885", None), ("882", POP882)):
         rs = [r for r in recs if pop is None or r["query_id"] in pop]
-        for by_unit in (False, True):
-            tag = f"{pop_name} {'단위순위' if by_unit else '셀순위'}"
+        for by_unit in (False, True, "budget"):
+            tag = f"{pop_name} {'예산20전달집합' if by_unit == 'budget' else '단위순위' if by_unit else '셀순위'}"
             per_k = {}
             for k in KS:
                 rows = [metrics(set(r["gold_ids"]), r["doc"]["ranked_units"], k, by_unit) for r in rs]
@@ -83,9 +90,9 @@ for arm in ARMS:
     out[arm] = res
     for pop_name in ("2885", "882"):
         md.append(f"\n## {arm} — query count={res['n_scored'] if pop_name == '2885' else len(POP882)} ({pop_name})\n")
-        for by in ("셀순위", "단위순위"):
+        for by in ("셀순위", "단위순위", "예산20전달집합"):
             md.append(f"\n{by} k | Recall | Precision | F1 | Hit | All-Evidence | 전달 셀 수\n---|---|---|---|---|---|---")
-            for k in KS:
+            for k in (KS if by != "예산20전달집합" else (20,)):
                 m = res[f"{pop_name} {by}"][str(k)]
                 md.append(f"{k} | {m['recall']:.4f} | {m['precision']:.4f} | {m['f1']:.4f} | {m['hit']:.4f} | {m['all']:.4f} | {m['n_delivered']:.1f}")
 (HERE / "retrieval_metrics.json").write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

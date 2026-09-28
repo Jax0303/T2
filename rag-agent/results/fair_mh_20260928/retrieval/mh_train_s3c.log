@@ -1,0 +1,286 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] 2908 queries / 2908 docs (제외: {'needs_text_evidence': 4922}) -4s
+[corpus] 11793 tables / 423473 cell units (8s)
+[bm25] 20087 terms in 2s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  35%|███▍      | 69/199 [00:00<00:00, 649.51it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1056.72it/s]
+  200/2908  16s
+  400/2908  32s
+  600/2908  54s
+  800/2908  62s
+  1000/2908  79s
+  1200/2908  94s
+  1400/2908  110s
+  1600/2908  126s
+  1800/2908  141s
+  2000/2908  156s
+  2200/2908  170s
+  2400/2908  186s
+  2600/2908  200s
+  2800/2908  216s
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "cell_text": "ours",
+  "n_units_table_description": null,
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 423473,
+      "max_tokens": 188,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 2908,
+      "max_tokens": 78,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": null,
+  "budget_cells": 20,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 2908,
+  "n_tables": 11793,
+  "n_units": 423473,
+  "corpus_text_sha256": "ccef1b9526bb259c744eb61ccf8944a89f5bd82c8ee81089f87a1a060c0b0258",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 2908,
+  "n_scored": 2885,
+  "n_excluded": 23,
+  "excluded_by_reason": {
+    "gold_in_header": 17,
+    "gold_table_unparsed": 4,
+    "gold_cell_missing": 2
+  },
+  "query_ids_sha256": "ed462b6d1380fd6c95f06f0d6c77fde8c239f02d5cf44288d14014b6634d6ceb",
+  "by_layer": {
+    "ALL": {
+      "n": 2885,
+      "corpus": {
+        "accuracy_all": 0.2738,
+        "accuracy_any_DIAGNOSTIC": 0.5757,
+        "gold_doc_in_context": 0.6974,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0107,
+          "5": 0.0808,
+          "10": 0.1633,
+          "20": 0.2738
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.8634,
+        "accuracy_any_DIAGNOSTIC": 0.9733,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0419,
+          "5": 0.5307,
+          "10": 0.7293,
+          "20": 0.8634
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9168,
+        "accuracy_any_DIAGNOSTIC": 0.9872,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.7,
+        "accuracy_all_at_k": {
+          "1": 0.0444,
+          "5": 0.5757,
+          "10": 0.7858,
+          "20": 0.9168
+        }
+      },
+      "mean_m": 2.652,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 71,
+      "corpus": {
+        "accuracy_all": 0.6479,
+        "accuracy_any_DIAGNOSTIC": 0.6479,
+        "gold_doc_in_context": 0.7746,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.2254,
+          "5": 0.4648,
+          "10": 0.6056,
+          "20": 0.6479
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9577,
+        "accuracy_any_DIAGNOSTIC": 0.9577,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.6338,
+          "5": 0.831,
+          "10": 0.9155,
+          "20": 0.9577
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9718,
+        "accuracy_any_DIAGNOSTIC": 0.9718,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.0,
+        "accuracy_all_at_k": {
+          "1": 0.662,
+          "5": 0.8732,
+          "10": 0.9577,
+          "20": 0.9718
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 2235,
+      "corpus": {
+        "accuracy_all": 0.2403,
+        "accuracy_any_DIAGNOSTIC": 0.587,
+        "gold_doc_in_context": 0.7007,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.0555,
+          "10": 0.1333,
+          "20": 0.2403
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.8492,
+        "accuracy_any_DIAGNOSTIC": 0.9736,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.4837,
+          "10": 0.6957,
+          "20": 0.8492
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9087,
+        "accuracy_any_DIAGNOSTIC": 0.9897,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.4,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5306,
+          "10": 0.7611,
+          "20": 0.9087
+        }
+      },
+      "mean_m": 2.738,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 212,
+      "corpus": {
+        "accuracy_all": 0.4245,
+        "accuracy_any_DIAGNOSTIC": 0.4245,
+        "gold_doc_in_context": 0.6934,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0708,
+          "5": 0.2547,
+          "10": 0.3443,
+          "20": 0.4245
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9575,
+        "accuracy_any_DIAGNOSTIC": 0.9575,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.3585,
+          "5": 0.7453,
+          "10": 0.8962,
+          "20": 0.9575
+        }
+      },
+      "table": {
+        "accuracy_all": 0.967,
+        "accuracy_any_DIAGNOSTIC": 0.967,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.9,
+        "accuracy_all_at_k": {
+          "1": 0.3821,
+          "5": 0.8019,
+          "10": 0.9057,
+          "20": 0.967
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 367,
+      "corpus": {
+        "accuracy_all": 0.3188,
+        "accuracy_any_DIAGNOSTIC": 0.5804,
+        "gold_doc_in_context": 0.6649,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.0599,
+          "10": 0.1553,
+          "20": 0.3188
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.8774,
+        "accuracy_any_DIAGNOSTIC": 0.9837,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.6349,
+          "10": 0.8011,
+          "20": 0.8774
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9264,
+        "accuracy_any_DIAGNOSTIC": 0.9864,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.7,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.6621,
+          "10": 0.8338,
+          "20": 0.9264
+        }
+      },
+      "mean_m": 3.401,
+      "m_over_budget": 0
+    }
+  }
+}
