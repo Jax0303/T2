@@ -97,3 +97,18 @@ MultiHiertt 그룹별(원본 규칙 대 원고 규칙): leaf 조회1 .5047 대 .
 4. 본 방법이 여섯 조건 모두의 주 모집단에서 원본 규칙 재구현보다 높다: **지지**.
 
 원고 반영(원고 규칙 결과를 대체·병기·부록)은 사용자 결정 대기. 부록 H 숫자 열 판정 행은 아직 "확인 중"이다.
+
+## 사후 추가 (2026-09-28, 결과 확인 뒤 사용자 지시): 원고 대체와 답변 재생성
+
+위 "답변은 돌리지 않는다"와 달리, 사용자가 원고 규칙 결과를 공식 규칙 결과로 **대체**하기로 정하고 답변 표본의 문맥이 바뀐
+조건의 답변을 다시 생성하라고 지시했다. 결과(검색 정확도)를 본 뒤 정한 사후 추가이며, 예측은 두지 않는다.
+
+- 문맥이 바뀐 문항 수(`results/tablerag_official_20260928/answers/context_changed.{py,json}`, 리더 입력 문자열 목록 비교):
+  HiTab 300(표 5-4 표본) leaf 207, path 38 (답변에 쓴 `t_tablerag_*_v2_gold` 문맥은 원고 규칙 재실행 문맥과 300건 모두 같음).
+  MultiHiertt 882(부록 F 표본): 처음 규칙 답변 문맥 대비 leaf 726·path 668, 머리글 고친 규칙(v3.3) 답변 문맥 대비 leaf 604·path 437,
+  최종 규칙 원고 규칙 문맥 대비 leaf 359·path 305.
+- HiTab 300: `scripts/fair_filter_eval.py --no-filter --arms tablerag_{leaf,path} --records <공식 규칙 records>` — 표 5-4 의 기존 행과
+  본 방법(s3c) 행을 만든 것과 같은 리더(Qwen2.5-7B-Instruct 4bit, neutral, 64토큰, temperature 0)·채점. 출력
+  `results/tablerag_official_20260928/answers/hitab_tablerag_{leaf,path}_official_rows.jsonl`. 표 5-4 의 본 방법 대비 McNemar 와
+  8개 비교 Holm 을 다시 계산한다.
+- MultiHiertt 882: 공식 규칙 검색은 최종 머리글 규칙으로만 있다. 어떤 문맥으로 답변을 만들지는 사용자 결정 뒤 이 절에 적는다.
