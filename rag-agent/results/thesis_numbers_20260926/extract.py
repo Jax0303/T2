@@ -1255,7 +1255,7 @@ L('05_results.md', ['**검색 정확도와 답변 정확도의 차이.**', '표 
   'mh_ans', 'mh_sample')
 L('05_results.md', '**머리글 규칙에 대한 민감도.**', 'stats3b', 'step4', 'reader_test')
 L('05_results.md', '결과는 예측과 반대였다.', 'mh_label', 'mh_label_pop', 'mh_pop')
-L('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'lookup_arith_posthoc')   # 2026-09-28 5.7절 최종 버전 교체
+L('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'lookup_arith_posthoc')   # 2026-09-28 5.7절 최종 버전 교체
 T61 = ['| HiTab (300) | 셀 문장 |', '| HiTab (300) | 고정 청크 |', '| MultiHiertt (882) | 셀 문장 |', '| MultiHiertt (882) | 고정 청크 |']
 L('06_discussion.md', T61, 'decomp', 'reader_test', 'mh_sample', HANS)
 L('06_discussion.md', ['| HiTab | 256 |', '| MultiHiertt | 642 |'], 'decomp', 'reader_test')
@@ -1519,11 +1519,11 @@ EX('09_appendix.md', '| TableRAG(Yu) 청크 | .6000', '<10⁻⁵', 'hitab_answer
 EX('09_appendix.md', '| RowCol | .4700', '<10⁻⁵', 'hitab_answer300', 'rowcol.mcnemar_base_vs_filtered.p_value')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', '99:29', 'mh_rules', '공통 2,871 v33u만:v1만')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', 'p=3.8×10⁻¹⁰', 'mh_rules', '공통 2,871 v33u만:v1만 p')
-EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=8.8×10⁻⁵', 'lookup_arith_posthoc', 'T2 1위 산술 대 조회 Fisher p')
-EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=1', 'lookup_arith_posthoc', 'T3 m=1 조회 대 산술 Fisher p')
-EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=.48', 'lookup_arith_posthoc', 'T4b 푸아송 이항 p')
-EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', '95.8%', 'lookup_arith_posthoc', '최종 산술1 예산20 정확도', 2)
-EX('05_results.md', '예산 20 기준 검색 성공률은 정답 셀이 1개인 문항에서', '32', 'lookup_arith_posthoc', 'T4b 관측 1위 적중', 2)
+EX('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=8.8×10⁻⁵', 'lookup_arith_posthoc', 'T2 1위 산술 대 조회 Fisher p')
+EX('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=1', 'lookup_arith_posthoc', 'T3 m=1 조회 대 산술 Fisher p')
+EX('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=.48', 'lookup_arith_posthoc', 'T4b 푸아송 이항 p')
+EX('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', '95.8%', 'lookup_arith_posthoc', '최종 산술1 예산20 정확도', 2)
+EX('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', '32', 'lookup_arith_posthoc', 'T4b 관측 1위 적중', 2)
 P11 = 'v1 n_scored'      # 2026-09-28: 사전등록 11줄 글 대신 처음 규칙 검색 결과 파일의 채점 수
 EX('04_setup.md', '**MultiHiertt 답변 표본.**', '2,871', 'mh_pop', P11, 1)
 EX('04_setup.md', '**데이터 사용 이력.**', '2,871', 'mh_pop', P11)
@@ -1649,7 +1649,7 @@ def auto_kind(f, line, typ, s, a, b):
         return K_ETC                                   # 그룹 이름 "셀 1개", "셀 2개 이상"
     if s == '1' and after.startswith('위'):
         return K_ETC                                   # 순위 "1위"
-    if s == '20' and ('예산' in line[max(0, a - 30):b + 10] or re.match(r'(셀|개|에 이르)', after) or '상위' in before):
+    if s == '20' and ('예산' in line[max(0, a - 30):b + 10] or '전달 셀' in line[max(0, a - 30):b + 10] or re.match(r'(셀|개|에 이르)', after) or '상위' in before or before.endswith('k=')):
         return K_SET
     if re.match(r'(토큰)', after):
         return K_SET if s in ('512', '384', '64') else K_RES
@@ -1784,6 +1784,7 @@ KIND_OVERRIDE = {(k[0], _linemap(k[0])[k[1]]) + k[2:]: v for k, v in KIND_OVERRI
 
 def KOA(f, anchor, kind, toks=None):
     KO(f, AT(f, anchor), kind, toks)
+KOA('04_setup.md', '그룹마다 표본 크기가 다르므로(상한 300)', K_SET, ['300'])   # 2026-09-28 용어 교체 뒤 줄 대응(difflib)이 끊겨 앵커로 고정
 
 
 KOA('04_setup.md', '**MultiHiertt.** MultiHiertt의 공개 test 파일', K_SEC, ['5.4'])
