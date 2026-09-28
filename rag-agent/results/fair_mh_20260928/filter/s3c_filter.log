@@ -1,0 +1,47 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<05:32,  1.20it/s]Loading weights:   1%|          | 2/399 [00:01<05:00,  1.32it/s]Loading weights:   1%|          | 4/399 [00:08<15:35,  2.37s/it]Loading weights:   3%|▎         | 12/399 [00:08<03:24,  1.89it/s]Loading weights:  78%|███████▊  | 313/399 [00:13<00:02, 35.41it/s]Loading weights:  81%|████████  | 323/399 [00:13<00:02, 36.21it/s]Loading weights: 100%|██████████| 399/399 [00:07<00:00, 53.06it/s]
+2026-09-28 17:03:27,016 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 17:03:27,087 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.07s.
+  128/882  158s
+2026-09-28 17:06:04,625 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 17:06:04,650 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  256/882  321s
+2026-09-28 17:08:48,248 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 17:08:48,275 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  384/882  483s
+2026-09-28 17:11:30,287 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 17:11:30,315 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  512/882  650s
+2026-09-28 17:14:17,297 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 17:14:17,323 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  640/882  817s
+2026-09-28 17:17:04,473 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 17:17:04,501 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  768/882  994s
+2026-09-28 17:20:01,080 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 17:20:01,101 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  882/882  1151s
+{
+ "unit": "cell",
+ "template": "s3c",
+ "split": "train",
+ "header_rule": "v3.3u",
+ "context_version": 2,
+ "stage": "llm_filter",
+ "source_records": "results/fair_mh_20260928/retrieval/mh_train_s3c_records.jsonl",
+ "source_records_sha256": "aa5b99c61b799f5a60ce5aa5fbc8e7ac1d4f2ba2244dc94767ce795d95fdde28",
+ "filter_model": "local:Qwen/Qwen3-8B?quantization=4bit",
+ "filter_prompt": "You select which context lines are needed to answer a question about tables from a financial report. Reply with only the line numbers, comma-separated, in increasing order. If the question needs a calculation or a comparison over several values, include EVERY line that holds a value the calculation or comparison needs — not just one. Also include any header or label lines needed to interpret those values. Do not explain, do not repeat the lines — output numbers only.",
+ "filter_prompt_sha256": "1e7a5bb871227717133357be4930e86caa0f0b6e90fc95528a2f9a7229bcd53f",
+ "max_new_tokens": 64,
+ "batch_size": 128,
+ "n": 882,
+ "n_filter_empty": 0,
+ "n_queries_with_invalid_ids": 9,
+ "n_invalid_ids_total": 76,
+ "lines_mean": 20.0,
+ "kept_mean": 6.61,
+ "correct_is_proxy": null,
+ "seconds": 1151.4,
+ "records_sha256": "3f44e59f54939b2714e4698e48aac7d8d6fe868e4c36a2ae86b644a04ffb4ca2"
+}
