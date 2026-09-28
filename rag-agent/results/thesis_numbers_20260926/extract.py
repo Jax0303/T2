@@ -985,6 +985,77 @@ def tdesc():
 
 
 @src
+def tro():
+    """2026-09-28 TableRAG(Chen) 재구현을 공식 숫자 열 규칙 결과로 대체(PREREG-2026-09-28-tablerag-official-dtype.md 사후 추가):
+    results/tablerag_official_20260928/replace/values.json (검색·Holm 가족 재계산·전달 가능 상한, --answers 면 답변),
+    이전 판 값(부록 H)은 derive.json·rerun compare.json 그대로."""
+    r = 'results/tablerag_official_20260928/replace/values.json'
+    d, S = jload(r), R(r)
+    rt, out = d['retrieval'], []
+    h = rt['hitab_gold']
+    for a in ('tablerag_path', 'tablerag_leaf'):
+        for t, v in h['accuracy'][a].items():
+            out.append(V(f'TRO {a}.{t}.accuracy', v, S))
+        for t, v in h['vs_s3c'][a].items():
+            out += _p_of(f'TRO {a}.{t} s3c만:상대만', v, S, 'ours')
+        out.append(V(f'TRO {a} 전달 셀 평균(단일 셀 991)', h['cells_delivered_single991'][a], S))
+    p, where = h['max_p_randrow_path_leaf_9']
+    out.append(Cand('p', f'TRO RandRow·path·leaf 9칸 중 최대 p ({where})', p, S, 'ours'))
+    sp = rt['hitab_split_family']
+    for a, v in sp['family'].items():
+        out += [V(f'TRO split {a} accuracy', v['accuracy'], S, _sl(a)), V(f'TRO split {a} correct', v['correct'], S, _sl(a)),
+                Cand('r', f'TRO split s3c만:{a}만', (v['b'], v['c']), S, 'ours'), V(f'TRO split s3c만 맞힘 b (대 {a})', v['b'], S, 'ours'),
+                V(f'TRO split {a}만 맞힘 c', v['c'], S, 'ours'), Cand('p', f'TRO split s3c만:{a}만 p', v['p'], S, 'ours'),
+                Cand('p', f'TRO split s3c만:{a}만 Holm p', v['p_holm'], S, 'ours')]
+    out += [V(f'TRO split {a} 전달 셀 평균', v, S, _sl(a)) for a, v in sp['cells_delivered_single991'].items()]
+    m = rt['mh_doc']
+    for a in ('tablerag_path', 'tablerag_leaf'):
+        out += [V(f'TRO {a} {g} 정확도', v, S) for g, v in m['accuracy'][a].items()]
+        for g, v in m['vs_s3c'][a].items():
+            out += _p_of(f'TRO s3c만:{a}만 {g}', v, S, 'ours')
+        out.append(V(f'TRO MH {a} 전달 셀 평균(2,885)', m['cells_delivered_2885'][a], S))
+    out += [Cand('p', f'TRO MH s3c만:{a}만 ALL Holm p', v['p_holm'], S, 'ours') for a, v in m['family_ALL'].items()]
+    b = d['bound']
+    for ds, x in (('HiTab', b['hitab']), ('MultiHiertt', b['multihiertt'])):
+        for a in ('leaf', 'path'):
+            out += [V(f'TRO 상한 {ds} {a} 비율(공식 규칙)', x['rate']['official'][a], S), V(f'TRO 상한 {ds} {a} 건수(공식 규칙)', x['deliverable']['official'][a], S)]
+        out.append(V(f'TRO 상한 {ds} n', x['n'], S))
+    # 부록 H 이전 판 → 새 값: 이전 판은 원고가 인용하던 파생 파일 그대로
+    old = dj()
+    SD, SC = R(DJ), R('results/rerun_20260926/compare.json')
+    cmp_old = {x['arm']: x for x in jload('results/rerun_20260926/compare.json')['item1']['hitab_split']}
+    for a in ('tablerag_leaf', 'tablerag_path'):
+        out += [V(f'TRO 이전 HiTab 표 안 {a} 단일 셀', old['hitab_retrieval_gold']['accuracy'][a]['single_cell'], SD),
+                V(f'TRO 새 HiTab 표 안 {a} 단일 셀', h['accuracy'][a]['single_cell'], S),
+                V(f'TRO 이전 HiTab 538표 {a}', cmp_old[a]['accuracy'], SC), V(f'TRO 새 HiTab 538표 {a}', sp['family'][a]['accuracy'], S),
+                V(f'TRO 이전 MH {a} ALL', old['mh_retrieval_doc']['accuracy'][a]['ALL'], SD), V(f'TRO 새 MH {a} ALL', m['accuracy'][a]['ALL'], S)]
+    an = d.get('answers') or {}
+    h3 = an.get('hitab300')
+    if h3:
+        out.append(V('TRO hitab300 n', h3['family']['sleaf']['n'], S))
+        for a, v in h3['family'].items():
+            out += _p_of(f'TRO hitab300 s3c만:{a}만', v, S, 'ours') + [Cand('p', f'TRO hitab300 s3c만:{a}만 Holm p', v['p_holm'], S, 'ours')]
+        for a, x in h3['tablerag'].items():
+            out += [V(f'TRO hitab300 {a} cells 전달 300', x['cells_delivered_300'], S), V(f'TRO hitab300 {a} retrieval 300', x['retrieval_300'], S),
+                    V(f'TRO hitab300 {a}.answer', x['answer'], S), V(f'TRO hitab300 {a}.answer_given_hit', x['answer_given_hit'], S),
+                    V(f'TRO hitab300 {a} retrieval_hits', x['hits'], S), V(f'TRO hitab300 {a} reader_input_tokens', x['reader_input_tokens_mean'], S),
+                    V(f'TRO hitab300 s3c−{a} 답변', x['diff_s3c_minus_this'], S, 'ours')]
+            y = x['appendix_A']
+            out += [V(f'TRO A {a}.answer_base', y['answer_base'], S), V(f'TRO A {a}.answer_filtered', y['answer_filtered'], S),
+                    V(f'TRO A {a}.delta', y['delta'], S), Cand('p', f'TRO A {a}.p_value', y['base_vs_filtered']['p_value'], S, None),
+                    V(f'TRO A {a}.lines_mean', y['lines_mean'], S), V(f'TRO A {a}.lines_kept_mean', y['lines_kept_mean'], S)]
+    return out
+
+
+@src
+def header_history():
+    """2026-09-28 4.1·6.5 머리글 규칙 수정 이력 수치(results/header_history_20260928/values.json)."""
+    r = 'results/header_history_20260928/values.json'
+    d, S = jload(r), R(r)
+    return [V(k, v, S) for k, v in d.items()]
+
+
+@src
 def lookup_arith_posthoc():
     """2026-09-28 5.7절 조회 대 산술 1위 적중 사후 분석(최종 버전, PREREG-2026-09-28-lookup-arith-posthoc.md, T4b·T9 는 그 뒤 추가):
     rank1.json(예산 20), posthoc/posthoc.json(T2·T3·T8), posthoc/posthoc_t4b_t9.json(T4b·T9), analyze.json(path overlap)."""
@@ -1076,17 +1147,17 @@ L('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batchi
 L('05_results.md', ['HiTab 단일 셀 조회 991건에서 세 가지 문장을', 'test 분할의 538개 표를 한 색인에', '표 5-1. 고유 라벨과'], HMETA)
 L('05_results.md', ['| 질문이 속한 표 안 | **.9637**', '| 538개 표를 한 색인에 |', '라벨은 두 범위 모두에서 검색 정확도를'], 'hitab_labelabl', HMETA)
 T52 = ['| **본 방법** | .9637', '| sleaf (잎 라벨 머리말 변형) | .9586', '| 고정 청크 | .8789', '| TableRAG(Yu) 청크 | .7881', '| RowCol | .7639',
-       '| RandRow | .3744', '| TableRAG 셀 검색 재구현(path) | .2916', '| TableRAG 셀 검색 재구현(leaf) | .2775', '| 표 단위 (상한) |']
+       '| RandRow | .3744', '| TableRAG 셀 검색 재구현(path) | .2896', '| TableRAG 셀 검색 재구현(leaf) | .4067', '| 표 단위 (상한) |']
 L('05_results.md', ['| 방법 | 단일 셀 조회 (991)', *T52, 'RandRow·path·leaf와의 비교는 9칸', '주 모집단인 단일 셀 조회에서', '**산술 216건에서는'],
   HRE, 'step4', HMETA)
 T53 = ['| **본 방법** | 19.41', '| sleaf (잎 라벨 머리말 변형) | 19.41', '| 고정 청크 | 69.06', '| TableRAG(Yu) 청크 | 52.09', '| RowCol | 22.52',
-       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.47', '| TableRAG 셀 검색 재구현(leaf) | 14.42', '| 표 전체 (검색 없음) | — | — | .7900']
+       '| RandRow | 22.06', '| TableRAG 셀 검색 재구현(path) | 14.48', '| TableRAG 셀 검색 재구현(leaf) | 17.71', '| 표 전체 (검색 없음) | — | — | .7900']
 L('05_results.md', ['표 5-4는 단일 셀 조회 300건에서', '표 5-4. HiTab 답변 정확도', *T53, '괄호 안은 검색에 성공한 질의 수다.',
                     '본 방법의 답변 정확도는 .7900이다.', '본 방법은 .7900 =', '**표 전체와의 비교.** 검색 없이 질문의 표'],
   HANS, 'decomp', 'stats3b', HOTH, 'hitab_answer300')
 L('05_results.md', '검색에 성공해도 정답률은', HANS, HOTH, 'hitab_oracle')
 T54 = ['| **본 방법** | .9575', '| sleaf (잎 라벨 머리말 변형) | .9528', '| 고정 청크 | .8255', '| TableRAG(Yu) 청크 | .8019', '| RowCol | .6179',
-       '| TableRAG 셀 검색 재구현(path) | .6132', '| TableRAG 셀 검색 재구현(leaf) | .4953', '| RandRow | .1698']
+       '| TableRAG 셀 검색 재구현(path) | .6274', '| TableRAG 셀 검색 재구현(leaf) | .5047', '| RandRow | .1698']
 L('05_results.md', ['표 5-5는 MultiHiertt train', '표 5-5. MultiHiertt 그룹별', '| 방법 | 조회·셀 1개 (212)', *T54,
                     'sleaf를 뺀 비교군 6개의 24칸은 모두', 'sleaf를 뺀 비교군 6개와의 24개', 'HiTab 산술(표 5-2)과 달리'],
   'mh_rerun', 'step4', 'rerun_cmp', 'mh_pop', 'mh_meta')
@@ -1131,7 +1202,7 @@ L('07_conclusion.md', '1. **검색 정확도.**', 'rerun_cmp', HRE, 'mh_rerun', 
 L('07_conclusion.md', '3. **답변 정확도.**', *CLAIM)
 L('07_conclusion.md', '남은 과제는 다음과 같다.', 'mh_sample', 'hitab_dup')
 TA1 = ['| sleaf(이전 조건) |', '| 고정 청크 | .6867', '| TableRAG(Yu) 청크 | .6000', '| RowCol | .4700', '| RandRow | .1533',
-       '| TableRAG 셀 검색 재구현(path) | .1433', '| TableRAG 셀 검색 재구현(leaf) | .0800']
+       '| TableRAG 셀 검색 재구현(path) | .1400', '| TableRAG 셀 검색 재구현(leaf) | .0833']
 L('09_appendix.md', ['검색 문맥에서 필요한 줄만 LLM이', '표 A-1.', *TA1, 'sleaf(이전 조건)는 필터 후'], 'hitab_answer300')
 L('09_appendix.md', 'HiTab 단일 셀 조회 991건에서 이 조건의', 'hitab_oracle', HMETA)
 L('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대', '한 건씩 생성하는 방식은 재실행해도'], 'batchcheck')
@@ -1285,6 +1356,27 @@ CP('09_appendix.md', [a for a, _ in TG1], {4: ['correct'], 5: ['만:'], 6: [r'\d
 CP('09_appendix.md', [a for a, _ in TG2], {2: ['cells'], 3: ['retrieval_success'], 4: ['answer_given_hit'], 5: ['answer_given_miss'], 6: ['answer ']})
 CP('09_appendix.md', [a for a, _ in TH1], {2: ['n911'], 3: ['rank911'], 4: ['n332'], 5: ['rank332']})
 CP('05_results.md', T53S, {2: ['전달'], 3: [' correct$'], 4: [' accuracy$'], 5: [r'맞힘 b'], 6: [r'만 맞힘 c'], 7: [r'만 p$'], 8: ['Holm p$']})
+# 2026-09-28 TableRAG(Chen) 공식 숫자 열 규칙 대체: 표 5-2·5-3·5-5 의 TableRAG 행, 낮은 이유, 부록 H 는 원천 tro
+for _a, _arm in ((T52[6], 'tablerag_path'), (T52[7], 'tablerag_leaf')):
+    L('05_results.md', _a, 'tro')
+    PF('05_results.md', _a, rf'^TRO {_arm}\.', rf'^TRO {_arm} 전달')
+for _a, _arm in ((T53S[6], 'tablerag_path'), (T53S[7], 'tablerag_leaf')):
+    L('05_results.md', _a, 'tro')
+    PF('05_results.md', _a, rf'^TRO split (s3c만:)?{_arm}', rf'^TRO split s3c만 맞힘 b \(대 {_arm}\)')
+for _a, _arm in ((T54[5], 'tablerag_path'), (T54[6], 'tablerag_leaf')):
+    L('05_results.md', _a, 'tro')
+    PF('05_results.md', _a, rf'^TRO {_arm} ', rf'^TRO s3c만:{_arm}만 ', rf'^TRO MH {_arm} 전달')
+L('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', 'tro')
+PF('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', r'^TRO 상한')
+L('09_appendix.md', '| TableRAG(Chen) | 숫자 열 판정 |', 'tro', HMETA)
+L('06_discussion.md', '**머리글 규칙 수정 이력.**', 'header_history')
+for _a, _arm in ((T53[6], 'tablerag_path'), (T53[7], 'tablerag_leaf')):
+    L('05_results.md', _a, 'tro')
+    PF('05_results.md', _a, rf'^TRO hitab300 (s3c만:)?{_arm}')
+L('09_appendix.md', 'TableRAG 셀 검색 재구현 두 행은 숫자·날짜 열 판정을', 'tro')
+for _a, _arm in ((TA1[5], 'tablerag_path'), (TA1[6], 'tablerag_leaf')):
+    L('09_appendix.md', _a, 'tro')
+    PF('09_appendix.md', _a, rf'^TRO A {_arm}\.')
 
 
 def EX(f, anchor, tok, setname, pat, occ=None):
@@ -1610,6 +1702,8 @@ KOA('05_results.md', 'MultiHiertt가 함께 제공하는 셀 문장(table_descri
 KOA('01_intro.md', '본 연구가 MT2Net과 다른 점은 네 가지다.', K_ETC, ['1', '2', '3', '4'])       # (1)~(4) 항목 번호
 KOA('02_related.md', '**MT2Net(Zhao et al., 2022).**', K_ETC, ['1', '2', '3', '4'])
 KOA('01_intro.md', '2. **셀 단위 검색을 발표된', K_SET, ['1,000'])                         # 고정 청크 설정
+KOA('06_discussion.md', '**머리글 규칙 수정 이력.**', K_SET, ['1,000'])                        # 고정 청크 설정(1,000자)
+KOA('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', K_ETC, ['1'])                 # "상한이 1보다 낮다"의 비교 기준
 KOA('02_related.md', '**MixRAG.** Zhang et al.(2026)은', K_CITE)                          # 선행 논문이 보고한 값
 KOA('02_related.md', '| MT2Net (Zhao et al., 2022) |', K_CITE)
 KOA('09_appendix.md', 'RowCol·RandRow·TableRAG 셀 검색 재구현의 882건 답변은', K_SET, ['12'])
@@ -1620,7 +1714,7 @@ KOA('02_related.md', '**HiTab.** Cheng et al.(2022)은', K_CITE)
 KOA('02_related.md', '검색된 문맥에 질문과 관련은 있으나', K_CITE)
 KOA('02_related.md', '**유형별 보고.**', K_CITE)
 for _a in ('| HiTab 채점기 |', '| TableRAG(Chen) | 스키마 문서 내용 |', '| TableRAG(Chen) | 스키마 검색 |', '| TableRAG(Chen) | 행 라벨 문서 |',
-           '| TableRAG(Chen) | 숫자 열 판정 |', '| TableRAG(Chen) | 셀 인코딩 예산 B |', '| TableRAG(Chen) | 질의 확장과 검색 개수 K |',
+           '| TableRAG(Chen) | 셀 인코딩 예산 B |', '| TableRAG(Chen) | 질의 확장과 검색 개수 K |',   # 숫자 열 판정 행은 2026-09-28 결과값이 들어가 대조한다
            '| RowCol | 색인 텍스트 |', '| RandRow | 색인·검색 |', '| RandRow | 리더 입력 |', '| TableRAG(Yu) | 청크 크기·겹침 단위 |',
            '| TableRAG(Yu) | 마크다운 변환 |', '| TableRAG(Yu) | 머리말 이름 |'):
     KOA('09_appendix.md', _a, K_CITE)                                                   # 부록 H: 원 논문·코드 설정값
