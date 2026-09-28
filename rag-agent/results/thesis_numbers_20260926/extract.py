@@ -1066,6 +1066,23 @@ def tro():
     return out
 
 
+@src
+def hitab538():
+    """2026-09-28 HiTab 538표 한 색인 답변 300건(PREREG-2026-09-28-hitab538-answer.md, results/hitab538_answer_20260928/analyze.json)."""
+    r = 'results/hitab538_answer_20260928/analyze.json'
+    d, S = jload(r), R(r)
+    out = [V('538 n', d['n'], S), V('538 s3c 정답 수 − 표 안 s3c 정답 수', d['s3c_538_minus_intable'], S, 'ours'),
+           V('538 표 안 s3c 정답 수 − s3c 정답 수(원고 "22건 적었다")', -d['s3c_538_minus_intable'], S, 'ours')]
+    for a in ('s3c', 'chunk', 'table_top1', 's3c_intable'):
+        out += [V(f'538 {a}.{k}', d[a][k], S, 'ours' if a.startswith('s3c') else None)
+                for k in ('answer_correct', 'answer', 'retrieval_hits', 'reader_input_tokens_mean')]
+    for k, t in d['confirmatory'].items():
+        out += [Cand('r', f'538 {k} s3c만:상대만', (t['a_only'], t['b_only']), S, 'ours'),
+                Cand('p', f'538 {k} p', t['p_value'], S, 'ours'), Cand('p', f'538 {k} Holm p', t['p_holm'], S, 'ours')]
+    c = d['s3c_538_vs_intable_counts']
+    return out + [V('538 s3c 538만 맞힘', c['only_538'], S, 'ours'), V('538 s3c 표 안만 맞힘', c['only_intable'], S, 'ours')]
+
+
 # 문헌 상수(원 출처의 값, 원고에서 옮긴 값이 아님). Qwen2.5-7B-Instruct 모델 카드: "config.json is set for context length up to
 # 32,768 tokens", "Full 131,072 tokens"(YaRN); Qwen2.5 Technical Report(arXiv:2412.15115): "other models to process up to 131,072 tokens".
 QWEN25_LIMIT, QWEN25_YARN_MAX = 32768, 131072
@@ -1246,6 +1263,8 @@ L('06_discussion.md', '두 방법 모두 정답 셀 전부를 리더 입력에 �
 L('06_discussion.md', 'MultiHiertt를 처음 머리글 규칙으로 비교하면', 'decomp', 'reader_test')
 L('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', 'stats3b', 'hitab_oracle', HANS, 'reader_test')
 L('05_results.md', '**참고 조건의 해석.**', 'stats3b', HANS, 'reader_test', 'token_totals')
+L('05_results.md', '**538표 한 색인 조건.**', 'hitab538', 'token_totals')
+L('06_discussion.md', '**답변 실험의 검색 범위.**', 'token_totals')
 L('06_discussion.md', '**MultiHiertt 산술.**', 'mh_ans')
 L('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', 'decomp', 'reader_dev', 'mh_sample', 'alpha_dev')
 L('06_discussion.md', '**가설은 지지되지 않았다.**', 'reader_dev')
@@ -1547,6 +1566,7 @@ EX('01_intro.md', '3. **답변 정확도까지', '237', 'stats3b', 'item3b_hitab
 EX('06_discussion.md', '**표 전체와의 비교.** 검색 없이 표 전체를', '237', HANS, 's3c.answer_correct', 1)
 EX('05_results.md', '**참고 조건의 해석.**', '237', HANS, 's3c.answer_correct', 1)
 EX('05_results.md', '**참고 조건의 해석.**', '13', 'token_totals', '(정수 부분')
+EX('05_results.md', '**538표 한 색인 조건.**', 'p=.82', 'hitab538', '538 s3c_vs_table_top1 Holm p', 2)
 EX('05_results.md', '이 범위에서 본 방법(.9142)은', '2.9×10⁻⁸', 'rerun_cmp', 'hitab_split s3c만:table만 Holm p')
 EX('06_discussion.md', '셋째, **색인 단위의 크기**', 'p=.88', HRE, 'chunk.arithmetic s3c만:상대만 p')
 EX('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은', '57', 'fix0928', 'chunk 처음 대 최종 context_differs')
@@ -1805,6 +1825,7 @@ KOA('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', K_SET, ['6'])
 KOA('05_results.md', '그룹별 값은 탐색적 결과다. Holm p는', K_SET, ['12'])
 KOA('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', K_SEC, ['9'])
 KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_SET, ['12'])
+KOA('05_results.md', '**538표 한 색인 조건.**', K_SET, ['1,000'])
 KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_ETC, ['0'])
 KOA('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', K_SET, ['20'])
 KOA('06_discussion.md', '| | | C: 정답 셀 순위 51 이하 | 16 |', K_SET, ['51'])
