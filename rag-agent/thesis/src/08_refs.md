@@ -13,6 +13,7 @@
 - Patnaik, S., Changwal, H., Aggarwal, M., Bhatia, S., Kumar, Y., & Krishnamurthy, B. (2024). CABINET: Content Relevance based Noise Reduction for Table Question Answering. In *Proceedings of ICLR 2024*. arXiv:2402.01155.
 - Qwen Team: Yang, A., Yang, B., Zhang, B., et al. (2024). Qwen2.5 Technical Report. arXiv:2412.15115.
 - Qwen Team: Yang, A., Li, A., Yang, B., et al. (2025). Qwen3 Technical Report. arXiv:2505.09388.
+- Qwen Team. Qwen2.5-7B-Instruct 모델 카드. Hugging Face. https://huggingface.co/Qwen/Qwen2.5-7B-Instruct (2026-09-28 확인).
 - Robertson, S., & Zaragoza, H. (2009). The Probabilistic Relevance Framework: BM25 and Beyond. *Foundations and Trends in Information Retrieval*, 3(4), 333–389.
 - Sui, Y., Zou, J., Zhou, M., et al. (2024). TAP4LLM: Table Provider on Sampling, Augmenting, and Packing Semi-structured Data for Large Language Model Reasoning. In *Findings of EMNLP 2024*. arXiv:2312.09039.
 - Wang, J., Qin, C., Zheng, M., Si, Q., Li, P., & Lin, Z. (2026). A Closer Look into LLMs for Table Understanding. arXiv:2603.15402.

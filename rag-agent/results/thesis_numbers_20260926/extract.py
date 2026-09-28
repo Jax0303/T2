@@ -1055,7 +1055,9 @@ def token_totals():
     h = d['hitab_test_tables']
     return [V('HiTab test 표 수', h['n_units'], S), V('HiTab test 표 토큰 합', h['tokens_concatenated_with_sep'], S),
             V('리더 입력 한도', d['limit'], S), V('HiTab test 표 토큰 합 / 입력 한도', h['times_limit_concat'], S),
-            V('HiTab test 표 토큰 합 / 입력 한도 (정수 부분, 원고 "13배")', h['tokens_concatenated_with_sep'] // d['limit'], S)]
+            V('HiTab test 표 토큰 합 / 입력 한도 (정수 부분, 원고 "13배")', h['tokens_concatenated_with_sep'] // d['limit'], S),
+            # 131,072 = YaRN 적용 최대 문맥(외부 문헌, 5.5 참고 조건의 해석)
+            V('HiTab test 표 토큰 합 / 131,072', h['tokens_concatenated_with_sep'] / 131072, S + ' + 외부 문헌 131,072')]
 
 
 @src
@@ -1534,6 +1536,8 @@ NOTFOUND = {}
 # 다른 논문이 보고한 값 — 결과 파일과 대조하지 않고 '외부 문헌' 출처로 적는다 (2026-09-28)
 EXTERNAL = {}
 _Z = '외부 문헌: Zhao et al. (2022) MultiHiertt, Table 2 (arXiv:2206.01347)'
+_Q = '외부 문헌: Qwen2.5 Technical Report (arXiv:2412.15115) 본문 "other models to process up to 131,072 tokens"(YaRN·DCA), Hugging Face Qwen/Qwen2.5-7B-Instruct 모델 카드 "Full 131,072 tokens" (2026-09-28 확인)'
+EXTERNAL['05_results.md', AT('05_results.md', '**참고 조건의 해석.**'), '131,072'] = _Q
 for _t in ('100', '4', '84.9%'):
     EXTERNAL['06_discussion.md', AT('06_discussion.md', '**정답 근거 주석의 범위.**'), _t] = _Z
 
