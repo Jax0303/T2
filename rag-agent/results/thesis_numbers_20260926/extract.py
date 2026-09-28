@@ -1197,6 +1197,29 @@ def corpus_stats():
     return out
 
 
+@src
+def norr():
+    """2026-09-28 RandRow 삭제(지도교수 지시 §4) 뒤 Holm 가족 재계산(results/mh_only_20260928/no_randrow_holm.json):
+    검색 9→8개·비교군 5개 20칸, 답변 882 12→10개, 부록 C 8→6개."""
+    r = 'results/mh_only_20260928/no_randrow_holm.json'
+    d, S = jload(r), R(r)
+    c = d['five_baselines_20_cells']
+    out = [Cand('p', f'NRR 비교군 20칸 중 최대 p ({c["max_p"][1]})', c['max_p'][0], S, 'ours'),
+           V('NRR 20칸 중 p<.05 칸 수', c['n_p_lt_05'], S, 'ours'), V('NRR 비교군 칸 수', c['n_cells'], S)]
+    out += [Cand('p', f'NRR 검색 s3c만:{a}만 Holm p', v['p_holm'], S, 'ours') for a, v in d['retrieval_family_ALL_8'].items()]
+    fam = d['answer882_family_10']
+    out.append(V('NRR mh882 가족 크기', len(fam), S))
+    out += [Cand('p', f'NRR mh882 {k} Holm p', v['p_holm'], S, 'ours') for k, v in fam.items()]
+    out += [V(f'NRR mh882 {k} Holm p 값', v['p_holm'], S, 'ours') for k, v in fam.items()]
+    f6 = d['appendixC_v1_family6']
+    out.append(V('NRR C6 가족 크기', len(f6), S))
+    out += [Cand('p', f'NRR C6 {k} Holm p', v['p_holm'], S, 'ours') for k, v in f6.items()]
+    mx = d['appendixC_max_holm_rowcol_3']
+    out += [Cand('p', f'NRR C6 RowCol 3개 중 최대 Holm p ({mx[1]})', mx[0], S, 'ours'),
+            V('NRR C6 RowCol 조건 수', sum(1 for k in f6 if k.startswith('rowcol')), S)]
+    return out
+
+
 # =============================================================== 4. ===== MANUAL: 문장 조각(앵커) → 원천
 # 줄 번호 대신 그 줄에만 있는 문장 조각으로 찾는다(원고가 고쳐져도 목록을 다시 쓰지 않게). 조각이 0곳 또는 2곳 이상이면 멈춘다.
 @lru_cache(None)
@@ -1248,10 +1271,11 @@ L('04_setup.md', '**MultiHiertt 답변 표본.**', 'mh_sample', 'mh_pop')
 L('04_setup.md', '**검정.**', 'stats3b', 'mh_sample')
 L('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', 'batchcheck')
 T54 = ['| **본 방법** | .9575', '| sleaf (잎 라벨 머리말 변형) | .9528', '| 고정 청크 | .8255', '| TableRAG(Yu) 청크 | .8019', '| RowCol | .6179',
-       '| TableRAG 셀 검색 재구현(path) | .6274', '| TableRAG 셀 검색 재구현(leaf) | .5047', '| RandRow | .1698']
+       '| TableRAG 셀 검색 재구현(path) | .6274', '| TableRAG 셀 검색 재구현(leaf) | .5047']
 L('05_results.md', ['표 5-1은 MultiHiertt train', '표 5-1. MultiHiertt 그룹별', '| 방법 | 조회·셀 1개 (212)', *T54,
-                    'sleaf를 뺀 비교군 6개의 24칸은 모두', 'sleaf를 뺀 비교군 6개와의 24개', '산술·셀 2개 이상(2,235건) 그룹에서도 본 방법이'],
+                    'sleaf를 뺀 비교군 5개의 20칸은 모두', 'sleaf를 뺀 비교군 5개와의 20개', '산술·셀 2개 이상(2,235건) 그룹에서도 본 방법이'],
   'mh_rerun', 'step4', 'rerun_cmp', 'mh_pop', 'mh_meta')
+L('05_results.md', ['sleaf를 뺀 비교군 5개의 20칸은 모두', 'sleaf를 뺀 비교군 5개와의 20개'], 'norr')
 L('05_results.md', ['표 5-2는 본 방법의 머리글 규칙만', '| v1 (사전등록 당시) | .9434', '| v3.3 (머리글 수정) | .9623',
                     '| **v3.3u (+ 문장 고유화', '처음 규칙(v1)은 14건의 정답 셀을', 'v1에서 v3.3으로 머리글을 고치면'], 'mh_rules', 'mh_pop')
 L('05_results.md', ['MultiHiertt가 함께 제공하는 셀 문장(table_description', '표 5-3. 본 방법과 table_description',
@@ -1299,9 +1323,8 @@ L('07_conclusion.md', '남은 과제는 다음과 같다.', 'mh_sample')
 L('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대', '한 건씩 생성하는 방식은 재실행해도'], 'batchcheck')
 TG1 = [('| 참고: 검색 없이 문서 표 전체 입력 | 검색 없음 |', 'fulltable'), ('| 고정 청크 | 처음 규칙 검색 |', 'chunk'), ('| TableRAG(Yu) 청크 | 처음 규칙 검색 |', 'trag_hetero'),
        ('| RowCol (셀 문장을 이은 변형, 4.2절) |', 'rowcol'), ('| RowCol (값만) |', 'rowcol_values'),
-       ('| RowCol (셀 문장을 이은 변형) | 머리글 고친', 'rowcol_hv33'), ('| RandRow (셀 문장을 이은 변형) |', 'randrow'),
-       ('| RandRow (값만) |', 'randrow_values')]
-L('09_appendix.md', ['RowCol·RandRow의 882건 답변은', '표 C-1. 처음 규칙의 본 방법', *[a for a, _ in TG1]], 'v1cmp', 'mh_sample', 'tro')
+       ('| RowCol (셀 문장을 이은 변형) | 머리글 고친', 'rowcol_hv33')]
+L('09_appendix.md', ['RowCol의 882건 답변은', '표 C-1. 처음 규칙의 본 방법', *[a for a, _ in TG1]], 'v1cmp', 'mh_sample', 'tro', 'norr')
 TG2 = [('| 본 방법 | 20.00 | .8776', 'cell'), ('| 고정 청크 | 51.25', 'chunk'), ('| TableRAG(Yu) 청크 | 46.93', 'trag_hetero')]
 L('09_appendix.md', ['표 C-2. 처음 규칙의 정답률 분해', *[a for a, _ in TG2], '두 방법이 모두 검색에 성공한 문항에서 처음 규칙의'], 'decomp', 'reader_test', 'mh_sample')
 L('09_appendix.md', ['β 선택에 쓴 MultiHiertt dev(validation) 911건은', '표 D-1.', '| 후보 | 911건 맞힘', '332건 기준에서도 β=1.0이 1위다.'], 'alpha_dev', 'mh_dev_pop')
@@ -1318,7 +1341,7 @@ L('06_discussion.md', '고정 청크(최종 규칙)의 검색 성공 687건은',
 # 원고에 sleaf 로 이름을 밝혀 쓴 줄 — 이 줄의 sleaf 값은 '본 방법으로 쓴 sleaf' 가 아니다
 SLEAF_NAMED = {(f, AT(f, a)) for f, a in [
     ('00a_abstract_ko.md', AB_KO), ('00b_abstract_en.md', AB_EN), ('01_intro.md', '1. **셀 단위 검색을 발표된'),
-    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9528'), ('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개')]}
+    ('05_results.md', '| sleaf (잎 라벨 머리말 변형) | .9528'), ('05_results.md', 'sleaf를 뺀 비교군 5개와의 20개')]}
 
 # 표 행처럼 한 줄이 한 조건일 때 먼저 볼 필드(정규식)
 PREFER = {}
@@ -1328,7 +1351,7 @@ def PF(f, anchor, *pats):
     PREFER[f, AT(f, anchor)] = list(pats)
 
 
-for _a, _arm in zip(T54, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'tablerag_path', 'tablerag_leaf', 'randrow']):
+for _a, _arm in zip(T54, ['s3c', 'sleaf', 'chunk', 'trag_hetero', 'rowcol', 'tablerag_path', 'tablerag_leaf']):
     PF('05_results.md', _a, rf'^{_arm} ', rf's3c만:{_arm}만 ', rf'^MH {_arm} 전달')
 for _a, _arm in T5_4:
     PF('05_results.md', _a, rf'^mhonly {_arm}\.')
@@ -1344,11 +1367,11 @@ PF('06_discussion.md', T61[0], r'^decomp mh cell_uniq ')
 PF('06_discussion.md', T61[1], r'^decomp ALL chunk ', r'^test chunk ')
 PF('06_discussion.md', '| MultiHiertt | 642 |', r'^inter ALL ')
 for _a, _n in TG1:
-    PF('09_appendix.md', _a, rf'^TRO F8 {_n} ', rf'^v1cmp {_n} ', rf'v1만:{_n}만$')   # Holm 은 2026-09-28 8개 묶음(TRO F8)
+    PF('09_appendix.md', _a, rf'^NRR C6 {_n} ', rf'^TRO F8 {_n} ', rf'^v1cmp {_n} ', rf'v1만:{_n}만$')   # Holm 은 RandRow 삭제 뒤 6개 묶음(NRR C6)
 TF3 = [('| TableRAG 셀 검색 재구현(path) | .1280', 'tablerag_path_official'), ('| TableRAG 셀 검색 재구현(leaf) | .0900', 'tablerag_leaf_official')]
-L('09_appendix.md', ['표 C-3. 최종 규칙의 본 방법', '| 비교군 | 조회·셀 1개 (211)', *[a for a, _ in TF3], 'TableRAG 셀 검색 재구현의 답변은 숫자·날짜 열 판정을'], 'tro')
+L('09_appendix.md', ['표 C-3. 최종 규칙의 본 방법', '| 비교군 | 조회·셀 1개 (211)', *[a for a, _ in TF3], 'TableRAG 셀 검색 재구현의 답변은 숫자·날짜 열 판정을'], 'tro', 'norr')
 for _a, _n in TF3:
-    PF('09_appendix.md', _a, rf'^TRO mh882 (기준만:)?{_n}')
+    PF('09_appendix.md', _a, rf'^NRR mh882 {_n} Holm', rf'^TRO mh882 (기준만:)?{_n}')
 for _a, _c in TG2:
     PF('09_appendix.md', _a, rf'^decomp mh {_c} ')
 for _a, _c in TH1:
@@ -1400,7 +1423,7 @@ CP('06_discussion.md', ['| MultiHiertt | 642 |'],
    {2: [r'both n', r' n$'], 3: ['ours', 'cell'], 4: ['other', 'chunk'], 5: ['만:'], 6: [r' p$'], 7: ['only ours'], 8: ['only other']})
 CP('09_appendix.md', ['| 한 건씩 재실행 대', '| continuous batching 대'],
    {2: [r' n$'], 3: ['출력 문자열 일치 수'], 4: ['추출 답 일치 수'], 5: ['정답 수'], 6: ['정오 불일치'], 7: [r'정오 불일치.* p$']})
-CP('09_appendix.md', [a for a, _ in TG1], {4: ['correct'], 5: ['만:'], 6: [r'\d p$|[a-z] p$'], 7: ['Holm']})
+CP('09_appendix.md', [a for a, _ in TG1], {4: ['correct'], 5: ['만:'], 6: [r'\d p$|[a-z] p$'], 7: [r'^NRR C6 .*Holm']})
 CP('09_appendix.md', [a for a, _ in TG2], {2: ['cells'], 3: ['retrieval_success'], 4: ['answer_given_hit'], 5: ['answer_given_miss'], 6: ['answer ']})
 CP('09_appendix.md', [a for a, _ in TH1], {2: ['n911'], 3: ['rank911'], 4: ['n332'], 5: ['rank332']})
 # 2026-09-28 TableRAG(Chen) 공식 숫자 열 규칙 대체: 표 5-1 의 TableRAG 행, 부록 E 는 원천 tro
@@ -1447,10 +1470,10 @@ EX('09_appendix.md', '| continuous batching 대', '35', 'batchcheck', 'cb_120 �
 EX('09_appendix.md', '| continuous batching 대', '1.0', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만) p')
 EX('04_setup.md', 'MultiHiertt 답변 실행은 transformers의 continuous batching', 'p=1.0', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만) p')
 EX('06_discussion.md', '**생성 방식.**', '1:1', 'batchcheck', 'cb_120 정오 불일치(기존만:이번만)')
-EX('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', 'p<.05', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
-EX('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', 'p=.021', 'mh_rerun', 's3c 대 비교군 24칸 중 최대 p')
-EX('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', 'p=4.4×10⁻⁵⁰', 'mh_rerun', 's3c만:chunk만 ALL p')
-EX('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', 'p=.0040', 'rerun_cmp', 'mh_doc s3c만:sleaf만 Holm p')
+EX('05_results.md', 'sleaf를 뺀 비교군 5개의 20칸은 모두', 'p<.05', 'norr', 'NRR 비교군 20칸 중 최대 p')
+EX('05_results.md', 'sleaf를 뺀 비교군 5개의 20칸은 모두', 'p=.021', 'norr', 'NRR 비교군 20칸 중 최대 p')
+EX('05_results.md', 'sleaf를 뺀 비교군 5개와의 20개', 'p=4.4×10⁻⁵⁰', 'mh_rerun', 's3c만:chunk만 ALL p')
+EX('05_results.md', 'sleaf를 뺀 비교군 5개와의 20개', 'p=.0040', 'norr', 'NRR 검색 s3c만:sleaf만 Holm p')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', '99:29', 'mh_rules', '공통 2,871 v33u만:v1만')
 EX('05_results.md', '처음 규칙(v1)은 14건의 정답 셀을', 'p=3.8×10⁻¹⁰', 'mh_rules', '공통 2,871 v33u만:v1만 p')
 EX('05_results.md', 'k=20 기준 검색 성공률은 정답 셀이 1개인 문항에서', 'p=8.8×10⁻⁵', 'lookup_arith_posthoc', 'T2 1위 산술 대 조회 Fisher p')
@@ -1476,7 +1499,6 @@ EX('05_results.md', '| 참고: 검색 없이 문서 표 전체 입력 | .5592', 
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.039', 'stats3b', 'item3b_mh882_pooled fulltable p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
 EX('05_results.md', '| TableRAG(Yu) 청크 | .5545', 'p=.0056', 'stats3b', 'item3b_mh882_pooled trag_hetero Holm p')
-EX('05_results.md', '**나머지 비교군.**', 'p=2.1×10⁻⁶', 'v1cmp', 'v1cmp 셀 표현 비교군 9개 중 최대 Holm p')
 EX('06_discussion.md', TFULL6, 'p=.078', 'stats3b', 'item3b_mh882_pooled fulltable Holm p')
 EX('06_discussion.md', '**고정 청크 대비 답변 우위의 집중.**', 'p=.0005', 'reader_test', 'test arith_m2+ cell_vs_chunk p')
 
@@ -1712,7 +1734,7 @@ KOA('04_setup.md', MH41, K_SEC, ['5.1'])
 KOA('04_setup.md', MH41, K_N, [('2', 1)])      # 정답 셀이 빈 칸으로 파싱된 2건
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_ETC, ['1', '2', ('3', 2)])   # (1)(2)(3) 항목 번호
 KOA('04_setup.md', '**TableRAG 셀 검색 재구현의 범위.**', K_SET, [('3', 1)])             # 자주 나오는 값 3개
-KOA('05_results.md', '**나머지 비교군.**', K_SET, ['8', '5'])
+KOA('05_results.md', '**나머지 비교군.**', K_SET, ['6', '3'])
 KOA('05_results.md', 'MultiHiertt가 함께 제공하는 셀 문장(table_description', K_ETC, ['1'])   # 1회 실행
 KOA('01_intro.md', '본 연구가 MT2Net과 다른 점은 세 가지다.', K_ETC, ['1', '2', '3'])       # (1)~(4) 항목 번호
 KOA('02_related.md', '**MT2Net(Zhao et al., 2022).**', K_ETC, ['1', '2', '3'])
@@ -1721,7 +1743,7 @@ KOA('06_discussion.md', '**머리글 규칙 수정 이력.**', K_SET, ['1,000'])
 KOA('05_results.md', '**TableRAG 셀 검색 재구현이 낮은 이유.**', K_ETC, ['1'])                 # "상한이 1보다 낮다"의 비교 기준
 KOA('02_related.md', '**MixRAG.** Zhang et al.(2026)은', K_CITE)                          # 선행 논문이 보고한 값
 KOA('02_related.md', '| MT2Net (Zhao et al., 2022) |', K_CITE)
-KOA('09_appendix.md', 'RowCol·RandRow의 882건 답변은', K_SET, ['8'])
+KOA('09_appendix.md', 'RowCol의 882건 답변은', K_SET, ['6'])
 KOA('06_discussion.md', '**정답 근거 주석의 범위.**', K_CITE, ['2'])
 KOA('09_appendix.md', '키워드가 있는 91문항은 모두', K_ETC, ['12'])                          # 질문 인용 "less than 12 months"                     # 인용 위치 Table 2
 # 2026-09-28 인용 대조 반영: 선행 논문이 보고한 값·인용 쪽 번호(원고 줄 전체)
@@ -1731,7 +1753,7 @@ KOA('02_related.md', '검색 결과에 질문과 관련은 있으나', K_CITE)
 KOA('02_related.md', '**유형별 보고.**', K_CITE)
 for _a in ('| TableRAG(Chen) | 스키마 문서 내용 |', '| TableRAG(Chen) | 스키마 검색 |', '| TableRAG(Chen) | 행 라벨 문서 |',
            '| TableRAG(Chen) | 셀 인코딩 예산 B |', '| TableRAG(Chen) | 질의 확장과 검색 개수 K |',   # 숫자 열 판정 행은 2026-09-28 결과값이 들어가 대조한다
-           '| RowCol | 색인 텍스트 |', '| RandRow | 색인·검색 |', '| RandRow | 리더 입력 |', '| TableRAG(Yu) | 청크 크기·겹침 단위 |',
+           '| RowCol | 색인 텍스트 |', '| TableRAG(Yu) | 청크 크기·겹침 단위 |',
            '| TableRAG(Yu) | 마크다운 변환 |', '| TableRAG(Yu) | 머리말 이름 |'):
     KOA('09_appendix.md', _a, K_CITE)                                                   # 부록 H: 원 논문·코드 설정값
 KOA('06_discussion.md', '**가설은 지지되지 않았다.**', K_ETC, ['1'])                      # 정답 셀이 1개인
@@ -1739,15 +1761,15 @@ KOA('06_discussion.md', '| | | H: 정답 표의 셀은 있으나', K_ETC, ['0'])
 KOA('06_discussion.md', 'MultiHiertt 실패 394건 중', K_SET, ['50'])
 KOA('06_discussion.md', '**재정렬 진단.**', K_SET, ['50'])
 KOA('09_appendix.md', 'β 선택에 쓴 MultiHiertt dev(validation) 911건은', K_SET, ['1.0', '0.1', '0.9', '11'])
-KOA('05_results.md', 'sleaf를 뺀 비교군 6개의 24칸은 모두', K_SET, ['6'])
-KOA('05_results.md', 'sleaf를 뺀 비교군 6개와의 24개', K_SET, ['6'])
-KOA('05_results.md', '그룹별 값은 탐색적 결과다. Holm p는', K_SET, ['12'])
+KOA('05_results.md', 'sleaf를 뺀 비교군 5개의 20칸은 모두', K_SET, ['5'])
+KOA('05_results.md', 'sleaf를 뺀 비교군 5개와의 20개', K_SET, ['5'])
+KOA('05_results.md', '그룹별 값은 탐색적 결과다. Holm p는', K_SET, ['10'])
 KOA('05_results.md', '**주 비교: 고정 청크(최종 규칙).**', K_SEC, ['9'])
-KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_SET, ['12'])
+KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_SET, ['10'])
 KOA('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', K_ETC, ['0'])
 KOA('06_discussion.md', '처음 규칙의 교집합 결과(38:76)를 보고', K_SET, ['20'])
 KOA('09_appendix.md', '332건 기준에서도 β=1.0이 1위다.', K_SET, ['1.0', '0.6'])
-KOA('09_appendix.md', '"머리글 규칙 영향"은 두 규칙에서', K_SET, ['1', '8', '4'])    # 규칙 불일치 행 수, Holm 묶음 크기, 옮긴 행 수
+KOA('09_appendix.md', '"머리글 규칙 영향"은 두 규칙에서', K_SET, ['1', '6', '4'])    # 규칙 불일치 행 수, Holm 묶음 크기, 옮긴 행 수
 KOA('07_conclusion.md', '3. **답변 정확도.**', K_SET, ['4'])                       # 4비트
 # 2026-09-28 MultiHiertt 단독 원고: 사전등록한 k 후보·설정값
 for _f, _a in (('04_setup.md', '**전달 셀 수 k의 선택.**'), ('05_results.md', '【대기: 표 5-5. 전달 셀 수 k별 dev 답변 정확도')):
@@ -1842,13 +1864,14 @@ RESULT_EXT = ('.json', '.jsonl', '.csv')            # 코드가 만든 결과 �
 
 
 # 2026-09-28 MultiHiertt TableRAG(Chen) 답변 교체 뒤 Holm(12개·8개 묶음) 연결
-L('05_results.md', ['**나머지 비교군.**', '**표 전체와 TableRAG(Yu) 청크.**', T56[2], T56[3]], 'tro')
-L('04_setup.md', '**검정.**', 'tro')
+L('05_results.md', ['**나머지 비교군.**', '**표 전체와 TableRAG(Yu) 청크.**', T56[2], T56[3]], 'tro', 'norr')
+L('04_setup.md', '**검정.**', 'tro', 'norr')
 EX('05_results.md', T56[2], 'p=.078', 'tro', 'TRO mh882 fulltable Holm p')
 EX('05_results.md', T56[3], 'p=.0056', 'tro', 'TRO mh882 trag_hetero Holm p')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', '.078', 'tro', 'TRO mh882 fulltable Holm p 값')
-EX('05_results.md', '**나머지 비교군.**', 'p=2.1×10⁻⁶', 'tro', 'TRO F8 RowCol·RandRow 5개 중 최대 Holm p')
-EX('04_setup.md', '**검정.**', '12', 'tro', 'TRO mh882 가족 크기')
+EX('05_results.md', '**나머지 비교군.**', 'p=2.1×10⁻⁶', 'norr', 'NRR C6 RowCol 3개 중 최대 Holm p')
+EX('05_results.md', '**나머지 비교군.**', 'p=3.4×10⁻⁸²', 'norr', 'NRR mh882 tablerag_leaf_official Holm p')
+EX('04_setup.md', '**검정.**', '10', 'norr', 'NRR mh882 가족 크기')
 EX('05_results.md', '**표 전체와 TableRAG(Yu) 청크.**', 'p=.0056', 'tro', 'TRO mh882 trag_hetero Holm p')
 PF('09_appendix.md', '| 비교군 | 조회·셀 1개 (211)', r'^TRO mh882 \S+ n$')
 
