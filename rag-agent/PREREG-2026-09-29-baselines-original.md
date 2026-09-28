@@ -45,3 +45,13 @@
 ## 실행 순서
 
 본 방법 순위 100 재검색(진행 중) → 비교군 4개 3문항 점검(서브에이전트, 병렬 구현·순차 GPU) → 사용자에게 점검 결과 보고 → 전체 실행 순서: `langchain_chunk` → `raptor` → `tablerag_chen` → `tablerag_yu`(각 2,885 검색 + 882 답변, GPU 잠금 `.gpu.lock`) → `final/` 표.
+
+## 실행 전 추가 (2026-09-29 03:5x, 점검 3문항 뒤·전체 실행 전)
+
+점검 3문항(882 앞 3건) 결과: `langchain_chunk` EM 0/3, `raptor` 2,000토큰 1/3·575토큰 1/3, `tablerag_chen` 0/3(풀이 5회 안에 Final Answer 미도달 3건, 코드 오류 0·1·5), `tablerag_yu` 0/3(반복 3~4회, SQL 오류 1). 판정용 아님.
+
+구현 중 생긴 이탈·판단 (각 README 에 상세):
+- `tablerag_chen`: `official_frame(path)` 에는 행 머리글이 없어 풀이가 행을 고를 수 없으므로 **행 라벨 열(0열, 행 머리글 경로 결합)을 추가**했다 — 원본이 가정하는 "첫 열 = 행 이름" 평면 표에 대응. 공식 코드 패치 3곳(모델 제공자 `local:` 갈래, langchain 대체 클래스, 다중 표 dict 를 REPL 지역변수로).
+- `tablerag_yu`: 같은 이유로 `row_header` 열 추가; MySQL→SQLite 패치 1줄(프롬프트 "MySQL syntax"→"SQLite syntax"); 공식 코드 결함 2곳(스키마 언패킹 예외, set 순서)은 의도대로 처리; 재정렬기는 GPU 메모리 포화로 CPU. **문항당 약 150초(1문항 실측)라 답변은 882 만 돌린다**(2,885 는 약 121시간). 검색 지표는 LLM 없는 1회차 검색(질문 → 회수 30 → 재정렬 3)의 목록으로 2,885 전부 계산한다. 최종답 표시 문장은 다른 비교군과 같이 붙인다(추출 규칙 통일).
+- `raptor`: 원본 `ClusterTreeBuilder` 를 문서마다 재사용하면 `num_layers` 가 덮어써져 요약이 0회가 되는 결함 → 문서마다 빌더를 새로 만든다(vendor 패치 0). 원본 청커의 `.` 분할로 소수 값이 갈라져, gold 셀 전부가 어느 잎엔가 온전히 든 문항은 2,335/2,885(80.94%) — 원방법 그대로 두고 사실만 적는다.
+- 실행: `run_all.sh`(LangChain → RAPTOR → Chen, 파이썬 직접 호출·flock·rc 즉시 확인) 뒤 Yu 두 단계. 예상: LangChain 2~2.5h, RAPTOR 7~11h, Chen 15~16h, Yu 검색 짧음 + 답변 882 약 37h(1문항 근거).
