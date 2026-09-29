@@ -51,7 +51,7 @@ def merged_loader(n_docs: int, seed: str):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--stage", required=True, choices=["retrieve", "answer"])
+    ap.add_argument("--stage", required=True, choices=["retrieve", "answer", "langchain"])
     ap.add_argument("--n-docs", type=int, default=5)
     ap.add_argument("--seed", default="20260929")
     ap.add_argument("rest", nargs=argparse.REMAINDER)
@@ -62,6 +62,17 @@ def main() -> int:
     if a.stage == "retrieve":
         sys.argv = ["mh_arms.py", *rest]
         return mh_arms.main()
+    if a.stage == "langchain":
+        # 비교군 LangChain 청크: 같은 합친 문서. 질의 집합 대조 파일·문항 목록·출력 폴더만 이 실험 것으로 바꾼다.
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("langchain_chunk_baseline", ROOT / "scripts/baselines/langchain_chunk.py")
+        L = importlib.util.module_from_spec(spec); spec.loader.exec_module(L)
+        L.load_population = loader
+        L.S3C = ROOT / "results/bigdoc_20260929/bigdoc_s3c_records.jsonl"
+        L.SUBSET = IDS
+        L.OUT = ROOT / "results/bigdoc_20260929/langchain_chunk"
+        sys.argv = ["langchain_chunk.py", *rest]
+        return L.main()
     import answer_accuracy_mh  # noqa: E402
     answer_accuracy_mh.load_population = loader
     sys.argv = ["answer_accuracy_mh.py", *rest]
