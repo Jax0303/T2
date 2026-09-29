@@ -131,6 +131,8 @@ def main():
                     help="0 = 검색 2,885 전부 + 답변 882 부분집합. N = 882 부분집합(query_id 순)의 앞 N 건만(검색+답변)")
     ap.add_argument("--out-dir", default=str(OUT))
     ap.add_argument("--resume", action="store_true", help="저장된 records 의 query_id 는 건너뛰고 이어 쓴다")
+    ap.add_argument("--max-tokens", type=int, default=MAX_TOKENS,
+                    help="LLM 호출당 생성 상한(원본 128). 512 = PREREG-2026-09-29-chen-max-tokens.md 이탈 조건")
     ap.add_argument("--embed-device", default=None, help="임베딩 모델 장치(기본 자동=cuda). GPU 가 모자라면 cpu")
     a = ap.parse_args()
     if os.environ.get("PYTHONHASHSEED") != "0":
@@ -166,7 +168,7 @@ def main():
     agent_mod.Retriever = DocRetriever                      # TableAgent.__init__ 이 만드는 Retriever 를 문서용으로
     agent = DocAgent(model_name=READER, retrieve_mode="embed", embed_model_name=EMBED, task=TASK, agent_type="TableRAG",
                      top_k=TOP_K, max_encode_cell=MAX_ENCODE_CELL, temperature=0.0, top_p=0.95,
-                     stop_tokens=["Observation:"], max_tokens=MAX_TOKENS, max_depth=MAX_DEPTH, db_dir=str(DB))
+                     stop_tokens=["Observation:"], max_tokens=a.max_tokens, max_depth=MAX_DEPTH, db_dir=str(DB))
     if a.embed_device:
         from agent.local_backend import HuggingFaceEmbeddings
         agent.retriever.embedder = HuggingFaceEmbeddings(EMBED, device=a.embed_device)
@@ -240,7 +242,7 @@ def main():
     common = {"arm": "tablerag_chen", "split": "train", "header_rule": "v3.3u", "label_rule": "none",
               "official_code": (VENDOR / "VENDOR_COMMIT").read_text(encoding="utf-8").strip().splitlines(),
               "task_prompts": TASK, "top_k": TOP_K, "max_encode_cell": MAX_ENCODE_CELL, "max_depth": MAX_DEPTH,
-              "max_tokens_per_call": MAX_TOKENS, "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+              "max_tokens_per_call": a.max_tokens, "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
               "encoder": EMBED, "reader": agent.model.client.name, "seed": SEED, "temperature": 0.0,
               "limit": a.limit, "resumed": len(done), "provenance": provenance(ROOT)}
     summary = {**common, "n_queries": len(recs), "seconds": round(sum(r["seconds"] for r in recs), 1),
