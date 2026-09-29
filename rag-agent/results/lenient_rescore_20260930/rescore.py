@@ -12,19 +12,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / "scripts"))
 from mh_arms import official_answers
-from rag_agent.eval.multihiertt_em import docmath_match, mh_exact_match
+from rag_agent.eval.multihiertt_em import format_match, mh_exact_match
 
-MON = r"(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?"
-def _clean(s): return re.sub(MON, "", str(s).lower()).replace("$", "").replace("level", "")
-def _nums(s): return sorted(set(float(x) for x in re.findall(r"-?\d+\.?\d*", _clean(s).replace(",", "").replace("%", ""))))
-def _words(s): return sorted(re.sub(r"[^a-z0-9. ]", " ", _clean(s)).split())
-
-def lenient(pred, gold, program):
-    if pred is None: return False
-    if mh_exact_match(pred, gold, program): return True
-    if program: return docmath_match(pred, gold, True)
-    g = _nums(gold)
-    return (g == _nums(pred)) if g else (_words(gold) == _words(pred) != [])
+lenient = format_match
 
 R = ROOT / "results"
 FILES = {  # 이름: (파일, 문항 범위)

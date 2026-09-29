@@ -175,3 +175,26 @@ def docmath_match(pred, gold, program: bool) -> bool:
     p = docmath_number(pred)
     # 자릿수가 너무 긴 예측·'inf'·'nan' 은 float 가 inf/nan 이 되어 compare_two_numbers 가 죽는다 — 오답으로 둔다
     return p is not None and math.isfinite(p) and compare_two_numbers(p, float(gold))
+
+
+_MONTH_DAY = r"(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?"
+
+
+def _fmt_clean(s):
+    return re.sub(_MONTH_DAY, "", str(s).lower()).replace("$", "").replace("level", "")
+
+
+def format_match(pred, gold, program: bool) -> bool:
+    """형식 허용 채점(2026-09-30 지도교수 지시: 값이 같고 표기만 다르면 정답). 공식 EM 이 맞으면 정답,
+    아니면 산술은 ``docmath_match``, 조회는 날짜의 '월 일,'·'$'·'level' 을 지운 뒤 정답에 숫자가 있으면
+    숫자 집합이, 없으면 단어 묶음이 같을 때 정답. 조회 규칙은 본 방법 오답을 본 뒤 정했다."""
+    if pred is None:
+        return False
+    if mh_exact_match(pred, gold, program):
+        return True
+    if program:
+        return docmath_match(pred, gold, True)
+    nums = lambda s: sorted(set(float(x) for x in re.findall(r"-?\d+\.?\d*", _fmt_clean(s).replace(",", "").replace("%", ""))))
+    words = lambda s: sorted(re.sub(r"[^a-z0-9. ]", " ", _fmt_clean(s)).split())
+    g = nums(gold)
+    return (g == nums(pred)) if g else (words(gold) == words(pred) != [])
