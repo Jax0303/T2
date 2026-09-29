@@ -1,0 +1,61 @@
+{
+  "prompt_text": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\nQuestion: {question} \nContext: {context} \nAnswer:",
+  "system_message": null,
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "n": 200,
+  "marker_missing": 0,
+  "input_tokens_mean": 698.6,
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "correct": 80
+    },
+    "arith_m1": {
+      "n": 14,
+      "correct": 4
+    },
+    "arith_m2+": {
+      "n": 70,
+      "correct": 11
+    },
+    "lookup_m1": {
+      "n": 49,
+      "correct": 31
+    },
+    "lookup_m2+": {
+      "n": 67,
+      "correct": 34
+    }
+  },
+  "scorer_self_check": {
+    "em": 0.945,
+    "n": 200,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 11
+  },
+  "records_sha256": "8c444511f4b38abc182143cfc5976371df0789a1f443edb4e7ffa17437df2a06",
+  "provenance": {
+    "git_commit": "9fea92ecc95d172d77bdc86d3bb23d2978a835a1",
+    "git_dirty": true,
+    "source_sha256": "11dd2d41eb56b449d0b4eb45de9e69a218372609804a64d637dbb189b1eaa8b7",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  }
+}
