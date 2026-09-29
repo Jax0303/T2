@@ -14,6 +14,10 @@ echo "[end] $(date -Is) retrieval rc=$?"
   --split train --header-rule v3.3u --label-rule none --prompt cot --max-tokens 384 --batch-size 128 \
   --same-queries-as results/mh_arms/cap300_20260924/cell_uniq.jsonl --out $O/mh_value_answer.jsonl > $O/mh_value_answer.log 2>&1
 echo "[end] $(date -Is) answer rc=$?"
+# 2026-09-29 11:0x 추가: Yu 검색이 GPU 메모리 포화로 0.9→7.5초/문항으로 느려져 끊고(1,2xx/2,885) 여기서 이어 돈다
+.venv/bin/python scripts/baselines/tablerag_yu.py --out-dir results/mh_only_20260928/baselines/tablerag_yu --stage retrieve --resume \
+  > results/mh_only_20260928/baselines/tablerag_yu/retrieve_resume.log 2>&1
+echo "[end] $(date -Is) yu_retrieve_resume rc=$?"
 '
 kill -CONT 1170410
 echo "[resumed] $(date -Is) run_rest.sh"
