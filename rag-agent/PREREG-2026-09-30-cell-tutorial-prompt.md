@@ -1,0 +1,25 @@
+# 사전등록: 본 방법 셀 문장 + LangChain 튜토리얼 지시문 (2026-09-30, 실행 전)
+
+## 왜
+200문항 답변에서 본 방법 93 대 LangChain 청크 60 이지만, 두 조건은 입력 내용(셀 20개 대 청크 4개)과
+지시문(계산 과정을 쓰라 대 세 문장 이내)이 함께 다르다. 표 전체 입력(본 방법 지시문) 80 대 LangChain 60
+(35:15)이라 격차의 상당 부분이 지시문 몫일 수 있다. 지시문·프롬프트 틀을 LangChain 과 똑같이 두고
+입력 내용만 셀 문장으로 바꿔 이 반론을 판정한다.
+
+## 조건
+- 문항: `results/mh_only_20260928/baselines/ids200.jsonl` 200문항(표 4-7 과 같음).
+- 입력 내용: 본 방법 882 답변(`results/mh_arms/cap300_20260924/cell_uniq.jsonl`)과 같은 셀 문장 20개
+  (`results/mh_arms/mh_train_cell_hv3.3u_none_doc_records.jsonl` 의 doc.context, 문항마다 context_sha256 일치 확인), 한 줄에 하나.
+- 지시문·틀: `scripts/baselines/langchain_chunk.py` 의 RAG_PROMPT + MARKER, PROMPT 틀, system 메시지 없음(UserOnly) — 그대로 가져다 쓴다.
+- LLM: Qwen3-8B 4bit, 생각 모드 끔, 탐욕, 최대 384토큰, seed 42, 배치 128. 채점: mh_exact_match(공식 포팅), 마지막 'Final answer:' 뒤.
+- 스크립트: `scripts/baselines/cell_tutorial_prompt.py`. 출력: `results/cell_tutorial_prompt_20260930/`.
+
+## 판정 (주 비교 1개)
+- 셀 문장+튜토리얼 지시문 대 LangChain 청크(60/200), 같은 문항 McNemar 정확 이항 양측, 유의 수준 .05. 보정 없음(단일 주 비교).
+- 예측: 셀 문장+튜토리얼 지시문이 LangChain 보다 유의하게 높다.
+- 유의하게 높으면: "같은 지시문에서도 셀 문장 입력이 LangChain 청크보다 높다"로 원고 4.3.4·5장 한계 둘째 문장을 고친다.
+- 유의하지 않거나 낮으면: 원고의 한계 문장(지시문 차이가 섞임)을 그대로 두고, 이 결과를 그 근거로 덧붙인다.
+
+## 보고만 (판정 아님)
+- 셀 문장+튜토리얼 지시문 대 본 방법(93/200, 계산 과정 지시문) — 지시문 효과의 크기.
+- 문항 그룹별 맞힌 수, 'Final answer:' 표시 누락 수, 평균 입력 토큰.
