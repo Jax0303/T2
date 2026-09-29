@@ -386,9 +386,10 @@ def main() -> int:
     ap.add_argument("--row-text", default="values", choices=["sentence", "values"],
                     help="--unit row/rowcol/randrow: values = 발표된 단위(값만), sentence = 우리 셀 문장을 이어 붙인 변형. "
                          "2026-09-25 기본값을 values 로 — 09-18 MH 실행이 지정을 빠뜨려 sentence 로 돌았다")
-    ap.add_argument("--cell-text", default="ours", choices=["ours", "table_description"],
+    ap.add_argument("--cell-text", default="ours", choices=["ours", "table_description", "value"],
                     help="--unit cell: table_description = 셀 문장을 데이터셋의 table_description 문장으로 바꾼다. "
-                         "그 문장이 없는 셀은 --template 문장 그대로 (PREREG-2026-09-28-table-description.md)")
+                         "그 문장이 없는 셀은 --template 문장 그대로 (PREREG-2026-09-28-table-description.md). "
+                         "value = 색인(dense·BM25)만 셀 값으로, 리더 입력은 --template 문장 그대로 (PREREG-2026-09-29-header-ablation.md)")
     ap.add_argument("--tablerag-colmode", default="leaf", choices=["leaf", "path"])
     ap.add_argument("--tablerag-dtype", default="infer", choices=["infer", "all_object", "official"],
                     help="official = 원본 utils.infer_dtype 를 펼친 프레임에 적용 (PREREG-2026-09-28-tablerag-official-dtype.md)")
@@ -485,6 +486,12 @@ def main() -> int:
         {}, a.chunk_chars, a.tablerag_colmode, a.row_text, a.chunk_overlap, None,
         load=lambda tid, _d: tables.get(tid), trag_dtype=a.tablerag_dtype)
     n_desc = None
+    ctx_texts = texts
+    if a.cell_text == "value":
+        # 헤더 경로 제거 ablation: 색인 텍스트만 값으로 바꾸고, 리더 입력은 본 방법 문장 그대로 둔다
+        ctx_texts = list(texts)
+        texts = [str(tables[c[0]].table.data[c[1]][c[2]]) for (c,) in covers]
+        print(f"[cell-text] value {len(texts)} (예: {texts[:3]})", flush=True)
     if a.cell_text == "table_description":
         # 키 "{표}-{행}-{열}" = 펼친 격자 좌표 = cell_id 의 '::' 뒤. 색인 셀 집합(covers)은 그대로다.
         descs = {u: json.loads(d[1]) if isinstance(d[1], str) else d[1] for u, d in docs.items()}
@@ -627,7 +634,7 @@ def main() -> int:
                     return rowcol_select(order, covers, texts, is_row, budget,
                                          dump, grid, a.template, a.row_text,
                                          cap=a.rowcol_max_pairs)
-                return budget_select(order, covers, texts, budget, dump)
+                return budget_select(order, covers, ctx_texts, budget, dump)
 
             selected = select(a.budget, a.dump_context)
             got, n_cells, ctx = selected
@@ -650,7 +657,7 @@ def main() -> int:
                 r["gold_ids"] = sorted(short(c) for c in q["gold"])
                 r[scope]["ranked_units"] = [sorted(short(c) for c in covers[p]) for p in order[:a.dump_ranked]]
                 # 단위 텍스트만의 토큰 수(--context-tokenizer, 기본 Qwen3-8B) — 토큰 예산 표용
-                r[scope]["ranked_tokens"] = [n_tok(texts[p]) for p in order[:a.dump_ranked]]
+                r[scope]["ranked_tokens"] = [n_tok(ctx_texts[p]) for p in order[:a.dump_ranked]]
             if a.dump_context:
                 r[scope]["context"] = ctx
                 r[scope]["context_sha256"] = digest(ctx)
