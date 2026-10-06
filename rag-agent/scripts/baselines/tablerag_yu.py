@@ -376,6 +376,7 @@ def main() -> int:
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--cache-dir", default=".cache/tablerag_yu")
+    ap.add_argument("--embed-device", default=None, help="임베더 장치. 기본 cuda:0. answer 에서 큰 인코더(bge-m3)를 리더와 같이 올리면 8GB 를 넘어 cpu")
     a = ap.parse_args()
     a.reranker_device = a.reranker_device or ("cuda:0" if a.stage == "retrieve" else "cpu")
 
@@ -416,6 +417,9 @@ def main() -> int:
     cache = Path(a.cache_dir)
     cache.mkdir(parents=True, exist_ok=True)
     ret = Retriever(a.embed_model, a.reranker, a.reranker_device, cache)
+    if a.embed_device == "cpu":
+        import torch
+        ret.embedder.model.to("cpu"); ret.embedder.device = torch.device("cpu")
     ret.index(docs)
     from transformers import AutoTokenizer
     qwen_tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-8B")

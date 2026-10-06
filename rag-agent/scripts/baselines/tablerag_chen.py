@@ -134,6 +134,9 @@ def main():
     ap.add_argument("--max-tokens", type=int, default=MAX_TOKENS,
                     help="LLM 호출당 생성 상한(원본 128). 512 = PREREG-2026-09-29-chen-max-tokens.md 이탈 조건")
     ap.add_argument("--embed-device", default=None, help="임베딩 모델 장치(기본 자동=cuda). GPU 가 모자라면 cpu")
+    ap.add_argument("--reader", default=READER, help="LLM 사양(local:<hf id>?quantization=4bit|none, 기본 Qwen3-8B 4bit)")
+    ap.add_argument("--embed-model", default=EMBED)
+    ap.add_argument("--db-dir", default=str(DB), help="표별 임베딩 캐시. 인코더를 바꾸면 새 디렉터리를 준다(캐시 이름에 모델이 없다)")
     a = ap.parse_args()
     if os.environ.get("PYTHONHASHSEED") != "0":
         raise SystemExit("PYTHONHASHSEED=0 로 실행한다 — 원본이 검색 결과를 set() 으로 합쳐 순서가 해시에 달렸다")
@@ -166,12 +169,12 @@ def main():
 
     import torch
     agent_mod.Retriever = DocRetriever                      # TableAgent.__init__ 이 만드는 Retriever 를 문서용으로
-    agent = DocAgent(model_name=READER, retrieve_mode="embed", embed_model_name=EMBED, task=TASK, agent_type="TableRAG",
+    agent = DocAgent(model_name=a.reader, retrieve_mode="embed", embed_model_name=a.embed_model, task=TASK, agent_type="TableRAG",
                      top_k=TOP_K, max_encode_cell=MAX_ENCODE_CELL, temperature=0.0, top_p=0.95,
-                     stop_tokens=["Observation:"], max_tokens=a.max_tokens, max_depth=MAX_DEPTH, db_dir=str(DB))
+                     stop_tokens=["Observation:"], max_tokens=a.max_tokens, max_depth=MAX_DEPTH, db_dir=a.db_dir)
     if a.embed_device:
         from agent.local_backend import HuggingFaceEmbeddings
-        agent.retriever.embedder = HuggingFaceEmbeddings(EMBED, device=a.embed_device)
+        agent.retriever.embedder = HuggingFaceEmbeddings(a.embed_model, device=a.embed_device)
     torch.manual_seed(SEED)
     llm, tok = agent.model.client, agent.model.tokenizer
     n_tok = lambda t: len(tok(t, add_special_tokens=False)["input_ids"])
@@ -243,7 +246,7 @@ def main():
               "official_code": (VENDOR / "VENDOR_COMMIT").read_text(encoding="utf-8").strip().splitlines(),
               "task_prompts": TASK, "top_k": TOP_K, "max_encode_cell": MAX_ENCODE_CELL, "max_depth": MAX_DEPTH,
               "max_tokens_per_call": a.max_tokens, "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
-              "encoder": EMBED, "reader": agent.model.client.name, "seed": SEED, "temperature": 0.0,
+              "encoder": a.embed_model, "reader": agent.model.client.name, "seed": SEED, "temperature": 0.0,
               "limit": a.limit, "resumed": len(done), "provenance": provenance(ROOT)}
     summary = {**common, "n_queries": len(recs), "seconds": round(sum(r["seconds"] for r in recs), 1),
                "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",

@@ -1,0 +1,18 @@
+# 이름<TAB>명령 — PREREG-2026-10-06-post-defense.md 순서. 변수 P S B IDS MAIN L2 는 session.sh 가 export 한다.	
+dev_k_cut	$P $S/dev_k_cut.py
+dev_k1_answer	$P scripts/answer_accuracy_mh.py --records $S/dev_k/dev_s3c_k1_records.jsonl --scope doc --condition retrieved --split validation --header-rule v3.3u --batch-size 128 --same-queries-as results/reader_format_20260927/mh_dev_pop332.jsonl --quiet-accuracy --out $S/dev_k/dev_s3c_k1_answer.jsonl --resume
+dev_k3_answer	$P scripts/answer_accuracy_mh.py --records $S/dev_k/dev_s3c_k3_records.jsonl --scope doc --condition retrieved --split validation --header-rule v3.3u --batch-size 128 --same-queries-as results/reader_format_20260927/mh_dev_pop332.jsonl --quiet-accuracy --out $S/dev_k/dev_s3c_k3_answer.jsonl --resume
+l2_ours_answer	$P scripts/answer_accuracy_mh.py --records results/mh_arms/mh_train_cell_hv3.3u_none_doc_records.jsonl --scope doc --condition retrieved --split train --header-rule v3.3u --batch-size 128 --same-queries-as $IDS --same-contexts-as results/mh_arms/cap300_20260924/cell_uniq.jsonl --reader $L2 --quiet-accuracy --out $S/llm_qwen17/ours_answer.jsonl --resume
+l2_langchain_answer	$P scripts/baselines/langchain_chunk.py --stage answer --limit 200 --out-dir $S/llm_qwen17/langchain_chunk --records $B/langchain_chunk/langchain_chunk_records.jsonl --reader $L2 --resume
+yu882_answer	$P scripts/baselines/tablerag_yu.py --out-dir $B/tablerag_yu --stage answer --resume
+l2_yu_answer	$P scripts/baselines/tablerag_yu.py --out-dir $S/llm_qwen17/tablerag_yu --stage answer --answer-ids $IDS --reader $L2 --resume
+e2_ours_retrieval	$P scripts/mh_arms.py --split train --header-rule v3.3u --alpha 0.7 --budget 20 --embed-model BAAI/bge-m3 --k-ladder 1,5,10,20 --dump-ranked 100 --cache-dir .cache/bgem3_20261006 --unit cell --template s3c --out-dir $S/enc_bgem3/retrieval --tag mh_train_s3c
+e2_ours_answer	$P scripts/answer_accuracy_mh.py --records $S/enc_bgem3/retrieval/mh_train_s3c_records.jsonl --scope doc --condition retrieved --split train --header-rule v3.3u --batch-size 128 --same-queries-as $IDS --reader $MAIN --quiet-accuracy --out $S/enc_bgem3/ours_answer.jsonl --resume
+e2_langchain_retrieve	$P scripts/baselines/langchain_chunk.py --stage retrieve --out-dir $S/enc_bgem3/langchain_chunk --embed-model BAAI/bge-m3
+e2_langchain_answer	$P scripts/baselines/langchain_chunk.py --stage answer --limit 200 --out-dir $S/enc_bgem3/langchain_chunk --reader $MAIN --resume
+l2_raptor	$P scripts/baselines/raptor.py --out-dir $S/llm_qwen17/raptor --limit 200 --reader $L2 --resume
+e2_yu_retrieve	$P scripts/baselines/tablerag_yu.py --out-dir $S/enc_bgem3/tablerag_yu --stage retrieve --embed-model BAAI/bge-m3 --cache-dir .cache/tablerag_yu_bgem3 --resume
+e2_yu_answer	$P scripts/baselines/tablerag_yu.py --out-dir $S/enc_bgem3/tablerag_yu --stage answer --answer-ids $IDS --embed-model BAAI/bge-m3 --cache-dir .cache/tablerag_yu_bgem3 --embed-device cpu --resume
+e2_raptor	$P scripts/baselines/raptor.py --out-dir $S/enc_bgem3/raptor --limit 200 --embed-model BAAI/bge-m3 --embed-device cpu --resume
+l2_chen	$P scripts/baselines/tablerag_chen.py --out-dir $S/llm_qwen17/tablerag_chen --limit 200 --max-tokens 512 --reader $L2 --resume
+e2_chen	$P scripts/baselines/tablerag_chen.py --out-dir $S/enc_bgem3/tablerag_chen --limit 200 --max-tokens 512 --embed-model BAAI/bge-m3 --db-dir .cache/tablerag_chen_bgem3/db --embed-device cpu --resume

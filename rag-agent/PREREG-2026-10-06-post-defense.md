@@ -1,0 +1,55 @@
+# 사전등록: 심사 후 보완 실험 — 2026-10-06, 실행 전
+
+## 배경 (심사 2026-10-01 지적, 사용자 전달 2026-10-06)
+- 김명호: ② 전달 셀 수 k 근거 — "1위 정밀도가 높으면 k=1 에서 답변 정확도를 재면 되지 않나". ③ LLM 2종·인코더 2종으로 모든 정확도 결과의 robustness.
+- 김영종: ① Yu 대비 유의성·채점 기준 타당성. ③ 양자화 모델 선례 / 작은 모델 또는 양자화 없는 Qwen.
+- 사용자 결정(2026-10-06): 연구실 GPU 없음, 집 GPU 8GB(RTX 3060 Ti) → **양자화 없이 올라가는 가벼운 모델**을 둘째 LLM 으로 쓴다.
+  882문항은 **4시간 세션**으로 나눠 돌리고 문항 단위로 저장해 잇는다. 표기(김영종 ②)는 글 작업으로 뒤에, 한국어 표 데이터셋(최지용 ③)은 AI Hub 승인 뒤 별도 사전등록.
+
+## 공통 조건 (고정)
+- 주 설정은 원고 그대로: 셀 문장 s3c, 머리글 규칙 v3.3u, bge-base-en-v1.5, 하이브리드 α 0.7, 상위 20셀, Qwen3-8B NF4 4비트 비생각 greedy cot 384토큰.
+- 문항: 답변 200(`baselines/ids200.jsonl`, 조회 116/산술 84), 검색 2,885. 검증 집합 332 는 A 에만.
+- 채점: 공식 EM 과 형식 허용 채점(`results/lenient_rescore_20260930/rescore.py` 의 규칙) 둘 다 계산. **주 판정은 형식 허용(원고 4.2.2)**. 규칙은 결과를 보고 바꾸지 않는다.
+- 판정: 같은 문항 McNemar 정확검정. 조건별로 보고하고 보정은 하지 않는다(탐색이 아니라 반복 확인이므로).
+- 실행 방식: `results/post_defense_20261006/session.sh [시간]` 이 `jobs.txt` 를 순서대로 돌린다. 마감에 걸린 작업은 SIGINT 로 끊고 다음 세션이 같은 인자 `--resume` 으로 잇는다.
+  모든 작업은 문항(또는 문서 트리) 단위로 저장하므로 끊김은 결과에 영향이 없다(잘린 마지막 행은 각 스크립트의 resume 규칙대로 버리거나 다시 만든다).
+- 코드 변경(이 문서와 같은 커밋): LangChain `--out-dir/--records/--reader/--embed-model/--resume`, RAPTOR `--resume/--embed-device`, Chen `--reader/--embed-model/--db-dir`, Yu `--embed-device`, Chen 로컬 백엔드가 `?quantization=none` 을 읽음. 기본값은 모두 기존 실행과 같다.
+
+## A. 검증 집합 k=1·3 답변 (김명호 ②)
+- 조건: dev 332, `mh_dev_s3c_b50` 기록의 앞 k 셀(`dev_k_cut.py`, dev_k2.sh 의 cut_k 와 같음), 리더·프롬프트는 dev k 사다리(5~75)와 동일.
+- 이미 있는 수치(정답 셀 전부 포함 비율, dev 332): k=1 3.3%, k=3 37.7%, k=5 53.6%, k=10 73.5%, k=20 87.4%.
+- 예측: 형식 허용 정답 수 k=1 < k=3 < k=5(130) < k=20(152). k=1 대 k=20 은 우연이 아니다(p<.001).
+- 쓰임: 원고 3.3.4 의 k 문단에 k=1·3 수치를 덧붙인다. k 선택 규칙·k=20 은 바꾸지 않는다.
+
+## B. Yu 882 답변 (김영종 ①)
+- 조건: 기존 200 결과(`baselines/tablerag_yu/tablerag_yu_answer.jsonl`)에 같은 설정·같은 out-dir 로 682 문항을 `--resume` 으로 더한다. 본 방법 882(`cap300_20260924/cell_uniq.jsonl`)·LangChain 882 는 있다. RAPTOR·Chen 은 200 유지(원고 표 4-7 은 200 그대로).
+- 판정: 882 쌍 McNemar, 형식 허용(주)·공식 EM·DocMath 수치 허용 셋 다 보고(부록).
+- 예측: 형식 허용에서 본 방법 > Yu. 200 의 불일치 비율(28:16)이 유지되면 882 에서 p<.05. 유지되지 않으면 그대로 보고한다 — 채점 규칙으로 유의성을 만들지 않는다.
+
+## C. 둘째 LLM — Qwen3-1.7B bf16, 양자화 없음 (김명호 ③·김영종 ③)
+- 선택 이유: 8GB 에 양자화 없이 올라가는 Qwen3 계열(가중치 3.4GB). Qwen3-8B bf16(16GB)·8비트(9GB)·Qwen3-4B bf16(8GB)은 안 올라간다.
+- 조건: 5방법 × 200, 검색은 bge-base 그대로, LLM 만 교체. 본 방법은 같은 문맥(`--same-contexts-as`), LangChain 은 기존 레코드로 답변만, RAPTOR 는 요약도 LLM 이므로 트리 재생성(새 out-dir), Chen·Yu 는 파이프라인 전체(새 out-dir, Chen 표 임베딩 캐시는 같은 인코더라 재사용).
+- 예측: 모든 방법의 절대 정확도 하락. 본 방법 − LangChain·RAPTOR·Chen 의 부호 유지, 각각 우연 아님. Yu 는 SQL 생성이 작은 모델에서 더 어려워 본 방법 ≥ Yu.
+- 셋째 LLM(다른 계열: Llama-3.2-3B-Instruct bf16 6.4GB, 접근 불가면 SmolLM3-3B bf16 6.2GB)은 사용자 확인 뒤 같은 절차로 추가하고 이 문서에 추기한다.
+
+## D. 둘째 인코더 — bge-m3 (김명호 ③)
+- 선택 이유: 다른 구조·크기(XLM-R large 568M, 1024차원, 다국어)이고 접두어가 없어 모든 비교군 코드 경로(CLS 풀링)가 그대로 맞는다. Yu 원논문의 인코더이기도 하다. 한국어 표 실험에도 다시 쓴다.
+- 조건: 5방법 검색 2,885(본 방법·LangChain·Yu 1회차)·RAPTOR·Chen 200 + 답변 200(주 LLM). 임베딩 캐시는 인코더별 새 디렉터리(`.cache/bgem3_20261006`, `.cache/tablerag_yu_bgem3`, `.cache/tablerag_chen_bgem3`) — 세 캐시 모두 파일 이름에 모델이 없어 섞이면 안 된다.
+  리더와 같은 프로세스에 올리는 단계(Yu 답변·RAPTOR·Chen)는 인코더를 CPU 에 둔다(fp32 2.2GB + 4비트 리더 5.5GB 가 8GB 를 넘는다).
+- 예측: 본 방법 R@20 은 bge-base 대비 ±3%p 안, 셀 정밀도는 단위가 셀이라 거의 같음, 비교군 대비 순위 유지. 답변 ±5%p 안.
+
+## 판정 규칙 (결과 전 고정)
+- "robust" = C·D 각 조건에서 본 방법 − LangChain / RAPTOR / Chen 의 부호가 주 설정과 같고 우연이 아님(p<.05). Yu 는 수치 그대로 적는다.
+- 어떤 결과든 원고에 싣는다. 설정은 결과를 본 뒤 바꾸지 않는다. 비교군의 답변 표는 같은 200 문항·같은 방법으로 유지한다.
+
+## 순서·시간 추정 (jobs.txt)
+A(약 0.5h) → C 본 방법·LangChain(0.3h) → B Yu 882(약 11h) → C Yu(2~3h) → D 본 방법·LangChain(1h) → C RAPTOR(2~4h) → D Yu(4~5h) → D RAPTOR(2~4h) → C Chen(5~10h) → D Chen(8~13h). 합계 약 40~55 GPU 시간 = 4시간 세션 10~14회.
+
+## 산출물
+- `results/post_defense_20261006/{dev_k, llm_qwen17, enc_bgem3}/`, 작업 로그 `logs/<작업>.log`, 세션 로그 `session_*.log`, 완료 목록 `done.txt`, 실패 목록 `failed.txt`.
+- 집계 스크립트는 결과가 모이면 `summarize.py` 로 추가한다(형식 허용 재채점은 기존 rescore.py 규칙 함수 재사용).
+
+## 부록 — vendor 패치 (vendor/ 는 .gitignore 라 여기 기록)
+`vendor/table_rag/agent/local_backend.py` `LocalQwen.__init__`: `LocalQwenLLM(model_name=model_name, quantization="4bit")` →
+`name, kw = _split_spec(model_name); LocalQwenLLM(model_name=name, **{"quantization": "4bit", **kw})` (`rag_agent.llm.factory._split_spec`).
+기본 동작(사양에 `?quantization=` 이 없으면 4비트)은 그대로이므로 기존 Chen 결과의 재현에는 영향이 없다.

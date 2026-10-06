@@ -36,6 +36,7 @@ from mh_arms import (NO_TITLE, OFFICIAL_REPO, OFFICIAL_REV, build_tables,  # noq
 from rag_agent.eval.artifacts import digest, file_digest, provenance   # noqa: E402
 from rag_agent.eval.multihiertt_em import mh_exact_match, self_check   # noqa: E402
 from rag_agent.eval.multihiertt_f1 import mh_f1                        # noqa: E402
+from rag_agent.llm.factory import _split_spec                          # noqa: E402
 from rag_agent.serialization.chunks import markdown_source             # noqa: E402
 
 # 튜토리얼 rlm/rag-prompt 원문. 마지막 문장(Final answer 표시)만 이 저장소의 채점 규약을 위해 덧붙였다.
@@ -75,7 +76,7 @@ def retrieve(a):
     from transformers import AutoTokenizer
     from rag_agent.retrieve.encoders import default_encoder
 
-    enc = default_encoder(model_name=EMBED)
+    enc = default_encoder(model_name=a.embed_model)
 
     class BGE(Embeddings):                                              # 본 방법과 같은 인코더·접두어
         def embed_documents(self, texts):
@@ -100,8 +101,9 @@ def retrieve(a):
         queries = sorted((q for q in queries if q["uid"] in set(want)), key=lambda q: q["uid"])
     print(f"[pop] {len(queries)} queries (제외 {dict(skipped)})", flush=True)
 
-    out = OUT / "langchain_chunk_records.jsonl"
-    OUT.mkdir(parents=True, exist_ok=True)
+    out_dir = Path(a.out_dir)
+    out = out_dir / "langchain_chunk_records.jsonl"
+    out_dir.mkdir(parents=True, exist_ok=True)
     if out.exists():
         raise SystemExit(f"{out} 있음 — 덮어쓰지 않는다")
     recs, t0, n_chunks = [], time.time(), 0
@@ -150,7 +152,7 @@ def retrieve(a):
                                                                  for x in v) / len(v), 1)}
                             for k, v in sorted(by.items())},
                "records_sha256": file_digest(out)}
-    (OUT / "langchain_chunk.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    (out_dir / "langchain_chunk.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({k: v for k, v in summary.items() if k != "provenance"}, ensure_ascii=False, indent=2))
 
 
@@ -164,7 +166,9 @@ def answer(a):
             return self.tokenizer.apply_chat_template([{"role": "user", "content": user}], tokenize=False,
                                                       add_generation_prompt=True, enable_thinking=False)
 
-    recs = {r["query_id"]: r for r in map(json.loads, open(OUT / "langchain_chunk_records.jsonl", encoding="utf-8"))}
+    out_dir = Path(a.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    recs = {r["query_id"]: r for r in map(json.loads, open(a.records or out_dir / "langchain_chunk_records.jsonl", encoding="utf-8"))}
     want = [json.loads(l)["query_id"] for l in open(SUBSET, encoding="utf-8")]
     want = want[:a.limit] if a.limit else want
     missing = [q for q in want if q not in recs]
@@ -175,16 +179,22 @@ def answer(a):
     check = self_check([answers[r["query_id"]] for r in rows_in], [r["kind"] == "arith" for r in rows_in])
     print(f"[scorer] gold 를 예측으로 넣었을 때 EM={check['em']} (n={check['n']})", flush=True)
 
-    out = OUT / "langchain_chunk_answer.jsonl"
+    out = out_dir / "langchain_chunk_answer.jsonl"
+    done = {}
     if out.exists():
-        raise SystemExit(f"{out} 있음 — 덮어쓰지 않는다")
-    llm = UserOnly(model_name=READER, quantization="4bit")
+        if not a.resume:
+            raise SystemExit(f"{out} 있음 — 덮어쓰지 않는다(--resume)")
+        done = {r["query_id"]: r for r in map(json.loads, open(out, encoding="utf-8"))}
+        print(f"[resume] 저장된 {len(done)}건 건너뜀", flush=True)
+    name, kw = _split_spec(a.reader.removeprefix("local:"))      # "Qwen/Qwen3-1.7B?quantization=none" 도 받는다
+    llm = UserOnly(model_name=name, **{"quantization": "4bit", **kw})
     torch.manual_seed(SEED)
     limit = llm.context_limit
-    rows, t0 = [], time.time()
-    with out.open("x", encoding="utf-8", newline="\n") as stream:
-        for s in range(0, len(rows_in), BATCH):
-            batch, t = rows_in[s:s + BATCH], time.time()
+    rows, t0 = [done[r["query_id"]] for r in rows_in if r["query_id"] in done], time.time()
+    pending = [r for r in rows_in if r["query_id"] not in done]
+    with out.open("a", encoding="utf-8", newline="\n") as stream:
+        for s in range(0, len(pending), BATCH):
+            batch, t = pending[s:s + BATCH], time.time()
             users = [PROMPT.format(instr=RAG_PROMPT + MARKER, question=r["question"], context=r["context"]) for r in batch]
             n_toks = [llm.n_prompt_tokens("", u) for u in users]
             for n in n_toks:
@@ -224,7 +234,7 @@ def answer(a):
                                 "input_tokens_mean": round(sum(x["n_tok"] for x in v) / len(v), 1)}
                             for k, v in sorted(by.items())},
                "records_sha256": file_digest(out)}
-    (OUT / "langchain_chunk_answer.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    (out_dir / "langchain_chunk_answer.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({k: v for k, v in summary.items() if k not in ("provenance", "reader_details")},
                      ensure_ascii=False, indent=2))
 
@@ -234,6 +244,12 @@ def main():
     ap.add_argument("--stage", required=True, choices=["retrieve", "answer"])
     ap.add_argument("--limit", type=int, default=0,
                     help="0 = 검색 2,885 전부·답변 882 부분집합. N = 882 부분집합(query_id 순)의 앞 N 건만 두 단계 모두")
+    ap.add_argument("--out-dir", default=str(OUT))
+    ap.add_argument("--records", default="", help="답변 단계가 읽을 검색 레코드(기본 <out-dir>/langchain_chunk_records.jsonl). "
+                                                "리더만 바꾼 재실행은 기존 레코드를 가리킨다")
+    ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit", help="답변 LLM 사양(local:<hf id>?quantization=4bit|none)")
+    ap.add_argument("--embed-model", default=EMBED)
+    ap.add_argument("--resume", action="store_true", help="답변 단계: 저장된 행은 건너뛰고 이어 쓴다")
     a = ap.parse_args()
     (retrieve if a.stage == "retrieve" else answer)(a)
 

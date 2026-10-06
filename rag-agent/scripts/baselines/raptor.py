@@ -270,11 +270,13 @@ def main() -> int:
     ap.add_argument("--batch-size", type=int, default=1, help="답변 생성 묶음(>1 이면 LocalQwenLLM.complete_batch)")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--dry-run", action="store_true", help="LLM 없이 문서·잎 청크·배달 가능 셀 통계만")
+    ap.add_argument("--resume", action="store_true", help="저장된 레코드의 query_id 는 건너뛰고 이어 쓴다(트리는 <tree-dir> 캐시, 답변은 원래부터 이어 씀)")
+    ap.add_argument("--embed-device", default=None, help="인코더 장치(기본 자동=cuda). 리더와 같이 올려 GPU 가 모자라면 cpu")
     a = ap.parse_args()
     out = Path(a.out_dir)
     tree_dir = Path(a.tree_dir) if a.tree_dir else out / "trees"
     rec_path = out / "raptor_records.jsonl"
-    if rec_path.exists() and not a.dry_run:
+    if rec_path.exists() and not (a.dry_run or a.resume):
         raise SystemExit(f"{rec_path} 가 있다 — 새 --out-dir")
     logging.getLogger().setLevel(logging.WARNING)      # vendor 코드의 INFO 로그를 줄인다
 
@@ -323,7 +325,7 @@ def main() -> int:
     from rag_agent.retrieve.encoders import default_encoder
     import torch
     torch.manual_seed(a.seed)
-    enc = default_encoder(model_name=a.embed_model)
+    enc = default_encoder(model_name=a.embed_model, **({"device": a.embed_device} if a.embed_device else {}))
     llm = build_llm(a.reader)
     summarizer = QwenSummarizer(llm)
     config = ClusterTreeConfig(
@@ -335,8 +337,16 @@ def main() -> int:
     # 1) 트리 + collapsed-tree 검색 레코드
     out.mkdir(parents=True, exist_ok=True)
     entries, rows, t0 = {}, [], time.time()
-    with rec_path.open("w", encoding="utf-8") as stream:
+    done = set()
+    if a.resume and rec_path.exists():
+        saved = [json.loads(l) for l in rec_path.open(encoding="utf-8")]
+        done = {x["query_id"] for x in saved}
+        rows = [x for x in saved if "excluded" not in x]
+        print(f"[resume] 저장된 레코드 {len(done)}건 건너뜀(트리 통계는 이번 실행에서 만든 트리만)", flush=True)
+    with rec_path.open("a" if a.resume else "w", encoding="utf-8") as stream:
         for n, (q, r) in enumerate(recs.items(), 1):
+            if q in done:
+                continue
             key, text, cells = rendered[q]
             if q in excluded:
                 stream.write(json.dumps({"query_id": q, "excluded": excluded[q]}) + "\n")

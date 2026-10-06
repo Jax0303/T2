@@ -539,7 +539,7 @@ def main() -> int:
     key = digest(texts)[:16]
     # strict_no_k 는 질문의 문서 행만 읽으므로 조각을 메모리 매핑한다 — train 전체 행렬(약 3GB)을
     # 이 상자 RAM 에 올리지 않는다. 다른 모드는 예전 그대로 한 행렬에 채운다.
-    emb = None if no_k else np.empty((len(texts), 768), dtype=np.float32)
+    emb = None                       # 차원은 첫 조각에서 읽는다(bge-base 768, bge-m3 1024)
     shards = []
     for s in range(0, len(texts), a.shard):
         f = cache / f"{a.unit}_{len(texts)}_{key}_{s}.npy"
@@ -555,6 +555,8 @@ def main() -> int:
         if no_k:
             shards.append(v)
         else:
+            if emb is None:
+                emb = np.empty((len(texts), v.shape[1]), dtype=np.float32)
             emb[s:s + len(v)] = v
         del v
     mix_info = None
