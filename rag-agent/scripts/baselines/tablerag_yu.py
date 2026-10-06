@@ -22,6 +22,10 @@ import argparse
 import importlib.util
 import json
 import os
+
+# 882 답변에서 예약 메모리가 11.3GiB 까지 자라 WSL 이 시스템 RAM 으로 넘기며 문항당 62초→182초로 느려졌다(2026-10-06 세션 1).
+# 조각화를 줄이고(expandable_segments) 문항마다 캐시를 비운다. 결과(출력)에는 영향이 없다.
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 import random
 import re
 import sqlite3
@@ -466,6 +470,7 @@ def main() -> int:
             fans.flush()
             print(f"  {n}/{len(todo)} {qid[:8]} rounds={len(trace['rounds'])} calls={chat.n_calls - calls0} "
                   f"sql_err={n_err} pred={answer!r} {seconds}s", flush=True)
+            torch.cuda.empty_cache()
     return 0
 
 

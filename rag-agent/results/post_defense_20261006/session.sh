@@ -7,7 +7,7 @@ cd "$(dirname "$0")/../.." || exit 1
 export PYTHONPATH=. HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0
 export P=.venv/bin/python S=results/post_defense_20261006 B=results/mh_only_20260928/baselines
 export IDS=results/mh_only_20260928/baselines/ids200.jsonl
-export MAIN="local:Qwen/Qwen3-8B?quantization=4bit" L2="local:Qwen/Qwen3-1.7B?quantization=none"
+export MAIN="local:Qwen/Qwen3-8B?quantization=4bit" L2="local:Qwen/Qwen3-1.7B?quantization=none" L3="local:meta-llama/Llama-3.2-3B-Instruct?quantization=none"
 H=${1:-4}; deadline=$(( $(date +%s) + H*3600 ))
 mkdir -p $S/logs; touch $S/done.txt $S/failed.txt
 log=$S/session_$(date +%Y%m%d_%H%M).log

@@ -21,5 +21,11 @@ l2_raptor	$P scripts/baselines/raptor.py --out-dir $S/llm_qwen17/raptor --limit 
 e2_yu_retrieve	$P scripts/baselines/tablerag_yu.py --out-dir $S/enc_bgem3/tablerag_yu --stage retrieve --embed-model BAAI/bge-m3 --cache-dir .cache/tablerag_yu_bgem3 --resume
 e2_yu_answer	$P scripts/baselines/tablerag_yu.py --out-dir $S/enc_bgem3/tablerag_yu --stage answer --answer-ids $IDS --embed-model BAAI/bge-m3 --cache-dir .cache/tablerag_yu_bgem3 --embed-device cpu --resume
 e2_raptor	$P scripts/baselines/raptor.py --out-dir $S/enc_bgem3/raptor --limit 200 --embed-model BAAI/bge-m3 --embed-device cpu --resume
+# --- PREREG-2026-10-06-post-defense.md 추기 C-2: 셋째 LLM Llama-3.2-3B-Instruct bf16 (연기 시험 통과 2026-10-06 20:0x)
+l3_ours_answer	$P scripts/answer_accuracy_mh.py --records results/mh_arms/mh_train_cell_hv3.3u_none_doc_records.jsonl --scope doc --condition retrieved --split train --header-rule v3.3u --batch-size 128 --same-contexts-as $IDS --reader $L3 --quiet-accuracy --out $S/llm_llama3b/ours_answer.jsonl --resume
+l3_langchain_answer	$P scripts/baselines/langchain_chunk.py --stage answer --limit 200 --out-dir $S/llm_llama3b/langchain_chunk --records $B/langchain_chunk/langchain_chunk_records.jsonl --reader $L3 --resume
+l3_yu_answer	$P scripts/baselines/tablerag_yu.py --out-dir $S/llm_llama3b/tablerag_yu --stage answer --answer-ids $IDS --reader $L3 --embed-device cpu --resume
+l3_raptor	$P scripts/baselines/raptor.py --out-dir $S/llm_llama3b/raptor --limit 200 --reader $L3 --embed-device cpu --resume
+l3_chen	$P scripts/baselines/tablerag_chen.py --out-dir $S/llm_llama3b/tablerag_chen --limit 200 --max-tokens 512 --reader $L3 --embed-device cpu --resume
 l2_chen	$P scripts/baselines/tablerag_chen.py --out-dir $S/llm_qwen17/tablerag_chen --limit 200 --max-tokens 512 --reader $L2 --resume
 e2_chen	$P scripts/baselines/tablerag_chen.py --out-dir $S/enc_bgem3/tablerag_chen --limit 200 --max-tokens 512 --embed-model BAAI/bge-m3 --db-dir .cache/tablerag_chen_bgem3/db --embed-device cpu --resume
