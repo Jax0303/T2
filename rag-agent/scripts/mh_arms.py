@@ -386,7 +386,7 @@ def main() -> int:
     ap.add_argument("--row-text", default="values", choices=["sentence", "values"],
                     help="--unit row/rowcol/randrow: values = 발표된 단위(값만), sentence = 우리 셀 문장을 이어 붙인 변형. "
                          "2026-09-25 기본값을 values 로 — 09-18 MH 실행이 지정을 빠뜨려 sentence 로 돌았다")
-    ap.add_argument("--cell-text", default="ours", choices=["ours", "table_description", "value"],
+    ap.add_argument("--cell-text", default="ours", choices=["ours", "table_description", "value", "leaf"],
                     help="--unit cell: table_description = 셀 문장을 데이터셋의 table_description 문장으로 바꾼다. "
                          "그 문장이 없는 셀은 --template 문장 그대로 (PREREG-2026-09-28-table-description.md). "
                          "value = 색인(dense·BM25)만 셀 값으로, 리더 입력은 --template 문장 그대로 (PREREG-2026-09-29-header-ablation.md)")
@@ -449,7 +449,7 @@ def main() -> int:
     if a.threshold_from and not no_k:
         ap.error("--threshold-from is only for strict_no_k")
     if a.cell_text != "ours" and (a.unit != "cell" or a.label_mix is not None):
-        ap.error("--cell-text table_description: --unit cell only, without --label-mix")
+        ap.error("--cell-text table_description/value/leaf: --unit cell only, without --label-mix")
     if a.label_mix is not None and (no_k or a.unit != "cell" or not 0 <= a.label_mix <= 1):
         ap.error("--label-mix: --unit cell, not strict_no_k, 0..1")
     if no_k and (a.unit == "rowcol" or (a.split == "test" and not a.threshold_from)):
@@ -492,6 +492,16 @@ def main() -> int:
         ctx_texts = list(texts)
         texts = [str(tables[c[0]].table.data[c[1]][c[2]]) for (c,) in covers]
         print(f"[cell-text] value {len(texts)} (예: {texts[:3]})", flush=True)
+    if a.cell_text == "leaf":
+        # 계층 경로 중 마지막 머리글만 색인("행 잎 > 열 잎: 값") — 상위 머리글의 기여 분리(PREREG-2026-10-06-claim-chain.md A).
+        # value 와 같이 색인 텍스트만 바꾸고 리더 입력은 본 방법 문장 그대로 둔다. 빈 경로는 빈 문자열.
+        ctx_texts = list(texts)
+        def leaf(c):
+            t = tables[c[0]].table
+            rp, cp = t.row_path(c[1]), t.col_path(c[2])
+            return f"{rp[-1] if rp else ''} > {cp[-1] if cp else ''}: {t.data[c[1]][c[2]]}"
+        texts = [leaf(c) for (c,) in covers]
+        print(f"[cell-text] leaf {len(texts)} (예: {texts[:3]}; 서로 다른 문장 {len(set(texts))})", flush=True)
     if a.cell_text == "table_description":
         # 키 "{표}-{행}-{열}" = 펼친 격자 좌표 = cell_id 의 '::' 뒤. 색인 셀 집합(covers)은 그대로다.
         descs = {u: json.loads(d[1]) if isinstance(d[1], str) else d[1] for u, d in docs.items()}

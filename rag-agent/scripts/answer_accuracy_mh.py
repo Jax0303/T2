@@ -15,6 +15,8 @@ HiTab 쪽 EM 과 **섞어 평균 내지 않는다** — 채점기가 다르다.
   fulltable  검색 없이 문서의 표 전부.
   rowexp     검색이 고른 셀이 속한 행 전체 + 열 머리글 경로(리더 입력 형식 조건, PREREG-2026-09-27-reader-format.md).
              검색은 retrieved 와 같다. 셀 문장이 문서 안에서 유일한 레코드(s3c 셀, 머리글 v3.3u)에서만 쓴다.
+  subtable   검색이 고른 셀 그대로(같은 20셀)를 행·열 머리글 경로가 붙은 마크다운 부분 표로(형식 효과, PREREG-2026-10-06-claim-chain.md B1).
+  fullcells  검색 없이 문서의 모든 셀 문장(범위 효과, 같은 문서 B2). rowexp 와 같은 레코드 조건.
 
 저장과 재개: 문항마다 결과 행을 즉시 쓰고, 실행 조건(질의 id·순서, 문맥 해시, 모델 revision, 프롬프트,
 생성 설정, 코드 해시)을 `<out>.run.json` 에 남긴다. 중단되면 같은 명령에 --resume 을 붙여 남은 문항만
@@ -104,20 +106,29 @@ def full_tables(split, header_rule="v1", label_rule="none"):
     return out
 
 
-def rowexp_contexts(scored, scope, split, header_rule, label_rule, keep_hybrid):
-    """{질의: (행 확장 줄, 셀 수)} — 레코드의 셀 문장을 다시 만든 셀 문장과 맞춰 셀 좌표를 찾는다(문서 안 유일)."""
+def rowexp_contexts(scored, scope, split, header_rule, label_rule, keep_hybrid, mode="rowexp"):
+    """{질의: (줄들, 셀 수)} — 레코드의 셀 문장을 다시 만든 셀 문장과 맞춰 셀 좌표를 찾는다(문서 안 유일).
+    mode: rowexp(행 확장) / subtable(같은 셀만 부분 표) / fullcells(문서의 모든 셀 문장, 말뭉치 순서)."""
     from types import SimpleNamespace
-    from retrieval_accuracy import build_corpus, row_expand_context
+    from retrieval_accuracy import build_corpus, row_expand_context, subtable_context
     _q, docs, _ = load_population(split, keep_hybrid=keep_hybrid)
     tables, _ = build_tables({u: docs[u] for u in {r["query_id"] for r in scored}}, header_rule, label_rule)
     texts, covers, _, unit_tids, _ = build_corpus("", sorted(tables), "s3c", "cell", {}, load=lambda t, _d: tables.get(t))
-    where = {}
+    where, by_uid = {}, defaultdict(list)
     for txt, cov, tid in zip(texts, covers, unit_tids):
         key = (tid.split("::")[0], txt)
         if key in where:
             raise SystemExit(f"rowexp: 문서 안에 같은 셀 문장이 있다 ({key[0]})")
         where[key] = next(iter(cov))
+        by_uid[key[0]].append(txt)
     tabs = {t: SimpleNamespace(table=v.table, title="") for t, v in tables.items()}
+    if mode == "fullcells":
+        return {r["query_id"]: (by_uid[r["query_id"]], len(by_uid[r["query_id"]])) for r in scored}
+    if mode == "subtable":
+        def sub(cells):
+            units = subtable_context(sorted(cells), tabs, "", {}, header_mode="path")
+            return [ln for u in units for ln in u["text"].split("\n") if ln.strip() != "#"], len(cells)
+        return {r["query_id"]: sub([where[(r["query_id"], s)] for s in r[scope]["context"]]) for r in scored}
     return {r["query_id"]: row_expand_context([where[(r["query_id"], s)] for s in r[scope]["context"]], tabs, {})
             for r in scored}
 
@@ -202,7 +213,7 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--records", required=True)
     ap.add_argument("--scope", default="doc", choices=["doc", "corpus", "table"])
-    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold", "fulltable", "rowexp"])
+    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold", "fulltable", "rowexp", "subtable", "fullcells"])
     # 기본값 = 채택 설정 (PREREG-2026-09-13-reader-qwen3.md, 재확인 PREREG-2026-09-23-reader-thinking-pilot.md).
     # 2026-09-21 실행 15개가 옛 기본값(neutral, 64)으로 돌아 채택 설정이 아닌 수치를 낸 전례가 있다.
     ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit")
@@ -303,12 +314,12 @@ def main() -> int:
 
     full = full_tables(a.split, a.header_rule, a.label_rule) if a.condition == "fulltable" else None
     rowexp = None
-    if a.condition == "rowexp":
+    if a.condition in ("rowexp", "subtable", "fullcells"):
         args = meta.get("arguments", {})
         if (meta.get("unit"), meta.get("template"), args.get("header_rule"), args.get("label_rule")) != \
                 ("cell", "s3c", a.header_rule, a.label_rule):
             raise SystemExit("rowexp: 레코드가 s3c 셀 검색이 아니거나 머리글·라벨 규칙이 --header-rule/--label-rule 과 다르다")
-        rowexp = rowexp_contexts(scored, a.scope, a.split, a.header_rule, a.label_rule, bool(args.get("keep_hybrid")))
+        rowexp = rowexp_contexts(scored, a.scope, a.split, a.header_rule, a.label_rule, bool(args.get("keep_hybrid")), a.condition)
     ctxs = {r["query_id"]: (gold_context(gold[r["query_id"]], tables) if a.condition == "gold"
                             else full[r["query_id"]] if full is not None
                             else rowexp[r["query_id"]][0] if rowexp is not None
@@ -365,7 +376,7 @@ def main() -> int:
             row = {"query_id": r["query_id"], "layer": r["layer"], "kind": r["kind"],
                    "m": r["m"], "question": r["question"],
                    # 표 전체는 정의상 근거를 전부 담는다
-                   "retrieval_correct": 1 if full is not None else r[a.scope]["correct"],
+                   "retrieval_correct": 1 if (full is not None or a.condition == "fullcells") else r[a.scope]["correct"],
                    "answer_correct": int(mh_exact_match(pred, r["answer"], r["kind"] == "arith")),
                    "answer_correct_docmath": int(docmath_match(pred, r["answer"], r["kind"] == "arith")),
                    "n_ctx": len(ctx), "n_tok": n_tok,
