@@ -2,6 +2,7 @@
 
 입력 내용만 본 방법(cell_uniq 882 답변과 같은 셀 문장), 지시문·프롬프트 틀·system 없음은 langchain_chunk.py 그대로.
 """
+import argparse
 import json
 import os
 import sys
@@ -28,6 +29,12 @@ OUT = ROOT / "results/cell_tutorial_prompt_20260930"
 
 
 def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--ids", default=str(IDS), help="문항 목록 jsonl(query_id). 882 = results/mh_arms/cap300_20260924/cell_uniq.jsonl")
+    ap.add_argument("--out-dir", default=str(OUT))
+    ap.add_argument("--resume", action="store_true", help="answer.jsonl 의 저장된 행은 건너뛰고 이어 쓴다")
+    a = ap.parse_args()
+    out_dir = Path(a.out_dir)
     import torch
     from rag_agent.llm.local_qwen import LocalQwenLLM
 
@@ -39,7 +46,7 @@ def main():
 
     recs = read_records(RECORDS)
     ours = {r["query_id"]: r for r in map(json.loads, open(OURS, encoding="utf-8"))}
-    want = [json.loads(l)["query_id"] for l in open(IDS, encoding="utf-8") if l.strip()]
+    want = [json.loads(l)["query_id"] for l in open(a.ids, encoding="utf-8") if l.strip()]
     rows_in = [recs[q] for q in want]
     bad = [r["query_id"] for r in rows_in if digest(r["doc"]["context"]) != ours[r["query_id"]]["context_sha256"]]
     if bad:
@@ -49,16 +56,21 @@ def main():
     check = self_check([answers[r["query_id"]] for r in rows_in], [r["kind"] == "arith" for r in rows_in])
     print(f"[scorer] gold 를 예측으로 넣었을 때 EM={check['em']} (n={check['n']})", flush=True)
 
-    OUT.mkdir(exist_ok=True)
-    out = OUT / "answer.jsonl"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / "answer.jsonl"
+    done = {}
     if out.exists():
-        raise SystemExit(f"{out} 있음 — 덮어쓰지 않는다")
+        if not a.resume:
+            raise SystemExit(f"{out} 있음 — 덮어쓰지 않는다(--resume)")
+        done = {r["query_id"]: r for r in map(json.loads, open(out, encoding="utf-8"))}
+        print(f"[resume] 저장된 {len(done)}건 건너뜀", flush=True)
     llm = UserOnly(model_name=READER, quantization="4bit")
     torch.manual_seed(SEED)
-    rows, t0 = [], time.time()
-    with out.open("x", encoding="utf-8", newline="\n") as stream:
-        for s in range(0, len(rows_in), BATCH):
-            batch, t = rows_in[s:s + BATCH], time.time()
+    rows, t0 = [done[r["query_id"]] for r in rows_in if r["query_id"] in done], time.time()
+    pending = [r for r in rows_in if r["query_id"] not in done]
+    with out.open("a", encoding="utf-8", newline="\n") as stream:
+        for s in range(0, len(pending), BATCH):
+            batch, t = pending[s:s + BATCH], time.time()
             users = [PROMPT.format(instr=RAG_PROMPT + MARKER, question=r["question"],
                                    context="\n".join(r["doc"]["context"])) for r in batch]
             n_toks = [llm.n_prompt_tokens("", u) for u in users]
@@ -88,7 +100,7 @@ def main():
                "input_tokens_mean": round(sum(x["n_tok"] for x in rows) / len(rows), 1),
                "by_layer": {k: {"n": len(v), "correct": sum(v)} for k, v in sorted(by.items())},
                "scorer_self_check": check, "records_sha256": file_digest(out), "provenance": provenance(ROOT)}
-    (OUT / "answer.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    (out_dir / "answer.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

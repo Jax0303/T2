@@ -17,6 +17,8 @@ HiTab 쪽 EM 과 **섞어 평균 내지 않는다** — 채점기가 다르다.
              검색은 retrieved 와 같다. 셀 문장이 문서 안에서 유일한 레코드(s3c 셀, 머리글 v3.3u)에서만 쓴다.
   subtable   검색이 고른 셀 그대로(같은 20셀)를 행·열 머리글 경로가 붙은 마크다운 부분 표로(형식 효과, PREREG-2026-10-06-claim-chain.md B1).
   fullcells  검색 없이 문서의 모든 셀 문장(범위 효과, 같은 문서 B2). rowexp 와 같은 레코드 조건.
+  noise      정답 셀 문장 + 검색 순위의 비정답 셀 문장 --noise-n 개(잡음 사다리, PREREG-2026-10-07-claims.md 4).
+             정답 위치는 --gold-pos(top/mid/bottom). 레코드는 ranked_units 100 개를 실은 것(retrieval_r100).
 
 저장과 재개: 문항마다 결과 행을 즉시 쓰고, 실행 조건(질의 id·순서, 문맥 해시, 모델 revision, 프롬프트,
 생성 설정, 코드 해시)을 `<out>.run.json` 에 남긴다. 중단되면 같은 명령에 --resume 을 붙여 남은 문항만
@@ -106,13 +108,15 @@ def full_tables(split, header_rule="v1", label_rule="none"):
     return out
 
 
-def rowexp_contexts(scored, scope, split, header_rule, label_rule, keep_hybrid, mode="rowexp"):
+def rowexp_contexts(scored, scope, split, header_rule, label_rule, keep_hybrid, mode="rowexp", noise=(20, "top")):
     """{질의: (줄들, 셀 수)} — 레코드의 셀 문장을 다시 만든 셀 문장과 맞춰 셀 좌표를 찾는다(문서 안 유일).
-    mode: rowexp(행 확장) / subtable(같은 셀만 부분 표) / fullcells(문서의 모든 셀 문장, 말뭉치 순서)."""
+    mode: rowexp(행 확장) / subtable(같은 셀만 부분 표) / fullcells(문서의 모든 셀 문장, 말뭉치 순서)
+          / noise(정답 셀 + 검색 순위의 비정답 셀 noise[0] 개, 정답 위치 noise[1])."""
     from types import SimpleNamespace
+    from mh_arms import cell_id
     from retrieval_accuracy import build_corpus, row_expand_context, subtable_context
     _q, docs, _ = load_population(split, keep_hybrid=keep_hybrid)
-    tables, _ = build_tables({u: docs[u] for u in {r["query_id"] for r in scored}}, header_rule, label_rule)
+    tables, hdr = build_tables({u: docs[u] for u in {r["query_id"] for r in scored}}, header_rule, label_rule)
     texts, covers, _, unit_tids, _ = build_corpus("", sorted(tables), "s3c", "cell", {}, load=lambda t, _d: tables.get(t))
     where, by_uid = {}, defaultdict(list)
     for txt, cov, tid in zip(texts, covers, unit_tids):
@@ -124,6 +128,22 @@ def rowexp_contexts(scored, scope, split, header_rule, label_rule, keep_hybrid, 
     tabs = {t: SimpleNamespace(table=v.table, title="") for t, v in tables.items()}
     if mode == "fullcells":
         return {r["query_id"]: (by_uid[r["query_id"]], len(by_uid[r["query_id"]])) for r in scored}
+    if mode == "noise":
+        n, pos = noise
+        sent = defaultdict(dict)                                   # 문서 -> 짧은 셀 id("표-행-열") -> 색인 문장
+        for (uid, txt), c in where.items():
+            sent[uid][cell_id(c, hdr).split("::", 1)[1]] = txt
+        out = {}
+        for r in scored:
+            s, gold_ids = sent[r["query_id"]], set(r["gold_ids"])
+            gold = [s[g] for g in r["gold_ids"]]
+            hard = [s[u[0]] for u in r[scope]["ranked_units"] if u[0] not in gold_ids][:n]
+            if len(hard) < n:
+                raise SystemExit(f"noise: 비정답 후보가 {n}개보다 적다 ({r['query_id']}: {len(hard)})")
+            h = len(hard) // 2
+            lines = {"top": gold + hard, "bottom": hard + gold, "mid": hard[:h] + gold + hard[h:]}[pos]
+            out[r["query_id"]] = (lines, len(lines))
+        return out
     if mode == "subtable":
         def sub(cells):
             units = subtable_context(sorted(cells), tabs, "", {}, header_mode="path")
@@ -179,6 +199,7 @@ def run_config(a, llm, details, ctxs):
             "reader_details": {k: v for k, v in details.items() if k != "chat_template"},
             "chat_template_sha256": digest(details.get("chat_template")),
             "prompt": a.prompt, "prompt_sha256": digest(PROMPTS[a.prompt]),
+            **({"noise_n": a.noise_n, "gold_pos": a.gold_pos} if a.condition == "noise" else {}),
             "max_new_tokens": a.max_tokens, "temperature": 0.0, "seed": a.seed, "batch_size": a.batch_size,
             "packages": provenance(ROOT)["packages"],
             "code_sha256": digest(code), "code_files": code}
@@ -213,7 +234,9 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--records", required=True)
     ap.add_argument("--scope", default="doc", choices=["doc", "corpus", "table"])
-    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold", "fulltable", "rowexp", "subtable", "fullcells"])
+    ap.add_argument("--condition", default="retrieved", choices=["retrieved", "gold", "fulltable", "rowexp", "subtable", "fullcells", "noise"])
+    ap.add_argument("--noise-n", type=int, default=20, help="noise: 정답 셀에 더하는 검색 순위의 비정답 셀 수")
+    ap.add_argument("--gold-pos", default="top", choices=["top", "mid", "bottom"], help="noise: 정답 셀 문장의 위치")
     # 기본값 = 채택 설정 (PREREG-2026-09-13-reader-qwen3.md, 재확인 PREREG-2026-09-23-reader-thinking-pilot.md).
     # 2026-09-21 실행 15개가 옛 기본값(neutral, 64)으로 돌아 채택 설정이 아닌 수치를 낸 전례가 있다.
     ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit")
@@ -314,12 +337,13 @@ def main() -> int:
 
     full = full_tables(a.split, a.header_rule, a.label_rule) if a.condition == "fulltable" else None
     rowexp = None
-    if a.condition in ("rowexp", "subtable", "fullcells"):
+    if a.condition in ("rowexp", "subtable", "fullcells", "noise"):
         args = meta.get("arguments", {})
         if (meta.get("unit"), meta.get("template"), args.get("header_rule"), args.get("label_rule")) != \
                 ("cell", "s3c", a.header_rule, a.label_rule):
             raise SystemExit("rowexp: 레코드가 s3c 셀 검색이 아니거나 머리글·라벨 규칙이 --header-rule/--label-rule 과 다르다")
-        rowexp = rowexp_contexts(scored, a.scope, a.split, a.header_rule, a.label_rule, bool(args.get("keep_hybrid")), a.condition)
+        rowexp = rowexp_contexts(scored, a.scope, a.split, a.header_rule, a.label_rule, bool(args.get("keep_hybrid")), a.condition,
+                                 (a.noise_n, a.gold_pos))
     ctxs = {r["query_id"]: (gold_context(gold[r["query_id"]], tables) if a.condition == "gold"
                             else full[r["query_id"]] if full is not None
                             else rowexp[r["query_id"]][0] if rowexp is not None
@@ -376,7 +400,7 @@ def main() -> int:
             row = {"query_id": r["query_id"], "layer": r["layer"], "kind": r["kind"],
                    "m": r["m"], "question": r["question"],
                    # 표 전체는 정의상 근거를 전부 담는다
-                   "retrieval_correct": 1 if (full is not None or a.condition == "fullcells") else r[a.scope]["correct"],
+                   "retrieval_correct": 1 if (full is not None or a.condition in ("fullcells", "noise")) else r[a.scope]["correct"],
                    "answer_correct": int(mh_exact_match(pred, r["answer"], r["kind"] == "arith")),
                    "answer_correct_docmath": int(docmath_match(pred, r["answer"], r["kind"] == "arith")),
                    "n_ctx": len(ctx), "n_tok": n_tok,
