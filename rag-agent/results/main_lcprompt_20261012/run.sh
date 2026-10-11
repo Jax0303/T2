@@ -13,7 +13,7 @@ with open(sys.argv[1]) as f, open(sys.argv[2], "x") as g:
         r = json.loads(l)
         g.write(json.dumps({"query_id": r["query_id"], "kind": r["kind"], "layer": r["layer"], "m": len(r["gold_ids"]),
                             "question": r["question"], "gold_ids": r["gold_ids"], "context": r["context_2000"],
-                            "correct": r["correct_2000"], "cells_in_context": len(r["cells_2000"])}, ensure_ascii=False) + "\n")
+                            "correct": r["correct_2000"], "cells_in_context": r["cells_2000"]}, ensure_ascii=False) + "\n")
 PY
 }
 echo "[start] $(date -Is) raptor200_lc"

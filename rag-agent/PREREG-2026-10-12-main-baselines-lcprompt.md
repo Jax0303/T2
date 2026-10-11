@@ -15,7 +15,7 @@
 ## 새 실행 (results/main_lcprompt_20261012/)
 1. **RAPTOR 200문항, LangChain 지시문.** 기존 RAPTOR 검색 결과(`baselines/raptor/raptor_records.jsonl`, 2,000토큰, 원래 코드의
    노드 결합 그대로)의 `context_2000` 을 `langchain_chunk.py --stage answer` 에 넣는다. 코드 변경 없음, 레코드 형식만 바꾼다
-   (`context ← context_2000`, `correct ← correct_2000`, `cells_in_context ← len(cells_2000)`, `m ← len(gold_ids)`).
+   (`context ← context_2000`, `correct ← correct_2000`, `cells_in_context ← cells_2000(이미 개수)`, `m ← len(gold_ids)`).
 2. **RAPTOR 882문항으로 확장.** `raptor.py --limit 882 --tree-dir baselines/raptor/trees`(트리 캐시 재사용, 없는 문서만 새로 만든다),
    `--batch-size 128`. 그 `context_2000` 으로 1과 같은 방법의 LangChain 지시문 답변. 원래 지시문 답변은 같이 생기지만 주 결과가 아니다.
 - LLM Qwen3-8B 4bit 비생각 greedy, 384토큰, seed 42. 채점 공식 EM + 형식 허용(주), 같은 문항 정확 McNemar, 비교 둘(본 방법 대 각 비교군) Holm.
