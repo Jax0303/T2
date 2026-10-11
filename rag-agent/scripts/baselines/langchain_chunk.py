@@ -169,7 +169,7 @@ def answer(a):
     out_dir = Path(a.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     recs = {r["query_id"]: r for r in map(json.loads, open(a.records or out_dir / "langchain_chunk_records.jsonl", encoding="utf-8"))}
-    want = [json.loads(l)["query_id"] for l in open(SUBSET, encoding="utf-8")]
+    want = [json.loads(l)["query_id"] for l in open(a.ids or SUBSET, encoding="utf-8") if l.strip()]
     want = want[:a.limit] if a.limit else want
     missing = [q for q in want if q not in recs]
     if missing:
@@ -190,20 +190,25 @@ def answer(a):
     cot = a.prompt == "cot"                                        # 본 방법 지시문·틀(system=COT, user=Context/Question) — 지시문×단위 2×2
     llm = (LocalQwenLLM if cot else UserOnly)(model_name=name, **{"quantization": "4bit", **kw})
     system = COT if cot else ""
+    INSTR = RAG_PROMPT if a.prompt == "original" else RAG_PROMPT + MARKER   # original = rlm/rag-prompt 원문, 표시 문장 없음
     build = ((lambda r: "Context:\n" + r["context"] + f"\n\nQuestion: {r['question']}\nAnswer:") if cot else
-             (lambda r: PROMPT.format(instr=RAG_PROMPT + MARKER, question=r["question"], context=r["context"])))
+             (lambda r: PROMPT.format(instr=INSTR, question=r["question"], context=r["context"])))
     torch.manual_seed(SEED)
     limit = llm.context_limit
     rows, t0 = [done[r["query_id"]] for r in rows_in if r["query_id"] in done], time.time()
     pending = [r for r in rows_in if r["query_id"] not in done]
     with out.open("a", encoding="utf-8", newline="\n") as stream:
-        for s in range(0, len(pending), BATCH):
-            batch, t = pending[s:s + BATCH], time.time()
+        bs = a.batch_size
+        for s in range(0, len(pending), bs):
+            batch, t = pending[s:s + bs], time.time()
             users = [build(r) for r in batch]
             n_toks = [llm.n_prompt_tokens(system, u) for u in users]
             for n in n_toks:
                 check_context_limit(n, MAX_NEW, limit)
-            raws = llm.complete_batch(system, users, max_tokens=MAX_NEW)
+            raws = ([llm.complete(system, users[0], max_tokens=MAX_NEW, temperature=0.0)] if bs == 1 else
+                    llm.complete_batch(system, users, max_tokens=MAX_NEW))      # 1 = 한 문항씩(긴 입력, 묶음 캐시 부족 때)
+            if bs == 1:
+                torch.cuda.empty_cache()                                   # 한 문항씩일 때 캐시 비우기(WSL 넘침 완화, Yu 882 전례)
             sec = round((time.time() - t) / len(batch), 3)
             for r, n, raw in zip(batch, n_toks, raws):
                 gold, prog = answers[r["query_id"]], r["kind"] == "arith"
@@ -226,9 +231,9 @@ def answer(a):
                                                                             if k != "chat_template"},
                "prompt": a.prompt, "system_message": COT if cot else None,
                "prompt_text": (COT + "\n---\nContext:\n{context}\n\nQuestion: {question}\nAnswer:" if cot else
-                               PROMPT.format(instr=RAG_PROMPT + MARKER, question="{question}", context="{context}")),
-               "prompt_sha256": digest(COT if cot else RAG_PROMPT + MARKER),
-               "max_new_tokens": MAX_NEW, "seed": SEED, "batch_size": BATCH, "temperature": 0.0,
+                               PROMPT.format(instr=INSTR, question="{question}", context="{context}")),
+               "prompt_sha256": digest(COT if cot else INSTR),
+               "max_new_tokens": MAX_NEW, "seed": SEED, "batch_size": a.batch_size, "temperature": 0.0,
                "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
                "answer_source": f"{OFFICIAL_REPO}@{OFFICIAL_REV}", "scorer_self_check": check,
                "limit": a.limit, "n": len(rows), "marker_missing": sum(not x["marker_found"] for x in rows),
@@ -256,9 +261,12 @@ def main():
     ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit", help="답변 LLM 사양(local:<hf id>?quantization=4bit|none)")
     ap.add_argument("--embed-model", default=EMBED)
     ap.add_argument("--resume", action="store_true", help="답변 단계: 저장된 행은 건너뛰고 이어 쓴다")
-    ap.add_argument("--prompt", default="tutorial", choices=["tutorial", "cot"],
+    ap.add_argument("--batch-size", type=int, default=BATCH, help="답변 묶음 크기(기본 128). 1 = 한 문항씩 complete")
+    ap.add_argument("--ids", default="", help="답변 단계 문항 목록·순서(jsonl, query_id). 기본 882 부분집합 순서")
+    ap.add_argument("--prompt", default="tutorial", choices=["tutorial", "cot", "original"],
                     help="답변 단계 지시문. tutorial = rlm/rag-prompt(원방법). cot = 본 방법 지시문·틀(answer_accuracy_mh.COT) — "
-                         "PREREG-2026-10-07-claims.md 1(지시문×단위 2×2)")
+                         "PREREG-2026-10-07-claims.md 1(지시문×단위 2×2). original = rlm/rag-prompt 원문 그대로(Final answer 표시 문장 없음, "
+                         "PREREG-2026-10-12-cellform.md)")
     a = ap.parse_args()
     (retrieve if a.stage == "retrieve" else answer)(a)
 
