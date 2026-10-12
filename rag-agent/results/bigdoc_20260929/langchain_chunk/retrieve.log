@@ -1,0 +1,61 @@
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  21%|██        | 41/199 [00:00<00:00, 391.34it/s]Loading weights:  45%|████▌     | 90/199 [00:00<00:00, 447.61it/s]Loading weights:  68%|██████▊   | 135/199 [00:00<00:00, 436.53it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 537.32it/s]
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[bigdoc] 200 docs × 5 (표 평균 20.3)
+[pop] 200 queries (제외 {'needs_text_evidence': 4922})
+  200/200  49s
+{
+  "arm": "langchain_chunk",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "renderer": "serialization.chunks.markdown_source (fulltable 조건과 같음), 표 사이 빈 줄",
+  "splitter": "RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200, add_start_index=True)",
+  "vector_store": "langchain_core InMemoryVectorStore (cosine), similarity_search k=4",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "passage_prefix": "",
+  "cell_credit": "값이 통째로 청크 안에 있는 셀만 (serialization.chunks.table_chunks 규칙)",
+  "n_queries": 200,
+  "n_chunks_total": 4059,
+  "limit": 0,
+  "seconds": 49.4,
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "accuracy_all": 0.88,
+      "accuracy_any_DIAGNOSTIC": 0.925,
+      "cells_delivered_mean": 165.6,
+      "context_tokens_mean": 1616.6
+    },
+    "arith_m1": {
+      "n": 14,
+      "accuracy_all": 0.8571,
+      "accuracy_any_DIAGNOSTIC": 0.8571,
+      "cells_delivered_mean": 153.9,
+      "context_tokens_mean": 1610.4
+    },
+    "arith_m2+": {
+      "n": 70,
+      "accuracy_all": 0.8857,
+      "accuracy_any_DIAGNOSTIC": 0.9714,
+      "cells_delivered_mean": 161.6,
+      "context_tokens_mean": 1594.5
+    },
+    "lookup_m1": {
+      "n": 49,
+      "accuracy_all": 0.9796,
+      "accuracy_any_DIAGNOSTIC": 0.9796,
+      "cells_delivered_mean": 166.6,
+      "context_tokens_mean": 1636.8
+    },
+    "lookup_m2+": {
+      "n": 67,
+      "accuracy_all": 0.806,
+      "accuracy_any_DIAGNOSTIC": 0.8507,
+      "cells_delivered_mean": 171.4,
+      "context_tokens_mean": 1626.2
+    }
+  },
+  "records_sha256": "0f02f683aa3ddad1b8aac09fdbd4d7d0fc54f0e966dfc77e53c34ed68e814154"
+}

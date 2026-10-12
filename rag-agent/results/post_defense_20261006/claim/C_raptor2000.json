@@ -1,0 +1,67 @@
+{
+  "source": "raptor",
+  "records": "results/mh_only_20260928/baselines/raptor/raptor_records.jsonl",
+  "budget": 2000,
+  "ids": "results/mh_only_20260928/baselines/ids200.jsonl",
+  "kinds": "",
+  "limit": 0,
+  "n": 200,
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation. If the final value requires arithmetic, first write the exact computation as one Python arithmetic expression using only the numbers from the context (no variables, no units) on a line 'Program: ' and then the 'Final answer: ' line.",
+  "prompt_sha256": "c38fd4b48692b57b358036f172ea207480c0c611b4257c4da3976ef814a83bfa",
+  "max_new_tokens": 384,
+  "batch_size": 128,
+  "seed": 42,
+  "temperature": 0.0,
+  "program_found": 127,
+  "program_executed": 106,
+  "marker_missing": 7,
+  "by_kind": {
+    "ALL": {
+      "n": 200,
+      "em": 0.255,
+      "lenient": 0.335,
+      "docmath": 0.335,
+      "llm_em": 0.225,
+      "llm_lenient": 0.285,
+      "program_executed": 106,
+      "retrieval_correct": 0.805
+    },
+    "arith": {
+      "n": 84,
+      "em": 0.1786,
+      "lenient": 0.369,
+      "docmath": 0.369,
+      "llm_em": 0.1071,
+      "llm_lenient": 0.25,
+      "program_executed": 78,
+      "retrieval_correct": 0.7262
+    },
+    "lookup": {
+      "n": 116,
+      "em": 0.3103,
+      "lenient": 0.3103,
+      "docmath": 0.3103,
+      "llm_em": 0.3103,
+      "llm_lenient": 0.3103,
+      "program_executed": 28,
+      "retrieval_correct": 0.8621
+    }
+  },
+  "provenance": {
+    "git_commit": "a5cded9d7d2a88dc1712049141f155759b9d1084",
+    "git_dirty": true,
+    "source_sha256": "3ca6aefb58f89f997ffbbab8b67ff09d340ddf7812fd27bc5ad6e8d4fe86ebbf",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "records_sha256": "ce87b06b50cb2a0687ddb45810031aa2923a5e0f888474affb76a2e25cd043fd"
+}

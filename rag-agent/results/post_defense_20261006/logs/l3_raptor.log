@@ -1,0 +1,409 @@
+[start] 2026-10-08T01:08:26+09:00 $P scripts/baselines/raptor.py --out-dir $S/llm_llama3b/raptor --limit 200 --reader $L3 --embed-device cpu --resume
+2026-10-08 01:08:55,020 - Loading faiss with AVX2 support.
+2026-10-08 01:08:55,020 - Could not load library with AVX2 support due to:
+ModuleNotFoundError("No module named 'faiss.swigfaiss_avx2'")
+2026-10-08 01:08:55,020 - Loading faiss.
+2026-10-08 01:08:55,436 - Successfully loaded faiss.
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+2026-10-08 01:08:56,110 - Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+2026-10-08 01:08:56,111 - Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[docs] 200 queries, 186 distinct documents, excluded 0
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 56/199 [00:00<00:00, 555.78it/s]Loading weights:  56%|█████▋    | 112/199 [00:00<00:00, 487.06it/s]Loading weights:  81%|████████▏ | 162/199 [00:00<00:00, 441.84it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 467.19it/s]
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/254 [00:00<?, ?it/s]Loading weights:   0%|          | 1/254 [00:04<18:49,  4.46s/it]Loading weights:   4%|▎         | 9/254 [00:04<01:33,  2.61it/s]Loading weights:   5%|▍         | 12/254 [00:05<01:11,  3.37it/s]Loading weights:   6%|▌         | 14/254 [00:05<01:18,  3.06it/s]Loading weights:   7%|▋         | 18/254 [00:06<00:55,  4.23it/s]Loading weights:   8%|▊         | 20/254 [00:06<01:00,  3.85it/s]Loading weights:   9%|▊         | 22/254 [00:07<00:51,  4.49it/s]Loading weights:   9%|▉         | 23/254 [00:07<01:06,  3.46it/s]Loading weights:   9%|▉         | 24/254 [00:07<00:59,  3.85it/s]Loading weights:  11%|█         | 27/254 [00:08<00:51,  4.44it/s]Loading weights:  11%|█         | 28/254 [00:09<01:04,  3.51it/s]Loading weights:  12%|█▏        | 31/254 [00:09<00:54,  4.12it/s]Loading weights:  14%|█▍        | 36/254 [00:09<00:32,  6.78it/s]Loading weights:  15%|█▌        | 39/254 [00:10<00:24,  8.76it/s]Loading weights:  16%|█▌        | 41/254 [00:10<00:25,  8.21it/s]Loading weights:  19%|█▉        | 49/254 [00:10<00:17, 12.02it/s]Loading weights:  21%|██▏       | 54/254 [00:11<00:16, 12.46it/s]Loading weights:  22%|██▏       | 56/254 [00:11<00:21,  9.20it/s]Loading weights:  23%|██▎       | 59/254 [00:12<00:25,  7.51it/s]Loading weights:  24%|██▎       | 60/254 [00:12<00:26,  7.24it/s]Loading weights:  25%|██▍       | 63/254 [00:12<00:20,  9.31it/s]Loading weights:  26%|██▋       | 67/254 [00:12<00:16, 11.36it/s]Loading weights:  27%|██▋       | 69/254 [00:12<00:15, 12.28it/s]Loading weights:  30%|██▉       | 76/254 [00:13<00:08, 20.42it/s]Loading weights:  32%|███▏      | 82/254 [00:13<00:06, 24.61it/s]Loading weights:  37%|███▋      | 93/254 [00:13<00:04, 33.25it/s]Loading weights:  39%|███▉      | 99/254 [00:13<00:04, 32.32it/s]Loading weights:  41%|████      | 103/254 [00:13<00:04, 30.81it/s]Loading weights:  42%|████▏     | 107/254 [00:14<00:06, 23.24it/s]Loading weights:  43%|████▎     | 110/254 [00:14<00:06, 22.12it/s]Loading weights:  45%|████▍     | 114/254 [00:14<00:05, 25.01it/s]Loading weights:  48%|████▊     | 121/254 [00:14<00:04, 30.55it/s]Loading weights:  51%|█████     | 129/254 [00:14<00:03, 40.50it/s]Loading weights:  53%|█████▎    | 135/254 [00:14<00:02, 40.21it/s]Loading weights:  57%|█████▋    | 145/254 [00:14<00:02, 49.99it/s]Loading weights:  59%|█████▉    | 151/254 [00:15<00:02, 47.40it/s]Loading weights:  62%|██████▏   | 158/254 [00:15<00:01, 48.66it/s]Loading weights:  65%|██████▍   | 165/254 [00:15<00:01, 49.40it/s]Loading weights:  67%|██████▋   | 171/254 [00:15<00:01, 48.47it/s]Loading weights:  69%|██████▉   | 176/254 [00:15<00:01, 45.70it/s]Loading weights:  71%|███████▏  | 181/254 [00:15<00:01, 46.56it/s]Loading weights:  73%|███████▎  | 186/254 [00:16<00:02, 25.96it/s]Loading weights:  75%|███████▌  | 191/254 [00:16<00:02, 28.84it/s]Loading weights:  78%|███████▊  | 197/254 [00:16<00:01, 32.16it/s]Loading weights:  79%|███████▉  | 201/254 [00:16<00:02, 25.12it/s]Loading weights:  81%|████████  | 205/254 [00:16<00:01, 24.79it/s]Loading weights:  83%|████████▎ | 211/254 [00:16<00:01, 30.88it/s]Loading weights:  85%|████████▌ | 217/254 [00:16<00:01, 36.35it/s]Loading weights:  89%|████████▉ | 226/254 [00:17<00:00, 44.30it/s]Loading weights:  93%|█████████▎| 235/254 [00:17<00:00, 53.37it/s]Loading weights:  96%|█████████▌| 244/254 [00:17<00:00, 61.72it/s]Loading weights:  99%|█████████▉| 251/254 [00:17<00:00, 61.89it/s]Loading weights: 100%|██████████| 254/254 [00:17<00:00, 14.55it/s]
+  [tree] bc002b36bf4313f9 {'doc_key': 'bc002b36bf4313f9', 'n_chars': 1804, 'n_doc_tok_cl100k': 812, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 100, 'n_cells_deliverable_by_a_leaf': 100, 'seconds': -0.5}
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+  [tree] d0d73e9c2c87bfa0 {'doc_key': 'd0d73e9c2c87bfa0', 'n_chars': 3011, 'n_doc_tok_cl100k': 1163, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 156, 'n_cells_deliverable_by_a_leaf': 90, 'seconds': 30.7}
+  [tree] b6c86679d5084905 {'doc_key': 'b6c86679d5084905', 'n_chars': 4246, 'n_doc_tok_cl100k': 1687, 'n_leaves': 20, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 253, 'n_cells_deliverable_by_a_leaf': 229, 'seconds': 59.4}
+  [tree] 835209cc7421f353 {'doc_key': '835209cc7421f353', 'n_chars': 1963, 'n_doc_tok_cl100k': 845, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 84, 'n_cells_deliverable_by_a_leaf': 66, 'seconds': 13.9}
+  [tree] 25b3d40d6f306ef3 {'doc_key': '25b3d40d6f306ef3', 'n_chars': 2471, 'n_doc_tok_cl100k': 1037, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 146, 'n_cells_deliverable_by_a_leaf': 143, 'seconds': 35.4}
+  [tree] a2124c5a167078fb {'doc_key': 'a2124c5a167078fb', 'n_chars': 4497, 'n_doc_tok_cl100k': 1739, 'n_leaves': 21, 'n_nodes': 26, 'n_layers': 1, 'nodes_per_layer': {'0': 21, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 200, 'n_cells_deliverable_by_a_leaf': 196, 'seconds': 50.3}
+  [tree] 89625e57d978eec3 {'doc_key': '89625e57d978eec3', 'n_chars': 2223, 'n_doc_tok_cl100k': 785, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 105, 'n_cells_deliverable_by_a_leaf': 73, 'seconds': 12.0}
+  [tree] f3f19c03ba024a4d {'doc_key': 'f3f19c03ba024a4d', 'n_chars': 1617, 'n_doc_tok_cl100k': 754, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 102, 'n_cells_deliverable_by_a_leaf': 80, 'seconds': 10.3}
+  [tree] 09388055d3137245 {'doc_key': '09388055d3137245', 'n_chars': 2166, 'n_doc_tok_cl100k': 902, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 111, 'n_cells_deliverable_by_a_leaf': 79, 'seconds': 11.9}
+  [tree] e61273f7e1bd263a {'doc_key': 'e61273f7e1bd263a', 'n_chars': 4198, 'n_doc_tok_cl100k': 1574, 'n_leaves': 18, 'n_nodes': 22, 'n_layers': 1, 'nodes_per_layer': {'0': 18, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 218, 'n_cells_deliverable_by_a_leaf': 179, 'seconds': 40.1}
+  [tree] a35ef948ccb8e99d {'doc_key': 'a35ef948ccb8e99d', 'n_chars': 1683, 'n_doc_tok_cl100k': 726, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 92, 'n_cells_deliverable_by_a_leaf': 85, 'seconds': 10.3}
+  [tree] 57d746edf56b6734 {'doc_key': '57d746edf56b6734', 'n_chars': 4063, 'n_doc_tok_cl100k': 1776, 'n_leaves': 20, 'n_nodes': 23, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 246, 'n_cells_deliverable_by_a_leaf': 174, 'seconds': 39.0}
+  [tree] ed50e58604eb5abc {'doc_key': 'ed50e58604eb5abc', 'n_chars': 4532, 'n_doc_tok_cl100k': 1622, 'n_leaves': 19, 'n_nodes': 23, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 201, 'n_cells_deliverable_by_a_leaf': 171, 'seconds': 43.4}
+  [tree] bad0c9188933968b {'doc_key': 'bad0c9188933968b', 'n_chars': 4174, 'n_doc_tok_cl100k': 1660, 'n_leaves': 20, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 229, 'n_cells_deliverable_by_a_leaf': 206, 'seconds': 42.2}
+  [tree] dce04d8cdc5d357e {'doc_key': 'dce04d8cdc5d357e', 'n_chars': 1814, 'n_doc_tok_cl100k': 851, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 94, 'n_cells_deliverable_by_a_leaf': 20, 'seconds': 12.2}
+  [tree] b3671eb16fc05304 {'doc_key': 'b3671eb16fc05304', 'n_chars': 2007, 'n_doc_tok_cl100k': 854, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 129, 'n_cells_deliverable_by_a_leaf': 127, 'seconds': 13.1}
+  [tree] d9aac561fcf9fbe2 {'doc_key': 'd9aac561fcf9fbe2', 'n_chars': 3154, 'n_doc_tok_cl100k': 1182, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 138, 'n_cells_deliverable_by_a_leaf': 138, 'seconds': 32.0}
+  [tree] 7f253c95d0bf819e {'doc_key': '7f253c95d0bf819e', 'n_chars': 2295, 'n_doc_tok_cl100k': 726, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 66, 'n_cells_deliverable_by_a_leaf': 62, 'seconds': 10.5}
+  [tree] 1fdb19e24919c3e4 {'doc_key': '1fdb19e24919c3e4', 'n_chars': 3103, 'n_doc_tok_cl100k': 1213, 'n_leaves': 14, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 194, 'n_cells_deliverable_by_a_leaf': 168, 'seconds': 36.9}
+  [tree] d112cca3c89824ca {'doc_key': 'd112cca3c89824ca', 'n_chars': 2974, 'n_doc_tok_cl100k': 1283, 'n_leaves': 14, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 156, 'n_cells_deliverable_by_a_leaf': 26, 'seconds': 31.5}
+  [tree] 92d4f12b305f3be9 {'doc_key': '92d4f12b305f3be9', 'n_chars': 1233, 'n_doc_tok_cl100k': 538, 'n_leaves': 6, 'n_nodes': 6, 'n_layers': 0, 'nodes_per_layer': {'0': 6}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 62, 'n_cells_deliverable_by_a_leaf': 28, 'seconds': 6.4}
+  [tree] b75b93c037156d97 {'doc_key': 'b75b93c037156d97', 'n_chars': 3409, 'n_doc_tok_cl100k': 1476, 'n_leaves': 17, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 163, 'n_cells_deliverable_by_a_leaf': 78, 'seconds': 36.3}
+  [tree] b6b17d27951dde40 {'doc_key': 'b6b17d27951dde40', 'n_chars': 2460, 'n_doc_tok_cl100k': 1034, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 110, 'n_cells_deliverable_by_a_leaf': 81, 'seconds': 29.8}
+  [tree] e0b3d42108127549 {'doc_key': 'e0b3d42108127549', 'n_chars': 1740, 'n_doc_tok_cl100k': 663, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 100, 'n_cells_deliverable_by_a_leaf': 88, 'seconds': 9.4}
+  [tree] ef392e12d0e898a0 {'doc_key': 'ef392e12d0e898a0', 'n_chars': 3102, 'n_doc_tok_cl100k': 1045, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 134, 'n_cells_deliverable_by_a_leaf': 104, 'seconds': 27.8}
+  [tree] 08052d4c0661b568 {'doc_key': '08052d4c0661b568', 'n_chars': 1908, 'n_doc_tok_cl100k': 692, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 52, 'n_cells_deliverable_by_a_leaf': 52, 'seconds': 11.4}
+  [tree] f0e0a2dc10afc508 {'doc_key': 'f0e0a2dc10afc508', 'n_chars': 4104, 'n_doc_tok_cl100k': 1427, 'n_leaves': 17, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 192, 'n_cells_deliverable_by_a_leaf': 192, 'seconds': 38.5}
+  [tree] 53d881c38eadbfb2 {'doc_key': '53d881c38eadbfb2', 'n_chars': 1843, 'n_doc_tok_cl100k': 691, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 86, 'n_cells_deliverable_by_a_leaf': 81, 'seconds': 10.4}
+  [tree] efd17ea000bf533b {'doc_key': 'efd17ea000bf533b', 'n_chars': 2136, 'n_doc_tok_cl100k': 883, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 102, 'n_cells_deliverable_by_a_leaf': 36, 'seconds': 13.6}
+  [tree] 0bc164fd6479b190 {'doc_key': '0bc164fd6479b190', 'n_chars': 1571, 'n_doc_tok_cl100k': 616, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 79, 'n_cells_deliverable_by_a_leaf': 79, 'seconds': 8.0}
+  [tree] 3e4a32918791717f {'doc_key': '3e4a32918791717f', 'n_chars': 2950, 'n_doc_tok_cl100k': 1121, 'n_leaves': 13, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 114, 'n_cells_deliverable_by_a_leaf': 61, 'seconds': 33.1}
+  [tree] 4cdcbaf204be62b9 {'doc_key': '4cdcbaf204be62b9', 'n_chars': 2143, 'n_doc_tok_cl100k': 952, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 141, 'n_cells_deliverable_by_a_leaf': 111, 'seconds': 16.6}
+  [tree] 89552d98243f9015 {'doc_key': '89552d98243f9015', 'n_chars': 2831, 'n_doc_tok_cl100k': 1121, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 175, 'n_cells_deliverable_by_a_leaf': 150, 'seconds': 30.8}
+  [tree] 7001b734e69fd540 {'doc_key': '7001b734e69fd540', 'n_chars': 2759, 'n_doc_tok_cl100k': 1198, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 138, 'n_cells_deliverable_by_a_leaf': 57, 'seconds': 33.5}
+  [tree] 1ddc330972fc393c {'doc_key': '1ddc330972fc393c', 'n_chars': 3245, 'n_doc_tok_cl100k': 1311, 'n_leaves': 16, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 171, 'n_cells_deliverable_by_a_leaf': 171, 'seconds': 45.9}
+  [tree] 8dfc0ef2b9429a0c {'doc_key': '8dfc0ef2b9429a0c', 'n_chars': 2706, 'n_doc_tok_cl100k': 1077, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 134, 'n_cells_deliverable_by_a_leaf': 69, 'seconds': 32.2}
+  [tree] 0b5c2ec1be373954 {'doc_key': '0b5c2ec1be373954', 'n_chars': 3558, 'n_doc_tok_cl100k': 1297, 'n_leaves': 15, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 177, 'n_cells_deliverable_by_a_leaf': 177, 'seconds': 39.4}
+  [tree] c1e1f41c71a821dd {'doc_key': 'c1e1f41c71a821dd', 'n_chars': 2418, 'n_doc_tok_cl100k': 1124, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 140, 'n_cells_deliverable_by_a_leaf': 83, 'seconds': 28.7}
+  [tree] eb48430bfccae1f5 {'doc_key': 'eb48430bfccae1f5', 'n_chars': 3278, 'n_doc_tok_cl100k': 1298, 'n_leaves': 15, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 164, 'n_cells_deliverable_by_a_leaf': 125, 'seconds': 35.4}
+  [tree] a49a117f6a0afa80 {'doc_key': 'a49a117f6a0afa80', 'n_chars': 3669, 'n_doc_tok_cl100k': 1290, 'n_leaves': 16, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 187, 'n_cells_deliverable_by_a_leaf': 181, 'seconds': 43.1}
+  [tree] 41cb940225844f63 {'doc_key': '41cb940225844f63', 'n_chars': 2929, 'n_doc_tok_cl100k': 1031, 'n_leaves': 12, 'n_nodes': 14, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 2}, 'n_summary_calls': 2, 'cluster_failed_leaves_only': None, 'n_cells': 148, 'n_cells_deliverable_by_a_leaf': 140, 'seconds': 24.2}
+  [tree] de41b2e26245fd99 {'doc_key': 'de41b2e26245fd99', 'n_chars': 1413, 'n_doc_tok_cl100k': 551, 'n_leaves': 6, 'n_nodes': 6, 'n_layers': 0, 'nodes_per_layer': {'0': 6}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 66, 'n_cells_deliverable_by_a_leaf': 55, 'seconds': 8.1}
+  [tree] b27fd94b34977aa6 {'doc_key': 'b27fd94b34977aa6', 'n_chars': 1777, 'n_doc_tok_cl100k': 678, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 84, 'n_cells_deliverable_by_a_leaf': 65, 'seconds': 10.7}
+  [tree] 701d7969253eb39a {'doc_key': '701d7969253eb39a', 'n_chars': 4441, 'n_doc_tok_cl100k': 1684, 'n_leaves': 20, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 206, 'n_cells_deliverable_by_a_leaf': 201, 'seconds': 42.8}
+  [tree] d665d4443da80069 {'doc_key': 'd665d4443da80069', 'n_chars': 1528, 'n_doc_tok_cl100k': 632, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 87, 'n_cells_deliverable_by_a_leaf': 87, 'seconds': 9.5}
+  [tree] 70e3df8ea6b6f63d {'doc_key': '70e3df8ea6b6f63d', 'n_chars': 2005, 'n_doc_tok_cl100k': 760, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 94, 'n_cells_deliverable_by_a_leaf': 68, 'seconds': 10.5}
+  [tree] 15afd0fc71113974 {'doc_key': '15afd0fc71113974', 'n_chars': 3590, 'n_doc_tok_cl100k': 1426, 'n_leaves': 17, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 199, 'n_cells_deliverable_by_a_leaf': 199, 'seconds': 39.8}
+  [tree] b1f77477e355bb56 {'doc_key': 'b1f77477e355bb56', 'n_chars': 2026, 'n_doc_tok_cl100k': 751, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 80, 'n_cells_deliverable_by_a_leaf': 80, 'seconds': 12.0}
+  [tree] 120e8fffe71f9d16 {'doc_key': '120e8fffe71f9d16', 'n_chars': 2301, 'n_doc_tok_cl100k': 897, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 122, 'n_cells_deliverable_by_a_leaf': 114, 'seconds': 13.6}
+  [tree] b6216da7cd325ee2 {'doc_key': 'b6216da7cd325ee2', 'n_chars': 4035, 'n_doc_tok_cl100k': 1515, 'n_leaves': 18, 'n_nodes': 22, 'n_layers': 1, 'nodes_per_layer': {'0': 18, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 187, 'n_cells_deliverable_by_a_leaf': 159, 'seconds': 45.5}
+  [tree] 0325a2ff2f9f762b {'doc_key': '0325a2ff2f9f762b', 'n_chars': 3660, 'n_doc_tok_cl100k': 1476, 'n_leaves': 17, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 155, 'n_cells_deliverable_by_a_leaf': 83, 'seconds': 37.5}
+  [tree] 2686a2696d88924e {'doc_key': '2686a2696d88924e', 'n_chars': 1924, 'n_doc_tok_cl100k': 762, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 98, 'n_cells_deliverable_by_a_leaf': 72, 'seconds': 8.4}
+  [tree] ecf1547b881460bb {'doc_key': 'ecf1547b881460bb', 'n_chars': 2239, 'n_doc_tok_cl100k': 861, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 91, 'n_cells_deliverable_by_a_leaf': 25, 'seconds': 13.3}
+  [tree] c432b1eaf3076918 {'doc_key': 'c432b1eaf3076918', 'n_chars': 3423, 'n_doc_tok_cl100k': 1277, 'n_leaves': 15, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 148, 'n_cells_deliverable_by_a_leaf': 104, 'seconds': 37.7}
+  [tree] f26121dd5e4e80cb {'doc_key': 'f26121dd5e4e80cb', 'n_chars': 2970, 'n_doc_tok_cl100k': 1295, 'n_leaves': 15, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 174, 'n_cells_deliverable_by_a_leaf': 161, 'seconds': 32.6}
+  [tree] 931c3c23be055313 {'doc_key': '931c3c23be055313', 'n_chars': 1720, 'n_doc_tok_cl100k': 663, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 92, 'n_cells_deliverable_by_a_leaf': 74, 'seconds': 10.5}
+  [tree] 2a911182918fc348 {'doc_key': '2a911182918fc348', 'n_chars': 1567, 'n_doc_tok_cl100k': 629, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 64, 'n_cells_deliverable_by_a_leaf': 7, 'seconds': 9.2}
+  [tree] d7cba2074346df84 {'doc_key': 'd7cba2074346df84', 'n_chars': 1995, 'n_doc_tok_cl100k': 829, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 116, 'n_cells_deliverable_by_a_leaf': 81, 'seconds': 11.8}
+  [tree] db55ac1f7d0c7560 {'doc_key': 'db55ac1f7d0c7560', 'n_chars': 3243, 'n_doc_tok_cl100k': 1426, 'n_leaves': 17, 'n_nodes': 22, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 223, 'n_cells_deliverable_by_a_leaf': 223, 'seconds': 51.6}
+  [tree] 78c462ceb3e7b504 {'doc_key': '78c462ceb3e7b504', 'n_chars': 4185, 'n_doc_tok_cl100k': 1670, 'n_leaves': 19, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 220, 'n_cells_deliverable_by_a_leaf': 156, 'seconds': 47.4}
+  [tree] a8d1e015549754cf {'doc_key': 'a8d1e015549754cf', 'n_chars': 2762, 'n_doc_tok_cl100k': 1192, 'n_leaves': 14, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 188, 'n_cells_deliverable_by_a_leaf': 158, 'seconds': 35.9}
+  [tree] d585ba16cfa23e6c {'doc_key': 'd585ba16cfa23e6c', 'n_chars': 1280, 'n_doc_tok_cl100k': 563, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 71, 'n_cells_deliverable_by_a_leaf': 43, 'seconds': 9.3}
+  [cluster-fail → leaves only] e1eb4bfb3e642909 ValueError: Fitting the mixture model failed because some components have ill-defined empirical covariance (for instance caused by singleton or collapsed samples). Try to decrease the number of compon
+  [tree] e1eb4bfb3e642909 {'doc_key': 'e1eb4bfb3e642909', 'n_chars': 2601, 'n_doc_tok_cl100k': 1075, 'n_leaves': 12, 'n_nodes': 12, 'n_layers': 0, 'nodes_per_layer': {'0': 12}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': 'ValueError: Fitting the mixture model failed because some components have ill-defined empirical covariance (for instance caused by singleton or collapsed samples). Try to decrease the number of compon', 'n_cells': 165, 'n_cells_deliverable_by_a_leaf': 165, 'seconds': 30.7}
+  [tree] 990f7a0f402541c3 {'doc_key': '990f7a0f402541c3', 'n_chars': 1794, 'n_doc_tok_cl100k': 790, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 111, 'n_cells_deliverable_by_a_leaf': 111, 'seconds': 9.9}
+  [tree] 83c3fd2a58ce6f36 {'doc_key': '83c3fd2a58ce6f36', 'n_chars': 3430, 'n_doc_tok_cl100k': 1456, 'n_leaves': 18, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 18, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 187, 'n_cells_deliverable_by_a_leaf': 178, 'seconds': 38.5}
+  [tree] 6d2471dd6ed3e103 {'doc_key': '6d2471dd6ed3e103', 'n_chars': 2790, 'n_doc_tok_cl100k': 1203, 'n_leaves': 14, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 170, 'n_cells_deliverable_by_a_leaf': 138, 'seconds': 35.3}
+  [tree] 667331887a70ad11 {'doc_key': '667331887a70ad11', 'n_chars': 2760, 'n_doc_tok_cl100k': 1151, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 160, 'n_cells_deliverable_by_a_leaf': 128, 'seconds': 29.5}
+  [tree] 8bd5a7757ed03be6 {'doc_key': '8bd5a7757ed03be6', 'n_chars': 3732, 'n_doc_tok_cl100k': 1435, 'n_leaves': 16, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 187, 'n_cells_deliverable_by_a_leaf': 157, 'seconds': 39.0}
+  [tree] 86a2c50ba88b0dc9 {'doc_key': '86a2c50ba88b0dc9', 'n_chars': 2084, 'n_doc_tok_cl100k': 914, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 138, 'n_cells_deliverable_by_a_leaf': 106, 'seconds': 15.0}
+  [tree] 3748dbb2a6777fa4 {'doc_key': '3748dbb2a6777fa4', 'n_chars': 1200, 'n_doc_tok_cl100k': 476, 'n_leaves': 6, 'n_nodes': 6, 'n_layers': 0, 'nodes_per_layer': {'0': 6}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 56, 'n_cells_deliverable_by_a_leaf': 35, 'seconds': 7.1}
+  [tree] 67c124ba584dc774 {'doc_key': '67c124ba584dc774', 'n_chars': 1875, 'n_doc_tok_cl100k': 702, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 79, 'n_cells_deliverable_by_a_leaf': 57, 'seconds': 9.4}
+  [tree] 641aa7f089c1a5e9 {'doc_key': '641aa7f089c1a5e9', 'n_chars': 2649, 'n_doc_tok_cl100k': 1018, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 123, 'n_cells_deliverable_by_a_leaf': 91, 'seconds': 30.5}
+  [tree] 0756a9b2cd46578e {'doc_key': '0756a9b2cd46578e', 'n_chars': 1542, 'n_doc_tok_cl100k': 696, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 77, 'n_cells_deliverable_by_a_leaf': 3, 'seconds': 11.0}
+  [tree] 62b552c28f2e99e7 {'doc_key': '62b552c28f2e99e7', 'n_chars': 5205, 'n_doc_tok_cl100k': 2025, 'n_leaves': 24, 'n_nodes': 28, 'n_layers': 1, 'nodes_per_layer': {'0': 24, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 257, 'n_cells_deliverable_by_a_leaf': 232, 'seconds': 48.6}
+  [tree] 884ac78f93961af2 {'doc_key': '884ac78f93961af2', 'n_chars': 2483, 'n_doc_tok_cl100k': 917, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 115, 'n_cells_deliverable_by_a_leaf': 115, 'seconds': 14.3}
+  [tree] a04f92b4c00bbc2c {'doc_key': 'a04f92b4c00bbc2c', 'n_chars': 1348, 'n_doc_tok_cl100k': 639, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 56, 'n_cells_deliverable_by_a_leaf': 6, 'seconds': 10.1}
+  [tree] a11a2b1fd8c6575e {'doc_key': 'a11a2b1fd8c6575e', 'n_chars': 2069, 'n_doc_tok_cl100k': 811, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 105, 'n_cells_deliverable_by_a_leaf': 90, 'seconds': 10.2}
+  [tree] 7aab0f9aa20ded83 {'doc_key': '7aab0f9aa20ded83', 'n_chars': 1967, 'n_doc_tok_cl100k': 770, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 98, 'n_cells_deliverable_by_a_leaf': 54, 'seconds': 11.4}
+  [tree] 5084719ae59ff63a {'doc_key': '5084719ae59ff63a', 'n_chars': 4812, 'n_doc_tok_cl100k': 1911, 'n_leaves': 22, 'n_nodes': 26, 'n_layers': 1, 'nodes_per_layer': {'0': 22, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 247, 'n_cells_deliverable_by_a_leaf': 194, 'seconds': 47.6}
+  [tree] d77675dbbcca0c9b {'doc_key': 'd77675dbbcca0c9b', 'n_chars': 2793, 'n_doc_tok_cl100k': 1123, 'n_leaves': 14, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 137, 'n_cells_deliverable_by_a_leaf': 137, 'seconds': 32.0}
+  [tree] 31f791b498d25ecc {'doc_key': '31f791b498d25ecc', 'n_chars': 3850, 'n_doc_tok_cl100k': 1418, 'n_leaves': 16, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 111, 'n_cells_deliverable_by_a_leaf': 19, 'seconds': 46.4}
+  [tree] 4f607d12ad94d8a2 {'doc_key': '4f607d12ad94d8a2', 'n_chars': 3767, 'n_doc_tok_cl100k': 1481, 'n_leaves': 17, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 276, 'n_cells_deliverable_by_a_leaf': 226, 'seconds': 35.9}
+  [tree] 900f195440a1aa16 {'doc_key': '900f195440a1aa16', 'n_chars': 4969, 'n_doc_tok_cl100k': 1659, 'n_leaves': 19, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 184, 'n_cells_deliverable_by_a_leaf': 178, 'seconds': 49.4}
+  [tree] 77cde71144c0165e {'doc_key': '77cde71144c0165e', 'n_chars': 2070, 'n_doc_tok_cl100k': 697, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 83, 'n_cells_deliverable_by_a_leaf': 83, 'seconds': 10.6}
+  [tree] 10a74a6c7e07ddd1 {'doc_key': '10a74a6c7e07ddd1', 'n_chars': 2010, 'n_doc_tok_cl100k': 779, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 112, 'n_cells_deliverable_by_a_leaf': 102, 'seconds': 11.4}
+  [tree] f8cb746d8ed27ca5 {'doc_key': 'f8cb746d8ed27ca5', 'n_chars': 2486, 'n_doc_tok_cl100k': 1078, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 132, 'n_cells_deliverable_by_a_leaf': 60, 'seconds': 29.6}
+  [tree] d1f587fdadc03ba7 {'doc_key': 'd1f587fdadc03ba7', 'n_chars': 1924, 'n_doc_tok_cl100k': 774, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 96, 'n_cells_deliverable_by_a_leaf': 70, 'seconds': 13.6}
+  [tree] 27de95de19d24f49 {'doc_key': '27de95de19d24f49', 'n_chars': 1728, 'n_doc_tok_cl100k': 576, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 58, 'n_cells_deliverable_by_a_leaf': 53, 'seconds': 8.2}
+  [tree] d5b56f93ead8fecb {'doc_key': 'd5b56f93ead8fecb', 'n_chars': 1494, 'n_doc_tok_cl100k': 604, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 79, 'n_cells_deliverable_by_a_leaf': 49, 'seconds': 10.6}
+  [tree] e92c663c9ef862a5 {'doc_key': 'e92c663c9ef862a5', 'n_chars': 2803, 'n_doc_tok_cl100k': 1087, 'n_leaves': 12, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 139, 'n_cells_deliverable_by_a_leaf': 111, 'seconds': 34.4}
+  [tree] 222f275cd93b363f {'doc_key': '222f275cd93b363f', 'n_chars': 2060, 'n_doc_tok_cl100k': 859, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 116, 'n_cells_deliverable_by_a_leaf': 94, 'seconds': 12.4}
+  [tree] f1e66c70058b5094 {'doc_key': 'f1e66c70058b5094', 'n_chars': 3263, 'n_doc_tok_cl100k': 1141, 'n_leaves': 13, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 143, 'n_cells_deliverable_by_a_leaf': 143, 'seconds': 35.9}
+  [tree] b4f997eca66bb58b {'doc_key': 'b4f997eca66bb58b', 'n_chars': 5337, 'n_doc_tok_cl100k': 1907, 'n_leaves': 21, 'n_nodes': 26, 'n_layers': 1, 'nodes_per_layer': {'0': 21, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 252, 'n_cells_deliverable_by_a_leaf': 194, 'seconds': 53.7}
+  [tree] d324c8636ad1a9bf {'doc_key': 'd324c8636ad1a9bf', 'n_chars': 3098, 'n_doc_tok_cl100k': 1113, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 196, 'n_cells_deliverable_by_a_leaf': 187, 'seconds': 33.1}
+  [tree] 4ad6febf291236a1 {'doc_key': '4ad6febf291236a1', 'n_chars': 2341, 'n_doc_tok_cl100k': 881, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 122, 'n_cells_deliverable_by_a_leaf': 122, 'seconds': 13.4}
+  [tree] 673bede6ecc06b49 {'doc_key': '673bede6ecc06b49', 'n_chars': 1695, 'n_doc_tok_cl100k': 659, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 92, 'n_cells_deliverable_by_a_leaf': 92, 'seconds': 10.0}
+  [tree] 550b5b17da92c7ea {'doc_key': '550b5b17da92c7ea', 'n_chars': 3445, 'n_doc_tok_cl100k': 1414, 'n_leaves': 15, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 227, 'n_cells_deliverable_by_a_leaf': 152, 'seconds': 38.0}
+  100/200 trees 97 2529s
+  [tree] 3411d3733445ec05 {'doc_key': '3411d3733445ec05', 'n_chars': 3129, 'n_doc_tok_cl100k': 1315, 'n_leaves': 15, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 190, 'n_cells_deliverable_by_a_leaf': 190, 'seconds': 35.2}
+  [tree] 556341d23bb9bfc6 {'doc_key': '556341d23bb9bfc6', 'n_chars': 2481, 'n_doc_tok_cl100k': 897, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 121, 'n_cells_deliverable_by_a_leaf': 83, 'seconds': 14.6}
+  [tree] 39c1132590741a26 {'doc_key': '39c1132590741a26', 'n_chars': 1837, 'n_doc_tok_cl100k': 722, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 67, 'n_cells_deliverable_by_a_leaf': 0, 'seconds': 10.0}
+  [tree] 4e616e8e02b6293b {'doc_key': '4e616e8e02b6293b', 'n_chars': 2378, 'n_doc_tok_cl100k': 851, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 109, 'n_cells_deliverable_by_a_leaf': 106, 'seconds': 13.5}
+  [tree] dad461a63028b76b {'doc_key': 'dad461a63028b76b', 'n_chars': 2722, 'n_doc_tok_cl100k': 1312, 'n_leaves': 16, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 318, 'n_cells_deliverable_by_a_leaf': 306, 'seconds': 35.3}
+  [tree] e9182d8baf8acf95 {'doc_key': 'e9182d8baf8acf95', 'n_chars': 1399, 'n_doc_tok_cl100k': 641, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 85, 'n_cells_deliverable_by_a_leaf': 44, 'seconds': 9.5}
+  [tree] 51dda18aead7b57f {'doc_key': '51dda18aead7b57f', 'n_chars': 4741, 'n_doc_tok_cl100k': 1651, 'n_leaves': 19, 'n_nodes': 23, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 149, 'n_cells_deliverable_by_a_leaf': 149, 'seconds': 42.3}
+  [tree] 51bf2518022790e4 {'doc_key': '51bf2518022790e4', 'n_chars': 2395, 'n_doc_tok_cl100k': 876, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 104, 'n_cells_deliverable_by_a_leaf': 98, 'seconds': 12.4}
+  [tree] 22ec3b7bc886a7c6 {'doc_key': '22ec3b7bc886a7c6', 'n_chars': 1954, 'n_doc_tok_cl100k': 806, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 103, 'n_cells_deliverable_by_a_leaf': 35, 'seconds': 9.1}
+  [tree] 418ff412c8bc496c {'doc_key': '418ff412c8bc496c', 'n_chars': 3065, 'n_doc_tok_cl100k': 1432, 'n_leaves': 20, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 238, 'n_cells_deliverable_by_a_leaf': 228, 'seconds': 42.0}
+  [tree] 7469cffa35b15eb5 {'doc_key': '7469cffa35b15eb5', 'n_chars': 3854, 'n_doc_tok_cl100k': 1362, 'n_leaves': 16, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 206, 'n_cells_deliverable_by_a_leaf': 206, 'seconds': 35.1}
+  [tree] 00bfc42fc7be0a32 {'doc_key': '00bfc42fc7be0a32', 'n_chars': 1779, 'n_doc_tok_cl100k': 761, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 101, 'n_cells_deliverable_by_a_leaf': 81, 'seconds': 11.2}
+  [tree] eab3b1fe98af9cb7 {'doc_key': 'eab3b1fe98af9cb7', 'n_chars': 1862, 'n_doc_tok_cl100k': 643, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 74, 'n_cells_deliverable_by_a_leaf': 65, 'seconds': 9.8}
+  [tree] 95bd9767fc91e582 {'doc_key': '95bd9767fc91e582', 'n_chars': 3591, 'n_doc_tok_cl100k': 1378, 'n_leaves': 16, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 164, 'n_cells_deliverable_by_a_leaf': 150, 'seconds': 40.3}
+  [tree] 3fd057bb1e1d9305 {'doc_key': '3fd057bb1e1d9305', 'n_chars': 3287, 'n_doc_tok_cl100k': 1143, 'n_leaves': 14, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 2}, 'n_summary_calls': 2, 'cluster_failed_leaves_only': None, 'n_cells': 196, 'n_cells_deliverable_by_a_leaf': 196, 'seconds': 27.2}
+  [tree] 9c57718706e60455 {'doc_key': '9c57718706e60455', 'n_chars': 2019, 'n_doc_tok_cl100k': 917, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 103, 'n_cells_deliverable_by_a_leaf': 0, 'seconds': 12.5}
+  [tree] 4c881c4f215d8be5 {'doc_key': '4c881c4f215d8be5', 'n_chars': 1840, 'n_doc_tok_cl100k': 703, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 75, 'n_cells_deliverable_by_a_leaf': 47, 'seconds': 10.8}
+  [tree] 30580ef1f02d59dc {'doc_key': '30580ef1f02d59dc', 'n_chars': 2186, 'n_doc_tok_cl100k': 782, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 92, 'n_cells_deliverable_by_a_leaf': 92, 'seconds': 12.8}
+  [tree] 702dde8619c59103 {'doc_key': '702dde8619c59103', 'n_chars': 2177, 'n_doc_tok_cl100k': 1043, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 141, 'n_cells_deliverable_by_a_leaf': 77, 'seconds': 27.9}
+  [tree] c3cd5bb88ccd0574 {'doc_key': 'c3cd5bb88ccd0574', 'n_chars': 1684, 'n_doc_tok_cl100k': 600, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 78, 'n_cells_deliverable_by_a_leaf': 54, 'seconds': 8.8}
+  [tree] ddca894aec55d3d8 {'doc_key': 'ddca894aec55d3d8', 'n_chars': 1137, 'n_doc_tok_cl100k': 501, 'n_leaves': 6, 'n_nodes': 6, 'n_layers': 0, 'nodes_per_layer': {'0': 6}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 48, 'n_cells_deliverable_by_a_leaf': 20, 'seconds': 8.5}
+  [tree] 05e41d0d975a25e9 {'doc_key': '05e41d0d975a25e9', 'n_chars': 3333, 'n_doc_tok_cl100k': 1317, 'n_leaves': 14, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 206, 'n_cells_deliverable_by_a_leaf': 146, 'seconds': 31.2}
+  [tree] 480cd0603ca7d14a {'doc_key': '480cd0603ca7d14a', 'n_chars': 2208, 'n_doc_tok_cl100k': 986, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 156, 'n_cells_deliverable_by_a_leaf': 156, 'seconds': 28.7}
+  [tree] 561bc417decf0d95 {'doc_key': '561bc417decf0d95', 'n_chars': 3968, 'n_doc_tok_cl100k': 1543, 'n_leaves': 18, 'n_nodes': 22, 'n_layers': 1, 'nodes_per_layer': {'0': 18, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 215, 'n_cells_deliverable_by_a_leaf': 183, 'seconds': 45.1}
+  [tree] 7bbb066466377afd {'doc_key': '7bbb066466377afd', 'n_chars': 2325, 'n_doc_tok_cl100k': 963, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 145, 'n_cells_deliverable_by_a_leaf': 127, 'seconds': 14.0}
+  [tree] d997911be65f9105 {'doc_key': 'd997911be65f9105', 'n_chars': 2112, 'n_doc_tok_cl100k': 800, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 88, 'n_cells_deliverable_by_a_leaf': 58, 'seconds': 12.8}
+  [tree] f17ef397d7e6317f {'doc_key': 'f17ef397d7e6317f', 'n_chars': 1563, 'n_doc_tok_cl100k': 741, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 75, 'n_cells_deliverable_by_a_leaf': 30, 'seconds': 9.5}
+  [tree] d8ff3e68f507c8c4 {'doc_key': 'd8ff3e68f507c8c4', 'n_chars': 2483, 'n_doc_tok_cl100k': 912, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 131, 'n_cells_deliverable_by_a_leaf': 112, 'seconds': 14.6}
+  [tree] 2256f59447d91cb2 {'doc_key': '2256f59447d91cb2', 'n_chars': 2535, 'n_doc_tok_cl100k': 914, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 118, 'n_cells_deliverable_by_a_leaf': 118, 'seconds': 14.9}
+  [tree] 2f68fd60a6c1cdd7 {'doc_key': '2f68fd60a6c1cdd7', 'n_chars': 3706, 'n_doc_tok_cl100k': 1364, 'n_leaves': 15, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 180, 'n_cells_deliverable_by_a_leaf': 114, 'seconds': 37.4}
+  [tree] f49e2b722e99346a {'doc_key': 'f49e2b722e99346a', 'n_chars': 2078, 'n_doc_tok_cl100k': 746, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 106, 'n_cells_deliverable_by_a_leaf': 94, 'seconds': 11.2}
+  [tree] 9b9a02890ac7090b {'doc_key': '9b9a02890ac7090b', 'n_chars': 2572, 'n_doc_tok_cl100k': 1049, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 118, 'n_cells_deliverable_by_a_leaf': 56, 'seconds': 29.4}
+  [tree] 83428755eec8f76b {'doc_key': '83428755eec8f76b', 'n_chars': 3275, 'n_doc_tok_cl100k': 1132, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 124, 'n_cells_deliverable_by_a_leaf': 124, 'seconds': 30.9}
+  [tree] c6e1f47866484382 {'doc_key': 'c6e1f47866484382', 'n_chars': 5235, 'n_doc_tok_cl100k': 1982, 'n_leaves': 24, 'n_nodes': 30, 'n_layers': 1, 'nodes_per_layer': {'0': 24, '1': 6}, 'n_summary_calls': 6, 'cluster_failed_leaves_only': None, 'n_cells': 296, 'n_cells_deliverable_by_a_leaf': 290, 'seconds': 60.5}
+  [tree] 5824912a197ef795 {'doc_key': '5824912a197ef795', 'n_chars': 3154, 'n_doc_tok_cl100k': 1402, 'n_leaves': 16, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 198, 'n_cells_deliverable_by_a_leaf': 124, 'seconds': 40.5}
+  [tree] d4f45b19d9d25b31 {'doc_key': 'd4f45b19d9d25b31', 'n_chars': 4406, 'n_doc_tok_cl100k': 1649, 'n_leaves': 18, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 18, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 271, 'n_cells_deliverable_by_a_leaf': 246, 'seconds': 37.1}
+  [tree] 829d810516f902bb {'doc_key': '829d810516f902bb', 'n_chars': 2902, 'n_doc_tok_cl100k': 1133, 'n_leaves': 13, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 146, 'n_cells_deliverable_by_a_leaf': 121, 'seconds': 36.0}
+  [tree] 6e4b235350345db4 {'doc_key': '6e4b235350345db4', 'n_chars': 2581, 'n_doc_tok_cl100k': 912, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 122, 'n_cells_deliverable_by_a_leaf': 86, 'seconds': 14.0}
+  [tree] e83bd98472938168 {'doc_key': 'e83bd98472938168', 'n_chars': 2823, 'n_doc_tok_cl100k': 1248, 'n_leaves': 15, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 138, 'n_cells_deliverable_by_a_leaf': 119, 'seconds': 35.8}
+  [tree] 15de67c34d7293ec {'doc_key': '15de67c34d7293ec', 'n_chars': 3564, 'n_doc_tok_cl100k': 1487, 'n_leaves': 17, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 155, 'n_cells_deliverable_by_a_leaf': 25, 'seconds': 36.1}
+  [tree] 9e1ad800bd4a373a {'doc_key': '9e1ad800bd4a373a', 'n_chars': 1861, 'n_doc_tok_cl100k': 839, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 100, 'n_cells_deliverable_by_a_leaf': 41, 'seconds': 13.1}
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/baselines/raptor.py", line 462, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/raptor.py", line 355, in main
+    entries[key] = build_tree(text, cells, config, summarizer, tok_cl, tree_dir, key)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/raptor.py", line 212, in build_tree
+    tree = builder.build_from_text(doc_text, use_multithreading=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/vendor/raptor/raptor/tree_builder.py", line 291, in build_from_text
+    root_nodes = self.construct_tree(all_nodes, all_nodes, layer_to_nodes)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/vendor/raptor/raptor/cluster_tree_builder.py", line 130, in construct_tree
+    process_cluster(
+  File "/home/user/T2-1/rag-agent/vendor/raptor/raptor/cluster_tree_builder.py", line 71, in process_cluster
+    summarized_text = self.summarize(
+                      ^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/vendor/raptor/raptor/tree_builder.py", line 206, in summarize
+    return self.summarization_model.summarize(context, max_tokens)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/raptor.py", line 89, in summarize
+    return self.llm.complete(SUM_SYSTEM, SUM_USER.format(context=context),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 118, in complete
+    out = self.model.generate(**inputs, **gen_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2584, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2791, in _sample
+    while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+[start] 2026-10-08T02:09:15+09:00 $P scripts/baselines/raptor.py --out-dir $S/llm_llama3b/raptor --limit 200 --reader $L3 --embed-device cpu --resume
+2026-10-08 02:09:32,841 - Loading faiss with AVX2 support.
+2026-10-08 02:09:32,841 - Could not load library with AVX2 support due to:
+ModuleNotFoundError("No module named 'faiss.swigfaiss_avx2'")
+2026-10-08 02:09:32,841 - Loading faiss.
+2026-10-08 02:09:33,146 - Successfully loaded faiss.
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+2026-10-08 02:09:33,407 - Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+2026-10-08 02:09:33,408 - Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[docs] 200 queries, 186 distinct documents, excluded 0
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2328.95it/s]
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/254 [00:00<?, ?it/s]Loading weights:   0%|          | 1/254 [00:03<12:53,  3.06s/it]Loading weights:   1%|          | 2/254 [00:03<05:37,  1.34s/it]Loading weights:   2%|▏         | 4/254 [00:03<02:49,  1.48it/s]Loading weights:   4%|▎         | 9/254 [00:04<01:16,  3.20it/s]Loading weights:   6%|▌         | 14/254 [00:05<00:54,  4.43it/s]Loading weights:   7%|▋         | 18/254 [00:05<00:41,  5.73it/s]Loading weights:   7%|▋         | 19/254 [00:06<00:53,  4.39it/s]Loading weights:   9%|▊         | 22/254 [00:06<00:43,  5.33it/s]Loading weights:   9%|▉         | 23/254 [00:07<00:58,  3.98it/s]Loading weights:  10%|█         | 26/254 [00:07<00:45,  4.96it/s]Loading weights:  11%|█         | 27/254 [00:08<00:59,  3.85it/s]Loading weights:  12%|█▏        | 30/254 [00:08<00:59,  3.79it/s]Loading weights:  12%|█▏        | 31/254 [00:09<01:11,  3.11it/s]Loading weights:  13%|█▎        | 32/254 [00:10<01:42,  2.17it/s]Loading weights:  13%|█▎        | 33/254 [00:10<01:33,  2.35it/s]Loading weights:  14%|█▍        | 36/254 [00:11<00:54,  3.99it/s]Loading weights:  15%|█▍        | 38/254 [00:11<00:46,  4.67it/s]Loading weights:  15%|█▌        | 39/254 [00:12<01:14,  2.88it/s]Loading weights:  16%|█▌        | 40/254 [00:13<01:37,  2.20it/s]Loading weights:  16%|█▌        | 41/254 [00:14<01:56,  1.83it/s]Loading weights:  17%|█▋        | 44/254 [00:14<01:11,  2.92it/s]Loading weights:  18%|█▊        | 46/254 [00:14<00:57,  3.59it/s]Loading weights:  19%|█▊        | 47/254 [00:14<00:55,  3.74it/s]Loading weights:  19%|█▉        | 49/254 [00:15<00:51,  3.96it/s]Loading weights:  22%|██▏       | 57/254 [00:15<00:18, 10.67it/s]Loading weights:  24%|██▎       | 60/254 [00:15<00:16, 12.12it/s]Loading weights:  25%|██▍       | 63/254 [00:15<00:16, 11.39it/s]Loading weights:  26%|██▌       | 65/254 [00:16<00:18, 10.03it/s]Loading weights:  26%|██▋       | 67/254 [00:16<00:18, 10.20it/s]Loading weights:  27%|██▋       | 69/254 [00:16<00:17, 10.35it/s]Loading weights:  29%|██▊       | 73/254 [00:16<00:12, 14.15it/s]Loading weights:  30%|██▉       | 76/254 [00:16<00:10, 16.36it/s]Loading weights:  31%|███       | 79/254 [00:16<00:09, 17.91it/s]Loading weights:  32%|███▏      | 82/254 [00:17<00:08, 19.98it/s]Loading weights:  34%|███▍      | 86/254 [00:17<00:17,  9.60it/s]Loading weights:  35%|███▌      | 90/254 [00:18<00:14, 11.67it/s]Loading weights:  36%|███▌      | 92/254 [00:18<00:15, 10.71it/s]Loading weights:  39%|███▉      | 100/254 [00:18<00:07, 19.72it/s]Loading weights:  43%|████▎     | 108/254 [00:18<00:05, 27.49it/s]Loading weights:  44%|████▍     | 113/254 [00:19<00:08, 16.14it/s]Loading weights:  46%|████▌     | 117/254 [00:19<00:07, 18.67it/s]Loading weights:  48%|████▊     | 121/254 [00:19<00:07, 18.66it/s]Loading weights:  51%|█████     | 130/254 [00:19<00:04, 27.05it/s]Loading weights:  55%|█████▍    | 139/254 [00:19<00:03, 36.32it/s]Loading weights:  57%|█████▋    | 145/254 [00:19<00:02, 40.38it/s]Loading weights:  60%|██████    | 153/254 [00:20<00:02, 47.48it/s]Loading weights:  63%|██████▎   | 159/254 [00:20<00:02, 46.39it/s]Loading weights:  65%|██████▌   | 166/254 [00:20<00:01, 47.90it/s]Loading weights:  68%|██████▊   | 173/254 [00:20<00:01, 52.46it/s]Loading weights:  70%|███████   | 179/254 [00:20<00:02, 31.59it/s]Loading weights:  72%|███████▏  | 184/254 [00:21<00:04, 16.13it/s]Loading weights:  74%|███████▍  | 188/254 [00:21<00:03, 16.55it/s]Loading weights:  75%|███████▌  | 191/254 [00:22<00:03, 15.82it/s]Loading weights:  76%|███████▋  | 194/254 [00:22<00:04, 14.17it/s]Loading weights:  80%|███████▉  | 202/254 [00:22<00:02, 21.12it/s]Loading weights:  81%|████████  | 205/254 [00:22<00:02, 22.26it/s]Loading weights:  83%|████████▎ | 211/254 [00:22<00:01, 27.70it/s]Loading weights:  87%|████████▋ | 220/254 [00:22<00:01, 33.65it/s]Loading weights:  89%|████████▉ | 227/254 [00:22<00:00, 39.86it/s]Loading weights:  92%|█████████▏| 234/254 [00:23<00:00, 42.82it/s]Loading weights:  95%|█████████▌| 242/254 [00:23<00:00, 50.74it/s]Loading weights:  98%|█████████▊| 248/254 [00:23<00:00, 43.88it/s]Loading weights: 100%|██████████| 254/254 [00:23<00:00, 10.81it/s]
+[resume] 저장된 레코드 147건 건너뜀(트리 통계는 이번 실행에서 만든 트리만)
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+  [tree] 38f8dfa632b3d330 {'doc_key': '38f8dfa632b3d330', 'n_chars': 3309, 'n_doc_tok_cl100k': 1341, 'n_leaves': 16, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 186, 'n_cells_deliverable_by_a_leaf': 186, 'seconds': 25.6}
+  [tree] d09d9c1f67da965b {'doc_key': 'd09d9c1f67da965b', 'n_chars': 1935, 'n_doc_tok_cl100k': 664, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 59, 'n_cells_deliverable_by_a_leaf': 54, 'seconds': 8.6}
+  [tree] 002fc1d9cc9be3bc {'doc_key': '002fc1d9cc9be3bc', 'n_chars': 3565, 'n_doc_tok_cl100k': 1428, 'n_leaves': 16, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 166, 'n_cells_deliverable_by_a_leaf': 132, 'seconds': 48.1}
+  [tree] b315f384c41d4476 {'doc_key': 'b315f384c41d4476', 'n_chars': 3254, 'n_doc_tok_cl100k': 1285, 'n_leaves': 15, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 158, 'n_cells_deliverable_by_a_leaf': 135, 'seconds': 36.1}
+  [tree] 0bb0c75ba9e4c9d6 {'doc_key': '0bb0c75ba9e4c9d6', 'n_chars': 4220, 'n_doc_tok_cl100k': 1952, 'n_leaves': 24, 'n_nodes': 29, 'n_layers': 1, 'nodes_per_layer': {'0': 24, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 222, 'n_cells_deliverable_by_a_leaf': 169, 'seconds': 57.3}
+  [tree] 81c2ba5205206287 {'doc_key': '81c2ba5205206287', 'n_chars': 2846, 'n_doc_tok_cl100k': 1103, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 155, 'n_cells_deliverable_by_a_leaf': 130, 'seconds': 31.0}
+  [tree] 306fda7c09edc882 {'doc_key': '306fda7c09edc882', 'n_chars': 3478, 'n_doc_tok_cl100k': 1416, 'n_leaves': 18, 'n_nodes': 22, 'n_layers': 1, 'nodes_per_layer': {'0': 18, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 200, 'n_cells_deliverable_by_a_leaf': 200, 'seconds': 42.5}
+  [tree] f0e0a2dc10afc508 {'doc_key': 'f0e0a2dc10afc508', 'n_chars': 4104, 'n_doc_tok_cl100k': 1427, 'n_leaves': 17, 'n_nodes': 21, 'n_layers': 1, 'nodes_per_layer': {'0': 17, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 192, 'n_cells_deliverable_by_a_leaf': 192, 'seconds': 38.5}
+  [tree] 798e061de0487213 {'doc_key': '798e061de0487213', 'n_chars': 4390, 'n_doc_tok_cl100k': 1692, 'n_leaves': 21, 'n_nodes': 26, 'n_layers': 1, 'nodes_per_layer': {'0': 21, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 231, 'n_cells_deliverable_by_a_leaf': 222, 'seconds': 50.8}
+  [tree] 6ba5091ebc47c096 {'doc_key': '6ba5091ebc47c096', 'n_chars': 2717, 'n_doc_tok_cl100k': 1282, 'n_leaves': 14, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 156, 'n_cells_deliverable_by_a_leaf': 101, 'seconds': 32.4}
+  [tree] de41b2e26245fd99 {'doc_key': 'de41b2e26245fd99', 'n_chars': 1413, 'n_doc_tok_cl100k': 551, 'n_leaves': 6, 'n_nodes': 6, 'n_layers': 0, 'nodes_per_layer': {'0': 6}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 66, 'n_cells_deliverable_by_a_leaf': 55, 'seconds': 8.1}
+  [tree] 0dcc108bbac7627c {'doc_key': '0dcc108bbac7627c', 'n_chars': 8228, 'n_doc_tok_cl100k': 3200, 'n_leaves': 37, 'n_nodes': 44, 'n_layers': 1, 'nodes_per_layer': {'0': 37, '1': 7}, 'n_summary_calls': 7, 'cluster_failed_leaves_only': None, 'n_cells': 445, 'n_cells_deliverable_by_a_leaf': 445, 'seconds': 79.5}
+  [tree] 5ba3363c0c2beceb {'doc_key': '5ba3363c0c2beceb', 'n_chars': 2684, 'n_doc_tok_cl100k': 1047, 'n_leaves': 12, 'n_nodes': 14, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 2}, 'n_summary_calls': 2, 'cluster_failed_leaves_only': None, 'n_cells': 133, 'n_cells_deliverable_by_a_leaf': 115, 'seconds': 25.1}
+  [tree] 8e06d62b30b1589c {'doc_key': '8e06d62b30b1589c', 'n_chars': 2363, 'n_doc_tok_cl100k': 858, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 102, 'n_cells_deliverable_by_a_leaf': 61, 'seconds': 13.7}
+  [tree] a003b5a5b20a4de8 {'doc_key': 'a003b5a5b20a4de8', 'n_chars': 3289, 'n_doc_tok_cl100k': 1237, 'n_leaves': 14, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 227, 'n_cells_deliverable_by_a_leaf': 226, 'seconds': 36.6}
+  [tree] 4f3f0b581795dfdb {'doc_key': '4f3f0b581795dfdb', 'n_chars': 2655, 'n_doc_tok_cl100k': 913, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 85, 'n_cells_deliverable_by_a_leaf': 51, 'seconds': 14.2}
+  [tree] 8fb2ba9bdb95877c {'doc_key': '8fb2ba9bdb95877c', 'n_chars': 2818, 'n_doc_tok_cl100k': 1021, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 130, 'n_cells_deliverable_by_a_leaf': 103, 'seconds': 34.1}
+  [tree] f651c6039b815b77 {'doc_key': 'f651c6039b815b77', 'n_chars': 2545, 'n_doc_tok_cl100k': 989, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 133, 'n_cells_deliverable_by_a_leaf': 133, 'seconds': 40.6}
+  [tree] 5146a9bbb3a2e654 {'doc_key': '5146a9bbb3a2e654', 'n_chars': 1771, 'n_doc_tok_cl100k': 698, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 64, 'n_cells_deliverable_by_a_leaf': 31, 'seconds': 13.8}
+  [tree] b6c86679d5084905 {'doc_key': 'b6c86679d5084905', 'n_chars': 4246, 'n_doc_tok_cl100k': 1687, 'n_leaves': 20, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 253, 'n_cells_deliverable_by_a_leaf': 229, 'seconds': 59.4}
+  [tree] ea4af62aa6e825d7 {'doc_key': 'ea4af62aa6e825d7', 'n_chars': 1855, 'n_doc_tok_cl100k': 774, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 89, 'n_cells_deliverable_by_a_leaf': 62, 'seconds': 18.8}
+  [tree] 0b344ab6175e5717 {'doc_key': '0b344ab6175e5717', 'n_chars': 2433, 'n_doc_tok_cl100k': 896, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 134, 'n_cells_deliverable_by_a_leaf': 126, 'seconds': 19.0}
+  [tree] 5824912a197ef795 {'doc_key': '5824912a197ef795', 'n_chars': 3154, 'n_doc_tok_cl100k': 1402, 'n_leaves': 16, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 198, 'n_cells_deliverable_by_a_leaf': 124, 'seconds': 40.5}
+  [tree] e174391b20080a22 {'doc_key': 'e174391b20080a22', 'n_chars': 4117, 'n_doc_tok_cl100k': 1714, 'n_leaves': 19, 'n_nodes': 22, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 267, 'n_cells_deliverable_by_a_leaf': 202, 'seconds': 60.1}
+  [tree] ea2b5f068cb23034 {'doc_key': 'ea2b5f068cb23034', 'n_chars': 2464, 'n_doc_tok_cl100k': 972, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 119, 'n_cells_deliverable_by_a_leaf': 85, 'seconds': 16.8}
+  [tree] 077f7023484673aa {'doc_key': '077f7023484673aa', 'n_chars': 4883, 'n_doc_tok_cl100k': 1734, 'n_leaves': 20, 'n_nodes': 25, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 5}, 'n_summary_calls': 5, 'cluster_failed_leaves_only': None, 'n_cells': 201, 'n_cells_deliverable_by_a_leaf': 183, 'seconds': 70.3}
+  [tree] a5e8749ce4817797 {'doc_key': 'a5e8749ce4817797', 'n_chars': 1577, 'n_doc_tok_cl100k': 660, 'n_leaves': 8, 'n_nodes': 8, 'n_layers': 0, 'nodes_per_layer': {'0': 8}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 80, 'n_cells_deliverable_by_a_leaf': 70, 'seconds': 9.7}
+  [tree] d153724b1bde4491 {'doc_key': 'd153724b1bde4491', 'n_chars': 4495, 'n_doc_tok_cl100k': 1725, 'n_leaves': 21, 'n_nodes': 25, 'n_layers': 1, 'nodes_per_layer': {'0': 21, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 175, 'n_cells_deliverable_by_a_leaf': 152, 'seconds': 62.8}
+  [tree] 30580ef1f02d59dc {'doc_key': '30580ef1f02d59dc', 'n_chars': 2186, 'n_doc_tok_cl100k': 782, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 92, 'n_cells_deliverable_by_a_leaf': 92, 'seconds': 12.8}
+  [tree] 000605338ed4c4f2 {'doc_key': '000605338ed4c4f2', 'n_chars': 2820, 'n_doc_tok_cl100k': 1118, 'n_leaves': 12, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 146, 'n_cells_deliverable_by_a_leaf': 120, 'seconds': 49.0}
+  [tree] e3042aa961d07d42 {'doc_key': 'e3042aa961d07d42', 'n_chars': 2973, 'n_doc_tok_cl100k': 1424, 'n_leaves': 16, 'n_nodes': 20, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 226, 'n_cells_deliverable_by_a_leaf': 80, 'seconds': 51.4}
+  [tree] 494076a01ea9ded0 {'doc_key': '494076a01ea9ded0', 'n_chars': 1875, 'n_doc_tok_cl100k': 764, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 74, 'n_cells_deliverable_by_a_leaf': 72, 'seconds': 14.0}
+  [tree] 9fa78fa4c3c51717 {'doc_key': '9fa78fa4c3c51717', 'n_chars': 1402, 'n_doc_tok_cl100k': 586, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 72, 'n_cells_deliverable_by_a_leaf': 63, 'seconds': 8.3}
+  [tree] d62ed40492c9a561 {'doc_key': 'd62ed40492c9a561', 'n_chars': 2455, 'n_doc_tok_cl100k': 932, 'n_leaves': 11, 'n_nodes': 11, 'n_layers': 0, 'nodes_per_layer': {'0': 11}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 141, 'n_cells_deliverable_by_a_leaf': 104, 'seconds': 15.6}
+  [tree] d4a8e9dbc4094541 {'doc_key': 'd4a8e9dbc4094541', 'n_chars': 2797, 'n_doc_tok_cl100k': 1089, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 150, 'n_cells_deliverable_by_a_leaf': 141, 'seconds': 35.1}
+  [tree] 81c351983c6f8c33 {'doc_key': '81c351983c6f8c33', 'n_chars': 3062, 'n_doc_tok_cl100k': 1342, 'n_leaves': 14, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 174, 'n_cells_deliverable_by_a_leaf': 30, 'seconds': 33.0}
+  [tree] 1d8ff8dec3bba708 {'doc_key': '1d8ff8dec3bba708', 'n_chars': 3613, 'n_doc_tok_cl100k': 1310, 'n_leaves': 15, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 145, 'n_cells_deliverable_by_a_leaf': 87, 'seconds': 31.4}
+  [tree] 8433dc1d82b51582 {'doc_key': '8433dc1d82b51582', 'n_chars': 2715, 'n_doc_tok_cl100k': 1057, 'n_leaves': 14, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 93, 'n_cells_deliverable_by_a_leaf': 93, 'seconds': 33.1}
+  [tree] 8857a49fb663818a {'doc_key': '8857a49fb663818a', 'n_chars': 1708, 'n_doc_tok_cl100k': 772, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 118, 'n_cells_deliverable_by_a_leaf': 99, 'seconds': 12.0}
+  [tree] 60af459d6b67a221 {'doc_key': '60af459d6b67a221', 'n_chars': 3925, 'n_doc_tok_cl100k': 1968, 'n_leaves': 21, 'n_nodes': 25, 'n_layers': 1, 'nodes_per_layer': {'0': 21, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 253, 'n_cells_deliverable_by_a_leaf': 13, 'seconds': 46.2}
+  [tree] 95a6c060e9d74f77 {'doc_key': '95a6c060e9d74f77', 'n_chars': 2945, 'n_doc_tok_cl100k': 1099, 'n_leaves': 12, 'n_nodes': 15, 'n_layers': 1, 'nodes_per_layer': {'0': 12, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 140, 'n_cells_deliverable_by_a_leaf': 140, 'seconds': 29.8}
+  [tree] db0022515688a037 {'doc_key': 'db0022515688a037', 'n_chars': 3270, 'n_doc_tok_cl100k': 1230, 'n_leaves': 15, 'n_nodes': 18, 'n_layers': 1, 'nodes_per_layer': {'0': 15, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 183, 'n_cells_deliverable_by_a_leaf': 183, 'seconds': 33.3}
+  [tree] 8530dbc39af34ee2 {'doc_key': '8530dbc39af34ee2', 'n_chars': 4148, 'n_doc_tok_cl100k': 1581, 'n_leaves': 19, 'n_nodes': 23, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 224, 'n_cells_deliverable_by_a_leaf': 216, 'seconds': 42.0}
+  [tree] 3e68334a300fced1 {'doc_key': '3e68334a300fced1', 'n_chars': 1969, 'n_doc_tok_cl100k': 776, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 103, 'n_cells_deliverable_by_a_leaf': 93, 'seconds': 13.3}
+  [tree] abb9b4550a4a363d {'doc_key': 'abb9b4550a4a363d', 'n_chars': 2638, 'n_doc_tok_cl100k': 1132, 'n_leaves': 14, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 14, '1': 2}, 'n_summary_calls': 2, 'cluster_failed_leaves_only': None, 'n_cells': 156, 'n_cells_deliverable_by_a_leaf': 156, 'seconds': 30.4}
+  [tree] 2a62f453ef4d5bb1 {'doc_key': '2a62f453ef4d5bb1', 'n_chars': 2085, 'n_doc_tok_cl100k': 768, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 70, 'n_cells_deliverable_by_a_leaf': 60, 'seconds': 11.0}
+  [tree] 7ab6b89c9f64575c {'doc_key': '7ab6b89c9f64575c', 'n_chars': 4036, 'n_doc_tok_cl100k': 1558, 'n_leaves': 19, 'n_nodes': 23, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 192, 'n_cells_deliverable_by_a_leaf': 192, 'seconds': 44.8}
+  [tree] 171ee3bbb44e3101 {'doc_key': '171ee3bbb44e3101', 'n_chars': 2312, 'n_doc_tok_cl100k': 903, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 100, 'n_cells_deliverable_by_a_leaf': 76, 'seconds': 12.6}
+  [tree] d6d27ba065232a84 {'doc_key': 'd6d27ba065232a84', 'n_chars': 3247, 'n_doc_tok_cl100k': 1278, 'n_leaves': 16, 'n_nodes': 19, 'n_layers': 1, 'nodes_per_layer': {'0': 16, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 140, 'n_cells_deliverable_by_a_leaf': 104, 'seconds': 34.8}
+  [tree] 6faa5a36c8ed9a64 {'doc_key': '6faa5a36c8ed9a64', 'n_chars': 4552, 'n_doc_tok_cl100k': 1737, 'n_leaves': 19, 'n_nodes': 23, 'n_layers': 1, 'nodes_per_layer': {'0': 19, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 212, 'n_cells_deliverable_by_a_leaf': 171, 'seconds': 44.7}
+  [tree] 66e26c9878ab2b7b {'doc_key': '66e26c9878ab2b7b', 'n_chars': 1887, 'n_doc_tok_cl100k': 825, 'n_leaves': 9, 'n_nodes': 9, 'n_layers': 0, 'nodes_per_layer': {'0': 9}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 98, 'n_cells_deliverable_by_a_leaf': 65, 'seconds': 10.8}
+  [tree] f0a17fc6d49733ed {'doc_key': 'f0a17fc6d49733ed', 'n_chars': 1462, 'n_doc_tok_cl100k': 599, 'n_leaves': 7, 'n_nodes': 7, 'n_layers': 0, 'nodes_per_layer': {'0': 7}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 70, 'n_cells_deliverable_by_a_leaf': 40, 'seconds': 9.9}
+  [tree] 676cb3602d1bf78a {'doc_key': '676cb3602d1bf78a', 'n_chars': 2414, 'n_doc_tok_cl100k': 942, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 107, 'n_cells_deliverable_by_a_leaf': 95, 'seconds': 11.6}
+  200/200 trees 53 1546s
+{
+ "n_scored": 200,
+ "n_documents": 53,
+ "tree_stats_mean": {
+  "n_leaves": 13.92,
+  "n_nodes": 16.21,
+  "n_layers": 0.62,
+  "n_summary_calls": 2.28,
+  "seconds": 31.41,
+  "n_doc_tok_cl100k": 1193.21
+ },
+ "cluster_failed_leaves_only": {
+  "n": 0,
+  "doc_keys": []
+ },
+ "by_layer": {
+  "ALL": {
+   "n": 200,
+   "accuracy_all_2000": 0.81,
+   "accuracy_all_575": 0.65,
+   "n_tok_2000_mean": 1447.0,
+   "n_tok_575_mean": 525.8
+  },
+  "arith_m1": {
+   "n": 14,
+   "accuracy_all_2000": 0.5,
+   "accuracy_all_575": 0.1429,
+   "n_tok_2000_mean": 1552.6,
+   "n_tok_575_mean": 507.6
+  },
+  "arith_m2+": {
+   "n": 70,
+   "accuracy_all_2000": 0.7857,
+   "accuracy_all_575": 0.6429,
+   "n_tok_2000_mean": 1402.5,
+   "n_tok_575_mean": 524.0
+  },
+  "lookup_m1": {
+   "n": 49,
+   "accuracy_all_2000": 0.7959,
+   "accuracy_all_575": 0.7143,
+   "n_tok_2000_mean": 1447.8,
+   "n_tok_575_mean": 532.0
+  },
+  "lookup_m2+": {
+   "n": 67,
+   "accuracy_all_2000": 0.9104,
+   "accuracy_all_575": 0.7164,
+   "n_tok_2000_mean": 1470.7,
+   "n_tok_575_mean": 526.8
+  }
+ }
+}
+  [answer 2000] 50/200 93s
+  [answer 2000] 100/200 183s
+  [answer 2000] 150/200 279s
+  [answer 2000] 200/200 374s
+{
+ "budget_qwen3_tokens": 2000,
+ "n": 200,
+ "marker_missing": 139,
+ "generation_seconds": 373.6,
+ "by_layer": {
+  "ALL": {
+   "n": 200,
+   "answer_em": 0.12,
+   "f1": 0.1375,
+   "retrieval_accuracy_here": 0.81,
+   "input_tokens_mean": 1270.4
+  },
+  "arith_m1": {
+   "n": 14,
+   "answer_em": 0.0,
+   "f1": 0.0,
+   "retrieval_accuracy_here": 0.5,
+   "input_tokens_mean": 1343.1
+  },
+  "arith_m2+": {
+   "n": 70,
+   "answer_em": 0.0429,
+   "f1": 0.0429,
+   "retrieval_accuracy_here": 0.7857,
+   "input_tokens_mean": 1240.4
+  },
+  "lookup_m1": {
+   "n": 49,
+   "answer_em": 0.2653,
+   "f1": 0.2653,
+   "retrieval_accuracy_here": 0.7959,
+   "input_tokens_mean": 1262.3
+  },
+  "lookup_m2+": {
+   "n": 67,
+   "answer_em": 0.1194,
+   "f1": 0.1716,
+   "retrieval_accuracy_here": 0.9104,
+   "input_tokens_mean": 1292.6
+  }
+ }
+}
+  [answer 575] 50/200 117s
+  [answer 575] 100/200 233s
+  [answer 575] 150/200 348s
+  [answer 575] 200/200 466s
+{
+ "budget_qwen3_tokens": 575,
+ "n": 200,
+ "marker_missing": 123,
+ "generation_seconds": 466.0,
+ "by_layer": {
+  "ALL": {
+   "n": 200,
+   "answer_em": 0.125,
+   "f1": 0.1364,
+   "retrieval_accuracy_here": 0.65,
+   "input_tokens_mean": 525.8
+  },
+  "arith_m1": {
+   "n": 14,
+   "answer_em": 0.0,
+   "f1": 0.0,
+   "retrieval_accuracy_here": 0.1429,
+   "input_tokens_mean": 507.0
+  },
+  "arith_m2+": {
+   "n": 70,
+   "answer_em": 0.0286,
+   "f1": 0.0286,
+   "retrieval_accuracy_here": 0.6429,
+   "input_tokens_mean": 526.3
+  },
+  "lookup_m1": {
+   "n": 49,
+   "answer_em": 0.2449,
+   "f1": 0.248,
+   "retrieval_accuracy_here": 0.7143,
+   "input_tokens_mean": 531.1
+  },
+  "lookup_m2+": {
+   "n": 67,
+   "answer_em": 0.1642,
+   "f1": 0.196,
+   "retrieval_accuracy_here": 0.7164,
+   "input_tokens_mean": 525.4
+  }
+ }
+}

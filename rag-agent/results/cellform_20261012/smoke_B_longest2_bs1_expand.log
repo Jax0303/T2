@@ -1,0 +1,75 @@
+[scorer] gold 를 예측으로 넣었을 때 EM=0.5 (n=2)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<03:32,  1.87it/s]Loading weights:   1%|          | 2/399 [00:01<03:22,  1.96it/s]Loading weights:   1%|          | 4/399 [00:01<01:27,  4.50it/s]Loading weights:   4%|▍         | 15/399 [00:01<00:18, 20.58it/s]Loading weights:   5%|▌         | 21/399 [00:01<00:13, 27.24it/s]Loading weights:   7%|▋         | 27/399 [00:01<00:11, 33.03it/s]Loading weights:   9%|▉         | 37/399 [00:01<00:07, 46.18it/s]Loading weights:  11%|█         | 43/399 [00:01<00:07, 47.70it/s]Loading weights:  13%|█▎        | 50/399 [00:01<00:06, 51.25it/s]Loading weights:  15%|█▌        | 61/399 [00:01<00:05, 60.86it/s]Loading weights:  18%|█▊        | 72/399 [00:02<00:04, 67.46it/s]Loading weights:  21%|██        | 82/399 [00:02<00:04, 74.91it/s]Loading weights:  23%|██▎       | 93/399 [00:02<00:03, 77.08it/s]Loading weights:  26%|██▌       | 103/399 [00:02<00:03, 80.72it/s]Loading weights:  28%|██▊       | 112/399 [00:02<00:03, 82.10it/s]Loading weights:  30%|███       | 121/399 [00:02<00:03, 77.20it/s]Loading weights:  32%|███▏      | 129/399 [00:02<00:03, 71.72it/s]Loading weights:  34%|███▍      | 137/399 [00:02<00:03, 72.25it/s]Loading weights:  37%|███▋      | 147/399 [00:03<00:03, 75.15it/s]Loading weights:  39%|███▉      | 155/399 [00:03<00:03, 73.35it/s]Loading weights:  41%|████      | 163/399 [00:03<00:03, 67.33it/s]Loading weights:  43%|████▎     | 171/399 [00:03<00:03, 64.68it/s]Loading weights:  45%|████▌     | 181/399 [00:03<00:03, 72.11it/s]Loading weights:  48%|████▊     | 191/399 [00:03<00:02, 75.98it/s]Loading weights:  51%|█████     | 202/399 [00:03<00:02, 79.34it/s]Loading weights:  53%|█████▎    | 211/399 [00:03<00:02, 81.36it/s]Loading weights:  55%|█████▌    | 220/399 [00:04<00:02, 76.33it/s]Loading weights:  57%|█████▋    | 228/399 [00:04<00:02, 69.62it/s]Loading weights:  59%|█████▉    | 236/399 [00:04<00:02, 71.38it/s]Loading weights:  62%|██████▏   | 246/399 [00:04<00:01, 76.85it/s]Loading weights:  64%|██████▍   | 255/399 [00:04<00:01, 80.15it/s]Loading weights:  66%|██████▌   | 264/399 [00:04<00:01, 74.04it/s]Loading weights:  68%|██████▊   | 272/399 [00:04<00:01, 64.16it/s]Loading weights:  70%|███████   | 281/399 [00:04<00:01, 65.73it/s]Loading weights:  73%|███████▎  | 291/399 [00:05<00:01, 71.71it/s]Loading weights:  75%|███████▌  | 301/399 [00:05<00:01, 74.59it/s]Loading weights:  77%|███████▋  | 309/399 [00:05<00:01, 75.67it/s]Loading weights:  79%|███████▉  | 317/399 [00:05<00:01, 71.82it/s]Loading weights:  81%|████████▏ | 325/399 [00:05<00:01, 65.59it/s]Loading weights:  84%|████████▍ | 335/399 [00:05<00:00, 72.44it/s]Loading weights:  86%|████████▋ | 345/399 [00:05<00:00, 76.92it/s]Loading weights:  89%|████████▊ | 354/399 [00:05<00:00, 79.55it/s]Loading weights:  91%|█████████ | 363/399 [00:06<00:00, 77.08it/s]Loading weights:  93%|█████████▎| 371/399 [00:06<00:00, 68.85it/s]Loading weights:  95%|█████████▍| 379/399 [00:06<00:00, 67.55it/s]Loading weights:  97%|█████████▋| 389/399 [00:06<00:00, 71.57it/s]Loading weights: 100%|██████████| 399/399 [00:06<00:00, 61.36it/s]
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/baselines/langchain_chunk.py", line 275, in <module>
+    main()
+  File "/home/user/T2-1/rag-agent/scripts/baselines/langchain_chunk.py", line 271, in main
+    (retrieve if a.stage == "retrieve" else answer)(a)
+  File "/home/user/T2-1/rag-agent/scripts/baselines/langchain_chunk.py", line 208, in answer
+    raws = ([llm.complete(system, users[0], max_tokens=MAX_NEW, temperature=0.0)] if bs == 1 else
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 118, in complete
+    out = self.model.generate(**inputs, **gen_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2584, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2784, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 3830, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 907, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 492, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1036, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 252, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 424, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 332, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 82, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+RuntimeError: CUDA driver error: device not ready

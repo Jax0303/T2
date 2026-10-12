@@ -1,0 +1,94 @@
+{
+  "arm": "langchain_chunk",
+  "reader": "local:meta-llama/Llama-3.2-3B-Instruct?quantization=none",
+  "reader_details": {
+    "name": "local:meta-llama/Llama-3.2-3B-Instruct?quantization=none",
+    "revision_requested": null,
+    "revision_resolved": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+    "quantization": null,
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 131072,
+    "enable_thinking": false
+  },
+  "prompt": "tutorial",
+  "system_message": null,
+  "prompt_text": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\nQuestion: {question} \nContext: {context} \nAnswer:",
+  "prompt_sha256": "1462f2b9c9afb154fb5c32956722325fa2f2aae9a357e2a0f584978c28d93f48",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.945,
+    "n": 200,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 11
+  },
+  "limit": 200,
+  "n": 200,
+  "marker_missing": 62,
+  "n_over_context_limit": 0,
+  "generation_seconds": 359.2,
+  "provenance": {
+    "git_commit": "a5cded9d7d2a88dc1712049141f155759b9d1084",
+    "git_dirty": true,
+    "source_sha256": "d37c646cb3041e09b77c70eb8a9c30c588a387057902470190b5ebe240e6be86",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "retrieval_accuracy_here": 0.985,
+      "answer_em": 0.075,
+      "answer_f1": 0.0775,
+      "input_tokens_mean": 1155.1
+    },
+    "arith_m1": {
+      "n": 14,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.0714,
+      "answer_f1": 0.0714,
+      "input_tokens_mean": 1214.1
+    },
+    "arith_m2+": {
+      "n": 70,
+      "retrieval_accuracy_here": 0.9714,
+      "answer_em": 0.0286,
+      "answer_f1": 0.0286,
+      "input_tokens_mean": 1126.1
+    },
+    "lookup_m1": {
+      "n": 49,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.2041,
+      "answer_f1": 0.2041,
+      "input_tokens_mean": 1137.8
+    },
+    "lookup_m2+": {
+      "n": 67,
+      "retrieval_accuracy_here": 0.9851,
+      "answer_em": 0.0299,
+      "answer_f1": 0.0373,
+      "input_tokens_mean": 1185.8
+    }
+  },
+  "records_sha256": "dcc729805714c283715e24687be92a04025e7c998a8fd460528a6238502083f3"
+}

@@ -1,0 +1,80 @@
+{
+  "baseline": "raptor",
+  "raptor_repo": "https://github.com/parthsarthi03/raptor",
+  "raptor_commit": "7da1d48a7e1d7dec61a63c9d9aae84e2dfaa5767",
+  "records_source": "results/mh_only_20260928/retrieval/mh_train_s3c_records.jsonl",
+  "answer_set": "results/mh_arms/cap300_20260924/cell_uniq.jsonl",
+  "limit": 3,
+  "n_queries": 3,
+  "n_scored": 3,
+  "n_excluded": 0,
+  "excluded": {},
+  "n_documents": 3,
+  "chunk_tokens_cl100k": 100,
+  "summary_max_tokens": 100,
+  "budgets_qwen3_tokens": [
+    2000,
+    575
+  ],
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "summarizer": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "n_summary_calls_total": 9,
+  "tree_seconds_total": 71.7,
+  "tree_stats_mean": {
+    "n_leaves": 14.33,
+    "n_nodes": 17.33,
+    "n_layers": 0.67,
+    "n_summary_calls": 3.0,
+    "seconds": 23.9,
+    "n_doc_tok_cl100k": 1220.67
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "accuracy_all_2000": 1.0,
+      "accuracy_all_575": 0.6667,
+      "n_tok_2000_mean": 1574.0,
+      "n_tok_575_mean": 543.7
+    },
+    "arith_m2+": {
+      "n": 1,
+      "accuracy_all_2000": 1.0,
+      "accuracy_all_575": 1.0,
+      "n_tok_2000_mean": 1876.0,
+      "n_tok_575_mean": 529.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "accuracy_all_2000": 1.0,
+      "accuracy_all_575": 0.5,
+      "n_tok_2000_mean": 1423.0,
+      "n_tok_575_mean": 551.0
+    }
+  },
+  "provenance": {
+    "git_commit": "7d4d8ff1a49911e71fdf3c75d8d98361b688cd36",
+    "git_dirty": true,
+    "source_sha256": "6506a510d43ed0b023c22edbbf445fba5b71c8657431ffa2fb607a52b94c62cc",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "limit": 3,
+    "out_dir": "results/mh_only_20260928/baselines/raptor/smoke3",
+    "tree_dir": "",
+    "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "batch_size": 1,
+    "seed": 42,
+    "dry_run": false
+  }
+}

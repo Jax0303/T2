@@ -1,0 +1,671 @@
+{
+  "name": "rag-agent",
+  "description": "RAG over hierarchical-header tables: one cell = one sentence, hybrid BM25+dense index, fine-tuned bge encoder, local Qwen reader.",
+  "languages": [
+    "markdown",
+    "python",
+    "toml"
+  ],
+  "frameworks": [],
+  "files": [
+    {
+      "path": "CLAUDE.md",
+      "language": "markdown",
+      "sizeLines": 65,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 52,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "rag-agent/pyproject.toml",
+      "language": "toml",
+      "sizeLines": 36,
+      "fileCategory": "config"
+    },
+    {
+      "path": "rag-agent/rag_agent/__init__.py",
+      "language": "python",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/bench/__init__.py",
+      "language": "python",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/bench/hitab.py",
+      "language": "python",
+      "sizeLines": 108,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/bench/hitab_grid.py",
+      "language": "python",
+      "sizeLines": 418,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/bench/schema.py",
+      "language": "python",
+      "sizeLines": 106,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/data/__init__.py",
+      "language": "python",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/data/loader.py",
+      "language": "python",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/eval/__init__.py",
+      "language": "python",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/eval/answer_em.py",
+      "language": "python",
+      "sizeLines": 106,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/eval/artifacts.py",
+      "language": "python",
+      "sizeLines": 155,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/eval/metrics.py",
+      "language": "python",
+      "sizeLines": 368,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/eval/multihiertt_em.py",
+      "language": "python",
+      "sizeLines": 97,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/eval/strict_recall.py",
+      "language": "python",
+      "sizeLines": 215,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/llm/__init__.py",
+      "language": "python",
+      "sizeLines": 4,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/llm/base.py",
+      "language": "python",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/llm/factory.py",
+      "language": "python",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/llm/groq_llm.py",
+      "language": "python",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/llm/local_qwen.py",
+      "language": "python",
+      "sizeLines": 112,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/llm/openai_llm.py",
+      "language": "python",
+      "sizeLines": 155,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/reconstruct/__init__.py",
+      "language": "python",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/reconstruct/header_grid.py",
+      "language": "python",
+      "sizeLines": 1072,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/reconstruct/treethinker.py",
+      "language": "python",
+      "sizeLines": 348,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/retrieve/__init__.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/retrieve/encoders.py",
+      "language": "python",
+      "sizeLines": 212,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/retrieve/hybrid_index.py",
+      "language": "python",
+      "sizeLines": 222,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/retrieve/sparse_bm25.py",
+      "language": "python",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/serialization/__init__.py",
+      "language": "python",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/serialization/base.py",
+      "language": "python",
+      "sizeLines": 111,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/serialization/caption.py",
+      "language": "python",
+      "sizeLines": 240,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/serialization/chunks.py",
+      "language": "python",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/serialization/tablerag_unit.py",
+      "language": "python",
+      "sizeLines": 159,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/serialization/templates.py",
+      "language": "python",
+      "sizeLines": 164,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/stores/__init__.py",
+      "language": "python",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/rag_agent/stores/original_store.py",
+      "language": "python",
+      "sizeLines": 338,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/answer_accuracy.py",
+      "language": "python",
+      "sizeLines": 361,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/answer_accuracy_mh.py",
+      "language": "python",
+      "sizeLines": 350,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/mh_arms.py",
+      "language": "python",
+      "sizeLines": 664,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/point3_reconstruction_cost.py",
+      "language": "python",
+      "sizeLines": 285,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/reader_cot_pilot.py",
+      "language": "python",
+      "sizeLines": 86,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/retrieval_accuracy.py",
+      "language": "python",
+      "sizeLines": 1070,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/retrieval_accuracy_mh.py",
+      "language": "python",
+      "sizeLines": 423,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/scripts/tree_reconstruct_hitab_raw.py",
+      "language": "python",
+      "sizeLines": 545,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_answer_resume_mh.py",
+      "language": "python",
+      "sizeLines": 120,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_arm_fairness.py",
+      "language": "python",
+      "sizeLines": 126,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_baseline_units.py",
+      "language": "python",
+      "sizeLines": 159,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_currency_scoring.py",
+      "language": "python",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_evaluation_integrity.py",
+      "language": "python",
+      "sizeLines": 326,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_gold_context_matches_index.py",
+      "language": "python",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_groq_retry_after.py",
+      "language": "python",
+      "sizeLines": 142,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_header_col_boundary.py",
+      "language": "python",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_header_confirmed_errors.py",
+      "language": "python",
+      "sizeLines": 44,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_header_v3.py",
+      "language": "python",
+      "sizeLines": 225,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_header_v3_1.py",
+      "language": "python",
+      "sizeLines": 213,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_header_v3_2.py",
+      "language": "python",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_header_v3_3.py",
+      "language": "python",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_hierarchy_edges.py",
+      "language": "python",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_hitab_grid.py",
+      "language": "python",
+      "sizeLines": 71,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_mh_labels.py",
+      "language": "python",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_query_prefix.py",
+      "language": "python",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_reader_spec.py",
+      "language": "python",
+      "sizeLines": 44,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_retrieval_accuracy_mh.py",
+      "language": "python",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_retrieval_accuracy_scoring.py",
+      "language": "python",
+      "sizeLines": 97,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_section_rows.py",
+      "language": "python",
+      "sizeLines": 126,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_sparse_bm25.py",
+      "language": "python",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_strict_recall.py",
+      "language": "python",
+      "sizeLines": 212,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_templates.py",
+      "language": "python",
+      "sizeLines": 140,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_upstream_review_regressions.py",
+      "language": "python",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "rag-agent/tests/test_vector_backend.py",
+      "language": "python",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    }
+  ],
+  "totalFiles": 71,
+  "filteredByIgnore": 472,
+  "estimatedComplexity": "moderate",
+  "importMap": {
+    "CLAUDE.md": [],
+    "README.md": [],
+    "rag-agent/pyproject.toml": [],
+    "rag-agent/rag_agent/__init__.py": [],
+    "rag-agent/rag_agent/bench/__init__.py": [
+      "rag-agent/rag_agent/bench/schema.py"
+    ],
+    "rag-agent/rag_agent/bench/hitab.py": [
+      "rag-agent/rag_agent/bench/schema.py",
+      "rag-agent/rag_agent/data/loader.py",
+      "rag-agent/rag_agent/stores/original_store.py"
+    ],
+    "rag-agent/rag_agent/bench/hitab_grid.py": [
+      "rag-agent/rag_agent/stores/original_store.py"
+    ],
+    "rag-agent/rag_agent/bench/schema.py": [],
+    "rag-agent/rag_agent/data/__init__.py": [
+      "rag-agent/rag_agent/data/loader.py"
+    ],
+    "rag-agent/rag_agent/data/loader.py": [],
+    "rag-agent/rag_agent/eval/__init__.py": [
+      "rag-agent/rag_agent/eval/metrics.py"
+    ],
+    "rag-agent/rag_agent/eval/answer_em.py": [
+      "rag-agent/rag_agent/eval/metrics.py"
+    ],
+    "rag-agent/rag_agent/eval/artifacts.py": [],
+    "rag-agent/rag_agent/eval/metrics.py": [],
+    "rag-agent/rag_agent/eval/multihiertt_em.py": [],
+    "rag-agent/rag_agent/eval/strict_recall.py": [
+      "rag-agent/rag_agent/eval/artifacts.py"
+    ],
+    "rag-agent/rag_agent/llm/__init__.py": [
+      "rag-agent/rag_agent/llm/base.py",
+      "rag-agent/rag_agent/llm/factory.py",
+      "rag-agent/rag_agent/llm/groq_llm.py",
+      "rag-agent/rag_agent/llm/local_qwen.py"
+    ],
+    "rag-agent/rag_agent/llm/base.py": [],
+    "rag-agent/rag_agent/llm/factory.py": [
+      "rag-agent/rag_agent/llm/base.py",
+      "rag-agent/rag_agent/llm/groq_llm.py",
+      "rag-agent/rag_agent/llm/local_qwen.py",
+      "rag-agent/rag_agent/llm/openai_llm.py"
+    ],
+    "rag-agent/rag_agent/llm/groq_llm.py": [
+      "rag-agent/rag_agent/llm/base.py"
+    ],
+    "rag-agent/rag_agent/llm/local_qwen.py": [
+      "rag-agent/rag_agent/llm/base.py"
+    ],
+    "rag-agent/rag_agent/llm/openai_llm.py": [
+      "rag-agent/rag_agent/llm/base.py"
+    ],
+    "rag-agent/rag_agent/reconstruct/__init__.py": [
+      "rag-agent/rag_agent/reconstruct/header_grid.py"
+    ],
+    "rag-agent/rag_agent/reconstruct/header_grid.py": [],
+    "rag-agent/rag_agent/reconstruct/treethinker.py": [],
+    "rag-agent/rag_agent/retrieve/__init__.py": [
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/retrieve/hybrid_index.py"
+    ],
+    "rag-agent/rag_agent/retrieve/encoders.py": [],
+    "rag-agent/rag_agent/retrieve/hybrid_index.py": [
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/serialization/base.py"
+    ],
+    "rag-agent/rag_agent/retrieve/sparse_bm25.py": [],
+    "rag-agent/rag_agent/serialization/__init__.py": [
+      "rag-agent/rag_agent/serialization/base.py",
+      "rag-agent/rag_agent/serialization/caption.py"
+    ],
+    "rag-agent/rag_agent/serialization/base.py": [],
+    "rag-agent/rag_agent/serialization/caption.py": [
+      "rag-agent/rag_agent/serialization/base.py",
+      "rag-agent/rag_agent/serialization/templates.py"
+    ],
+    "rag-agent/rag_agent/serialization/chunks.py": [],
+    "rag-agent/rag_agent/serialization/tablerag_unit.py": [
+      "rag-agent/rag_agent/serialization/base.py"
+    ],
+    "rag-agent/rag_agent/serialization/templates.py": [
+      "rag-agent/rag_agent/serialization/base.py"
+    ],
+    "rag-agent/rag_agent/stores/__init__.py": [
+      "rag-agent/rag_agent/stores/original_store.py"
+    ],
+    "rag-agent/rag_agent/stores/original_store.py": [],
+    "rag-agent/scripts/answer_accuracy.py": [
+      "rag-agent/rag_agent/bench/__init__.py",
+      "rag-agent/rag_agent/eval/artifacts.py",
+      "rag-agent/rag_agent/eval/metrics.py",
+      "rag-agent/rag_agent/llm/factory.py",
+      "rag-agent/rag_agent/serialization/caption.py",
+      "rag-agent/rag_agent/serialization/templates.py",
+      "rag-agent/scripts/retrieval_accuracy.py"
+    ],
+    "rag-agent/scripts/answer_accuracy_mh.py": [
+      "rag-agent/rag_agent/eval/artifacts.py",
+      "rag-agent/rag_agent/eval/multihiertt_em.py",
+      "rag-agent/rag_agent/llm/factory.py",
+      "rag-agent/rag_agent/serialization/caption.py",
+      "rag-agent/rag_agent/serialization/templates.py",
+      "rag-agent/scripts/answer_accuracy.py",
+      "rag-agent/scripts/mh_arms.py"
+    ],
+    "rag-agent/scripts/mh_arms.py": [
+      "rag-agent/rag_agent/eval/__init__.py",
+      "rag-agent/rag_agent/eval/artifacts.py",
+      "rag-agent/rag_agent/reconstruct/__init__.py",
+      "rag-agent/rag_agent/reconstruct/header_grid.py",
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/retrieve/hybrid_index.py",
+      "rag-agent/rag_agent/retrieve/sparse_bm25.py",
+      "rag-agent/scripts/retrieval_accuracy.py"
+    ],
+    "rag-agent/scripts/point3_reconstruction_cost.py": [
+      "rag-agent/rag_agent/bench/hitab.py",
+      "rag-agent/rag_agent/reconstruct/__init__.py",
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/scripts/tree_reconstruct_hitab_raw.py"
+    ],
+    "rag-agent/scripts/reader_cot_pilot.py": [
+      "rag-agent/rag_agent/eval/artifacts.py",
+      "rag-agent/rag_agent/eval/multihiertt_em.py",
+      "rag-agent/rag_agent/llm/factory.py",
+      "rag-agent/scripts/answer_accuracy_mh.py",
+      "rag-agent/scripts/mh_arms.py"
+    ],
+    "rag-agent/scripts/retrieval_accuracy.py": [
+      "rag-agent/rag_agent/bench/__init__.py",
+      "rag-agent/rag_agent/data/loader.py",
+      "rag-agent/rag_agent/eval/__init__.py",
+      "rag-agent/rag_agent/eval/artifacts.py",
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/retrieve/hybrid_index.py",
+      "rag-agent/rag_agent/retrieve/sparse_bm25.py",
+      "rag-agent/rag_agent/serialization/__init__.py",
+      "rag-agent/rag_agent/serialization/caption.py",
+      "rag-agent/rag_agent/serialization/templates.py"
+    ],
+    "rag-agent/scripts/retrieval_accuracy_mh.py": [
+      "rag-agent/rag_agent/reconstruct/__init__.py",
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/retrieve/hybrid_index.py",
+      "rag-agent/rag_agent/retrieve/sparse_bm25.py",
+      "rag-agent/rag_agent/serialization/caption.py",
+      "rag-agent/rag_agent/serialization/templates.py",
+      "rag-agent/scripts/retrieval_accuracy.py"
+    ],
+    "rag-agent/scripts/tree_reconstruct_hitab_raw.py": [
+      "rag-agent/rag_agent/reconstruct/__init__.py"
+    ],
+    "rag-agent/tests/test_answer_resume_mh.py": [
+      "rag-agent/rag_agent/eval/artifacts.py"
+    ],
+    "rag-agent/tests/test_arm_fairness.py": [],
+    "rag-agent/tests/test_baseline_units.py": [],
+    "rag-agent/tests/test_currency_scoring.py": [
+      "rag-agent/rag_agent/eval/metrics.py"
+    ],
+    "rag-agent/tests/test_evaluation_integrity.py": [
+      "rag-agent/rag_agent/eval/artifacts.py",
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/serialization/chunks.py"
+    ],
+    "rag-agent/tests/test_gold_context_matches_index.py": [],
+    "rag-agent/tests/test_groq_retry_after.py": [
+      "rag-agent/rag_agent/llm/__init__.py",
+      "rag-agent/rag_agent/llm/groq_llm.py"
+    ],
+    "rag-agent/tests/test_header_col_boundary.py": [
+      "rag-agent/rag_agent/reconstruct/__init__.py"
+    ],
+    "rag-agent/tests/test_header_confirmed_errors.py": [],
+    "rag-agent/tests/test_header_v3.py": [
+      "rag-agent/rag_agent/reconstruct/header_grid.py"
+    ],
+    "rag-agent/tests/test_header_v3_1.py": [
+      "rag-agent/rag_agent/reconstruct/header_grid.py"
+    ],
+    "rag-agent/tests/test_header_v3_2.py": [
+      "rag-agent/rag_agent/reconstruct/header_grid.py"
+    ],
+    "rag-agent/tests/test_header_v3_3.py": [
+      "rag-agent/rag_agent/reconstruct/header_grid.py"
+    ],
+    "rag-agent/tests/test_hierarchy_edges.py": [],
+    "rag-agent/tests/test_hitab_grid.py": [
+      "rag-agent/rag_agent/bench/__init__.py",
+      "rag-agent/rag_agent/data/loader.py"
+    ],
+    "rag-agent/tests/test_mh_labels.py": [],
+    "rag-agent/tests/test_query_prefix.py": [
+      "rag-agent/rag_agent/retrieve/encoders.py"
+    ],
+    "rag-agent/tests/test_reader_spec.py": [
+      "rag-agent/rag_agent/llm/factory.py"
+    ],
+    "rag-agent/tests/test_retrieval_accuracy_mh.py": [
+      "rag-agent/rag_agent/reconstruct/__init__.py"
+    ],
+    "rag-agent/tests/test_retrieval_accuracy_scoring.py": [],
+    "rag-agent/tests/test_section_rows.py": [
+      "rag-agent/rag_agent/reconstruct/__init__.py"
+    ],
+    "rag-agent/tests/test_sparse_bm25.py": [
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/retrieve/sparse_bm25.py"
+    ],
+    "rag-agent/tests/test_strict_recall.py": [
+      "rag-agent/rag_agent/bench/__init__.py",
+      "rag-agent/rag_agent/eval/__init__.py"
+    ],
+    "rag-agent/tests/test_templates.py": [
+      "rag-agent/rag_agent/serialization/__init__.py",
+      "rag-agent/rag_agent/serialization/caption.py",
+      "rag-agent/rag_agent/serialization/templates.py"
+    ],
+    "rag-agent/tests/test_upstream_review_regressions.py": [
+      "rag-agent/rag_agent/eval/artifacts.py"
+    ],
+    "rag-agent/tests/test_vector_backend.py": [
+      "rag-agent/rag_agent/retrieve/encoders.py",
+      "rag-agent/rag_agent/retrieve/hybrid_index.py",
+      "rag-agent/rag_agent/serialization/base.py"
+    ]
+  }
+}

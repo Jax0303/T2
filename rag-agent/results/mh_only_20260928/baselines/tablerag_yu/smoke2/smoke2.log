@@ -1,0 +1,24 @@
+[start] 2026-09-29T03:25:31+09:00 commit 7d4d8ff vendor f8d798f args: --stage retrieve --limit 3 --out-dir results/mh_only_20260928/baselines/tablerag_yu/smoke2
+[plan] stage=retrieve 3 문항, 남은 3
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[corpus] 3 docs / 16 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  40%|███▉      | 79/199 [00:00<00:00, 788.72it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1002.15it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:  15%|█▌        | 59/393 [00:00<00:00, 560.03it/s]Loading weights:  30%|██▉       | 116/393 [00:00<00:00, 545.81it/s]Loading weights:  44%|████▎     | 171/393 [00:00<00:00, 524.55it/s]Loading weights:  57%|█████▋    | 224/393 [00:00<00:00, 466.07it/s]Loading weights:  70%|███████   | 277/393 [00:00<00:00, 467.08it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 593.14it/s]
+  3/3 1s
+[retrieve] 3 문항 1.3s (문항당 0.44s)
+[end] 2026-09-29T03:25:53+09:00 rc=0
+[start] 2026-09-29T03:25:53+09:00 commit 7d4d8ff vendor f8d798f args: --stage answer --limit 3 --out-dir results/mh_only_20260928/baselines/tablerag_yu/smoke2
+[plan] stage=answer 3 문항, 남은 3
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[corpus] 3 docs / 16 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  81%|████████  | 161/199 [00:00<00:00, 1606.34it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1930.64it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:  58%|█████▊    | 226/393 [00:00<00:00, 2256.12it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 2409.61it/s]
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<06:29,  1.02it/s]Loading weights:   1%|          | 2/399 [00:01<05:01,  1.32it/s]Loading weights:   1%|          | 4/399 [00:01<02:11,  3.01it/s]Loading weights:   3%|▎         | 10/399 [00:01<00:39,  9.78it/s]Loading weights:   4%|▍         | 16/399 [00:02<00:24, 15.68it/s]Loading weights:   6%|▌         | 24/399 [00:02<00:14, 25.89it/s]Loading weights:   7%|▋         | 29/399 [00:02<00:13, 27.81it/s]Loading weights:  10%|▉         | 38/399 [00:02<00:10, 35.30it/s]Loading weights:  12%|█▏        | 48/399 [00:02<00:07, 45.63it/s]Loading weights:  14%|█▎        | 54/399 [00:02<00:07, 47.11it/s]Loading weights:  15%|█▌        | 60/399 [00:02<00:07, 47.96it/s]Loading weights:  18%|█▊        | 70/399 [00:02<00:05, 55.27it/s]Loading weights:  19%|█▉        | 76/399 [00:03<00:06, 51.40it/s]Loading weights:  21%|██        | 82/399 [00:03<00:06, 51.28it/s]Loading weights:  23%|██▎       | 92/399 [00:03<00:05, 56.42it/s]Loading weights:  25%|██▍       | 98/399 [00:03<00:05, 54.13it/s]Loading weights:  26%|██▌       | 104/399 [00:03<00:05, 54.17it/s]Loading weights:  29%|██▊       | 114/399 [00:03<00:04, 59.56it/s]Loading weights:  30%|███       | 120/399 [00:03<00:04, 57.94it/s]Loading weights:  32%|███▏      | 126/399 [00:03<00:04, 55.24it/s]Loading weights:  34%|███▎      | 134/399 [00:04<00:04, 61.31it/s]Loading weights:  35%|███▌      | 141/399 [00:04<00:04, 56.08it/s]Loading weights:  37%|███▋      | 148/399 [00:04<00:04, 55.37it/s]Loading weights:  39%|███▉      | 156/399 [00:04<00:03, 61.35it/s]Loading weights:  41%|████      | 163/399 [00:04<00:04, 55.98it/s]Loading weights:  42%|████▏     | 169/399 [00:04<00:04, 56.97it/s]Loading weights:  44%|████▍     | 175/399 [00:11<01:11,  3.13it/s]Loading weights:  45%|████▌     | 181/399 [00:11<00:51,  4.25it/s]Loading weights: 100%|██████████| 399/399 [00:08<00:00, 48.50it/s]
+[gpu] allocated 6.08 GiB, reserved 6.16 GiB
+  1/3 007a44f1 rounds=3 calls=7 sql_err=0 pred='No, Investment Banking Fees decreased by 4% from 2006 to 2007' 44.346s
+  2/3 00fa4ad4 rounds=3 calls=7 sql_err=0 pred='2734' 78.943s
+  3/3 01208501 rounds=2 calls=6 sql_err=1 pred='793000 65385' 37.77s
+[end] 2026-09-29T03:28:58+09:00 rc=0

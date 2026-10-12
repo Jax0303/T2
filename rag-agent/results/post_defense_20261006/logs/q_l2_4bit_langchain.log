@@ -1,0 +1,79 @@
+[start] 2026-10-07T20:05:59+09:00 $P scripts/baselines/langchain_chunk.py --stage answer --limit 200 --out-dir $S/llm_qwen17_4bit/langchain_chunk --records $B/langchain_chunk/langchain_chunk_records.jsonl --reader local:Qwen/Qwen3-1.7B?quantization=4bit --resume
+[scorer] gold 를 예측으로 넣었을 때 EM=0.945 (n=200)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:   0%|          | 1/311 [00:00<01:23,  3.72it/s]Loading weights:   1%|          | 2/311 [00:00<01:21,  3.78it/s]Loading weights:   2%|▏         | 5/311 [00:00<00:30, 10.07it/s]Loading weights:   9%|▊         | 27/311 [00:00<00:04, 62.41it/s]Loading weights:  15%|█▌        | 48/311 [00:00<00:02, 98.15it/s]Loading weights:  21%|██        | 65/311 [00:00<00:02, 116.95it/s]Loading weights:  27%|██▋       | 83/311 [00:01<00:01, 130.20it/s]Loading weights:  34%|███▍      | 105/311 [00:01<00:01, 152.45it/s]Loading weights:  43%|████▎     | 133/311 [00:01<00:00, 186.57it/s]Loading weights:  49%|████▉     | 153/311 [00:01<00:01, 125.53it/s]Loading weights:  54%|█████▍    | 169/311 [00:02<00:02, 55.62it/s] Loading weights:  58%|█████▊    | 181/311 [00:02<00:02, 50.42it/s]Loading weights:  64%|██████▍   | 200/311 [00:02<00:01, 66.30it/s]Loading weights:  68%|██████▊   | 213/311 [00:02<00:01, 67.80it/s]Loading weights:  72%|███████▏  | 224/311 [00:03<00:01, 68.48it/s]Loading weights:  75%|███████▌  | 234/311 [00:03<00:01, 72.58it/s]Loading weights:  78%|███████▊  | 244/311 [00:03<00:01, 45.21it/s]Loading weights:  81%|████████  | 252/311 [00:04<00:01, 31.19it/s]Loading weights:  83%|████████▎ | 258/311 [00:04<00:02, 24.74it/s]Loading weights:  85%|████████▌ | 265/311 [00:04<00:01, 28.40it/s]Loading weights:  87%|████████▋ | 270/311 [00:04<00:01, 30.44it/s]Loading weights:  90%|█████████ | 280/311 [00:05<00:00, 40.02it/s]Loading weights:  92%|█████████▏| 287/311 [00:05<00:00, 44.21it/s]Loading weights:  94%|█████████▍| 293/311 [00:05<00:00, 39.25it/s]Loading weights:  97%|█████████▋| 301/311 [00:05<00:00, 46.08it/s]Loading weights:  99%|█████████▊| 307/311 [00:05<00:00, 48.65it/s]Loading weights: 100%|██████████| 311/311 [00:05<00:00, 55.97it/s]
+2026-10-07 20:06:11,739 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 20:06:11,862 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.12s.
+  128/200  73s
+2026-10-07 20:07:24,145 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 20:07:24,226 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.08s.
+  200/200  125s
+{
+  "arm": "langchain_chunk",
+  "reader": "local:Qwen/Qwen3-1.7B?quantization=4bit",
+  "prompt": "tutorial",
+  "system_message": null,
+  "prompt_text": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\nQuestion: {question} \nContext: {context} \nAnswer:",
+  "prompt_sha256": "1462f2b9c9afb154fb5c32956722325fa2f2aae9a357e2a0f584978c28d93f48",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.945,
+    "n": 200,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 11
+  },
+  "limit": 200,
+  "n": 200,
+  "marker_missing": 2,
+  "n_over_context_limit": 0,
+  "generation_seconds": 124.4,
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "retrieval_accuracy_here": 0.985,
+      "answer_em": 0.11,
+      "answer_f1": 0.1245,
+      "input_tokens_mean": 1397.8
+    },
+    "arith_m1": {
+      "n": 14,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 1493.6
+    },
+    "arith_m2+": {
+      "n": 70,
+      "retrieval_accuracy_here": 0.9714,
+      "answer_em": 0.0286,
+      "answer_f1": 0.0286,
+      "input_tokens_mean": 1355.2
+    },
+    "lookup_m1": {
+      "n": 49,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.3061,
+      "answer_f1": 0.3061,
+      "input_tokens_mean": 1379.3
+    },
+    "lookup_m2+": {
+      "n": 67,
+      "retrieval_accuracy_here": 0.9851,
+      "answer_em": 0.0746,
+      "answer_f1": 0.1181,
+      "input_tokens_mean": 1435.8
+    }
+  },
+  "records_sha256": "e45a5ad3607807fd637ed347bbd06adca87688234ad4dc4ff45ed792e8bbe332"
+}

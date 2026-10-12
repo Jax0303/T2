@@ -1,0 +1,89 @@
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "official_code": [
+    "google-research/google-research  directory table_rag",
+    "commit 08a8d6736475776f42ffac23b2c13111a28e5795",
+    "fetched 2026-09-29 (git sparse-checkout)"
+  ],
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 128,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 200,
+  "resumed": 76,
+  "provenance": {
+    "git_commit": "460b6f72ad4d646f7c410a2890de75711aeaae2d",
+    "git_dirty": true,
+    "source_sha256": "fe5257fd98c6543d2501d1cdac37755959ed72f8f53f2828ea59951c91cda893",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "n_queries": 124,
+  "seconds": 4804.0,
+  "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",
+  "by_layer": {
+    "ALL": {
+      "n": 124,
+      "accuracy_all": 0.121,
+      "accuracy_any_DIAGNOSTIC": 0.3145,
+      "cells_delivered_mean": 6.9,
+      "units_mean": 13.6,
+      "context_tokens_mean": 999.5,
+      "expansion_llm_calls_mean": 2.02
+    },
+    "arith_m1": {
+      "n": 8,
+      "accuracy_all": 0.375,
+      "accuracy_any_DIAGNOSTIC": 0.375,
+      "cells_delivered_mean": 6.6,
+      "units_mean": 13.0,
+      "context_tokens_mean": 1182.9,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m2+": {
+      "n": 36,
+      "accuracy_all": 0.0556,
+      "accuracy_any_DIAGNOSTIC": 0.3333,
+      "cells_delivered_mean": 6.2,
+      "units_mean": 13.6,
+      "context_tokens_mean": 960.0,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m1": {
+      "n": 30,
+      "accuracy_all": 0.1667,
+      "accuracy_any_DIAGNOSTIC": 0.1667,
+      "cells_delivered_mean": 6.0,
+      "units_mean": 12.0,
+      "context_tokens_mean": 1031.2,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m2+": {
+      "n": 50,
+      "accuracy_all": 0.1,
+      "accuracy_any_DIAGNOSTIC": 0.38,
+      "cells_delivered_mean": 7.9,
+      "units_mean": 14.7,
+      "context_tokens_mean": 979.6,
+      "expansion_llm_calls_mean": 2.04
+    }
+  },
+  "records_sha256": "7c33aa3b3c4e4c282457b8e6e81f2c9a09c6c4821c2deb4d9d8b602e91c2d31a"
+}

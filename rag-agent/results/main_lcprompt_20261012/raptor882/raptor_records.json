@@ -1,0 +1,102 @@
+{
+  "baseline": "raptor",
+  "raptor_repo": "https://github.com/parthsarthi03/raptor",
+  "raptor_commit": "7da1d48a7e1d7dec61a63c9d9aae84e2dfaa5767",
+  "records_source": "results/mh_only_20260928/retrieval/mh_train_s3c_records.jsonl",
+  "answer_set": "results/mh_arms/cap300_20260924/cell_uniq.jsonl",
+  "limit": 882,
+  "n_queries": 882,
+  "n_scored": 882,
+  "n_excluded": 0,
+  "excluded": {},
+  "n_documents": 582,
+  "chunk_tokens_cl100k": 100,
+  "summary_max_tokens": 100,
+  "budgets_qwen3_tokens": [
+    2000,
+    575
+  ],
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "summarizer": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "n_summary_calls_total": 410,
+  "tree_seconds_total": 7068.1,
+  "cluster_failed_leaves_only": {
+    "n": 1,
+    "doc_keys": [
+      "bfa683648f1b2d29"
+    ]
+  },
+  "tree_stats_mean": {
+    "n_leaves": 12.75,
+    "n_nodes": 14.62,
+    "n_layers": 0.52,
+    "n_summary_calls": 1.87,
+    "seconds": 12.14,
+    "n_doc_tok_cl100k": 1102.6
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 882,
+      "accuracy_all_2000": 0.7789,
+      "accuracy_all_575": 0.6395,
+      "n_tok_2000_mean": 1428.6,
+      "n_tok_575_mean": 526.4
+    },
+    "arith_m1": {
+      "n": 71,
+      "accuracy_all_2000": 0.4789,
+      "accuracy_all_575": 0.338,
+      "n_tok_2000_mean": 1367.7,
+      "n_tok_575_mean": 517.9
+    },
+    "arith_m2+": {
+      "n": 300,
+      "accuracy_all_2000": 0.8133,
+      "accuracy_all_575": 0.6567,
+      "n_tok_2000_mean": 1404.2,
+      "n_tok_575_mean": 524.2
+    },
+    "lookup_m1": {
+      "n": 211,
+      "accuracy_all_2000": 0.8152,
+      "accuracy_all_575": 0.7109,
+      "n_tok_2000_mean": 1434.8,
+      "n_tok_575_mean": 531.0
+    },
+    "lookup_m2+": {
+      "n": 300,
+      "accuracy_all_2000": 0.79,
+      "accuracy_all_575": 0.6433,
+      "n_tok_2000_mean": 1463.1,
+      "n_tok_575_mean": 527.3
+    }
+  },
+  "provenance": {
+    "git_commit": "edcbfe1a4e362f50f249e571c9c3a73005612a9a",
+    "git_dirty": true,
+    "source_sha256": "b8eff1bd3e1906154bfb3022214d69394ba2e134e8b4d874efe982b1eddc10af",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "limit": 882,
+    "out_dir": "results/main_lcprompt_20261012/raptor882",
+    "tree_dir": "results/mh_only_20260928/baselines/raptor/trees",
+    "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "batch_size": 128,
+    "seed": 42,
+    "dry_run": false,
+    "resume": true,
+    "embed_device": null
+  }
+}

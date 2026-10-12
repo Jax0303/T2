@@ -1,0 +1,78 @@
+[scorer] gold 를 예측으로 넣었을 때 EM=0.945 (n=200)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<05:49,  1.14it/s]Loading weights:   1%|          | 2/399 [00:01<05:37,  1.18it/s]Loading weights:   1%|          | 4/399 [00:01<02:29,  2.65it/s]Loading weights:   2%|▏         | 6/399 [00:02<01:29,  4.38it/s]Loading weights:   4%|▍         | 15/399 [00:02<00:25, 14.96it/s]Loading weights:   5%|▍         | 19/399 [00:02<00:22, 17.10it/s]Loading weights:   7%|▋         | 26/399 [00:02<00:15, 24.10it/s]Loading weights:   8%|▊         | 30/399 [00:02<00:14, 25.60it/s]Loading weights:   9%|▉         | 37/399 [00:02<00:10, 33.78it/s]Loading weights:  11%|█▏        | 45/399 [00:02<00:08, 43.11it/s]Loading weights:  13%|█▎        | 51/399 [00:02<00:07, 45.06it/s]Loading weights:  15%|█▌        | 60/399 [00:03<00:06, 55.00it/s]Loading weights:  18%|█▊        | 70/399 [00:03<00:05, 65.07it/s]Loading weights:  20%|█▉        | 78/399 [00:03<00:04, 67.29it/s]Loading weights:  22%|██▏       | 86/399 [00:03<00:04, 64.64it/s]Loading weights:  23%|██▎       | 93/399 [00:03<00:04, 65.27it/s]Loading weights:  26%|██▌       | 103/399 [00:03<00:04, 69.41it/s]Loading weights:  28%|██▊       | 111/399 [00:03<00:04, 66.25it/s]Loading weights:  30%|██▉       | 118/399 [00:03<00:04, 58.49it/s]Loading weights:  32%|███▏      | 126/399 [00:04<00:04, 62.39it/s]Loading weights:  34%|███▍      | 136/399 [00:04<00:03, 68.65it/s]Loading weights:  36%|███▌      | 144/399 [00:04<00:03, 64.19it/s]Loading weights:  38%|███▊      | 151/399 [00:04<00:03, 62.04it/s]Loading weights:  40%|███▉      | 159/399 [00:04<00:03, 64.76it/s]Loading weights:  42%|████▏     | 169/399 [00:04<00:03, 72.61it/s]Loading weights:  90%|████████▉ | 358/399 [00:04<00:00, 519.42it/s]Loading weights: 100%|██████████| 399/399 [00:05<00:00, 76.20it/s] 
+2026-10-08 12:22:41,208 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-08 12:22:41,267 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.06s.
+  128/200  837s
+2026-10-08 12:36:37,869 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-08 12:36:37,897 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+  200/200  1427s
+{
+  "arm": "langchain_chunk",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt": "cot",
+  "system_message": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\n---\nContext:\n{context}\n\nQuestion: {question}\nAnswer:",
+  "prompt_sha256": "1f5ae3c04b4bc1b7f9409a3877a851db59b00c25ab06cc67725bcd1ee93b6d30",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.945,
+    "n": 200,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 11
+  },
+  "limit": 0,
+  "n": 200,
+  "marker_missing": 6,
+  "n_over_context_limit": 0,
+  "generation_seconds": 1427.3,
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "retrieval_accuracy_here": 0.75,
+      "answer_em": 0.295,
+      "answer_f1": 0.3068,
+      "input_tokens_mean": 1735.1
+    },
+    "arith_m1": {
+      "n": 14,
+      "retrieval_accuracy_here": 0.7143,
+      "answer_em": 0.1429,
+      "answer_f1": 0.1429,
+      "input_tokens_mean": 1708.6
+    },
+    "arith_m2+": {
+      "n": 70,
+      "retrieval_accuracy_here": 0.7286,
+      "answer_em": 0.1286,
+      "answer_f1": 0.1286,
+      "input_tokens_mean": 1690.4
+    },
+    "lookup_m1": {
+      "n": 49,
+      "retrieval_accuracy_here": 0.898,
+      "answer_em": 0.5102,
+      "answer_f1": 0.5182,
+      "input_tokens_mean": 1765.3
+    },
+    "lookup_m2+": {
+      "n": 67,
+      "retrieval_accuracy_here": 0.6716,
+      "answer_em": 0.3433,
+      "answer_f1": 0.3725,
+      "input_tokens_mean": 1765.3
+    }
+  },
+  "records_sha256": "7833c7ccea13f5e8a0c61525a78b29bf88022372ce396825375e9809f748e436"
+}

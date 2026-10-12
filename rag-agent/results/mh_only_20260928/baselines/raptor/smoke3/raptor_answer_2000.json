@@ -1,0 +1,52 @@
+{
+  "budget_qwen3_tokens": 2000,
+  "n": 3,
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "seed": 42,
+  "max_new_tokens": 384,
+  "batch_size": 1,
+  "qa_system": "You are Question Answering Portal",
+  "qa_user": "Given Context: {context} Give the best full answer amongst the option to question {question} On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "scorer": "multihiertt_em.mh_exact_match (공식 EM) + multihiertt_f1.mh_f1 (공식 F1 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "marker_missing": 0,
+  "generation_seconds": 12.1,
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "answer_em": 0.3333,
+      "f1": 0.3333,
+      "retrieval_accuracy_here": 1.0,
+      "input_tokens_mean": 1660.3
+    },
+    "arith_m2+": {
+      "n": 1,
+      "answer_em": 0.0,
+      "f1": 0.0,
+      "retrieval_accuracy_here": 1.0,
+      "input_tokens_mean": 1968.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "answer_em": 0.5,
+      "f1": 0.5,
+      "retrieval_accuracy_here": 1.0,
+      "input_tokens_mean": 1506.5
+    }
+  },
+  "provenance": {
+    "git_commit": "7d4d8ff1a49911e71fdf3c75d8d98361b688cd36",
+    "git_dirty": true,
+    "source_sha256": "6506a510d43ed0b023c22edbbf445fba5b71c8657431ffa2fb607a52b94c62cc",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  }
+}

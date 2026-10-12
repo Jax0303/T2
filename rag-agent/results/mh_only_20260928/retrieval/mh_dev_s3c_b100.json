@@ -1,0 +1,359 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "validation",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "cell_text": "ours",
+  "n_units_table_description": null,
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "21ffc197c4e9e22cebc61c3637e4aa490a941cd6",
+    "git_dirty": true,
+    "source_sha256": "d97bb882e12fe561fc60c0a8a56f5b45eb09b4fa0d70b8f32f227f9e1c7527e7",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "validation",
+    "unit": "cell",
+    "template": "s3c",
+    "row_text": "values",
+    "cell_text": "ours",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v3.3u",
+    "label_rule": "none",
+    "keep_hybrid": false,
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "budget": 100,
+    "label_mix": null,
+    "k_ladder": "1,5,10,20,50,75,100",
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "only_uids": "",
+    "question_suffix": "",
+    "shard": 50000,
+    "dump_context": 1,
+    "dump_ranked": 100,
+    "cache_dir": ".cache/rerun_20260926_mh",
+    "out_dir": "results/mh_only_20260928/retrieval",
+    "tag": "mh_dev_s3c_b100",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 53778,
+      "max_tokens": 137,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 338,
+      "max_tokens": 55,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": null,
+  "budget_cells": 100,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 338,
+  "n_tables": 1369,
+  "n_units": 53778,
+  "corpus_text_sha256": "8685130bc233aab2dd1ffacd3905952db38df349f33d16e002de6758c27d867b",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 706
+  },
+  "n_queries": 338,
+  "n_scored": 332,
+  "n_excluded": 6,
+  "excluded_by_reason": {
+    "gold_in_header": 3,
+    "gold_table_unparsed": 3
+  },
+  "query_ids_sha256": "9ee3c716b405f41c5fe93b54536e74c73753dbced6d5a24c7aaff61ed814e90f",
+  "by_layer": {
+    "ALL": {
+      "n": 332,
+      "corpus": {
+        "accuracy_all": 0.7078,
+        "accuracy_any_DIAGNOSTIC": 0.8675,
+        "gold_doc_in_context": 0.9428,
+        "cells_delivered_mean": 100.0,
+        "accuracy_all_at_k": {
+          "1": 0.012,
+          "5": 0.1717,
+          "10": 0.2982,
+          "20": 0.4307,
+          "50": 0.5873,
+          "75": 0.6566,
+          "100": 0.7078
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.994,
+        "accuracy_any_DIAGNOSTIC": 0.997,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 95.6,
+        "accuracy_all_at_k": {
+          "1": 0.0331,
+          "5": 0.5361,
+          "10": 0.7349,
+          "20": 0.8735,
+          "50": 0.9759,
+          "75": 0.994,
+          "100": 0.994
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 59.2,
+        "accuracy_all_at_k": {
+          "1": 0.0331,
+          "5": 0.5783,
+          "10": 0.7771,
+          "20": 0.9157,
+          "50": 0.991,
+          "75": 1.0,
+          "100": 1.0
+        }
+      },
+      "mean_m": 2.768,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 10,
+      "corpus": {
+        "accuracy_all": 0.9,
+        "accuracy_any_DIAGNOSTIC": 0.9,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 100.0,
+        "accuracy_all_at_k": {
+          "1": 0.4,
+          "5": 0.8,
+          "10": 0.8,
+          "20": 0.8,
+          "50": 0.8,
+          "75": 0.9,
+          "100": 0.9
+        }
+      },
+      "doc": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 92.6,
+        "accuracy_all_at_k": {
+          "1": 0.6,
+          "5": 0.9,
+          "10": 1.0,
+          "20": 1.0,
+          "50": 1.0,
+          "75": 1.0,
+          "100": 1.0
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 34.2,
+        "accuracy_all_at_k": {
+          "1": 0.6,
+          "5": 1.0,
+          "10": 1.0,
+          "20": 1.0,
+          "50": 1.0,
+          "75": 1.0,
+          "100": 1.0
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 254,
+      "corpus": {
+        "accuracy_all": 0.685,
+        "accuracy_any_DIAGNOSTIC": 0.8661,
+        "gold_doc_in_context": 0.937,
+        "cells_delivered_mean": 100.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.1457,
+          "10": 0.2598,
+          "20": 0.4055,
+          "50": 0.5551,
+          "75": 0.626,
+          "100": 0.685
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9961,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 95.7,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5,
+          "10": 0.7087,
+          "20": 0.8819,
+          "50": 0.9803,
+          "75": 0.9961,
+          "100": 0.9961
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 55.8,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5394,
+          "10": 0.7598,
+          "20": 0.9291,
+          "50": 0.9921,
+          "75": 1.0,
+          "100": 1.0
+        }
+      },
+      "mean_m": 2.736,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 20,
+      "corpus": {
+        "accuracy_all": 0.75,
+        "accuracy_any_DIAGNOSTIC": 0.75,
+        "gold_doc_in_context": 0.95,
+        "cells_delivered_mean": 100.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.2,
+          "10": 0.4,
+          "20": 0.55,
+          "50": 0.7,
+          "75": 0.7,
+          "100": 0.75
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.95,
+        "accuracy_any_DIAGNOSTIC": 0.95,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 95.2,
+        "accuracy_all_at_k": {
+          "1": 0.25,
+          "5": 0.8,
+          "10": 0.8,
+          "20": 0.85,
+          "50": 0.95,
+          "75": 0.95,
+          "100": 0.95
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 70.5,
+        "accuracy_all_at_k": {
+          "1": 0.25,
+          "5": 0.8,
+          "10": 0.8,
+          "20": 0.85,
+          "50": 0.95,
+          "75": 1.0,
+          "100": 1.0
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 48,
+      "corpus": {
+        "accuracy_all": 0.7708,
+        "accuracy_any_DIAGNOSTIC": 0.9167,
+        "gold_doc_in_context": 0.9583,
+        "cells_delivered_mean": 100.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.1667,
+          "10": 0.3542,
+          "20": 0.4375,
+          "50": 0.6667,
+          "75": 0.75,
+          "100": 0.7708
+        }
+      },
+      "doc": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 96.1,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5417,
+          "10": 0.7917,
+          "20": 0.8125,
+          "50": 0.9583,
+          "75": 1.0,
+          "100": 1.0
+        }
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 77.6,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.6042,
+          "10": 0.8125,
+          "20": 0.8542,
+          "50": 1.0,
+          "75": 1.0,
+          "100": 1.0
+        }
+      },
+      "mean_m": 4.042,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "0f6691fa59378fc331cacdd52bfd78f1b25600169c77ed5dd4e54905af7777a6"
+}

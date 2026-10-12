@@ -1,0 +1,176 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[pop] 200 queries (답변 200, 제외 {'needs_text_evidence': 4922}); [scorer] gold 를 예측으로 넣었을 때 EM=0.945
+[resume] 저장된 76건 건너뜀
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<05:53,  1.12it/s]Loading weights:   1%|          | 2/399 [00:01<06:17,  1.05it/s]Loading weights:   1%|          | 4/399 [00:01<02:34,  2.56it/s]Loading weights:   2%|▏         | 6/399 [00:02<01:35,  4.12it/s]Loading weights:   3%|▎         | 10/399 [00:08<06:55,  1.07s/it]Loading weights:   4%|▍         | 16/399 [00:09<03:08,  2.03it/s]Loading weights:  81%|████████  | 323/399 [00:13<00:02, 36.55it/s]Loading weights:  82%|████████▏ | 327/399 [00:13<00:01, 36.59it/s]Loading weights: 100%|██████████| 399/399 [00:08<00:00, 49.74it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 55/199 [00:00<00:00, 525.88it/s]Loading weights:  55%|█████▌    | 110/199 [00:00<00:00, 521.82it/s]Loading weights:  84%|████████▍ | 168/199 [00:00<00:00, 547.47it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 639.09it/s]
+  80/200  169s  답변 4  em=0.2500
+  100/200  974s  답변 24  em=0.0833
+  120/200  1776s  답변 44  em=0.0909
+  140/200  2527s  답변 64  em=0.0625
+  160/200  3265s  답변 84  em=0.0595
+  180/200  4074s  답변 104  em=0.0481
+  200/200  4811s  답변 124  em=0.0484
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 128,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 200,
+  "resumed": 76,
+  "n": 124,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.945,
+    "n": 200,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 11
+  },
+  "pred_rule": "원본 solver_loop 의 answer (마지막 'Answer:' 뒤 첫 줄) 그대로, 추가 추출 없음",
+  "generation_seconds": 4804.0,
+  "by_layer": {
+    "ALL": {
+      "n": 124,
+      "retrieval_accuracy_here": 0.121,
+      "answer_em": 0.0484,
+      "answer_f1": 0.0588,
+      "input_tokens_mean": 7263.7,
+      "llm_calls_mean": 6.32,
+      "code_errors_mean": 2.57,
+      "terminal_rate": 0.3468,
+      "seconds_mean": 38.7
+    },
+    "arith_m1": {
+      "n": 8,
+      "retrieval_accuracy_here": 0.375,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 7464.6,
+      "llm_calls_mean": 5.88,
+      "code_errors_mean": 1.62,
+      "terminal_rate": 0.5,
+      "seconds_mean": 35.5
+    },
+    "arith_m2+": {
+      "n": 36,
+      "retrieval_accuracy_here": 0.0556,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 7465.6,
+      "llm_calls_mean": 6.5,
+      "code_errors_mean": 2.89,
+      "terminal_rate": 0.2778,
+      "seconds_mean": 40.9
+    },
+    "lookup_m1": {
+      "n": 30,
+      "retrieval_accuracy_here": 0.1667,
+      "answer_em": 0.0333,
+      "answer_f1": 0.0333,
+      "input_tokens_mean": 6618.6,
+      "llm_calls_mean": 5.93,
+      "code_errors_mean": 2.17,
+      "terminal_rate": 0.5,
+      "seconds_mean": 33.5
+    },
+    "lookup_m2+": {
+      "n": 50,
+      "retrieval_accuracy_here": 0.1,
+      "answer_em": 0.1,
+      "answer_f1": 0.1258,
+      "input_tokens_mean": 7473.4,
+      "llm_calls_mean": 6.5,
+      "code_errors_mean": 2.74,
+      "terminal_rate": 0.28,
+      "seconds_mean": 40.8
+    }
+  },
+  "records_sha256": "908254703e43ece3c8579a869d1146da2208dbfdd4a4d8bc35e9ed9471a5592e"
+}
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 128,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 200,
+  "resumed": 76,
+  "n_queries": 124,
+  "seconds": 4804.0,
+  "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",
+  "by_layer": {
+    "ALL": {
+      "n": 124,
+      "accuracy_all": 0.121,
+      "accuracy_any_DIAGNOSTIC": 0.3145,
+      "cells_delivered_mean": 6.9,
+      "units_mean": 13.6,
+      "context_tokens_mean": 999.5,
+      "expansion_llm_calls_mean": 2.02
+    },
+    "arith_m1": {
+      "n": 8,
+      "accuracy_all": 0.375,
+      "accuracy_any_DIAGNOSTIC": 0.375,
+      "cells_delivered_mean": 6.6,
+      "units_mean": 13.0,
+      "context_tokens_mean": 1182.9,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m2+": {
+      "n": 36,
+      "accuracy_all": 0.0556,
+      "accuracy_any_DIAGNOSTIC": 0.3333,
+      "cells_delivered_mean": 6.2,
+      "units_mean": 13.6,
+      "context_tokens_mean": 960.0,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m1": {
+      "n": 30,
+      "accuracy_all": 0.1667,
+      "accuracy_any_DIAGNOSTIC": 0.1667,
+      "cells_delivered_mean": 6.0,
+      "units_mean": 12.0,
+      "context_tokens_mean": 1031.2,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m2+": {
+      "n": 50,
+      "accuracy_all": 0.1,
+      "accuracy_any_DIAGNOSTIC": 0.38,
+      "cells_delivered_mean": 7.9,
+      "units_mean": 14.7,
+      "context_tokens_mean": 979.6,
+      "expansion_llm_calls_mean": 2.04
+    }
+  },
+  "records_sha256": "7c33aa3b3c4e4c282457b8e6e81f2c9a09c6c4821c2deb4d9d8b602e91c2d31a"
+}

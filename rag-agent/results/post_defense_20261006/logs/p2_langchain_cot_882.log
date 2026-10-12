@@ -1,0 +1,94 @@
+[start] 2026-10-07T18:41:35+09:00 $P scripts/baselines/langchain_chunk.py --stage answer --prompt cot --out-dir $S/prompt2x2/langchain_cot --records $B/langchain_chunk/langchain_chunk_records.jsonl --resume
+[scorer] gold 를 예측으로 넣었을 때 EM=0.9512471655328798 (n=882)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:01<07:53,  1.19s/it]Loading weights:   1%|          | 2/399 [00:01<06:08,  1.08it/s]Loading weights:   1%|          | 4/399 [00:02<02:37,  2.51it/s]Loading weights:   2%|▏         | 6/399 [00:02<01:37,  4.05it/s]Loading weights:   4%|▍         | 16/399 [00:02<00:25, 14.90it/s]Loading weights:   6%|▌         | 24/399 [00:02<00:15, 23.97it/s]Loading weights:   7%|▋         | 29/399 [00:02<00:13, 26.61it/s]Loading weights:  10%|▉         | 38/399 [00:02<00:10, 35.08it/s]Loading weights:  12%|█▏        | 48/399 [00:02<00:07, 47.04it/s]Loading weights:  14%|█▍        | 56/399 [00:02<00:06, 53.90it/s]Loading weights:  16%|█▌        | 63/399 [00:03<00:06, 53.97it/s]Loading weights:  18%|█▊        | 71/399 [00:03<00:05, 59.68it/s]Loading weights:  20%|██        | 81/399 [00:03<00:04, 64.87it/s]Loading weights:  22%|██▏       | 89/399 [00:03<00:04, 67.73it/s]Loading weights:  24%|██▍       | 97/399 [00:03<00:04, 67.91it/s]Loading weights:  26%|██▋       | 105/399 [00:03<00:04, 60.92it/s]Loading weights:  29%|██▊       | 114/399 [00:03<00:04, 67.69it/s]Loading weights:  31%|███       | 122/399 [00:03<00:04, 67.45it/s]Loading weights:  33%|███▎      | 130/399 [00:04<00:04, 66.23it/s]Loading weights:  34%|███▍      | 137/399 [00:04<00:04, 62.44it/s]Loading weights:  37%|███▋      | 147/399 [00:04<00:03, 67.42it/s]Loading weights:  39%|███▊      | 154/399 [00:04<00:04, 58.71it/s]Loading weights:  40%|████      | 161/399 [00:04<00:04, 56.77it/s]Loading weights:  43%|████▎     | 170/399 [00:04<00:03, 62.16it/s]Loading weights:  45%|████▌     | 180/399 [00:04<00:03, 70.75it/s]Loading weights:  47%|████▋     | 188/399 [00:04<00:02, 71.59it/s]Loading weights:  49%|████▉     | 196/399 [00:05<00:03, 67.47it/s]Loading weights:  51%|█████     | 204/399 [00:05<00:02, 65.14it/s]Loading weights:  54%|█████▎    | 214/399 [00:05<00:02, 71.07it/s]Loading weights:  56%|█████▌    | 224/399 [00:05<00:02, 72.02it/s]Loading weights:  58%|█████▊    | 232/399 [00:05<00:02, 68.62it/s]Loading weights:  60%|█████▉    | 239/399 [00:05<00:02, 62.93it/s]Loading weights:  62%|██████▏   | 247/399 [00:05<00:02, 63.63it/s]Loading weights:  64%|██████▍   | 257/399 [00:06<00:02, 67.59it/s]Loading weights:  66%|██████▌   | 264/399 [00:06<00:02, 67.18it/s]Loading weights:  68%|██████▊   | 271/399 [00:06<00:02, 63.08it/s]Loading weights:  70%|███████   | 280/399 [00:06<00:01, 67.35it/s]Loading weights:  73%|███████▎  | 290/399 [00:06<00:01, 74.17it/s]Loading weights:  75%|███████▍  | 298/399 [00:06<00:01, 74.97it/s]Loading weights:  77%|███████▋  | 306/399 [00:06<00:01, 69.58it/s]Loading weights:  79%|███████▊  | 314/399 [00:06<00:01, 65.05it/s]Loading weights:  81%|████████  | 324/399 [00:06<00:01, 71.62it/s]Loading weights:  84%|████████▎ | 334/399 [00:07<00:00, 72.87it/s]Loading weights:  86%|████████▌ | 342/399 [00:07<00:00, 71.57it/s]Loading weights:  88%|████████▊ | 350/399 [00:07<00:00, 68.30it/s]Loading weights:  89%|████████▉ | 357/399 [00:07<00:00, 64.62it/s]Loading weights:  92%|█████████▏| 367/399 [00:07<00:00, 67.73it/s]Loading weights:  94%|█████████▎| 374/399 [00:07<00:00, 66.91it/s]Loading weights:  95%|█████████▌| 381/399 [00:07<00:00, 62.74it/s]Loading weights:  98%|█████████▊| 390/399 [00:07<00:00, 67.27it/s]Loading weights: 100%|██████████| 399/399 [00:08<00:00, 49.68it/s]
+2026-10-07 18:41:51,688 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 18:41:51,753 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.07s.
+  128/882  647s
+2026-10-07 18:52:38,701 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 18:52:38,726 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  256/882  1341s
+2026-10-07 19:04:12,730 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 19:04:12,754 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  384/882  2014s
+2026-10-07 19:15:25,492 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 19:15:25,517 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  512/882  2771s
+2026-10-07 19:28:02,491 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 19:28:02,511 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  640/882  3603s
+2026-10-07 19:41:54,620 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 19:41:54,640 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  768/882  4302s
+2026-10-07 19:53:34,164 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-07 19:53:34,184 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.02s.
+  882/882  5033s
+{
+  "arm": "langchain_chunk",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt": "cot",
+  "system_message": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\n---\nContext:\n{context}\n\nQuestion: {question}\nAnswer:",
+  "prompt_sha256": "1f5ae3c04b4bc1b7f9409a3877a851db59b00c25ab06cc67725bcd1ee93b6d30",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.9512471655328798,
+    "n": 882,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 43
+  },
+  "limit": 0,
+  "n": 882,
+  "marker_missing": 23,
+  "n_over_context_limit": 0,
+  "generation_seconds": 5033.3,
+  "by_layer": {
+    "ALL": {
+      "n": 882,
+      "retrieval_accuracy_here": 0.983,
+      "answer_em": 0.4592,
+      "answer_f1": 0.4816,
+      "input_tokens_mean": 1373.9
+    },
+    "arith_m1": {
+      "n": 71,
+      "retrieval_accuracy_here": 0.9859,
+      "answer_em": 0.338,
+      "answer_f1": 0.338,
+      "input_tokens_mean": 1352.7
+    },
+    "arith_m2+": {
+      "n": 300,
+      "retrieval_accuracy_here": 0.9833,
+      "answer_em": 0.2367,
+      "answer_f1": 0.2367,
+      "input_tokens_mean": 1365.3
+    },
+    "lookup_m1": {
+      "n": 211,
+      "retrieval_accuracy_here": 0.9905,
+      "answer_em": 0.5972,
+      "answer_f1": 0.6041,
+      "input_tokens_mean": 1368.8
+    },
+    "lookup_m2+": {
+      "n": 300,
+      "retrieval_accuracy_here": 0.9767,
+      "answer_em": 0.6133,
+      "answer_f1": 0.6743,
+      "input_tokens_mean": 1391.0
+    }
+  },
+  "records_sha256": "9b1259cc352e8496cd98aeb5dcdb45730df652dc7e8a3eb6a9794e8aae1e784d"
+}

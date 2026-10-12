@@ -1,0 +1,28 @@
+[same-queries] 882 요청 -> 882 (새 레코드에 없음 0)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:  48%|████▊     | 192/399 [00:04<00:05, 39.77it/s]Loading weights:  50%|████▉     | 199/399 [00:04<00:04, 40.54it/s]Loading weights: 100%|██████████| 399/399 [00:01<00:00, 347.15it/s]
+2026-09-28 23:25:54,126 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 23:25:54,193 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.07s.
+2026-09-28 23:29:14,034 - ContinuousBatchingLogger - ERROR - Error in generation loop: No requests can be scheduled and no request can be offloaded.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 898, in _run_generation_loop
+    requests_available = batch_processor.prepare_next_batch()  # this is where the TP group communicates
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 384, in prepare_next_batch
+    raise RuntimeError("No requests can be scheduled and no request can be offloaded.")
+RuntimeError: No requests can be scheduled and no request can be offloaded.
+2026-09-28 23:29:15,040 - ContinuousBatchingLogger - ERROR - Generation thread terminated unexpectedly.
+2026-09-28 23:29:21,890 - ContinuousBatchingLogger - ERROR - Requests ['req_0', 'req_1', 'req_2', 'req_4', 'req_5', 'req_6', 'req_7', 'req_8', 'req_9', 'req_10', 'req_11', 'req_12', 'req_13', 'req_14', 'req_15', 'req_16', 'req_17', 'req_18', 'req_19', 'req_20', 'req_21', 'req_22', 'req_24', 'req_25', 'req_26', 'req_27', 'req_28', 'req_29', 'req_30', 'req_33', 'req_35', 'req_36', 'req_37', 'req_38', 'req_39', 'req_40', 'req_41', 'req_44', 'req_46', 'req_48', 'req_49', 'req_50', 'req_51', 'req_53', 'req_54', 'req_55', 'req_56', 'req_57', 'req_58', 'req_60', 'req_61', 'req_62', 'req_63', 'req_64', 'req_65', 'req_66', 'req_68', 'req_69', 'req_71', 'req_72', 'req_74', 'req_75', 'req_77', 'req_78', 'req_79', 'req_80', 'req_81', 'req_82', 'req_83', 'req_85', 'req_86', 'req_88', 'req_89', 'req_90', 'req_91', 'req_92', 'req_93', 'req_94', 'req_95', 'req_96', 'req_97', 'req_98', 'req_99', 'req_100', 'req_101', 'req_102', 'req_103', 'req_104', 'req_105', 'req_106', 'req_107', 'req_108', 'req_109', 'req_110', 'req_111', 'req_112', 'req_114', 'req_115', 'req_116', 'req_117', 'req_120', 'req_121', 'req_122', 'req_123', 'req_125', 'req_126', 'req_127'] not found in results.
+Returning results of generate_batch despite unexpected termination.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 426, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 362, in main
+    for r, n_tok, raw, seconds in generate([r for r in scored if r["query_id"] not in done]):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 355, in generate
+    llm.complete_batch(PROMPTS[a.prompt], users, max_tokens=a.max_tokens))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 150, in complete_batch
+    raise RuntimeError(f"generate_batch 가 {len(ids)}건 중 {len(keys)}건만 돌려줬다")
+RuntimeError: generate_batch 가 128건 중 21건만 돌려줬다

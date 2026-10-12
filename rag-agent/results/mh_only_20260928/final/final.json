@@ -1,0 +1,191 @@
+{
+ "manifest": {
+  "본 방법 (셀 문장)": {
+   "retrieval": "results/mh_only_20260928/retrieval/mh_train_s3c_records.jsonl",
+   "retrieval_sha256": "67498f9c18b2c40df3a2c3cbf966f76f075d63daad9801e597f206a5a5c94130",
+   "answer": "results/mh_arms/cap300_20260924/cell_uniq.jsonl",
+   "answer_sha256": "62e5efaa5393296afb81959628cf8e704587e4378253392a6edf52c309f7a4ad",
+   "header_rule_answer_run": "v3.3u",
+   "condition": "retrieved",
+   "context_mismatch_vs_retrieval": 0,
+   "context_mismatch_ids": []
+  },
+  "TableRAG(Yu) 청크": {
+   "retrieval": "results/mh_only_20260928/retrieval/mh_train_trag_hetero_records.jsonl",
+   "retrieval_sha256": "a8f58b09c4e304a6bf6eb0f7bd9eb39d839f3514789aa39c36c83a7d65d7c9b8",
+   "answer": "results/mh_arms/cap300_20260924/trag_hetero.jsonl",
+   "answer_sha256": "2d6e58092303580b21be0b7b267d8ae05d72eba9c7148c027e47c33812e01b96",
+   "header_rule_answer_run": "v1",
+   "condition": "retrieved",
+   "context_mismatch_vs_retrieval": 2,
+   "context_mismatch_ids": [
+    "04fc33c30dc94c9b9ad0fb5b3e14c6e4",
+    "e228ad8c5d5e4b11aa3d8edc9c624d4c"
+   ]
+  },
+  "TableRAG(Chen) leaf": {
+   "retrieval": "results/mh_only_20260928/retrieval/mh_train_tablerag_leaf_records.jsonl",
+   "retrieval_sha256": "0f6f0d4ca602a9c6f6b84c290873ee7e4270b29c03a79ef1b419f4c9406950a3",
+   "answer": "results/tablerag_official_20260928/answers/mh_tablerag_leaf_official.jsonl",
+   "answer_sha256": "c504862b78991c19b11fb8bfabb1f5c0266d866c43da425734f1bb334dc761e0",
+   "header_rule_answer_run": "v3.3u",
+   "condition": "retrieved",
+   "context_mismatch_vs_retrieval": 0,
+   "context_mismatch_ids": []
+  },
+  "TableRAG(Chen) path": {
+   "retrieval": "results/mh_only_20260928/retrieval/mh_train_tablerag_path_records.jsonl",
+   "retrieval_sha256": "9ec9249cf086a453485f925fdb3601863436d33dac3935d9aba06c20c5321e71",
+   "answer": "results/tablerag_official_20260928/answers/mh_tablerag_path_official.jsonl",
+   "answer_sha256": "14572a812578b23f923d8d1a6c705a9c6fe16245e8232ea7045fa24c6fcf32c1",
+   "header_rule_answer_run": "v3.3u",
+   "condition": "retrieved",
+   "context_mismatch_vs_retrieval": 0,
+   "context_mismatch_ids": []
+  },
+  "참고: 표 전체 입력": {
+   "retrieval": null,
+   "retrieval_sha256": null,
+   "answer": "results/mh_arms/cap300_20260924/fulltable.jsonl",
+   "answer_sha256": "81e608a5e0423bca53ec0b7fca78aab74f3cbeb27e28d0b53751dba2902afaeb",
+   "header_rule_answer_run": "v1",
+   "condition": "fulltable",
+   "context_mismatch_vs_retrieval": 0,
+   "context_mismatch_ids": []
+  },
+  "부록: 고정 청크": {
+   "retrieval": "results/mh_only_20260928/retrieval/mh_train_chunk_records.jsonl",
+   "retrieval_sha256": "9ba00aac1ad71b9aef9f84de7b0d65567d35337d96b3ab7393e67074ce7c6973",
+   "answer": "results/reader_format_20260927/test/mh_chunk_final.jsonl",
+   "answer_sha256": "4cac398c991c85abbc1f468f1295734d518fa577232bed3a2054a00686829407",
+   "header_rule_answer_run": "v3.3u",
+   "condition": "retrieved",
+   "context_mismatch_vs_retrieval": 0,
+   "context_mismatch_ids": []
+  }
+ },
+ "retrieval_2885": {
+  "본 방법 (셀 문장)": {
+   "correct": 2491,
+   "rate": 0.8634,
+   "by_group": {
+    "lookup_m1": 0.9575,
+    "lookup_m2+": 0.8774,
+    "arith_m1": 0.9577,
+    "arith_m2+": 0.8492
+   },
+   "b": 0,
+   "c": 0,
+   "p": 1.0
+  },
+  "TableRAG(Yu) 청크": {
+   "correct": 2015,
+   "rate": 0.6984,
+   "by_group": {
+    "lookup_m1": 0.8019,
+    "lookup_m2+": 0.7548,
+    "arith_m1": 0.8451,
+    "arith_m2+": 0.6747
+   },
+   "b": 672,
+   "c": 196,
+   "p": 1.0640277904154384e-61,
+   "p_holm": 1.0640277904154384e-61
+  },
+  "TableRAG(Chen) leaf": {
+   "correct": 1001,
+   "rate": 0.347,
+   "by_group": {
+    "lookup_m1": 0.5047,
+    "lookup_m2+": 0.2698,
+    "arith_m1": 0.6761,
+    "arith_m2+": 0.3342
+   },
+   "b": 1549,
+   "c": 59,
+   "p": 0.0,
+   "p_holm": 0.0
+  },
+  "TableRAG(Chen) path": {
+   "correct": 1098,
+   "rate": 0.3806,
+   "by_group": {
+    "lookup_m1": 0.6274,
+    "lookup_m2+": 0.376,
+    "arith_m1": 0.6479,
+    "arith_m2+": 0.3494
+   },
+   "b": 1465,
+   "c": 72,
+   "p": 0.0,
+   "p_holm": 0.0
+  },
+  "부록: 고정 청크": {
+   "correct": 2074,
+   "rate": 0.7189,
+   "by_group": {
+    "lookup_m1": 0.8255,
+    "lookup_m2+": 0.8065,
+    "arith_m1": 0.831,
+    "arith_m2+": 0.6908
+   },
+   "b": 618,
+   "c": 201,
+   "p": 4.403727300851395e-50
+  }
+ },
+ "answer_882": {
+  "본 방법 (셀 문장)": {
+   "correct": 408,
+   "rate": 0.4626,
+   "b": 0,
+   "c": 0,
+   "p": 1.0,
+   "main": true
+  },
+  "TableRAG(Yu) 청크": {
+   "correct": 361,
+   "rate": 0.4093,
+   "b": 128,
+   "c": 81,
+   "p": 0.0014047781081729287,
+   "main": true,
+   "p_holm": 0.0028095562163458574
+  },
+  "TableRAG(Chen) leaf": {
+   "correct": 79,
+   "rate": 0.0896,
+   "b": 343,
+   "c": 14,
+   "p": 3.4366103353052474e-83,
+   "main": true,
+   "p_holm": 1.374644134122099e-82
+  },
+  "TableRAG(Chen) path": {
+   "correct": 114,
+   "rate": 0.1293,
+   "b": 316,
+   "c": 22,
+   "p": 7.346853458756432e-68,
+   "main": true,
+   "p_holm": 2.2040560376269295e-67
+  },
+  "참고: 표 전체 입력": {
+   "correct": 378,
+   "rate": 0.4286,
+   "b": 114,
+   "c": 84,
+   "p": 0.03903905591217148,
+   "main": true,
+   "p_holm": 0.03903905591217148
+  },
+  "부록: 고정 청크": {
+   "correct": 368,
+   "rate": 0.4172,
+   "b": 118,
+   "c": 78,
+   "p": 0.005208719734947976,
+   "main": false
+  }
+ }
+}

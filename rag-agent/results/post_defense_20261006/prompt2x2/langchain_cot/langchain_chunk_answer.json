@@ -1,0 +1,94 @@
+{
+  "arm": "langchain_chunk",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "reader_details": {
+    "name": "local:Qwen/Qwen3-8B?quantization=4bit",
+    "revision_requested": null,
+    "revision_resolved": "b968826d9c46dd6066d109eabc6255188de91218",
+    "quantization": "4bit",
+    "device": "cuda",
+    "dtype": "torch.bfloat16",
+    "context_limit": 40960,
+    "enable_thinking": false
+  },
+  "prompt": "cot",
+  "system_message": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\n---\nContext:\n{context}\n\nQuestion: {question}\nAnswer:",
+  "prompt_sha256": "1f5ae3c04b4bc1b7f9409a3877a851db59b00c25ab06cc67725bcd1ee93b6d30",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.9512471655328798,
+    "n": 882,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 43
+  },
+  "limit": 0,
+  "n": 882,
+  "marker_missing": 23,
+  "n_over_context_limit": 0,
+  "generation_seconds": 5033.3,
+  "provenance": {
+    "git_commit": "a5cded9d7d2a88dc1712049141f155759b9d1084",
+    "git_dirty": true,
+    "source_sha256": "3ca6aefb58f89f997ffbbab8b67ff09d340ddf7812fd27bc5ad6e8d4fe86ebbf",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 882,
+      "retrieval_accuracy_here": 0.983,
+      "answer_em": 0.4592,
+      "answer_f1": 0.4816,
+      "input_tokens_mean": 1373.9
+    },
+    "arith_m1": {
+      "n": 71,
+      "retrieval_accuracy_here": 0.9859,
+      "answer_em": 0.338,
+      "answer_f1": 0.338,
+      "input_tokens_mean": 1352.7
+    },
+    "arith_m2+": {
+      "n": 300,
+      "retrieval_accuracy_here": 0.9833,
+      "answer_em": 0.2367,
+      "answer_f1": 0.2367,
+      "input_tokens_mean": 1365.3
+    },
+    "lookup_m1": {
+      "n": 211,
+      "retrieval_accuracy_here": 0.9905,
+      "answer_em": 0.5972,
+      "answer_f1": 0.6041,
+      "input_tokens_mean": 1368.8
+    },
+    "lookup_m2+": {
+      "n": 300,
+      "retrieval_accuracy_here": 0.9767,
+      "answer_em": 0.6133,
+      "answer_f1": 0.6743,
+      "input_tokens_mean": 1391.0
+    }
+  },
+  "records_sha256": "9b1259cc352e8496cd98aeb5dcdb45730df652dc7e8a3eb6a9794e8aae1e784d"
+}

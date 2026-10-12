@@ -1,0 +1,6331 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "ba1e8859b7d89d6cd0f874dc74cc29d8aa111597",
+  "generatedAt": "2026-09-16T07:08:24.178Z",
+  "files": {
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "694a2d721e41c385f3db492838c23299826df5ba9809e3b0721aac70021e196a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": false
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "d044818c04fb0fa7386f4828fa9f3bd69d882d4146be846c150e8fb0d9f5ea1a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 53,
+      "hasStructuralAnalysis": false
+    },
+    "rag-agent/pyproject.toml": {
+      "filePath": "rag-agent/pyproject.toml",
+      "contentHash": "b6882cee08516c04c88a2927514018f23e291b2f42d441c55870138d7e33fc83",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "rag-agent/rag_agent/__init__.py": {
+      "filePath": "rag-agent/rag_agent/__init__.py",
+      "contentHash": "268a96918a8f3af09c8efb182c1b657b54c0d19b9cae7004b845d7fd3fbce30e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/bench/__init__.py": {
+      "filePath": "rag-agent/rag_agent/bench/__init__.py",
+      "contentHash": "3a0035daf8606fa77e832a6e81985a1e958a48f77334d8a14f95ed74f019f676",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".schema",
+          "specifiers": [
+            "BenchTable",
+            "BenchQuery",
+            "GoldOperand",
+            "Chunk"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/bench/hitab.py": {
+      "filePath": "rag-agent/rag_agent/bench/hitab.py",
+      "contentHash": "4086b445ae12c1c091c69f51ca43cc3df2cd37ebd3604fe8f2d342284e9928ca",
+      "functions": [
+        {
+          "name": "_bench_table_from_original",
+          "params": [
+            "ot"
+          ],
+          "returnType": "BenchTable",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_operand",
+          "params": [
+            "bt",
+            "r",
+            "c"
+          ],
+          "returnType": "GoldOperand",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "load_tables",
+          "params": [
+            "data_dir",
+            "table_ids"
+          ],
+          "returnType": "Dict[str, BenchTable]",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "load_queries",
+          "params": [
+            "data_dir",
+            "split",
+            "max_samples"
+          ],
+          "returnType": "tuple",
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Dict",
+            "List",
+            "Optional"
+          ]
+        },
+        {
+          "source": "..data.loader",
+          "specifiers": [
+            "load_samples",
+            "load_table"
+          ]
+        },
+        {
+          "source": "..stores.original_store",
+          "specifiers": [
+            "build_original_table",
+            "OriginalTable"
+          ]
+        },
+        {
+          "source": ".",
+          "specifiers": [
+            "_grid"
+          ]
+        },
+        {
+          "source": ".schema",
+          "specifiers": [
+            "BenchTable",
+            "BenchQuery",
+            "GoldOperand"
+          ]
+        }
+      ],
+      "exports": [
+        "_bench_table_from_original",
+        "_operand",
+        "load_tables",
+        "load_queries"
+      ],
+      "totalLines": 109,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/bench/hitab_grid.py": {
+      "filePath": "rag-agent/rag_agent/bench/hitab_grid.py",
+      "contentHash": "0b4da98c249fe0817f8ba212018cd05f9307fca3addc97b65cddcf7f034e3037",
+      "functions": [
+        {
+          "name": "norm_value",
+          "params": [
+            "v"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "col_index",
+          "params": [
+            "letters"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "parse_coord",
+          "params": [
+            "coord"
+          ],
+          "returnType": "Optional[Tuple[int, int]]",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "_children",
+          "params": [
+            "node"
+          ],
+          "returnType": "List[dict]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_raw_text",
+          "params": [
+            "texts",
+            "node"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "axis_map",
+          "params": [
+            "hmt_root",
+            "raw_root",
+            "texts",
+            "axis"
+          ],
+          "returnType": "Dict[int, int]",
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "_dirs",
+          "params": [
+            "data_dir"
+          ],
+          "returnType": "Tuple[Path, Path]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "table_ids",
+          "params": [
+            "data_dir"
+          ],
+          "returnType": "List[str]",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "load_table",
+          "params": [
+            "table_id",
+            "data_dir"
+          ],
+          "returnType": "Optional[HitabTable]",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "formula_refs",
+          "params": [
+            "sample"
+          ],
+          "returnType": "Tuple[List[Tuple[int, int]], Optional[str]]",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "linked_refs",
+          "params": [
+            "sample"
+          ],
+          "returnType": "List[Tuple[int, int]]",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "gold_cells",
+          "params": [
+            "sample",
+            "tab"
+          ],
+          "returnType": "Tuple[set, Optional[str]]",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "_find_node",
+          "params": [
+            "root",
+            "raw_root",
+            "texts",
+            "rc",
+            "axis"
+          ],
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "header_scope",
+          "params": [
+            "tab",
+            "rc"
+          ],
+          "returnType": "set",
+          "exported": true,
+          "lineCount": 34
+        },
+        {
+          "name": "gold_target",
+          "params": [
+            "sample",
+            "tab"
+          ],
+          "returnType": "Tuple[set, str, Optional[str]]",
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "answer_gold",
+          "params": [
+            "sample",
+            "tab"
+          ],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "classes": [
+        {
+          "name": "HitabTable",
+          "methods": [
+            "__init__",
+            "_fill_gaps",
+            "to_data"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 42
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "lru_cache"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Dict",
+            "List",
+            "Optional",
+            "Tuple"
+          ]
+        },
+        {
+          "source": "..stores.original_store",
+          "specifiers": [
+            "OriginalTable",
+            "_to_float",
+            "build_original_table"
+          ]
+        }
+      ],
+      "exports": [
+        "norm_value",
+        "col_index",
+        "parse_coord",
+        "_children",
+        "_raw_text",
+        "axis_map",
+        "HitabTable",
+        "_dirs",
+        "table_ids",
+        "load_table",
+        "formula_refs",
+        "linked_refs",
+        "gold_cells",
+        "_find_node",
+        "header_scope",
+        "gold_target",
+        "answer_gold"
+      ],
+      "totalLines": 419,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/bench/schema.py": {
+      "filePath": "rag-agent/rag_agent/bench/schema.py",
+      "contentHash": "1ca81009b984cbabe9abd9459b4108ffe9fb5d458cf0060375bf488b98217548",
+      "functions": [],
+      "classes": [
+        {
+          "name": "GoldOperand",
+          "methods": [
+            "path_str"
+          ],
+          "properties": [
+            "row",
+            "col",
+            "header_path",
+            "value",
+            "value_type"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "BenchTable",
+          "methods": [
+            "n_rows",
+            "n_cols",
+            "col_path",
+            "row_path",
+            "cell",
+            "full_path"
+          ],
+          "properties": [
+            "table_id",
+            "title",
+            "data",
+            "top_paths",
+            "left_paths",
+            "source"
+          ],
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "BenchQuery",
+          "methods": [],
+          "properties": [
+            "query_id",
+            "question",
+            "gold_table_id",
+            "answer",
+            "gold_operands",
+            "aggregation",
+            "split",
+            "source",
+            "exclusion_reason"
+          ],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "Chunk",
+          "methods": [
+            "covers"
+          ],
+          "properties": [
+            "table_id",
+            "chunk_id",
+            "text",
+            "rows",
+            "cols"
+          ],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "imports": [
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass",
+            "field"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "List",
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "GoldOperand",
+        "BenchTable",
+        "BenchQuery",
+        "Chunk"
+      ],
+      "totalLines": 107,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/data/__init__.py": {
+      "filePath": "rag-agent/rag_agent/data/__init__.py",
+      "contentHash": "e23d845c43aa98db65383c27d45fbec8326ea14a41429682c8839c1a9af10667",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".loader",
+          "specifiers": [
+            "load_hitab",
+            "load_samples",
+            "load_table",
+            "get_answer",
+            "get_query_from_sample",
+            "get_table_from_sample",
+            "get_table_id"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/data/loader.py": {
+      "filePath": "rag-agent/rag_agent/data/loader.py",
+      "contentHash": "100fd0626cf18074f3afb917bea5a68d781bab86b8648660b7384ad82ac73be9",
+      "functions": [
+        {
+          "name": "_find_data_root",
+          "params": [
+            "data_dir"
+          ],
+          "returnType": "Path",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "load_samples",
+          "params": [
+            "data_dir",
+            "split",
+            "max_samples"
+          ],
+          "returnType": "List[dict]",
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "load_table",
+          "params": [
+            "table_id",
+            "data_dir"
+          ],
+          "returnType": "Optional[dict]",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "load_hitab",
+          "params": [
+            "data_dir",
+            "split",
+            "max_samples"
+          ],
+          "returnType": "List[dict]",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "get_table_from_sample",
+          "params": [
+            "sample"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "get_query_from_sample",
+          "params": [
+            "sample"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "get_table_id",
+          "params": [
+            "sample"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_answer",
+          "params": [
+            "sample"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "print_sample_structure",
+          "params": [
+            "sample",
+            "max_depth"
+          ],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "List",
+            "Optional",
+            "Dict"
+          ]
+        }
+      ],
+      "exports": [
+        "_find_data_root",
+        "load_samples",
+        "load_table",
+        "load_hitab",
+        "get_table_from_sample",
+        "get_query_from_sample",
+        "get_table_id",
+        "get_answer",
+        "print_sample_structure"
+      ],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/eval/__init__.py": {
+      "filePath": "rag-agent/rag_agent/eval/__init__.py",
+      "contentHash": "5a427f3a83ee3a2efae033bff9e3113e2a49cd2bd371c8c770a716ba2bd8440b",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".metrics",
+          "specifiers": [
+            "numeric_match",
+            "exact_match",
+            "recall_at_k",
+            "mrr",
+            "ndcg_at_k",
+            "difficulty_class",
+            "HARD_CLASSES"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/eval/answer_em.py": {
+      "filePath": "rag-agent/rag_agent/eval/answer_em.py",
+      "contentHash": "f220381cc24000d5ee97b8a7758bdf145fd9bd3100b48d0b1945079f69afc874",
+      "functions": [
+        {
+          "name": "query_type",
+          "params": [
+            "aggregation"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "em_official",
+          "params": [
+            "pred",
+            "gold"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "format_defect",
+          "params": [
+            "pred",
+            "gold",
+            "tol"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "score",
+          "params": [
+            "pred",
+            "gold",
+            "aggregation"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "self_check",
+          "params": [
+            "records"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".metrics",
+          "specifiers": [
+            "_to_nums",
+            "hitab_exact_match_text"
+          ]
+        }
+      ],
+      "exports": [
+        "query_type",
+        "em_official",
+        "format_defect",
+        "score",
+        "self_check"
+      ],
+      "totalLines": 107,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/eval/artifacts.py": {
+      "filePath": "rag-agent/rag_agent/eval/artifacts.py",
+      "contentHash": "e9a56681dcf62e76afc53f0bfb584f8d8b299b536eb1ff5e896427383dc9b63f",
+      "functions": [
+        {
+          "name": "digest",
+          "params": [
+            "value"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "file_digest",
+          "params": [
+            "path"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "read_records",
+          "params": [
+            "path"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "require_same_ids",
+          "params": [
+            "reference",
+            "other",
+            "label"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "evidence_fields",
+          "params": [
+            "selection",
+            "gold"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "validate_retrieval",
+          "params": [
+            "row"
+          ],
+          "exported": true,
+          "lineCount": 37
+        },
+        {
+          "name": "provenance",
+          "params": [
+            "root"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "write_pair",
+          "params": [
+            "records_path",
+            "rows",
+            "summary",
+            "summary_path"
+          ],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [
+        {
+          "name": "Selection",
+          "methods": [
+            "context",
+            "__iter__"
+          ],
+          "properties": [
+            "cells",
+            "units",
+            "dump"
+          ],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "imports": [
+        {
+          "source": "hashlib",
+          "specifiers": [
+            "hashlib"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "platform",
+          "specifiers": [
+            "platform"
+          ]
+        },
+        {
+          "source": "subprocess",
+          "specifiers": [
+            "subprocess"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass"
+          ]
+        },
+        {
+          "source": "importlib.metadata",
+          "specifiers": [
+            "PackageNotFoundError",
+            "version"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        }
+      ],
+      "exports": [
+        "digest",
+        "file_digest",
+        "read_records",
+        "require_same_ids",
+        "Selection",
+        "evidence_fields",
+        "validate_retrieval",
+        "provenance",
+        "write_pair"
+      ],
+      "totalLines": 156,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/eval/metrics.py": {
+      "filePath": "rag-agent/rag_agent/eval/metrics.py",
+      "contentHash": "b55363de5c52b438854201b772908f8825719452c8f2f60cbc91428bfe39da68",
+      "functions": [
+        {
+          "name": "_to_nums",
+          "params": [
+            "s"
+          ],
+          "returnType": "List[float]",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "_flatten_strs",
+          "params": [
+            "g"
+          ],
+          "returnType": "List[str]",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "numeric_match",
+          "params": [
+            "pred",
+            "gold",
+            "rel_tol"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 45
+        },
+        {
+          "name": "exact_match",
+          "params": [
+            "pred",
+            "gold"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "_wtq_normalize",
+          "params": [
+            "x"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "_hmt_str_to_float",
+          "params": [
+            "s"
+          ],
+          "exported": true,
+          "lineCount": 28
+        },
+        {
+          "name": "_hmt_process",
+          "params": [
+            "v"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "_hmt_equal",
+          "params": [
+            "p",
+            "g"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "hitab_exact_match",
+          "params": [
+            "pred",
+            "gold"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "hitab_exact_match_text",
+          "params": [
+            "pred_text",
+            "gold"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "_multi_string_match",
+          "params": [
+            "pred_text",
+            "gold"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "recall_at_k",
+          "params": [
+            "ranked_ids",
+            "gold_id",
+            "k"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "mrr",
+          "params": [
+            "ranked_ids",
+            "gold_id"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "ndcg_at_k",
+          "params": [
+            "ranked_ids",
+            "gold_id",
+            "k"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_formula_ops",
+          "params": [
+            "sample"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "difficulty_class",
+          "params": [
+            "sample"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "macro_avg",
+          "params": [
+            "values"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "unicodedata",
+          "specifiers": [
+            "unicodedata"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Iterable",
+            "List"
+          ]
+        }
+      ],
+      "exports": [
+        "_to_nums",
+        "_flatten_strs",
+        "numeric_match",
+        "exact_match",
+        "_wtq_normalize",
+        "_hmt_str_to_float",
+        "_hmt_process",
+        "_hmt_equal",
+        "hitab_exact_match",
+        "hitab_exact_match_text",
+        "_multi_string_match",
+        "recall_at_k",
+        "mrr",
+        "ndcg_at_k",
+        "_formula_ops",
+        "difficulty_class",
+        "macro_avg"
+      ],
+      "totalLines": 369,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/eval/multihiertt_em.py": {
+      "filePath": "rag-agent/rag_agent/eval/multihiertt_em.py",
+      "contentHash": "ebc660161a2acd80579ec508f4115b8e1ff27bdd1a184c0316bd4fd7c4210828",
+      "functions": [
+        {
+          "name": "str_to_num",
+          "params": [
+            "text"
+          ],
+          "returnType": "object",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_is_number",
+          "params": [
+            "text"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "_normalize_number",
+          "params": [
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_remove_punc",
+          "params": [
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_normalize_answer",
+          "params": [
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "_bags",
+          "params": [
+            "answer"
+          ],
+          "returnType": "List[Set[str]]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "_spans",
+          "params": [
+            "answer"
+          ],
+          "returnType": "List[str]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "span_exact_match",
+          "params": [
+            "pred",
+            "gold"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "mh_exact_match",
+          "params": [
+            "pred",
+            "gold"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "self_check",
+          "params": [
+            "golds"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "string",
+          "specifiers": [
+            "string"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "List",
+            "Set"
+          ]
+        }
+      ],
+      "exports": [
+        "str_to_num",
+        "_is_number",
+        "_normalize_number",
+        "_remove_punc",
+        "_normalize_answer",
+        "_bags",
+        "_spans",
+        "span_exact_match",
+        "mh_exact_match",
+        "self_check"
+      ],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/eval/strict_recall.py": {
+      "filePath": "rag-agent/rag_agent/eval/strict_recall.py",
+      "contentHash": "d6ffd7bd5ce346f4f7e7fd90fedf25b1659a889acac4b4b976883f02393a69e4",
+      "functions": [
+        {
+          "name": "question_type",
+          "params": [
+            "arithmetic",
+            "n_gold"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "score",
+          "params": [
+            "gold",
+            "pred",
+            "carriers"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "row",
+          "params": [
+            "dataset",
+            "split",
+            "query_id",
+            "qtype",
+            "gold",
+            "pred",
+            "carriers",
+            "table_of",
+            "table_metrics",
+            "**extra"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "summarize",
+          "params": [
+            "rows"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "outputs",
+          "params": [
+            "out_dir",
+            "tag"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "write",
+          "params": [
+            "out_dir",
+            "tag",
+            "rows",
+            "groups",
+            "meta",
+            "anomalies",
+            "excluded"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "token_counter",
+          "params": [
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "sweep",
+          "params": [
+            "cases",
+            "grid"
+          ],
+          "returnType": "list",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "choose_threshold",
+          "params": [
+            "sweep_rows"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "selected_threshold",
+          "params": [
+            "sweep_rows",
+            "split",
+            "score_definition",
+            "config"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "load_threshold",
+          "params": [
+            "path",
+            "dataset",
+            "split",
+            "config"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "print_groups",
+          "params": [
+            "blocks"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "csv",
+          "specifiers": [
+            "csv"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "statistics",
+          "specifiers": [
+            "statistics"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": ".artifacts",
+          "specifiers": [
+            "file_digest",
+            "write_pair"
+          ]
+        }
+      ],
+      "exports": [
+        "question_type",
+        "score",
+        "row",
+        "summarize",
+        "outputs",
+        "write",
+        "token_counter",
+        "sweep",
+        "choose_threshold",
+        "selected_threshold",
+        "load_threshold",
+        "print_groups"
+      ],
+      "totalLines": 216,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/llm/__init__.py": {
+      "filePath": "rag-agent/rag_agent/llm/__init__.py",
+      "contentHash": "0e03c4446778329af3a966cfa2ae5aa6bfbec32a0530b890c29b574b6caeeff0",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".base",
+          "specifiers": [
+            "BaseLLM"
+          ]
+        },
+        {
+          "source": ".local_qwen",
+          "specifiers": [
+            "LocalQwenLLM"
+          ]
+        },
+        {
+          "source": ".groq_llm",
+          "specifiers": [
+            "GroqLLM"
+          ]
+        },
+        {
+          "source": ".factory",
+          "specifiers": [
+            "build_llm"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/llm/base.py": {
+      "filePath": "rag-agent/rag_agent/llm/base.py",
+      "contentHash": "812a395acaef98d5347c5d6488722b4610b74bfde65a14ed7266fda225a3903c",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BaseLLM",
+          "methods": [
+            "complete"
+          ],
+          "properties": [
+            "name",
+            "last_finish_reason"
+          ],
+          "exported": true,
+          "lineCount": 15
+        }
+      ],
+      "imports": [
+        {
+          "source": "abc",
+          "specifiers": [
+            "ABC",
+            "abstractmethod"
+          ]
+        }
+      ],
+      "exports": [
+        "BaseLLM"
+      ],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/llm/factory.py": {
+      "filePath": "rag-agent/rag_agent/llm/factory.py",
+      "contentHash": "c4ea96e8a41a54486c4eb6173fe0b7c81a0ef0851dcf65c1c8e00436918f6ac9",
+      "functions": [
+        {
+          "name": "_load_dotenv",
+          "params": [],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "_split_spec",
+          "params": [
+            "model"
+          ],
+          "returnType": "tuple[str, dict]",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "build_llm",
+          "params": [
+            "spec",
+            "**kwargs"
+          ],
+          "returnType": "BaseLLM",
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": ".base",
+          "specifiers": [
+            "BaseLLM"
+          ]
+        },
+        {
+          "source": ".groq_llm",
+          "specifiers": [
+            "GroqLLM"
+          ]
+        },
+        {
+          "source": ".local_qwen",
+          "specifiers": [
+            "LocalQwenLLM"
+          ]
+        },
+        {
+          "source": ".openai_llm",
+          "specifiers": [
+            "OpenAILLM"
+          ]
+        }
+      ],
+      "exports": [
+        "_load_dotenv",
+        "_split_spec",
+        "build_llm"
+      ],
+      "totalLines": 74,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/llm/groq_llm.py": {
+      "filePath": "rag-agent/rag_agent/llm/groq_llm.py",
+      "contentHash": "97869aeb4872af9c0b20a22615ffbf4a3c5e34b8b841af464d9dfea458dfab75",
+      "functions": [
+        {
+          "name": "retry_after",
+          "params": [
+            "msg",
+            "attempt",
+            "cap"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [
+        {
+          "name": "GroqLLM",
+          "methods": [
+            "__init__",
+            "complete"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 82
+        }
+      ],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": ".base",
+          "specifiers": [
+            "BaseLLM"
+          ]
+        }
+      ],
+      "exports": [
+        "retry_after",
+        "GroqLLM"
+      ],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/llm/local_qwen.py": {
+      "filePath": "rag-agent/rag_agent/llm/local_qwen.py",
+      "contentHash": "15348509b7506299f9b50f35773e4af1ce4fb6bd0acc9f4b7f9eea9a5debe963",
+      "functions": [],
+      "classes": [
+        {
+          "name": "LocalQwenLLM",
+          "methods": [
+            "__init__",
+            "metadata",
+            "_prompt",
+            "n_prompt_tokens",
+            "context_limit",
+            "complete"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 98
+        }
+      ],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Optional"
+          ]
+        },
+        {
+          "source": ".base",
+          "specifiers": [
+            "BaseLLM"
+          ]
+        }
+      ],
+      "exports": [
+        "LocalQwenLLM"
+      ],
+      "totalLines": 113,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/llm/openai_llm.py": {
+      "filePath": "rag-agent/rag_agent/llm/openai_llm.py",
+      "contentHash": "d53a496ddb32ea05887af7d9ce6f100b917b4712da130a50ea63ef984b490803",
+      "functions": [],
+      "classes": [
+        {
+          "name": "OpenAILLM",
+          "methods": [
+            "__init__",
+            "complete",
+            "_is_reasoning"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 112
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "urllib.error",
+          "specifiers": [
+            "urllib.error"
+          ]
+        },
+        {
+          "source": "urllib.request",
+          "specifiers": [
+            "urllib.request"
+          ]
+        },
+        {
+          "source": ".base",
+          "specifiers": [
+            "BaseLLM"
+          ]
+        }
+      ],
+      "exports": [
+        "OpenAILLM"
+      ],
+      "totalLines": 156,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/reconstruct/__init__.py": {
+      "filePath": "rag-agent/rag_agent/reconstruct/__init__.py",
+      "contentHash": "e52840e8a5072f321f3f3813b1fc90b6afb8dbd675e1b8c34bae1d10ab67bbaa",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".header_grid",
+          "specifiers": [
+            "guess_n_header_cols",
+            "guess_n_header_rows",
+            "parse_html_table",
+            "parse_html_table_with_merges",
+            "reconstruct_col_paths",
+            "reconstruct_paths_with_merges",
+            "reconstruct_row_paths"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/reconstruct/header_grid.py": {
+      "filePath": "rag-agent/rag_agent/reconstruct/header_grid.py",
+      "contentHash": "9b27d282711702856b7c6a3e66aa9c016ef2ce7d55559b90fc3480954559325e",
+      "functions": [
+        {
+          "name": "parse_html_table",
+          "params": [
+            "html"
+          ],
+          "returnType": "Grid",
+          "exported": true,
+          "lineCount": 46
+        },
+        {
+          "name": "parse_html_table_layout",
+          "params": [
+            "html"
+          ],
+          "exported": true,
+          "lineCount": 55
+        },
+        {
+          "name": "_marked_rows",
+          "params": [
+            "cover"
+          ],
+          "returnType": "set",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_hierarchical_carry",
+          "params": [
+            "levels"
+          ],
+          "returnType": "List[List[str]]",
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "_years",
+          "params": [
+            "path"
+          ],
+          "returnType": "set",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_narrow_col_paths",
+          "params": [
+            "grid",
+            "n_header_rows",
+            "n_header_cols",
+            "cover"
+          ],
+          "returnType": "List[List[str]]",
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "reconstruct_col_paths",
+          "params": [
+            "grid",
+            "n_header_rows",
+            "n_header_cols",
+            "cover",
+            "narrow"
+          ],
+          "returnType": "List[List[str]]",
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "section_label",
+          "params": [
+            "row"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "band_qualifiers",
+          "params": [
+            "grid",
+            "n_header_rows",
+            "n_header_cols"
+          ],
+          "returnType": "List[str]",
+          "exported": true,
+          "lineCount": 33
+        },
+        {
+          "name": "reconstruct_row_paths",
+          "params": [
+            "grid",
+            "n_header_rows",
+            "n_header_cols",
+            "use_section_rows",
+            "use_band_qualifiers",
+            "cover",
+            "close_on_total",
+            "disambiguate",
+            "isolated_blank_only"
+          ],
+          "returnType": "List[List[str]]",
+          "exported": true,
+          "lineCount": 129
+        },
+        {
+          "name": "_stack_levels",
+          "params": [
+            "stacks",
+            "hard0"
+          ],
+          "returnType": "List[List[str]]",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_total_names",
+          "params": [
+            "label",
+            "heading"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "_own_total",
+          "params": [
+            "label",
+            "heading"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "_own_total_below",
+          "params": [
+            "grid",
+            "r",
+            "n_header_cols",
+            "heading"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_split_identical_paths",
+          "params": [
+            "stacks",
+            "sidxs",
+            "trails",
+            "levels",
+            "skip",
+            "closed",
+            "other_years",
+            "skip_numbers",
+            "numbers_guard"
+          ],
+          "exported": true,
+          "lineCount": 61
+        },
+        {
+          "name": "parse_html_table_with_merges",
+          "params": [
+            "html"
+          ],
+          "exported": true,
+          "lineCount": 54
+        },
+        {
+          "name": "_fill_merges",
+          "params": [
+            "grid",
+            "merged_regions"
+          ],
+          "returnType": "Grid",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "reconstruct_paths_with_merges",
+          "params": [
+            "grid",
+            "merged_regions",
+            "n_header_rows",
+            "n_header_cols"
+          ],
+          "exported": true,
+          "lineCount": 64
+        },
+        {
+          "name": "looks_numeric",
+          "params": [
+            "s"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_left_region_blank",
+          "params": [
+            "grid",
+            "r",
+            "n_header_cols"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_left_region_units_note",
+          "params": [
+            "grid",
+            "r",
+            "n_header_cols",
+            "rule"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_year_label_row",
+          "params": [
+            "grid",
+            "r",
+            "n_header_cols"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_number_like",
+          "params": [
+            "s"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "_label_row",
+          "params": [
+            "grid",
+            "r",
+            "n_header_cols",
+            "numbers"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "corner_scope",
+          "params": [
+            "grid",
+            "n_header_rows",
+            "n_header_cols",
+            "col_paths",
+            "row_paths",
+            "max_len"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "_numeric_data_row",
+          "params": [
+            "grid",
+            "r",
+            "n_header_cols"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "_section_boundary",
+          "params": [
+            "grid",
+            "r"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "guess_n_header_rows",
+          "params": [
+            "grid",
+            "n_header_cols",
+            "max_header_rows",
+            "rule"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 63
+        },
+        {
+          "name": "_data_like",
+          "params": [
+            "s"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_numeric_data_col",
+          "params": [
+            "grid",
+            "c",
+            "n_header_rows"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "_col_unlabeled",
+          "params": [
+            "grid",
+            "c",
+            "n_header_rows"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "guess_n_header_cols",
+          "params": [
+            "grid",
+            "n_header_rows",
+            "max_header_cols"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 89
+        }
+      ],
+      "classes": [
+        {
+          "name": "_TableHTMLParser",
+          "methods": [
+            "__init__",
+            "handle_starttag",
+            "handle_data",
+            "handle_endtag"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 35
+        }
+      ],
+      "imports": [
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "html.parser",
+          "specifiers": [
+            "HTMLParser"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Dict",
+            "List"
+          ]
+        }
+      ],
+      "exports": [
+        "_TableHTMLParser",
+        "parse_html_table",
+        "parse_html_table_layout",
+        "_marked_rows",
+        "_hierarchical_carry",
+        "_years",
+        "_narrow_col_paths",
+        "reconstruct_col_paths",
+        "section_label",
+        "band_qualifiers",
+        "reconstruct_row_paths",
+        "_stack_levels",
+        "_total_names",
+        "_own_total",
+        "_own_total_below",
+        "_split_identical_paths",
+        "parse_html_table_with_merges",
+        "_fill_merges",
+        "reconstruct_paths_with_merges",
+        "looks_numeric",
+        "_left_region_blank",
+        "_left_region_units_note",
+        "_year_label_row",
+        "_number_like",
+        "_label_row",
+        "corner_scope",
+        "_numeric_data_row",
+        "_section_boundary",
+        "guess_n_header_rows",
+        "_data_like",
+        "_numeric_data_col",
+        "_col_unlabeled",
+        "guess_n_header_cols"
+      ],
+      "totalLines": 1073,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/reconstruct/treethinker.py": {
+      "filePath": "rag-agent/rag_agent/reconstruct/treethinker.py",
+      "contentHash": "8af65f5c50a7c6a17e024ccdee1b043f0529cad3db725165a38bc2c184cd9ee1",
+      "functions": [
+        {
+          "name": "render_latex",
+          "params": [
+            "grid",
+            "max_rows",
+            "merged_regions"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 49
+        },
+        {
+          "name": "parse_tuples",
+          "params": [
+            "text"
+          ],
+          "returnType": "List[Tuple[str, int, int, int, str]]",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "_norm",
+          "params": [
+            "s"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_paths_at",
+          "params": [
+            "ts",
+            "base",
+            "n_data_lines"
+          ],
+          "returnType": "List[List[str]]",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "calibrate_offset",
+          "params": [
+            "ts",
+            "leaf_labels",
+            "n_data_lines",
+            "search"
+          ],
+          "returnType": "Tuple[int, float]",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "paths_from_tuples",
+          "params": [
+            "tuples",
+            "axis",
+            "n_header_lines",
+            "n_data_lines",
+            "leaf_labels"
+          ],
+          "returnType": "List[List[str]]",
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "demo",
+          "params": [],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 47
+        }
+      ],
+      "classes": [
+        {
+          "name": "TreeThinker",
+          "methods": [
+            "__init__",
+            "_ask",
+            "reconstruct"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 83
+        }
+      ],
+      "imports": [
+        {
+          "source": "hashlib",
+          "specifiers": [
+            "hashlib"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Dict",
+            "List",
+            "Optional",
+            "Sequence",
+            "Tuple"
+          ]
+        }
+      ],
+      "exports": [
+        "render_latex",
+        "parse_tuples",
+        "_norm",
+        "_paths_at",
+        "calibrate_offset",
+        "paths_from_tuples",
+        "TreeThinker",
+        "demo"
+      ],
+      "totalLines": 349,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/retrieve/__init__.py": {
+      "filePath": "rag-agent/rag_agent/retrieve/__init__.py",
+      "contentHash": "49565a3fd30a8cdfb3e3c446ce95fbeced7b57d74adce087c84da30a8965c6c1",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".encoders",
+          "specifiers": [
+            "Encoder",
+            "HashingEncoder",
+            "default_encoder"
+          ]
+        },
+        {
+          "source": ".hybrid_index",
+          "specifiers": [
+            "HybridIndex",
+            "RetrievedChunk"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/retrieve/encoders.py": {
+      "filePath": "rag-agent/rag_agent/retrieve/encoders.py",
+      "contentHash": "04bc3583a358f051e69c1faca0332cafe2c142c1a4eb18b8adc55ae9e616fb80",
+      "functions": [
+        {
+          "name": "_tokenize",
+          "params": [
+            "text"
+          ],
+          "returnType": "List[str]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_l2_normalize",
+          "params": [
+            "mat"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "default_prefixes",
+          "params": [
+            "model_name"
+          ],
+          "returnType": "tuple",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "default_encoder",
+          "params": [
+            "prefer_model",
+            "allow_fallback",
+            "**kwargs"
+          ],
+          "returnType": "Encoder",
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [
+        {
+          "name": "Encoder",
+          "methods": [
+            "encode",
+            "encode_query"
+          ],
+          "properties": [
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "HashingEncoder",
+          "methods": [
+            "__init__",
+            "_bucket",
+            "encode"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "SentenceTransformerEncoder",
+          "methods": [
+            "__init__",
+            "_encode",
+            "encode",
+            "encode_query",
+            "metadata",
+            "audit_inputs"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 78
+        }
+      ],
+      "imports": [
+        {
+          "source": "hashlib",
+          "specifiers": [
+            "hashlib"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "List",
+            "Optional",
+            "Protocol",
+            "runtime_checkable"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        }
+      ],
+      "exports": [
+        "_tokenize",
+        "Encoder",
+        "_l2_normalize",
+        "HashingEncoder",
+        "SentenceTransformerEncoder",
+        "default_prefixes",
+        "default_encoder"
+      ],
+      "totalLines": 213,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/retrieve/hybrid_index.py": {
+      "filePath": "rag-agent/rag_agent/retrieve/hybrid_index.py",
+      "contentHash": "2ecb5de164debbb517c1f41e158f3b56eda7dd694384941850e33b3e771339be",
+      "functions": [
+        {
+          "name": "_minmax",
+          "params": [
+            "scores"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_rrf",
+          "params": [
+            "scores",
+            "rrf_k"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "resolve_dense_backend",
+          "params": [
+            "name"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [
+        {
+          "name": "RetrievedChunk",
+          "methods": [],
+          "properties": [
+            "chunk",
+            "score",
+            "bm25",
+            "dense"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "HybridIndex",
+          "methods": [
+            "__init__",
+            "_build_index",
+            "close",
+            "_dense_scores",
+            "_bm25_scores",
+            "search"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 131
+        }
+      ],
+      "imports": [
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "List",
+            "Optional",
+            "Sequence",
+            "Tuple"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "..serialization.base",
+          "specifiers": [
+            "Chunk"
+          ]
+        },
+        {
+          "source": ".encoders",
+          "specifiers": [
+            "Encoder",
+            "_tokenize",
+            "default_encoder"
+          ]
+        }
+      ],
+      "exports": [
+        "_minmax",
+        "_rrf",
+        "resolve_dense_backend",
+        "RetrievedChunk",
+        "HybridIndex"
+      ],
+      "totalLines": 223,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/retrieve/sparse_bm25.py": {
+      "filePath": "rag-agent/rag_agent/retrieve/sparse_bm25.py",
+      "contentHash": "0d770c564a2e2682c3eeb6c19694f7b3e7b8d4be2a6d38f970d6f3771d717870",
+      "functions": [],
+      "classes": [
+        {
+          "name": "SparseBM25",
+          "methods": [
+            "__init__",
+            "get_scores"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 53
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Iterable",
+            "List",
+            "Sequence"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "scipy.sparse",
+          "specifiers": [
+            "csr_matrix"
+          ]
+        }
+      ],
+      "exports": [
+        "SparseBM25"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/serialization/__init__.py": {
+      "filePath": "rag-agent/rag_agent/serialization/__init__.py",
+      "contentHash": "6e76af7a487fbe17e969867fb7a3b0f1009c04937621e3858d5eb7874c5abc54",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".",
+          "specifiers": [
+            "caption"
+          ]
+        },
+        {
+          "source": ".base",
+          "specifiers": [
+            "Chunk",
+            "TableView",
+            "fmt_value",
+            "join_path",
+            "leaf"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/serialization/base.py": {
+      "filePath": "rag-agent/rag_agent/serialization/base.py",
+      "contentHash": "e2394e8d25ef80f4acda0a1248b7e94d8e1010b1f366461d02f5181562261a85",
+      "functions": [
+        {
+          "name": "fmt_value",
+          "params": [
+            "v"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "leaf",
+          "params": [
+            "path"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "join_path",
+          "params": [
+            "path",
+            "sep"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "TableView",
+          "methods": [
+            "n_rows",
+            "n_cols",
+            "cell",
+            "col_path",
+            "row_path"
+          ],
+          "properties": [
+            "table_id",
+            "title"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "Chunk",
+          "methods": [
+            "to_dict"
+          ],
+          "properties": [
+            "table_id",
+            "chunk_id",
+            "text",
+            "scheme",
+            "kind",
+            "row_index",
+            "col_index",
+            "header_paths",
+            "metadata"
+          ],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "imports": [
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass",
+            "field"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "List",
+            "Optional",
+            "Protocol",
+            "runtime_checkable"
+          ]
+        }
+      ],
+      "exports": [
+        "TableView",
+        "Chunk",
+        "fmt_value",
+        "leaf",
+        "join_path"
+      ],
+      "totalLines": 112,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/serialization/chunks.py": {
+      "filePath": "rag-agent/rag_agent/serialization/chunks.py",
+      "contentHash": "c12442670a23b55765e2a3cee0fcd4f0b3ecff69131faa28eae14701785530de",
+      "functions": [
+        {
+          "name": "markdown_source",
+          "params": [
+            "tab",
+            "table",
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "split_chunks",
+          "params": [
+            "text",
+            "size",
+            "overlap",
+            "tokenizer"
+          ],
+          "exported": true,
+          "lineCount": 34
+        },
+        {
+          "name": "table_chunks",
+          "params": [
+            "tab",
+            "table",
+            "name",
+            "size",
+            "overlap",
+            "tokenizer"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "markdown_source",
+        "split_chunks",
+        "table_chunks"
+      ],
+      "totalLines": 70,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/serialization/tablerag_unit.py": {
+      "filePath": "rag-agent/rag_agent/serialization/tablerag_unit.py",
+      "contentHash": "9476d6fb305d285f857d1cb73153d3b25f1f78ccc75905bd5b6f6bbb8ee4f58c",
+      "functions": [
+        {
+          "name": "_col_name",
+          "params": [
+            "table",
+            "c",
+            "mode"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "_is_numeric_column",
+          "params": [
+            "table",
+            "c"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "schema_doc",
+          "params": [
+            "table",
+            "c",
+            "mode"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cell_doc",
+          "params": [
+            "table",
+            "r",
+            "c",
+            "mode"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "serialize",
+          "params": [
+            "table",
+            "max_encode_cell",
+            "column_name_mode",
+            "**kwargs"
+          ],
+          "returnType": "List[Chunk]",
+          "exported": true,
+          "lineCount": 63
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "collections",
+          "specifiers": [
+            "Counter"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "List",
+            "Optional"
+          ]
+        },
+        {
+          "source": ".base",
+          "specifiers": [
+            "Chunk",
+            "TableView",
+            "fmt_value",
+            "join_path"
+          ]
+        }
+      ],
+      "exports": [
+        "_col_name",
+        "_is_numeric_column",
+        "schema_doc",
+        "cell_doc",
+        "serialize"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/serialization/templates.py": {
+      "filePath": "rag-agent/rag_agent/serialization/templates.py",
+      "contentHash": "1f7a5f32932adaea29e93735a316d6435d17cbb6ca6789bbc162ebaa2c5d1295",
+      "functions": [
+        {
+          "name": "_path",
+          "params": [
+            "path",
+            "sep",
+            "leaf_first"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "render",
+          "params": [
+            "template",
+            "title",
+            "row_path",
+            "col_path",
+            "value"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 55
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Sequence"
+          ]
+        },
+        {
+          "source": ".base",
+          "specifiers": [
+            "fmt_value",
+            "join_path"
+          ]
+        }
+      ],
+      "exports": [
+        "_path",
+        "render"
+      ],
+      "totalLines": 165,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/stores/__init__.py": {
+      "filePath": "rag-agent/rag_agent/stores/__init__.py",
+      "contentHash": "7ac282dd2c8cb3982fe5c09db73acb02b420b210c473738c34d495f92b6f49b1",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".original_store",
+          "specifiers": [
+            "OriginalTable",
+            "TableIndex",
+            "OriginalStore"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/rag_agent/stores/original_store.py": {
+      "filePath": "rag-agent/rag_agent/stores/original_store.py",
+      "contentHash": "42df68cfcb94b1c55e3738d8762106b2375cd2a8ac7f0ad43f41a4063ab15521",
+      "functions": [
+        {
+          "name": "_parse_paths",
+          "params": [
+            "root"
+          ],
+          "returnType": "Tuple[List[List[str]], Dict[int, List[str]]]",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "_to_float",
+          "params": [
+            "v"
+          ],
+          "returnType": "Optional[float]",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "build_original_table",
+          "params": [
+            "raw"
+          ],
+          "returnType": "OriginalTable",
+          "exported": true,
+          "lineCount": 42
+        }
+      ],
+      "classes": [
+        {
+          "name": "OriginalTable",
+          "methods": [
+            "n_rows",
+            "n_cols",
+            "cell",
+            "cell_num",
+            "col_path",
+            "row_path",
+            "to_dataframe",
+            "_match_path",
+            "find_cols_by_header",
+            "find_rows_by_header",
+            "_norm_tokens",
+            "_fuzzy_score",
+            "_fuzzy_find_rows",
+            "_fuzzy_find_cols",
+            "resolve",
+            "excel_ref_to_rc"
+          ],
+          "properties": [
+            "table_id",
+            "title",
+            "data",
+            "top_paths",
+            "left_paths",
+            "top_paths_by_col",
+            "left_paths_by_row"
+          ],
+          "exported": true,
+          "lineCount": 187
+        },
+        {
+          "name": "TableIndex",
+          "methods": [
+            "__init__",
+            "add",
+            "get",
+            "__len__",
+            "ids"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "imports": [
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass",
+            "field"
+          ]
+        },
+        {
+          "source": "difflib",
+          "specifiers": [
+            "SequenceMatcher"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Dict",
+            "List",
+            "Optional",
+            "Tuple"
+          ]
+        },
+        {
+          "source": "pandas",
+          "specifiers": [
+            "pd"
+          ]
+        }
+      ],
+      "exports": [
+        "_parse_paths",
+        "_to_float",
+        "OriginalTable",
+        "build_original_table",
+        "TableIndex"
+      ],
+      "totalLines": 339,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/scripts/answer_accuracy.py": {
+      "filePath": "rag-agent/scripts/answer_accuracy.py",
+      "contentHash": "e6b112b46bd5d70b60b71cf02dc86abf70be72d6765b8a8901a568ab59d492b3",
+      "functions": [
+        {
+          "name": "load_evidence",
+          "params": [
+            "path"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "check_context_limit",
+          "params": [
+            "n_tokens",
+            "max_new_tokens",
+            "context_limit"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "gold_context",
+          "params": [
+            "rec",
+            "tabs",
+            "data_dir"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "load_saved_rows",
+          "params": [
+            "path",
+            "order"
+          ],
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "summarize",
+          "params": [
+            "rows",
+            "limit"
+          ],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 173
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "collections",
+          "specifiers": [
+            "Counter",
+            "defaultdict"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "rag_agent.bench",
+          "specifiers": [
+            "hg"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.metrics",
+          "specifiers": [
+            "hitab_exact_match_text"
+          ]
+        },
+        {
+          "source": "rag_agent.llm.factory",
+          "specifiers": [
+            "build_llm"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.caption",
+          "specifiers": [
+            "caption_sentence",
+            "with_page_title"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.templates",
+          "specifiers": [
+            "STRUCTURAL_COMPACT"
+          ]
+        },
+        {
+          "source": "scripts.retrieval_accuracy",
+          "specifiers": [
+            "PAGE_TITLES"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.artifacts",
+          "specifiers": [
+            "digest",
+            "file_digest",
+            "provenance",
+            "read_records",
+            "validate_retrieval"
+          ]
+        }
+      ],
+      "exports": [
+        "load_evidence",
+        "check_context_limit",
+        "gold_context",
+        "load_saved_rows",
+        "summarize",
+        "main"
+      ],
+      "totalLines": 362,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/scripts/answer_accuracy_mh.py": {
+      "filePath": "rag-agent/scripts/answer_accuracy_mh.py",
+      "contentHash": "d3771af20ad99c7236683cfa8c2bec121f927876df8dfd1863137cb602f48636",
+      "functions": [
+        {
+          "name": "extract",
+          "params": [
+            "text"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "gold_cells_by_query",
+          "params": [
+            "split",
+            "header_rule",
+            "label_rule"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "gold_context",
+          "params": [
+            "cells",
+            "tables"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "summarize",
+          "params": [
+            "rows",
+            "limit"
+          ],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "run_config",
+          "params": [
+            "a",
+            "llm",
+            "details",
+            "ctxs"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "load_saved_rows",
+          "params": [
+            "path",
+            "order",
+            "ctxs"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 185
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "collections",
+          "specifiers": [
+            "defaultdict"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "answer_accuracy",
+          "specifiers": [
+            "PROMPTS",
+            "check_context_limit"
+          ]
+        },
+        {
+          "source": "mh_arms",
+          "specifiers": [
+            "NO_TITLE",
+            "build_tables",
+            "load_population",
+            "resolve_gold"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.artifacts",
+          "specifiers": [
+            "digest",
+            "file_digest",
+            "provenance",
+            "read_records"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.multihiertt_em",
+          "specifiers": [
+            "mh_exact_match",
+            "self_check"
+          ]
+        },
+        {
+          "source": "rag_agent.llm.factory",
+          "specifiers": [
+            "build_llm"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.caption",
+          "specifiers": [
+            "caption_sentence"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.templates",
+          "specifiers": [
+            "STRUCTURAL_COMPACT"
+          ]
+        }
+      ],
+      "exports": [
+        "extract",
+        "gold_cells_by_query",
+        "gold_context",
+        "summarize",
+        "run_config",
+        "load_saved_rows",
+        "main"
+      ],
+      "totalLines": 351,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/scripts/point3_reconstruction_cost.py": {
+      "filePath": "rag-agent/scripts/point3_reconstruction_cost.py",
+      "contentHash": "0f304719745175114fb65d3525dd1d35edaf2ba4759ca4ea79ce178c7cf4c724",
+      "functions": [
+        {
+          "name": "cell_text",
+          "params": [
+            "rp",
+            "cp",
+            "v",
+            "scheme"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "shuffle_ancestors",
+          "params": [
+            "paths",
+            "seed"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "build_table_paths",
+          "params": [
+            "raw",
+            "bt"
+          ],
+          "exported": true,
+          "lineCount": 45
+        },
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 159
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "rag_agent.bench.hitab",
+          "specifiers": [
+            "load_queries"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct",
+          "specifiers": [
+            "reconstruct_col_paths",
+            "reconstruct_row_paths"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.encoders",
+          "specifiers": [
+            "default_encoder"
+          ]
+        },
+        {
+          "source": "tree_reconstruct_hitab_raw",
+          "specifiers": [
+            "align",
+            "norm",
+            "tree_lines"
+          ]
+        }
+      ],
+      "exports": [
+        "cell_text",
+        "shuffle_ancestors",
+        "build_table_paths",
+        "main"
+      ],
+      "totalLines": 286,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/scripts/reader_cot_pilot.py": {
+      "filePath": "rag-agent/scripts/reader_cot_pilot.py",
+      "contentHash": "84c40531abe2b9e1b7b4e20a8e9f35ec78a28c7161f0dd31baa5beab62274333",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 49
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "copy",
+          "specifiers": [
+            "copy"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "random",
+          "specifiers": [
+            "random"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "answer_accuracy_mh",
+          "specifiers": [
+            "COT",
+            "PROMPTS",
+            "extract",
+            "gold_context"
+          ]
+        },
+        {
+          "source": "mh_arms",
+          "specifiers": [
+            "M"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.artifacts",
+          "specifiers": [
+            "write_pair"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.multihiertt_em",
+          "specifiers": [
+            "mh_exact_match"
+          ]
+        },
+        {
+          "source": "rag_agent.llm.factory",
+          "specifiers": [
+            "build_llm"
+          ]
+        }
+      ],
+      "exports": [
+        "main"
+      ],
+      "totalLines": 87,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/scripts/retrieval_accuracy_mh.py": {
+      "filePath": "rag-agent/scripts/retrieval_accuracy_mh.py",
+      "contentHash": "1f639aae7a27cbb6d61059dddd359fb0a91b46001afa36b95797cbb87493f5cf",
+      "functions": [
+        {
+          "name": "_norm",
+          "params": [
+            "s"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "load_population",
+          "params": [
+            "split"
+          ],
+          "exported": true,
+          "lineCount": 38
+        },
+        {
+          "name": "build_corpus",
+          "params": [
+            "docs"
+          ],
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "resolve_gold",
+          "params": [
+            "queries",
+            "cell_index",
+            "tables"
+          ],
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "audit_gold_values",
+          "params": [
+            "queries",
+            "docs"
+          ],
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "layer",
+          "params": [
+            "q"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "rate",
+          "params": [
+            "hits",
+            "n"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 199
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "collections",
+          "specifiers": [
+            "Counter",
+            "defaultdict"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "retrieval_accuracy",
+          "specifiers": [
+            "budget_select"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct",
+          "specifiers": [
+            "guess_n_header_cols",
+            "guess_n_header_rows",
+            "parse_html_table",
+            "reconstruct_col_paths",
+            "reconstruct_row_paths"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.encoders",
+          "specifiers": [
+            "_tokenize",
+            "default_encoder"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.hybrid_index",
+          "specifiers": [
+            "_minmax"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.sparse_bm25",
+          "specifiers": [
+            "SparseBM25"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.caption",
+          "specifiers": [
+            "caption_sentence"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.templates",
+          "specifiers": [
+            "STRUCTURAL_COMPACT"
+          ]
+        }
+      ],
+      "exports": [
+        "_norm",
+        "load_population",
+        "build_corpus",
+        "resolve_gold",
+        "audit_gold_values",
+        "layer",
+        "rate",
+        "main"
+      ],
+      "totalLines": 424,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/scripts/tree_reconstruct_hitab_raw.py": {
+      "filePath": "rag-agent/scripts/tree_reconstruct_hitab_raw.py",
+      "contentHash": "76e345f22ff1e2561869acc74167a83e93b631116abd7b33c023c6c385961338",
+      "functions": [
+        {
+          "name": "_cell",
+          "params": [
+            "texts",
+            "r",
+            "c"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "tree_lines",
+          "params": [
+            "root",
+            "axis"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "_norm_val",
+          "params": [
+            "v"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_label_at",
+          "params": [
+            "texts",
+            "line",
+            "band",
+            "axis"
+          ],
+          "returnType": "set[str]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_align_axis",
+          "params": [
+            "texts",
+            "cand",
+            "band",
+            "axis",
+            "leaf_labels"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "align",
+          "params": [
+            "texts",
+            "rows_c",
+            "cols_c",
+            "nhr",
+            "nhc",
+            "bt",
+            "min_match"
+          ],
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "norm",
+          "params": [
+            "path"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "segment_f1",
+          "params": [
+            "gold",
+            "rec"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "hierarchy_edges",
+          "params": [
+            "paths"
+          ],
+          "returnType": "set",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "size_bucket",
+          "params": [
+            "n_rows",
+            "n_cols"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "score_table",
+          "params": [
+            "raw",
+            "bt",
+            "guess_boundary",
+            "guess_cols",
+            "force_cols",
+            "use_merges",
+            "tt",
+            "row_fn"
+          ],
+          "exported": true,
+          "lineCount": 106
+        },
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 181
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "collections",
+          "specifiers": [
+            "Counter",
+            "defaultdict"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct",
+          "specifiers": [
+            "guess_n_header_cols",
+            "guess_n_header_rows",
+            "reconstruct_col_paths",
+            "reconstruct_paths_with_merges",
+            "reconstruct_row_paths"
+          ]
+        }
+      ],
+      "exports": [
+        "_cell",
+        "tree_lines",
+        "_norm_val",
+        "_label_at",
+        "_align_axis",
+        "align",
+        "norm",
+        "segment_f1",
+        "hierarchy_edges",
+        "size_bucket",
+        "score_table",
+        "main"
+      ],
+      "totalLines": 546,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_answer_resume_mh.py": {
+      "filePath": "rag-agent/tests/test_answer_resume_mh.py",
+      "contentHash": "7a91dc2ebf2a32a67e8afddfbb9b5303037f69627b8c6396cd4a0fbc5bd9f2b6",
+      "functions": [
+        {
+          "name": "fixture",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "run",
+          "params": [
+            "monkeypatch",
+            "rp",
+            "out",
+            "reader",
+            "*extra"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "crashed",
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_crash_then_resume_has_no_gap_or_duplicate",
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ],
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "test_resume_refuses_different_reader_setting",
+          "params": [
+            "tmp_path",
+            "monkeypatch",
+            "change"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "test_resume_refuses_inconsistent_saved_rows",
+          "params": [
+            "tmp_path",
+            "monkeypatch",
+            "tamper",
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [
+        {
+          "name": "Reader",
+          "methods": [
+            "__init__",
+            "metadata",
+            "n_prompt_tokens",
+            "complete"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 18
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "types",
+          "specifiers": [
+            "SimpleNamespace"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.artifacts",
+          "specifiers": [
+            "digest",
+            "file_digest",
+            "read_records",
+            "write_pair"
+          ]
+        },
+        {
+          "source": "scripts",
+          "specifiers": [
+            "am"
+          ]
+        }
+      ],
+      "exports": [
+        "fixture",
+        "Reader",
+        "run",
+        "crashed",
+        "test_crash_then_resume_has_no_gap_or_duplicate",
+        "test_resume_refuses_different_reader_setting",
+        "test_resume_refuses_inconsistent_saved_rows"
+      ],
+      "totalLines": 121,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_arm_fairness.py": {
+      "filePath": "rag-agent/tests/test_arm_fairness.py",
+      "contentHash": "65737d5346f51456b0154ec862c2c6f651724ad53d635b27785addf0abd680b8",
+      "functions": [
+        {
+          "name": "test_covers_are_valid_and_lossless",
+          "params": [
+            "unit",
+            "kw",
+            "complete"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "test_scoring_has_no_per_arm_branch",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_every_arm_scored_the_same_queries",
+          "params": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "test_budget_counts_distinct_cells",
+          "params": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "test_budget_never_scores_a_cell_it_did_not_deliver",
+          "params": [],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "importlib.util",
+          "specifiers": [
+            "importlib.util"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        }
+      ],
+      "exports": [
+        "test_covers_are_valid_and_lossless",
+        "test_scoring_has_no_per_arm_branch",
+        "test_every_arm_scored_the_same_queries",
+        "test_budget_counts_distinct_cells",
+        "test_budget_never_scores_a_cell_it_did_not_deliver"
+      ],
+      "totalLines": 127,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_baseline_units.py": {
+      "filePath": "rag-agent/tests/test_baseline_units.py",
+      "contentHash": "c10a73601b942ae82125cf0479a2886ceab36c3fe86148534282c7f8152f29a9",
+      "functions": [
+        {
+          "name": "test_raw_lines_keeps_the_header_block_and_maps_cells_exactly",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_chunk_repeats_the_header_block_and_partitions_cells",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_tablerag_folds_numeric_and_keeps_the_stub_column",
+          "params": [],
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "test_rowcol_is_an_intersection_not_a_union",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "test_rowcol_delivers_the_subtable_it_scored",
+          "params": [],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "test_published_row_unit_is_values_not_our_sentence",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_chunk_does_not_drop_rows_after_a_blank_section_row",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [
+        {
+          "name": "T",
+          "methods": [
+            "cell",
+            "col_path",
+            "row_path"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "Tab",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "imports": [
+        {
+          "source": "importlib.util",
+          "specifiers": [
+            "importlib.util"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        }
+      ],
+      "exports": [
+        "T",
+        "Tab",
+        "test_raw_lines_keeps_the_header_block_and_maps_cells_exactly",
+        "test_chunk_repeats_the_header_block_and_partitions_cells",
+        "test_tablerag_folds_numeric_and_keeps_the_stub_column",
+        "test_rowcol_is_an_intersection_not_a_union",
+        "test_rowcol_delivers_the_subtable_it_scored",
+        "test_published_row_unit_is_values_not_our_sentence",
+        "test_chunk_does_not_drop_rows_after_a_blank_section_row"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_currency_scoring.py": {
+      "filePath": "rag-agent/tests/test_currency_scoring.py",
+      "contentHash": "cc692180a7522603ec032f7ffc95dac4247e2cb28f75599dbc9032f44a99c0be",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestCurrency",
+          "methods": [
+            "test_dollar_gold_accepts_bare_number",
+            "test_dollar_prediction_accepts_bare_gold",
+            "test_a_wrong_number_is_still_wrong",
+            "test_the_published_normalisations_still_hold",
+            "test_text_answers_are_untouched"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "TestMultiValueStringGold",
+          "methods": [
+            "test_a_missing_space_is_not_a_wrong_answer",
+            "test_wrong_values_still_fail",
+            "test_order_still_matters",
+            "test_single_value_gold_is_untouched"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.metrics",
+          "specifiers": [
+            "hitab_exact_match",
+            "hitab_exact_match_text"
+          ]
+        }
+      ],
+      "exports": [
+        "TestCurrency",
+        "TestMultiValueStringGold"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_evaluation_integrity.py": {
+      "filePath": "rag-agent/tests/test_evaluation_integrity.py",
+      "contentHash": "cce23e8358529b3827cb38f408c68dc1a5f6d92bb8cc96513f19a7e3154e239b",
+      "functions": [
+        {
+          "name": "record",
+          "params": [
+            "qid",
+            "n_gold"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "answer",
+          "params": [
+            "r"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_export_limit_never_hides_selected_units",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_gold_above_64_is_saved_and_validated_in_full",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_evidence_mismatch_is_rejected",
+          "params": [
+            "field",
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_rowcol_delivers_only_intersection_values_with_labels",
+          "params": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "test_rowcol_refuses_old_union_export_without_renderer",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_character_chunks_equal_native_splitter_and_preserve_offsets",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_true_token_chunks_with_fast_tokenizer",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "test_chunk_does_not_credit_a_partial_value",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_embedding_overflow_counts_prefix_and_special_tokens",
+          "params": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "test_duplicate_ids_and_subset_comparisons_fail",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_reader_accepts_only_matching_v2_summary",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_writer_refuses_orphan_summary",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_reader_context_limit_includes_generation_budget",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_gap_accounts_for_correct_answers_after_retrieval_misses",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_answer_rescoring_and_population_mismatch_fail",
+          "params": [],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "test_oracle_requires_explicit_matching_metadata",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "test_historical_report_uses_gold_v2_and_marks_invalid_arms",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "write_verified_fixture",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "test_verified_report_checks_evidence_and_expected_denominators",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_verified_report_refuses_reader_context_mismatch_even_with_valid_file_hash",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "test_verified_report_refuses_uncontrolled_reader_change",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "test_reader_main_writes_verified_evidence_without_model_download",
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "test_reader_primary_only_uses_preregistered_population",
+          "params": [
+            "tmp_path",
+            "monkeypatch"
+          ],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "copy",
+          "specifiers": [
+            "copy"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "types",
+          "specifiers": [
+            "SimpleNamespace"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.artifacts",
+          "specifiers": [
+            "Selection",
+            "digest",
+            "evidence_fields",
+            "read_records",
+            "require_same_ids",
+            "validate_retrieval",
+            "write_pair"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.encoders",
+          "specifiers": [
+            "SentenceTransformerEncoder"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.chunks",
+          "specifiers": [
+            "split_chunks",
+            "markdown_source",
+            "table_chunks"
+          ]
+        },
+        {
+          "source": "scripts",
+          "specifiers": [
+            "ra"
+          ]
+        },
+        {
+          "source": "scripts",
+          "specifiers": [
+            "aa"
+          ]
+        },
+        {
+          "source": "analysis.validated_tables",
+          "specifiers": [
+            "build",
+            "load_manifest",
+            "paired_counts",
+            "validate_answers"
+          ]
+        },
+        {
+          "source": "analysis.compose_oracle",
+          "specifiers": [
+            "compose"
+          ]
+        }
+      ],
+      "exports": [
+        "record",
+        "answer",
+        "test_export_limit_never_hides_selected_units",
+        "test_gold_above_64_is_saved_and_validated_in_full",
+        "test_evidence_mismatch_is_rejected",
+        "test_rowcol_delivers_only_intersection_values_with_labels",
+        "test_rowcol_refuses_old_union_export_without_renderer",
+        "test_character_chunks_equal_native_splitter_and_preserve_offsets",
+        "test_true_token_chunks_with_fast_tokenizer",
+        "test_chunk_does_not_credit_a_partial_value",
+        "test_embedding_overflow_counts_prefix_and_special_tokens",
+        "test_duplicate_ids_and_subset_comparisons_fail",
+        "test_reader_accepts_only_matching_v2_summary",
+        "test_writer_refuses_orphan_summary",
+        "test_reader_context_limit_includes_generation_budget",
+        "test_gap_accounts_for_correct_answers_after_retrieval_misses",
+        "test_answer_rescoring_and_population_mismatch_fail",
+        "test_oracle_requires_explicit_matching_metadata",
+        "test_historical_report_uses_gold_v2_and_marks_invalid_arms",
+        "write_verified_fixture",
+        "test_verified_report_checks_evidence_and_expected_denominators",
+        "test_verified_report_refuses_reader_context_mismatch_even_with_valid_file_hash",
+        "test_verified_report_refuses_uncontrolled_reader_change",
+        "test_reader_main_writes_verified_evidence_without_model_download",
+        "test_reader_primary_only_uses_preregistered_population"
+      ],
+      "totalLines": 327,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_gold_context_matches_index.py": {
+      "filePath": "rag-agent/tests/test_gold_context_matches_index.py",
+      "contentHash": "eca304d0afe2238c664fc33ea833987e44daffc0b186af9958be9168a29bf240",
+      "functions": [
+        {
+          "name": "test_gold_sentence_is_verbatim_in_delivered_context",
+          "params": [],
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "importlib.util",
+          "specifiers": [
+            "importlib.util"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        }
+      ],
+      "exports": [
+        "test_gold_sentence_is_verbatim_in_delivered_context"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_groq_retry_after.py": {
+      "filePath": "rag-agent/tests/test_groq_retry_after.py",
+      "contentHash": "7addcd31ced9606ac5d47ecf25e77bf199d8f2e133174cc07069c3249c30751f",
+      "functions": [
+        {
+          "name": "test_honours_the_hint_and_pads_the_window",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "test_milliseconds",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "test_falls_back_to_exponential_without_a_hint",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "test_waits_out_the_daily_window_not_just_the_minute_one",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_gpt_oss_does_not_pay_for_medium_reasoning",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "test_capped",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "_llm",
+          "params": [
+            "fails",
+            "slept"
+          ],
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "test_rides_out_a_ten_minute_window_in_short_hops",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_gives_up_when_the_patience_budget_is_spent",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "test_a_non_429_error_is_not_retried",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [
+        {
+          "name": "_Stub",
+          "methods": [
+            "__init__",
+            "_create"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "imports": [
+        {
+          "source": "rag_agent.llm.groq_llm",
+          "specifiers": [
+            "GroqLLM",
+            "retry_after"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "types",
+          "specifiers": [
+            "SimpleNamespace"
+          ]
+        },
+        {
+          "source": "rag_agent.llm",
+          "specifiers": [
+            "groq_llm"
+          ]
+        }
+      ],
+      "exports": [
+        "test_honours_the_hint_and_pads_the_window",
+        "test_milliseconds",
+        "test_falls_back_to_exponential_without_a_hint",
+        "test_waits_out_the_daily_window_not_just_the_minute_one",
+        "test_gpt_oss_does_not_pay_for_medium_reasoning",
+        "test_capped",
+        "_Stub",
+        "_llm",
+        "test_rides_out_a_ten_minute_window_in_short_hops",
+        "test_gives_up_when_the_patience_budget_is_spent",
+        "test_a_non_429_error_is_not_retried"
+      ],
+      "totalLines": 143,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_header_col_boundary.py": {
+      "filePath": "rag-agent/tests/test_header_col_boundary.py",
+      "contentHash": "b005e968632a723f48cc7fdc2ea41ebbc2bb3e52c03e9855b864834ac93a63ab",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestHeaderColBoundary",
+          "methods": [
+            "test_group_label_spans_unlabeled_stub_columns",
+            "test_leading_index_column_is_not_the_whole_stub",
+            "test_the_extension_needs_a_labelled_column_to_its_right",
+            "test_a_plain_labelled_table_is_unchanged"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct",
+          "specifiers": [
+            "guess_n_header_cols"
+          ]
+        }
+      ],
+      "exports": [
+        "TestHeaderColBoundary"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_header_confirmed_errors.py": {
+      "filePath": "rag-agent/tests/test_header_confirmed_errors.py",
+      "contentHash": "76ad785bae7fde1c271510d29e7ac58935410e30a36626f9906e624f62169468",
+      "functions": [
+        {
+          "name": "test_only_rows_between_a_heading_and_its_own_total_are_judged",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_own_total_is_the_heading_word_for_word",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_a_heading_lost_on_a_row_that_already_had_a_v2_error_is_rule_made",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [
+        {
+          "name": "_Table",
+          "methods": [
+            "__init__",
+            "row_path"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "analysis.header_confirmed_errors",
+          "specifiers": [
+            "compare",
+            "judge",
+            "own_total",
+            "words"
+          ]
+        }
+      ],
+      "exports": [
+        "_Table",
+        "test_only_rows_between_a_heading_and_its_own_total_are_judged",
+        "test_own_total_is_the_heading_word_for_word",
+        "test_a_heading_lost_on_a_row_that_already_had_a_v2_error_is_rule_made"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_header_v3.py": {
+      "filePath": "rag-agent/tests/test_header_v3.py",
+      "contentHash": "a47342821f3bfeaff278bf95d50fb6be2dddbe82d900fe456b39d934b3e8f8f6",
+      "functions": [
+        {
+          "name": "_table",
+          "params": [
+            "*rows"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "test_layout_parser_returns_the_same_grid",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_explicit_blank_in_a_marked_header_row_does_not_inherit_the_left_label",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_colspan_covers_exactly_its_columns",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_an_empty_colspan_does_not_carry_the_label_before_it",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_rows_without_markup_and_padded_cells_keep_the_v2_carry",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "test_blank_row_label_does_not_inherit_the_previous_rows_label",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_a_rowspan_label_still_covers_its_rows",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_a_text_label_row_under_a_blank_corner_is_header",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_footnoted_years_are_a_label_row",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_label_row_rule_does_not_swallow_data_rows",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_a_total_row_closes_its_section",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "test_closing_a_section_keeps_the_leading_scope",
+          "params": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "test_identical_paths_are_split_by_the_nearest_heading_above_them",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "test_headings_that_do_not_split_a_collision_are_not_added",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_a_dated_corner_is_the_scope_of_undated_columns",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_corner_scope_needs_a_year_and_undated_columns",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_build_tables_v3_applies_the_rules_and_v2_is_unchanged",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct.header_grid",
+          "specifiers": [
+            "corner_scope",
+            "guess_n_header_rows",
+            "parse_html_table",
+            "parse_html_table_layout",
+            "reconstruct_col_paths",
+            "reconstruct_row_paths"
+          ]
+        }
+      ],
+      "exports": [
+        "_table",
+        "test_layout_parser_returns_the_same_grid",
+        "test_explicit_blank_in_a_marked_header_row_does_not_inherit_the_left_label",
+        "test_colspan_covers_exactly_its_columns",
+        "test_an_empty_colspan_does_not_carry_the_label_before_it",
+        "test_rows_without_markup_and_padded_cells_keep_the_v2_carry",
+        "test_blank_row_label_does_not_inherit_the_previous_rows_label",
+        "test_a_rowspan_label_still_covers_its_rows",
+        "test_a_text_label_row_under_a_blank_corner_is_header",
+        "test_footnoted_years_are_a_label_row",
+        "test_label_row_rule_does_not_swallow_data_rows",
+        "test_a_total_row_closes_its_section",
+        "test_closing_a_section_keeps_the_leading_scope",
+        "test_identical_paths_are_split_by_the_nearest_heading_above_them",
+        "test_headings_that_do_not_split_a_collision_are_not_added",
+        "test_a_dated_corner_is_the_scope_of_undated_columns",
+        "test_corner_scope_needs_a_year_and_undated_columns",
+        "test_build_tables_v3_applies_the_rules_and_v2_is_unchanged"
+      ],
+      "totalLines": 226,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_header_v3_1.py": {
+      "filePath": "rag-agent/tests/test_header_v3_1.py",
+      "contentHash": "f84736f4924344e124cc9bf1733b16369ca675ef8f608cfd5ab3cd5743572ae7",
+      "functions": [
+        {
+          "name": "_table",
+          "params": [
+            "*rows"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "test_a_label_that_declares_a_span_still_stops_at_its_edge",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_a_one_by_one_label_keeps_the_v2_carry",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_covered_positions_are_not_filled",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_a_cut_that_would_delete_the_columns_year_falls_back_to_v2",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "test_cutting_a_span_keeps_a_one_by_one_label_that_starts_after_it",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_cutting_a_span_also_cuts_the_labels_that_started_inside_it",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_only_a_lone_blank_label_row_loses_the_inherited_label",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "test_signed_currency_rows_are_data_not_labels",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_v3_1_still_takes_real_label_rows",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_a_total_closes_only_the_section_it_names",
+          "params": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "test_bare_and_plural_totals_close",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "test_a_closed_heading_is_not_put_back",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "test_a_heading_with_another_year_is_not_added",
+          "params": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "test_corner_scope_needs_undated_rows_and_a_short_corner",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_build_tables_v3_1_keeps_the_case_fixes",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct.header_grid",
+          "specifiers": [
+            "corner_scope",
+            "guess_n_header_rows",
+            "parse_html_table_layout",
+            "reconstruct_col_paths",
+            "reconstruct_row_paths"
+          ]
+        }
+      ],
+      "exports": [
+        "_table",
+        "test_a_label_that_declares_a_span_still_stops_at_its_edge",
+        "test_a_one_by_one_label_keeps_the_v2_carry",
+        "test_covered_positions_are_not_filled",
+        "test_a_cut_that_would_delete_the_columns_year_falls_back_to_v2",
+        "test_cutting_a_span_keeps_a_one_by_one_label_that_starts_after_it",
+        "test_cutting_a_span_also_cuts_the_labels_that_started_inside_it",
+        "test_only_a_lone_blank_label_row_loses_the_inherited_label",
+        "test_signed_currency_rows_are_data_not_labels",
+        "test_v3_1_still_takes_real_label_rows",
+        "test_a_total_closes_only_the_section_it_names",
+        "test_bare_and_plural_totals_close",
+        "test_a_closed_heading_is_not_put_back",
+        "test_a_heading_with_another_year_is_not_added",
+        "test_corner_scope_needs_undated_rows_and_a_short_corner",
+        "test_build_tables_v3_1_keeps_the_case_fixes"
+      ],
+      "totalLines": 214,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_header_v3_2.py": {
+      "filePath": "rag-agent/tests/test_header_v3_2.py",
+      "contentHash": "46d1c28fdb7726a193e36f796d8fd7073862741ef2647fa70ed05d57499af364",
+      "functions": [
+        {
+          "name": "_table",
+          "params": [
+            "*rows"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "test_a_named_sub_total_does_not_close_a_section_whose_own_total_is_still_below",
+          "params": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "test_a_bare_total_does_not_close_it_either",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "test_the_own_total_of_the_same_heading_further_down_does_not_count",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "test_a_number_is_not_a_heading_that_tells_rows_apart",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "test_build_tables_v3_2_is_v3_1_with_the_two_rules_replaced",
+          "params": [],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct.header_grid",
+          "specifiers": [
+            "reconstruct_row_paths"
+          ]
+        }
+      ],
+      "exports": [
+        "_table",
+        "test_a_named_sub_total_does_not_close_a_section_whose_own_total_is_still_below",
+        "test_a_bare_total_does_not_close_it_either",
+        "test_the_own_total_of_the_same_heading_further_down_does_not_count",
+        "test_a_number_is_not_a_heading_that_tells_rows_apart",
+        "test_build_tables_v3_2_is_v3_1_with_the_two_rules_replaced"
+      ],
+      "totalLines": 99,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_header_v3_3.py": {
+      "filePath": "rag-agent/tests/test_header_v3_3.py",
+      "contentHash": "66d88068f1656e1e298a105c3d7e90aa44bd3d08148eaed3e2f177ded5cbdded",
+      "functions": [
+        {
+          "name": "test_a_group_that_would_take_a_heading_from_above_a_skipped_number_keeps_the_v2_path",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_a_split_decided_before_reaching_the_number_is_kept",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_build_tables_v3_3_is_v3_2_with_s5n3",
+          "params": [],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct.header_grid",
+          "specifiers": [
+            "reconstruct_row_paths"
+          ]
+        }
+      ],
+      "exports": [
+        "test_a_group_that_would_take_a_heading_from_above_a_skipped_number_keeps_the_v2_path",
+        "test_a_split_decided_before_reaching_the_number_is_kept",
+        "test_build_tables_v3_3_is_v3_2_with_s5n3"
+      ],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_hierarchy_edges.py": {
+      "filePath": "rag-agent/tests/test_hierarchy_edges.py",
+      "contentHash": "b73abc230651a82487aab9888fed42d3a50948068574c5051303a402ff1010c7",
+      "functions": [
+        {
+          "name": "test_shared_ancestor_counted_once",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_normalisation_and_dropped_level",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "tree_reconstruct_hitab_raw",
+          "specifiers": [
+            "hierarchy_edges"
+          ]
+        }
+      ],
+      "exports": [
+        "test_shared_ancestor_counted_once",
+        "test_normalisation_and_dropped_level"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_hitab_grid.py": {
+      "filePath": "rag-agent/tests/test_hitab_grid.py",
+      "contentHash": "e1891ac9ac47c38d422a185cc695517684b40295f60039a6759f38f023ee60ef",
+      "functions": [
+        {
+          "name": "_load",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_every_table_maps_and_gold_resolves",
+          "params": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "collections",
+          "specifiers": [
+            "Counter"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "rag_agent.bench",
+          "specifiers": [
+            "hg"
+          ]
+        },
+        {
+          "source": "rag_agent.data.loader",
+          "specifiers": [
+            "load_samples"
+          ]
+        }
+      ],
+      "exports": [
+        "_load",
+        "test_every_table_maps_and_gold_resolves"
+      ],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_mh_labels.py": {
+      "filePath": "rag-agent/tests/test_mh_labels.py",
+      "contentHash": "86df4b21e9175df085600358227de205d8aa172322921d3d94ac792ce25ad578",
+      "functions": [
+        {
+          "name": "test_label_is_the_paragraph_right_before_the_marker",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "mh_arms",
+          "specifiers": [
+            "table_labels"
+          ]
+        }
+      ],
+      "exports": [
+        "test_label_is_the_paragraph_right_before_the_marker"
+      ],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_query_prefix.py": {
+      "filePath": "rag-agent/tests/test_query_prefix.py",
+      "contentHash": "41af02933b904bf87d88d35f801a0b6406950fa9ce2d3a3619526e4c288dc8cc",
+      "functions": [
+        {
+          "name": "test_bge_v15_instructs_the_query_and_leaves_the_passage_bare",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_e5_marks_both_sides",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "test_bge_m3_gets_nothing_despite_matching_bge",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_unknown_and_empty_models_get_no_prefix",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "rag_agent.retrieve.encoders",
+          "specifiers": [
+            "default_prefixes"
+          ]
+        }
+      ],
+      "exports": [
+        "test_bge_v15_instructs_the_query_and_leaves_the_passage_bare",
+        "test_e5_marks_both_sides",
+        "test_bge_m3_gets_nothing_despite_matching_bge",
+        "test_unknown_and_empty_models_get_no_prefix"
+      ],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_reader_spec.py": {
+      "filePath": "rag-agent/tests/test_reader_spec.py",
+      "contentHash": "9232a2be7891f0e1f4ee5f5d7f82329dd4aa0026c40b13ffcee9c94153d238aa",
+      "functions": [
+        {
+          "name": "test_query_suffix_becomes_kwargs",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_several_and_ints",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "test_bare_spec_is_untouched",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_quantization_is_part_of_the_reader_name",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "rag_agent.llm.factory",
+          "specifiers": [
+            "_split_spec"
+          ]
+        }
+      ],
+      "exports": [
+        "test_query_suffix_becomes_kwargs",
+        "test_several_and_ints",
+        "test_bare_spec_is_untouched",
+        "test_quantization_is_part_of_the_reader_name"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_retrieval_accuracy_mh.py": {
+      "filePath": "rag-agent/tests/test_retrieval_accuracy_mh.py",
+      "contentHash": "97d54416e3b9d3a19253c3a6039272d6ade7df2288188bb0032f3f6f65c85501",
+      "functions": [
+        {
+          "name": "test_evidence_coords_are_expanded_grid_positions",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "test_gold_coords_match_dataset_own_rendering",
+          "params": [],
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "test_layer_names_come_from_dataset_fields_only",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "rag_agent.reconstruct",
+          "specifiers": [
+            "parse_html_table"
+          ]
+        }
+      ],
+      "exports": [
+        "test_evidence_coords_are_expanded_grid_positions",
+        "test_gold_coords_match_dataset_own_rendering",
+        "test_layer_names_come_from_dataset_fields_only"
+      ],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_retrieval_accuracy_scoring.py": {
+      "filePath": "rag-agent/tests/test_retrieval_accuracy_scoring.py",
+      "contentHash": "b564533d105ad7c5e03ff5a4997a098987ed4bfb725eeafab5e2030fdd4814e9",
+      "functions": [
+        {
+          "name": "fill",
+          "params": [
+            "covers",
+            "order",
+            "budget"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_cell_budget_is_counted_in_cells_not_units",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_pass_fail_is_all_or_any_by_mode",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_gold_shape_matches_the_scorer",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "test_type_accuracy_needs_every_gold_cell",
+          "params": [],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        }
+      ],
+      "exports": [
+        "fill",
+        "test_cell_budget_is_counted_in_cells_not_units",
+        "test_pass_fail_is_all_or_any_by_mode",
+        "test_gold_shape_matches_the_scorer",
+        "test_type_accuracy_needs_every_gold_cell"
+      ],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_section_rows.py": {
+      "filePath": "rag-agent/tests/test_section_rows.py",
+      "contentHash": "656c80d8b10b3758837de6b908abdcfaeaea39686c56ec89709bda395bcd4512",
+      "functions": [
+        {
+          "name": "test_section_row_becomes_the_parent_level",
+          "params": [],
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "test_section_label_need_not_sit_in_the_stub",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_a_leading_title_row_is_not_a_boundary",
+          "params": [],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "test_a_section_row_under_a_real_header_still_ends_it",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_no_section_rows_is_unchanged",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "test_leading_section_run_is_a_persistent_scope",
+          "params": [],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "test_single_leading_heading_is_not_kept_as_scope",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "test_v2_keeps_a_year_row_under_an_unparenthesised_units_note",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "rag_agent.reconstruct",
+          "specifiers": [
+            "guess_n_header_rows",
+            "reconstruct_row_paths"
+          ]
+        }
+      ],
+      "exports": [
+        "test_section_row_becomes_the_parent_level",
+        "test_section_label_need_not_sit_in_the_stub",
+        "test_a_leading_title_row_is_not_a_boundary",
+        "test_a_section_row_under_a_real_header_still_ends_it",
+        "test_no_section_rows_is_unchanged",
+        "test_leading_section_run_is_a_persistent_scope",
+        "test_single_leading_heading_is_not_kept_as_scope",
+        "test_v2_keeps_a_year_row_under_an_unparenthesised_units_note"
+      ],
+      "totalLines": 127,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_sparse_bm25.py": {
+      "filePath": "rag-agent/tests/test_sparse_bm25.py",
+      "contentHash": "6b35705ac2564e71a77ea50dff7f97dbc4446d1e0fba841f68474a7be188b2c2",
+      "functions": [
+        {
+          "name": "test_scores_match_rank_bm25",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "rank_bm25",
+          "specifiers": [
+            "BM25Okapi"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.encoders",
+          "specifiers": [
+            "_tokenize"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.sparse_bm25",
+          "specifiers": [
+            "SparseBM25"
+          ]
+        }
+      ],
+      "exports": [
+        "test_scores_match_rank_bm25"
+      ],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_strict_recall.py": {
+      "filePath": "rag-agent/tests/test_strict_recall.py",
+      "contentHash": "468dc2924c2c05d770c208ea3924d3206a7e5f010194e8a5029858e849ff27c1",
+      "functions": [
+        {
+          "name": "test_all_gold_exactly",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_all_gold_plus_an_extra_cell",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_one_gold_missing",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_empty_prediction_is_zero",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_duplicate_cells_count_once",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_selector_output_is_scored_whole_not_recut",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_threshold_selection_is_variable_length_and_never_calls_budget_select",
+          "params": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "test_threshold_is_chosen_by_macro_f1_never_returning_everything",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_threshold_is_applied_only_from_another_split",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "test_same_value_at_other_coordinates_is_not_gold",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_header_gold_is_found_through_a_cell_that_carries_it",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_summary_puts_precision_and_size_next_to_strict_recall",
+          "params": [
+            "tmp_path"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "_hitab",
+          "params": [
+            "pred"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_hitab_arithmetic_gold_is_every_answer_operand",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_hitab_header_answer_gold_is_the_header_cell_its_cells_carry",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "test_mh_gold_spans_tables_with_dataset_cell_ids",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "test_mh_text_only_questions_are_excluded_hybrids_kept",
+          "params": [
+            "monkeypatch"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "test_mh_anomaly_log_flags_a_value_that_disagrees",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "rag_agent.bench",
+          "specifiers": [
+            "hg"
+          ]
+        },
+        {
+          "source": "rag_agent.eval",
+          "specifiers": [
+            "sr"
+          ]
+        }
+      ],
+      "exports": [
+        "test_all_gold_exactly",
+        "test_all_gold_plus_an_extra_cell",
+        "test_one_gold_missing",
+        "test_empty_prediction_is_zero",
+        "test_duplicate_cells_count_once",
+        "test_selector_output_is_scored_whole_not_recut",
+        "test_threshold_selection_is_variable_length_and_never_calls_budget_select",
+        "test_threshold_is_chosen_by_macro_f1_never_returning_everything",
+        "test_threshold_is_applied_only_from_another_split",
+        "test_same_value_at_other_coordinates_is_not_gold",
+        "test_header_gold_is_found_through_a_cell_that_carries_it",
+        "test_summary_puts_precision_and_size_next_to_strict_recall",
+        "_hitab",
+        "test_hitab_arithmetic_gold_is_every_answer_operand",
+        "test_hitab_header_answer_gold_is_the_header_cell_its_cells_carry",
+        "test_mh_gold_spans_tables_with_dataset_cell_ids",
+        "test_mh_text_only_questions_are_excluded_hybrids_kept",
+        "test_mh_anomaly_log_flags_a_value_that_disagrees"
+      ],
+      "totalLines": 213,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_upstream_review_regressions.py": {
+      "filePath": "rag-agent/tests/test_upstream_review_regressions.py",
+      "contentHash": "dab05768bc69a9481881ed2143ef057ed542f3c6a9934b81abb78b260a315b0e",
+      "functions": [
+        {
+          "name": "test_default_rowcol_keeps_selected_column_header_without_union_leak",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_rowcol_path_headers_are_explicit",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_one_row_column_document_does_not_gain_row_stub",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_bad_gold_coordinates_cannot_silently_select_another_cell",
+          "params": [
+            "coordinate"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "test_same_id_different_question_is_not_comparable",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [
+        {
+          "name": "Table",
+          "methods": [
+            "row_path",
+            "col_path"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "imports": [
+        {
+          "source": "copy",
+          "specifiers": [
+            "copy"
+          ]
+        },
+        {
+          "source": "types",
+          "specifiers": [
+            "SimpleNamespace"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "scripts",
+          "specifiers": [
+            "ra"
+          ]
+        },
+        {
+          "source": "rag_agent.eval.artifacts",
+          "specifiers": [
+            "Selection",
+            "evidence_fields",
+            "validate_retrieval"
+          ]
+        },
+        {
+          "source": "analysis.validated_tables",
+          "specifiers": [
+            "validate_answers"
+          ]
+        }
+      ],
+      "exports": [
+        "Table",
+        "test_default_rowcol_keeps_selected_column_header_without_union_leak",
+        "test_rowcol_path_headers_are_explicit",
+        "test_one_row_column_document_does_not_gain_row_stub",
+        "test_bad_gold_coordinates_cannot_silently_select_another_cell",
+        "test_same_id_different_question_is_not_comparable"
+      ],
+      "totalLines": 59,
+      "hasStructuralAnalysis": true
+    },
+    "rag-agent/tests/test_vector_backend.py": {
+      "filePath": "rag-agent/tests/test_vector_backend.py",
+      "contentHash": "36a55d795dd420c709e27e12896091f2ca0d0d750f539b68e4afd7c9d0d92cd7",
+      "functions": [
+        {
+          "name": "_chunks",
+          "params": [
+            "n"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_both",
+          "params": [
+            "chunks",
+            "**kw"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "test_faiss_and_numpy_rank_identically",
+          "params": [
+            "alpha",
+            "fusion"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_dense_scores_match_the_matmul",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "test_close_drops_the_index_and_falls_back_cleanly",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "test_empty_corpus_needs_no_index",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "test_explicit_faiss_never_degrades_silently",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.encoders",
+          "specifiers": [
+            "HashingEncoder"
+          ]
+        },
+        {
+          "source": "rag_agent.retrieve.hybrid_index",
+          "specifiers": [
+            "HybridIndex",
+            "resolve_dense_backend"
+          ]
+        },
+        {
+          "source": "rag_agent.serialization.base",
+          "specifiers": [
+            "Chunk"
+          ]
+        }
+      ],
+      "exports": [
+        "_chunks",
+        "_both",
+        "test_faiss_and_numpy_rank_identically",
+        "test_dense_scores_match_the_matmul",
+        "test_close_drops_the_index_and_falls_back_cleanly",
+        "test_empty_corpus_needs_no_index",
+        "test_explicit_faiss_never_degrades_silently"
+      ],
+      "totalLines": 86,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

@@ -1,25 +1,35 @@
 # 참고문헌
 
-- Cao, B., Lu, H., Ma, C., Wang, T., Li, R., & Fan, J. (2026). Orthogonal Hierarchical Decomposition for Structure-Aware Table Understanding with Large Language Models. In *Proceedings of ICML 2026*. arXiv:2602.01969.
-- Chen, S.-A., Miculicich, L., Eisenschlos, J. M., et al. (2024). TableRAG: Million-Token Table Understanding with Language Models. In *Advances in Neural Information Processing Systems 37 (NeurIPS 2024)*, pp. 74899–74921. arXiv:2410.04739.
-- Cheng, Z., Dong, H., Wang, Z., et al. (2022). HiTab: A Hierarchical Table Dataset for Question Answering and Natural Language Generation. In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022)*, pp. 1094–1110.
-- Cuconasu, F., Trappolini, G., Siciliano, F., et al. (2024). The Power of Noise: Redefining Retrieval for RAG Systems. In *Proceedings of SIGIR 2024*, pp. 719–729.
-- Deng, N., Sun, Z., He, R., et al. (2024). Tables as Texts or Images: Evaluating the Table Reasoning Ability of LLMs and MLLMs. In *Findings of ACL 2024*. arXiv:2402.12424.
-- Holm, S. (1979). A Simple Sequentially Rejective Multiple Test Procedure. *Scandinavian Journal of Statistics*, 6(2), 65–70.
-- Lewis, P., Perez, E., Piktus, A., et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. In *Advances in Neural Information Processing Systems (NeurIPS 2020)*, 33, pp. 9459–9474. arXiv:2005.11401.
-- Lin, W., Blloshmi, R., Byrne, B., de Gispert, A., & Iglesias, G. (2023). An Inner Table Retriever for Robust Table Question Answering. In *Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) (ACL 2023)*, pp. 9909–9926.
-- Liu, N. F., Lin, K., Hewitt, J., et al. (2024). Lost in the Middle: How Language Models Use Long Contexts. *Transactions of the Association for Computational Linguistics*, 12, 157–173.
-- McNemar, Q. (1947). Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages. *Psychometrika*, 12(2), 153–157.
-- Patnaik, S., Changwal, H., Aggarwal, M., Bhatia, S., Kumar, Y., & Krishnamurthy, B. (2024). CABINET: Content Relevance based Noise Reduction for Table Question Answering. In *Proceedings of ICLR 2024*. arXiv:2402.01155.
-- Qwen Team: Yang, A., Li, A., Yang, B., et al. (2025). Qwen3 Technical Report. arXiv:2505.09388.
-- Robertson, S., & Zaragoza, H. (2009). The Probabilistic Relevance Framework: BM25 and Beyond. *Foundations and Trends in Information Retrieval*, 3(4), 333–389.
-- Sui, Y., Zou, J., Zhou, M., et al. (2024). TAP4LLM: Table Provider on Sampling, Augmenting, and Packing Semi-structured Data for Large Language Model Reasoning. In *Findings of EMNLP 2024*. arXiv:2312.09039.
-- Wang, J., Qin, C., Zheng, M., Si, Q., Li, P., & Lin, Z. (2026). A Closer Look into LLMs for Table Understanding. arXiv:2603.15402.
-- Wu, P., Yang, Y., Zhu, G., et al. (2025a). RealHiTBench: A Comprehensive Realistic Hierarchical Table Benchmark for Evaluating LLM-Based Table Analysis. In *Findings of ACL 2025*, pp. 7105–7137.
-- Wu, X., Yang, J., Chai, L., et al. (2025b). TableBench: A Comprehensive and Complex Benchmark for Table Question Answering. In *Proceedings of AAAI 2025*, 39(24), pp. 25497–25506.
-- Xiao, S., Liu, Z., Zhang, P., Muennighoff, N., Lian, D., & Nie, J.-Y. (2024). C-Pack: Packed Resources For General Chinese Embeddings. In *Proceedings of SIGIR 2024*. arXiv:2309.07597.
-- Yu, X., Jian, P., & Chen, C. (2025). TableRAG: A Retrieval Augmented Generation Framework for Heterogeneous Document Reasoning. In *Proceedings of EMNLP 2025*. arXiv:2506.10380.
-- Zhang, C., Chen, Q., & Zhang, M. (2026). Mixture-of-RAG: Integrating Text and Tables with Large Language Models. In *Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.1 (KDD 2026)*, pp. 1880–1891.
-- Zhang, T., Yue, X., Li, Y., & Sun, H. (2024). TableLlama: Towards Open Large Generalist Models for Tables. In *Proceedings of NAACL 2024*. arXiv:2311.09206.
-- Zhao, Y., Li, Y., Li, C., & Zhang, R. (2022). MultiHiertt: Numerical Reasoning over Multi Hierarchical Tabular and Textual Data. In *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022)*, pp. 6588–6600.
-- Zhou, W., Ma, B., Friedrich, A., & Mesgar, M. (2026). Table Question Answering in the Era of Large Language Models: A Comprehensive Survey of Tasks, Methods, and Evaluation. In *Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, pp. 12161–12189. arXiv:2510.09671.
+[1] Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttler, H., Lewis, M., Yih, W., Rocktäschel, T., Riedel, S. and Kiela, D., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," Advances in Neural Information Processing Systems, Vol. 33, pp. 9459-9474, 2020.
+
+[2] LangChain, "Build a RAG agent with LangChain," LangChain Documentation, https://docs.langchain.com/oss/python/langchain/rag (2026년 6월 17일 보존본: https://web.archive.org/web/20260617220905/https://docs.langchain.com/oss/python/langchain/rag, 2026년 9월 29일 확인).
+
+[3] Karpukhin, V., Oguz, B., Min, S., Lewis, P., Wu, L., Edunov, S., Chen, D. and Yih, W., "Dense Passage Retrieval for Open-Domain Question Answering," Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing, pp. 6769-6781, 2020.
+
+[4] Xiao, S., Liu, Z., Zhang, P., Muennighoff, N., Lian, D. and Nie, J.-Y., "C-Pack: Packed Resources for General Chinese Embeddings," Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval, 2024 (arXiv:2309.07597).
+
+[5] Robertson, S. and Zaragoza, H., "The Probabilistic Relevance Framework: BM25 and Beyond," Foundations and Trends in Information Retrieval, Vol. 3, No. 4, pp. 333-389, 2009.
+
+[6] Cuconasu, F., Trappolini, G., Siciliano, F., Filice, S., Campagnano, C., Maarek, Y., Tonellotto, N. and Silvestri, F., "The Power of Noise: Redefining Retrieval for RAG Systems," Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval, pp. 719-729, 2024.
+
+[7] Liu, N. F., Lin, K., Hewitt, J., Paranjape, A., Bevilacqua, M., Petroni, F. and Liang, P., "Lost in the Middle: How Language Models Use Long Contexts," Transactions of the Association for Computational Linguistics, Vol. 12, pp. 157-173, 2024.
+
+[8] Asai, A., Wu, Z., Wang, Y., Sil, A. and Hajishirzi, H., "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection," Proceedings of the 12th International Conference on Learning Representations, pp. 9112-9141, 2024.
+
+[9] Sarthi, P., Abdullah, S., Tuli, A., Khanna, S., Goldie, A. and Manning, C. D., "RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval," Proceedings of the 12th International Conference on Learning Representations, pp. 32628-32649, 2024.
+
+[10] Cheng, Z., Dong, H., Wang, Z., Jia, R., Guo, J., Gao, Y., Han, S., Lou, J.-G. and Zhang, D., "HiTab: A Hierarchical Table Dataset for Question Answering and Natural Language Generation," Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics, pp. 1094-1110, 2022.
+
+[11] Zhao, Y., Li, Y., Li, C. and Zhang, R., "MultiHiertt: Numerical Reasoning over Multi Hierarchical Tabular and Textual Data," Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics, pp. 6588-6600, 2022.
+
+[12] Lin, W., Blloshmi, R., Byrne, B., de Gispert, A. and Iglesias, G., "An Inner Table Retriever for Robust Table Question Answering," Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics, pp. 9909-9926, 2023.
+
+[13] Chen, S.-A., Miculicich, L., Eisenschlos, J. M., Wang, Z., Wang, Z., Chen, Y., Fujii, Y., Lin, H.-T., Lee, C.-Y. and Pfister, T., "TableRAG: Million-Token Table Understanding with Language Models," Advances in Neural Information Processing Systems, Vol. 37, pp. 74899-74921, 2024.
+
+[14] Yu, X., Jian, P. and Chen, C., "TableRAG: A Retrieval Augmented Generation Framework for Heterogeneous Document Reasoning," Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing, 2025 (arXiv:2506.10380).
+
+[15] Qwen Team, "Qwen3 Technical Report," arXiv:2505.09388, 2025.
+
+[16] McNemar, Q., "Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages," Psychometrika, Vol. 12, No. 2, pp. 153-157, 1947.
+
+[17] Holm, S., "A Simple Sequentially Rejective Multiple Test Procedure," Scandinavian Journal of Statistics, Vol. 6, No. 2, pp. 65-70, 1979.

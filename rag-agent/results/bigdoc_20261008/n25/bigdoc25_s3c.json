@@ -1,0 +1,311 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "train",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "cell_text": "ours",
+  "n_units_table_description": null,
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "dd33c048cd9fb474f034a82c2df5ab10ad09675d",
+    "git_dirty": true,
+    "source_sha256": "d37c646cb3041e09b77c70eb8a9c30c588a387057902470190b5ebe240e6be86",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "train",
+    "unit": "cell",
+    "template": "s3c",
+    "row_text": "values",
+    "cell_text": "ours",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v3.3u",
+    "label_rule": "none",
+    "keep_hybrid": false,
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "budget": 20,
+    "label_mix": null,
+    "k_ladder": "1,5,10,20",
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "only_uids": "",
+    "question_suffix": "",
+    "shard": 50000,
+    "dump_context": 1,
+    "dump_ranked": 20,
+    "cache_dir": ".cache/bigdoc25_20261008",
+    "out_dir": "results/bigdoc_20261008/n25",
+    "tag": "bigdoc25_s3c",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 721119,
+      "max_tokens": 188,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 200,
+      "max_tokens": 55,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": null,
+  "budget_cells": 20,
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "n_tables_labelled": 0,
+  "context_version": 2,
+  "n_docs": 200,
+  "n_tables": 20241,
+  "n_units": 721119,
+  "corpus_text_sha256": "a530d880b0e02e17270a56d19677ffa6d8d212b94d172e47022d5c9aacb67794",
+  "population_skipped_upstream": {
+    "needs_text_evidence": 4922
+  },
+  "n_queries": 200,
+  "n_scored": 200,
+  "n_excluded": 0,
+  "excluded_by_reason": {},
+  "query_ids_sha256": "665a61635d105df2fad73d014d28c865c45bbd61ca3c297076c9fc2bc1c6a657",
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "corpus": {
+        "accuracy_all": 0.235,
+        "accuracy_any_DIAGNOSTIC": 0.425,
+        "gold_doc_in_context": 0.61,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.03,
+          "5": 0.1,
+          "10": 0.145,
+          "20": 0.235
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.8,
+        "accuracy_any_DIAGNOSTIC": 0.915,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.135,
+          "5": 0.55,
+          "10": 0.69,
+          "20": 0.8
+        }
+      },
+      "table": {
+        "accuracy_all": 0.945,
+        "accuracy_any_DIAGNOSTIC": 0.975,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.2,
+        "accuracy_all_at_k": {
+          "1": 0.165,
+          "5": 0.665,
+          "10": 0.84,
+          "20": 0.945
+        }
+      },
+      "mean_m": 2.37,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 14,
+      "corpus": {
+        "accuracy_all": 0.4286,
+        "accuracy_any_DIAGNOSTIC": 0.4286,
+        "gold_doc_in_context": 0.5714,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.1429,
+          "5": 0.2857,
+          "10": 0.3571,
+          "20": 0.4286
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.7857,
+        "accuracy_any_DIAGNOSTIC": 0.7857,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.5,
+          "5": 0.6429,
+          "10": 0.7143,
+          "20": 0.7857
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9286,
+        "accuracy_any_DIAGNOSTIC": 0.9286,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.8,
+        "accuracy_all_at_k": {
+          "1": 0.6429,
+          "5": 0.8571,
+          "10": 0.9286,
+          "20": 0.9286
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 70,
+      "corpus": {
+        "accuracy_all": 0.1714,
+        "accuracy_any_DIAGNOSTIC": 0.4286,
+        "gold_doc_in_context": 0.6,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.0429,
+          "10": 0.1,
+          "20": 0.1714
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.7143,
+        "accuracy_any_DIAGNOSTIC": 0.9143,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.4286,
+          "10": 0.5286,
+          "20": 0.7143
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9286,
+        "accuracy_any_DIAGNOSTIC": 0.9714,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 18.3,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5286,
+          "10": 0.7571,
+          "20": 0.9286
+        }
+      },
+      "mean_m": 2.714,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 49,
+      "corpus": {
+        "accuracy_all": 0.3469,
+        "accuracy_any_DIAGNOSTIC": 0.3469,
+        "gold_doc_in_context": 0.6531,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0816,
+          "5": 0.2653,
+          "10": 0.2857,
+          "20": 0.3469
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.9388,
+        "accuracy_any_DIAGNOSTIC": 0.9388,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.4082,
+          "5": 0.6939,
+          "10": 0.8367,
+          "20": 0.9388
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9796,
+        "accuracy_any_DIAGNOSTIC": 0.9796,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.8,
+        "accuracy_all_at_k": {
+          "1": 0.4898,
+          "5": 0.7959,
+          "10": 0.9184,
+          "20": 0.9796
+        }
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 67,
+      "corpus": {
+        "accuracy_all": 0.1791,
+        "accuracy_any_DIAGNOSTIC": 0.4776,
+        "gold_doc_in_context": 0.597,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.0,
+          "10": 0.0448,
+          "20": 0.1791
+        }
+      },
+      "doc": {
+        "accuracy_all": 0.791,
+        "accuracy_any_DIAGNOSTIC": 0.9254,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.5522,
+          "10": 0.7463,
+          "20": 0.791
+        }
+      },
+      "table": {
+        "accuracy_all": 0.9403,
+        "accuracy_any_DIAGNOSTIC": 0.9851,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.7,
+        "accuracy_all_at_k": {
+          "1": 0.0,
+          "5": 0.6716,
+          "10": 0.8507,
+          "20": 0.9403
+        }
+      },
+      "mean_m": 3.299,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "f30f2c56995bfb9e67c684be857bc59462907c4bdf1f32dea21975ab2664cbeb"
+}

@@ -1,0 +1,100 @@
+{
+  "baseline": "raptor",
+  "raptor_repo": "https://github.com/parthsarthi03/raptor",
+  "raptor_commit": "7da1d48a7e1d7dec61a63c9d9aae84e2dfaa5767",
+  "records_source": "results/mh_only_20260928/retrieval/mh_train_s3c_records.jsonl",
+  "answer_set": "results/mh_arms/cap300_20260924/cell_uniq.jsonl",
+  "limit": 200,
+  "n_queries": 200,
+  "n_scored": 200,
+  "n_excluded": 0,
+  "excluded": {},
+  "n_documents": 53,
+  "chunk_tokens_cl100k": 100,
+  "summary_max_tokens": 100,
+  "budgets_qwen3_tokens": [
+    2000,
+    575
+  ],
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "summarizer": "local:meta-llama/Llama-3.2-3B-Instruct?quantization=none",
+  "n_summary_calls_total": 109,
+  "tree_seconds_total": 1664.9,
+  "cluster_failed_leaves_only": {
+    "n": 0,
+    "doc_keys": []
+  },
+  "tree_stats_mean": {
+    "n_leaves": 13.92,
+    "n_nodes": 16.21,
+    "n_layers": 0.62,
+    "n_summary_calls": 2.28,
+    "seconds": 31.41,
+    "n_doc_tok_cl100k": 1193.21
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 200,
+      "accuracy_all_2000": 0.81,
+      "accuracy_all_575": 0.65,
+      "n_tok_2000_mean": 1447.0,
+      "n_tok_575_mean": 525.8
+    },
+    "arith_m1": {
+      "n": 14,
+      "accuracy_all_2000": 0.5,
+      "accuracy_all_575": 0.1429,
+      "n_tok_2000_mean": 1552.6,
+      "n_tok_575_mean": 507.6
+    },
+    "arith_m2+": {
+      "n": 70,
+      "accuracy_all_2000": 0.7857,
+      "accuracy_all_575": 0.6429,
+      "n_tok_2000_mean": 1402.5,
+      "n_tok_575_mean": 524.0
+    },
+    "lookup_m1": {
+      "n": 49,
+      "accuracy_all_2000": 0.7959,
+      "accuracy_all_575": 0.7143,
+      "n_tok_2000_mean": 1447.8,
+      "n_tok_575_mean": 532.0
+    },
+    "lookup_m2+": {
+      "n": 67,
+      "accuracy_all_2000": 0.9104,
+      "accuracy_all_575": 0.7164,
+      "n_tok_2000_mean": 1470.7,
+      "n_tok_575_mean": 526.8
+    }
+  },
+  "provenance": {
+    "git_commit": "a5cded9d7d2a88dc1712049141f155759b9d1084",
+    "git_dirty": true,
+    "source_sha256": "d37c646cb3041e09b77c70eb8a9c30c588a387057902470190b5ebe240e6be86",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "limit": 200,
+    "out_dir": "results/post_defense_20261006/llm_llama3b/raptor",
+    "tree_dir": "",
+    "reader": "local:meta-llama/Llama-3.2-3B-Instruct?quantization=none",
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "batch_size": 1,
+    "seed": 42,
+    "dry_run": false,
+    "resume": true,
+    "embed_device": "cpu"
+  }
+}

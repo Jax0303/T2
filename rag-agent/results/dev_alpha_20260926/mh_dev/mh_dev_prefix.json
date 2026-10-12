@@ -1,0 +1,218 @@
+{
+  "dataset": "MultiHiertt (Zhao et al., ACL 2022) via bevaya/MultiHiertt, answers from yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "split": "validation",
+  "unit": "cell",
+  "template": "s3c",
+  "row_text": "values",
+  "tablerag_colmode": "leaf",
+  "chunk_chars": 1000,
+  "chunk_overlap": 200,
+  "metric": "질의 단위 맞았다/틀렸다, 운영점 하나 (CLAUDE.md §0.1). 주지표 = all.",
+  "hierarchy_source": "self-reconstructed",
+  "provenance": {
+    "git_commit": "378db416bd65c6d8a44007c80c1c9fbbabb03305",
+    "git_dirty": false,
+    "source_sha256": "171e83f1b351a62a00231a15b5778f4137dbaf7bb33da33e839adb7b21358d6e",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "arguments": {
+    "split": "validation",
+    "unit": "cell",
+    "template": "s3c",
+    "row_text": "values",
+    "tablerag_colmode": "leaf",
+    "tablerag_dtype": "infer",
+    "header_rule": "v3.3u",
+    "label_rule": "L1",
+    "keep_hybrid": true,
+    "chunk_chars": 1000,
+    "chunk_overlap": 200,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_overflow": "error",
+    "alpha": 0.7,
+    "budget": 20,
+    "label_mix": null,
+    "k_ladder": "",
+    "rowcol_max_pairs": 200,
+    "max_docs": 0,
+    "shard": 50000,
+    "dump_context": 1,
+    "cache_dir": ".cache/dev_alpha_20260926",
+    "out_dir": "results/dev_alpha_20260926/mh_dev",
+    "tag": "mh_dev_prefix",
+    "metric_mode": "accuracy",
+    "threshold_from": "",
+    "context_tokenizer": "Qwen/Qwen3-8B"
+  },
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "alpha": 0.7,
+  "embedding_input_audit": {
+    "documents": {
+      "n": 135894,
+      "max_tokens": 190,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    },
+    "queries": {
+      "n": 929,
+      "max_tokens": 67,
+      "max_seq_length": 512,
+      "n_overflow": 0,
+      "overflow_ratio": 0.0,
+      "overflow_indices": [],
+      "policy": "error"
+    }
+  },
+  "label_mix": null,
+  "budget_cells": 20,
+  "header_rule": "v3.3u",
+  "label_rule": "L1",
+  "n_tables_labelled": 3592,
+  "context_version": 2,
+  "n_docs": 929,
+  "n_tables": 3609,
+  "n_units": 135894,
+  "corpus_text_sha256": "ac98fd834c37994da818e945e4727e22a9b8075448569c38f2025f6b5f41993b",
+  "population_skipped_upstream": {
+    "text_only": 115
+  },
+  "n_queries": 929,
+  "n_scored": 911,
+  "n_excluded": 18,
+  "excluded_by_reason": {
+    "gold_in_header": 13,
+    "gold_table_unparsed": 5
+  },
+  "query_ids_sha256": "5d1c992cef38176d3ab47a5209c9b0a6a31a48e832d3202b827d5c431e4cdaea",
+  "by_layer": {
+    "ALL": {
+      "n": 911,
+      "corpus": {
+        "accuracy_all": 0.2569,
+        "accuracy_any_DIAGNOSTIC": 0.5708,
+        "gold_doc_in_context": 0.6751,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8288,
+        "accuracy_any_DIAGNOSTIC": 0.9693,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.888,
+        "accuracy_any_DIAGNOSTIC": 0.989,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.0
+      },
+      "mean_m": 2.802,
+      "m_over_budget": 0
+    },
+    "arith_m1": {
+      "n": 31,
+      "corpus": {
+        "accuracy_all": 0.4516,
+        "accuracy_any_DIAGNOSTIC": 0.4516,
+        "gold_doc_in_context": 0.5161,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9355,
+        "accuracy_any_DIAGNOSTIC": 0.9355,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 1.0,
+        "accuracy_any_DIAGNOSTIC": 1.0,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 14.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "arith_m2+": {
+      "n": 682,
+      "corpus": {
+        "accuracy_all": 0.2082,
+        "accuracy_any_DIAGNOSTIC": 0.5924,
+        "gold_doc_in_context": 0.6921,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8065,
+        "accuracy_any_DIAGNOSTIC": 0.978,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.871,
+        "accuracy_any_DIAGNOSTIC": 0.9912,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.0
+      },
+      "mean_m": 2.922,
+      "m_over_budget": 0
+    },
+    "lookup_m1": {
+      "n": 75,
+      "corpus": {
+        "accuracy_all": 0.4667,
+        "accuracy_any_DIAGNOSTIC": 0.4667,
+        "gold_doc_in_context": 0.6,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.9333,
+        "accuracy_any_DIAGNOSTIC": 0.9333,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.96,
+        "accuracy_any_DIAGNOSTIC": 0.96,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "mean_m": 1.0,
+      "m_over_budget": 0
+    },
+    "lookup_m2+": {
+      "n": 123,
+      "corpus": {
+        "accuracy_all": 0.3496,
+        "accuracy_any_DIAGNOSTIC": 0.5447,
+        "gold_doc_in_context": 0.6667,
+        "cells_delivered_mean": 20.0
+      },
+      "doc": {
+        "accuracy_all": 0.8618,
+        "accuracy_any_DIAGNOSTIC": 0.9512,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 20.0
+      },
+      "table": {
+        "accuracy_all": 0.9106,
+        "accuracy_any_DIAGNOSTIC": 0.9919,
+        "gold_doc_in_context": 1.0,
+        "cells_delivered_mean": 19.9
+      },
+      "mean_m": 3.691,
+      "m_over_budget": 0
+    }
+  },
+  "records_sha256": "1e949ea1576c633391c75b56556b942cbae02e70bba67b8623f5f3bc8e65da3b"
+}

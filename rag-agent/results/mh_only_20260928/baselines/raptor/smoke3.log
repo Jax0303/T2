@@ -1,0 +1,109 @@
+2026-09-29 03:20:38,240 - Loading faiss with AVX2 support.
+2026-09-29 03:20:38,241 - Could not load library with AVX2 support due to:
+ModuleNotFoundError("No module named 'faiss.swigfaiss_avx2'")
+2026-09-29 03:20:38,241 - Loading faiss.
+2026-09-29 03:20:38,292 - Successfully loaded faiss.
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+2026-09-29 03:20:38,707 - Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+2026-09-29 03:20:38,707 - Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[docs] 3 queries, 3 distinct documents, excluded 0
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2242.33it/s]
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:01<06:52,  1.04s/it]Loading weights:   1%|          | 2/399 [00:01<05:52,  1.13it/s]Loading weights:   1%|          | 4/399 [00:01<02:30,  2.63it/s]Loading weights:   2%|▏         | 6/399 [00:02<01:30,  4.36it/s]Loading weights:   4%|▍         | 15/399 [00:02<00:25, 14.79it/s]Loading weights:   5%|▍         | 19/399 [00:08<03:45,  1.69it/s]Loading weights:   7%|▋         | 27/399 [00:09<01:57,  3.16it/s]Loading weights:  79%|███████▊  | 314/399 [00:14<00:02, 34.77it/s]Loading weights:  81%|████████  | 323/399 [00:14<00:02, 35.62it/s]Loading weights: 100%|██████████| 399/399 [00:08<00:00, 47.48it/s]
+  [tree] bc002b36bf4313f9 {'doc_key': 'bc002b36bf4313f9', 'n_chars': 1804, 'n_doc_tok_cl100k': 812, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'n_cells': 100, 'n_cells_deliverable_by_a_leaf': 100, 'seconds': 0.4}
+  [tree] d0d73e9c2c87bfa0 {'doc_key': 'd0d73e9c2c87bfa0', 'n_chars': 3011, 'n_doc_tok_cl100k': 1163, 'n_leaves': 13, 'n_nodes': 17, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 4}, 'n_summary_calls': 4, 'n_cells': 156, 'n_cells_deliverable_by_a_leaf': 90, 'seconds': 37.2}
+  [tree] b6c86679d5084905 {'doc_key': 'b6c86679d5084905', 'n_chars': 4246, 'n_doc_tok_cl100k': 1687, 'n_leaves': 20, 'n_nodes': 25, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 5}, 'n_summary_calls': 5, 'n_cells': 253, 'n_cells_deliverable_by_a_leaf': 229, 'seconds': 34.1}
+{
+ "n_scored": 3,
+ "n_documents": 3,
+ "tree_stats_mean": {
+  "n_leaves": 14.33,
+  "n_nodes": 17.33,
+  "n_layers": 0.67,
+  "n_summary_calls": 3.0,
+  "seconds": 23.9,
+  "n_doc_tok_cl100k": 1220.67
+ },
+ "by_layer": {
+  "ALL": {
+   "n": 3,
+   "accuracy_all_2000": 1.0,
+   "accuracy_all_575": 0.6667,
+   "n_tok_2000_mean": 1574.0,
+   "n_tok_575_mean": 543.7
+  },
+  "arith_m2+": {
+   "n": 1,
+   "accuracy_all_2000": 1.0,
+   "accuracy_all_575": 1.0,
+   "n_tok_2000_mean": 1876.0,
+   "n_tok_575_mean": 529.0
+  },
+  "lookup_m2+": {
+   "n": 2,
+   "accuracy_all_2000": 1.0,
+   "accuracy_all_575": 0.5,
+   "n_tok_2000_mean": 1423.0,
+   "n_tok_575_mean": 551.0
+  }
+ }
+}
+{
+ "budget_qwen3_tokens": 2000,
+ "n": 3,
+ "marker_missing": 0,
+ "generation_seconds": 12.1,
+ "by_layer": {
+  "ALL": {
+   "n": 3,
+   "answer_em": 0.3333,
+   "f1": 0.3333,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 1660.3
+  },
+  "arith_m2+": {
+   "n": 1,
+   "answer_em": 0.0,
+   "f1": 0.0,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 1968.0
+  },
+  "lookup_m2+": {
+   "n": 2,
+   "answer_em": 0.5,
+   "f1": 0.5,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 1506.5
+  }
+ }
+}
+{
+ "budget_qwen3_tokens": 575,
+ "n": 3,
+ "marker_missing": 0,
+ "generation_seconds": 29.7,
+ "by_layer": {
+  "ALL": {
+   "n": 3,
+   "answer_em": 0.3333,
+   "f1": 0.48,
+   "retrieval_accuracy_here": 0.6667,
+   "input_tokens_mean": 628.0
+  },
+  "arith_m2+": {
+   "n": 1,
+   "answer_em": 0.0,
+   "f1": 0.0,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 623.0
+  },
+  "lookup_m2+": {
+   "n": 2,
+   "answer_em": 0.5,
+   "f1": 0.72,
+   "retrieval_accuracy_here": 0.5,
+   "input_tokens_mean": 630.5
+  }
+ }
+}

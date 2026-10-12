@@ -1,0 +1,85 @@
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "official_code": [
+    "google-research/google-research  directory table_rag",
+    "commit 08a8d6736475776f42ffac23b2c13111a28e5795",
+    "fetched 2026-09-29 (git sparse-checkout)"
+  ],
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 128,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 3,
+  "resumed": 0,
+  "provenance": {
+    "git_commit": "7d4d8ff1a49911e71fdf3c75d8d98361b688cd36",
+    "git_dirty": true,
+    "source_sha256": "347cb4d43fae9c4459e42ef2b82176f2448bf4d59351c375fdc0ee4cbede5e03",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "n": 3,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 3,
+    "fail_examples": [],
+    "n_fail": 0
+  },
+  "pred_rule": "원본 solver_loop 의 answer (마지막 'Answer:' 뒤 첫 줄) 그대로, 추가 추출 없음",
+  "generation_seconds": 141.3,
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0233,
+      "input_tokens_mean": 8414.0,
+      "llm_calls_mean": 7.0,
+      "code_errors_mean": 2.0,
+      "terminal_rate": 0.0,
+      "seconds_mean": 47.1
+    },
+    "arith_m2+": {
+      "n": 1,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 9188.0,
+      "llm_calls_mean": 7.0,
+      "code_errors_mean": 5.0,
+      "terminal_rate": 0.0,
+      "seconds_mean": 51.7
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.035,
+      "input_tokens_mean": 8027.0,
+      "llm_calls_mean": 7.0,
+      "code_errors_mean": 0.5,
+      "terminal_rate": 0.0,
+      "seconds_mean": 44.8
+    }
+  },
+  "records_sha256": "6721a970b186be955f5b6399b6cf4248e979416a060947cfaadc595a740b62a5"
+}

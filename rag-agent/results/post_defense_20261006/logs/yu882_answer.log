@@ -1,0 +1,342 @@
+[start] 2026-10-06T16:19:18+09:00 $P scripts/baselines/tablerag_yu.py --out-dir $B/tablerag_yu --stage answer --resume
+[resume] 200 저장됨
+[plan] stage=answer 882 문항, 남은 682
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[corpus] 682 docs / 3553 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 56/199 [00:00<00:00, 559.75it/s]Loading weights:  56%|█████▋    | 112/199 [00:00<00:00, 533.95it/s]Loading weights:  90%|████████▉ | 179/199 [00:00<00:00, 594.44it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 644.20it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:   8%|▊         | 30/393 [00:00<00:01, 299.28it/s]Loading weights:  16%|█▌        | 61/393 [00:00<00:01, 299.46it/s]Loading weights:  23%|██▎       | 92/393 [00:00<00:01, 287.76it/s]Loading weights:  32%|███▏      | 125/393 [00:00<00:00, 295.35it/s]Loading weights:  40%|███▉      | 157/393 [00:00<00:00, 302.21it/s]Loading weights:  48%|████▊     | 189/393 [00:00<00:00, 305.38it/s]Loading weights:  56%|█████▌    | 220/393 [00:00<00:00, 278.68it/s]Loading weights:  63%|██████▎   | 249/393 [00:00<00:00, 245.92it/s]Loading weights:  72%|███████▏  | 284/393 [00:01<00:00, 264.96it/s]Loading weights:  79%|███████▉  | 312/393 [00:01<00:00, 268.35it/s]Loading weights:  88%|████████▊ | 345/393 [00:01<00:00, 275.60it/s]Loading weights: 100%|██████████| 393/393 [00:01<00:00, 316.07it/s]
+[embed] 3553 chunks in 56s -> .cache/tablerag_yu/emb_3553_8235fa0d3e2d5ba5.npy
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:03<26:12,  3.95s/it]Loading weights:   1%|          | 2/399 [00:07<24:35,  3.72s/it]Loading weights:   1%|          | 4/399 [00:07<09:23,  1.43s/it]Loading weights:   2%|▏         | 6/399 [00:07<05:05,  1.29it/s]Loading weights:   4%|▍         | 16/399 [00:07<01:13,  5.24it/s]Loading weights:   6%|▌         | 23/399 [00:08<00:43,  8.74it/s]Loading weights:   7%|▋         | 28/399 [00:08<00:32, 11.29it/s]Loading weights:   9%|▉         | 37/399 [00:08<00:19, 18.32it/s]Loading weights:  11%|█         | 43/399 [00:08<00:15, 22.46it/s]Loading weights:  12%|█▏        | 49/399 [00:08<00:13, 26.79it/s]Loading weights:  14%|█▍        | 55/399 [00:22<04:02,  1.42it/s]Loading weights:  15%|█▌        | 60/399 [00:22<02:58,  1.90it/s]Loading weights:  18%|█▊        | 70/399 [00:22<01:40,  3.26it/s]Loading weights:  19%|█▉        | 76/399 [00:22<01:14,  4.34it/s]Loading weights:  21%|██        | 82/399 [00:22<00:55,  5.75it/s]Loading weights:  23%|██▎       | 92/399 [00:22<00:33,  9.04it/s]Loading weights:  25%|██▍       | 98/399 [00:22<00:26, 11.43it/s]Loading weights:  26%|██▌       | 104/399 [00:23<00:20, 14.15it/s]Loading weights:  29%|██▊       | 114/399 [00:23<00:14, 20.33it/s]Loading weights:  30%|███       | 120/399 [00:23<00:11, 23.94it/s]Loading weights:  32%|███▏      | 126/399 [00:23<00:09, 27.72it/s]Loading weights:  34%|███▍      | 136/399 [00:23<00:07, 36.48it/s]Loading weights:  36%|███▌      | 142/399 [00:23<00:06, 39.52it/s]Loading weights:  37%|███▋      | 148/399 [00:23<00:06, 41.03it/s]Loading weights:  40%|███▉      | 158/399 [00:24<00:04, 50.29it/s]Loading weights:  41%|████▏     | 165/399 [00:24<00:04, 54.45it/s]Loading weights:  43%|████▎     | 172/399 [00:24<00:04, 49.97it/s]Loading weights:  45%|████▌     | 181/399 [00:24<00:03, 55.84it/s]Loading weights:  48%|████▊     | 191/399 [00:24<00:03, 58.68it/s]Loading weights:  50%|████▉     | 198/399 [00:24<00:05, 37.38it/s]Loading weights:  51%|█████     | 203/399 [00:25<00:05, 39.16it/s]Loading weights:  53%|█████▎    | 213/399 [00:25<00:03, 48.28it/s]Loading weights:  55%|█████▍    | 219/399 [00:25<00:03, 47.85it/s]Loading weights:  56%|█████▋    | 225/399 [00:25<00:03, 47.19it/s]Loading weights:  59%|█████▉    | 235/399 [00:25<00:03, 52.96it/s]Loading weights:  60%|██████    | 241/399 [00:25<00:03, 51.77it/s]Loading weights:  62%|██████▏   | 247/399 [00:25<00:02, 52.70it/s]Loading weights:  64%|██████▍   | 257/399 [00:25<00:02, 59.66it/s]Loading weights:  66%|██████▌   | 264/399 [00:26<00:02, 60.92it/s]Loading weights:  68%|██████▊   | 271/399 [00:26<00:02, 55.18it/s]Loading weights:  70%|███████   | 280/399 [00:26<00:02, 57.24it/s]Loading weights:  73%|███████▎  | 290/399 [00:26<00:01, 65.12it/s]Loading weights:  74%|███████▍  | 297/399 [00:26<00:01, 64.78it/s]Loading weights:  76%|███████▌  | 304/399 [00:26<00:01, 56.38it/s]Loading weights:  78%|███████▊  | 313/399 [00:26<00:01, 61.31it/s]Loading weights:  80%|████████  | 321/399 [00:26<00:01, 65.78it/s]Loading weights:  82%|████████▏ | 328/399 [00:27<00:01, 48.00it/s]Loading weights:  84%|████████▍ | 335/399 [00:27<00:01, 50.86it/s]Loading weights:  86%|████████▌ | 343/399 [00:27<00:00, 56.86it/s]Loading weights:  88%|████████▊ | 350/399 [00:27<00:00, 55.14it/s]Loading weights:  89%|████████▉ | 357/399 [00:27<00:00, 52.44it/s]Loading weights:  92%|█████████▏| 366/399 [00:27<00:00, 61.25it/s]Loading weights:  93%|█████████▎| 373/399 [00:28<00:00, 51.72it/s]Loading weights:  95%|█████████▍| 379/399 [00:28<00:00, 48.53it/s]Loading weights:  97%|█████████▋| 386/399 [00:28<00:00, 51.75it/s]Loading weights:  98%|█████████▊| 392/399 [00:28<00:00, 46.50it/s]Loading weights: 100%|██████████| 399/399 [00:28<00:00, 14.00it/s]
+[gpu] allocated 6.08 GiB, reserved 11.33 GiB
+  1/682 3a1c1a34 rounds=3 calls=7 sql_err=0 pred='45350.5' 131.528s
+  2/682 3a4a2262 rounds=2 calls=4 sql_err=1 pred='194.5' 72.685s
+  3/682 3a960ac8 rounds=2 calls=4 sql_err=0 pred='24155' 169.863s
+  4/682 3aca8642 rounds=2 calls=4 sql_err=0 pred='209%' 185.643s
+  5/682 3b20edee rounds=2 calls=4 sql_err=0 pred='$37,151 $918,169' 149.056s
+  6/682 3b3a3abf rounds=3 calls=7 sql_err=0 pred='2017' 136.756s
+  7/682 3b589ca2 rounds=3 calls=7 sql_err=0 pred='100%' 290.06s
+  8/682 3b82eb7e rounds=2 calls=4 sql_err=0 pred='69' 125.731s
+  9/682 3bb187cb rounds=2 calls=4 sql_err=0 pred='1531 12897' 280.923s
+  10/682 3c5d3dbb rounds=3 calls=7 sql_err=0 pred='2016' 139.354s
+  11/682 3ca1cadd rounds=2 calls=4 sql_err=0 pred='36820' 96.581s
+  12/682 3cc0dc0a rounds=2 calls=4 sql_err=0 pred='26.46%' 229.448s
+  13/682 3cec784d rounds=2 calls=4 sql_err=1 pred='2013' 327.414s
+  14/682 3cee30b8 rounds=2 calls=4 sql_err=0 pred='2014' 189.244s
+  15/682 3cfb4733 rounds=2 calls=4 sql_err=0 pred='5%' 120.261s
+  16/682 3d1f1ad7 rounds=2 calls=4 sql_err=0 pred='1207' 81.994s
+  17/682 3d56c854 rounds=2 calls=6 sql_err=2 pred='334335' 321.054s
+  18/682 3daa3352 rounds=2 calls=4 sql_err=0 pred='251.3' 153.528s
+  19/682 3dc371d6 rounds=2 calls=4 sql_err=0 pred='$197.3' 100.445s
+  20/682 3e1eb9e1 rounds=2 calls=4 sql_err=0 pred='414.8' 212.591s
+  21/682 3e633c72 rounds=2 calls=4 sql_err=0 pred='2004' 126.487s
+  22/682 3ef79cc7 rounds=2 calls=4 sql_err=0 pred='7,294 and $24,250' 148.546s
+  23/682 3f499f9c rounds=3 calls=7 sql_err=0 pred='Nuclear production decommissioning' 554.289s
+  24/682 3ff420ba rounds=2 calls=6 sql_err=0 pred='557 6205020' 203.921s
+  25/682 409ab886 rounds=2 calls=6 sql_err=0 pred='43.85' 266.073s
+  26/682 414dbfc7 rounds=2 calls=4 sql_err=0 pred='4%' 57.53s
+  27/682 416073f4 rounds=2 calls=4 sql_err=0 pred='There is no year where General for Steam Sold(MMlb) is greater than 590' 186.326s
+  28/682 41e65de2 rounds=2 calls=4 sql_err=0 pred='21.46%' 186.976s
+  29/682 41ee71b4 rounds=2 calls=4 sql_err=0 pred='1' 215.844s
+  30/682 41f8f405 rounds=2 calls=4 sql_err=0 pred='9924' 133.565s
+  31/682 42763ded rounds=5 calls=13 sql_err=0 pred=None 580.286s
+  32/682 427f069e rounds=2 calls=4 sql_err=0 pred='753000' 247.208s
+  33/682 429dd2cf rounds=3 calls=7 sql_err=0 pred='-12.56%' 335.139s
+  34/682 42a73119 rounds=2 calls=8 sql_err=0 pred='2007' 256.192s
+  35/682 432268fc rounds=3 calls=7 sql_err=0 pred='22018.83' 480.737s
+  36/682 4366e684 rounds=2 calls=4 sql_err=0 pred='13.0' 137.04s
+  37/682 43b7151a rounds=5 calls=15 sql_err=0 pred=None 1304.403s
+  38/682 44513442 rounds=2 calls=4 sql_err=0 pred='603' 142.793s
+  39/682 447c2a94 rounds=2 calls=8 sql_err=0 pred='28253' 240.0s
+  40/682 449f5c58 rounds=4 calls=10 sql_err=0 pred='None of the elements in the Total row for 2017 have a FairValue that makes up more than 15% of the total FairValue' 485.632s
+  41/682 44ed2c1d rounds=2 calls=4 sql_err=0 pred='3.62' 107.224s
+  42/682 456001e6 rounds=2 calls=4 sql_err=0 pred='$103.65' 62.683s
+  43/682 45cfb76c rounds=2 calls=4 sql_err=0 pred='$2,262 million' 88.048s
+  44/682 45f19627 rounds=3 calls=7 sql_err=0 pred='56.89%' 222.981s
+  45/682 46c82512 rounds=5 calls=13 sql_err=0 pred='994' 946.086s
+  46/682 472ae26b rounds=2 calls=4 sql_err=0 pred='200451' 102.49s
+  47/682 477d576b rounds=2 calls=6 sql_err=0 pred='6160' 182.326s
+  48/682 4803d913 rounds=2 calls=4 sql_err=0 pred='1100030' 140.45s
+  49/682 481188a4 rounds=2 calls=4 sql_err=0 pred='0' 117.896s
+  50/682 481f8c9e rounds=2 calls=4 sql_err=0 pred='2018' 153.287s
+  51/682 484f4c17 rounds=3 calls=7 sql_err=0 pred='No' 247.123s
+  52/682 48e6ea58 rounds=2 calls=4 sql_err=0 pred='1065.7' 217.409s
+  53/682 496eeaf7 rounds=3 calls=7 sql_err=0 pred='1949.8' 253.856s
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 473, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 451, in main
+    answer, round1, trace = run_case(r["question"], docs[qid], ret, chat, n_tok)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 331, in run_case
+    sub_answer = chat([{"role": "user", "content": combine}]) or ""
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 246, in __call__
+    out = self.llm.model.generate(**inputs, max_new_tokens=self.max_tokens, do_sample=False,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2584, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2791, in _sample
+    while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+[start] 2026-10-06T22:10:28+09:00 $P scripts/baselines/tablerag_yu.py --out-dir $B/tablerag_yu --stage answer --resume
+[resume] 253 저장됨
+[plan] stage=answer 882 문항, 남은 629
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[corpus] 629 docs / 3271 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  26%|██▌       | 51/199 [00:00<00:00, 469.34it/s]Loading weights:  50%|████▉     | 99/199 [00:00<00:00, 473.97it/s]Loading weights:  76%|███████▌  | 151/199 [00:00<00:00, 493.86it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 557.01it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:   7%|▋         | 29/393 [00:00<00:01, 249.81it/s]Loading weights:  15%|█▍        | 58/393 [00:00<00:01, 268.02it/s]Loading weights:  22%|██▏       | 88/393 [00:00<00:01, 276.34it/s]Loading weights:  30%|███       | 119/393 [00:00<00:00, 288.98it/s]Loading weights:  38%|███▊      | 148/393 [00:00<00:00, 258.62it/s]Loading weights:  45%|████▍     | 175/393 [00:00<00:00, 254.09it/s]Loading weights:  52%|█████▏    | 204/393 [00:00<00:00, 264.17it/s]Loading weights:  59%|█████▉    | 231/393 [00:00<00:00, 251.98it/s]Loading weights:  66%|██████▌   | 260/393 [00:00<00:00, 261.87it/s]Loading weights:  73%|███████▎  | 287/393 [00:01<00:00, 203.36it/s]Loading weights:  79%|███████▉  | 310/393 [00:01<00:00, 206.85it/s]Loading weights: 100%|██████████| 393/393 [00:01<00:00, 283.36it/s]
+[embed] 3271 chunks in 39s -> .cache/tablerag_yu/emb_3271_029f38aad3863319.npy
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<04:59,  1.33it/s]Loading weights:   1%|          | 2/399 [00:01<05:13,  1.27it/s]Loading weights:   1%|          | 4/399 [00:01<02:10,  3.03it/s]Loading weights:   2%|▏         | 6/399 [00:01<01:19,  4.95it/s]Loading weights:   4%|▍         | 15/399 [00:01<00:23, 16.13it/s]Loading weights:   5%|▍         | 19/399 [00:02<00:20, 18.16it/s]Loading weights:   7%|▋         | 26/399 [00:02<00:15, 23.46it/s]Loading weights:   8%|▊         | 30/399 [00:02<00:15, 23.42it/s]Loading weights:   9%|▉         | 37/399 [00:02<00:12, 29.33it/s]Loading weights:  10%|█         | 41/399 [00:02<00:12, 28.04it/s]Loading weights:  12%|█▏        | 48/399 [00:02<00:10, 34.91it/s]Loading weights:  13%|█▎        | 52/399 [00:03<00:10, 33.79it/s]Loading weights:  15%|█▍        | 59/399 [00:03<00:08, 38.03it/s]Loading weights:  16%|█▌        | 64/399 [00:03<00:09, 36.43it/s]Loading weights:  18%|█▊        | 70/399 [00:03<00:08, 39.63it/s]Loading weights:  19%|█▉        | 75/399 [00:03<00:08, 38.52it/s]Loading weights:  20%|██        | 81/399 [00:03<00:07, 39.84it/s]Loading weights:  22%|██▏       | 86/399 [00:03<00:08, 36.12it/s]Loading weights:  23%|██▎       | 92/399 [00:04<00:07, 39.32it/s]Loading weights:  24%|██▍       | 97/399 [00:04<00:07, 38.33it/s]Loading weights:  26%|██▌       | 103/399 [00:04<00:06, 42.41it/s]Loading weights:  27%|██▋       | 108/399 [00:04<00:07, 39.93it/s]Loading weights:  29%|██▊       | 114/399 [00:04<00:06, 42.60it/s]Loading weights:  30%|██▉       | 119/399 [00:04<00:06, 40.32it/s]Loading weights:  31%|███▏      | 125/399 [00:04<00:06, 40.99it/s]Loading weights:  33%|███▎      | 130/399 [00:04<00:06, 40.36it/s]Loading weights:  34%|███▍      | 136/399 [00:05<00:06, 42.34it/s]Loading weights:  35%|███▌      | 141/399 [00:05<00:06, 38.11it/s]Loading weights:  37%|███▋      | 147/399 [00:05<00:06, 39.74it/s]Loading weights:  38%|███▊      | 152/399 [00:05<00:06, 39.30it/s]Loading weights:  40%|███▉      | 158/399 [00:05<00:05, 42.81it/s]Loading weights:  41%|████      | 163/399 [00:05<00:05, 40.54it/s]Loading weights:  42%|████▏     | 169/399 [00:05<00:05, 41.22it/s]Loading weights:  44%|████▎     | 174/399 [00:06<00:05, 40.19it/s]Loading weights:  45%|████▌     | 180/399 [00:06<00:05, 41.01it/s]Loading weights:  46%|████▋     | 185/399 [00:06<00:05, 37.32it/s]Loading weights:  48%|████▊     | 191/399 [00:06<00:05, 37.95it/s]Loading weights:  49%|████▉     | 195/399 [00:06<00:06, 32.50it/s]Loading weights:  51%|█████     | 202/399 [00:06<00:05, 38.65it/s]Loading weights:  52%|█████▏    | 207/399 [00:06<00:04, 40.46it/s]Loading weights:  53%|█████▎    | 213/399 [00:07<00:04, 42.87it/s]Loading weights:  55%|█████▍    | 218/399 [00:07<00:04, 41.88it/s]Loading weights:  56%|█████▌    | 224/399 [00:07<00:04, 43.49it/s]Loading weights:  57%|█████▋    | 229/399 [00:07<00:03, 42.83it/s]Loading weights:  59%|█████▉    | 235/399 [00:07<00:03, 45.12it/s]Loading weights:  60%|██████    | 240/399 [00:07<00:03, 41.16it/s]Loading weights:  62%|██████▏   | 246/399 [00:07<00:03, 41.03it/s]Loading weights:  63%|██████▎   | 251/399 [00:07<00:03, 39.54it/s]Loading weights:  64%|██████▍   | 257/399 [00:08<00:03, 42.42it/s]Loading weights:  66%|██████▌   | 262/399 [00:08<00:03, 43.18it/s]Loading weights:  67%|██████▋   | 268/399 [00:08<00:02, 45.94it/s]Loading weights:  68%|██████▊   | 273/399 [00:08<00:03, 41.24it/s]Loading weights:  70%|██████▉   | 279/399 [00:08<00:02, 40.49it/s]Loading weights:  71%|███████   | 284/399 [00:08<00:03, 37.00it/s]Loading weights:  73%|███████▎  | 290/399 [00:08<00:02, 38.16it/s]Loading weights:  74%|███████▎  | 294/399 [00:09<00:03, 34.43it/s]Loading weights:  75%|███████▌  | 301/399 [00:09<00:02, 37.45it/s]Loading weights:  76%|███████▋  | 305/399 [00:09<00:02, 36.12it/s]Loading weights:  78%|███████▊  | 312/399 [00:09<00:02, 43.24it/s]Loading weights:  79%|███████▉  | 317/399 [00:09<00:01, 41.09it/s]Loading weights:  81%|████████  | 323/399 [00:09<00:01, 42.70it/s]Loading weights:  82%|████████▏ | 328/399 [00:09<00:01, 41.65it/s]Loading weights:  84%|████████▎ | 334/399 [00:09<00:01, 45.45it/s]Loading weights:  85%|████████▍ | 339/399 [00:10<00:01, 43.69it/s]Loading weights:  86%|████████▋ | 345/399 [00:10<00:01, 45.67it/s]Loading weights:  88%|████████▊ | 350/399 [00:10<00:01, 45.05it/s]Loading weights:  89%|████████▉ | 356/399 [00:10<00:00, 48.49it/s]Loading weights:  90%|█████████ | 361/399 [00:10<00:00, 47.60it/s]Loading weights:  92%|█████████▏| 367/399 [00:10<00:00, 49.80it/s]Loading weights:  93%|█████████▎| 373/399 [00:10<00:00, 47.16it/s]Loading weights:  95%|█████████▍| 379/399 [00:10<00:00, 41.08it/s]Loading weights:  96%|█████████▌| 384/399 [00:11<00:00, 41.61it/s]Loading weights:  97%|█████████▋| 389/399 [00:11<00:00, 42.33it/s]Loading weights:  99%|█████████▊| 394/399 [00:11<00:00, 40.43it/s]Loading weights: 100%|██████████| 399/399 [00:11<00:00, 35.01it/s]
+[gpu] allocated 6.07 GiB, reserved 6.18 GiB
+  1/629 49a4c690 rounds=2 calls=4 sql_err=0 pred='-25128' 68.722s
+  2/629 49b85ad8 rounds=2 calls=4 sql_err=0 pred='1,767.3' 26.685s
+  3/629 49ca72c5 rounds=2 calls=4 sql_err=0 pred='24324' 27.776s
+  4/629 4a42fccc rounds=3 calls=7 sql_err=0 pred='2016' 33.259s
+  5/629 4a885108 rounds=2 calls=4 sql_err=0 pred='$1,227.02' 36.66s
+  6/629 4ab73f78 rounds=4 calls=10 sql_err=0 pred='103.69%' 120.03s
+  7/629 4ae22659 rounds=2 calls=4 sql_err=0 pred='644' 18.896s
+  8/629 4b025ef0 rounds=2 calls=4 sql_err=0 pred='1050.4' 38.02s
+  9/629 4b176d1d rounds=2 calls=6 sql_err=0 pred='19349' 36.628s
+  10/629 4b450670 rounds=2 calls=4 sql_err=0 pred='2017' 51.68s
+  11/629 4b48ccc2 rounds=2 calls=4 sql_err=0 pred='Plywood – square feet (3/8”)(2)' 32.721s
+  12/629 4b90118a rounds=2 calls=4 sql_err=0 pred='2014' 28.054s
+  13/629 4bc6e463 rounds=2 calls=4 sql_err=0 pred='-73.68%' 28.595s
+  14/629 4c0f99eb rounds=2 calls=4 sql_err=0 pred='$60.84' 22.301s
+  15/629 4c6964d2 rounds=2 calls=4 sql_err=0 pred='1550' 31.507s
+  16/629 4c7cd48c rounds=2 calls=4 sql_err=0 pred='2009' 30.408s
+  17/629 4c8b6124 rounds=2 calls=4 sql_err=0 pred='$4,083,577' 24.94s
+  18/629 4d3f4d88 rounds=2 calls=4 sql_err=0 pred='1.71%' 23.184s
+  19/629 4d786407 rounds=3 calls=7 sql_err=0 pred='Shares used for computation (in thousands):(2) > Diluted' 73.12s
+  20/629 4d8ef061 rounds=2 calls=6 sql_err=0 pred='25.84' 29.77s
+  21/629 4dded919 rounds=2 calls=4 sql_err=0 pred='2007 and 2008' 30.361s
+  22/629 4e0b8f5b rounds=2 calls=4 sql_err=0 pred='48195' 41.256s
+  23/629 4e87e963 rounds=2 calls=4 sql_err=0 pred='$-9' 34.668s
+  24/629 4eca2399 rounds=2 calls=4 sql_err=0 pred='$27.02' 21.667s
+  25/629 4edd6ca3 rounds=4 calls=10 sql_err=0 pred='2007' 74.715s
+  26/629 4f41e0d9 rounds=3 calls=7 sql_err=0 pred='1' 39.632s
+  27/629 50d15d35 rounds=2 calls=4 sql_err=0 pred='2011' 27.592s
+  28/629 50d95675 rounds=3 calls=7 sql_err=1 pred='3284766' 68.798s
+  29/629 52ab2633 rounds=2 calls=4 sql_err=0 pred='1419.5' 31.342s
+  30/629 53a27b14 rounds=3 calls=7 sql_err=0 pred='2015' 89.118s
+  31/629 544806bd rounds=2 calls=6 sql_err=0 pred='No' 43.819s
+  32/629 54e9346a rounds=2 calls=4 sql_err=0 pred='11549725' 32.315s
+  33/629 553a6453 rounds=2 calls=4 sql_err=0 pred='$1,535' 25.885s
+  34/629 556fddea rounds=2 calls=4 sql_err=0 pred='$1,524,267' 29.564s
+  35/629 55fdbfc0 rounds=2 calls=4 sql_err=0 pred='6983' 51.86s
+  36/629 560312fe rounds=2 calls=4 sql_err=0 pred='13892' 48.217s
+  37/629 5604ccb0 rounds=2 calls=4 sql_err=0 pred='Notional amount of credit extension commitments under Expire in OneYear or Less' 31.521s
+  38/629 5637ef91 rounds=2 calls=6 sql_err=0 pred='7660' 30.988s
+  39/629 566af4e9 rounds=2 calls=4 sql_err=0 pred='116600' 31.128s
+  40/629 568073c8 rounds=3 calls=7 sql_err=0 pred='2304' 46.038s
+  41/629 56e86fda rounds=2 calls=4 sql_err=0 pred='213.3' 25.945s
+  42/629 5733965e rounds=2 calls=4 sql_err=0 pred='15792' 30.098s
+  43/629 57651164 rounds=2 calls=4 sql_err=0 pred='2011, 2012, 2013, 2014, 2015' 52.409s
+  44/629 57989baf rounds=5 calls=15 sql_err=0 pred=None 68.614s
+  45/629 58588235 rounds=2 calls=4 sql_err=0 pred='2286' 31.221s
+  46/629 5874a60d rounds=4 calls=10 sql_err=0 pred='423780' 162.473s
+  47/629 5899701a rounds=2 calls=6 sql_err=0 pred='124570' 48.33s
+  48/629 58e09350 rounds=2 calls=4 sql_err=0 pred='250.82%' 33.42s
+  49/629 58f504ab rounds=2 calls=4 sql_err=1 pred='5438.3' 20.016s
+  50/629 5a1a81ca rounds=2 calls=4 sql_err=0 pred='2008' 25.281s
+  51/629 5ab34b37 rounds=3 calls=7 sql_err=0 pred='754132.8' 63.039s
+  52/629 5ad68351 rounds=2 calls=6 sql_err=0 pred='No' 48.306s
+  53/629 5b731aca rounds=2 calls=4 sql_err=0 pred='$1,087' 16.565s
+  54/629 5ba1371f rounds=2 calls=4 sql_err=0 pred='3834.1' 22.639s
+  55/629 5c0f3d66 rounds=3 calls=7 sql_err=0 pred='Assets' 34.518s
+  56/629 5d902028 rounds=2 calls=4 sql_err=0 pred='51.44%' 44.433s
+  57/629 5e189228 rounds=2 calls=4 sql_err=0 pred='1279.97' 41.575s
+  58/629 5eea0e72 rounds=2 calls=4 sql_err=0 pred='$7,704 million and $3,906 million' 33.619s
+  59/629 5f1574f8 rounds=3 calls=7 sql_err=0 pred='2003' 50.677s
+  60/629 5f34ab2f rounds=2 calls=4 sql_err=0 pred='5' 39.243s
+  61/629 602eeb9c rounds=2 calls=4 sql_err=0 pred='4.51%' 31.924s
+  62/629 6035ee73 rounds=2 calls=4 sql_err=0 pred='-2.6%' 18.214s
+  63/629 60686126 rounds=3 calls=7 sql_err=0 pred='2016' 56.891s
+  64/629 60a5af4a rounds=2 calls=4 sql_err=0 pred='Not applicable or not available' 28.301s
+  65/629 60d31fa0 rounds=2 calls=4 sql_err=0 pred='No' 23.437s
+  66/629 60ec5633 rounds=2 calls=4 sql_err=1 pred='6804700' 57.288s
+  67/629 6144d84a rounds=5 calls=15 sql_err=0 pred=None 106.945s
+  68/629 626e838a rounds=2 calls=4 sql_err=0 pred='1805' 26.887s
+  69/629 62701611 rounds=3 calls=7 sql_err=0 pred='5' 58.822s
+  70/629 62ad8d9c rounds=2 calls=4 sql_err=0 pred='2816230' 41.996s
+  71/629 62b8d513 rounds=3 calls=7 sql_err=0 pred='Steam production asbestos' 56.759s
+  72/629 62fbb784 rounds=2 calls=4 sql_err=0 pred='12485' 41.024s
+  73/629 63200feb rounds=4 calls=10 sql_err=0 pred='2012' 77.676s
+  74/629 63953f44 rounds=3 calls=7 sql_err=0 pred="There is no year's value greater than 27000" 65.01s
+  75/629 63d6e074 rounds=2 calls=4 sql_err=0 pred='167' 31.063s
+  76/629 63e67cd3 rounds=2 calls=4 sql_err=0 pred='$68,198' 21.964s
+  77/629 647d8f7c rounds=3 calls=7 sql_err=0 pred='18430.33' 50.343s
+  78/629 647ec3a4 rounds=2 calls=4 sql_err=0 pred='$0' 30.117s
+  79/629 64935a5b rounds=3 calls=7 sql_err=0 pred='2014' 42.94s
+  80/629 651137b2 rounds=2 calls=4 sql_err=0 pred='2007' 22.709s
+  81/629 654baa5a rounds=4 calls=10 sql_err=0 pred='Performance guarantees' 62.712s
+  82/629 657174bb rounds=2 calls=4 sql_err=0 pred='1087 1492' 22.615s
+  83/629 65c70b30 rounds=2 calls=4 sql_err=0 pred='2' 47.152s
+  84/629 65e9154b rounds=4 calls=10 sql_err=0 pred='1.77%' 106.325s
+  85/629 66246f7f rounds=2 calls=6 sql_err=0 pred='4810918' 62.964s
+  86/629 665bca15 rounds=2 calls=4 sql_err=0 pred='1877' 34.421s
+  87/629 668cc9d4 rounds=2 calls=6 sql_err=0 pred='No' 49.557s
+  88/629 668dcb02 rounds=4 calls=10 sql_err=0 pred='13' 79.064s
+  89/629 669796af rounds=2 calls=4 sql_err=0 pred='2016' 18.129s
+  90/629 67a67004 rounds=2 calls=8 sql_err=0 pred='8248.33' 93.456s
+  91/629 67f30b06 rounds=2 calls=8 sql_err=0 pred='$30.2 million' 73.568s
+  92/629 67ff32c0 rounds=2 calls=4 sql_err=0 pred='2011' 23.55s
+  93/629 68458722 rounds=2 calls=4 sql_err=0 pred='$3,231' 48.85s
+  94/629 6891e224 rounds=3 calls=7 sql_err=0 pred='2009' 42.56s
+  95/629 68cbb553 rounds=2 calls=4 sql_err=0 pred='5262.9' 37.492s
+  96/629 68e8905e rounds=2 calls=4 sql_err=0 pred='932' 39.582s
+  97/629 6968e618 rounds=2 calls=4 sql_err=0 pred='1817' 27.262s
+  98/629 697c682b rounds=2 calls=4 sql_err=0 pred='2010' 47.395s
+  99/629 699fdd8c rounds=2 calls=6 sql_err=0 pred='Yes' 47.996s
+  100/629 69c03308 rounds=2 calls=4 sql_err=0 pred='$30.42' 35.502s
+  101/629 69f78a72 rounds=3 calls=7 sql_err=0 pred='No' 81.888s
+  102/629 6a1ebccf rounds=2 calls=6 sql_err=0 pred='Yes' 70.52s
+  103/629 6a844545 rounds=3 calls=7 sql_err=0 pred='2017' 99.724s
+  104/629 6b066d83 rounds=2 calls=6 sql_err=0 pred='2011' 44.262s
+  105/629 6b464843 rounds=3 calls=7 sql_err=0 pred='1859' 73.366s
+  106/629 6b6c414a rounds=2 calls=4 sql_err=0 pred='2007' 44.913s
+  107/629 6b997563 rounds=3 calls=7 sql_err=1 pred='2010' 65.719s
+  108/629 6bd7b489 rounds=3 calls=7 sql_err=0 pred='Combined' 52.84s
+  109/629 6bfa6976 rounds=2 calls=4 sql_err=0 pred='2018' 32.584s
+  110/629 6cf17612 rounds=2 calls=4 sql_err=0 pred='11178' 50.2s
+  111/629 6d8e6d9a rounds=2 calls=4 sql_err=0 pred='2012' 48.45s
+  112/629 6d9cc621 rounds=3 calls=7 sql_err=0 pred='International Insurance' 62.655s
+  113/629 6db258c2 rounds=3 calls=7 sql_err=0 pred='6550' 56.302s
+  114/629 6de89637 rounds=2 calls=4 sql_err=0 pred='1' 57.859s
+  115/629 6e5173ba rounds=2 calls=4 sql_err=0 pred='6271.0' 27.725s
+  116/629 6e54c100 rounds=5 calls=15 sql_err=0 pred=None 123.888s
+  117/629 6f1ba9a2 rounds=2 calls=4 sql_err=0 pred='25179' 27.651s
+  118/629 6f6a5c8e rounds=2 calls=4 sql_err=0 pred='2003' 29.354s
+  119/629 6f9138b7 rounds=2 calls=4 sql_err=0 pred='28%' 22.666s
+  120/629 6fdcece1 rounds=2 calls=4 sql_err=0 pred='22' 21.169s
+  121/629 70e4d58a rounds=2 calls=4 sql_err=0 pred='No' 27.758s
+  122/629 71270076 rounds=2 calls=4 sql_err=0 pred='5368' 51.956s
+  123/629 7146e8d7 rounds=5 calls=11 sql_err=0 pred='Revenue' 74.994s
+  124/629 71c6a20d rounds=2 calls=4 sql_err=0 pred='10455' 38.283s
+  125/629 71fe5ee6 rounds=2 calls=4 sql_err=0 pred='13.5 $1800' 33.38s
+  126/629 720db94a rounds=3 calls=7 sql_err=0 pred='44.44' 72.587s
+  127/629 7274c4e5 rounds=2 calls=4 sql_err=0 pred='85' 34.508s
+  128/629 72ef50fe rounds=2 calls=4 sql_err=0 pred='130' 35.241s
+  129/629 733486ae rounds=2 calls=4 sql_err=0 pred='4688' 35.898s
+  130/629 73e125a6 rounds=2 calls=4 sql_err=0 pred='2872' 40.222s
+  131/629 7449d6de rounds=2 calls=4 sql_err=0 pred='2011, 2010, 2009' 50.556s
+  132/629 74b1e40f rounds=2 calls=4 sql_err=0 pred='28.76' 22.573s
+  133/629 74bc4e75 rounds=3 calls=7 sql_err=0 pred='$1,806' 56.061s
+  134/629 7535166e rounds=3 calls=7 sql_err=0 pred='2015' 49.373s
+  135/629 75edcfb8 rounds=2 calls=4 sql_err=0 pred='Consolidated' 45.988s
+  136/629 761d3c3f rounds=3 calls=7 sql_err=0 pred="No, the Balance at end of year for Common stock in Stockholder's Equity did not keep increasing each year between 2003 and 2002. It remained the same in 2003 and increased in 2004" 64.395s
+  137/629 76ce37e6 rounds=4 calls=10 sql_err=0 pred='-16.64%' 85.365s
+  138/629 77535d4d rounds=2 calls=4 sql_err=0 pred='103419' 26.885s
+  139/629 778cc0b3 rounds=3 calls=7 sql_err=0 pred='2014' 53.342s
+  140/629 77b6e001 rounds=2 calls=4 sql_err=0 pred='2007' 24.166s
+  141/629 77c78691 rounds=2 calls=4 sql_err=0 pred='1' 33.834s
+  142/629 77ee13b2 rounds=2 calls=6 sql_err=0 pred='No' 37.928s
+  143/629 78420bd1 rounds=4 calls=10 sql_err=0 pred='$50,225 million' 89.477s
+  144/629 7863a046 rounds=2 calls=6 sql_err=0 pred='2018' 49.065s
+  145/629 789428cc rounds=2 calls=4 sql_err=0 pred='395424' 35.654s
+  146/629 78bcca60 rounds=4 calls=10 sql_err=0 pred='0' 77.488s
+  147/629 793f4b6c rounds=4 calls=10 sql_err=0 pred='6253418' 158.874s
+  148/629 797ce449 rounds=2 calls=4 sql_err=0 pred='3' 21.055s
+  149/629 79a3b036 rounds=2 calls=4 sql_err=0 pred='1005, 3431' 40.764s
+  150/629 79bb6ce8 rounds=2 calls=4 sql_err=0 pred='$201' 16.796s
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 478, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 455, in main
+    answer, round1, trace = run_case(r["question"], docs[qid], ret, chat, n_tok)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 319, in run_case
+    ranked, recall, rr = ret.retrieve(doc, sub_query)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/baselines/tablerag_yu.py", line 229, in retrieve
+    rr = self.reranker.compute_score([[query, doc.chunks[i]] for i in recall])
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/vendor/tablerag_yu/online_inference/utils/tool_utils.py", line 96, in compute_score
+    scores = self.model(**test_inputs_batch, return_dict=True).logits.view(-1).float()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 907, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/xlm_roberta/modeling_xlm_roberta.py", line 958, in forward
+    outputs = self.roberta(
+              ^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1036, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 252, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/xlm_roberta/modeling_xlm_roberta.py", line 641, in forward
+    encoder_outputs = self.encoder(
+                      ^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/xlm_roberta/modeling_xlm_roberta.py", line 535, in forward
+    hidden_states = layer_module(
+                    ^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/xlm_roberta/modeling_xlm_roberta.py", line 459, in forward
+    layer_output = apply_chunking_to_forward(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/pytorch_utils.py", line 201, in apply_chunking_to_forward
+    return forward_fn(*input_tensors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/xlm_roberta/modeling_xlm_roberta.py", line 465, in feed_forward_chunk
+    intermediate_output = self.intermediate(attention_output)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/xlm_roberta/modeling_xlm_roberta.py", line 386, in forward
+    hidden_states = self.dense(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

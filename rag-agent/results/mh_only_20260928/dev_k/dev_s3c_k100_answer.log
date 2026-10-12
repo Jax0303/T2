@@ -1,0 +1,63 @@
+[same-queries] 332 요청 -> 332 (새 레코드에 없음 0)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<04:37,  1.43it/s]Loading weights:   1%|          | 2/399 [00:00<02:34,  2.57it/s]Loading weights:   1%|          | 4/399 [00:01<01:13,  5.35it/s]Loading weights:   3%|▎         | 10/399 [00:01<00:24, 15.87it/s]Loading weights:   4%|▍         | 17/399 [00:01<00:15, 25.29it/s]Loading weights:   7%|▋         | 27/399 [00:01<00:09, 40.57it/s]Loading weights:   9%|▉         | 37/399 [00:01<00:07, 51.60it/s]Loading weights:  11%|█         | 44/399 [00:01<00:06, 54.44it/s]Loading weights:  13%|█▎        | 51/399 [00:01<00:06, 51.77it/s]Loading weights:  15%|█▌        | 60/399 [00:01<00:05, 57.23it/s]Loading weights:  17%|█▋        | 67/399 [00:01<00:05, 59.61it/s]Loading weights:  19%|█▊        | 74/399 [00:02<00:06, 52.97it/s]Loading weights:  20%|██        | 81/399 [00:02<00:05, 56.40it/s]Loading weights:  22%|██▏       | 87/399 [00:02<00:05, 56.86it/s]Loading weights:  23%|██▎       | 93/399 [00:02<00:05, 56.65it/s]Loading weights:  26%|██▌       | 103/399 [00:02<00:04, 64.62it/s]Loading weights:  28%|██▊       | 110/399 [00:02<00:04, 64.56it/s]Loading weights:  29%|██▉       | 117/399 [00:02<00:05, 52.36it/s]Loading weights:  32%|███▏      | 126/399 [00:03<00:04, 56.68it/s]Loading weights:  34%|███▍      | 136/399 [00:03<00:04, 57.60it/s]Loading weights:  36%|███▌      | 142/399 [00:03<00:04, 57.16it/s]Loading weights:  37%|███▋      | 148/399 [00:03<00:04, 56.79it/s]Loading weights:  40%|███▉      | 158/399 [00:03<00:03, 62.18it/s]Loading weights:  41%|████▏     | 165/399 [00:03<00:03, 61.81it/s]Loading weights:  43%|████▎     | 172/399 [00:03<00:04, 56.68it/s]Loading weights:  45%|████▌     | 180/399 [00:03<00:03, 62.38it/s]Loading weights:  47%|████▋     | 187/399 [00:04<00:03, 62.50it/s]Loading weights:  49%|████▊     | 194/399 [00:04<00:03, 54.18it/s]Loading weights:  51%|█████     | 202/399 [00:04<00:03, 60.33it/s]Loading weights:  52%|█████▏    | 209/399 [00:04<00:03, 58.56it/s]Loading weights:  54%|█████▍    | 216/399 [00:04<00:03, 54.57it/s]Loading weights:  56%|█████▋    | 225/399 [00:04<00:02, 60.79it/s]Loading weights:  59%|█████▉    | 235/399 [00:04<00:02, 66.24it/s]Loading weights:  61%|██████    | 242/399 [00:04<00:02, 65.61it/s]Loading weights:  62%|██████▏   | 249/399 [00:05<00:02, 59.33it/s]Loading weights:  65%|██████▍   | 258/399 [00:05<00:02, 60.30it/s]Loading weights:  67%|██████▋   | 268/399 [00:05<00:02, 63.68it/s]Loading weights:  69%|██████▉   | 275/399 [00:05<00:02, 59.12it/s]Loading weights:  70%|███████   | 281/399 [00:05<00:02, 52.92it/s]Loading weights:  73%|███████▎  | 291/399 [00:05<00:01, 60.35it/s]Loading weights:  75%|███████▍  | 298/399 [00:12<00:26,  3.77it/s]Loading weights:  76%|███████▌  | 303/399 [00:12<00:20,  4.66it/s]Loading weights: 100%|██████████| 399/399 [00:06<00:00, 57.11it/s]
+2026-09-28 21:15:25,684 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 21:15:25,779 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.09s.
+  100/332  2324s
+2026-09-28 21:54:10,205 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 21:54:10,262 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.06s.
+  200/332  4382s
+2026-09-28 22:28:27,785 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-28 22:28:27,812 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.03s.
+2026-09-28 22:47:16,193 - ContinuousBatchingLogger - ERROR - Error in generation loop: No requests can be scheduled and no request can be offloaded.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 898, in _run_generation_loop
+    requests_available = batch_processor.prepare_next_batch()  # this is where the TP group communicates
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 384, in prepare_next_batch
+    raise RuntimeError("No requests can be scheduled and no request can be offloaded.")
+RuntimeError: No requests can be scheduled and no request can be offloaded.
+2026-09-28 22:47:17,205 - ContinuousBatchingLogger - ERROR - Generation thread terminated unexpectedly.
+2026-09-28 22:47:17,401 - ContinuousBatchingLogger - ERROR - Requests ['req_7'] not found in results.
+Returning results of generate_batch despite unexpected termination.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 426, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 362, in main
+    for r, n_tok, raw, seconds in generate([r for r in scored if r["query_id"] not in done]):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 355, in generate
+    llm.complete_batch(PROMPTS[a.prompt], users, max_tokens=a.max_tokens))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 150, in complete_batch
+    raise RuntimeError(f"generate_batch 가 {len(ids)}건 중 {len(keys)}건만 돌려줬다")
+RuntimeError: generate_batch 가 76건 중 75건만 돌려줬다
+[same-queries] 332 요청 -> 332 (새 레코드에 없음 0)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<05:17,  1.25it/s]Loading weights:   1%|          | 2/399 [00:01<05:20,  1.24it/s]Loading weights:   1%|          | 4/399 [00:01<02:27,  2.68it/s]Loading weights:   2%|▏         | 6/399 [00:01<01:31,  4.32it/s]Loading weights:   4%|▍         | 15/399 [00:02<00:35, 10.85it/s]Loading weights:   4%|▍         | 17/399 [00:02<00:44,  8.57it/s]Loading weights:   5%|▌         | 21/399 [00:02<00:31, 11.83it/s]Loading weights:   7%|▋         | 26/399 [00:03<00:24, 15.32it/s]Loading weights:   7%|▋         | 29/399 [00:03<00:21, 16.90it/s]Loading weights:   9%|▉         | 37/399 [00:03<00:13, 26.34it/s]Loading weights:  11%|█         | 43/399 [00:03<00:10, 32.52it/s]Loading weights:  13%|█▎        | 50/399 [00:03<00:09, 38.24it/s]Loading weights:  15%|█▌        | 60/399 [00:03<00:06, 49.04it/s]Loading weights:  18%|█▊        | 70/399 [00:03<00:05, 58.02it/s]Loading weights:  20%|█▉        | 78/399 [00:03<00:05, 63.00it/s]Loading weights:  21%|██▏       | 85/399 [00:04<00:05, 61.19it/s]Loading weights:  23%|██▎       | 93/399 [00:04<00:04, 65.83it/s]Loading weights:  26%|██▌       | 103/399 [00:04<00:04, 72.89it/s]Loading weights:  28%|██▊       | 111/399 [00:04<00:03, 73.23it/s]Loading weights:  30%|██▉       | 119/399 [00:04<00:04, 67.49it/s]Loading weights:  32%|███▏      | 126/399 [00:04<00:04, 64.63it/s]Loading weights:  34%|███▍      | 136/399 [00:04<00:03, 69.94it/s]Loading weights:  36%|███▌      | 144/399 [00:04<00:03, 68.49it/s]Loading weights:  38%|███▊      | 151/399 [00:11<01:05,  3.77it/s]Loading weights:  40%|███▉      | 159/399 [00:11<00:45,  5.25it/s]Loading weights: 100%|██████████| 399/399 [00:08<00:00, 48.12it/s]
+[resume] 저장된 256행을 이어 쓴다
+2026-09-29 00:41:46,436 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 00:41:46,534 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.10s.
+2026-09-29 01:02:05,452 - ContinuousBatchingLogger - ERROR - Error in generation loop: No requests can be scheduled and no request can be offloaded.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 898, in _run_generation_loop
+    requests_available = batch_processor.prepare_next_batch()  # this is where the TP group communicates
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 384, in prepare_next_batch
+    raise RuntimeError("No requests can be scheduled and no request can be offloaded.")
+RuntimeError: No requests can be scheduled and no request can be offloaded.
+2026-09-29 01:02:06,471 - ContinuousBatchingLogger - ERROR - Generation thread terminated unexpectedly.
+2026-09-29 01:02:08,113 - ContinuousBatchingLogger - ERROR - Requests ['req_7', 'req_10', 'req_45', 'req_63'] not found in results.
+Returning results of generate_batch despite unexpected termination.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 426, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 362, in main
+    for r, n_tok, raw, seconds in generate([r for r in scored if r["query_id"] not in done]):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 355, in generate
+    llm.complete_batch(PROMPTS[a.prompt], users, max_tokens=a.max_tokens))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 150, in complete_batch
+    raise RuntimeError(f"generate_batch 가 {len(ids)}건 중 {len(keys)}건만 돌려줬다")
+RuntimeError: generate_batch 가 76건 중 72건만 돌려줬다

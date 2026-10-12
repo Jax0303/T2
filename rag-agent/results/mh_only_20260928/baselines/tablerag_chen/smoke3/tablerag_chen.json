@@ -1,0 +1,71 @@
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "official_code": [
+    "google-research/google-research  directory table_rag",
+    "commit 08a8d6736475776f42ffac23b2c13111a28e5795",
+    "fetched 2026-09-29 (git sparse-checkout)"
+  ],
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 128,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 3,
+  "resumed": 0,
+  "provenance": {
+    "git_commit": "7d4d8ff1a49911e71fdf3c75d8d98361b688cd36",
+    "git_dirty": true,
+    "source_sha256": "347cb4d43fae9c4459e42ef2b82176f2448bf4d59351c375fdc0ee4cbede5e03",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "n_queries": 3,
+  "seconds": 141.3,
+  "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 0.6667,
+      "cells_delivered_mean": 4.0,
+      "units_mean": 15.0,
+      "context_tokens_mean": 996.0,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m2+": {
+      "n": 1,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 1.0,
+      "cells_delivered_mean": 6.0,
+      "units_mean": 17.0,
+      "context_tokens_mean": 1100.0,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 0.5,
+      "cells_delivered_mean": 3.0,
+      "units_mean": 14.0,
+      "context_tokens_mean": 944.0,
+      "expansion_llm_calls_mean": 2.0
+    }
+  },
+  "records_sha256": "3281b77391a44e7a8844a8811b58a4ad89b46c475829b8bf4a200eb06b1f9c56"
+}

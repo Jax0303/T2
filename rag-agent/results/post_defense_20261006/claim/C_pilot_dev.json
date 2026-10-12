@@ -1,0 +1,57 @@
+{
+  "source": "ours",
+  "records": "results/mh_only_20260928/dev_k/dev_s3c_k20_records.jsonl",
+  "budget": null,
+  "ids": "",
+  "kinds": "arith",
+  "limit": 50,
+  "n": 50,
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt_text": "Answer the question using only the provided table context. Read the row and column labels to identify the relevant values. Think step by step and show the calculation. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation. If the final value requires arithmetic, first write the exact computation as one Python arithmetic expression using only the numbers from the context (no variables, no units) on a line 'Program: ' and then the 'Final answer: ' line.",
+  "prompt_sha256": "c38fd4b48692b57b358036f172ea207480c0c611b4257c4da3976ef814a83bfa",
+  "max_new_tokens": 384,
+  "batch_size": 128,
+  "seed": 42,
+  "temperature": 0.0,
+  "program_found": 46,
+  "program_executed": 46,
+  "marker_missing": 0,
+  "by_kind": {
+    "ALL": {
+      "n": 50,
+      "em": 0.26,
+      "lenient": 0.48,
+      "docmath": 0.48,
+      "llm_em": 0.18,
+      "llm_lenient": 0.32,
+      "program_executed": 46,
+      "retrieval_correct": 0.88
+    },
+    "arith": {
+      "n": 50,
+      "em": 0.26,
+      "lenient": 0.48,
+      "docmath": 0.48,
+      "llm_em": 0.18,
+      "llm_lenient": 0.32,
+      "program_executed": 46,
+      "retrieval_correct": 0.88
+    }
+  },
+  "provenance": {
+    "git_commit": "c0e534c72a9c6af29bb5994d26e7d5304ec05d40",
+    "git_dirty": true,
+    "source_sha256": "2aca543201daae49cade5d85be4d1d815b167bf1d5ce9d0c6d741aab479486c6",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "records_sha256": "10cc6acfc237146ce7f159f40902b84e32a917c7369b6f6b847f0b7be2ce2ad2"
+}

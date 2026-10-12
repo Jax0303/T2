@@ -1,0 +1,86 @@
+{
+ "rows": [
+  {
+   "method": "LangChain 청크",
+   "k": 1,
+   "cells_mean": 46.3,
+   "recall": 76.8,
+   "ours_same_cells": 98.6,
+   "ours_capped_at_list": 1
+  },
+  {
+   "method": "LangChain 청크",
+   "k": 2,
+   "cells_mean": 83.9,
+   "recall": 93.4,
+   "ours_same_cells": 99.4,
+   "ours_capped_at_list": 46
+  },
+  {
+   "method": "LangChain 청크",
+   "k": 4,
+   "cells_mean": 126.8,
+   "recall": 99.4,
+   "ours_same_cells": 99.4,
+   "ours_capped_at_list": 140
+  },
+  {
+   "method": "TableRAG(Yu)",
+   "k": 1,
+   "cells_mean": 43.3,
+   "recall": 82.8,
+   "ours_same_cells": 97.5,
+   "ours_capped_at_list": 1
+  },
+  {
+   "method": "TableRAG(Yu)",
+   "k": 2,
+   "cells_mean": 79.6,
+   "recall": 95.6,
+   "ours_same_cells": 99.4,
+   "ours_capped_at_list": 43
+  },
+  {
+   "method": "TableRAG(Yu)",
+   "k": 5,
+   "cells_mean": 131.8,
+   "recall": 100.0,
+   "ours_same_cells": 99.4,
+   "ours_capped_at_list": 138
+  },
+  {
+   "method": "RAPTOR",
+   "k": 1,
+   "cells_mean": 11.2,
+   "recall": 37.0,
+   "ours_same_cells": 69.0,
+   "ours_capped_at_list": 2
+  },
+  {
+   "method": "RAPTOR",
+   "k": 5,
+   "cells_mean": 53.5,
+   "recall": 68.4,
+   "ours_same_cells": 94.9,
+   "ours_capped_at_list": 23
+  },
+  {
+   "method": "RAPTOR",
+   "k": 20,
+   "cells_mean": 112.6,
+   "recall": 81.7,
+   "ours_same_cells": 97.9,
+   "ours_capped_at_list": 103
+  }
+ ],
+ "langchain_top1_has_gold": 81.0,
+ "ours_same_cells_has_gold": 99.0,
+ "ours_R@1_max": 58.6,
+ "ours_cellP@20_max": 11.9,
+ "gold_per_q_200": 2.37,
+ "gold_per_q_2885": 2.65,
+ "table_4_5_recheck": {
+  "ours_R@5": 73.4,
+  "langchain_R@1": 76.8
+ }
+}

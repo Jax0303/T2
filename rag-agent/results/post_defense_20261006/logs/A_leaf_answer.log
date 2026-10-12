@@ -1,0 +1,11 @@
+[start] 2026-10-06T20:18:35+09:00 $P scripts/answer_accuracy_mh.py --records $S/claim/A_leaf/mh_train_s3c_leaf_records.jsonl --scope doc --condition retrieved --split train --header-rule v3.3u --batch-size 128 --same-queries-as $IDS --reader $MAIN --quiet-accuracy --out $S/claim/A_leaf_answer.jsonl --resume
+[same-queries] 200 요청 -> 200 (새 레코드에 없음 0)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:03<21:30,  3.24s/it]Loading weights:   1%|          | 2/399 [00:06<20:46,  3.14s/it]Loading weights:   1%|          | 4/399 [00:06<08:28,  1.29s/it]Loading weights:   2%|▏         | 6/399 [00:06<04:41,  1.40it/s]Loading weights:   4%|▍         | 15/399 [00:07<01:13,  5.19it/s]Loading weights:   5%|▍         | 18/399 [00:07<00:59,  6.44it/s]Loading weights:   5%|▌         | 21/399 [00:07<00:46,  8.14it/s]Loading weights:   7%|▋         | 26/399 [00:07<00:37, 10.07it/s]Loading weights:   7%|▋         | 29/399 [00:07<00:34, 10.80it/s]Loading weights:   9%|▉         | 35/399 [00:07<00:22, 16.25it/s]Loading weights:  10%|▉         | 38/399 [00:08<00:23, 15.65it/s]Loading weights:  10%|█         | 41/399 [00:08<00:20, 17.67it/s]Loading weights:  12%|█▏        | 48/399 [00:08<00:14, 23.73it/s]Loading weights:  13%|█▎        | 52/399 [00:08<00:14, 24.38it/s]Loading weights:  14%|█▍        | 56/399 [00:22<05:35,  1.02it/s]Loading weights:  15%|█▌        | 60/399 [00:22<04:00,  1.41it/s]Loading weights:  57%|█████▋    | 226/399 [00:27<00:11, 14.84it/s]Loading weights:  59%|█████▉    | 236/399 [00:27<00:10, 15.78it/s]Loading weights:  62%|██████▏   | 246/399 [00:27<00:08, 17.06it/s]Loading weights: 100%|██████████| 399/399 [00:16<00:00, 23.58it/s]
+2026-10-06 20:19:09,856 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-06 20:19:09,923 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.07s.
+  100/200  800s
+2026-10-06 20:32:30,416 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-10-06 20:32:30,499 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.08s.
+  200/200  1336s
+[done] 200행 -> results/post_defense_20261006/claim/A_leaf_answer.json

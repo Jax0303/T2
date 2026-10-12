@@ -1,0 +1,211 @@
+[start] 2026-10-08T00:07:55+09:00 $P scripts/baselines/tablerag_yu.py --out-dir $S/llm_llama3b/tablerag_yu --stage answer --answer-ids $IDS --reader $L3 --embed-device cpu --resume
+[plan] stage=answer 200 문항, 남은 200
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[corpus] 200 docs / 1025 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 23/199 [00:00<00:00, 222.81it/s]Loading weights:  33%|███▎      | 66/199 [00:00<00:00, 333.03it/s]Loading weights:  55%|█████▌    | 110/199 [00:00<00:00, 370.51it/s]Loading weights:  74%|███████▍  | 147/199 [00:00<00:00, 318.76it/s]Loading weights:  90%|█████████ | 180/199 [00:00<00:00, 204.79it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 270.06it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:   3%|▎         | 11/393 [00:00<00:05, 73.46it/s]Loading weights:   5%|▍         | 19/393 [00:00<00:15, 24.92it/s]Loading weights:   6%|▌         | 23/393 [00:00<00:17, 21.29it/s]Loading weights:   7%|▋         | 26/393 [00:01<00:17, 21.20it/s]Loading weights:   9%|▊         | 34/393 [00:01<00:11, 30.51it/s]Loading weights:  10%|▉         | 38/393 [00:01<00:18, 18.82it/s]Loading weights:  12%|█▏        | 48/393 [00:01<00:14, 23.19it/s]Loading weights:  13%|█▎        | 52/393 [00:02<00:16, 20.88it/s]Loading weights:  14%|█▍        | 55/393 [00:02<00:17, 19.62it/s]Loading weights:  15%|█▍        | 58/393 [00:02<00:16, 20.13it/s]Loading weights:  16%|█▌        | 61/393 [00:03<00:27, 11.89it/s]Loading weights:  18%|█▊        | 69/393 [00:03<00:18, 17.22it/s]Loading weights:  18%|█▊        | 72/393 [00:03<00:18, 17.02it/s]Loading weights:  19%|█▉        | 75/393 [00:03<00:18, 17.42it/s]Loading weights:  21%|██        | 81/393 [00:03<00:13, 23.41it/s]Loading weights:  21%|██▏       | 84/393 [00:03<00:12, 23.85it/s]Loading weights:  30%|███       | 118/393 [00:04<00:03, 71.05it/s]Loading weights:  36%|███▌      | 142/393 [00:04<00:02, 102.47it/s]Loading weights:  41%|████      | 162/393 [00:04<00:02, 113.13it/s]Loading weights:  46%|████▌     | 179/393 [00:04<00:01, 111.06it/s]Loading weights:  49%|████▊     | 191/393 [00:04<00:02, 91.84it/s] Loading weights:  51%|█████▏    | 202/393 [00:05<00:02, 74.31it/s]Loading weights:  54%|█████▎    | 211/393 [00:05<00:02, 76.61it/s]Loading weights:  56%|█████▌    | 220/393 [00:05<00:02, 75.49it/s]Loading weights:  59%|█████▉    | 233/393 [00:05<00:01, 85.34it/s]Loading weights:  67%|██████▋   | 263/393 [00:05<00:00, 134.47it/s]Loading weights:  71%|███████   | 279/393 [00:05<00:00, 119.18it/s]Loading weights:  75%|███████▍  | 293/393 [00:05<00:00, 113.03it/s]Loading weights:  80%|████████  | 316/393 [00:05<00:00, 133.67it/s]Loading weights: 100%|██████████| 393/393 [00:05<00:00, 65.75it/s] 
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/254 [00:00<?, ?it/s]Loading weights:   0%|          | 1/254 [00:00<03:55,  1.08it/s]Loading weights:   2%|▏         | 6/254 [00:01<00:32,  7.53it/s]Loading weights:   6%|▌         | 14/254 [00:01<00:13, 18.38it/s]Loading weights:   9%|▊         | 22/254 [00:01<00:08, 28.11it/s]Loading weights:  11%|█         | 28/254 [00:01<00:06, 32.60it/s]Loading weights:  13%|█▎        | 34/254 [00:01<00:06, 31.61it/s]Loading weights:  16%|█▌        | 40/254 [00:01<00:06, 31.12it/s]Loading weights:  19%|█▉        | 48/254 [00:01<00:05, 40.09it/s]Loading weights:  22%|██▏       | 57/254 [00:02<00:03, 49.88it/s]Loading weights:  25%|██▌       | 64/254 [00:02<00:03, 49.28it/s]Loading weights:  28%|██▊       | 70/254 [00:02<00:07, 23.62it/s]Loading weights:  30%|██▉       | 75/254 [00:03<00:08, 21.39it/s]Loading weights:  31%|███       | 79/254 [00:03<00:07, 22.56it/s]Loading weights:  33%|███▎      | 85/254 [00:03<00:06, 28.05it/s]Loading weights:  36%|███▌      | 91/254 [00:03<00:04, 33.43it/s]Loading weights:  39%|███▉      | 100/254 [00:03<00:03, 42.57it/s]Loading weights:  42%|████▏     | 106/254 [00:03<00:03, 43.49it/s]Loading weights:  44%|████▍     | 113/254 [00:03<00:02, 48.26it/s]Loading weights:  48%|████▊     | 122/254 [00:03<00:02, 52.24it/s]Loading weights:  52%|█████▏    | 131/254 [00:04<00:02, 59.18it/s]Loading weights:  57%|█████▋    | 144/254 [00:04<00:01, 70.67it/s]Loading weights:  60%|██████    | 153/254 [00:04<00:01, 71.35it/s]Loading weights:  63%|██████▎   | 161/254 [00:04<00:01, 63.65it/s]Loading weights:  66%|██████▌   | 168/254 [00:04<00:01, 49.28it/s]Loading weights:  70%|███████   | 179/254 [00:04<00:01, 60.53it/s]Loading weights:  73%|███████▎  | 186/254 [00:05<00:01, 51.21it/s]Loading weights:  76%|███████▌  | 192/254 [00:05<00:01, 51.71it/s]Loading weights:  78%|███████▊  | 198/254 [00:05<00:01, 44.42it/s]Loading weights:  80%|███████▉  | 203/254 [00:05<00:01, 41.76it/s]Loading weights:  83%|████████▎ | 210/254 [00:05<00:01, 42.22it/s]Loading weights:  85%|████████▍ | 215/254 [00:05<00:00, 42.40it/s]Loading weights:  88%|████████▊ | 224/254 [00:05<00:00, 52.01it/s]Loading weights:  91%|█████████ | 230/254 [00:06<00:00, 48.58it/s]Loading weights:  94%|█████████▍| 239/254 [00:06<00:00, 57.95it/s]Loading weights:  98%|█████████▊| 248/254 [00:06<00:00, 62.02it/s]Loading weights: 100%|██████████| 254/254 [00:06<00:00, 40.46it/s]
+[gpu] allocated 5.98 GiB, reserved 6.00 GiB
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+  1/200 007a44f1 rounds=5 calls=5 sql_err=0 pred=None 22.336s
+  2/200 00fa4ad4 rounds=5 calls=5 sql_err=0 pred=None 17.127s
+  3/200 01208501 rounds=5 calls=5 sql_err=0 pred=None 17.839s
+  4/200 01491ead rounds=5 calls=5 sql_err=0 pred=None 12.923s
+  5/200 014fccb5 rounds=5 calls=5 sql_err=0 pred=None 18.884s
+  6/200 01a51817 rounds=5 calls=5 sql_err=0 pred=None 25.264s
+  7/200 029260e2 rounds=5 calls=5 sql_err=0 pred=None 18.806s
+  8/200 02ffb637 rounds=5 calls=5 sql_err=0 pred=None 14.714s
+  9/200 0355ae36 rounds=5 calls=5 sql_err=0 pred=None 14.41s
+  10/200 03a31171 rounds=5 calls=5 sql_err=0 pred=None 19.515s
+  11/200 03c1239d rounds=5 calls=5 sql_err=0 pred=None 11.18s
+  12/200 04624222 rounds=5 calls=5 sql_err=0 pred=None 20.381s
+  13/200 04bf5e3c rounds=5 calls=5 sql_err=0 pred=None 25.321s
+  14/200 04e25e10 rounds=5 calls=5 sql_err=0 pred=None 21.257s
+  15/200 04fc33c3 rounds=5 calls=5 sql_err=0 pred=None 16.234s
+  16/200 0574491e rounds=5 calls=5 sql_err=0 pred=None 14.233s
+  17/200 06549e28 rounds=5 calls=5 sql_err=0 pred=None 20.801s
+  18/200 0784493f rounds=5 calls=5 sql_err=0 pred=None 10.919s
+  19/200 0799c427 rounds=5 calls=5 sql_err=0 pred=None 20.976s
+  20/200 079b7926 rounds=5 calls=5 sql_err=0 pred=None 12.149s
+  21/200 07a1e662 rounds=5 calls=5 sql_err=0 pred=None 10.95s
+  22/200 07a76a5b rounds=5 calls=5 sql_err=0 pred=None 20.917s
+  23/200 081b2ee2 rounds=5 calls=5 sql_err=0 pred=None 18.196s
+  24/200 08e15549 rounds=5 calls=5 sql_err=0 pred=None 13.958s
+  25/200 08ff3176 rounds=5 calls=5 sql_err=0 pred=None 15.934s
+  26/200 095fb4d3 rounds=5 calls=5 sql_err=0 pred=None 10.831s
+  27/200 096c7e72 rounds=5 calls=5 sql_err=0 pred=None 22.36s
+  28/200 09d3e9bd rounds=5 calls=5 sql_err=0 pred=None 15.261s
+  29/200 0a2c44f0 rounds=5 calls=5 sql_err=0 pred=None 12.021s
+  30/200 0a351fcd rounds=5 calls=5 sql_err=0 pred=None 14.207s
+  31/200 0aa5765b rounds=5 calls=5 sql_err=0 pred=None 17.175s
+  32/200 0b6c848f rounds=5 calls=5 sql_err=0 pred=None 13.815s
+  33/200 0bd64668 rounds=5 calls=5 sql_err=0 pred=None 17.721s
+  34/200 0d1e2900 rounds=5 calls=5 sql_err=0 pred=None 17.852s
+  35/200 0d8d5676 rounds=5 calls=5 sql_err=0 pred=None 18.277s
+  36/200 0dc03282 rounds=5 calls=5 sql_err=0 pred=None 15.119s
+  37/200 0e494357 rounds=5 calls=5 sql_err=0 pred=None 17.401s
+  38/200 0e57aab0 rounds=5 calls=5 sql_err=0 pred=None 19.261s
+  39/200 0e697a45 rounds=5 calls=5 sql_err=0 pred=None 15.97s
+  40/200 0e880832 rounds=5 calls=5 sql_err=0 pred=None 18.662s
+  41/200 0f03164b rounds=5 calls=5 sql_err=0 pred=None 17.016s
+  42/200 0f75a4bd rounds=5 calls=5 sql_err=0 pred=None 18.513s
+  43/200 1027323b rounds=5 calls=5 sql_err=0 pred=None 9.392s
+  44/200 103370d3 rounds=5 calls=5 sql_err=0 pred=None 17.487s
+  45/200 104e34da rounds=5 calls=5 sql_err=0 pred=None 13.928s
+  46/200 10f664be rounds=5 calls=5 sql_err=0 pred=None 24.8s
+  47/200 110bf010 rounds=5 calls=5 sql_err=0 pred=None 11.269s
+  48/200 113587b7 rounds=5 calls=5 sql_err=0 pred=None 17.122s
+  49/200 1162a505 rounds=5 calls=5 sql_err=0 pred=None 16.552s
+  50/200 1175164d rounds=5 calls=5 sql_err=0 pred=None 13.742s
+  51/200 11963559 rounds=5 calls=5 sql_err=0 pred=None 12.043s
+  52/200 11975f6f rounds=5 calls=5 sql_err=0 pred=None 21.291s
+  53/200 1239551a rounds=5 calls=5 sql_err=0 pred=None 20.058s
+  54/200 1273e029 rounds=5 calls=5 sql_err=0 pred=None 12.148s
+  55/200 1281e54b rounds=5 calls=5 sql_err=0 pred=None 16.641s
+  56/200 12f92b7d rounds=5 calls=5 sql_err=0 pred=None 14.821s
+  57/200 1365e3ab rounds=5 calls=5 sql_err=0 pred=None 19.109s
+  58/200 13faecab rounds=5 calls=5 sql_err=0 pred=None 12.06s
+  59/200 1452ec45 rounds=5 calls=5 sql_err=0 pred=None 16.9s
+  60/200 146aaec8 rounds=5 calls=5 sql_err=0 pred=None 13.679s
+  61/200 148ebeec rounds=5 calls=5 sql_err=0 pred=None 20.985s
+  62/200 14bb95e9 rounds=5 calls=5 sql_err=0 pred=None 28.798s
+  63/200 14e97fb1 rounds=5 calls=5 sql_err=0 pred=None 18.228s
+  64/200 152e2b4a rounds=5 calls=5 sql_err=0 pred=None 11.964s
+  65/200 1598567b rounds=5 calls=5 sql_err=0 pred=None 11.305s
+  66/200 16582b76 rounds=5 calls=5 sql_err=0 pred=None 17.46s
+  67/200 16b1154d rounds=5 calls=5 sql_err=0 pred=None 11.631s
+  68/200 171a2b3e rounds=5 calls=5 sql_err=0 pred=None 24.524s
+  69/200 17443e68 rounds=5 calls=5 sql_err=0 pred=None 18.669s
+  70/200 1811f946 rounds=5 calls=5 sql_err=0 pred=None 18.306s
+  71/200 189da0f7 rounds=5 calls=5 sql_err=0 pred=None 17.494s
+  72/200 18b3fdd8 rounds=5 calls=5 sql_err=0 pred=None 16.949s
+  73/200 18e0dd6f rounds=5 calls=5 sql_err=0 pred=None 10.556s
+  74/200 18fed98e rounds=5 calls=5 sql_err=0 pred=None 15.069s
+  75/200 194a68f1 rounds=5 calls=5 sql_err=0 pred=None 16.949s
+  76/200 194ef421 rounds=5 calls=5 sql_err=0 pred=None 13.92s
+  77/200 19785c1e rounds=5 calls=5 sql_err=0 pred=None 22.696s
+  78/200 1998071d rounds=5 calls=5 sql_err=0 pred=None 14.454s
+  79/200 199f043b rounds=5 calls=5 sql_err=0 pred=None 12.519s
+  80/200 19b943c1 rounds=5 calls=5 sql_err=0 pred=None 15.082s
+  81/200 1a0036c3 rounds=5 calls=5 sql_err=0 pred=None 11.191s
+  82/200 1a1c1cd9 rounds=5 calls=5 sql_err=0 pred=None 24.636s
+  83/200 1ab34eba rounds=5 calls=5 sql_err=0 pred=None 18.406s
+  84/200 1ab49c3b rounds=5 calls=5 sql_err=0 pred=None 17.084s
+  85/200 1ae7dc82 rounds=5 calls=5 sql_err=0 pred=None 21.705s
+  86/200 1b1082b3 rounds=5 calls=5 sql_err=0 pred=None 24.873s
+  87/200 1b6661d1 rounds=5 calls=5 sql_err=0 pred=None 12.26s
+  88/200 1b70748b rounds=5 calls=5 sql_err=0 pred=None 14.301s
+  89/200 1b8e6149 rounds=5 calls=5 sql_err=0 pred=None 12.794s
+  90/200 1bcc7982 rounds=5 calls=5 sql_err=0 pred=None 13.986s
+  91/200 1c1b9b75 rounds=5 calls=5 sql_err=0 pred=None 12.215s
+  92/200 1c60b5b2 rounds=5 calls=5 sql_err=0 pred=None 8.445s
+  93/200 1cef8b6c rounds=5 calls=5 sql_err=0 pred=None 19.728s
+  94/200 1cfe50bc rounds=5 calls=5 sql_err=0 pred=None 18.281s
+  95/200 1d12ae98 rounds=5 calls=5 sql_err=0 pred=None 15.438s
+  96/200 1d70940b rounds=5 calls=5 sql_err=0 pred=None 23.712s
+  97/200 1d9f779d rounds=5 calls=5 sql_err=0 pred=None 15.313s
+  98/200 1e02898f rounds=5 calls=5 sql_err=0 pred=None 16.111s
+  99/200 1e070d19 rounds=5 calls=5 sql_err=0 pred=None 14.625s
+  100/200 1e201e07 rounds=5 calls=5 sql_err=0 pred=None 19.472s
+  101/200 1e724be0 rounds=5 calls=5 sql_err=0 pred=None 16.05s
+  102/200 1eef397a rounds=5 calls=5 sql_err=0 pred=None 14.898s
+  103/200 1f3116d9 rounds=5 calls=5 sql_err=0 pred=None 13.791s
+  104/200 1f3b19c2 rounds=5 calls=5 sql_err=0 pred=None 18.334s
+  105/200 2002613e rounds=5 calls=5 sql_err=0 pred=None 17.574s
+  106/200 2014ead9 rounds=5 calls=5 sql_err=0 pred=None 12.484s
+  107/200 206a2b0d rounds=5 calls=5 sql_err=0 pred=None 26.124s
+  108/200 208854d4 rounds=5 calls=5 sql_err=0 pred=None 13.811s
+  109/200 20b27fd2 rounds=5 calls=5 sql_err=0 pred=None 19.883s
+  110/200 21261b67 rounds=5 calls=5 sql_err=0 pred=None 20.859s
+  111/200 215a4357 rounds=5 calls=5 sql_err=0 pred=None 23.217s
+  112/200 219e87f0 rounds=5 calls=5 sql_err=0 pred=None 17.26s
+  113/200 21a72ef1 rounds=5 calls=5 sql_err=0 pred=None 13.055s
+  114/200 21e442e3 rounds=5 calls=5 sql_err=0 pred=None 19.183s
+  115/200 21f22d2c rounds=5 calls=5 sql_err=0 pred=None 13.898s
+  116/200 22b73fcb rounds=5 calls=5 sql_err=0 pred=None 11.639s
+  117/200 2326b0af rounds=5 calls=5 sql_err=0 pred=None 18.569s
+  118/200 234d5886 rounds=5 calls=5 sql_err=0 pred=None 18.913s
+  119/200 2360034e rounds=5 calls=5 sql_err=0 pred=None 16.607s
+  120/200 23900023 rounds=5 calls=5 sql_err=0 pred=None 17.755s
+  121/200 239009c6 rounds=5 calls=5 sql_err=0 pred=None 17.426s
+  122/200 23a5e768 rounds=5 calls=5 sql_err=0 pred=None 13.236s
+  123/200 24648aa2 rounds=5 calls=5 sql_err=0 pred=None 14.186s
+  124/200 2480510c rounds=5 calls=5 sql_err=0 pred=None 10.479s
+  125/200 248fceb4 rounds=5 calls=5 sql_err=0 pred=None 10.047s
+  126/200 24e7f861 rounds=5 calls=5 sql_err=0 pred=None 20.265s
+  127/200 2505bc4e rounds=5 calls=5 sql_err=0 pred=None 14.98s
+  128/200 2591e242 rounds=5 calls=5 sql_err=0 pred=None 22.082s
+  129/200 25e72265 rounds=5 calls=5 sql_err=0 pred=None 19.181s
+  130/200 25efb082 rounds=5 calls=5 sql_err=0 pred=None 9.737s
+  131/200 25fb7a29 rounds=5 calls=5 sql_err=0 pred=None 11.129s
+  132/200 260482e2 rounds=5 calls=5 sql_err=0 pred=None 14.326s
+  133/200 2616023d rounds=5 calls=5 sql_err=0 pred=None 13.726s
+  134/200 2642de24 rounds=5 calls=5 sql_err=0 pred=None 20.923s
+  135/200 26b33995 rounds=5 calls=5 sql_err=0 pred=None 11.492s
+  136/200 276a4a50 rounds=5 calls=5 sql_err=0 pred=None 18.093s
+  137/200 27753491 rounds=5 calls=5 sql_err=0 pred=None 14.066s
+  138/200 27f94cfa rounds=5 calls=5 sql_err=0 pred=None 29.518s
+  139/200 2829d469 rounds=5 calls=5 sql_err=0 pred=None 18.848s
+  140/200 282f394c rounds=5 calls=5 sql_err=0 pred=None 12.323s
+  141/200 283328f0 rounds=5 calls=5 sql_err=0 pred=None 23.001s
+  142/200 289a3673 rounds=5 calls=5 sql_err=0 pred=None 24.594s
+  143/200 28e10e89 rounds=5 calls=5 sql_err=0 pred=None 13.355s
+  144/200 28ecfa7e rounds=5 calls=5 sql_err=0 pred=None 16.529s
+  145/200 292d9659 rounds=5 calls=5 sql_err=0 pred=None 16.223s
+  146/200 29760c31 rounds=5 calls=5 sql_err=0 pred=None 18.01s
+  147/200 29d6c4d3 rounds=5 calls=5 sql_err=0 pred=None 14.501s
+  148/200 2a0e6d33 rounds=5 calls=5 sql_err=0 pred=None 19.419s
+  149/200 2a1e26b7 rounds=5 calls=5 sql_err=0 pred=None 29.683s
+  150/200 2ae38d71 rounds=5 calls=5 sql_err=0 pred=None 19.256s
+  151/200 2b8f6529 rounds=5 calls=5 sql_err=0 pred=None 20.131s
+  152/200 2bc14eb4 rounds=5 calls=5 sql_err=0 pred=None 45.991s
+  153/200 2c2968a8 rounds=5 calls=5 sql_err=0 pred=None 18.495s
+  154/200 2c2d85fd rounds=5 calls=5 sql_err=0 pred=None 21.482s
+  155/200 2c9fcdd6 rounds=5 calls=5 sql_err=0 pred=None 21.36s
+  156/200 2cafe67b rounds=5 calls=5 sql_err=0 pred=None 21.689s
+  157/200 2cb5964b rounds=5 calls=5 sql_err=0 pred=None 17.614s
+  158/200 2d41cc72 rounds=5 calls=5 sql_err=0 pred=None 11.306s
+  159/200 2d9fc9a4 rounds=5 calls=5 sql_err=0 pred=None 39.292s
+  160/200 2e110030 rounds=5 calls=5 sql_err=0 pred=None 15.981s
+  161/200 2e44735c rounds=5 calls=5 sql_err=0 pred=None 14.568s
+  162/200 2e461d83 rounds=5 calls=5 sql_err=0 pred=None 22.589s
+  163/200 2e758678 rounds=5 calls=5 sql_err=0 pred=None 13.472s
+  164/200 2eb3128b rounds=5 calls=5 sql_err=0 pred=None 17.401s
+  165/200 2f07d38f rounds=5 calls=5 sql_err=0 pred=None 18.485s
+  166/200 2f56b881 rounds=5 calls=5 sql_err=0 pred=None 17.555s
+  167/200 2f8c281d rounds=5 calls=5 sql_err=0 pred=None 24.145s
+  168/200 2fa5414d rounds=5 calls=5 sql_err=0 pred=None 11.795s
+  169/200 30239770 rounds=5 calls=5 sql_err=0 pred=None 20.349s
+  170/200 302dbb62 rounds=5 calls=5 sql_err=0 pred=None 45.895s
+  171/200 305893c3 rounds=5 calls=5 sql_err=0 pred=None 38.089s
+  172/200 308b7fed rounds=5 calls=5 sql_err=0 pred=None 24.265s
+  173/200 30ad4439 rounds=5 calls=5 sql_err=0 pred=None 22.173s
+  174/200 30b1fa7f rounds=5 calls=5 sql_err=0 pred=None 12.923s
+  175/200 30ca4906 rounds=5 calls=5 sql_err=0 pred=None 22.389s
+  176/200 30cc12ce rounds=5 calls=5 sql_err=0 pred=None 13.229s
+  177/200 31568129 rounds=5 calls=5 sql_err=0 pred=None 18.46s
+  178/200 318c96f6 rounds=5 calls=5 sql_err=0 pred=None 22.232s
+  179/200 31c3396e rounds=5 calls=5 sql_err=0 pred=None 13.652s
+  180/200 31efe993 rounds=5 calls=5 sql_err=0 pred=None 10.929s
+  181/200 32070e46 rounds=5 calls=5 sql_err=0 pred=None 17.653s
+  182/200 3254bf6c rounds=5 calls=5 sql_err=0 pred=None 17.418s
+  183/200 32a9cc75 rounds=5 calls=5 sql_err=0 pred=None 19.241s
+  184/200 3321318f rounds=5 calls=5 sql_err=0 pred=None 16.609s
+  185/200 33f8dab7 rounds=5 calls=5 sql_err=0 pred=None 19.624s
+  186/200 3410a4e5 rounds=5 calls=5 sql_err=0 pred=None 17.62s
+  187/200 34196d12 rounds=5 calls=5 sql_err=0 pred=None 36.391s
+  188/200 343351bc rounds=5 calls=5 sql_err=0 pred=None 17.527s
+  189/200 347a6c16 rounds=5 calls=5 sql_err=0 pred=None 22.278s
+  190/200 34b2cf77 rounds=5 calls=5 sql_err=0 pred=None 24.005s
+  191/200 3533cf5b rounds=5 calls=5 sql_err=0 pred=None 16.141s
+  192/200 35a33cbb rounds=5 calls=5 sql_err=0 pred=None 15.228s
+  193/200 35d86637 rounds=5 calls=5 sql_err=0 pred=None 19.88s
+  194/200 37eb2429 rounds=5 calls=5 sql_err=0 pred=None 18.613s
+  195/200 3833a342 rounds=5 calls=5 sql_err=0 pred=None 28.413s
+  196/200 38443319 rounds=5 calls=5 sql_err=0 pred=None 24.402s
+  197/200 391cb095 rounds=5 calls=5 sql_err=0 pred=None 28.455s
+  198/200 393d38dd rounds=5 calls=5 sql_err=0 pred=None 12.829s
+  199/200 394e33b8 rounds=5 calls=5 sql_err=0 pred=None 11.308s
+  200/200 39b77b0d rounds=5 calls=5 sql_err=0 pred=None 17.082s

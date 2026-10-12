@@ -1,0 +1,54 @@
+[scorer] gold 를 예측으로 넣었을 때 EM=1.0 (n=3)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<06:17,  1.06it/s]Loading weights:   1%|          | 2/399 [00:01<05:30,  1.20it/s]Loading weights:   1%|          | 4/399 [00:01<02:21,  2.79it/s]Loading weights:   3%|▎         | 10/399 [00:01<00:43,  8.98it/s]Loading weights:   4%|▍         | 16/399 [00:02<00:25, 14.81it/s]Loading weights:   5%|▌         | 21/399 [00:02<00:18, 20.05it/s]Loading weights:   7%|▋         | 26/399 [00:02<00:15, 24.68it/s]Loading weights:   8%|▊         | 30/399 [00:02<00:14, 25.78it/s]Loading weights:  10%|▉         | 38/399 [00:02<00:10, 34.82it/s]Loading weights:  12%|█▏        | 48/399 [00:02<00:08, 43.75it/s]Loading weights:  13%|█▎        | 53/399 [00:02<00:08, 43.14it/s]Loading weights:  15%|█▍        | 59/399 [00:03<00:07, 45.47it/s]Loading weights:  16%|█▋        | 65/399 [00:03<00:06, 48.93it/s]Loading weights:  18%|█▊        | 72/399 [00:03<00:06, 49.99it/s]Loading weights:  21%|██        | 82/399 [00:03<00:05, 58.39it/s]Loading weights:  23%|██▎       | 92/399 [00:03<00:04, 64.70it/s]Loading weights:  25%|██▍       | 99/399 [00:03<00:04, 62.46it/s]Loading weights:  27%|██▋       | 106/399 [00:10<01:21,  3.59it/s]Loading weights: 100%|██████████| 399/399 [00:07<00:00, 52.50it/s]
+2026-09-29 02:50:08,029 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
+2026-09-29 02:50:08,079 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.05s.
+  3/3  16s
+{
+  "arm": "langchain_chunk",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt_text": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\nQuestion: {question} \nContext: {context} \nAnswer:",
+  "prompt_sha256": "1462f2b9c9afb154fb5c32956722325fa2f2aae9a357e2a0f584978c28d93f48",
+  "system_message": null,
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 3,
+    "fail_examples": [],
+    "n_fail": 0
+  },
+  "limit": 3,
+  "n": 3,
+  "marker_missing": 0,
+  "n_over_context_limit": 0,
+  "generation_seconds": 15.8,
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "retrieval_accuracy_here": 0.6667,
+      "answer_em": 0.0,
+      "answer_f1": 0.0733,
+      "input_tokens_mean": 1549.7
+    },
+    "arith_m2+": {
+      "n": 1,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 1890.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "retrieval_accuracy_here": 0.5,
+      "answer_em": 0.0,
+      "answer_f1": 0.11,
+      "input_tokens_mean": 1379.5
+    }
+  },
+  "records_sha256": "c8db59458b416f8ae0f690ef680ed60fae4ada7261d185fc656e3930e1c3e095"
+}

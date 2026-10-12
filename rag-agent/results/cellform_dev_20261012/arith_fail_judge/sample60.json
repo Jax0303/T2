@@ -1,0 +1,1713 @@
+[
+{
+"no": 1,
+"query_id": "a0e717e5587449269ac6a50f9901a374",
+"question": "what is the percentage change in the balance of asset allocation from 2016 to 2017?",
+"program": "subtract(196545,176675), divide(#0,176675)",
+"answer": 0.11247,
+"gold": [
+[
+1,
+"Asset allocation and balanced > December 31,2016: $176,675"
+],
+[
+0,
+"Asset allocation and balanced > December 31,2017: $196,545"
+]
+],
+"used_nongold": [],
+"raw": "The balance for asset allocation in 2016 was $176,675 and in 2017 it was $196,545. The percentage change is calculated by ((196,545 - 176,675) / 176,675) * 100, which equals approximately 11.28%. The percentage change in the balance of asset allocation from 2016 to 2017 is 11.28%.",
+"n_lines": 46
+},
+{
+"no": 2,
+"query_id": "0424fed0f39947f4b8a0db5e6e5be730",
+"question": "In the year with largest amount of Collection: Residential, what's the increasing rate of Total Collection of Collection?",
+"program": "subtract(2862.0,2411.6), divide(#0,2862.0)",
+"answer": 0.15737,
+"gold": [
+[
+5,
+"Collection: > Total Collection > 2008: 2,862.0"
+],
+[
+3,
+"Collection: > Total Collection > 2007: 2,411.6"
+]
+],
+"used_nongold": [
+[
+1,
+"Collection: > Residential > 2008: $966.0"
+]
+],
+"raw": "The year with the largest Residential Collection is 2008 ($966.0). The Total Collection in 2008 was $2,862.0. The increasing rate from 2007 to 2008 is (2,862.0 - 2,411.6) / 2,411.6 = 18.67%.",
+"n_lines": 46
+},
+{
+"no": 3,
+"query_id": "0f9b83fe5eb040fdbc9aea0727669b14",
+"question": "If Total revenue develops with the same increasing rate in 2013, what will it reach in 2014? (in millions)",
+"program": "subtract(3201,3384), divide(#0,3384), add(const_1,#1), multiply(#2,3201)",
+"answer": 3027.89628,
+"gold": [
+[
+0,
+"Total revenue > As of and for the Year Ended December 31, > 2013: 3,201"
+],
+[
+1,
+"Total revenue > As of and for the Year Ended December 31, > 2012: 3,384"
+]
+],
+"used_nongold": [
+[
+8,
+"Total revenue > Change: -183"
+]
+],
+"raw": "Total revenue in 2013 was $3,201 million. The change from 2012 to 2013 was a decrease of $183 million. If it develops with the same increasing rate, it would reach $3,018 million in 2014.",
+"n_lines": 39
+},
+{
+"no": 4,
+"query_id": "0207d7d304404d3c9748f1a2082cf43b",
+"question": "In the year with largest amount of Product revenue, what's the sum of Product revenue and Service and other revenue ? (in million)",
+"program": "add(811,968)",
+"answer": 1779.0,
+"gold": [
+[
+3,
+"Table 1 > Product revenue > Fiscal2012: $811"
+],
+[
+8,
+"Table 1 > Service and other revenue > Fiscal2012: 968"
+],
+[
+5,
+"Table 2 > Product revenue > Fiscal2012: $334"
+]
+],
+"used_nongold": [
+[
+4,
+"Table 1 > Product revenue > Fiscal2014: $851"
+],
+[
+10,
+"Table 2 > Service and other revenue > Fiscal2014: 1,522"
+]
+],
+"raw": "The year with the largest Product revenue is Fiscal2014 with $851 million. The Service and other revenue for Fiscal2014 is $1,522 million. The sum of Product revenue and Service and other revenue for Fiscal2014 is $2,373 million.",
+"n_lines": 47
+},
+{
+"no": 5,
+"query_id": "0f853db20fd346e2bbe8f61ca99721d5",
+"question": "What's the total value of all Year Ended October 31, that are in the range of 0 and 5 in 2017? (in million)",
+"program": "add(3.4,2.6)",
+"answer": 6.0,
+"gold": [
+[
+3,
+"Foreign currency exchange gain (loss) > Year Ended October 31, > 2017 > (dollars in millions): 3.4"
+],
+[
+1,
+"Other, net > Year Ended October 31, > 2017 > (dollars in millions): 2.6"
+]
+],
+"used_nongold": [],
+"raw": "The total value of all entries in the range of 0 and 5 in 2017 is $10.3 million. This includes $2.6 million for \"Other, net,\" $3.4 million for \"Foreign currency exchange gain (loss),\" and $4.3 million for \"Interest income\" and \"Interest expense\" combined.",
+"n_lines": 33
+},
+{
+"no": 6,
+"query_id": "cd7616212a9640a5b3f4e23dc81d9863",
+"question": "What is the average amount of No surrender charge of 2010 Individual Variable Annuities, and Net cash used in financing activities of 2009 ?",
+"program": "add(11859.0,28997.0), divide(#0,const_2)",
+"answer": 20428.0,
+"gold": [
+[
+1,
+"No surrender charge > 2010 > Individual Variable Annuities: $11,859"
+],
+[
+13,
+"Summary: > Net cash used in financing activities > 2009: -28,997"
+]
+],
+"used_nongold": [],
+"raw": "The average No surrender charge for 2010 Individual Variable Annuities is $11,859. The Net cash used in financing activities for 2009 is -28,997.",
+"n_lines": 37
+},
+{
+"no": 7,
+"query_id": "c347852afc26409698df26b26bc5a05c",
+"question": "What's the total amount of Rental and management in 2010? (in thousand)",
+"program": "add(1936373,447629)",
+"answer": 2384002.0,
+"gold": [
+[
+1,
+"Statements of Operations Data: > Operating expenses: > Cost of operations (exclusive of items shown separately below) > Rental and management > Year Ended December 31, > 2010 > (In thousands, except per share data): 447,629"
+],
+[
+0,
+"Statements of Operations Data: > Revenues: > Rental and management > Year Ended December 31, > 2010 > (In thousands, except per share data): $1,936,373"
+]
+],
+"used_nongold": [],
+"raw": "The total amount of Rental and management revenue in 2010 is $1,936,373 (in thousands). The total operating expenses for Rental and management in 2010 is $447,629 (in thousands). Therefore, the total amount of Rental and management in 2010 is $1,936,373 (revenue) minus $447,629 (expenses), which equals $1,488,744 (in thousands).",
+"n_lines": 28
+},
+{
+"no": 8,
+"query_id": "f5f076f713464003a877f8a573a39877",
+"question": "what was the change in the weighted average common shares outstanding for diluted computations from 2017 to 2018",
+"program": "subtract(286.8,290.6), divide(#0,290.6)",
+"answer": -0.01308,
+"gold": [
+[
+0,
+"Weighted average common shares outstanding for diluted computations > 2018: 286.8"
+],
+[
+1,
+"Weighted average common shares outstanding for diluted computations > 2017: 290.6"
+]
+],
+"used_nongold": [
+[
+6,
+"Weighted average dilutive effect of equity awards > 2018: 2.3"
+],
+[
+7,
+"Weighted average dilutive effect of equity awards > 2017: 2.8"
+],
+[
+8,
+"Weighted average dilutive effect of equity awards > 2016: 3.8"
+]
+],
+"raw": "The weighted average common shares outstanding for diluted computations decreased from 290.6 in 2017 to 286.8 in 2018. This represents a decrease of 3.8 million shares. The change is primarily due to the dilutive effect of equity awards, which decreased from 2.8 to 2.3 million shares.",
+"n_lines": 63
+},
+{
+"no": 9,
+"query_id": "15b06e6b07934ebd8de47b3ac57f637a",
+"question": "what is the percent change between net revenue in 2006 and 2007?",
+"program": "subtract(486.9,466.1), divide(#0,466.1)",
+"answer": 0.04463,
+"gold": [
+[
+1,
+"2006 net revenue > Amount (In Millions): $466.1"
+],
+[
+0,
+"2007 net revenue > Amount (In Millions): $486.9"
+]
+],
+"used_nongold": [],
+"raw": "The net revenue in 2006 was $466.1 million and in 2007 it was $486.9 million. The percent change is calculated as ((486.9 - 466.1) / 466.1) * 100, which equals approximately 4.44%.",
+"n_lines": 44
+},
+{
+"no": 10,
+"query_id": "598b19e95b3e47e686d994b9e1dba3d6",
+"question": "What's the average of Business separation costs,Business restructuring and cost reduction actions and Pension settlement loss in terms of Operating Income in 2016?",
+"program": "add(52.2,33.9), add(#0,6.4), divide(#1,const_3)",
+"answer": 30.83333,
+"gold": [
+[
+10,
+"Pension settlement loss > row 9 > Continuing Operations > Operating Income: 6.4"
+],
+[
+5,
+"Business separation costs(C) > row 6 > Continuing Operations > Operating Income: 52.2"
+],
+[
+2,
+"Business restructuring and cost reduction actions > row 8 > Continuing Operations > Operating Income: 33.9"
+]
+],
+"used_nongold": [
+[
+3,
+"Business restructuring and cost reduction actions > row 14 > Continuing Operations > Operating Income: 207.7"
+],
+[
+7,
+"Continuing Operations > Business restructuring and cost reduction actions > row 30 > Continuing Operations > Operating Income: 207.7"
+],
+[
+41,
+"Continuing Operations > Business separation costs(C) > Continuing Operations > Diluted EPS: .03"
+],
+[
+46,
+"Business separation costs(C) > row 13 > Continuing Operations > Diluted EPS: .03"
+]
+],
+"raw": "The average of Business separation costs, Business restructuring and cost reduction actions, and Pension settlement loss in terms of Operating Income in 2016 is calculated by summing the relevant Operating Income values: 52.2 (Business separation costs), 207.7 (Business restructuring and cost reduction actions), and 6.4 (Pension settlement loss), resulting in a total of 266.3. The average is then 266.3 divided by 3, which equals approximately 88.8. Therefore, the average is 88.8.",
+"n_lines": 77
+},
+{
+"no": 11,
+"query_id": "9e369c4204434bbbae67051af6769ca2",
+"question": "What is the growing rate of Limited partnerships and other alternative investments in the years with the least Policy loans, at outstanding balance?",
+"program": "subtract(3040,3015), divide(#0,3040)",
+"answer": 0.00822,
+"gold": [
+[
+4,
+"Limited partnerships and other alternative investments > December 31, 2013 > Amount: 3,040"
+],
+[
+6,
+"Limited partnerships and other alternative investments > December 31, 2012 > Amount: 3,015"
+]
+],
+"used_nongold": [
+[
+0,
+"Limited partnerships and other alternative investments > December 31, 2013 > Percent: 3.9%"
+],
+[
+1,
+"Limited partnerships and other alternative investments > December 31, 2012 > Percent: 2.9%"
+],
+[
+2,
+"Policy loans, at outstanding balance > December 31, 2013 > Percent: 1.8%"
+],
+[
+3,
+"Policy loans, at outstanding balance > December 31, 2012 > Percent: 1.9%"
+]
+],
+"raw": "The growing rate of Limited partnerships and other alternative investments in the years with the least Policy loans, at outstanding balance, is calculated by comparing their percentages. In 2012, Limited partnerships had a 2.9% share while Policy loans were 1.9%, and in 2013, Limited partnerships were 3.9% while Policy loans were 1.8%. The growth rate for Limited partnerships from 2012 to 2013 is 3.9% - 2.9% = 1.0%.",
+"n_lines": 26
+},
+{
+"no": 12,
+"query_id": "fd177cc7491d45c7b8c40dbb515e542e",
+"question": "what is the percent change in free cash flow from 2015 to 2016",
+"program": "subtract(929.8,755.3), divide(#0,755.3)",
+"answer": 0.23103,
+"gold": [
+[
+1,
+"Free cash flow > 2016: $929.8"
+],
+[
+0,
+"Free cash flow > 2015: $755.3"
+]
+],
+"used_nongold": [
+[
+23,
+"Total Revenues > Years Ended > September 29, 2007 > % of Total Segment Revenue: 100%"
+],
+[
+30,
+"Total Revenues > Years Ended > September 27, 2008 > % of Total Segment Revenue: 100%"
+]
+],
+"raw": "The free cash flow in 2015 was $755.3 and in 2016 it was $929.8. The percent change is calculated as ((929.8 - 755.3) / 755.3) * 100, which equals approximately 23%.",
+"n_lines": 48
+},
+{
+"no": 13,
+"query_id": "429b4e9a62464173a2e9278cbb9f2417",
+"question": "What will Commercial – foreign reach in 2010 if it continues to grow at its current rate? (in millions)",
+"program": "subtract(2605,1459), divide(#0,1459), add(const_1,#1), multiply(#2,2605)",
+"answer": 4651.14805,
+"gold": [
+[
+2,
+"Commercial – foreign > December 31 > 2009 > Amount: 2,605"
+],
+[
+3,
+"Commercial – foreign > December 31 > 2008 > Amount: 1,459"
+]
+],
+"used_nongold": [],
+"raw": "In 2009, the amount for Commercial – foreign was $2,605 million. The growth rate from 2008 to 2009 is (2,605 - 1,459) / 1,459 ≈ 75.4%. Continuing at this rate, the value in 2010 would be approximately $4,535 million.",
+"n_lines": 43
+},
+{
+"no": 14,
+"query_id": "5f8317477a6745cb8cc0c669b08735a0",
+"question": "What is the growing rate of total asset-6 in the year with the most gross profit? (in %)",
+"program": "subtract(4260766,3907909), divide(#0,3907909)",
+"answer": 0.09029,
+"gold": [
+[
+10,
+"Consolidated Balance Sheet Data: > Total assets-6 > 2002-2: 4,260,766"
+],
+[
+11,
+"Consolidated Balance Sheet Data: > Total assets-6 > 2001: 3,907,909"
+]
+],
+"used_nongold": [
+[
+1,
+"Consolidated Statement of Operations Data: > Gross profit > 2002-2: 1,057,613"
+],
+[
+9,
+"Consolidated Balance Sheet Data: > Total assets-6 > 1998: 4,066,982"
+]
+],
+"raw": "The year with the most gross profit is 2002-2 with $1,057,613. The total assets-6 in 1998 were $4,066,982 and in 2002-2 were $4,260,766. The growing rate is ((4,260,766 - 4,066,982) / 4,066,982) * 100 = 4.76%.",
+"n_lines": 51
+},
+{
+"no": 15,
+"query_id": "cbed5c3e2c48458ebd38f1889104fc24",
+"question": "In the section with lowest amount of Sales, what's the increasing rate of Fair Value ? (in %)",
+"program": "subtract(1,5), divide(#0,5)",
+"answer": -0.8,
+"gold": [
+[
+17,
+"Fair Value as of January 1, 2016 > Foreign government: $5"
+],
+[
+19,
+"Fair Value as of December 31, 2016 > Foreign government: $1"
+]
+],
+"used_nongold": [
+[
+44,
+"Sales > Foreign government: -4"
+]
+],
+"raw": "The section with the lowest amount of Sales is \"Sales > Foreign government: -4\". The increasing rate of Fair Value for this section is not directly provided in the context. Therefore, I cannot determine the increasing rate of Fair Value for the section with the lowest amount of Sales.",
+"n_lines": 52
+},
+{
+"no": 16,
+"query_id": "fb2da75c16d640bea45099c8efe695b9",
+"question": "what was the total refined products trunk lines production in tbd for the three year period?",
+"program": "add(953,960), add(#0,1049)",
+"answer": 2962.0,
+"gold": [
+[
+0,
+"Refined products trunk lines > 2009: 953"
+],
+[
+1,
+"Refined products trunk lines > 2008: 960"
+],
+[
+2,
+"Refined products trunk lines > 2007: 1,049"
+]
+],
+"used_nongold": [],
+"raw": "The total refined products trunk lines production in TBD for the three-year period is not directly provided in the context. The values given are for specific years, but there is no mention of a \"TBD\" (to be determined) figure for the total. The context includes totals for 2007, 2008, and 2009, but not for TBD.",
+"n_lines": 37
+},
+{
+"no": 17,
+"query_id": "608a340e5f8042599964582e7da73ada",
+"question": "what was the percentage change in the allowance for loan losses from 2007 to 2008?",
+"program": "subtract(16117,8940), divide(#0,8940)",
+"answer": 0.8028,
+"gold": [
+[
+5,
+"Table 2 > Allowance for loan losses at beginning of year > 2008-1: $16,117"
+],
+[
+2,
+"Table 2 > Allowance for loan losses at beginning of year > 2007-1: $8,940"
+]
+],
+"used_nongold": [],
+"raw": "The percentage change in the allowance for loan losses from 2007 to 2008 is not provided in the context. The values for the beginning and end of the year are given, but no percentage change is explicitly stated. The context also mentions \"NM\" (not mentioned) for the percentage change in some related categories.",
+"n_lines": 49
+},
+{
+"no": 18,
+"query_id": "1bdc664049c8474eaa3175f8ccf1a5fe",
+"question": "In the year with largest amount of Services, what's the increasing rate of Hardware ?",
+"program": "subtract(120,122), divide(#0,122)",
+"answer": -0.01639,
+"gold": [
+[
+1,
+"Technology Solutions > Hardware > Years Ended March 31, > 2012: 120"
+],
+[
+4,
+"Technology Solutions > Hardware > Years Ended March 31, > 2011: 122"
+]
+],
+"used_nongold": [
+[
+0,
+"Technology Solutions > Hardware > Change > 2012: -2"
+],
+[
+2,
+"Technology Solutions > Hardware > Change > 2011: 7"
+],
+[
+3,
+"Technology Solutions > Hardware > Years Ended March 31, > 2010: 114"
+],
+[
+5,
+"Technology Solutions > Services > Years Ended March 31, > 2012: 2,594"
+],
+[
+15,
+"Technology Solutions > Services > Change > 2011: 2"
+],
+[
+23,
+"Distribution Solutions > Direct distribution & services > Change > 2011: 7%"
+]
+],
+"raw": "The year with the largest amount of Services is 2012, with a value of 2,594. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7. The increasing rate of Hardware in 2010 is 114. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7. The increasing rate of Hardware in 2010 is 114. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7. The increasing rate of Hardware in 2010 is 114. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7. The increasing rate of Hardware in 2010 is 114. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7. The increasing rate of Hardware in 2010 is 114. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7. The increasing rate of Hardware in 2010 is 114. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7. The increasing rate of Hardware in 2010 is 114. The increasing rate of Hardware in 2012 is -2. The increasing rate of Hardware in 2011 is 7",
+"n_lines": 38
+},
+{
+"no": 19,
+"query_id": "df3e2ab5de794ae194e7725ae16f7f9b",
+"question": "What is the growing rate of hombuilding in the year with the most financial services?",
+"program": "subtract(6085.9,4236.2), divide(#0,4236.2)",
+"answer": 0.43664,
+"gold": [
+[
+2,
+"Operating Data: > Revenues: > Homebuilding > Year Ended September 30, > 2013 > (In millions, except per share data): $6,085.9"
+],
+[
+9,
+"Operating Data: > Revenues: > Homebuilding > Year Ended September 30, > 2012: $4,236.2"
+]
+],
+"used_nongold": [
+[
+0,
+"Operating Data: > Revenues: > Financial Services > Year Ended September 30, > 2013 > (In millions, except per share data): 173.4"
+],
+[
+8,
+"Operating Data: > Revenues: > Homebuilding > Year Ended September 30, > 2010: $4,309.7"
+]
+],
+"raw": "The year with the most financial services revenue is 2013, with $173.4 million. The homebuilding revenue for 2013 was $6,085.9 million. The growing rate of homebuilding in 2013 is calculated as ($6,085.9 - $4,309.7) / $4,309.7 * 100 = 41.1%.",
+"n_lines": 38
+},
+{
+"no": 20,
+"query_id": "c6a02de040504cc1b3d9a73ac081cf5f",
+"question": "by what percentage did protect carrying values of excess inventories increase from 2002 to 2003?",
+"program": "subtract(-57,-41), divide(#0,-41)",
+"answer": 0.39024,
+"gold": [
+[
+0,
+"Protect carrying values of excess inventories > 2003 > $-112: -57"
+],
+[
+1,
+"Protect carrying values of excess inventories > 2002 > $-95: -41"
+]
+],
+"used_nongold": [],
+"raw": "The carrying values of excess inventories for \"Protect\" decreased from $-95 in 2002 to $-112 in 2003. To calculate the percentage change, we use the formula: ((New Value - Old Value) / Old Value) * 100. The percentage change is ((-112 - (-95)) / -95) * 100, which results in a 17.89% decrease.",
+"n_lines": 53
+},
+{
+"no": 21,
+"query_id": "7d672b76304d4a65bfd3b8cb0a0f7e6d",
+"question": "In the year with lowest amount of Other analog, what's the increasing rate of Converters?",
+"program": "subtract(1285368,1180072), divide(#0,1180072)",
+"answer": 0.08923,
+"gold": [
+[
+14,
+"Converters > 2014 > Revenue: $1,285,368"
+],
+[
+12,
+"Converters > 2013 > Revenue: $1,180,072"
+],
+[
+5,
+"Other analog > 2014 > Revenue: 356,406"
+],
+[
+4,
+"Other analog > 2013 > Revenue: 372,281"
+]
+],
+"used_nongold": [
+[
+0,
+"Other analog > 2014 > Y/Y%: -4%"
+],
+[
+15,
+"Converters > 2014 > Y/Y%: 9%"
+],
+[
+25,
+"Total analog products > 2014 > Y/Y%: 9%"
+]
+],
+"raw": "The year with the lowest amount of Other analog is 2014, as it has a Y/Y% of -4%. The increasing rate of Converters in 2014 is 9%. The increasing rate of Converters is not directly provided for other years, so we cannot determine it for the year with the lowest Other analog.",
+"n_lines": 37
+},
+{
+"no": 22,
+"query_id": "a5d4ca36f39045a58e272321703b2723",
+"question": "What was the average value of the Cost of goods sold in the years where External net sales is positive?",
+"program": "add(-130.4,131.0), divide(#0,const_2)",
+"answer": 0.3,
+"gold": [
+[
+10,
+"Table 4 > Cost of goods sold > Fourth Quarter > 2012 > column 1: -130.4"
+],
+[
+12,
+"Table 4 > Cost of goods sold > Fourth Quarter > 2011 > column 3: -131.0"
+]
+],
+"used_nongold": [],
+"raw": "The average value of the Cost of goods sold in the years where External net sales is positive is not directly calculable from the given data. The context provides values for Cost of goods sold and External net sales, but not in the same years or with enough clarity to compute an average. The data appears to be fragmented and not aligned for the required calculation.",
+"n_lines": 48
+},
+{
+"no": 23,
+"query_id": "24f730c9d9704a8d9597fe4ae83ada60",
+"question": "What is the total value of Operating revenues, Purchased power , Fuel and Other operations and maintenance for Electric ? (in million)",
+"program": "add(8437,2036), add(#0,180), add(#1,2270)",
+"answer": 12923.0,
+"gold": [
+[
+2,
+"Operating revenues > Twelve Months Ended December 31, 2014 > Electric: $8,437"
+],
+[
+6,
+"Purchased power > Twelve Months Ended December 31, 2014 > Electric: 2,036"
+],
+[
+54,
+"Fuel > Twelve Months Ended December 31, 2014 > Electric: 180"
+],
+[
+0,
+"Other operations and maintenance > Twelve Months Ended December 31, 2014 > Electric: 2,270"
+]
+],
+"used_nongold": [
+[
+7,
+"Purchased power > 2014 Total: 2,091"
+],
+[
+12,
+"Other operations and maintenance > 2014 Total: 2,873"
+],
+[
+34,
+"Operating revenues > 2014 Total: $10,786"
+]
+],
+"raw": "The total value of Operating revenues, Purchased power, Fuel, and Other operations and maintenance for Electric in 2014 is $10,786 (Operating revenues) + $2,091 (Purchased power) + $180 (Fuel) + $2,873 (Other operations and maintenance) = $15,930 million.",
+"n_lines": 70
+},
+{
+"no": 24,
+"query_id": "c6142d850b7c4dceb522ed6af794b216",
+"question": "If Swaps in terms of Interest rate contracts with Contract/ Notional develops with the same growth rate in 2005, what will it reach in 2006? (in dollars in millions)",
+"program": "subtract(14401577,11597813), divide(#0,11597813), add(const_1,#1), multiply(14401577,#2)",
+"answer": 17883149.18398,
+"gold": [
+[
+0,
+"Interest rate contracts > Swaps > December 31 > 2005 > Contract/ Notional: $14,401,577"
+],
+[
+1,
+"Interest rate contracts > Swaps > December 31 > 2004 > Contract/ Notional: $11,597,813"
+]
+],
+"used_nongold": [],
+"raw": "In 2005, the Contract/Notional for Interest rate contracts > Swaps was $14,401,577. Assuming the same growth rate from 2004 to 2005, which is an increase of $2,803,764, the value in 2006 would be $17,205,341.",
+"n_lines": 38
+},
+{
+"no": 25,
+"query_id": "285ef5da09d940e98a2cc14364b26ea3",
+"question": "In the year with larger amount for Europe, what's the increasing rate of the amount for Asia-Pacific ?",
+"program": "subtract(1710.4,1650.3), divide(#0,1650.3)",
+"answer": 0.03642,
+"gold": [
+[
+6,
+"EMEA: > Europe > 2018: 4,375.4"
+],
+[
+7,
+"EMEA: > Europe > 2017: 4,127.9"
+],
+[
+1,
+"EMEA: > Asia-Pacific > 2018: 1,710.4"
+],
+[
+2,
+"EMEA: > Asia-Pacific > 2017: 1,650.3"
+]
+],
+"used_nongold": [
+[
+3,
+"EMEA: > Asia-Pacific > % Organic Growth: 7.9%"
+]
+],
+"raw": "In the year with a larger amount for Europe, the increasing rate of the amount for Asia-Pacific is 7.9%. The 2018 amount for Asia-Pacific is $1,710.4, which shows a growth rate of 7.9% compared to 2017. The growth rate is calculated based on the organic growth percentage provided in the context.",
+"n_lines": 41
+},
+{
+"no": 26,
+"query_id": "1d1f42c2c4f94a9db3ede810fc99d183",
+"question": "what is the growth rate in operating profit for space systems in 2012?",
+"program": "subtract(1083,1063), divide(#0,1063)",
+"answer": 0.01881,
+"gold": [
+[
+0,
+"Operating profit > 2012: 1,083"
+],
+[
+1,
+"Operating profit > 2011: 1,063"
+]
+],
+"used_nongold": [],
+"raw": "The operating profit for 2012 is 1,083. The operating profit for 2011 is 1,063. The growth rate in operating profit from 2011 to 2012 is 1.9%.",
+"n_lines": 65
+},
+{
+"no": 27,
+"query_id": "8d31bd87a7f64e4d9acd5ec44217b932",
+"question": "What is the sum of the Total operating expenses in the sections where Total operating revenues is positive? (in million)",
+"program": "subtract(-2139.5,11.4)",
+"answer": -2150.9,
+"gold": [
+[
+8,
+"Year ended December 31, 2009 > Total operating expenses > Before Consolidation: -2,139.5"
+],
+[
+3,
+"Year ended December 31, 2009 > Total operating expenses > Consolidated Investment Products-2: -11.4"
+]
+],
+"used_nongold": [
+[
+0,
+"Year ended December 31, 2010 > Total operating expenses > Total: 2,897.8"
+],
+[
+2,
+"Year ended December 31, 2010 > Total operating expenses > Before Consolidation-1: 2,887.8"
+],
+[
+6,
+"Year ended December 31, 2010 > Total operating revenues > Total: 3,487.7"
+],
+[
+12,
+"Year ended December 31, 2010 > Total operating revenues > Before Consolidation-1: 3,532.7"
+]
+],
+"raw": "The Total operating revenues are positive in 2010 (3,487.7) and 2010 Before Consolidation-1 (3,532.7). The corresponding Total operating expenses for these sections are 2,897.8 and 2,887.8, respectively. The sum of these expenses is 5,785.6 million.",
+"n_lines": 40
+},
+{
+"no": 28,
+"query_id": "6f38c39fd06b4e5a826ffb6964fcb0b5",
+"question": "What's the total value of all Value (In millions) that are in the range of 400 and 1000 in 2011? (in million)",
+"program": "add(438.4,691.8), add(#0,835.8)",
+"answer": 1966.0,
+"gold": [
+[
+9,
+"East > Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Value (In millions) > 2011: $438.4"
+],
+[
+16,
+"Southeast > Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Value (In millions) > 2011: 691.8"
+],
+[
+12,
+"West > Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Value (In millions) > 2011: 835.8"
+]
+],
+"used_nongold": [
+[
+14,
+"South Central > Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Value (In millions) > 2011: 1,080.0"
+]
+],
+"raw": "The total value of all entries in the range of 400 and 1000 in 2011 is $1,080.0 + $835.8 + $691.8 + $438.4 = $2,045.0 million.",
+"n_lines": 39
+},
+{
+"no": 29,
+"query_id": "dcbf50822c884611aafdae61e7a73deb",
+"question": "What is the total value of Operating income, Other investment income/(losses), Equity in earnings of unconsolidated affiliates and Interest and dividend income for before consolidation ? (in million)",
+"program": "add(644.9,15.6), add(#0,40.8), add(#1,10.4)",
+"answer": 711.7,
+"gold": [
+[
+17,
+"Year ended December 31, 2010 > Operating income > Before Consolidation-1: 644.9"
+],
+[
+1,
+"Year ended December 31, 2010 > Equity in earnings of unconsolidated affiliates > Before Consolidation-1: 40.8"
+],
+[
+11,
+"Year ended December 31, 2010 > Interest and dividend income > Before Consolidation-1: 10.4"
+],
+[
+9,
+"Year ended December 31, 2010 > Other investment income/(losses) > Before Consolidation-1: 15.6"
+]
+],
+"used_nongold": [
+[
+0,
+"Year ended December 31, 2009 > Equity in earnings of unconsolidated affiliates > Before Consolidation: 24.5"
+],
+[
+4,
+"Year ended December 31, 2009 > Other investment income/(losses) > Before Consolidation: 7.8"
+],
+[
+5,
+"Year ended December 31, 2009 > Interest and dividend income > Before Consolidation: 9.8"
+],
+[
+6,
+"Year ended December 31, 2010 > Equity in earnings of unconsolidated affiliates > Total: 40.2"
+],
+[
+12,
+"Year ended December 31, 2009 > Operating income > Before Consolidation: 493.8"
+],
+[
+29,
+"Year ended December 31, 2009 > Interest and dividend income > Total: 9.8"
+]
+],
+"raw": "The total value of Operating income, Other investment income/(losses), Equity in earnings of unconsolidated affiliates, and Interest and dividend income before consolidation for 2009 is $493.8 million (Operating income) + $7.8 million (Other investment income) + $24.5 million (Equity in earnings) + $9.8 million (Interest and dividend income) = $535.9 million. For 2010, it is $644.9 million (Operating income) + $15.6 million (Other investment income) + $40.2 million (Equity in earnings) + $10.4 million (Interest and dividend income) = $699.9 million. The total for both years is $1,235.8 million.",
+"n_lines": 37
+},
+{
+"no": 30,
+"query_id": "d59dd32fccc5468ab10a15cf07cc65d7",
+"question": "What is the total amount of Insurance of At December 31, 2017 Case Reserves, and Insurance of At December 31, 2016 Case Reserves ?",
+"program": "add(1049.4,1018.5)",
+"answer": 2067.9,
+"gold": [
+[
+1,
+"Insurance > At December 31, 2017 > Case Reserves: 1,049.4"
+],
+[
+0,
+"Insurance > At December 31, 2016 > Case Reserves: 1,018.5"
+]
+],
+"used_nongold": [],
+"raw": "The total amount of Insurance of At December 31, 2017 Case Reserves is 1,049.4. The total amount of Insurance of At December 31, 2016 Case Reserves is 1,018.5.",
+"n_lines": 47
+},
+{
+"no": 31,
+"query_id": "a76ffcd4626241179ae83d59841a141a",
+"question": "What was the total amount of Foreign govt./govt. agencies, Municipal, RMBS and U.S. Treasuries for Fair of 12 Months or More ?",
+"program": "add(68,863), add(#0,1147), add(#1,119)",
+"answer": 2197.0,
+"gold": [
+[
+9,
+"RMBS > December 31, 2010 > 12 Months or More > Fair > Value: 1,147"
+],
+[
+3,
+"U.S. Treasuries > December 31, 2010 > 12 Months or More > Fair > Value: 119"
+],
+[
+1,
+"Foreign govt./govt. agencies > December 31, 2010 > 12 Months or More > Fair > Value: 68"
+],
+[
+20,
+"Municipal > December 31, 2010 > 12 Months or More > Fair > Value: 863"
+]
+],
+"used_nongold": [
+[
+35,
+"Total securities in an unrealized loss > December 31, 2010 > 12 Months or More > Fair > Value: $12,811"
+]
+],
+"raw": "The total amount for Foreign govt./govt. agencies, Municipal, RMBS, and U.S. Treasuries for 12 Months or More is $12,811. This includes values from the context provided for each category. The value for U.S. Treasuries is not explicitly listed but is included in the total.",
+"n_lines": 50
+},
+{
+"no": 32,
+"query_id": "12d5979317f0464ead500253a9a3d8db",
+"question": "What will Investment securities be like in 2013 if it develops with the same increasing rate as current? (in million)",
+"program": "subtract(61406,60634), divide(#0,60634), add(1,#1), multiply(61406,#2)",
+"answer": 62187.8292,
+"gold": [
+[
+0,
+"BALANCESHEETHIGHLIGHTS > Investment securities > At or for the year ended December 31 > 2012 (a) (b): 61,406"
+],
+[
+3,
+"BALANCESHEETHIGHLIGHTS > Investment securities > At or for the year ended December 31 > 2011 (b): 60,634"
+]
+],
+"used_nongold": [],
+"raw": "In 2013, if Investment securities continue to grow at the same rate as from 2012 to 2011, they would be approximately 67,698 million. The growth rate from 2011 to 2012 was an increase of about 1,772 million. Continuing this rate, the value in 2013 would be around 67,698 million.",
+"n_lines": 51
+},
+{
+"no": 33,
+"query_id": "73ff3a747e0043daadfb2671f2c66c46",
+"question": "What was the total amount of elements for RevPAR excluding those elements greater than 150 in 2016 ?",
+"program": "add(144.94,149.49), add(#0,149.92), add(#1,103.65), add(#2,118.14), add(#3,106.20), add(#4,147.48)",
+"answer": 919.82,
+"gold": [
+[
+10,
+"Table 5 > Courtyard > RevPAR > 2016: $103.65"
+],
+[
+31,
+"Table 5 > Residence Inn > RevPAR > 2016: $118.14"
+],
+[
+17,
+"Table 5 > Composite North American Limited-Service-4 > RevPAR > 2016: $106.20"
+],
+[
+1,
+"Table 5 > North American - All-5 > RevPAR > 2016: $147.48"
+],
+[
+22,
+"Table 5 > Marriott Hotels > RevPAR > 2016: $144.94"
+],
+[
+8,
+"Table 5 > Sheraton > RevPAR > 2016: $149.49"
+],
+[
+37,
+"Table 5 > Composite North American Upper Upscale-2 > RevPAR > 2016: $149.92"
+]
+],
+"used_nongold": [
+[
+7,
+"Table 6 > The Ritz-Carlton > RevPAR > 2016: $252.40"
+],
+[
+11,
+"Table 5 > The Ritz-Carlton > RevPAR > 2016: $252.40"
+],
+[
+12,
+"Table 6 > W Hotels > RevPAR > 2016: $239.94"
+],
+[
+14,
+"Table 5 > W Hotels > RevPAR > 2016: $239.94"
+],
+[
+16,
+"Table 6 > Composite North American Luxury-1 > RevPAR > 2016: $231.99"
+],
+[
+59,
+"Table 6 > The Ritz-Carlton > Occupancy > Change vs. 2015: 1.0%"
+]
+],
+"raw": "The total amount of elements for RevPAR excluding those greater than 150 in 2016 is 10.  \nThe elements with RevPAR values greater than 150 are The Ritz-Carlton ($252.40), W Hotels ($239.94), and Composite North American Luxury-1 ($231.99).  \nThe remaining elements are 10 in total.",
+"n_lines": 72
+},
+{
+"no": 34,
+"query_id": "1f70539b80bb4faa80fa3c34321cf587",
+"question": "What is the sum of the Case reserves in the years in gross where Case reserves is positive? (in million)",
+"program": "add(3149,3180)",
+"answer": 6329.0,
+"gold": [
+[
+11,
+"Property and all other > Case reserves > 2009 > Gross: $3,149"
+],
+[
+10,
+"Property and all other > Case reserves > 2008 > Gross: $3,180"
+]
+],
+"used_nongold": [
+[
+1,
+"Case reserves > 2009 > Gross: $17,307"
+],
+[
+3,
+"Case reserves > 2008 > Gross: $16,583"
+]
+],
+"raw": "The sum of the Case reserves in the years where Case reserves is positive (in million) is $34,290. This includes $16,583 for 2008 and $17,307 for 2009. The values are derived from the gross Case reserves for those years.",
+"n_lines": 71
+},
+{
+"no": 35,
+"query_id": "1d43af3556a141f19498859046f8a14f",
+"question": "How much is the Total expenses for Corporate Benefit Funding less than the 50% of the sum of all Total expenses? (in million)",
+"program": "multiply(0.5,45923), subtract(#0,7735)",
+"answer": 15226.5,
+"gold": [
+[
+2,
+"Table 5 > Total expenses > Corporate Benefit Funding: $7,735"
+],
+[
+29,
+"Table 5 > Total expenses > Total: $45,923"
+]
+],
+"used_nongold": [
+[
+1,
+"Table 4 > Total expenses > Corporate Benefit Funding > (In millions): $6,982"
+]
+],
+"raw": "The Total expenses for Corporate Benefit Funding is $6,982 million. 50% of this amount is $3,491 million. The difference between the Total expenses and 50% of the Total expenses is $3,491 million.",
+"n_lines": 80
+},
+{
+"no": 36,
+"query_id": "f790e8acf95b49c88751230a8ca89e8f",
+"question": "In the year with the most Premiums, what is the growth rate of Interest credited to bank deposits?",
+"program": "subtract(163,166), divide(#0,166)",
+"answer": -0.01807,
+"gold": [
+[
+1,
+"Operating Expenses > Interest credited to bank deposits > Years Ended December 31, > 2009 > (In millions): 163"
+],
+[
+2,
+"Operating Expenses > Interest credited to bank deposits > Years Ended December 31, > 2008: 166"
+]
+],
+"used_nongold": [
+[
+0,
+"Operating Expenses > Interest credited to bank deposits > % Change: -1.8%"
+],
+[
+3,
+"Operating Expenses > Interest credited to bank deposits > Change: -3"
+],
+[
+26,
+"Operating Expenses > Amortization of DAC and VOBA > Years Ended December 31, > 2009 > (In millions): 3"
+]
+],
+"raw": "The year with the most Premiums is 2008, as it had higher Premiums compared to 2009. The growth rate of Interest credited to bank deposits in 2008 was -3. The growth rate of Interest credited to bank deposits in 2009 was -1.8%.",
+"n_lines": 62
+},
+{
+"no": 37,
+"query_id": "aad54f148a144ed28f0cffc0a0331fe0",
+"question": "What is the growing rate of Residential real estate of Recoveries in the year with the least Commercial real estate of Gross charge-offs?",
+"program": "subtract(13,26), divide(#0,26)",
+"answer": -0.5,
+"gold": [
+[
+11,
+"Recoveries > Residential real estate > 2015: 13"
+],
+[
+13,
+"Recoveries > Residential real estate > 2014: 26"
+]
+],
+"used_nongold": [
+[
+18,
+"Recoveries > Residential real estate > 2018: 21"
+],
+[
+22,
+"Gross charge-offs > Commercial > 2018: -108"
+],
+[
+54,
+"As a percentage of average loans: > Net charge-offs > 2017: .21%"
+]
+],
+"raw": "The year with the least Commercial real estate of Gross charge-offs is 2018, with -108. The growing rate of Residential real estate of Recoveries in 2018 is 21. The answer is 21.",
+"n_lines": 88
+},
+{
+"no": 38,
+"query_id": "c9c72ec704974d758d72b4c83d24e19d",
+"question": "What's the total amount of the Total revenues in the years where Net realized capital gains (losses) is greater than -716?",
+"program": "add(65656,59812)",
+"answer": 125468.0,
+"gold": [
+[
+7,
+"Revenues: > Total revenues > Years Ended December 31, > 2012: 65,656"
+],
+[
+13,
+"Revenues: > Total revenues > Years Ended December 31, > 2011: 59,812"
+]
+],
+"used_nongold": [
+[
+0,
+"Revenues: > Net realized capital gains (losses) > Years Ended December 31, > 2010 (a): -716"
+],
+[
+9,
+"Revenues: > Total revenues > Years Ended December 31, > 2010 (a): 72,829"
+]
+],
+"raw": "The years where Net realized capital gains (losses) is greater than -716 are 2010 (a), 2011, and 2012. The total revenues for these years are 72,829, 59,812, and 65,656 respectively. The total amount is 198,297.",
+"n_lines": 50
+},
+{
+"no": 39,
+"query_id": "8ce2db08e664492193dc999d6bdb12e8",
+"question": "What is the average amount of Investment banking fees of 2004, and Commissions and fees of Year Ended December 2014 ?",
+"program": "add(3572.0,3153.0), divide(#0,const_2)",
+"answer": 3362.5,
+"gold": [
+[
+1,
+"Commissions and fees > Year Ended December > 2014: 3,153"
+],
+[
+0,
+"Revenue by business > Investment banking fees > 2004: $3,572"
+]
+],
+"used_nongold": [],
+"raw": "The average amount of Investment banking fees in 2004 was $3,572. The Commissions and fees for the Year Ended December 2014 were $3,153. The answer is based on the provided data points.",
+"n_lines": 62
+},
+{
+"no": 40,
+"query_id": "166ac4c838454fc4990347a0df99c06f",
+"question": "by how much did net rental expense increase from 2006 to 2008?",
+"program": "subtract(267,193), divide(#0,193)",
+"answer": 0.38342,
+"gold": [
+[
+0,
+"Net rental expense > 2008: $267"
+],
+[
+1,
+"Net rental expense > 2006: $193"
+]
+],
+"used_nongold": [],
+"raw": "The net rental expense in 2008 was $267 and in 2006 was $193. The increase from 2006 to 2008 is $74.",
+"n_lines": 48
+},
+{
+"no": 41,
+"query_id": "dffb0fb5af34452b9cd11caa393b033d",
+"question": "what is the roi of an investment in fidelity national information services from 2007 to 2008?",
+"program": "subtract(70.08,const_100), divide(#0,const_100)",
+"answer": -0.2992,
+"gold": [
+[
+1,
+"Fidelity National Information Services, Inc. > 12/08: 70.08"
+]
+],
+"used_nongold": [
+[
+9,
+"Key Metrics: > Return on average tangible common equity-2 (3) > As of and for the Year Ended December 31, > 2012: 4.89"
+],
+[
+10,
+"Key Metrics: > Return on average tangible common equity-2 (3) > As of and for the Year Ended December 31, > 2013: 5.48"
+]
+],
+"raw": "The return on average tangible common equity for Fidelity National Information Services in 2012 was 4.89% and in 2013 was 5.48%. This indicates an increase in ROI from 2012 to 2013. The exact ROI for the period 2007 to 2008 is not directly provided in the context.",
+"n_lines": 47
+},
+{
+"no": 42,
+"query_id": "08f6538bafb0465f9f738854592f8804",
+"question": "What's the total amount of Converters, Amplifiers/Radio frequency, Other analog and Subtotal analog signal processing in 2014?",
+"program": "add(1285368,806975), add(#0,356406), add(#1,2448749)",
+"answer": 4897498.0,
+"gold": [
+[
+20,
+"Converters > 2014 > Revenue: $1,285,368"
+],
+[
+8,
+"Amplifiers/Radio frequency > 2014 > Revenue: 806,975"
+],
+[
+10,
+"Other analog > 2014 > Revenue: 356,406"
+],
+[
+1,
+"Subtotal analog signal processing > 2014 > Revenue: 2,448,749"
+]
+],
+"used_nongold": [
+[
+9,
+"Total analog products > 2014 > Revenue: $2,623,232"
+]
+],
+"raw": "The total amount of Converters, Amplifiers/Radio frequency, Other analog, and Subtotal analog signal processing in 2014 is $2,623,232. This includes the revenue from Subtotal analog signal processing, which is $2,448,749, and the revenue from Amplifiers/Radio frequency, Other analog, and Converters.",
+"n_lines": 38
+},
+{
+"no": 43,
+"query_id": "041bd4167fc84deeb6ff4a6e468dc4f1",
+"question": "What was the average of Full service for Gas Delivered($ in millions)in 2012, 2013, and 2014 ? (in million)",
+"program": "add(889,1059), add(#0,1141), divide(#1,const_3)",
+"answer": 1029.66667,
+"gold": [
+[
+2,
+"Gas Delivered(MDt) > Gas Delivered($ in millions) > Firm Sales > Full service > Year Ended December 31, > 2012: $889"
+],
+[
+1,
+"Gas Delivered(MDt) > Gas Delivered($ in millions) > Firm Sales > Full service > Year Ended December 31, > 2013: $1,059"
+],
+[
+0,
+"Gas Delivered(MDt) > Gas Delivered($ in millions) > Firm Sales > Full service > Year Ended December 31, > 2014: $1,141"
+]
+],
+"used_nongold": [
+[
+24,
+"Gas Delivered(MDt) > Firm Sales > Full service > Year Ended December 31, > 2014: 75,630"
+],
+[
+27,
+"Gas Delivered(MDt) > Firm Sales > Full service > Year Ended December 31, > 2012: 57,595"
+]
+],
+"raw": "The values for Full service in 2012, 2013, and 2014 are $57,595 million, $75,630 million, and $889 million respectively. The average of these values is $47,304.67 million.",
+"n_lines": 32
+},
+{
+"no": 44,
+"query_id": "ce4dfc31b820456eab4c33e5cf58c163",
+"question": "what's the total amount of Cash provided by operating activities of 2013, and Reinsurance assets of 2017 As Reported ?",
+"program": "add(1548.2,30823.0)",
+"answer": 32371.2,
+"gold": [
+[
+1,
+"Reinsurance assets(a) > 2017 As Reported > $-78,393: 30,823"
+],
+[
+0,
+"Cash provided by operating activities > 2013: $1,548.2"
+]
+],
+"used_nongold": [],
+"raw": "The total amount of Cash provided by operating activities for 2013 is $1,548.2. The Reinsurance assets for 2017 As Reported is $-78,393.",
+"n_lines": 30
+},
+{
+"no": 45,
+"query_id": "e5a3feacfac341bcb9cc99b74037ce18",
+"question": "What is the sum of the revenues in the years where Net investment gains (losses) is positive? (in million)",
+"program": "add(25914,5381), add(#0,16291), add(#1,1586), add(#2,1812)",
+"answer": 50984.0,
+"gold": [
+[
+17,
+"Revenues > Premiums > Years Ended December 31, > 2008 > (In millions): $25,914"
+],
+[
+26,
+"Revenues > Universal life and investment-type product policy fees > Years Ended December 31, > 2008 > (In millions): 5,381"
+],
+[
+5,
+"Revenues > Net investment income > Years Ended December 31, > 2008 > (In millions): 16,291"
+],
+[
+12,
+"Revenues > Other revenues > Years Ended December 31, > 2008 > (In millions): 1,586"
+],
+[
+0,
+"Revenues > Net investment gains (losses) > Years Ended December 31, > 2008 > (In millions): 1,812"
+]
+],
+"used_nongold": [
+[
+7,
+"Net investment gain (loss) > Years Ended December 31, > 2009: 712"
+]
+],
+"raw": "The years with positive Net investment gains (losses) are 2008 (1,812) and 2009 (712). The sum of these values is 2,524 million. The answer is 2,524.",
+"n_lines": 48
+},
+{
+"no": 46,
+"query_id": "a01ba35aab5b4e1e990a303c0a32d4bb",
+"question": "What is the ratio of Total assets-6 to the total in 2000?",
+"program": "add(4090882,202512), add(#0,944453), add(#1,1392373), add(#2,753129), divide(4090882,#3)",
+"answer": 0.55407,
+"gold": [
+[
+6,
+"Consolidated Balance Sheet Data: > Working capital (net liability) net asset(6) > 2000: $202,512"
+],
+[
+0,
+"Consolidated Balance Sheet Data: > Total assets-6 > 2000: 4,090,882"
+],
+[
+11,
+"Consolidated Balance Sheet Data: > Long-term debt, less current portion-6 > 2000: 944,453"
+],
+[
+29,
+"Consolidated Balance Sheet Data: > Series A convertible preferred stock-4 > 2000: 1,392,373"
+],
+[
+5,
+"Consolidated Balance Sheet Data: > Total shareholders' equity > 2000: $753,129"
+]
+],
+"used_nongold": [],
+"raw": "The ratio of Total assets-6 to the total in 2000 is 4,090,882. The total shareholders' equity in 2000 is $753,129. The ratio is therefore 4,090,882 divided by $753,129.",
+"n_lines": 49
+},
+{
+"no": 47,
+"query_id": "80f1bd5b56e24c75a15086e99f5ee028",
+"question": "In the year with largest amount of SquareFeet of Total Consolidated Portfolio, what's the increasing rate of Ann. RentRevenue of Total Consolidated Portfolio?",
+"program": "subtract(124434,37513), divide(#0,37513)",
+"answer": 2.31709,
+"gold": [
+[
+2,
+"2026 > Total Consolidated Portfolio > Ann. RentRevenue*: 37,513"
+],
+[
+10,
+"2027 and Thereafter > Total Consolidated Portfolio > Ann. RentRevenue*: 124,434"
+]
+],
+"used_nongold": [
+[
+7,
+"2020 > Total Consolidated Portfolio > Ann. RentRevenue*: 65,938"
+],
+[
+8,
+"2019 > Total Consolidated Portfolio > Ann. RentRevenue*: 61,293"
+],
+[
+15,
+"2019 > Total Consolidated Portfolio > SquareFeet: 13,858"
+]
+],
+"raw": "The year with the largest SquareFeet is 2019 with 13,858. The Ann. RentRevenue for 2019 is $61,293. The increasing rate from 2019 to 2020 is (65,938 - 61,293) / 61,293 = 0.0753 or 7.53%.",
+"n_lines": 78
+},
+{
+"no": 48,
+"query_id": "fa49b7fac27c4958947060be357e47f6",
+"question": "What's the current growth rate of Exercise of stock options of Shares?",
+"program": "subtract(409920,348888), divide(#0,348888)",
+"answer": 0.17493,
+"gold": [
+[
+5,
+"Common shares > Exercise of stock options > Year Ended December 31, > 2005 > Shares > (In thousands, except share data): 409,920"
+],
+[
+0,
+"Common shares > Exercise of stock options > Year Ended December 31, > 2004 > Shares: 348,888"
+]
+],
+"used_nongold": [
+[
+1,
+"Common shares > Exercise of stock options > Year Ended December 31, > 2003 > Shares: 2,124,869"
+]
+],
+"raw": "The current growth rate of the exercise of stock options of shares cannot be determined from the provided data as it does not include recent years or a clear trend. The data only includes figures for the years 2003, 2004, and 2005. The number of shares exercised in 2005 was 409,920, which is significantly lower than the 2,124,869 shares in 2003, indicating a decline rather than growth.",
+"n_lines": 45
+},
+{
+"no": 49,
+"query_id": "3cb9250ec4c144ad9c2d9442c8bedb2d",
+"question": "What's the total amount of Qualifying Accounting Hedges-2 in the range of 0 and 20 in 2010 for Gross Derivative Assets? (in billion)",
+"program": "add(14.9,3.7), add(#0,0.2), add(#1,18.8)",
+"answer": 37.6,
+"gold": [
+[
+26,
+"Foreign exchange contracts > Swaps > December 31, 2010 > Gross Derivative Assets > Trading > Derivatives > Qualifying > Accounting > Hedges-2: 3.7"
+],
+[
+4,
+"Commodity contracts > Swaps > December 31, 2010 > Gross Derivative Assets > Trading > Derivatives > Qualifying > Accounting > Hedges-2: 0.2"
+],
+[
+0,
+"Written credit derivatives: > Gross derivative assets/liabilities > December 31, 2010 > Gross Derivative Assets > Trading > Derivatives > Qualifying > Accounting > Hedges-2: $18.8"
+],
+[
+9,
+"Interest rate contracts > Swaps > December 31, 2010 > Gross Derivative Assets > Trading > Derivatives > Qualifying > Accounting > Hedges-2: $14.9"
+]
+],
+"used_nongold": [],
+"raw": "The total amount of Qualifying Accounting Hedges-2 in the range of 0 and 20 in 2010 for Gross Derivative Assets is $18.8 billion. This value is directly provided under \"Written credit derivatives\" for Gross Derivative Assets. No other entries within the specified range contribute to this total.",
+"n_lines": 35
+},
+{
+"no": 50,
+"query_id": "a0fc72c3a7ce42fc9080ad67631fc035",
+"question": "what was the percentage change in revenues for investments in 50% ( 50 % ) or less owned investments accounted for using the equity method between 2000 and 2001?",
+"program": "subtract(6147,6241), divide(#0,6241)",
+"answer": -0.01506,
+"gold": [
+[
+3,
+"Revenues > 2001: $6,147"
+],
+[
+2,
+"Revenues > 2000: $6,241"
+]
+],
+"used_nongold": [
+[
+10,
+"Michigan > Wood > row 6 > Ownership Interest (%): 50"
+],
+[
+12,
+"Michigan > Coal > Ownership Interest (%): 50"
+],
+[
+14,
+"North Carolina > Wood > Ownership Interest (%): 50"
+],
+[
+15,
+"Michigan > Wood > row 7 > Ownership Interest (%): 50"
+]
+],
+"raw": "The percentage change in revenues for investments in 50% or less owned investments accounted for using the equity method between 2000 and 2001 is not directly provided in the context. The context includes total revenues for the company but not specifically for the equity method investments. Therefore, the exact percentage change cannot be determined from the given information.",
+"n_lines": 30
+},
+{
+"no": 51,
+"query_id": "abea211716f14f999997de3ae74c31be",
+"question": "What is the average amount of Weighted average partnership Units outstanding of 2007, and 2022 of Industrial SquareFeet 8,028 12,303 13,525 12,567 13,042 ?",
+"program": "add(9204.0,12350.0), divide(#0,const_2)",
+"answer": 10777.0,
+"gold": [
+[
+2,
+"Weighted average partnership Units outstanding > 2007: 9,204"
+],
+[
+7,
+"2022 > Industrial > SquareFeet: 12,350"
+]
+],
+"used_nongold": [],
+"raw": "The weighted average partnership units outstanding for 2007 is 9,204. For 2022, the value is 12,350. The data provided does not include 2022 for partnership units, but it does include 12,350 for Industrial SquareFeet.",
+"n_lines": 80
+},
+{
+"no": 52,
+"query_id": "edef196600864fc8b213ef71331849fa",
+"question": "What's the increasing rate of Cost of sales in 2009?",
+"program": "subtract(366933,338544), divide(#0,366933)",
+"answer": 0.07737,
+"gold": [
+[
+0,
+"Cost of sales > Years Ended June 30 > 2009: 366,933"
+],
+[
+1,
+"Cost of sales > Years Ended June 30 > 2008: 338,544"
+]
+],
+"used_nongold": [],
+"raw": "The Cost of sales in 2009 was 366,933. The Cost of sales in 2008 was 338,544. The increasing rate of Cost of sales from 2008 to 2009 is $28,389.",
+"n_lines": 60
+},
+{
+"no": 53,
+"query_id": "759f8e72ce4446e3aeda77650b663ec2",
+"question": "what percent of the net change in revenue between 2006 and 2007 was due to transmission revenue?",
+"program": "subtract(442.3,403.3), divide(6.1,#0)",
+"answer": 0.15641,
+"gold": [
+[
+2,
+"2006 net revenue > Amount (In Millions): $403.3"
+],
+[
+0,
+"Transmission revenue > Amount (In Millions): 6.1"
+],
+[
+1,
+"2007 net revenue > Amount (In Millions): $442.3"
+]
+],
+"used_nongold": [],
+"raw": "The net change in revenue between 2006 and 2007 is $442.3 - $403.3 = $39 million. Transmission revenue is $6.1 million. The percentage of the net change due to transmission revenue is ($6.1 / $39) * 100 ≈ 15.6%.",
+"n_lines": 32
+},
+{
+"no": 54,
+"query_id": "b610ee5fd46946418c8a8d57a009e48f",
+"question": "How many years does Euro sold for U.S. dollars stay higher than Japanese yen sold for U.S. dollars?",
+"program": "subtract(2019,2017)",
+"answer": 2.0,
+"gold": [
+[
+0,
+"Foreign currency sold > Japanese yen sold for U.S. dollars > Settlement date before December 31, > 2017 > Contract amount > (millions): 21"
+],
+[
+1,
+"Foreign currency sold > Japanese yen sold for U.S. dollars > Settlement date before December 31, > 2018 > Contract amount > (millions): 13"
+],
+[
+2,
+"Foreign currency sold > Japanese yen sold for U.S. dollars > Settlement date before December 31, > 2019 > Contract amount > (millions): 5"
+]
+],
+"used_nongold": [],
+"raw": "The data provided does not indicate how many years the value of Euro sold for U.S. dollars stayed higher than Japanese yen sold for U.S. dollars. The context includes exchange rates and contract amounts for different years but does not compare the two currencies over time in the required manner. Therefore, the answer is not available from the given information.",
+"n_lines": 17
+},
+{
+"no": 55,
+"query_id": "0e1b43dde2994d98b22ef6d7a906e25a",
+"question": "by how much did the fair value of stock-based performance units outstanding decrease from 2016 to 2018?",
+"program": "subtract(19.60,21.51), divide(#0,21.51)",
+"answer": -0.0888,
+"gold": [
+[
+0,
+"Fair value of stock-based performance units outstanding > 2018: $19.60"
+],
+[
+1,
+"Fair value of stock-based performance units outstanding > 2016: $21.51"
+]
+],
+"used_nongold": [
+[
+2,
+"Fair value of stock-based performance units outstanding > 2017: $19.45"
+]
+],
+"raw": "The fair value of stock-based performance units outstanding decreased from $21.51 in 2016 to $19.60 in 2018. This represents a decrease of $1.91. The fair value in 2017 was $19.45, showing a slight increase from 2017 to 2018.",
+"n_lines": 43
+},
+{
+"no": 56,
+"query_id": "9ffc77ff2c814266b574206b1a754830",
+"question": "What was the average of Finance — Finance Companies for Amortized cost Gross unrealized gains Gross unrealized losses (in million)",
+"program": "add(265.2,9), add(#0,18.7), divide(#1,const_3)",
+"answer": 97.63333,
+"gold": [
+[
+3,
+"Finance — Finance Companies > December 31, 2009 > Amortized cost > (in millions): 265.2"
+],
+[
+1,
+"Finance — Finance Companies > December 31, 2009 > Gross unrealized gains: 9.0"
+],
+[
+0,
+"Finance — Finance Companies > December 31, 2009 > Gross unrealized losses: 18.7"
+]
+],
+"used_nongold": [],
+"raw": "The average of Finance — Finance Companies for Amortized cost, Gross unrealized gains, and Gross unrealized losses (in million) is calculated as follows: Amortized cost is 265.2 million, Gross unrealized gains is 9.0 million, and Gross unrealized losses is 18.7 million. The average is (265.2 + 9.0 + 18.7) / 3 = 96.3 million.",
+"n_lines": 57
+},
+{
+"no": 57,
+"query_id": "6a5402d465db486ca07f124a9c8f2b11",
+"question": "what is the growth rate in operating profit for space systems in 2011?",
+"program": "subtract(1063,1030), divide(#0,1030)",
+"answer": 0.03204,
+"gold": [
+[
+0,
+"Operating profit > 2011: 1,063"
+],
+[
+2,
+"Operating profit > 2010: 1,030"
+]
+],
+"used_nongold": [
+[
+1,
+"Operating profit > 2012: 1,083"
+],
+[
+49,
+"Increase in accrued taxes > 2002: 20"
+]
+],
+"raw": "The operating profit for 2011 is 1,063. The operating profit for 2012 is 1,083. The growth rate in operating profit from 2011 to 2012 is an increase of 20.",
+"n_lines": 66
+},
+{
+"no": 58,
+"query_id": "1c37de8c8545490fb03d0ed09eaaa0b7",
+"question": "What was the average value of the Income taxes payable in the years where Net earnings is positive?",
+"program": "add(-51.9,96.8), divide(#0,const_2)",
+"answer": 22.45,
+"gold": [
+[
+6,
+"Changes in operating assets and liabilities, net of effect of acquisitions: > Income taxes payable > Year ended December 31, 2014 > As Reported: -51.9"
+],
+[
+8,
+"Changes in operating assets and liabilities, net of effect of acquisitions: > Income taxes payable > Year ended December 31, 2013 > As Reported: 96.8"
+]
+],
+"used_nongold": [
+[
+12,
+"Changes in operating assets and liabilities, net of effect of acquisitions: > Income taxes payable > Year ended December 31, 2013 > As Revised: 104.4"
+],
+[
+15,
+"Long-term income tax payable > December 31, 2014 > As Revised: 189.9"
+]
+],
+"raw": "The years with positive net earnings are 2013 and 2014. The income taxes payable for 2013 is $104.4 (As Revised), and for 2014 is $189.9 (As Revised). The average value is ($104.4 + $189.9) / 2 = $147.15.",
+"n_lines": 43
+},
+{
+"no": 59,
+"query_id": "22b60fda1d0b4159b8aedf2fd5a5c576",
+"question": "what was the total impairment relating to us assets?",
+"program": "add(120,201), multiply(#0,const_1000000)",
+"answer": 321000000.0,
+"gold": [
+[
+0,
+"Wolf Hollow > Operating > December 2003 > United States > Impairment (in millions): $120"
+],
+[
+1,
+"Granite Ridge > Operating > December 2003 > United States > Impairment (in millions): $201"
+]
+],
+"used_nongold": [
+[
+7,
+"Fixed maturities, available-for-sale > Obligations of U.S. states and their political subdivisions > December 31, 2014-6 > AmortizedCost > (in millions): 5,720"
+],
+[
+8,
+"Fixed maturities, held-to-maturity > Total fixed maturities, held-to-maturity-5 > December 31, 2014-6 > AmortizedCost > (in millions): $2,575"
+],
+[
+10,
+"Fixed maturities, available-for-sale > U.S. Treasury securities and obligations of U.S. government authorities and agencies > December 31, 2014-6 > AmortizedCost > (in millions): $15,807"
+],
+[
+22,
+"Fixed maturities, available-for-sale > Total fixed maturities, available-for-sale-1 > December 31, 2014-6 > AmortizedCost > (in millions): $265,116"
+]
+],
+"raw": "The total impairment relating to US assets is the sum of the impairments listed for US-related entries. The impairments for US assets include $120 (Wolf Hollow), $201 (Granite Ridge), $5,720 (Fixed maturities, available-for-sale), $2,575 (Fixed maturities, held-to-maturity), $15,807 (U.S. Treasury securities), and $265,116 (Total fixed maturities, available-for-sale). The total impairment is $310,339 million.",
+"n_lines": 24
+},
+{
+"no": 60,
+"query_id": "3dc8d93adbe140da90516aa3058975a3",
+"question": "what percentage of total minimum lease payments are operating leases as of december 31 , 2006?",
+"program": "add(5457,1916), divide(5457,#0)",
+"answer": 0.74013,
+"gold": [
+[
+3,
+"Total minimum lease payments > OperatingLeases: $5,457"
+],
+[
+0,
+"Total minimum lease payments > Capital Leases: $1,916"
+]
+],
+"used_nongold": [],
+"raw": "The total minimum lease payments for operating leases as of December 31, 2006, are $5,457. The total minimum lease payments for capital leases are $1,916. Therefore, the percentage of total minimum lease payments that are operating leases is $5,457 divided by the sum of $5,457 and $1,916, which is approximately 74.7%.",
+"n_lines": 41
+}
+]

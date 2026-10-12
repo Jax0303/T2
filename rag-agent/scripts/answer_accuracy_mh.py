@@ -133,16 +133,18 @@ def rowexp_contexts(scored, scope, split, header_rule, label_rule, keep_hybrid, 
         sent = defaultdict(dict)                                   # 문서 -> 짧은 셀 id("표-행-열") -> 색인 문장
         for (uid, txt), c in where.items():
             sent[uid][cell_id(c, hdr).split("::", 1)[1]] = txt
-        out = {}
+        out, short = {}, []
         for r in scored:
             s, gold_ids = sent[r["query_id"]], set(r["gold_ids"])
             gold = [s[g] for g in r["gold_ids"]]
             hard = [s[u[0]] for u in r[scope]["ranked_units"] if u[0] not in gold_ids][:n]
-            if len(hard) < n:
-                raise SystemExit(f"noise: 비정답 후보가 {n}개보다 적다 ({r['query_id']}: {len(hard)})")
+            if len(hard) < n:                                       # 작은 문서: 저장 순위(100) 안 비정답이 n 보다 적으면 있는 만큼(=문서 전체)
+                short.append((r["query_id"], len(hard)))
             h = len(hard) // 2
             lines = {"top": gold + hard, "bottom": hard + gold, "mid": hard[:h] + gold + hard[h:]}[pos]
             out[r["query_id"]] = (lines, len(lines))
+        if short:
+            print(f"[noise] 비정답 후보가 {n}개보다 적은 문항 {len(short)}건 (예: {short[:3]}) — 있는 만큼 넣음", flush=True)
         return out
     if mode == "subtable":
         def sub(cells):
@@ -315,6 +317,7 @@ def main() -> int:
     if out.suffix != ".jsonl":
         raise SystemExit("--out must end in .jsonl")
     run_path = out.with_suffix(".run.json")
+    out.parent.mkdir(parents=True, exist_ok=True)                       # 2026-10-07: 새 디렉터리 --out 으로 3건 실패한 뒤
     if out.with_suffix(".json").exists():
         raise SystemExit(f"{out.with_suffix('.json')} exists — 완료된 답변 레그는 다시 돌리지 않는다; pass a new --out")
     if (out.exists() or run_path.exists()) and not a.resume:

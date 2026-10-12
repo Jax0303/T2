@@ -1,0 +1,113 @@
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "official_code": [
+    "google-research/google-research  directory table_rag",
+    "commit 08a8d6736475776f42ffac23b2c13111a28e5795",
+    "fetched 2026-09-29 (git sparse-checkout)"
+  ],
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 128,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 200,
+  "resumed": 76,
+  "provenance": {
+    "git_commit": "460b6f72ad4d646f7c410a2890de75711aeaae2d",
+    "git_dirty": true,
+    "source_sha256": "fe5257fd98c6543d2501d1cdac37755959ed72f8f53f2828ea59951c91cda893",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "n": 124,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.945,
+    "n": 200,
+    "fail_examples": [
+      -0.04655,
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.12369
+    ],
+    "n_fail": 11
+  },
+  "pred_rule": "원본 solver_loop 의 answer (마지막 'Answer:' 뒤 첫 줄) 그대로, 추가 추출 없음",
+  "generation_seconds": 4804.0,
+  "by_layer": {
+    "ALL": {
+      "n": 124,
+      "retrieval_accuracy_here": 0.121,
+      "answer_em": 0.0484,
+      "answer_f1": 0.0588,
+      "input_tokens_mean": 7263.7,
+      "llm_calls_mean": 6.32,
+      "code_errors_mean": 2.57,
+      "terminal_rate": 0.3468,
+      "seconds_mean": 38.7
+    },
+    "arith_m1": {
+      "n": 8,
+      "retrieval_accuracy_here": 0.375,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 7464.6,
+      "llm_calls_mean": 5.88,
+      "code_errors_mean": 1.62,
+      "terminal_rate": 0.5,
+      "seconds_mean": 35.5
+    },
+    "arith_m2+": {
+      "n": 36,
+      "retrieval_accuracy_here": 0.0556,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 7465.6,
+      "llm_calls_mean": 6.5,
+      "code_errors_mean": 2.89,
+      "terminal_rate": 0.2778,
+      "seconds_mean": 40.9
+    },
+    "lookup_m1": {
+      "n": 30,
+      "retrieval_accuracy_here": 0.1667,
+      "answer_em": 0.0333,
+      "answer_f1": 0.0333,
+      "input_tokens_mean": 6618.6,
+      "llm_calls_mean": 5.93,
+      "code_errors_mean": 2.17,
+      "terminal_rate": 0.5,
+      "seconds_mean": 33.5
+    },
+    "lookup_m2+": {
+      "n": 50,
+      "retrieval_accuracy_here": 0.1,
+      "answer_em": 0.1,
+      "answer_f1": 0.1258,
+      "input_tokens_mean": 7473.4,
+      "llm_calls_mean": 6.5,
+      "code_errors_mean": 2.74,
+      "terminal_rate": 0.28,
+      "seconds_mean": 40.8
+    }
+  },
+  "records_sha256": "908254703e43ece3c8579a869d1146da2208dbfdd4a4d8bc35e9ed9471a5592e"
+}

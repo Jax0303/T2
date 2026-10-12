@@ -1,0 +1,97 @@
+[start] 2026-10-07T20:08:34+09:00 env PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True $P scripts/answer_accuracy_mh.py --records results/mh_arms/mh_train_cell_hv3.3u_none_doc_records.jsonl --scope doc --condition fullcells --split train --header-rule v3.3u --batch-size 1 --same-queries-as $IDS --reader $L3 --quiet-accuracy --out $S/fullcells_small/llama3b_fullcells.jsonl --resume
+[same-queries] 200 요청 -> 200 (새 레코드에 없음 0)
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/254 [00:00<?, ?it/s]Loading weights:   0%|          | 1/254 [00:00<02:50,  1.49it/s]Loading weights:   4%|▍         | 10/254 [00:00<00:14, 16.62it/s]Loading weights:   7%|▋         | 19/254 [00:00<00:07, 29.68it/s]Loading weights:  12%|█▏        | 31/254 [00:01<00:04, 48.16it/s]Loading weights:  16%|█▌        | 41/254 [00:01<00:03, 55.85it/s]Loading weights:  20%|█▉        | 50/254 [00:01<00:03, 63.38it/s]Loading weights:  23%|██▎       | 59/254 [00:01<00:02, 67.99it/s]Loading weights:  27%|██▋       | 68/254 [00:01<00:02, 71.00it/s]Loading weights:  30%|███       | 77/254 [00:01<00:02, 75.67it/s]Loading weights:  35%|███▌      | 90/254 [00:01<00:01, 82.99it/s]Loading weights:  41%|████      | 103/254 [00:01<00:01, 86.11it/s]Loading weights:  46%|████▌     | 117/254 [00:01<00:01, 95.39it/s]Loading weights:  50%|█████     | 127/254 [00:02<00:01, 89.92it/s]Loading weights:  55%|█████▌    | 140/254 [00:02<00:01, 95.26it/s]Loading weights:  59%|█████▉    | 150/254 [00:02<00:01, 94.90it/s]Loading weights:  64%|██████▍   | 162/254 [00:02<00:00, 98.19it/s]Loading weights:  68%|██████▊   | 172/254 [00:02<00:00, 91.90it/s]Loading weights:  72%|███████▏  | 183/254 [00:02<00:00, 88.71it/s]Loading weights:  76%|███████▌  | 193/254 [00:02<00:00, 83.98it/s]Loading weights:  80%|███████▉  | 202/254 [00:02<00:00, 85.27it/s]Loading weights:  83%|████████▎ | 212/254 [00:03<00:00, 86.97it/s]Loading weights:  89%|████████▊ | 225/254 [00:03<00:00, 91.84it/s]Loading weights:  93%|█████████▎| 235/254 [00:03<00:00, 88.57it/s]Loading weights:  98%|█████████▊| 248/254 [00:03<00:00, 93.66it/s]Loading weights: 100%|██████████| 254/254 [00:03<00:00, 73.91it/s]
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 461, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 373, in main
+    with run_path.open("x", encoding="utf-8", newline="\n") as stream:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'results/post_defense_20261006/fullcells_small/llama3b_fullcells.run.json'
+[start] 2026-10-07T22:35:53+09:00 env PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True $P scripts/answer_accuracy_mh.py --records results/mh_arms/mh_train_cell_hv3.3u_none_doc_records.jsonl --scope doc --condition fullcells --split train --header-rule v3.3u --batch-size 1 --same-queries-as $IDS --reader $L3 --quiet-accuracy --out $S/fullcells_small/llama3b_fullcells.jsonl --resume
+[same-queries] 200 요청 -> 200 (새 레코드에 없음 0)
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/254 [00:00<?, ?it/s]Loading weights:   0%|          | 1/254 [00:02<12:20,  2.93s/it]Loading weights:   4%|▎         | 9/254 [00:03<01:01,  3.99it/s]Loading weights:   5%|▌         | 13/254 [00:03<00:45,  5.32it/s]Loading weights:   7%|▋         | 18/254 [00:03<00:30,  7.83it/s]Loading weights:   9%|▊         | 22/254 [00:03<00:22, 10.42it/s]Loading weights:  11%|█         | 27/254 [00:03<00:15, 14.23it/s]Loading weights:  13%|█▎        | 32/254 [00:03<00:11, 18.83it/s]Loading weights:  16%|█▌        | 40/254 [00:04<00:08, 26.63it/s]Loading weights:  19%|█▉        | 49/254 [00:04<00:05, 37.05it/s]Loading weights:  23%|██▎       | 58/254 [00:04<00:04, 43.08it/s]Loading weights:  27%|██▋       | 68/254 [00:04<00:03, 51.54it/s]Loading weights:  30%|██▉       | 75/254 [00:04<00:03, 50.56it/s]Loading weights:  32%|███▏      | 81/254 [00:04<00:03, 49.42it/s]Loading weights:  35%|███▌      | 89/254 [00:04<00:03, 54.96it/s]Loading weights:  38%|███▊      | 96/254 [00:05<00:02, 58.52it/s]Loading weights:  41%|████      | 104/254 [00:05<00:02, 62.88it/s]Loading weights:  44%|████▍     | 113/254 [00:05<00:02, 68.87it/s]Loading weights:  48%|████▊     | 122/254 [00:05<00:01, 73.81it/s]Loading weights:  52%|█████▏    | 131/254 [00:05<00:01, 77.70it/s]Loading weights:  56%|█████▌    | 141/254 [00:05<00:01, 81.09it/s]Loading weights:  59%|█████▉    | 150/254 [00:05<00:01, 82.76it/s]Loading weights:  63%|██████▎   | 159/254 [00:05<00:01, 80.98it/s]Loading weights:  66%|██████▌   | 168/254 [00:05<00:01, 79.92it/s]Loading weights:  70%|██████▉   | 177/254 [00:05<00:00, 82.22it/s]Loading weights:  74%|███████▍  | 188/254 [00:06<00:00, 88.65it/s]Loading weights:  78%|███████▊  | 198/254 [00:06<00:00, 89.42it/s]Loading weights:  81%|████████▏ | 207/254 [00:06<00:00, 83.14it/s]Loading weights:  85%|████████▌ | 216/254 [00:06<00:00, 83.19it/s]Loading weights:  89%|████████▊ | 225/254 [00:06<00:00, 81.28it/s]Loading weights:  92%|█████████▏| 234/254 [00:06<00:00, 81.56it/s]Loading weights:  96%|█████████▌| 243/254 [00:06<00:00, 81.06it/s]Loading weights:  99%|█████████▉| 252/254 [00:06<00:00, 83.15it/s]Loading weights: 100%|██████████| 254/254 [00:06<00:00, 36.99it/s]
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+Traceback (most recent call last):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 464, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 400, in main
+    for r, n_tok, raw, seconds in generate([r for r in scored if r["query_id"] not in done]):
+  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 391, in generate
+    raws = ([llm.complete(PROMPTS[a.prompt], users[0], max_tokens=a.max_tokens,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 118, in complete
+    out = self.model.generate(**inputs, **gen_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2584, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2784, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 3830, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 907, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 474, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1036, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 252, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 411, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 330, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py", line 183, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+RuntimeError: CUDA driver error: out of memory

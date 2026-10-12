@@ -1,0 +1,56 @@
+{
+  "arm": "langchain_chunk",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "renderer": "serialization.chunks.markdown_source (fulltable 조건과 같음), 표 사이 빈 줄",
+  "splitter": "RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200, add_start_index=True)",
+  "vector_store": "langchain_core InMemoryVectorStore (cosine), similarity_search k=4",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "passage_prefix": "",
+  "cell_credit": "값이 통째로 청크 안에 있는 셀만 (serialization.chunks.table_chunks 규칙)",
+  "n_queries": 3,
+  "n_chunks_total": 15,
+  "limit": 3,
+  "seconds": 0.9,
+  "provenance": {
+    "git_commit": "7d4d8ff1a49911e71fdf3c75d8d98361b688cd36",
+    "git_dirty": true,
+    "source_sha256": "66bdf594bd10bb46f539cbaf822f65d3501099489f9ec0f662fe5d4b9604b5dc",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.0",
+      "scipy": "1.18.0",
+      "transformers": "5.12.1",
+      "sentence-transformers": "5.6.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.12.1+cu130",
+      "bitsandbytes": "0.50.1"
+    }
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "accuracy_all": 0.6667,
+      "accuracy_any_DIAGNOSTIC": 1.0,
+      "cells_delivered_mean": 139.7,
+      "context_tokens_mean": 1433.7
+    },
+    "arith_m2+": {
+      "n": 1,
+      "accuracy_all": 1.0,
+      "accuracy_any_DIAGNOSTIC": 1.0,
+      "cells_delivered_mean": 175.0,
+      "context_tokens_mean": 1766.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "accuracy_all": 0.5,
+      "accuracy_any_DIAGNOSTIC": 1.0,
+      "cells_delivered_mean": 122.0,
+      "context_tokens_mean": 1267.5
+    }
+  },
+  "records_sha256": "99c45b0ae564bd1c7b7bd25aaf71afd24ca0dfa9e7e50a866ee88bf3aad702e4"
+}
