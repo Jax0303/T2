@@ -89,13 +89,18 @@ def retrieve(a):
     n_tok = lambda t: len(qtok(t, add_special_tokens=False)["input_ids"])
     splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK, chunk_overlap=OVERLAP, add_start_index=True)
 
-    queries, docs, skipped = load_population("train")
+    queries, docs, skipped = load_population(a.split)
     tables, hdr = build_tables(docs, "v3.3u", "none")
     live = {(tid, i, j) for tid, tab in tables.items() for i, row in enumerate(tab.table.data)
             for j, v in enumerate(row) if str(v).strip()}
     queries = [q for q in resolve_gold(queries, tables, hdr, live) if q["gold"] and not q["excluded"]]
-    ref = {json.loads(l)["query_id"] for l in open(S3C, encoding="utf-8") if '"doc"' in l}
-    assert {q["uid"] for q in queries} == ref, "질의 집합이 본 방법 레코드(2,885)와 다르다"
+    if a.split == "train":
+        ref = {json.loads(l)["query_id"] for l in open(S3C, encoding="utf-8") if '"doc"' in l}
+        assert {q["uid"] for q in queries} == ref, "질의 집합이 본 방법 레코드(2,885)와 다르다"
+    else:                                   # dev 등: --ids 의 문항만(그 문항이 모두 있어야 한다)
+        keep = {json.loads(l)["query_id"] for l in open(a.ids, encoding="utf-8") if l.strip()}
+        queries = [q for q in queries if q["uid"] in keep]
+        assert {q["uid"] for q in queries} == keep, "--ids 문항이 이 분할의 채점 가능 문항에 없다"
     want = [json.loads(l)["query_id"] for l in open(SUBSET, encoding="utf-8")][:a.limit] if a.limit else None
     if want:
         queries = sorted((q for q in queries if q["uid"] in set(want)), key=lambda q: q["uid"])
@@ -137,7 +142,7 @@ def retrieve(a):
     for r in recs:
         by[r["layer"]].append(r); by["ALL"].append(r)
     rate = lambda v: round(sum(v) / len(v), 4) if v else None
-    summary = {"arm": "langchain_chunk", "split": "train", "header_rule": "v3.3u", "label_rule": "none",
+    summary = {"arm": "langchain_chunk", "split": a.split, "header_rule": "v3.3u", "label_rule": "none",
                "renderer": "serialization.chunks.markdown_source (fulltable 조건과 같음), 표 사이 빈 줄",
                "splitter": f"RecursiveCharacterTextSplitter(chunk_size={CHUNK}, chunk_overlap={OVERLAP}, add_start_index=True)",
                "vector_store": "langchain_core InMemoryVectorStore (cosine), similarity_search k=4",
@@ -174,7 +179,7 @@ def answer(a):
     missing = [q for q in want if q not in recs]
     if missing:
         raise SystemExit(f"검색 레코드에 없는 질의 {len(missing)}건 (예: {missing[:3]}) — retrieve 먼저")
-    answers = official_answers("train")
+    answers = official_answers(a.split)
     rows_in = [recs[q] for q in want]
     check = self_check([answers[r["query_id"]] for r in rows_in], [r["kind"] == "arith" for r in rows_in])
     print(f"[scorer] gold 를 예측으로 넣었을 때 EM={check['em']} (n={check['n']})", flush=True)
@@ -261,6 +266,7 @@ def main():
     ap.add_argument("--reader", default="local:Qwen/Qwen3-8B?quantization=4bit", help="답변 LLM 사양(local:<hf id>?quantization=4bit|none)")
     ap.add_argument("--embed-model", default=EMBED)
     ap.add_argument("--resume", action="store_true", help="답변 단계: 저장된 행은 건너뛰고 이어 쓴다")
+    ap.add_argument("--split", default="train", help="검색 단계 분할(기본 train). train 이 아니면 --ids 의 문항만 검색")
     ap.add_argument("--batch-size", type=int, default=BATCH, help="답변 묶음 크기(기본 128). 1 = 한 문항씩 complete")
     ap.add_argument("--ids", default="", help="답변 단계 문항 목록·순서(jsonl, query_id). 기본 882 부분집합 순서")
     ap.add_argument("--prompt", default="tutorial", choices=["tutorial", "cot", "original"],
