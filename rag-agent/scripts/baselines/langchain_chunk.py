@@ -45,6 +45,10 @@ RAG_PROMPT = ("You are an assistant for question-answering tasks. Use the follow
               "Use three sentences maximum and keep the answer concise.")
 MARKER = " On the last line write 'Final answer: ' followed by only the final value, with no units or explanation."
 PROMPT = "{instr}\nQuestion: {question} \nContext: {context} \nAnswer:"
+# 표 없이 질문만(PREREG-2026-10-13-gpt4o.md): 원문에서 문맥 문장("Use the following pieces of retrieved context to answer the question.")만 뺐다.
+CLOSED_PROMPT = ("You are an assistant for question-answering tasks. Answer the question. If you don't know the answer, "
+                 "just say that you don't know. Use three sentences maximum and keep the answer concise.")
+CLOSED_TEMPLATE = "{instr}\nQuestion: {question} \nAnswer:"
 TOP_K, DUMP, CHUNK, OVERLAP = 4, 30, 1000, 200
 EMBED, READER, MAX_NEW, SEED, BATCH = "BAAI/bge-base-en-v1.5", "Qwen/Qwen3-8B", 384, 42, 128
 S3C = ROOT / "results/mh_only_20260928/retrieval/mh_train_s3c_records.jsonl"
@@ -191,15 +195,27 @@ def answer(a):
             raise SystemExit(f"{out} 있음 — 덮어쓰지 않는다(--resume)")
         done = {r["query_id"]: r for r in map(json.loads, open(out, encoding="utf-8"))}
         print(f"[resume] 저장된 {len(done)}건 건너뜀", flush=True)
-    name, kw = _split_spec(a.reader.removeprefix("local:"))      # "Qwen/Qwen3-1.7B?quantization=none" 도 받는다
     cot = a.prompt == "cot"                                        # 본 방법 지시문·틀(system=COT, user=Context/Question) — 지시문×단위 2×2
-    llm = (LocalQwenLLM if cot else UserOnly)(model_name=name, **{"quantization": "4bit", **kw})
+    api = a.reader.startswith("openai:")                           # API 리더(PREREG-2026-10-13-gpt4o.md): 한 문항씩, 토큰 수는 응답의 usage
+    if api:
+        if a.batch_size != 1:
+            raise SystemExit("API 리더는 --batch-size 1 로만 돌린다")
+        from rag_agent.llm.factory import _load_dotenv
+        from rag_agent.llm.openai_llm import _DEFAULT_BASE, OpenAILLM
+        _load_dotenv()
+        name, kw = _split_spec(a.reader.removeprefix("openai:"))  # "gpt-4o?key_env=OPENAI_API_KEY_OLD" = .env 의 어느 키를 쓸지
+        llm = OpenAILLM(model_name=name, base_url=_DEFAULT_BASE, api_key=os.environ[kw.get("key_env", "OPENAI_API_KEY")])
+    else:
+        name, kw = _split_spec(a.reader.removeprefix("local:"))  # "Qwen/Qwen3-1.7B?quantization=none" 도 받는다
+        llm = (LocalQwenLLM if cot else UserOnly)(model_name=name, **{"quantization": "4bit", **kw})
+        torch.manual_seed(SEED)
     system = COT if cot else ""
-    INSTR = RAG_PROMPT if a.prompt == "original" else RAG_PROMPT + MARKER   # original = rlm/rag-prompt 원문, 표시 문장 없음
+    closed = a.prompt == "closed"                                  # 표 없이 질문만
+    INSTR = CLOSED_PROMPT if closed else RAG_PROMPT if a.prompt == "original" else RAG_PROMPT + MARKER   # original = rlm/rag-prompt 원문, 표시 문장 없음
     build = ((lambda r: "Context:\n" + r["context"] + f"\n\nQuestion: {r['question']}\nAnswer:") if cot else
+             (lambda r: CLOSED_TEMPLATE.format(instr=INSTR, question=r["question"])) if closed else
              (lambda r: PROMPT.format(instr=INSTR, question=r["question"], context=r["context"])))
-    torch.manual_seed(SEED)
-    limit = llm.context_limit
+    limit = None if api else llm.context_limit
     rows, t0 = [done[r["query_id"]] for r in rows_in if r["query_id"] in done], time.time()
     pending = [r for r in rows_in if r["query_id"] not in done]
     with out.open("a", encoding="utf-8", newline="\n") as stream:
@@ -207,13 +223,17 @@ def answer(a):
         for s in range(0, len(pending), bs):
             batch, t = pending[s:s + bs], time.time()
             users = [build(r) for r in batch]
-            n_toks = [llm.n_prompt_tokens(system, u) for u in users]
-            for n in n_toks:
-                check_context_limit(n, MAX_NEW, limit)
-            raws = ([llm.complete(system, users[0], max_tokens=MAX_NEW, temperature=0.0)] if bs == 1 else
-                    llm.complete_batch(system, users, max_tokens=MAX_NEW))      # 1 = 한 문항씩(긴 입력, 묶음 캐시 부족 때)
-            if bs == 1:
-                torch.cuda.empty_cache()                                   # 한 문항씩일 때 캐시 비우기(WSL 넘침 완화, Yu 882 전례)
+            if api:
+                raws = [llm.complete(system, users[0], max_tokens=MAX_NEW)]
+                n_toks = [llm.last_usage.get("prompt_tokens")]
+            else:
+                n_toks = [llm.n_prompt_tokens(system, u) for u in users]
+                for n in n_toks:
+                    check_context_limit(n, MAX_NEW, limit)
+                raws = ([llm.complete(system, users[0], max_tokens=MAX_NEW, temperature=0.0)] if bs == 1 else
+                        llm.complete_batch(system, users, max_tokens=MAX_NEW))      # 1 = 한 문항씩(긴 입력, 묶음 캐시 부족 때)
+                if bs == 1:
+                    torch.cuda.empty_cache()                               # 한 문항씩일 때 캐시 비우기(WSL 넘침 완화, Yu 882 전례)
             sec = round((time.time() - t) / len(batch), 3)
             for r, n, raw in zip(batch, n_toks, raws):
                 gold, prog = answers[r["query_id"]], r["kind"] == "arith"
@@ -223,7 +243,9 @@ def answer(a):
                        "pred": pred, "answer": gold, "answer_correct": int(mh_exact_match(pred, gold, prog)),
                        "f1": mh_f1(pred, gold, prog), "raw": raw, "marker_found": marked,
                        "n_tok": n, "n_llm_calls": 1, "cells_in_context": r["cells_in_context"],
-                       "context_sha256": digest(r["context"]), "seconds": sec}
+                       "context_sha256": digest(r["context"]), "seconds": sec,
+                       **({"finish_reason": llm.last_finish_reason,
+                           "n_tok_out": llm.last_usage.get("completion_tokens")} if api else {})}
                 stream.write(json.dumps(row, ensure_ascii=False) + "\n")
                 rows.append(row)
             stream.flush(); os.fsync(stream.fileno())
@@ -236,9 +258,10 @@ def answer(a):
                                                                             if k != "chat_template"},
                "prompt": a.prompt, "system_message": COT if cot else None,
                "prompt_text": (COT + "\n---\nContext:\n{context}\n\nQuestion: {question}\nAnswer:" if cot else
+                               CLOSED_TEMPLATE.format(instr=INSTR, question="{question}") if closed else
                                PROMPT.format(instr=INSTR, question="{question}", context="{context}")),
                "prompt_sha256": digest(COT if cot else INSTR),
-               "max_new_tokens": MAX_NEW, "seed": SEED, "batch_size": a.batch_size, "temperature": 0.0,
+               "max_new_tokens": MAX_NEW, "seed": None if api else SEED, "batch_size": a.batch_size, "temperature": 0.0,
                "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
                "answer_source": f"{OFFICIAL_REPO}@{OFFICIAL_REV}", "scorer_self_check": check,
                "limit": a.limit, "n": len(rows), "marker_missing": sum(not x["marker_found"] for x in rows),
@@ -269,10 +292,10 @@ def main():
     ap.add_argument("--split", default="train", help="검색 단계 분할(기본 train). train 이 아니면 --ids 의 문항만 검색")
     ap.add_argument("--batch-size", type=int, default=BATCH, help="답변 묶음 크기(기본 128). 1 = 한 문항씩 complete")
     ap.add_argument("--ids", default="", help="답변 단계 문항 목록·순서(jsonl, query_id). 기본 882 부분집합 순서")
-    ap.add_argument("--prompt", default="tutorial", choices=["tutorial", "cot", "original"],
+    ap.add_argument("--prompt", default="tutorial", choices=["tutorial", "cot", "original", "closed"],
                     help="답변 단계 지시문. tutorial = rlm/rag-prompt(원방법). cot = 본 방법 지시문·틀(answer_accuracy_mh.COT) — "
                          "PREREG-2026-10-07-claims.md 1(지시문×단위 2×2). original = rlm/rag-prompt 원문 그대로(Final answer 표시 문장 없음, "
-                         "PREREG-2026-10-12-cellform.md)")
+                         "PREREG-2026-10-12-cellform.md). closed = 표 없이 질문만(원문에서 문맥 문장만 뺌, PREREG-2026-10-13-gpt4o.md)")
     a = ap.parse_args()
     (retrieve if a.stage == "retrieve" else answer)(a)
 

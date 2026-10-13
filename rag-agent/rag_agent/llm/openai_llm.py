@@ -77,6 +77,13 @@ class OpenAILLM(BaseLLM):
         # find out whether a run was actually deterministic.
         self._send_temperature = True
         self.last_finish_reason: str | None = None  # see BaseLLM
+        self.last_usage: dict = {}          # provider's token counts for the last call
+        self.last_model: str | None = None  # snapshot actually served (e.g. gpt-4o-2024-08-06)
+
+    def metadata(self) -> dict:
+        return {"model_name": self.model_name, "endpoint": self._endpoint,
+                "temperature": self.temperature, "temperature_sent": self._send_temperature,
+                "served_model": self.last_model}
 
     def complete(self, system: str, user: str, max_tokens: int = 256) -> str:
         # Newer OpenAI models reject `max_tokens`; `max_completion_tokens` is the
@@ -86,10 +93,10 @@ class OpenAILLM(BaseLLM):
         cap = "max_completion_tokens" if self._is_openai else "max_tokens"
         payload = {
             "model": self.model_name,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
+            # An empty system string means "no system message" (the LangChain
+            # tutorial prompt is a single human message), not an empty one.
+            "messages": ([{"role": "system", "content": system}] if system else [])
+                        + [{"role": "user", "content": user}],
             cap: max_tokens,
         }
         # Reasoning models accept only the default temperature; sending 0.0 is a
@@ -112,6 +119,8 @@ class OpenAILLM(BaseLLM):
                     body = json.load(fh)
                 choice = body["choices"][0]
                 self.last_finish_reason = choice.get("finish_reason")
+                self.last_usage = body.get("usage") or {}
+                self.last_model = body.get("model")
                 # .strip() to match GroqLLM: answerer.py gates its empty-completion
                 # retry on `not raw`, so a whitespace-only body must read as empty
                 # here too or the two backends stop being interchangeable.
