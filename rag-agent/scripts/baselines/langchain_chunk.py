@@ -45,6 +45,7 @@ RAG_PROMPT = ("You are an assistant for question-answering tasks. Use the follow
               "Use three sentences maximum and keep the answer concise.")
 MARKER = " On the last line write 'Final answer: ' followed by only the final value, with no units or explanation."
 PROMPT = "{instr}\nQuestion: {question} \nContext: {context} \nAnswer:"
+PROMPT_CF = "{instr}\nContext: {context} \nQuestion: {question} \nAnswer:"   # original_cf: 검색 결과를 질문 앞에(PREREG-2026-10-15-prompt-order.md)
 # 표 없이 질문만(PREREG-2026-10-13-gpt4o.md): 원문에서 문맥 문장("Use the following pieces of retrieved context to answer the question.")만 뺐다.
 CLOSED_PROMPT = ("You are an assistant for question-answering tasks. Answer the question. If you don't know the answer, "
                  "just say that you don't know. Use three sentences maximum and keep the answer concise.")
@@ -211,10 +212,11 @@ def answer(a):
         torch.manual_seed(SEED)
     system = COT if cot else ""
     closed = a.prompt == "closed"                                  # 표 없이 질문만
-    INSTR = CLOSED_PROMPT if closed else RAG_PROMPT if a.prompt == "original" else RAG_PROMPT + MARKER   # original = rlm/rag-prompt 원문, 표시 문장 없음
+    INSTR = CLOSED_PROMPT if closed else RAG_PROMPT if a.prompt in ("original", "original_cf") else RAG_PROMPT + MARKER   # original = rlm/rag-prompt 원문, 표시 문장 없음
+    TPL = PROMPT_CF if a.prompt == "original_cf" else PROMPT
     build = ((lambda r: "Context:\n" + r["context"] + f"\n\nQuestion: {r['question']}\nAnswer:") if cot else
              (lambda r: CLOSED_TEMPLATE.format(instr=INSTR, question=r["question"])) if closed else
-             (lambda r: PROMPT.format(instr=INSTR, question=r["question"], context=r["context"])))
+             (lambda r: TPL.format(instr=INSTR, question=r["question"], context=r["context"])))
     limit = None if api else llm.context_limit
     rows, t0 = [done[r["query_id"]] for r in rows_in if r["query_id"] in done], time.time()
     pending = [r for r in rows_in if r["query_id"] not in done]
@@ -259,7 +261,7 @@ def answer(a):
                "prompt": a.prompt, "system_message": COT if cot else None,
                "prompt_text": (COT + "\n---\nContext:\n{context}\n\nQuestion: {question}\nAnswer:" if cot else
                                CLOSED_TEMPLATE.format(instr=INSTR, question="{question}") if closed else
-                               PROMPT.format(instr=INSTR, question="{question}", context="{context}")),
+                               TPL.format(instr=INSTR, question="{question}", context="{context}")),
                "prompt_sha256": digest(COT if cot else INSTR),
                "max_new_tokens": MAX_NEW, "seed": None if api else SEED, "batch_size": a.batch_size, "temperature": 0.0,
                "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
@@ -292,10 +294,11 @@ def main():
     ap.add_argument("--split", default="train", help="검색 단계 분할(기본 train). train 이 아니면 --ids 의 문항만 검색")
     ap.add_argument("--batch-size", type=int, default=BATCH, help="답변 묶음 크기(기본 128). 1 = 한 문항씩 complete")
     ap.add_argument("--ids", default="", help="답변 단계 문항 목록·순서(jsonl, query_id). 기본 882 부분집합 순서")
-    ap.add_argument("--prompt", default="tutorial", choices=["tutorial", "cot", "original", "closed"],
+    ap.add_argument("--prompt", default="tutorial", choices=["tutorial", "cot", "original", "closed", "original_cf"],
                     help="답변 단계 지시문. tutorial = rlm/rag-prompt(원방법). cot = 본 방법 지시문·틀(answer_accuracy_mh.COT) — "
                          "PREREG-2026-10-07-claims.md 1(지시문×단위 2×2). original = rlm/rag-prompt 원문 그대로(Final answer 표시 문장 없음, "
-                         "PREREG-2026-10-12-cellform.md). closed = 표 없이 질문만(원문에서 문맥 문장만 뺌, PREREG-2026-10-13-gpt4o.md)")
+                         "PREREG-2026-10-12-cellform.md). closed = 표 없이 질문만(원문에서 문맥 문장만 뺌, PREREG-2026-10-13-gpt4o.md). "
+                         "original_cf = original 과 같은 문장, Context 를 Question 앞에(PREREG-2026-10-15-prompt-order.md)")
     a = ap.parse_args()
     (retrieve if a.stage == "retrieve" else answer)(a)
 
