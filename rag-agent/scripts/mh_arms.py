@@ -419,6 +419,8 @@ def main() -> int:
     ap.add_argument("--rowcol-max-pairs", type=int, default=200)
     ap.add_argument("--max-docs", type=int, default=0, help="배관 점검용. 보고용은 0")
     ap.add_argument("--only-uids", default="", help="JSON 목록: 이 문항만 검색한다(색인·BM25 는 전체 그대로)")
+    ap.add_argument("--prf", type=int, default=0, help="의사 적합성 피드백: 1차 문서 안 순위 상위 N 단위의 글을 질문 앞에 붙여 다시 검색(0 = 안 함). PREREG-2026-10-15-prf.md")
+    ap.add_argument("--prf-text", default="full", choices=["full", "path"], help="--prf 에 붙일 글: full = 단위 문장 전체, path = 마지막 ': 값' 을 뺀 경로만")
     ap.add_argument("--question-suffix", default="",
                     help="JSON {uid: 말}: 질문 뒤에 붙인다 (PREREG-2026-09-28-mh-name-append.md 진단용)")
     ap.add_argument("--shard", type=int, default=50000)
@@ -618,10 +620,24 @@ def main() -> int:
             continue
         dn = emb @ enc.encode_query([q["question"]])[0].astype(np.float32)
         sc = a.alpha * _minmax(dn) + (1 - a.alpha) * _minmax(sp)
+        prf_info = None
+        if a.prf:
+            # 의사 적합성 피드백(PREREG-2026-10-15-prf.md): 1차 검색의 문서 안 순위 상위 a.prf 단위의 글을
+            # 질문 앞에 붙여 새 질문을 만들고, 그 질문으로 dense·BM25 를 다시 계산한다. 그 뒤는 그대로.
+            sel0 = np.flatnonzero(uid_arr == q["uid"])
+            top0 = sel0[np.argsort(-sc[sel0], kind="stable")[:min(a.prf, len(sel0))]]
+            fb = [texts[p] if a.prf_text == "full" else texts[p].rsplit(": ", 1)[0] for p in top0]
+            q2 = " ".join(fb) + " " + q["question"]
+            sp = bm.get_scores(_tokenize(q2))
+            dn = emb @ enc.encode_query([q2])[0].astype(np.float32)
+            sc = a.alpha * _minmax(dn) + (1 - a.alpha) * _minmax(sp)
+            prf_info = {"n": a.prf, "text": a.prf_text, "feedback": fb, "query2": q2}
         r = {"query_id": q["uid"], "kind": q["kind"], "m": len(q["gold"]),
              "m_annotated": len(q["coords"]), "n_gold_tables": q["n_gold_tables"],
              "layer": layer(q), "question": q["question"], "answer": q["answer"],
              "mode": "all"}
+        if prf_info:
+            r["prf"] = prf_info
         gold_tids = {c[0] for c in q["gold"]}
         for scope in (("doc",) if strict else ("corpus", "doc", "table")):
             if scope == "table":
