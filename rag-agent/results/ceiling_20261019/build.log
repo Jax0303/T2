@@ -1,0 +1,20 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+D 재현 882/882
+O1: 882건, 정답 셀 포함 882, 전달 셀 평균 2.5, 토큰 평균 71, 최대 400, T 초과 0
+O2: 882건, 정답 셀 포함 882, 전달 셀 평균 71.2, 토큰 평균 709, 최대 3484, T 초과 59
+O3: 882건, 정답 셀 포함 879, 전달 셀 평균 64.2, 토큰 평균 646, 최대 2024, T 초과 0
+missing_gold>0: 0 | 정답 표 2개+: 62
+
+예시 O1:
+Table 2
+| | Year Ended > September 30, 2007 > ($ in 000's) | Year Ended > September 30, 2006 |
+| --- | --- | --- |
+| Revenues > Securities Commissions and > Investment Banking Fees | $ 41,879 | $ 43,703 |
+
+예시 O3:
+Table 2
+| | Year Ended > September 30, 2007 > ($ in 000's) | Year Ended > % Incr. (Decr.) > column 2 | Year Ended > September 30, 2006 | Year Ended > % Incr. (Decr.) > column 4 | Year Ended > September 30, 2005 |
+| --- | --- | --- | --- | --- | --- |
+| Revenues > Securities Commissions and > Investment Banking Fees | $ 41,879 | -4% | $ 43,703 | 46% | $ 29,928 |
+| Revenues > Securities Commissions 
