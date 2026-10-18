@@ -7,10 +7,10 @@
 
 축(순서대로):
   R 역할        R0 원문 / R1 재무 분석가
-  X 입력 설명   X0 없음 / X1 "표 셀, 값의 뜻은 행·열 머리글" 한 문장
+  X 입력 설명   X0 없음 / X1 "표 셀, 값의 뜻은 행·열 머리글" 한 문장 / X2 "표 또는 표의 일부" (2026-10-19 추가)
   F 거절        F0 원문("모르면 모른다") / F1 "항상 답하라"
   B 풀이        B0 원문("세 문장 이내") / B1 단계별(셀 찾기→계산→답) / B2 계산식을 먼저 쓰기
-  D 규칙        D0 없음 / D1 증가율·평균·개수·부호·머리글 일치·이름 답 규칙 6개
+  D 규칙        D0 없음 / D1 증가율·평균·개수·부호·머리글 일치·이름 답 규칙 6개 / D2 D1 + (7) 여러 표면 머리글 맞는 표만, 표끼리 합산 금지 (2026-10-19 추가)
   C 답 형식     C0 없음 / C1 'Final answer:' 값만 / C2 'Final answer:' 유형별(숫자·머리글 글·Yes/No)
   E 예시        E0 없음 / E1 풀이 예시 7개(train 에서 882 밖 문항, dev 에서도 뺌)
 변형 이름 = "R0X1F1B2D1C2E1" 처럼 축 글자+수준.
@@ -24,7 +24,8 @@ AXES = {
     "R": ["You are an assistant for question-answering tasks.",
           "You are a financial analyst answering questions about tables from a company's annual report."],
     "X": ["",
-          " The context contains cells from the report's tables; the meaning of each value is given by its row and column headers."],
+          " The context contains cells from the report's tables; the meaning of each value is given by its row and column headers.",
+          " The context contains tables or parts of tables from the report; the meaning of each value is given by its row and column headers."],   # X2 (2026-10-19, PREREG-2026-10-19-prompt-table-rule.md)
     "F": ["If you don't know the answer, just say that you don't know.",
           "The context contains what is needed to answer; do not say that you don't know, always give your best answer."],
     "B": ["Use three sentences maximum and keep the answer concise.",
@@ -35,7 +36,13 @@ AXES = {
           " Rules: (1) Percentage change or growth rate = (new - old) / old. (2) Average = sum / count; total or sum = add all the items asked. "
           "(3) 'How many' asks for a count of the items meeting the condition. (4) Use values exactly as shown, keeping their sign "
           "(values in parentheses are negative); do not convert units. (5) Choose the cell whose row and column headers both match the question. "
-          "(6) For 'which' or 'what' questions asking for a name, answer with the exact text from the headers."],
+          "(6) For 'which' or 'what' questions asking for a name, answer with the exact text from the headers.",
+          " Rules: (1) Percentage change or growth rate = (new - old) / old. (2) Average = sum / count; total or sum = add all the items asked. "
+          "(3) 'How many' asks for a count of the items meeting the condition. (4) Use values exactly as shown, keeping their sign "
+          "(values in parentheses are negative); do not convert units. (5) Choose the cell whose row and column headers both match the question. "
+          "(6) For 'which' or 'what' questions asking for a name, answer with the exact text from the headers. "
+          "(7) If the context contains several tables, use the table whose row and column headers match the question; "
+          "do not add up values from different tables unless the question asks for it."],   # D2 = D1 + (7) (2026-10-19)
     "C": ["",
           " On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.",
           " On the last line write 'Final answer: ' followed by the answer only: a number for numeric questions (no units or words), "
