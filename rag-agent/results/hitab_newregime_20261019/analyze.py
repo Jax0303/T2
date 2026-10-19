@@ -17,8 +17,13 @@ def gold_list(ans):
     try:
         v = ast.literal_eval(str(ans)); return [str(x) for x in v] if isinstance(v, list) else [str(v)]
     except Exception: return [str(ans)]
+import re
+def norm_fl(fl):  # score_hitab.py 와 같은 정규화(앞에 0 없는 소수, 부동소수 표기 잡음)
+    if fl is None: return None
+    fl = re.sub(r"(?<![\d.])\.(\d+)", r"0.\1", fl)
+    return re.sub(r"-?\d+\.\d{7,}", lambda m: format(float(m.group(0)), ".10g"), fl)
 def fin(r, q):
-    fl = sf.final_line(r["raw"]); return int(fl is not None and all(included_v2(fl, x, False) for x in gold_list(REC["A"][q]["answer"]))), fl
+    fl = norm_fl(sf.final_line(r["raw"])); return int(fl is not None and all(included_v2(fl, x, False) for x in gold_list(REC["A"][q]["answer"]))), fl
 runs = [d for d in sys.argv[1:]]
 S = {arm: [] for arm in ("A", "C", "D")}; FL = {arm: {} for arm in S}
 for d in runs:
