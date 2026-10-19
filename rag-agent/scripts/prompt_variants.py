@@ -7,7 +7,7 @@
 
 축(순서대로):
   R 역할        R0 원문 / R1 재무 분석가
-  X 입력 설명   X0 없음 / X1 "표 셀, 값의 뜻은 행·열 머리글" 한 문장 / X2 "표 또는 표의 일부" (2026-10-19 추가)
+  X 입력 설명   X0 없음 / X1 "표 셀, 값의 뜻은 행·열 머리글" 한 문장 / X2 "표 또는 표의 일부" (2026-10-19 추가) / X3 X1 + " > " 경로 표기 설명 (2026-10-19 추가)
   F 거절        F0 원문("모르면 모른다") / F1 "항상 답하라"
   B 풀이        B0 원문("세 문장 이내") / B1 단계별(셀 찾기→계산→답) / B2 계산식을 먼저 쓰기
   D 규칙        D0 없음 / D1 증가율·평균·개수·부호·머리글 일치·이름 답 규칙 6개 / D2 D1 + (7) 여러 표면 머리글 맞는 표만, 표끼리 합산 금지 (2026-10-19 추가)
@@ -25,7 +25,9 @@ AXES = {
           "You are a financial analyst answering questions about tables from a company's annual report."],
     "X": ["",
           " The context contains cells from the report's tables; the meaning of each value is given by its row and column headers.",
-          " The context contains tables or parts of tables from the report; the meaning of each value is given by its row and column headers."],   # X2 (2026-10-19, PREREG-2026-10-19-prompt-table-rule.md)
+          " The context contains tables or parts of tables from the report; the meaning of each value is given by its row and column headers.",   # X2 (2026-10-19, PREREG-2026-10-19-prompt-table-rule.md)
+          " The context contains cells from the report's tables; the meaning of each value is given by its row and column headers. "
+          "Header paths are written from the top-level header down to the sub-header, separated by ' > ' (for example 'Revenues > 2019' means the 2019 column under Revenues)."],   # X3 (2026-10-19, PREREG-2026-10-19-sentence-form.md: 꺽쇠 설명)
     "F": ["If you don't know the answer, just say that you don't know.",
           "The context contains what is needed to answer; do not say that you don't know, always give your best answer."],
     "B": ["Use three sentences maximum and keep the answer concise.",
