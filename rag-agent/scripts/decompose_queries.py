@@ -15,7 +15,7 @@ def parse(raw):
     return out
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--model", required=True); ap.add_argument("--records", required=True); ap.add_argument("--out", required=True)
-    ap.add_argument("--gpu-mem", type=float, default=0.6); a = ap.parse_args()
+    ap.add_argument("--gpu-mem", type=float, default=0.89); a = ap.parse_args()
     from vllm import LLM, SamplingParams
     from transformers import AutoTokenizer
     tok = AutoTokenizer.from_pretrained(a.model)
