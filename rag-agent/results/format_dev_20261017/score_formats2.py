@@ -40,7 +40,8 @@ def main():
                 rows = [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
                 if rows: S[arm_dir.name] = {r["query_id"]: score(r, G[r["query_id"]]) for r in rows}
         runs[Path(d).name] = S
-    qs = sorted(G); N = len(qs); out = {"n": N, "runs": {}, "mean": {}, "pairs": {}}
+    loaded = [set(s) for S in runs.values() for s in S.values()]
+    qs = sorted(set.intersection(*loaded)) if loaded else sorted(G); N = len(qs); out = {"n": N, "runs": {}, "mean": {}, "pairs": {}}   # 2026-10-18 수정: 분모 = 실제 돌린 문항(--gold train 일 때 7,830 전체로 잡히던 오류)
     arms = sorted({arm for S in runs.values() for arm in S})
     for rn, S in runs.items():
         out["runs"][rn] = {}
