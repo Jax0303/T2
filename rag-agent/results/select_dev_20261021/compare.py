@@ -31,7 +31,11 @@ for i in range(2):
     for x, y in (("DF", "AF"), ("DF", "CpF"), ("CpF", "AF")):
         b, c, p = mcn(N_[x][i], N_[y][i]); print(f"  실행{i+1} {x} 대 {y}: {sum(N_[x][i].values())} 대 {sum(N_[y][i].values())}, b:c {b}:{c}, p={p:.4f}")
 print("\n== 고르기 통계 ==")
-tables, hdr, sent, coord = load_split("validation", qs)
+D0 = {r["query_id"]: r for r in map(json.loads, open(ROOT / "results/format_dev_20261017/D_records.jsonl", encoding="utf-8"))}
+sent = {}
+for sp in ("validation", "train"):
+    ids = [q for q in qs if D0[q]["split"] == sp]
+    if ids: sent.update(load_split(sp, ids)[2])
 for a, f, nm in pairs:
     R = F[f]; n = len(R)
     s = f"  {nm}: 줄 {sum(r['n_lines'] for r in R.values())/n:.1f} → 남김 {sum(r['n_kept'] for r in R.values())/n:.1f}, 토큰 {sum(r['n_tok_ctx_before'] for r in R.values())/n:.0f} → {sum(r['n_tok_ctx'] for r in R.values())/n:.0f}, 빈 문맥 {sum(r['empty'] for r in R.values())}, 선택 출력 잘림 {sum(not r['sel_finished'] for r in R.values())}"
