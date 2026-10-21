@@ -11,7 +11,7 @@ import prompt_variants as pv
 FINAL = re.compile(r"final answer\**\s*[:：]", re.I)
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--model", required=True); ap.add_argument("--jobs", required=True); ap.add_argument("--max-new-tokens", type=int, default=32)
-    ap.add_argument("--gpu-mem", type=float, default=0.89); a = ap.parse_args()
+    ap.add_argument("--gpu-mem", type=float, default=0.89); ap.add_argument("--dry-run", action="store_true"); a = ap.parse_args()
     jobs = json.load(open(a.jobs)); todo = []
     for j in jobs:
         rows = [json.loads(l) for l in open(j["out"], encoding="utf-8") if l.strip()]
@@ -21,19 +21,21 @@ def main():
                 todo.append((j, r, recs[r["query_id"]]))
         j["_rows"] = rows
     print(f"[force] 잘린 행 {len(todo)}개 / 파일 {len(jobs)}개", flush=True)
-    from vllm import LLM, SamplingParams
     from transformers import AutoTokenizer
     tok = AutoTokenizer.from_pretrained(a.model)
+    LIMIT = 8192 - a.max_new_tokens - 8; tail = tok("\nFinal answer:", add_special_tokens=False)["input_ids"]
+    prompts = []; n_cut = 0
+    for j, r, rec in todo:                                                 # 토큰 id 로 이어 붙인다(디코드 왕복 없음). 넘치면 생성문 앞부분을 잘라 끝부분을 보존.
+        chat_ids = tok(tok.apply_chat_template([{"role": "user", "content": pv.build(j["variant"], rec["question"], rec["context"])}], tokenize=False, add_generation_prompt=True, enable_thinking=False), add_special_tokens=False)["input_ids"]
+        raw_ids = tok(r["raw"], add_special_tokens=False)["input_ids"]
+        room = LIMIT - len(chat_ids) - len(tail)
+        if len(raw_ids) > room: raw_ids = raw_ids[-room:]; n_cut += 1
+        prompts.append({"prompt_token_ids": chat_ids + raw_ids + tail})
+    print(f"[force] 프롬프트 {len(prompts)}개, 생성문 앞을 자른 것 {n_cut}, 최대 길이 {max((len(p['prompt_token_ids']) for p in prompts), default=0)}", flush=True)
+    if a.dry_run: return
+    from vllm import LLM, SamplingParams
     llm = LLM(model=a.model, dtype="bfloat16", gpu_memory_utilization=a.gpu_mem, max_model_len=8192, seed=42, enable_prefix_caching=True, max_num_seqs=16, language_model_only=True)
     sp = SamplingParams(temperature=0.0, max_tokens=a.max_new_tokens, seed=42)
-    prompts = []
-    for j, r, rec in todo:
-        chat = tok.apply_chat_template([{"role": "user", "content": pv.build(j["variant"], rec["question"], rec["context"])}], tokenize=False, add_generation_prompt=True, enable_thinking=False)
-        ids = tok(chat + r["raw"], add_special_tokens=False)["input_ids"]
-        if len(ids) > 8192 - a.max_new_tokens - 8:                      # 넘치면 생성문 앞부분을 잘라 맞춘다(끝부분은 보존)
-            keep = 8192 - a.max_new_tokens - 8; prompts.append(tok.decode(ids[:len(tok(chat, add_special_tokens=False)['input_ids'])]) + tok.decode(ids[-(keep - len(tok(chat, add_special_tokens=False)['input_ids'])):]) + "\nFinal answer:")
-        else:
-            prompts.append(chat + r["raw"] + "\nFinal answer:")
     t0 = time.time(); outs = llm.generate(prompts, sp, use_tqdm=False) if prompts else []
     for (j, r, rec), o in zip(todo, outs):
         cont = o.outputs[0].text.split("\n")[0].strip()
