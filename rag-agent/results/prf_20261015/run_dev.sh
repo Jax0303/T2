@@ -16,7 +16,7 @@ for c in prf0 prf1_path prf3_path prf5_path prf1_full prf3_full prf5_full; do
   .venv/bin/python $D/build_inputs.py validation $R/dev_${c}_records.jsonl $D/dev_ids332.json $LC $R/${c}_input.jsonl $( [ "$c" = prf0 ] && echo "--check results/cellform_dev_20261012/C_records.jsonl" ) 2>&1 | grep -v Warning
   [ "$c" = prf0 ] && continue
   echo "[answer] $(date -Is) $c"
-  .venv/bin/python scripts/baselines/langchain_chunk.py --stage answer --prompt original --resume --records $R/${c}_input.jsonl --ids $IDS --out-dir $R/ans_$c > $R/ans_$c.log 2>&1 || echo "answer failed $c"
+  .venv/bin/python scripts/baselines/langchain_chunk.py --stage answer --split validation --prompt original --resume --records $R/${c}_input.jsonl --ids $IDS --out-dir $R/ans_$c > $R/ans_$c.log 2>&1 || echo "answer failed $c"
   echo "[done] $(date -Is) $c $(wc -l < $R/ans_$c/langchain_chunk_answer.jsonl 2>/dev/null)"
 done
 echo "[all done] $(date -Is)"
