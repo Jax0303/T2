@@ -13,7 +13,7 @@
 """
 from __future__ import annotations
 
-import argparse
+import argparse, re
 import hashlib
 import json
 import os
@@ -171,6 +171,28 @@ def run_variant(a, tok, model, recs, variant: str, out_path: Path, done: dict):
     return n_done
 
 
+_FINAL = re.compile(r"final answer\**\s*[:：]\s*(.*)", re.I)
+_NUM = re.compile(r"-?\(?\$?\s*\d[\d,]*\.?\d*\)?%?")
+def final_key(text):
+    """마지막 'Final answer' 줄의 값을 투표 열쇠로: 첫 숫자(쉼표·$ 제거, 괄호 음수, 유효숫자 4자리) 없으면 소문자 글자."""
+    m = list(_FINAL.finditer(text or ""))
+    if not m: return None
+    v = m[-1].group(1).strip()
+    n = _NUM.search(v)
+    if n:
+        t = n.group(0); neg = t.startswith("-") or ("(" in t and ")" in t); t2 = re.sub(r"[^\d.]", "", t)
+        try:
+            x = float(t2) * (-1 if neg else 1); return f"{x:.4g}" + ("%" if t.endswith("%") else "")
+        except ValueError: pass
+    return v.lower().strip(" .") or None
+def sc_vote(outputs):
+    from collections import Counter
+    keys = [final_key(c.text) for c in outputs]; c = Counter(k for k in keys if k is not None)
+    if not c: return outputs[0], {"sc_n": len(outputs), "sc_keys": keys, "sc_win": None, "sc_votes": 0, "sc_agree": 0}
+    win, votes = c.most_common(1)[0]; idx = keys.index(win)
+    return outputs[idx], {"sc_n": len(outputs), "sc_keys": keys, "sc_win": win, "sc_votes": votes, "sc_agree": int(votes == len(outputs)), "sc_pick": idx,
+                          "sc_n_tok_out_all": sum(len(x.token_ids) for x in outputs), "sc_finished_all": sum(x.finish_reason == "stop" for x in outputs)}
+
 def main_vllm(a, recs_by_arm, arms, variants):
     """vLLM 경로: 변형×arm 마다 전체 문항을 한 번에 넘긴다(연속 묶음·greedy). 출력 행 형식은 hf 경로와 같다."""
     from vllm import LLM, SamplingParams
@@ -181,13 +203,16 @@ def main_vllm(a, recs_by_arm, arms, variants):
         kw["language_model_only"] = True                            # 글 모델만(시각 가중치 제외), 모델 카드 vLLM 안내
     llm = LLM(model=a.model, dtype="bfloat16", gpu_memory_utilization=a.gpu_mem, max_model_len=a.max_model_len, seed=SEED,
               enable_prefix_caching=True, max_num_batched_tokens=a.max_num_batched_tokens, max_num_seqs=a.max_num_seqs, **kw)
-    sp = SamplingParams(temperature=0.0, max_tokens=a.max_new_tokens, seed=SEED)
-    print(f"[model] {a.model} engine=vllm gpu_mem={a.gpu_mem} max_model_len={a.max_model_len}", flush=True)
+    if a.n_samples > 1:
+        sp = SamplingParams(n=a.n_samples, temperature=a.temperature, top_p=a.top_p, top_k=a.top_k, max_tokens=a.max_new_tokens, seed=SEED)
+    else:
+        sp = SamplingParams(temperature=0.0, max_tokens=a.max_new_tokens, seed=SEED)
+    print(f"[model] {a.model} engine=vllm gpu_mem={a.gpu_mem} max_model_len={a.max_model_len} n_samples={a.n_samples} temperature={a.temperature if a.n_samples > 1 else 0.0}", flush=True)
     out_dir = Path(a.out_dir) / arms[0]
     out_dir.mkdir(parents=True, exist_ok=True)
     meta = {"model": a.model, "engine": "vllm", "vllm": __import__("vllm").__version__, "dtype": "bfloat16", "arm": a.arm, "records": a.records,
             "n_records": {k: len(v) for k, v in recs_by_arm.items()}, "max_new_tokens": a.max_new_tokens, "gpu_memory_utilization": a.gpu_mem,
-            "max_model_len": a.max_model_len, "max_num_batched_tokens": a.max_num_batched_tokens, "max_num_seqs": a.max_num_seqs, "thinking": a.thinking, "decoding": "greedy (temperature 0)", "seed": SEED, "system_message": None,
+            "max_model_len": a.max_model_len, "max_num_batched_tokens": a.max_num_batched_tokens, "max_num_seqs": a.max_num_seqs, "thinking": a.thinking, "decoding": (f"sampling n={a.n_samples} temperature={a.temperature} top_p={a.top_p} top_k={a.top_k} + final-line vote" if a.n_samples > 1 else "greedy (temperature 0)"), "seed": SEED, "system_message": None,
             "chat_template_sha256": hashlib.sha256((tok.chat_template or "").encode()).hexdigest(), "variants": variants,
             "started": time.strftime("%Y-%m-%dT%H:%M:%S")}
     (out_dir / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -212,7 +237,9 @@ def main_vllm(a, recs_by_arm, arms, variants):
             sec = (time.time() - t0) / len(pending)
             with p.open("a", encoding="utf-8", newline="\n") as f:
                 for r, o in zip(pending, outs):
-                    g = o.outputs[0]
+                    g = o.outputs[0]; sc_info = None
+                    if a.n_samples > 1:                                  # 마지막 줄 값 다수결, 이긴 표본을 raw 로 둔다(채점기 불변)
+                        g, sc_info = sc_vote(o.outputs)
                     ids = list(g.token_ids)
                     cut = 0
                     if a.thinking and think_end is not None and think_end in ids:
@@ -223,6 +250,7 @@ def main_vllm(a, recs_by_arm, arms, variants):
                            "think_tokens": cut, "layer": r["layer"], "kind": r["kind"], "m": r["m"], "retrieval_correct": r["correct"],
                            "context_sha256": hashlib.sha256(r["context"].encode()).hexdigest(), "prompt_sha256": psha,
                            "max_new_tokens": a.max_new_tokens, "batch": "vllm", "seconds": round(sec, 3)}
+                    if sc_info: row.update(sc_info)
                     f.write(json.dumps(row, ensure_ascii=False) + "\n")
                 f.flush(); os.fsync(f.fileno())
             print(f"[done] {v}/{arm}: 새로 {len(pending)}건, 합계 {len(done) + len(pending)}, {time.time() - t0:.0f}s ({sec:.2f}s/건)", flush=True)
@@ -252,6 +280,8 @@ def main():
     ap.add_argument("--max-num-batched-tokens", type=int, default=4096, help="vllm: 한 스텝 prefill 토큰 상한(작을수록 활성 메모리 적게)")
     ap.add_argument("--max-num-seqs", type=int, default=32, help="vllm: 동시 시퀀스 상한")
     ap.add_argument("--shuffle-variants", type=int, default=0, help="변형 실행 순서를 이 시드로 섞는다(0 = 이름 순)")
+    ap.add_argument("--n-samples", type=int, default=1, help="vllm: 문항당 표본 수. 2 이상이면 temperature 표본 추출 + 마지막 줄 값 다수결(self-consistency, PREREG-2026-10-22-self-consistency-dev.md)")
+    ap.add_argument("--temperature", type=float, default=0.0); ap.add_argument("--top-p", type=float, default=1.0); ap.add_argument("--top-k", type=int, default=-1)
     a = ap.parse_args()
 
     rec_paths, arms = a.records.split(","), a.arm.split(",")
