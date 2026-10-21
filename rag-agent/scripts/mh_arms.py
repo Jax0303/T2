@@ -421,6 +421,7 @@ def main() -> int:
     ap.add_argument("--only-uids", default="", help="JSON 목록: 이 문항만 검색한다(색인·BM25 는 전체 그대로)")
     ap.add_argument("--prf", type=int, default=0, help="의사 적합성 피드백: 1차 문서 안 순위 상위 N 단위의 글을 질문 앞에 붙여 다시 검색(0 = 안 함). PREREG-2026-10-15-prf.md")
     ap.add_argument("--prf-text", default="full", choices=["full", "path"], help="--prf 에 붙일 글: full = 단위 문장 전체, path = 마지막 ': 값' 을 뺀 경로만")
+    ap.add_argument("--sub-queries", default="", help="JSON {uid: [검색 문구, ...]}: 질문을 값마다 쪼갠 문구. 원 질문 점수와 각 문구 점수(같은 dense·BM25·alpha 융합, 문서 안 min-max)의 단위별 최댓값으로 순위를 매긴다(PREREG-2026-10-21-decompose-dev.md)")
     ap.add_argument("--question-suffix", default="",
                     help="JSON {uid: 말}: 질문 뒤에 붙인다 (PREREG-2026-09-28-mh-name-append.md 진단용)")
     ap.add_argument("--shard", type=int, default=50000)
@@ -532,6 +533,7 @@ def main() -> int:
         suffix = json.loads(Path(a.question_suffix).read_text())
         for q in queries:
             q["question"] = (q["question"] + " " + suffix.get(q["uid"], "")).rstrip()
+    subq = json.loads(Path(a.sub_queries).read_text(encoding="utf-8")) if a.sub_queries else {}
     uid_arr = np.array([t.split("::")[0] for t in unit_tids])
     tid_arr = np.array(unit_tids)
     assert len(uid_arr) == len(texts), "unit->doc map lost a unit"
@@ -636,6 +638,14 @@ def main() -> int:
              "m_annotated": len(q["coords"]), "n_gold_tables": q["n_gold_tables"],
              "layer": layer(q), "question": q["question"], "answer": q["answer"],
              "mode": "all"}
+        if subq and q["uid"] in subq:
+            # 질문 쪼개기(PREREG-2026-10-21-decompose-dev.md): 문구마다 같은 융합 점수를 내고 단위별 최댓값을 취한다.
+            parts = []
+            for s_ in subq[q["uid"]]:
+                sp_i = bm.get_scores(_tokenize(s_)); dn_i = emb @ enc.encode_query([s_])[0].astype(np.float32)
+                parts.append(a.alpha * _minmax(dn_i) + (1 - a.alpha) * _minmax(sp_i))
+            sc = np.maximum.reduce([sc] + parts)
+            r["sub_queries"] = list(subq[q["uid"]])
         if prf_info:
             r["prf"] = prf_info
         gold_tids = {c[0] for c in q["gold"]}
