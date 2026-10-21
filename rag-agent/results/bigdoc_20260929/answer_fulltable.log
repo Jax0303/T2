@@ -1,34 +1,0 @@
-[same-queries] 200 요청 -> 200 (새 레코드에 없음 0)
-Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
-Found the latest cached dataset configuration 'default' at /home/user/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Fri Jul 10 18:00:14 2026).
-[bigdoc] 200 docs × 5 (표 평균 20.3)
-[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<05:48,  1.14it/s]Loading weights:   1%|          | 2/399 [00:01<04:52,  1.36it/s]Loading weights:   1%|▏         | 5/399 [00:01<01:35,  4.14it/s]Loading weights:   4%|▍         | 15/399 [00:01<00:24, 15.73it/s]Loading weights:   6%|▌         | 23/399 [00:01<00:15, 24.83it/s]Loading weights:   7%|▋         | 29/399 [00:01<00:12, 29.78it/s]Loading weights:  10%|▉         | 38/399 [00:02<00:08, 40.26it/s]Loading weights:  12%|█▏        | 48/399 [00:02<00:07, 49.25it/s]Loading weights:  14%|█▍        | 56/399 [00:02<00:06, 55.03it/s]Loading weights:  16%|█▌        | 63/399 [00:02<00:06, 53.67it/s]Loading weights:  18%|█▊        | 71/399 [00:02<00:05, 56.81it/s]Loading weights:  20%|██        | 81/399 [00:02<00:04, 64.30it/s]Loading weights:  22%|██▏       | 88/399 [00:02<00:04, 65.24it/s]Loading weights:  24%|██▍       | 95/399 [00:02<00:05, 60.52it/s]Loading weights:  26%|██▌       | 104/399 [00:03<00:04, 65.22it/s]Loading weights:  29%|██▊       | 114/399 [00:03<00:04, 71.11it/s]Loading weights:  31%|███       | 122/399 [00:03<00:03, 69.91it/s]Loading weights:  33%|███▎      | 130/399 [00:03<00:04, 65.02it/s]Loading weights:  34%|███▍      | 137/399 [00:10<01:11,  3.65it/s]Loading weights: 100%|██████████| 399/399 [00:06<00:00, 57.27it/s]
-2026-09-29 19:24:09,843 - ContinuousBatchingLogger - WARNING - Warming up for continuous batching...
-2026-09-29 19:24:09,906 - ContinuousBatchingLogger - WARNING - Warming up completed in 0.06s.
-2026-09-29 19:24:59,529 - ContinuousBatchingLogger - ERROR - Error in generation loop: No requests can be scheduled and no request can be offloaded.
-Traceback (most recent call last):
-  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 898, in _run_generation_loop
-    requests_available = batch_processor.prepare_next_batch()  # this is where the TP group communicates
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/T2-1/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/continuous_batching/continuous_api.py", line 384, in prepare_next_batch
-    raise RuntimeError("No requests can be scheduled and no request can be offloaded.")
-RuntimeError: No requests can be scheduled and no request can be offloaded.
-2026-09-29 19:25:00,538 - ContinuousBatchingLogger - ERROR - Generation thread terminated unexpectedly.
-2026-09-29 19:25:00,777 - ContinuousBatchingLogger - ERROR - Requests ['req_0', 'req_1', 'req_2', 'req_4', 'req_5', 'req_6', 'req_7'] not found in results.
-Returning results of generate_batch despite unexpected termination.
-Traceback (most recent call last):
-  File "/home/user/T2-1/rag-agent/scripts/mh_bigdoc.py", line 72, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "/home/user/T2-1/rag-agent/scripts/mh_bigdoc.py", line 68, in main
-    return answer_accuracy_mh.main()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 362, in main
-    for r, n_tok, raw, seconds in generate([r for r in scored if r["query_id"] not in done]):
-  File "/home/user/T2-1/rag-agent/scripts/answer_accuracy_mh.py", line 355, in generate
-    llm.complete_batch(PROMPTS[a.prompt], users, max_tokens=a.max_tokens))
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/T2-1/rag-agent/rag_agent/llm/local_qwen.py", line 150, in complete_batch
-    raise RuntimeError(f"generate_batch 가 {len(ids)}건 중 {len(keys)}건만 돌려줬다")
-RuntimeError: generate_batch 가 8건 중 1건만 돌려줬다
