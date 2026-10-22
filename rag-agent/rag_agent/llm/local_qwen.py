@@ -99,13 +99,18 @@ class LocalQwenLLM(BaseLLM):
 
     def complete(self, system: str, user: str, max_tokens: int = 256,
                  temperature: float = 0.0, top_p: float = 0.95, top_k: Optional[int] = None,
-                 min_p: Optional[float] = None, thinking: bool = False) -> str:
+                 min_p: Optional[float] = None, thinking: bool = False,
+                 stop: Optional[list] = None) -> str:
         """thinking=True 이면 ``</think>`` 뒤의 답만 돌려준다(모델 카드의 파싱 그대로, 토큰 151668).
-        생성 토큰 수와 생각 블록이 닫혔는지는 ``last_generation`` 에 남긴다."""
+        생성 토큰 수와 생각 블록이 닫혔는지는 ``last_generation`` 에 남긴다.
+        ``stop``(정지 문자열 목록, 2026-10-23 추가, 기본 None = 기존 동작)이 있으면 생성을 그 문자열에서 멈추고
+        돌려주는 글에서도 잘라낸다(OpenAI `stop` 의미; TableRAG(Chen) 비교군의 'Observation:' 용)."""
         prompt = self._prompt(system, user, thinking)
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
         gen_kwargs = dict(max_new_tokens=max_tokens or self.default_max_tokens,
                           pad_token_id=self.tokenizer.eos_token_id)
+        if stop:
+            gen_kwargs.update(stop_strings=list(stop), tokenizer=self.tokenizer)
         if temperature and temperature > 0:
             gen_kwargs.update(do_sample=True, temperature=temperature, top_p=top_p)
             if top_k is not None:
@@ -125,7 +130,12 @@ class LocalQwenLLM(BaseLLM):
                 cut = 0                                          # 생각이 한도 안에 안 닫힘
         self.last_generation = {"new_tokens": len(gen), "think_tokens": cut,
                                 "think_closed": (not thinking) or cut > 0}
-        return self.tokenizer.decode(gen[cut:], skip_special_tokens=True).strip()
+        text = self.tokenizer.decode(gen[cut:], skip_special_tokens=True)
+        for s in (stop or []):
+            i = text.find(s)
+            if i >= 0:
+                text = text[:i]
+        return text.strip()
 
     def complete_batch(self, system: str, users: list, max_tokens: int = 256) -> list:
         """비생각·greedy 전용 continuous batching(`generate_batch`) — 끝난 문항 자리에 다음 문항을

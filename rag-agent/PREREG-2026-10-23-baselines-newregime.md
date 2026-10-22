@@ -34,6 +34,9 @@
 - 그 전에 돌릴 수 있는 것: 표 전체 P*(vLLM), LangChain 답변(HF; 답변 단계는 langchain 패키지를 안 씀).
 
 ## 이탈 기록
-(실행 전)
+- 10-23 00:20 1단계 시작(표 전체 P* vLLM max-model-len 10,240 → LangChain HF).
+- 10-23 00:30~01:10 vendor 복원(사용자 지시로 clone): raptor `7da1d48`(tar.gz), tablerag_yu `f8d798f`, table_rag `08a8d67`(sparse). **Chen 의 `agent/local_backend.py` 는 원본이 없어 README 기록대로 재작성**(OpenAI 클라이언트 모양 LocalQwen + 정지열, sentence-transformers 임베딩, IndexFlatL2 저장소) — `scripts/baselines/vendor_patches/` 에 보존. `rag_agent/llm/local_qwen.py` 에 `stop` 인자 추가(기본 None, 기존 경로 불변). 설치: tiktoken 0.14.0·umap-learn 0.5.12·openai·tenacity. CPU 단위 시험 통과(저장소 저장/복원, 정지열 절단, 공급자 분기).
+- 10-01 과 다른 점(기록): 임베딩 캐시 `.cache/tablerag_yu`·`.cache/tablerag_chen` 이 이 PC 에 없어 다시 만든다(인코더 같음 → 같은 벡터). RAPTOR·Chen 은 `--limit 882`(882 부분집합만; 10-01 은 RAPTOR 2,885 검색 + Chen 882 답변·2,003 검색). 검색 지표는 882 기준으로 적는다.
+- 2단계 사슬(`run_stage2.sh`): 1단계 끝 → 3문항 시험(Chen·Yu·RAPTOR; 실패 시 멈춤) → RAPTOR → Yu → Chen. 시험 3문항 결과는 판정에 안 쓴다.
 
 ## 결과 (실행 뒤 채움)
