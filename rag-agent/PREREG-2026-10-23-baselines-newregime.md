@@ -40,6 +40,7 @@
 - 2단계 사슬(`run_stage2.sh`): 1단계 끝 → 3문항 시험(Chen·Yu·RAPTOR; 실패 시 멈춤) → RAPTOR → Yu → Chen. 시험 3문항 결과는 판정에 안 쓴다.
 
 - 10-23 00:59 LangChain 답변(HF `--batch-size 16`)이 `complete_batch`(transformers 연속 묶음)에서 `Invalid layer type: linear_attention` 으로 즉시 실패 — Qwen3.5 의 선형 어텐션 층을 묶음 생성기가 지원하지 않음. **`--batch-size 1`(한 건씩 `complete`)로 2단계 뒤에 다시 돌린다**(`run_stage3.sh` 역할의 대기 명령, 로그 `run_stage3.log`). 조건(지시문·384 토큰·상위 4청크) 불변, 생성 경로만 한 건씩.
+- 10-23 01:03 시험 3문항: **Chen 통과**(평균 64초/문항, 호출 6~7회, 코드 오류 2~5회/문항; 882 ≈ 16시간 예상). **Yu 실패**: 재랭커 `BAAI/bge-reranker-v2-m3` 가 이 PC 캐시에 없음(오프라인 모드) → 내려받은 뒤 다시. RAPTOR 시험은 사슬이 멈춰 미실행. 사슬 순서 변경: 3단계(LangChain 한 건씩, 2단계 중단 신호로 01:05 시작) → 2b단계(Yu·RAPTOR 시험 → RAPTOR → Yu → Chen). 전체 약 35~40 GPU시간 예상(한 건씩 HF 생성이 10-01 추정보다 느림: causal_conv1d 커널 없음).
 
 ## 결과 (실행 뒤 채움)
 ### 표 전체 입력(P*, vLLM, 00:21~00:59, 2,159초, 동시 16, max-model-len 10,240) — 1회
