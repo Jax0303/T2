@@ -69,5 +69,8 @@ def build_llm(spec: str, **kwargs) -> BaseLLM:
         return GroqLLM(model_name=model or "llama-3.3-70b-versatile", **kwargs)
     if backend == "openai":
         return OpenAILLM(model_name=model or "gpt-4.1-mini", **kwargs)
+    if backend == "vllm":                   # 2026-10-23: 로컬 vLLM 서버(/v1/completions), 프롬프트는 여기서 렌더링
+        from .vllm_completions import VLLMCompletionsLLM
+        return VLLMCompletionsLLM(model_name=model or "Qwen/Qwen3.5-4B", **kwargs)
     raise ValueError(
-        f"Unknown LLM backend: {backend!r} (expected local:, groq: or openai:)")
+        f"Unknown LLM backend: {backend!r} (expected local:, groq:, openai: or vllm:)")

@@ -85,6 +85,9 @@ TOOLS = [{"type": "function", "function": {           # main.py create_tools 그
         "type": "string", "description": "The subquery to be solved, only take natural language as input."}},
         "required": ["subquery"], "additionalProperties": False}, "strict": True}}]
 _TOOL_CALL = re.compile(r"<tool_call>\s*(\{.*?\})\s*</tool_call>", re.S)
+# 2026-10-23: Qwen3.5 채팅 템플릿의 도구 호출 형식(<function=이름><parameter=인자>값</parameter></function>) — JSON 형식(Qwen3)과 함께 받는다
+_TOOL_CALL_XML = re.compile(r"<tool_call>\s*<function=([^>\s]+)>(.*?)</function>\s*</tool_call>", re.S)
+_PARAM_XML = re.compile(r"<parameter=([^>\s]+)>\s*(.*?)\s*</parameter>", re.S)
 _SQL_BLOCK = re.compile(r"```sql([\s\S]*?)```", re.DOTALL)   # service.py extract_sql_statement
 
 
@@ -243,6 +246,10 @@ class Chat:
         import torch
         prompt = self.tok.apply_chat_template(messages, tools=tools, tokenize=False,
                                               add_generation_prompt=True, enable_thinking=False)
+        if hasattr(self.llm, "complete_prompt"):                 # 2026-10-23: vLLM 서버 경로 — 같은 프롬프트 원문을 /v1/completions 로
+            self.n_calls += 1
+            self.n_prompt_tokens += len(self.tok(prompt)["input_ids"])
+            return self.llm.complete_prompt(prompt, max_tokens=self.max_tokens)
         inputs = self.tok(prompt, return_tensors="pt").to(self.llm.device)
         self.n_calls += 1
         self.n_prompt_tokens += int(inputs["input_ids"].shape[1])
@@ -262,7 +269,12 @@ def parse_tool_calls(text: str):
                 subs.append(str(call["arguments"]["subquery"]))
         except (ValueError, KeyError):
             continue
-    return _TOOL_CALL.sub("", text).strip(), (subs or None)
+    for m in _TOOL_CALL_XML.finditer(text):                    # Qwen3.5 형식
+        if m.group(1) == "solve_subquery":
+            args = {k: v for k, v in _PARAM_XML.findall(m.group(2))}
+            if "subquery" in args:
+                subs.append(str(args["subquery"]))
+    return _TOOL_CALL_XML.sub("", _TOOL_CALL.sub("", text)).strip(), (subs or None)
 
 
 def is_final(text: str) -> bool:
@@ -379,6 +391,7 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0, help="앞 N 문항만 (query_id 정렬, retrieve 는 882 답변 집합이 먼저)")
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--shard", default="", help="k/n: 답변 문항(정렬 뒤)을 n 조각으로 나눠 k번째만(0부터). 조각마다 다른 --out-dir")
     ap.add_argument("--cache-dir", default=".cache/tablerag_yu")
     ap.add_argument("--embed-device", default=None, help="임베더 장치. 기본 cuda:0. answer 에서 큰 인코더(bge-m3)를 리더와 같이 올리면 8GB 를 넘어 cpu")
     a = ap.parse_args()
@@ -397,6 +410,8 @@ def main() -> int:
     order = answer_ids + (sorted(set(recs) - set(answer_ids)) if a.stage == "retrieve" else [])
     if a.limit:
         order = order[:a.limit]
+    if a.shard:                                                # 2026-10-23: 병렬 조각(k/n), 조각마다 다른 --out-dir
+        k, n = map(int, a.shard.split("/")); order = order[k::n]
     done = set()
     if a.resume and out_path.exists():
         done = {json.loads(l)["query_id"] for l in open(out_path, encoding="utf-8")}

@@ -136,6 +136,7 @@ def main():
     ap.add_argument("--embed-device", default=None, help="임베딩 모델 장치(기본 자동=cuda). GPU 가 모자라면 cpu")
     ap.add_argument("--reader", default=READER, help="LLM 사양(local:<hf id>?quantization=4bit|none, 기본 Qwen3-8B 4bit)")
     ap.add_argument("--embed-model", default=EMBED)
+    ap.add_argument("--shard", default="", help="k/n: 문항 순서를 n 조각으로 나눠 k번째만(0부터). 조각마다 다른 --out-dir")
     ap.add_argument("--db-dir", default=str(DB), help="표별 임베딩 캐시. 인코더를 바꾸면 새 디렉터리를 준다(캐시 이름에 모델이 없다)")
     a = ap.parse_args()
     if os.environ.get("PYTHONHASHSEED") != "0":
@@ -156,6 +157,8 @@ def main():
     subset = [json.loads(l)["query_id"] for l in open(SUBSET, encoding="utf-8")]
     assert subset == sorted(subset) and set(subset) <= set(queries)
     order = subset[:a.limit] if a.limit else subset + sorted(set(queries) - set(subset))
+    if a.shard:                                                # 2026-10-23: 병렬 조각(k/n), 조각마다 다른 --out-dir
+        k, n = map(int, a.shard.split("/")); order = order[k::n]
     answer_set = set(subset)
     answers = official_answers("train")
     check = self_check([answers[q] for q in order if q in answer_set], [queries[q]["kind"] == "arith" for q in order if q in answer_set])

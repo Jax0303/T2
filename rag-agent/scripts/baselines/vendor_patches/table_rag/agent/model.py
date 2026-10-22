@@ -65,7 +65,7 @@ class Model:
 
 
     def get_provider(self, model_name):
-        if model_name.startswith('local:'):
+        if model_name.startswith('local:') or model_name.startswith('vllm:'):
             return 'local'
         if 'gpt' in model_name:
             return 'openai'
@@ -75,7 +75,7 @@ class Model:
             return 'vllm'
 
     def get_context_limit(self, model_name):
-        if model_name.startswith('local:'):
+        if model_name.startswith('local:') or model_name.startswith('vllm:'):
             return 32768  # [local patch] 자리 표시; __init__ 뒤 실제 값(self.client.context_limit)으로 바꾼다
         if model_name == 'gpt-4-0125-preview' or model_name == 'gpt-4-turbo-2024-04-09' or model_name == 'gpt-4o-mini-2024-07-18':
             return 128000

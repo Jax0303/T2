@@ -128,11 +128,15 @@ class LocalQwen:
     """OpenAI 클라이언트 모양의 로컬 리더. `spec` = 'local:<hf id>[?quantization=4bit|none]'."""
 
     def __init__(self, spec: str, llm=None):
-        from rag_agent.llm.factory import _split_spec
+        from rag_agent.llm.factory import _split_spec, build_llm
         from rag_agent.llm.local_qwen import LocalQwenLLM
-        model_name = spec.split(":", 1)[1] if spec.startswith("local:") else spec
-        name, kw = _split_spec(model_name)
-        self.llm = llm or LocalQwenLLM(model_name=name, **{"quantization": "4bit", **kw})
+        if spec.startswith("vllm:"):                                   # 2026-10-23: 로컬 vLLM 서버 경로(같은 프롬프트 렌더링, 정지열 서버 처리)
+            self.llm = llm or build_llm(spec)
+            model_name = spec.split(":", 1)[1]
+        else:
+            model_name = spec.split(":", 1)[1] if spec.startswith("local:") else spec
+            name, kw = _split_spec(model_name)
+            self.llm = llm or LocalQwenLLM(model_name=name, **{"quantization": "4bit", **kw})
         self.name = getattr(self.llm, "name", f"local:{model_name}")
         self.tokenizer = self.llm.tokenizer
         self.n_calls = 0
