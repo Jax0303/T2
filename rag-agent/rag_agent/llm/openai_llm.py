@@ -79,6 +79,7 @@ class OpenAILLM(BaseLLM):
         self.last_finish_reason: str | None = None  # see BaseLLM
         self.last_usage: dict = {}          # provider's token counts for the last call
         self.last_model: str | None = None  # snapshot actually served (e.g. gpt-4o-2024-08-06)
+        self.last_fingerprint: str | None = None  # OpenAI `system_fingerprint` (backend config id), when the provider sends one
 
     def metadata(self) -> dict:
         return {"model_name": self.model_name, "endpoint": self._endpoint,
@@ -121,6 +122,7 @@ class OpenAILLM(BaseLLM):
                 self.last_finish_reason = choice.get("finish_reason")
                 self.last_usage = body.get("usage") or {}
                 self.last_model = body.get("model")
+                self.last_fingerprint = body.get("system_fingerprint")
                 # .strip() to match GroqLLM: answerer.py gates its empty-completion
                 # retry on `not raw`, so a whitespace-only body must read as empty
                 # here too or the two backends stop being interchangeable.

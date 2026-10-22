@@ -256,6 +256,87 @@ def main_vllm(a, recs_by_arm, arms, variants):
             print(f"[done] {v}/{arm}: 새로 {len(pending)}건, 합계 {len(done) + len(pending)}, {time.time() - t0:.0f}s ({sec:.2f}s/건)", flush=True)
 
 
+def main_openai(a, recs_by_arm, arms, variants):
+    """OpenAI 호환 API 경로: vllm 경로와 같은 사용자 메시지 하나(pv.build), system 없음, temperature 0, 출력 상한 = --max-new-tokens.
+    행 형식은 vllm 경로와 같고 served_model(응답의 model)·system_fingerprint·finish_reason·usage 를 더 적는다. 동시 요청은 스레드, 완료 순서대로 기록(채점은 query_id 기준)."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from rag_agent.llm.factory import _load_dotenv
+    from rag_agent.llm.openai_llm import OpenAILLM
+    _load_dotenv()
+    key = os.environ.get(a.key_env)
+    if not key:
+        raise SystemExit(f"{a.key_env} 가 비어 있다")
+    new_llm = lambda: OpenAILLM(model_name=a.model, api_key=key, temperature=0.0, request_timeout=a.request_timeout, base_url=a.base_url)
+    probe = new_llm()
+    out_dir = Path(a.out_dir) / arms[0]
+    out_dir.mkdir(parents=True, exist_ok=True)
+    meta = {"model": probe.name, "engine": "openai", "endpoint": probe._endpoint, "key_env": a.key_env, "arm": a.arm, "records": a.records,
+            "n_records": {k: len(v) for k, v in recs_by_arm.items()}, "max_new_tokens": a.max_new_tokens, "workers": a.workers,
+            "decoding": "temperature 0, seed 없음(API 는 재현을 보장하지 않는다)", "thinking": False, "system_message": None, "variants": variants,
+            "started": time.strftime("%Y-%m-%dT%H:%M:%S")}
+    (out_dir / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"[model] {probe.name} engine=openai endpoint={probe._endpoint} workers={a.workers} max_tokens={a.max_new_tokens}", flush=True)
+    local, lock, stop = threading.local(), threading.Lock(), threading.Event()
+    for v in variants:
+        for arm in arms:
+            d = Path(a.out_dir) / arm
+            d.mkdir(parents=True, exist_ok=True)
+            p = d / f"{v}.jsonl"
+            done = set()
+            if p.exists():
+                if not a.resume:
+                    raise SystemExit(f"{p} 있음 — 덮어쓰지 않는다(--resume)")
+                done = {json.loads(l)["query_id"] for l in open(p, encoding="utf-8") if l.strip()}
+            pending = [r for r in recs_by_arm[arm] if r["query_id"] not in done]
+            if not pending:
+                print(f"[done] {v}/{arm}: 새로 0건, 합계 {len(done)}", flush=True); continue
+            psha = hashlib.sha256((pv.instruction(v) + "\n" + pv.examples_block(v)).encode()).hexdigest()
+
+            def call(r):
+                if stop.is_set():
+                    return None
+                llm = getattr(local, "llm", None)
+                if llm is None:
+                    llm = local.llm = new_llm()
+                user = pv.build(v, r["question"], r["context"])
+                t0 = time.time()
+                try:
+                    text = llm.complete("", user, max_tokens=a.max_new_tokens)
+                except Exception as exc:                            # 429(크레딧·속도)·5xx 재시도 뒤에도 실패 → 사슬을 멈춘다(--resume 으로 이어서)
+                    stop.set()
+                    return {"error": f"{type(exc).__name__}: {str(exc)[:300]}", "query_id": r["query_id"]}
+                u = llm.last_usage or {}
+                return {"query_id": r["query_id"], "arm": arm, "variant": v, "model": llm.name, "engine": "openai", "thinking": False,
+                        "raw": text, "n_tok": u.get("prompt_tokens"), "n_tok_out": u.get("completion_tokens"), "finished": llm.last_finish_reason == "stop",
+                        "think_tokens": 0, "layer": r["layer"], "kind": r["kind"], "m": r["m"], "retrieval_correct": r["correct"],
+                        "context_sha256": hashlib.sha256(r["context"].encode()).hexdigest(), "prompt_sha256": psha,
+                        "max_new_tokens": a.max_new_tokens, "batch": "openai", "seconds": round(time.time() - t0, 3),
+                        "served_model": llm.last_model, "system_fingerprint": llm.last_fingerprint, "finish_reason": llm.last_finish_reason,
+                        "usage": u, "temperature_sent": llm._send_temperature, "called_at": time.strftime("%Y-%m-%dT%H:%M:%S")}
+
+            t0 = time.time(); n_ok = 0; errors = []
+            with ThreadPoolExecutor(max_workers=a.workers) as ex, p.open("a", encoding="utf-8", newline="\n") as f:
+                futs = [ex.submit(call, r) for r in pending]
+                for fu in as_completed(futs):
+                    row = fu.result()
+                    if row is None:
+                        continue
+                    if "error" in row:
+                        errors.append(row); continue
+                    with lock:
+                        f.write(json.dumps(row, ensure_ascii=False) + "\n"); f.flush()
+                    n_ok += 1
+                os.fsync(f.fileno())
+            sec = (time.time() - t0) / max(1, n_ok)
+            print(f"[done] {v}/{arm}: 새로 {n_ok}건, 오류 {len(errors)}건, 합계 {len(done) + n_ok}, {time.time() - t0:.0f}s ({sec:.2f}s/건)", flush=True)
+            if errors:
+                with (d / f"{v}.errors.jsonl").open("a", encoding="utf-8") as ef:
+                    for e in errors:
+                        ef.write(json.dumps({**e, "at": time.strftime("%Y-%m-%dT%H:%M:%S")}, ensure_ascii=False) + "\n")
+                raise SystemExit(f"[stop] {v}/{arm}: 오류 {len(errors)}건 — 첫 오류: {errors[0]['error']}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", required=True)
@@ -274,7 +355,11 @@ def main():
     ap.add_argument("--check-batch", type=int, default=0)
     ap.add_argument("--dry-run", action="store_true", help="모델 없이 첫 문항 프롬프트만 출력")
     ap.add_argument("--quantization", default="none", help="none(기본, 결과용) | 4bit(코드 점검용)")
-    ap.add_argument("--engine", default="hf", choices=["hf", "vllm"], help="hf = transformers 정적 묶음 / vllm = vLLM 연속 묶음(bf16, greedy)")
+    ap.add_argument("--engine", default="hf", choices=["hf", "vllm", "openai"], help="hf = transformers 정적 묶음 / vllm = vLLM 연속 묶음(bf16, greedy) / openai = OpenAI 호환 API(PREREG-2026-10-22-reader-sweep.md)")
+    ap.add_argument("--key-env", default="OPENAI_API_KEY", help="openai: 키를 읽을 환경 변수 이름(.env 도 읽는다)")
+    ap.add_argument("--base-url", default="https://api.openai.com/v1", help="openai: 엔드포인트 기본 URL(.env 의 OPENAI_COMPAT_BASE_URL 은 쓰지 않는다 — 어느 공급자에 보냈는지 명시)")
+    ap.add_argument("--workers", type=int, default=8, help="openai: 동시 요청 수")
+    ap.add_argument("--request-timeout", type=float, default=180.0, help="openai: 요청 제한 시간(초)")
     ap.add_argument("--gpu-mem", type=float, default=0.80, help="vllm: gpu_memory_utilization")
     ap.add_argument("--max-model-len", type=int, default=5120, help="vllm: 최대 길이(입력+출력)")
     ap.add_argument("--max-num-batched-tokens", type=int, default=4096, help="vllm: 한 스텝 prefill 토큰 상한(작을수록 활성 메모리 적게)")
@@ -312,6 +397,8 @@ def main():
         print(f"\n[dry-run] {len(variants)} 변형 × {len(recs)} 문항")
         return
 
+    if a.engine == "openai":
+        return main_openai(a, recs_by_arm, arms, variants)
     if a.engine == "vllm":
         return main_vllm(a, recs_by_arm, arms, variants)
     import torch
