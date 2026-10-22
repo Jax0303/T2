@@ -49,6 +49,7 @@
   |---|---|---|---|
   | Qwen3.5-4B | bf16 | **재사용** — D 3회(`final882_cap4096_run1~3`), O1 1회(`ceiling_20261019/run1`) | 현행 리더. 추가 실행 없음 |
   | Phi-4-mini-instruct(3.8B, Microsoft) | bf16, vLLM(Phi3ForCausalLM) | D 1회, O1 1회 | 다른 계열·게이트 없음·7.7GB. Llama-3.2-3B-Instruct·Gemma-3-4B 는 HF 수동 승인(토큰) 필요라 제외; 사용자가 토큰을 주면 Llama-3.2-3B 로 교체 가능. 10-15 모델 선택에서 "공개 벤치마크상 Qwen 보다 낮음"으로 뺐던 모델이므로 **리더 후보가 아니라 비교 리더**다 |
+  | Qwen3-4B-Instruct-2507 | bf16, vLLM | D 1회, O1 1회 | **10-22 19:40 추가(이탈 기록 참조)**: Phi 내려받기가 회선 130~170KB/s 로 12시간 이상 걸려, 가중치가 이미 있는 같은 회사 전 세대 모델을 먼저 돌린다. Phi 는 내려받기가 끝나면 그대로 실행(로컬 3종이 됨) |
   | GPT-4o(`openai:gpt-4o`) | API, temperature 0, seed 없음 | D 1회, **O1 2회**(반복 재현 측정) | `.env` OPENAI_API_KEY_OLD. **크레딧 충전은 사용자.** 응답마다 `model`(스냅샷)·`usage` 기록 |
   | GPT-4o-mini(`openai:gpt-4o-mini`) | API, temperature 0 | D 1회, O1 1회 | 아래 등급. 같은 키 |
   - 뺀 것(사용자 결정): Qwen3-4B-2507·Qwen3-1.7B(같은 계열 추가), Qwen3-8B 4비트(양자화).
@@ -65,7 +66,7 @@
 5. **원고 반영 위치**(결과 뒤, 별도 작업): 1장 폐쇄 환경 근거 문단(기관 문서 외부 전송 불가 + 재현성·가용성·비용; 문헌은 원문 대조 뒤 인용), 4장 리더 목록, 5장 표 "리더별 답변 정확도(D·O1)", 6장 "정답 셀만 줘도 틀리는 25% 의 원인"(분류 + 사람 87 과 비교) · "외부 LLM 참고 비교", 부록 분류표. 4.6 하드웨어(지금은 RTX 4070 Ti 12GB·vLLM bf16)도 함께 고친다.
 
 ## 예측 (실행 전 고정)
-- O1: GPT-4o 가 Qwen3.5-4B(75.3)보다 +3~8%p. GPT-4o-mini 68~78%(Qwen3.5-4B ±4 안). Phi-4-mini 55~68%.
+- O1: GPT-4o 가 Qwen3.5-4B(75.3)보다 +3~8%p. GPT-4o-mini 68~78%(Qwen3.5-4B ±4 안). Phi-4-mini 55~68%. Qwen3-4B-2507(10-22 19:40 추가, 실행 전): O1 75.3 ±3%p 안, D 70.3 ±4%p 안(초안 예측 복원).
 - **A·D 100문항 O1 정답률: 모든 리더 ≤ 45%, GPT-4o 도 ≤ 50%**(데이터 몫이라 모델을 바꿔도 안 오른다). 나머지 782 에서 Qwen3.5-4B 약 85%, GPT-4o 약 90%, GPT-4o-mini 약 85%, Phi-4-mini 약 70%.
 - D: GPT-4o − Qwen3.5-4B = +5~10%p. GPT-4o-mini − Qwen3.5-4B = −3~+5%p. Phi-4-mini − Qwen3.5-4B = −10~−20%p. 리더 순위는 O1 과 같다. 자동 분류의 잔여(해석·계산) 비율은 모델이 작을수록 높다.
 - 재현: GPT-4o O1 2회 문자열 동일률 < 70%, 정오 뒤집힘 2~5%(18~44문항). 로컬 HF 한 건씩 2회는 동일률 100%. vLLM 묶음은 실행 간 뒤집힘이 있다(이미 관측).
@@ -87,6 +88,7 @@
 - Phi-4-mini-instruct 내려받기 시작(약 2MB/s 로 느림; 끝나면 `run_phi4mini.sh` 가 대기 스크립트로 자동 시작, 로그 `run_phi4mini.log`).
 - 외부 전송량 계산(지시 1(a), 새 실행 없음): `results/reader_sweep_20261022/why_local_evidence.md` — 882문항 = 문서 582·표 2,344·셀 83,778; 본 방법 C 문항당 문서 셀 32.4%, LangChain 91.3%, D 78.6%, O1 2.1%; 10-13 실제 전송 3,105,614 토큰.
 - 연기 시험(판정에 안 씀, `smoke_gpt4omini/`·`smoke_gpt4o/`): **gpt-4o-mini → HTTP 403 `model_not_found` "Project … does not have access to model gpt-4o-mini"; `/v1/models` 에 gpt-4o 만 보임 → GPT-4o-mini 는 OpenAI 프로젝트 설정에서 허용해야 쓸 수 있다(사용자).** gpt-4o D 2문항 성공: served `gpt-4o-2024-08-06`, system_fingerprint `fp_55e838642c`, 1.9초/건, 출력 140·301 토큰, 크레딧 활성.
-- GPT-4o 본 실행(`run_gpt4o.sh`: D 1회 → O1 2회, 동시 6) 시작 시각은 `run_gpt4o.log`. 아래 등급 외부 리더는 사용자 결정 대기(gpt-4o-mini 허용 / Claude 대체 / 생략).
+- GPT-4o 본 실행(`run_gpt4o.sh`: D 1회 → O1 2회, 동시 6) 19:12 시작. D 882 완료(343초, 오류 0). **O1 은 23문항 뒤 HTTP 429 `insufficient_quota` "Your project has reached its configured enforced spend limit" 로 중단**(19:22; 크레딧이 아니라 OpenAI 프로젝트의 월 지출 한도. 사용자가 한도를 올리면 `--resume` 으로 이어서). 이것도 "외부 서비스에서 일어나는 일" 기록에 넣는다.
+- 10-22 19:40 이탈: Phi-4-mini 내려받기가 회선 속도(HF·미러 모두 130~170KB/s) 때문에 1.0/7.7GB, 12시간 이상 예상 → 가중치가 있는 Qwen3-4B-Instruct-2507 을 세 번째 로컬 리더로 **추가**(예측은 위에 실행 전 적음), Phi 는 내려받기 완료 뒤 자동 실행 유지. 같은 사슬에서 로컬 재현 점검(Qwen3.5-4B, O1 앞 50문항, HF 한 건씩 greedy 2회)도 돌린다. 아래 등급 외부 리더는 사용자 결정 대기(gpt-4o-mini 허용 / Claude 대체 / 생략).
 
 ## 결과 (실행 뒤 채움)
