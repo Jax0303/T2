@@ -4,12 +4,12 @@
 문장: "모든 실험은 GPU 한 장을 장착한 컴퓨터 한 대의 로컬 환경에서 수행하였으며, 외부 API 는 4.4.3 절의 참고 비교(GPT-4o)에서만 사용하였다."
 | 항목 | 내용 |
 |---|---|
-| CPU | 【연구실 PC CPU 확인】 |
+| CPU | Intel Core i9-13900K |
 | GPU | NVIDIA GeForce RTX 4070 Ti (12GB) |
-| 메모리 | 【WSL2 할당 확인】 |
-| 운영체제 | Ubuntu 24.04 LTS (WSL2) |
-| 언어 | Python 3.12 |
-| 라이브러리 | PyTorch 2.14.1 (CUDA 13.0), transformers 5.19.0, vLLM 0.31.0, sentence-transformers 【버전】, faiss 【버전】 |
+| 메모리 | 15GB (WSL2 할당) |
+| 운영체제 | Ubuntu 24.04.5 LTS (WSL2) |
+| 언어 | Python 3.12.3 |
+| 라이브러리 | PyTorch 2.14.1 (CUDA 13.0), transformers 5.19.0, sentence-transformers 6.1.0, faiss 1.15.1 (비교군·한 건씩 생성); vLLM 0.31.0 (PyTorch 2.13.0, transformers 5.17.0; 본 방법·전달 형식·표 전체 입력) |
 표 4-2 실험에 사용한 모델:
 | 용도 | 모델 | 설정 |
 |---|---|---|
