@@ -89,7 +89,8 @@
 - 외부 전송량 계산(지시 1(a), 새 실행 없음): `results/reader_sweep_20261022/why_local_evidence.md` — 882문항 = 문서 582·표 2,344·셀 83,778; 본 방법 C 문항당 문서 셀 32.4%, LangChain 91.3%, D 78.6%, O1 2.1%; 10-13 실제 전송 3,105,614 토큰.
 - 연기 시험(판정에 안 씀, `smoke_gpt4omini/`·`smoke_gpt4o/`): **gpt-4o-mini → HTTP 403 `model_not_found` "Project … does not have access to model gpt-4o-mini"; `/v1/models` 에 gpt-4o 만 보임 → GPT-4o-mini 는 OpenAI 프로젝트 설정에서 허용해야 쓸 수 있다(사용자).** gpt-4o D 2문항 성공: served `gpt-4o-2024-08-06`, system_fingerprint `fp_55e838642c`, 1.9초/건, 출력 140·301 토큰, 크레딧 활성.
 - GPT-4o 본 실행(`run_gpt4o.sh`: D 1회 → O1 2회, 동시 6) 19:12 시작. D 882 완료(343초, 오류 0). **O1 은 23문항 뒤 HTTP 429 `insufficient_quota` "Your project has reached its configured enforced spend limit" 로 중단**(19:22; 크레딧이 아니라 OpenAI 프로젝트의 월 지출 한도. 사용자가 한도를 올리면 `--resume` 으로 이어서). 이것도 "외부 서비스에서 일어나는 일" 기록에 넣는다.
-- 10-22 19:40 이탈: Phi-4-mini 내려받기가 회선 속도(HF·미러 모두 130~170KB/s) 때문에 1.0/7.7GB, 12시간 이상 예상 → 가중치가 있는 Qwen3-4B-Instruct-2507 을 세 번째 로컬 리더로 **추가**(예측은 위에 실행 전 적음), Phi 는 내려받기 완료 뒤 자동 실행 유지. 같은 사슬에서 로컬 재현 점검(Qwen3.5-4B, O1 앞 50문항, HF 한 건씩 greedy 2회)도 돌린다. 아래 등급 외부 리더는 사용자 결정 대기(gpt-4o-mini 허용 / Claude 대체 / 생략).
+- 10-22 19:40 이탈: Phi-4-mini 내려받기가 회선 속도(HF·미러 모두 130~170KB/s) 때문에 1.0/7.7GB, 12시간 이상 예상 → 가중치가 있는 Qwen3-4B-Instruct-2507 을 세 번째 로컬 리더로 **추가**(예측은 위에 실행 전 적음), Phi 는 내려받기 완료 뒤 자동 실행 유지. 같은 사슬에서 로컬 재현 점검(Qwen3.5-4B, O1 앞 50문항, HF 한 건씩 greedy 2회)도 돌린다.
+- 10-22 19:48 Phi 내려받기가 회선 회복으로 50분 만에 끝남(가중치 7.4GB 확인). 19:49 자동 시작된 Phi vLLM 이 GPU 를 쓰고 있던 2507 사슬과 겹쳐 시작 단계(메모리 확인)에서 실패, 출력 0건. 2507 사슬이 끝나면 다시 시작하도록 대기(`run_phi4mini_retry.log`). 조건 변화 없음. 아래 등급 외부 리더는 사용자 결정 대기(gpt-4o-mini 허용 / Claude 대체 / 생략).
 
 ## 결과 (실행 뒤 채움)
 ### D 채운 부분 표, 882, P*, 4,096 — GPT-4o 1회(19:12~19:18) 대 Qwen3.5-4B 3회 다수결 (`analyze_readers.py` → `analysis_D_gpt4o.json`, 결과 파일 미커밋)
