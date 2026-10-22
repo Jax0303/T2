@@ -44,6 +44,7 @@
 - **10-23 01:06 사용자 지시("빠르게 효율적으로") → 생성 엔진을 HF 한 건씩에서 로컬 vLLM 서버(OpenAI 호환, 같은 가중치 bf16·greedy·seed 42)로 전환.** 이유: HF 경로는 causal_conv1d 커널이 없어 문항당 60초대(합계 35~40시간). 방식: `rag_agent/llm/vllm_completions.py`(`vllm:` 사양) — 프롬프트는 클라이언트에서 토크나이저 채팅 템플릿으로 렌더링(LocalQwenLLM 과 같은 메시지 구성, enable_thinking=False)해 `/v1/completions` 로 원문 전송 → HF 경로와 프롬프트가 글자 단위로 같음; 정지열은 서버가 처리. Chen 은 `local_backend.LocalQwen` 이 이 백엔드를 감싸고, Yu 의 `Chat` 은 도구 설명이 든 템플릿을 그대로 렌더링해 보냄, RAPTOR·LangChain 은 `llm.complete`. 병렬: Chen 3조각·Yu 2조각(`--shard k/n`, 조각마다 out-dir; 채점 때 합침)·RAPTOR·LangChain 동시(서버 연속 묶음, 동시 32). 본 방법 D 와 같은 엔진이 된다. 진행 중이던 HF LangChain(29문항)은 중단·폐기.
 - Yu 도구 호출 형식: 원 래퍼의 파서는 Qwen3 의 JSON `<tool_call>{…}</tool_call>` 만 읽었다. Qwen3.5 템플릿은 `<function=…><parameter=…>` 형식을 쓰므로 **파서에 그 형식을 추가**(모델 교체에 따른 적응; 10-01 Qwen3-8B 결과에는 영향 없음). 서버 전환과 무관하게 필요했던 수정.
 - 서버 max-model-len 16,384. 이보다 긴 프롬프트는 400 오류로 그 문항이 실패 기록된다(개수 보고).
+- 10-23 01:11~01:13 vLLM 경로 시험 3문항: Chen 통과(평균 44초/문항, 호출 7회), RAPTOR 통과(트리 생성 + 답변 5~10초/문항), LangChain 통과(2~4초/문항; 첫 시도는 래퍼가 `vllm:` 사양을 몰라 실패 → 분기 추가). Yu 는 재랭커 내려받기 완료 뒤 시험. 01:14 전체 실행 시작(LangChain·RAPTOR·Chen 3조각 동시), Yu 2조각은 시험 통과 즉시 자동 시작. 예상: Chen ≈ 882×44초/3 ≈ 3.6시간, 나머지는 그 안.
 
 ## 결과 (실행 뒤 채움)
 ### 표 전체 입력(P*, vLLM, 00:21~00:59, 2,159초, 동시 16, max-model-len 10,240) — 1회
