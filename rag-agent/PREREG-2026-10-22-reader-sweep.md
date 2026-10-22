@@ -82,7 +82,11 @@
 4. 저장소: `~/T2` 에서 실행(`~/T2-1` 은 9월 말 사본, .venv 없음).
 5. 원고 반영(5·6장 표)은 보류(사용자 10-22). 1장 "왜 로컬인가" 문단은 로그 수치·인용과 함께 **초안(노트)** 으로만 준비한다.
 
-## 이탈 기록 (실행 중 바뀐 것)
-(실행 전)
+## 이탈 기록·실행 기록 (실행 중 바뀐 것)
+- 10-22 사용자 결정 반영 커밋 9015803. 코드 커밋 f7d9e82(`--engine openai`; 응답 model·system_fingerprint·usage 행마다 기록). `--dry-run` 첫 문항 프롬프트 sha256 `f9c535e9…` 가 openai·vllm 두 경로에서 같음(같은 `pv.build`).
+- Phi-4-mini-instruct 내려받기 시작(약 2MB/s 로 느림; 끝나면 `run_phi4mini.sh` 가 대기 스크립트로 자동 시작, 로그 `run_phi4mini.log`).
+- 외부 전송량 계산(지시 1(a), 새 실행 없음): `results/reader_sweep_20261022/why_local_evidence.md` — 882문항 = 문서 582·표 2,344·셀 83,778; 본 방법 C 문항당 문서 셀 32.4%, LangChain 91.3%, D 78.6%, O1 2.1%; 10-13 실제 전송 3,105,614 토큰.
+- 연기 시험(판정에 안 씀, `smoke_gpt4omini/`·`smoke_gpt4o/`): **gpt-4o-mini → HTTP 403 `model_not_found` "Project … does not have access to model gpt-4o-mini"; `/v1/models` 에 gpt-4o 만 보임 → GPT-4o-mini 는 OpenAI 프로젝트 설정에서 허용해야 쓸 수 있다(사용자).** gpt-4o D 2문항 성공: served `gpt-4o-2024-08-06`, system_fingerprint `fp_55e838642c`, 1.9초/건, 출력 140·301 토큰, 크레딧 활성.
+- GPT-4o 본 실행(`run_gpt4o.sh`: D 1회 → O1 2회, 동시 6) 시작 시각은 `run_gpt4o.log`. 아래 등급 외부 리더는 사용자 결정 대기(gpt-4o-mini 허용 / Claude 대체 / 생략).
 
 ## 결과 (실행 뒤 채움)
