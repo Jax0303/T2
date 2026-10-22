@@ -206,6 +206,15 @@ def answer(a):
         _load_dotenv()
         name, kw = _split_spec(a.reader.removeprefix("openai:"))  # "gpt-4o?key_env=OPENAI_API_KEY_OLD" = .env 의 어느 키를 쓸지
         llm = OpenAILLM(model_name=name, base_url=_DEFAULT_BASE, api_key=os.environ[kw.get("key_env", "OPENAI_API_KEY")])
+    elif a.reader.startswith("vllm:"):                             # 2026-10-23: 로컬 vLLM 서버(같은 프롬프트 렌더링, /v1/completions)
+        from rag_agent.llm.vllm_completions import VLLMCompletionsLLM
+
+        class UserOnlyV(VLLMCompletionsLLM):
+            def _prompt(self, system, user, thinking=False):
+                return self.tokenizer.apply_chat_template([{"role": "user", "content": user}], tokenize=False,
+                                                          add_generation_prompt=True, enable_thinking=False)
+        name, kw = _split_spec(a.reader.removeprefix("vllm:"))
+        llm = (VLLMCompletionsLLM if cot else UserOnlyV)(model_name=name, **kw)
     else:
         name, kw = _split_spec(a.reader.removeprefix("local:"))  # "Qwen/Qwen3-1.7B?quantization=none" 도 받는다
         llm = (LocalQwenLLM if cot else UserOnly)(model_name=name, **{"quantization": "4bit", **kw})

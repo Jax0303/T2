@@ -20,7 +20,12 @@ LAYERS = ("lookup_m1", "lookup_m2+", "arith_m1", "arith_m2+")
 G = official_answers("train")
 
 def load_items(path):
-    """{query_id: (final_answer_text, kind, layer, finished)}"""
+    """{query_id: (final_answer_text, kind, layer, finished)}. 'a+b+c' 는 조각(shard) 파일을 합친다."""
+    if "+" in path:
+        out = {}
+        for part in path.split("+"):
+            out.update(load_items(part))
+        return out
     p = Path(path)
     if p.is_dir():
         if (p / f"{V}.jsonl").exists():                      # 팔 디렉터리를 바로 준 경우(<run>/D)
