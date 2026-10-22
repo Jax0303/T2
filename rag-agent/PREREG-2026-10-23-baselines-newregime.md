@@ -39,4 +39,12 @@
 - 10-01 과 다른 점(기록): 임베딩 캐시 `.cache/tablerag_yu`·`.cache/tablerag_chen` 이 이 PC 에 없어 다시 만든다(인코더 같음 → 같은 벡터). RAPTOR·Chen 은 `--limit 882`(882 부분집합만; 10-01 은 RAPTOR 2,885 검색 + Chen 882 답변·2,003 검색). 검색 지표는 882 기준으로 적는다.
 - 2단계 사슬(`run_stage2.sh`): 1단계 끝 → 3문항 시험(Chen·Yu·RAPTOR; 실패 시 멈춤) → RAPTOR → Yu → Chen. 시험 3문항 결과는 판정에 안 쓴다.
 
+- 10-23 00:59 LangChain 답변(HF `--batch-size 16`)이 `complete_batch`(transformers 연속 묶음)에서 `Invalid layer type: linear_attention` 으로 즉시 실패 — Qwen3.5 의 선형 어텐션 층을 묶음 생성기가 지원하지 않음. **`--batch-size 1`(한 건씩 `complete`)로 2단계 뒤에 다시 돌린다**(`run_stage3.sh` 역할의 대기 명령, 로그 `run_stage3.log`). 조건(지시문·384 토큰·상위 4청크) 불변, 생성 경로만 한 건씩.
+
 ## 결과 (실행 뒤 채움)
+### 표 전체 입력(P*, vLLM, 00:21~00:59, 2,159초, 동시 16, max-model-len 10,240) — 1회
+| 팔 | 맞힘 /882 | % | 조회 /511 | 산술 /371 | 공식 EM | 잘림 | 출력 토큰 |
+|---|---|---|---|---|---|---|---|
+| 표 전체 입력(P*) | 603 | 68.4 | 386 | 217 | .5317 | 31 | 576 |
+- 예측(600~640) ✓. 본 방법 D 620 과의 비교는 전 팔이 끝난 뒤 한 표에서(채점기 `score_newregime.py`, 다수결·Holm).
+
