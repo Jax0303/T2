@@ -1,0 +1,121 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+[pop] 3 queries (답변 3, 제외 {'needs_text_evidence': 4922}); [scorer] gold 를 예측으로 넣었을 때 EM=1.0
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 3322.40it/s]
+  3/3  131s  답변 3  em=0.0000
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 512,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "vllm:Qwen/Qwen3.5-4B",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 3,
+  "resumed": 0,
+  "n": 3,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 3,
+    "fail_examples": [],
+    "n_fail": 0
+  },
+  "pred_rule": "원본 solver_loop 의 answer (마지막 'Answer:' 뒤 첫 줄) 그대로, 추가 추출 없음",
+  "generation_seconds": 130.6,
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 10819.7,
+      "llm_calls_mean": 7.0,
+      "code_errors_mean": 4.33,
+      "terminal_rate": 0.3333,
+      "seconds_mean": 43.5
+    },
+    "arith_m2+": {
+      "n": 1,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 13160.0,
+      "llm_calls_mean": 7.0,
+      "code_errors_mean": 5.0,
+      "terminal_rate": 0.0,
+      "seconds_mean": 58.2
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 9649.5,
+      "llm_calls_mean": 7.0,
+      "code_errors_mean": 4.0,
+      "terminal_rate": 0.5,
+      "seconds_mean": 36.2
+    }
+  },
+  "records_sha256": "2e25218a45acc8e123e07236c4c7b4ce5b36839afd17c3ce7f06f1cfda9797db"
+}
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 512,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "vllm:Qwen/Qwen3.5-4B",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 3,
+  "resumed": 0,
+  "n_queries": 3,
+  "seconds": 130.6,
+  "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 0.6667,
+      "cells_delivered_mean": 7.3,
+      "units_mean": 14.0,
+      "context_tokens_mean": 958.7,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m2+": {
+      "n": 1,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 1.0,
+      "cells_delivered_mean": 6.0,
+      "units_mean": 17.0,
+      "context_tokens_mean": 1124.0,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 0.5,
+      "cells_delivered_mean": 8.0,
+      "units_mean": 12.5,
+      "context_tokens_mean": 876.0,
+      "expansion_llm_calls_mean": 2.0
+    }
+  },
+  "records_sha256": "e9ff0bc85d7636e3d867c12afc1df3ee706ca9cd1e3d17c1159455cf5857e811"
+}

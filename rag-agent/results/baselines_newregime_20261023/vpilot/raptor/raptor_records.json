@@ -1,0 +1,86 @@
+{
+  "baseline": "raptor",
+  "raptor_repo": "https://github.com/parthsarthi03/raptor",
+  "raptor_commit": "7da1d48a7e1d7dec61a63c9d9aae84e2dfaa5767",
+  "records_source": "results/mh_only_20260928/retrieval/mh_train_s3c_records.jsonl",
+  "answer_set": "results/mh_arms/cap300_20260924/cell_uniq.jsonl",
+  "limit": 3,
+  "n_queries": 3,
+  "n_scored": 3,
+  "n_excluded": 0,
+  "excluded": {},
+  "n_documents": 3,
+  "chunk_tokens_cl100k": 100,
+  "summary_max_tokens": 100,
+  "budgets_qwen3_tokens": [
+    2000,
+    575
+  ],
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "summarizer": "vllm:Qwen/Qwen3.5-4B",
+  "n_summary_calls_total": 7,
+  "tree_seconds_total": 73.1,
+  "cluster_failed_leaves_only": {
+    "n": 0,
+    "doc_keys": []
+  },
+  "tree_stats_mean": {
+    "n_leaves": 14.33,
+    "n_nodes": 16.67,
+    "n_layers": 0.67,
+    "n_summary_calls": 2.33,
+    "seconds": 24.37,
+    "n_doc_tok_cl100k": 1220.67
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "accuracy_all_2000": 1.0,
+      "accuracy_all_575": 0.6667,
+      "n_tok_2000_mean": 1545.0,
+      "n_tok_575_mean": 542.3
+    },
+    "arith_m2+": {
+      "n": 1,
+      "accuracy_all_2000": 1.0,
+      "accuracy_all_575": 1.0,
+      "n_tok_2000_mean": 1894.0,
+      "n_tok_575_mean": 525.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "accuracy_all_2000": 1.0,
+      "accuracy_all_575": 0.5,
+      "n_tok_2000_mean": 1370.5,
+      "n_tok_575_mean": 551.0
+    }
+  },
+  "provenance": {
+    "git_commit": "1c0bad1299fc69a064691ce399acd43e8c58fa56",
+    "git_dirty": true,
+    "source_sha256": "6289af5e334ce3d5e80bf92b8522eb5bbdbd1a18af64e6f591d1acc8e1245b8e",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "transformers": "5.19.0",
+      "sentence-transformers": "6.1.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.14.1",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "arguments": {
+    "limit": 3,
+    "out_dir": "results/baselines_newregime_20261023/vpilot/raptor",
+    "tree_dir": "",
+    "reader": "vllm:Qwen/Qwen3.5-4B",
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "batch_size": 1,
+    "seed": 42,
+    "dry_run": false,
+    "resume": true,
+    "embed_device": "cpu"
+  }
+}

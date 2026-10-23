@@ -1,0 +1,26 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+[corpus] 3594 tables, 129556 cell units (3s)
+[text] 63596 sentence units from 65444 paragraphs
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  38%|███▊      | 75/199 [00:00<00:00, 723.79it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1155.86it/s]
+[dense] (193152, 768) in 89s
+[bm25] all 31519 / cell 14226 terms (105s)
+  100/882 115s
+  200/882 128s
+  300/882 139s
+  400/882 151s
+  500/882 163s
+  600/882 175s
+  700/882 185s
+  800/882 198s
+
+== 정답 셀 전부 포함(검색만), 882 ==
+표만 문서: 기존 레코드 LangChain 867/882 (98.3%) 본 방법 862/882 (97.7%) | 재구현 LangChain k4 867/882 (98.3%) 본 방법(같은 토큰) 863/882 (97.8%)
+표만 문서 사다리 k=1: LangChain 630/882 (71.4%) (평균 423토큰) 본 방법 같은 토큰 741/882 (84.0%)
+표만 문서 사다리 k=2: LangChain 785/882 (89.0%) (평균 796토큰) 본 방법 같은 토큰 828/882 (93.9%)
+문서 원문(문단+표): 청크 수 평균 19.0, LangChain k4 759/882 (86.1%) (평균 1195토큰, 상위4 중 표 청크 평균 2.07), k8 844/882 (95.7%)
+문서 원문 본 방법(셀+문장 색인, 같은 토큰) 840/882 (95.2%) (단위 평균 39.4, 그중 문장 4.0) | 셀만 색인(불공정 참고) 860/882 (97.5%)
+  lookup_m1: LangChain 원문 189/211 (89.6%) 본 방법 원문 209/211 (99.1%) | 표만 k1 LangChain 163/211 (77.3%) 본 방법 194/211 (91.9%)
+  lookup_m2+: LangChain 원문 259/300 (86.3%) 본 방법 원문 284/300 (94.7%) | 표만 k1 LangChain 213/300 (71.0%) 본 방법 251/300 (83.7%)
+  arith_m1: LangChain 원문 61/71 (85.9%) 본 방법 원문 70/71 (98.6%) | 표만 k1 LangChain 61/71 (85.9%) 본 방법 66/71 (93.0%)
+  arith_m2+: LangChain 원문 250/300 (83.3%) 본 방법 원문 277/300 (92.3%) | 표만 k1 LangChain 193/300 (64.3%) 본 방법 230/300 (76.7%)

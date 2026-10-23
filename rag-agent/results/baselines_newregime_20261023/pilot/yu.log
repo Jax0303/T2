@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 65, in <module>
+    _online_prompt = _load("trag_yu_online_prompt", "online_inference/prompt.py")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 60, in _load
+    spec.loader.exec_module(mod)
+  File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1128, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1186, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ugh/T2/rag-agent/vendor/tablerag_yu/online_inference/prompt.py'

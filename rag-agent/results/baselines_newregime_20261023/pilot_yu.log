@@ -1,0 +1,100 @@
+[plan] stage=answer 3 문항, 남은 3
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+[corpus] 3 docs / 16 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 4549.36it/s]
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 537, in cached_files
+    hf_hub_download(
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 89, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 266, in _inner
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1194, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1944, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: Cannot find the requested files in the disk cache and outgoing traffic has been disabled. To enable hf.co look-ups and downloads online, set 'local_files_only' to False.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 807, in from_pretrained
+    config = AutoConfig.from_pretrained(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/auto/configuration_auto.py", line 397, in from_pretrained
+    config_dict, unused_kwargs = PreTrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 792, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 844, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 370, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 620, in cached_files
+    raise OSError(
+OSError: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.
+Check your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 537, in cached_files
+    hf_hub_download(
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 89, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 266, in _inner
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1194, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1944, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: Cannot find the requested files in the disk cache and outgoing traffic has been disabled. To enable hf.co look-ups and downloads online, set 'local_files_only' to False.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 478, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 423, in main
+    ret = Retriever(a.embed_model, a.reranker, a.reranker_device, cache)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 203, in __init__
+    self.reranker = Reranker(reranker_model, use_fp16=False, device=reranker_device)   # 공식 기본 fp32
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/vendor/tablerag_yu/online_inference/utils/tool_utils.py", line 40, in __init__
+    self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, cache_dir=cache_dir)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 811, in from_pretrained
+    config = PreTrainedConfig.from_pretrained(pretrained_model_name_or_path, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 742, in from_pretrained
+    config_dict, kwargs = cls.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 792, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 844, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 370, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 620, in cached_files
+    raise OSError(
+OSError: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.
+Check your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.

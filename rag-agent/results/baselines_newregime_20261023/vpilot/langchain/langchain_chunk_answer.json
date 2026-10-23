@@ -1,0 +1,72 @@
+{
+  "arm": "langchain_chunk",
+  "reader": "vllm:Qwen/Qwen3.5-4B",
+  "reader_details": {
+    "model_name": "Qwen/Qwen3.5-4B",
+    "endpoint": "http://localhost:8000/v1/completions",
+    "engine": "vllm-server",
+    "context_limit": 16384,
+    "enable_thinking": false,
+    "decoding": "greedy (temperature 0)"
+  },
+  "prompt": "tutorial",
+  "system_message": null,
+  "prompt_text": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise. On the last line write 'Final answer: ' followed by only the final value, with no units or explanation.\nQuestion: {question} \nContext: {context} \nAnswer:",
+  "prompt_sha256": "1462f2b9c9afb154fb5c32956722325fa2f2aae9a357e2a0f584978c28d93f48",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 1,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 3,
+    "fail_examples": [],
+    "n_fail": 0
+  },
+  "limit": 3,
+  "n": 3,
+  "marker_missing": 0,
+  "n_over_context_limit": 0,
+  "generation_seconds": 7.7,
+  "provenance": {
+    "git_commit": "1c0bad1299fc69a064691ce399acd43e8c58fa56",
+    "git_dirty": true,
+    "source_sha256": "f471abecde64011f34df3f716c463d78355012efca20f67154bf3cadbd8a0aef",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "transformers": "5.19.0",
+      "sentence-transformers": "6.1.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.14.1",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "retrieval_accuracy_here": 0.6667,
+      "answer_em": 0.3333,
+      "answer_f1": 0.3333,
+      "input_tokens_mean": 1589.3
+    },
+    "arith_m2+": {
+      "n": 1,
+      "retrieval_accuracy_here": 1.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 1931.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "retrieval_accuracy_here": 0.5,
+      "answer_em": 0.5,
+      "answer_f1": 0.5,
+      "input_tokens_mean": 1418.5
+    }
+  },
+  "records_sha256": "6611671ed517f674b30e7c5c40f28b1fdd90b501d6b82919b4adb873d3a539bb"
+}

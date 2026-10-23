@@ -1,0 +1,361 @@
+{
+ "n": 882,
+ "self_check": {
+  "gold_in_sentence": 882,
+  "dont_know": 0
+ },
+ "conditions": {
+  "gpt_closed": {
+   "old": 3,
+   "new": 3,
+   "pct_old": 0.3,
+   "pct_new": 0.3,
+   "up": 0,
+   "down": 0,
+   "sens": 3,
+   "pct_sens": 0.3
+  },
+  "gpt_fulldoc": {
+   "old": 519,
+   "new": 533,
+   "pct_old": 58.8,
+   "pct_new": 60.4,
+   "up": 14,
+   "down": 0,
+   "sens": 541,
+   "pct_sens": 61.3
+  },
+  "gpt_ours": {
+   "old": 551,
+   "new": 560,
+   "pct_old": 62.5,
+   "pct_new": 63.5,
+   "up": 9,
+   "down": 0,
+   "sens": 569,
+   "pct_sens": 64.5
+  },
+  "gpt_langchain": {
+   "old": 536,
+   "new": 552,
+   "pct_old": 60.8,
+   "pct_new": 62.6,
+   "up": 16,
+   "down": 0,
+   "sens": 560,
+   "pct_sens": 63.5
+  },
+  "qwen_ours": {
+   "old": 470,
+   "new": 476,
+   "pct_old": 53.3,
+   "pct_new": 54.0,
+   "up": 6,
+   "down": 0,
+   "sens": 490,
+   "pct_sens": 55.6
+  },
+  "qwen_langchain": {
+   "old": 431,
+   "new": 436,
+   "pct_old": 48.9,
+   "pct_new": 49.4,
+   "up": 5,
+   "down": 0,
+   "sens": 453,
+   "pct_sens": 51.4
+  }
+ },
+ "by_type": {
+  "조회: 머리글(항목 이름)을 답함": {
+   "n": 249,
+   "pct_old": {
+    "gpt_closed": 0.8,
+    "gpt_fulldoc": 73.9,
+    "gpt_ours": 74.7,
+    "gpt_langchain": 74.3,
+    "qwen_ours": 73.9,
+    "qwen_langchain": 63.9
+   },
+   "pct_new": {
+    "gpt_closed": 0.8,
+    "gpt_fulldoc": 75.1,
+    "gpt_ours": 76.3,
+    "gpt_langchain": 75.5,
+    "qwen_ours": 75.5,
+    "qwen_langchain": 65.5
+   },
+   "gpt_ours_vs_langchain": {
+    "b": 15,
+    "c": 13,
+    "p": 0.8505540192127228
+   },
+   "qwen_ours_vs_langchain": {
+    "b": 40,
+    "c": 15,
+    "p": 0.0010158471941252854
+   }
+  },
+  "조회: 값을 답함": {
+   "n": 167,
+   "pct_old": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 75.4,
+    "gpt_ours": 77.2,
+    "gpt_langchain": 76.0,
+    "qwen_ours": 71.9,
+    "qwen_langchain": 64.7
+   },
+   "pct_new": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 75.4,
+    "gpt_ours": 77.2,
+    "gpt_langchain": 76.0,
+    "qwen_ours": 71.9,
+    "qwen_langchain": 64.7
+   },
+   "gpt_ours_vs_langchain": {
+    "b": 14,
+    "c": 12,
+    "p": 0.8450189828872681
+   },
+   "qwen_ours_vs_langchain": {
+    "b": 25,
+    "c": 13,
+    "p": 0.07295138851623051
+   }
+  },
+  "조회: 개수 세기": {
+   "n": 41,
+   "pct_old": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 7.3,
+    "gpt_ours": 9.8,
+    "gpt_langchain": 12.2,
+    "qwen_ours": 14.6,
+    "qwen_langchain": 17.1
+   },
+   "pct_new": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 34.1,
+    "gpt_ours": 22.0,
+    "gpt_langchain": 43.9,
+    "qwen_ours": 19.5,
+    "qwen_langchain": 19.5
+   },
+   "gpt_ours_vs_langchain": {
+    "b": 2,
+    "c": 11,
+    "p": 0.0224609375
+   },
+   "qwen_ours_vs_langchain": {
+    "b": 5,
+    "c": 5,
+    "p": 1.0
+   }
+  },
+  "조회: 예/아니오": {
+   "n": 54,
+   "pct_old": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 59.3,
+    "gpt_ours": 88.9,
+    "gpt_langchain": 68.5,
+    "qwen_ours": 90.7,
+    "qwen_langchain": 87.0
+   },
+   "pct_new": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 59.3,
+    "gpt_ours": 88.9,
+    "gpt_langchain": 68.5,
+    "qwen_ours": 90.7,
+    "qwen_langchain": 87.0
+   },
+   "gpt_ours_vs_langchain": {
+    "b": 13,
+    "c": 2,
+    "p": 0.00738525390625
+   },
+   "qwen_ours_vs_langchain": {
+    "b": 5,
+    "c": 3,
+    "p": 0.7265625
+   }
+  },
+  "산술: 정답 셀 2개 이상": {
+   "n": 300,
+   "pct_old": {
+    "gpt_closed": 0.3,
+    "gpt_fulldoc": 42.0,
+    "gpt_ours": 45.7,
+    "gpt_langchain": 43.7,
+    "qwen_ours": 24.3,
+    "qwen_langchain": 21.7
+   },
+   "pct_new": {
+    "gpt_closed": 0.3,
+    "gpt_fulldoc": 42.0,
+    "gpt_ours": 45.7,
+    "gpt_langchain": 43.7,
+    "qwen_ours": 24.3,
+    "qwen_langchain": 21.7
+   },
+   "gpt_ours_vs_langchain": {
+    "b": 29,
+    "c": 23,
+    "p": 0.48845566937989204
+   },
+   "qwen_ours_vs_langchain": {
+    "b": 29,
+    "c": 21,
+    "p": 0.3222363203575469
+   }
+  },
+  "산술: 정답 셀 1개": {
+   "n": 71,
+   "pct_old": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 67.6,
+    "gpt_ours": 66.2,
+    "gpt_langchain": 71.8,
+    "qwen_ours": 53.5,
+    "qwen_langchain": 63.4
+   },
+   "pct_new": {
+    "gpt_closed": 0.0,
+    "gpt_fulldoc": 67.6,
+    "gpt_ours": 66.2,
+    "gpt_langchain": 71.8,
+    "qwen_ours": 53.5,
+    "qwen_langchain": 63.4
+   },
+   "gpt_ours_vs_langchain": {
+    "b": 5,
+    "c": 9,
+    "p": 0.4239501953125
+   },
+   "qwen_ours_vs_langchain": {
+    "b": 8,
+    "c": 15,
+    "p": 0.21003961563110352
+   }
+  },
+  "전체": {
+   "n": 882,
+   "pct_old": {
+    "gpt_closed": 0.3,
+    "gpt_fulldoc": 58.8,
+    "gpt_ours": 62.5,
+    "gpt_langchain": 60.8,
+    "qwen_ours": 53.3,
+    "qwen_langchain": 48.9
+   },
+   "pct_new": {
+    "gpt_closed": 0.3,
+    "gpt_fulldoc": 60.4,
+    "gpt_ours": 63.5,
+    "gpt_langchain": 62.6,
+    "qwen_ours": 54.0,
+    "qwen_langchain": 49.4
+   },
+   "gpt_ours_vs_langchain": {
+    "b": 78,
+    "c": 70,
+    "p": 0.5651719099883431
+   },
+   "qwen_ours_vs_langchain": {
+    "b": 112,
+    "c": 72,
+    "p": 0.003917460831386641
+   }
+  }
+ },
+ "mcnemar": {
+  "gpt_fulldoc_vs_ours": {
+   "old": {
+    "b": 52,
+    "c": 84,
+    "p": 0.0076238271738663125
+   },
+   "new": {
+    "b": 58,
+    "c": 85,
+    "p": 0.02933159453346617
+   },
+   "sens": {
+    "b": 56,
+    "c": 84,
+    "p": 0.022154955980559547
+   }
+  },
+  "gpt_ours_vs_langchain": {
+   "old": {
+    "b": 76,
+    "c": 61,
+    "p": 0.23153716588439494
+   },
+   "new": {
+    "b": 78,
+    "c": 70,
+    "p": 0.5651719099883431
+   },
+   "sens": {
+    "b": 78,
+    "c": 69,
+    "p": 0.5095015886349893
+   }
+  },
+  "qwen_ours_vs_langchain": {
+   "old": {
+    "b": 111,
+    "c": 72,
+    "p": 0.0048325149210995755
+   },
+   "new": {
+    "b": 112,
+    "c": 72,
+    "p": 0.003917460831386641
+   },
+   "sens": {
+    "b": 114,
+    "c": 77,
+    "p": 0.009013932917080632
+   }
+  },
+  "ours_gpt_vs_qwen": {
+   "old": {
+    "b": 119,
+    "c": 38,
+    "p": 6.400299082335113e-11
+   },
+   "new": {
+    "b": 122,
+    "c": 38,
+    "p": 1.795956230322765e-11
+   },
+   "sens": {
+    "b": 120,
+    "c": 41,
+    "p": 3.482327751565527e-10
+   }
+  },
+  "langchain_gpt_vs_qwen": {
+   "old": {
+    "b": 160,
+    "c": 55,
+    "p": 4.443110544179856e-13
+   },
+   "new": {
+    "b": 168,
+    "c": 52,
+    "p": 1.9126762166302446e-15
+   },
+   "sens": {
+    "b": 164,
+    "c": 57,
+    "p": 3.4137876815260985e-13
+   }
+  }
+ }
+}

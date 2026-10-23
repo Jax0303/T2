@@ -1,0 +1,27 @@
+{
+ "model": "Qwen/Qwen3.5-4B",
+ "engine": "vllm",
+ "vllm": "0.31.0",
+ "dtype": "bfloat16",
+ "arm": "A,C,D",
+ "records": "results/hitab_newregime_20261019/confirm/A_records.jsonl,results/hitab_newregime_20261019/confirm/C_records.jsonl,results/hitab_newregime_20261019/confirm/D_records.jsonl",
+ "n_records": {
+  "A": 691,
+  "C": 691,
+  "D": 691
+ },
+ "max_new_tokens": 4096,
+ "gpu_memory_utilization": 0.89,
+ "max_model_len": 8192,
+ "max_num_batched_tokens": 4096,
+ "max_num_seqs": 32,
+ "thinking": false,
+ "decoding": "greedy (temperature 0)",
+ "seed": 42,
+ "system_message": null,
+ "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+ "variants": [
+  "R0X1F1B2D1C1E0"
+ ],
+ "started": "2026-10-19T07:55:26"
+}

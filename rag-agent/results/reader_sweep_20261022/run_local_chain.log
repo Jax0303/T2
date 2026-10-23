@@ -1,0 +1,193 @@
+max prompt tokens 2626
+[start 2507 seqs=24 max-model-len=8192] 2026-10-22T19:31:08+09:00
+(MainProcess pid=71968) INFO 10-22 19:31:15 [api_utils.py:286] non-default args: {'dtype': 'bfloat16', 'seed': 42, 'max_model_len': 8192, 'enable_prefix_caching': True, 'gpu_memory_utilization': 0.89, 'max_num_batched_tokens': 4096, 'max_num_seqs': 24, 'disable_log_stats': True, 'model': '/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3-4B-Instruct-2507/snapshots/cdbee75f17c01a7cc42f958dc650907174af0554'}
+(MainProcess pid=71968) WARNING 10-22 19:31:15 [interface.py:1355] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+(MainProcess pid=71968) INFO 10-22 19:31:15 [model.py:699] Resolved architecture: Qwen3ForCausalLM
+(MainProcess pid=71968) INFO 10-22 19:31:15 [model.py:2109] Using max model len 8192
+(MainProcess pid=71968) INFO 10-22 19:31:15 [scheduler.py:308] Chunked prefill is enabled with max_num_batched_tokens=4096.
+(MainProcess pid=71968) INFO 10-22 19:31:15 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=71968) WARNING 10-22 19:31:17 [system_utils.py:152] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: WSL is detected and NVML is not compatible with fork
+(EngineCore pid=72143) INFO 10-22 19:31:20 [core.py:129] Initializing a V1 LLM engine (v0.31.0) with config: model='/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3-4B-Instruct-2507/snapshots/cdbee75f17c01a7cc42f958dc650907174af0554', speculative_config=None, tokenizer='/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3-4B-Instruct-2507/snapshots/cdbee75f17c01a7cc42f958dc650907174af0554', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=42, served_model_name=/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3-4B-Instruct-2507/snapshots/cdbee75f17c01a7cc42f958dc650907174af0554, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [4096], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 48, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)
+(EngineCore pid=72143) INFO 10-22 19:31:21 [parallel_state.py:1825] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_8af1a44af8f2458d90ce0d44c169bc9a backend=nccl
+(EngineCore pid=72143) INFO 10-22 19:31:21 [parallel_state.py:2269] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=72143) INFO 10-22 19:31:21 [gpu_worker.py:479] Using V2 Model Runner
+(EngineCore pid=72143) WARNING 10-22 19:31:21 [buffer_utils.py:47] Pinned memory is not available on this platform; falling back to device memory for UVA buffers.
+(EngineCore pid=72143) INFO 10-22 19:31:22 [model_runner.py:375] Loading model from scratch...
+(EngineCore pid=72143) INFO 10-22 19:31:22 [cuda.py:526] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=72143) INFO 10-22 19:31:22 [flash_attn.py:1167] Using FlashAttention version 2
+(EngineCore pid=72143) INFO 10-22 19:31:23 [weight_utils.py:1063] Filesystem type for checkpoints: EXT4. Checkpoint size: 7.49 GiB. Available RAM: 9.99 GiB.
+(EngineCore pid=72143) INFO 10-22 19:31:23 [weight_utils.py:1086] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+Loading safetensors checkpoint shards:   0% Completed | 0/3 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  33% Completed | 1/3 [00:01<00:02,  1.40s/it]
+Loading safetensors checkpoint shards:  67% Completed | 2/3 [00:02<00:01,  1.43s/it]
+Loading safetensors checkpoint shards: 100% Completed | 3/3 [00:02<00:00,  1.04it/s]
+
+(EngineCore pid=72143) INFO 10-22 19:31:26 [default_loader.py:484] Loading weights took 2.88 seconds
+(EngineCore pid=72143) INFO 10-22 19:31:26 [model_runner.py:407] Model loading took 7.64 GiB memory and 4.452270 seconds
+(EngineCore pid=72143) INFO 10-22 19:31:26 [topk_topp_sampler.py:96] FlashInfer top-p/top-k sampling disabled via VLLM_USE_FLASHINFER_SAMPLER=0.
+(EngineCore pid=72143) INFO 10-22 19:31:26 [torch_utils.py:286] Reducing Torch threads from 16 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(EngineCore pid=72143) INFO 10-22 19:31:26 [utils.py:343] Using LBNHC KV cache layout.
+(EngineCore pid=72143) INFO 10-22 19:31:31 [backends.py:1090] Using cache directory: /home/ugh/.cache/vllm/torch_compile_cache/8902368346/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=72143) INFO 10-22 19:31:31 [backends.py:1151] Dynamo bytecode transform time: 4.10 s
+[rank0]:W1022 19:31:32.281000 72143 torch/_inductor/utils.py:1953] Not enough SMs to use max_autotune_gemm mode
+(EngineCore pid=72143) INFO 10-22 19:31:45 [backends.py:391] Compiling a graph for compile range (1, 4096) takes 14.27 s
+(EngineCore pid=72143) INFO 10-22 19:31:48 [backends.py:916] collected artifacts: 37 entries, 3 artifacts, 6204487 bytes total
+(EngineCore pid=72143) INFO 10-22 19:31:48 [decorators.py:717] saved AOT compiled function to /home/ugh/.cache/vllm/torch_compile_cache/torch_aot_compile/aaba0dfdf8f23a489ec8eef6ef5f1e815aab8c16b8ce8f3611bc1ea024cca1dd/rank_0_0/model
+(EngineCore pid=72143) INFO 10-22 19:31:48 [monitor.py:53] torch.compile took 21.09 s in total
+(EngineCore pid=72143) INFO 10-22 19:31:48 [monitor.py:81] Initial profiling/warmup run took 0.26 s
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/9 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):  22%|██▏       | 2/9 [00:00<00:00, 17.61it/s]Capturing CUDA graphs (PIECEWISE):  44%|████▍     | 4/9 [00:00<00:00, 18.79it/s]Capturing CUDA graphs (PIECEWISE):  78%|███████▊  | 7/9 [00:00<00:00, 19.95it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 9/9 [00:00<00:00, 19.66it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 9/9 [00:00<00:00, 19.45it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/2 [00:00<?, ?it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00, 31.75it/s]
+(EngineCore pid=72143) INFO 10-22 19:31:51 [model_runner.py:1087] Graph capturing finished in 1 secs, took 0.40 GiB
+(EngineCore pid=72143) INFO 10-22 19:31:51 [gpu_worker.py:692] Available KV cache memory: 1.77 GiB
+(EngineCore pid=72143) INFO 10-22 19:31:51 [gpu_worker.py:707] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8900 is equivalent to --gpu-memory-utilization=0.8556 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9244. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=72143) INFO 10-22 19:31:51 [kv_cache_utils.py:2464] GPU KV cache size: 12,896 tokens, Maximum concurrency for 8,192 tokens per request: 1.57x
+(EngineCore pid=72143) INFO 10-22 19:31:51 [kernel_warmup.py:172] JIT kernel warmup starting.
+(EngineCore pid=72143) INFO 10-22 19:31:51 [kernel_warmup.py:185] JIT kernel warmup finished in 0.00s.
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/9 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):  11%|█         | 1/9 [00:00<00:01,  6.73it/s]Capturing CUDA graphs (PIECEWISE):  22%|██▏       | 2/9 [00:00<00:01,  6.84it/s]Capturing CUDA graphs (PIECEWISE):  56%|█████▌    | 5/9 [00:00<00:00, 13.63it/s]Capturing CUDA graphs (PIECEWISE):  78%|███████▊  | 7/9 [00:00<00:00, 15.49it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 9/9 [00:00<00:00, 14.72it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/6 [00:00<?, ?it/s]Capturing CUDA graphs (FULL):  67%|██████▋   | 4/6 [00:00<00:00, 32.71it/s]Capturing CUDA graphs (FULL): 100%|██████████| 6/6 [00:00<00:00, 33.51it/s]
+(EngineCore pid=72143) INFO 10-22 19:32:01 [model_runner.py:1087] Graph capturing finished in 1 secs, took 0.06 GiB
+(EngineCore pid=72143) INFO 10-22 19:32:01 [gpu_worker.py:892] CUDA graph pool memory: 0.06 GiB (actual), 0.41 GiB (estimated), difference: 0.35 GiB (599.6%).
+(EngineCore pid=72143) INFO 10-22 19:32:01 [gpu_worker.py:955] Free memory on device (10.78/11.99 GiB) on startup. Desired GPU memory utilization is (0.89, 10.67 GiB). Actual usage is 7.73 GiB for consumed memory (weights + non-torch), 1.17 GiB for peak activation, and 0.06 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=1681793885` (1.57 GiB) to fit into requested memory, or `--kv-cache-memory=1790284800` (1.67 GiB) to fully utilize gpu memory. Current kv cache memory in use is 1.77 GiB.
+(EngineCore pid=72143) INFO 10-22 19:32:02 [jit_monitor.py:84] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(EngineCore pid=72143) INFO 10-22 19:32:02 [core.py:373] init engine (profile, create kv cache, warmup model) took 35.98 s (compilation: 21.09 s)
+(EngineCore pid=72143) INFO 10-22 19:32:02 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=71968) INFO 10-22 19:32:03 [hf.py:646] Detected the chat template content format to be 'string'. You can set `--chat-template-content-format` to override this.
+[model] Qwen/Qwen3-4B-Instruct-2507 engine=vllm gpu_mem=0.89 max_model_len=8192 n_samples=1 temperature=0.0
+[done] R1X1F1B2D1C1E0/D: 새로 882건, 합계 882, 1591s (1.80s/건)
+[done] R1X1F1B2D1C1E0/O1: 새로 882건, 합계 882, 245s (0.28s/건)
+(MainProcess pid=71968) INFO 10-22 20:02:39 [utils.py:638] [shutdown] Process manager: send sigterm to process EngineCore
+(EngineCore pid=72143) INFO 10-22 20:02:39 [core.py:1409] [shutdown] EngineCore: trigger received signal=SIGTERM
+(EngineCore pid=72143) INFO 10-22 20:02:39 [core.py:1558] [shutdown] EngineCore: start mode=abort timeout=0s
+(EngineCore pid=72143) INFO 10-22 20:02:39 [core.py:1589] [shutdown] EngineCore: request processing complete; starting resource teardown
+(EngineCore pid=72143) INFO 10-22 20:02:39 [core.py:1422] [shutdown] EngineCore: exiting busy loop
+[exit 0] 2026-10-22T20:02:42+09:00
+/home/ugh/T2/rag-agent/results/format_dev_20261017/score_formats2.py:1: SyntaxWarning: invalid escape sequence '\*'
+  """형식 비교 채점 v2 — PREREG-2026-10-18-table-cap.md. score_formats.py 와 같되 (1) 마지막 줄 라벨 정규식이 굵은 글씨를 허용한다
+
+== run_qwen3_4b_2507 ==
+| 팔 | 마지막 줄 맞힘 /882 | % | 조회 | 산술 | 전체 포함 | 공식 EM | 잘림 | 출력 토큰 |
+|---|---|---|---|---|---|---|---|---|
+| D | 565 | 64.1 | 347/511 | 218/371 | 688 | 0.5567 | 9 | 438.0 |
+| O1 | 579 | 65.6 | 377/511 | 202/371 | 657 | 0.559 | 1 | 188.0 |
+
+== 쌍 비교(마지막 줄, 실행별) ==
+  run_qwen3_4b_2507 O1 대 D: 579 대 565 b:c 104:90 p=0.351
+[start hf_repro_run1] 2026-10-22T20:02:43+09:00
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<03:44,  1.89it/s]Loading weights:   6%|▌         | 24/426 [00:00<00:08, 49.90it/s]Loading weights:  10%|▉         | 42/426 [00:00<00:04, 78.87it/s]Loading weights:  15%|█▍        | 62/426 [00:00<00:03, 104.89it/s]Loading weights:  19%|█▉        | 80/426 [00:00<00:02, 121.86it/s]Loading weights:  23%|██▎       | 97/426 [00:01<00:02, 131.11it/s]Loading weights:  27%|██▋       | 116/426 [00:01<00:02, 144.49it/s]Loading weights:  31%|███▏      | 134/426 [00:01<00:01, 147.47it/s]Loading weights:  36%|███▌      | 152/426 [00:01<00:01, 149.66it/s]Loading weights:  40%|███▉      | 169/426 [00:01<00:01, 154.20it/s]Loading weights:  44%|████▍     | 187/426 [00:01<00:01, 156.15it/s]Loading weights:  48%|████▊     | 206/426 [00:01<00:01, 161.40it/s]Loading weights:  55%|█████▍    | 234/426 [00:01<00:00, 192.08it/s]Loading weights:  60%|█████▉    | 254/426 [00:01<00:00, 172.52it/s]Loading weights:  65%|██████▌   | 278/426 [00:02<00:00, 190.24it/s]Loading weights:  70%|██████▉   | 298/426 [00:02<00:00, 187.81it/s]Loading weights:  75%|███████▍  | 318/426 [00:02<00:00, 165.84it/s]Loading weights:  79%|███████▉  | 336/426 [00:02<00:00, 157.88it/s]Loading weights:  84%|████████▎ | 356/426 [00:02<00:00, 167.77it/s]Loading weights:  88%|████████▊ | 374/426 [00:02<00:00, 168.35it/s]Loading weights:  93%|█████████▎| 398/426 [00:02<00:00, 183.89it/s]Loading weights:  98%|█████████▊| 417/426 [00:02<00:00, 184.45it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 145.65it/s]
+[load] 못 찾은 가중치 0, 안 쓴 가중치 0
+[load] 메모리 상한 0.839 × 12.0GB
+[model] Qwen/Qwen3.5-4B dtype=torch.bfloat16 class=Qwen3_5ForCausalLM vram=7.83GB
+[transformers] `causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+[transformers] `causal_conv1d_update` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+  R1X1F1B2D1C1E0/O1 1/50  34s  (묶음 1, 최장 655)
+  R1X1F1B2D1C1E0/O1 2/50  47s  (묶음 1, 최장 514)
+  R1X1F1B2D1C1E0/O1 3/50  53s  (묶음 1, 최장 468)
+  R1X1F1B2D1C1E0/O1 4/50  66s  (묶음 1, 최장 462)
+  R1X1F1B2D1C1E0/O1 5/50  79s  (묶음 1, 최장 457)
+  R1X1F1B2D1C1E0/O1 6/50  88s  (묶음 1, 최장 451)
+  R1X1F1B2D1C1E0/O1 7/50  93s  (묶음 1, 최장 441)
+  R1X1F1B2D1C1E0/O1 8/50  102s  (묶음 1, 최장 439)
+  R1X1F1B2D1C1E0/O1 9/50  115s  (묶음 1, 최장 439)
+  R1X1F1B2D1C1E0/O1 10/50  121s  (묶음 1, 최장 434)
+  R1X1F1B2D1C1E0/O1 11/50  127s  (묶음 1, 최장 433)
+  R1X1F1B2D1C1E0/O1 12/50  134s  (묶음 1, 최장 427)
+  R1X1F1B2D1C1E0/O1 13/50  141s  (묶음 1, 최장 422)
+  R1X1F1B2D1C1E0/O1 14/50  148s  (묶음 1, 최장 418)
+  R1X1F1B2D1C1E0/O1 15/50  157s  (묶음 1, 최장 414)
+  R1X1F1B2D1C1E0/O1 16/50  162s  (묶음 1, 최장 414)
+  R1X1F1B2D1C1E0/O1 17/50  169s  (묶음 1, 최장 413)
+  R1X1F1B2D1C1E0/O1 18/50  189s  (묶음 1, 최장 412)
+  R1X1F1B2D1C1E0/O1 19/50  203s  (묶음 1, 최장 410)
+  R1X1F1B2D1C1E0/O1 20/50  208s  (묶음 1, 최장 409)
+  R1X1F1B2D1C1E0/O1 21/50  222s  (묶음 1, 최장 407)
+  R1X1F1B2D1C1E0/O1 22/50  228s  (묶음 1, 최장 405)
+  R1X1F1B2D1C1E0/O1 23/50  232s  (묶음 1, 최장 401)
+  R1X1F1B2D1C1E0/O1 24/50  238s  (묶음 1, 최장 401)
+  R1X1F1B2D1C1E0/O1 25/50  251s  (묶음 1, 최장 399)
+  R1X1F1B2D1C1E0/O1 26/50  280s  (묶음 1, 최장 396)
+  R1X1F1B2D1C1E0/O1 27/50  302s  (묶음 1, 최장 396)
+  R1X1F1B2D1C1E0/O1 28/50  314s  (묶음 1, 최장 395)
+  R1X1F1B2D1C1E0/O1 29/50  323s  (묶음 1, 최장 394)
+  R1X1F1B2D1C1E0/O1 30/50  328s  (묶음 1, 최장 390)
+  R1X1F1B2D1C1E0/O1 31/50  335s  (묶음 1, 최장 388)
+  R1X1F1B2D1C1E0/O1 32/50  371s  (묶음 1, 최장 388)
+  R1X1F1B2D1C1E0/O1 33/50  376s  (묶음 1, 최장 387)
+  R1X1F1B2D1C1E0/O1 34/50  381s  (묶음 1, 최장 382)
+  R1X1F1B2D1C1E0/O1 35/50  397s  (묶음 1, 최장 381)
+  R1X1F1B2D1C1E0/O1 36/50  408s  (묶음 1, 최장 379)
+  R1X1F1B2D1C1E0/O1 37/50  412s  (묶음 1, 최장 379)
+  R1X1F1B2D1C1E0/O1 38/50  418s  (묶음 1, 최장 377)
+  R1X1F1B2D1C1E0/O1 39/50  425s  (묶음 1, 최장 376)
+  R1X1F1B2D1C1E0/O1 40/50  434s  (묶음 1, 최장 375)
+  R1X1F1B2D1C1E0/O1 41/50  442s  (묶음 1, 최장 373)
+  R1X1F1B2D1C1E0/O1 42/50  448s  (묶음 1, 최장 373)
+  R1X1F1B2D1C1E0/O1 43/50  452s  (묶음 1, 최장 372)
+  R1X1F1B2D1C1E0/O1 44/50  456s  (묶음 1, 최장 370)
+  R1X1F1B2D1C1E0/O1 45/50  460s  (묶음 1, 최장 369)
+  R1X1F1B2D1C1E0/O1 46/50  470s  (묶음 1, 최장 368)
+  R1X1F1B2D1C1E0/O1 47/50  475s  (묶음 1, 최장 367)
+  R1X1F1B2D1C1E0/O1 48/50  478s  (묶음 1, 최장 367)
+  R1X1F1B2D1C1E0/O1 49/50  481s  (묶음 1, 최장 361)
+  R1X1F1B2D1C1E0/O1 50/50  485s  (묶음 1, 최장 351)
+[done] R1X1F1B2D1C1E0/O1: 새로 50건, 합계 50
+[exit 0] 2026-10-22T20:10:57+09:00
+[start hf_repro_run2] 2026-10-22T20:10:57+09:00
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<01:43,  4.11it/s]Loading weights:  11%|█         | 47/426 [00:00<00:02, 170.53it/s]Loading weights:  22%|██▏       | 95/426 [00:00<00:01, 275.80it/s]Loading weights:  35%|███▍      | 147/426 [00:00<00:00, 351.00it/s]Loading weights:  46%|████▌     | 195/426 [00:00<00:00, 391.05it/s]Loading weights:  59%|█████▉    | 252/426 [00:00<00:00, 445.57it/s]Loading weights:  71%|███████   | 301/426 [00:00<00:00, 417.17it/s]Loading weights:  81%|████████  | 346/426 [00:01<00:00, 403.53it/s]Loading weights:  96%|█████████▋| 411/426 [00:01<00:00, 471.44it/s]Loading weights: 100%|██████████| 426/426 [00:01<00:00, 375.89it/s]
+[load] 못 찾은 가중치 0, 안 쓴 가중치 0
+[load] 메모리 상한 0.842 × 12.0GB
+[model] Qwen/Qwen3.5-4B dtype=torch.bfloat16 class=Qwen3_5ForCausalLM vram=7.83GB
+[transformers] `causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+[transformers] `causal_conv1d_update` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+  R1X1F1B2D1C1E0/O1 1/50  14s  (묶음 1, 최장 655)
+  R1X1F1B2D1C1E0/O1 2/50  27s  (묶음 1, 최장 514)
+  R1X1F1B2D1C1E0/O1 3/50  32s  (묶음 1, 최장 468)
+  R1X1F1B2D1C1E0/O1 4/50  41s  (묶음 1, 최장 462)
+  R1X1F1B2D1C1E0/O1 5/50  52s  (묶음 1, 최장 457)
+  R1X1F1B2D1C1E0/O1 6/50  62s  (묶음 1, 최장 451)
+  R1X1F1B2D1C1E0/O1 7/50  68s  (묶음 1, 최장 441)
+  R1X1F1B2D1C1E0/O1 8/50  77s  (묶음 1, 최장 439)
+  R1X1F1B2D1C1E0/O1 9/50  90s  (묶음 1, 최장 439)
+  R1X1F1B2D1C1E0/O1 10/50  95s  (묶음 1, 최장 434)
+  R1X1F1B2D1C1E0/O1 11/50  101s  (묶음 1, 최장 433)
+  R1X1F1B2D1C1E0/O1 12/50  108s  (묶음 1, 최장 427)
+  R1X1F1B2D1C1E0/O1 13/50  115s  (묶음 1, 최장 422)
+  R1X1F1B2D1C1E0/O1 14/50  121s  (묶음 1, 최장 418)
+  R1X1F1B2D1C1E0/O1 15/50  131s  (묶음 1, 최장 414)
+  R1X1F1B2D1C1E0/O1 16/50  136s  (묶음 1, 최장 414)
+  R1X1F1B2D1C1E0/O1 17/50  143s  (묶음 1, 최장 413)
+  R1X1F1B2D1C1E0/O1 18/50  157s  (묶음 1, 최장 412)
+  R1X1F1B2D1C1E0/O1 19/50  173s  (묶음 1, 최장 410)
+  R1X1F1B2D1C1E0/O1 20/50  180s  (묶음 1, 최장 409)
+  R1X1F1B2D1C1E0/O1 21/50  196s  (묶음 1, 최장 407)
+  R1X1F1B2D1C1E0/O1 22/50  202s  (묶음 1, 최장 405)
+  R1X1F1B2D1C1E0/O1 23/50  206s  (묶음 1, 최장 401)
+  R1X1F1B2D1C1E0/O1 24/50  212s  (묶음 1, 최장 401)
+  R1X1F1B2D1C1E0/O1 25/50  228s  (묶음 1, 최장 399)
+  R1X1F1B2D1C1E0/O1 26/50  265s  (묶음 1, 최장 396)
+  R1X1F1B2D1C1E0/O1 27/50  289s  (묶음 1, 최장 396)
+  R1X1F1B2D1C1E0/O1 28/50  302s  (묶음 1, 최장 395)
+  R1X1F1B2D1C1E0/O1 29/50  310s  (묶음 1, 최장 394)
+  R1X1F1B2D1C1E0/O1 30/50  314s  (묶음 1, 최장 390)
+  R1X1F1B2D1C1E0/O1 31/50  321s  (묶음 1, 최장 388)
+  R1X1F1B2D1C1E0/O1 32/50  355s  (묶음 1, 최장 388)
+  R1X1F1B2D1C1E0/O1 33/50  360s  (묶음 1, 최장 387)
+  R1X1F1B2D1C1E0/O1 34/50  364s  (묶음 1, 최장 382)
+  R1X1F1B2D1C1E0/O1 35/50  378s  (묶음 1, 최장 381)
+  R1X1F1B2D1C1E0/O1 36/50  388s  (묶음 1, 최장 379)
+  R1X1F1B2D1C1E0/O1 37/50  392s  (묶음 1, 최장 379)
+  R1X1F1B2D1C1E0/O1 38/50  396s  (묶음 1, 최장 377)
+  R1X1F1B2D1C1E0/O1 39/50  401s  (묶음 1, 최장 376)
+  R1X1F1B2D1C1E0/O1 40/50  409s  (묶음 1, 최장 375)
+  R1X1F1B2D1C1E0/O1 41/50  418s  (묶음 1, 최장 373)
+  R1X1F1B2D1C1E0/O1 42/50  425s  (묶음 1, 최장 373)
+  R1X1F1B2D1C1E0/O1 43/50  430s  (묶음 1, 최장 372)
+  R1X1F1B2D1C1E0/O1 44/50  433s  (묶음 1, 최장 370)
+  R1X1F1B2D1C1E0/O1 45/50  437s  (묶음 1, 최장 369)
+  R1X1F1B2D1C1E0/O1 46/50  447s  (묶음 1, 최장 368)
+  R1X1F1B2D1C1E0/O1 47/50  452s  (묶음 1, 최장 367)
+  R1X1F1B2D1C1E0/O1 48/50  456s  (묶음 1, 최장 367)
+  R1X1F1B2D1C1E0/O1 49/50  459s  (묶음 1, 최장 361)
+  R1X1F1B2D1C1E0/O1 50/50  463s  (묶음 1, 최장 351)
+[done] R1X1F1B2D1C1E0/O1: 새로 50건, 합계 50
+[exit 0] 2026-10-22T20:18:46+09:00
+[all done] 2026-10-22T20:18:46+09:00

@@ -1,0 +1,189 @@
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+[pop] 441 queries (답변 441, 제외 {'needs_text_evidence': 4922}); [scorer] gold 를 예측으로 넣었을 때 EM=0.9591836734693877
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 4103.49it/s]
+  20/441  1112s  답변 20  em=0.0000
+  40/441  2190s  답변 40  em=0.0000
+  60/441  3265s  답변 60  em=0.0167
+  80/441  4201s  답변 80  em=0.0250
+  100/441  5128s  답변 100  em=0.0800
+  120/441  6277s  답변 120  em=0.0750
+  140/441  7276s  답변 140  em=0.0714
+  160/441  8380s  답변 160  em=0.0625
+  180/441  9372s  답변 180  em=0.0611
+  200/441  10548s  답변 200  em=0.0550
+  220/441  11714s  답변 220  em=0.0500
+  240/441  12781s  답변 240  em=0.0542
+  260/441  13923s  답변 260  em=0.0538
+  280/441  15024s  답변 280  em=0.0500
+  300/441  16049s  답변 300  em=0.0500
+  320/441  17069s  답변 320  em=0.0531
+  340/441  18102s  답변 340  em=0.0500
+  360/441  19267s  답변 360  em=0.0500
+  380/441  20281s  답변 380  em=0.0500
+  400/441  21507s  답변 400  em=0.0500
+  420/441  22617s  답변 420  em=0.0524
+  440/441  23625s  답변 440  em=0.0545
+  441/441  23675s  답변 441  em=0.0544
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 512,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "vllm:Qwen/Qwen3.5-4B",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 882,
+  "resumed": 0,
+  "n": 441,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.9591836734693877,
+    "n": 441,
+    "fail_examples": [
+      -0.02825,
+      -0.22059,
+      -0.0894,
+      -0.02393,
+      -0.05121
+    ],
+    "n_fail": 18
+  },
+  "pred_rule": "원본 solver_loop 의 answer (마지막 'Answer:' 뒤 첫 줄) 그대로, 추가 추출 없음",
+  "generation_seconds": 23670.3,
+  "by_layer": {
+    "ALL": {
+      "n": 441,
+      "retrieval_accuracy_here": 0.0998,
+      "answer_em": 0.0544,
+      "answer_f1": 0.0678,
+      "input_tokens_mean": 9858.7,
+      "llm_calls_mean": 6.68,
+      "code_errors_mean": 3.71,
+      "terminal_rate": 0.2653,
+      "seconds_mean": 53.7
+    },
+    "arith_m1": {
+      "n": 42,
+      "retrieval_accuracy_here": 0.2143,
+      "answer_em": 0.0714,
+      "answer_f1": 0.0714,
+      "input_tokens_mean": 10536.5,
+      "llm_calls_mean": 6.5,
+      "code_errors_mean": 3.4,
+      "terminal_rate": 0.3571,
+      "seconds_mean": 51.1
+    },
+    "arith_m2+": {
+      "n": 134,
+      "retrieval_accuracy_here": 0.0597,
+      "answer_em": 0.0224,
+      "answer_f1": 0.0225,
+      "input_tokens_mean": 10003.8,
+      "llm_calls_mean": 6.66,
+      "code_errors_mean": 3.75,
+      "terminal_rate": 0.2388,
+      "seconds_mean": 55.2
+    },
+    "lookup_m1": {
+      "n": 110,
+      "retrieval_accuracy_here": 0.1636,
+      "answer_em": 0.0545,
+      "answer_f1": 0.0604,
+      "input_tokens_mean": 9401.9,
+      "llm_calls_mean": 6.68,
+      "code_errors_mean": 3.73,
+      "terminal_rate": 0.3,
+      "seconds_mean": 51.7
+    },
+    "lookup_m2+": {
+      "n": 155,
+      "retrieval_accuracy_here": 0.0581,
+      "answer_em": 0.0774,
+      "answer_f1": 0.1111,
+      "input_tokens_mean": 9873.9,
+      "llm_calls_mean": 6.76,
+      "code_errors_mean": 3.74,
+      "terminal_rate": 0.2387,
+      "seconds_mean": 54.5
+    }
+  },
+  "records_sha256": "b6812220778a61d5b27c7e8f9c485e02131dd337a61545cfe4790838a8278f75"
+}
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 512,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "vllm:Qwen/Qwen3.5-4B",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 882,
+  "resumed": 0,
+  "n_queries": 441,
+  "seconds": 23670.4,
+  "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",
+  "by_layer": {
+    "ALL": {
+      "n": 441,
+      "accuracy_all": 0.0998,
+      "accuracy_any_DIAGNOSTIC": 0.2426,
+      "cells_delivered_mean": 6.9,
+      "units_mean": 14.6,
+      "context_tokens_mean": 1022.5,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m1": {
+      "n": 42,
+      "accuracy_all": 0.2143,
+      "accuracy_any_DIAGNOSTIC": 0.2143,
+      "cells_delivered_mean": 10.0,
+      "units_mean": 18.6,
+      "context_tokens_mean": 1245.1,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m2+": {
+      "n": 134,
+      "accuracy_all": 0.0597,
+      "accuracy_any_DIAGNOSTIC": 0.2761,
+      "cells_delivered_mean": 6.9,
+      "units_mean": 15.2,
+      "context_tokens_mean": 1031.7,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m1": {
+      "n": 110,
+      "accuracy_all": 0.1636,
+      "accuracy_any_DIAGNOSTIC": 0.1636,
+      "cells_delivered_mean": 6.2,
+      "units_mean": 12.9,
+      "context_tokens_mean": 958.3,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m2+": {
+      "n": 155,
+      "accuracy_all": 0.0581,
+      "accuracy_any_DIAGNOSTIC": 0.2774,
+      "cells_delivered_mean": 6.6,
+      "units_mean": 14.3,
+      "context_tokens_mean": 999.9,
+      "expansion_llm_calls_mean": 2.0
+    }
+  },
+  "records_sha256": "987a76ecdf29c43e00440ccb22fe00ffbc108134a483262feedf324fdc85cdb2"
+}

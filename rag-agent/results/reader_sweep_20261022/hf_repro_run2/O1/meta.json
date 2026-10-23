@@ -1,0 +1,25 @@
+{
+ "model": "Qwen/Qwen3.5-4B",
+ "dtype": "torch.bfloat16",
+ "quantization": "none",
+ "model_class": "Qwen3_5ForCausalLM",
+ "arm": "O1",
+ "records": "results/ceiling_20261019/O1_records.jsonl",
+ "n_records": {
+  "O1": 50
+ },
+ "max_new_tokens": 4096,
+ "batch_tokens": 14000,
+ "max_batch": 1,
+ "thinking": false,
+ "decoding": "greedy (do_sample=False), temperature 0",
+ "seed": 42,
+ "system_message": null,
+ "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+ "transformers": "5.19.0",
+ "torch": "2.14.1+cu130",
+ "variants": [
+  "R1X1F1B2D1C1E0"
+ ],
+ "started": "2026-10-22T20:11:03"
+}

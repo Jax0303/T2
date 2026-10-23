@@ -1,0 +1,27 @@
+{
+ "model": "Qwen/Qwen3.5-4B",
+ "engine": "vllm",
+ "vllm": "0.31.0",
+ "dtype": "bfloat16",
+ "arm": "C,A",
+ "records": "results/prompt_sweep_20261015/dev_C_records.jsonl,results/prompt_sweep_20261015/dev_A_records.jsonl",
+ "n_records": {
+  "C": 395,
+  "A": 395
+ },
+ "max_new_tokens": 768,
+ "gpu_memory_utilization": 0.89,
+ "max_model_len": 5120,
+ "max_num_batched_tokens": 4096,
+ "max_num_seqs": 32,
+ "thinking": false,
+ "decoding": "greedy (temperature 0)",
+ "seed": 42,
+ "system_message": null,
+ "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+ "variants": [
+  "R0X0F0B0D0C0E0",
+  "R0X1F1B1D1C2E1"
+ ],
+ "started": "2026-10-15T21:40:26"
+}

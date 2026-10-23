@@ -1,0 +1,26 @@
+
+[600] 표 너비(열 수)
+  1) ≤4: 135문항 | LangChain 맞힘 110 (81.5%) | 잘라낸 표−LC 실행별 [3, 7, 0] 평균 +2.5%p | 목록−LC [-5, 0, -4] 평균 -2.2%p
+  2) 5~8: 394문항 | LangChain 맞힘 224 (56.8%) | 잘라낸 표−LC 실행별 [24, 20, 19] 평균 +5.3%p | 목록−LC [8, 0, 3] 평균 +0.9%p
+  3) 9+: 71문항 | LangChain 맞힘 42 (59.2%) | 잘라낸 표−LC 실행별 [0, -4, 3] 평균 -0.5%p | 목록−LC [-1, -2, 1] 평균 -0.9%p
+
+[600] 정답이 걸친 표 수
+  1: 411문항 | LangChain 맞힘 254 (61.7%) | 잘라낸 표−LC 실행별 [11, 9, 9] 평균 +2.4%p | 목록−LC [4, 1, 0] 평균 +0.4%p
+  2+: 189문항 | LangChain 맞힘 122 (64.6%) | 잘라낸 표−LC 실행별 [16, 14, 13] 평균 +7.6%p | 목록−LC [-2, -3, 0] 평균 -0.9%p
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/results/width_20261022/confirm_600_dev.py", line 14, in <module>
+    ids = sorted(R); tables, hdr, sent, coord = load_split("train", ids)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/results/format_dev_20261017/format_render.py", line 18, in load_split
+    tables, hdr = build_tables({u: docs[u] for u in uids}, "v3.3u", "none")
+                                   ~~~~^^^
+KeyError: '01f45f4d3645476d8e6ba16beab0ff28'
+
+[dev] 표 너비(열 수)
+  1) ≤4: 80문항 | LangChain 맞힘 58 (72.5%) | 잘라낸 표−LC 실행별 [1, 2] 평균 +1.9%p | 목록−LC [0, 0] 평균 +0.0%p
+  2) 5~8: 254문항 | LangChain 맞힘 160 (62.8%) | 잘라낸 표−LC 실행별 [6, 6] 평균 +2.4%p | 목록−LC [11, 7] 평균 +3.5%p
+  3) 9+: 61문항 | LangChain 맞힘 39 (63.9%) | 잘라낸 표−LC 실행별 [4, 6] 평균 +8.2%p | 목록−LC [-3, -2] 평균 -4.1%p
+
+[dev] 정답이 걸친 표 수
+  1: 369문항 | LangChain 맞힘 240 (65.2%) | 잘라낸 표−LC 실행별 [9, 13] 평균 +3.0%p | 목록−LC [6, 4] 평균 +1.4%p
+  2+: 26문항 | LangChain 맞힘 16 (61.5%) | 잘라낸 표−LC 실행별 [2, 1] 평균 +5.8%p | 목록−LC [2, 1] 평균 +5.8%p

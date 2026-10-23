@@ -1,0 +1,26 @@
+{
+ "model": "Qwen/Qwen3-8B",
+ "dtype": "torch.bfloat16",
+ "quantization": "4bit",
+ "model_class": "Qwen3ForCausalLM",
+ "arm": "C,A",
+ "records": "results/prompt_sweep_20261015/dev_C_records.jsonl,results/prompt_sweep_20261015/dev_A_records.jsonl",
+ "n_records": {
+  "C": 3,
+  "A": 3
+ },
+ "max_new_tokens": 128,
+ "batch_tokens": 24000,
+ "max_batch": 16,
+ "thinking": false,
+ "decoding": "greedy (do_sample=False), temperature 0",
+ "seed": 42,
+ "system_message": null,
+ "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+ "transformers": "5.19.0",
+ "torch": "2.14.1+cu130",
+ "variants": [
+  "R0X0F0B0D0C0E0"
+ ],
+ "started": "2026-10-15T19:06:29"
+}

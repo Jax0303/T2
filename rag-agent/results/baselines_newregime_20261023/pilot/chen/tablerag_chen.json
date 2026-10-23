@@ -1,0 +1,69 @@
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "official_code": [
+    "08a8d6736475776f42ffac23b2c13111a28e5795"
+  ],
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 512,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3.5-4B?quantization=none",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 3,
+  "resumed": 0,
+  "provenance": {
+    "git_commit": "9fa1244db8b5af7c2900861a2f20a5246418eb03",
+    "git_dirty": false,
+    "source_sha256": "14bbcc4c38c44d46d82f9b15afccd43790375366ea8f9bc44ce667f3b1c741f0",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "transformers": "5.19.0",
+      "sentence-transformers": "6.1.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.14.1",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "n_queries": 3,
+  "seconds": 190.9,
+  "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 0.6667,
+      "cells_delivered_mean": 7.3,
+      "units_mean": 14.0,
+      "context_tokens_mean": 958.7,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m2+": {
+      "n": 1,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 1.0,
+      "cells_delivered_mean": 6.0,
+      "units_mean": 17.0,
+      "context_tokens_mean": 1124.0,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "accuracy_all": 0.0,
+      "accuracy_any_DIAGNOSTIC": 0.5,
+      "cells_delivered_mean": 8.0,
+      "units_mean": 12.5,
+      "context_tokens_mean": 876.0,
+      "expansion_llm_calls_mean": 2.0
+    }
+  },
+  "records_sha256": "511280b35906df1a211586d3415d5576d2114899c14d6e87268792ad080ab3b7"
+}

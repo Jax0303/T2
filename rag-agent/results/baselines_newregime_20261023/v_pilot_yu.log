@@ -1,0 +1,27 @@
+[plan] stage=answer 3 문항, 남은 3
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+[corpus] 3 docs / 16 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 71/199 [00:00<00:00, 706.41it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1116.77it/s]
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 493, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 438, in main
+    ret = Retriever(a.embed_model, a.reranker, a.reranker_device, cache)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 206, in __init__
+    self.reranker = Reranker(reranker_model, use_fp16=False, device=reranker_device)   # 공식 기본 fp32
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/vendor/tablerag_yu/online_inference/utils/tool_utils.py", line 53, in __init__
+    self.model = AutoModelForSequenceClassification.from_pretrained(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 411, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4242, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_utils.py", line 744, in _get_resolved_checkpoint_files
+    raise OSError(
+OSError: BAAI/bge-reranker-v2-m3 does not appear to have a file named pytorch_model.bin or model.safetensors.

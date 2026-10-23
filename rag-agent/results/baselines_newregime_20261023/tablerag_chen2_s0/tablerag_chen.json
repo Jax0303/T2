@@ -1,0 +1,87 @@
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "official_code": [
+    "08a8d6736475776f42ffac23b2c13111a28e5795"
+  ],
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 512,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "vllm:Qwen/Qwen3.5-4B",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 882,
+  "resumed": 0,
+  "provenance": {
+    "git_commit": "f5e60f9edf2e6af8f892401cdf0c09224279ad9d",
+    "git_dirty": false,
+    "source_sha256": "f471abecde64011f34df3f716c463d78355012efca20f67154bf3cadbd8a0aef",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "transformers": "5.19.0",
+      "sentence-transformers": "6.1.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.14.1",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "n_queries": 441,
+  "seconds": 23915.5,
+  "cell_credit": "요약 문서→min·max 행, 범주 문서→같은 값 셀 전부 (retrieval_accuracy.tablerag_units 규칙)",
+  "by_layer": {
+    "ALL": {
+      "n": 441,
+      "accuracy_all": 0.1111,
+      "accuracy_any_DIAGNOSTIC": 0.2698,
+      "cells_delivered_mean": 7.0,
+      "units_mean": 14.5,
+      "context_tokens_mean": 1017.3,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m1": {
+      "n": 29,
+      "accuracy_all": 0.2069,
+      "accuracy_any_DIAGNOSTIC": 0.2069,
+      "cells_delivered_mean": 9.7,
+      "units_mean": 18.2,
+      "context_tokens_mean": 1187.6,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "arith_m2+": {
+      "n": 166,
+      "accuracy_all": 0.0723,
+      "accuracy_any_DIAGNOSTIC": 0.2892,
+      "cells_delivered_mean": 6.7,
+      "units_mean": 14.8,
+      "context_tokens_mean": 1041.1,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m1": {
+      "n": 101,
+      "accuracy_all": 0.2376,
+      "accuracy_any_DIAGNOSTIC": 0.2376,
+      "cells_delivered_mean": 6.3,
+      "units_mean": 12.8,
+      "context_tokens_mean": 955.1,
+      "expansion_llm_calls_mean": 2.0
+    },
+    "lookup_m2+": {
+      "n": 145,
+      "accuracy_all": 0.0483,
+      "accuracy_any_DIAGNOSTIC": 0.2828,
+      "cells_delivered_mean": 7.2,
+      "units_mean": 14.5,
+      "context_tokens_mean": 999.4,
+      "expansion_llm_calls_mean": 2.0
+    }
+  },
+  "records_sha256": "81706f8041b817e7d68ccab5447057a771edc5e3d5247ccf3b215019dcbc2810"
+}

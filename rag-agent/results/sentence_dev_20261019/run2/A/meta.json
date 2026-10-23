@@ -1,0 +1,32 @@
+{
+ "model": "Qwen/Qwen3.5-4B",
+ "engine": "vllm",
+ "vllm": "0.31.0",
+ "dtype": "bfloat16",
+ "arm": "A,D,Cp,S1T,S2T,S1same,S2same",
+ "records": "results/prompt_sweep_20261015/dev_A_records.jsonl,results/format_dev_20261017/D_records.jsonl,results/sentence_dev_20261019/Cp_records.jsonl,results/sentence_dev_20261019/S1T_records.jsonl,results/sentence_dev_20261019/S2T_records.jsonl,results/sentence_dev_20261019/S1same_records.jsonl,results/sentence_dev_20261019/S2same_records.jsonl",
+ "n_records": {
+  "A": 395,
+  "D": 395,
+  "Cp": 395,
+  "S1T": 395,
+  "S2T": 395,
+  "S1same": 395,
+  "S2same": 395
+ },
+ "max_new_tokens": 4096,
+ "gpu_memory_utilization": 0.89,
+ "max_model_len": 8192,
+ "max_num_batched_tokens": 4096,
+ "max_num_seqs": 20,
+ "thinking": false,
+ "decoding": "greedy (temperature 0)",
+ "seed": 42,
+ "system_message": null,
+ "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+ "variants": [
+  "R1X1F1B2D1C1E0",
+  "R1X3F1B2D1C1E0"
+ ],
+ "started": "2026-10-19T20:11:32"
+}

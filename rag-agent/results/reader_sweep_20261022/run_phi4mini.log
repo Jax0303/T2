@@ -1,0 +1,140 @@
+[download done] 2026-10-22T19:48:55+09:00
+[transformers] This model config has set a `rope_parameters['original_max_position_embeddings']` field, to be used together with `max_position_embeddings` to determine a scaling factor. Please set the `factor` field of `rope_parameters`with this ratio instead -- we recommend the use of this field over `original_max_position_embeddings`, as it is compatible with most model architectures.
+max prompt tokens 1942
+[start seqs=24 max-model-len=8192] 2026-10-22T19:49:01+09:00
+[transformers] This model config has set a `rope_parameters['original_max_position_embeddings']` field, to be used together with `max_position_embeddings` to determine a scaling factor. Please set the `factor` field of `rope_parameters`with this ratio instead -- we recommend the use of this field over `original_max_position_embeddings`, as it is compatible with most model architectures.
+(MainProcess pid=76634) INFO 10-22 19:49:06 [api_utils.py:286] non-default args: {'dtype': 'bfloat16', 'seed': 42, 'max_model_len': 8192, 'enable_prefix_caching': True, 'gpu_memory_utilization': 0.89, 'max_num_batched_tokens': 4096, 'max_num_seqs': 24, 'disable_log_stats': True, 'model': '/home/ugh/.cache/huggingface/hub/models--microsoft--Phi-4-mini-instruct/snapshots/cfbefacb99257ffa30c83adab238a50856ac3083'}
+(MainProcess pid=76634) WARNING 10-22 19:49:06 [interface.py:1355] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+(MainProcess pid=76634) INFO 10-22 19:49:11 [model.py:699] Resolved architecture: Phi3ForCausalLM
+(MainProcess pid=76634) INFO 10-22 19:49:11 [model.py:2109] Using max model len 8192
+(MainProcess pid=76634) INFO 10-22 19:49:11 [scheduler.py:308] Chunked prefill is enabled with max_num_batched_tokens=4096.
+(MainProcess pid=76634) INFO 10-22 19:49:11 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=76634) WARNING 10-22 19:49:13 [system_utils.py:152] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: WSL is detected and NVML is not compatible with fork
+(EngineCore pid=76840) INFO 10-22 19:49:16 [core.py:129] Initializing a V1 LLM engine (v0.31.0) with config: model='/home/ugh/.cache/huggingface/hub/models--microsoft--Phi-4-mini-instruct/snapshots/cfbefacb99257ffa30c83adab238a50856ac3083', speculative_config=None, tokenizer='/home/ugh/.cache/huggingface/hub/models--microsoft--Phi-4-mini-instruct/snapshots/cfbefacb99257ffa30c83adab238a50856ac3083', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=42, served_model_name=/home/ugh/.cache/huggingface/hub/models--microsoft--Phi-4-mini-instruct/snapshots/cfbefacb99257ffa30c83adab238a50856ac3083, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [4096], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 48, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)
+(EngineCore pid=76840) INFO 10-22 19:49:17 [parallel_state.py:1825] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_3b08f626d02c450dad3d9bcc2c1957e5 backend=nccl
+(EngineCore pid=76840) INFO 10-22 19:49:17 [parallel_state.py:2269] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=76840) INFO 10-22 19:49:17 [gpu_worker.py:479] Using V2 Model Runner
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433] EngineCore failed to start.
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433] Traceback (most recent call last):
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1395, in run_engine_core
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     return func(*args, **kwargs)
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1151, in __init__
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     super().__init__(
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 140, in __init__
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     self.model_executor = executor_class(vllm_config)
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     return func(*args, **kwargs)
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/executor/abstract.py", line 113, in __init__
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     self._init_executor()
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/executor/uniproc_executor.py", line 69, in _init_executor
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     self.driver_worker.init_device()
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/worker/worker_base.py", line 343, in init_device
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     self.worker.init_device()  # type: ignore
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     ^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     return func(*args, **kwargs)
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/worker/gpu_worker.py", line 490, in init_device
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     self.requested_memory = request_memory(init_snapshot, self.cache_config)
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]   File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/worker/utils.py", line 548, in request_memory
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433]     raise ValueError(
+(EngineCore pid=76840) ERROR 10-22 19:49:17 [core.py:1433] ValueError: Free memory on device cuda:0 (10.34/11.99 GiB) on startup is less than desired GPU memory utilization (0.89, 10.67 GiB). Decrease GPU memory utilization or reduce GPU memory used by other processes.
+Process EngineCore:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1437, in run_engine_core
+    raise e
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1395, in run_engine_core
+    engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1151, in __init__
+    super().__init__(
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 140, in __init__
+    self.model_executor = executor_class(vllm_config)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/executor/abstract.py", line 113, in __init__
+    self._init_executor()
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/executor/uniproc_executor.py", line 69, in _init_executor
+    self.driver_worker.init_device()
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/worker/worker_base.py", line 343, in init_device
+    self.worker.init_device()  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/worker/gpu_worker.py", line 490, in init_device
+    self.requested_memory = request_memory(init_snapshot, self.cache_config)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/worker/utils.py", line 548, in request_memory
+    raise ValueError(
+ValueError: Free memory on device cuda:0 (10.34/11.99 GiB) on startup is less than desired GPU memory utilization (0.89, 10.67 GiB). Decrease GPU memory utilization or reduce GPU memory used by other processes.
+[rank0]:[W1022 19:49:18.970744364 ProcessGroupNCCL.cpp:1624] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+(MainProcess pid=76634) INFO 10-22 19:49:18 [utils.py:638] [shutdown] Process manager: send sigterm to process EngineCore
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 445, in <module>
+    main()
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 403, in main
+    return main_vllm(a, recs_by_arm, arms, variants)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 204, in main_vllm
+    llm = LLM(model=a.model, dtype="bfloat16", gpu_memory_utilization=a.gpu_mem, max_model_len=a.max_model_len, seed=SEED,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/entrypoints/llm.py", line 344, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 185, in from_engine_args
+    return cls(
+           ^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 111, in __init__
+    self.engine_core = EngineCoreClient.make_client(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 126, in make_client
+    return SyncMPClient(
+           ^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 917, in __init__
+    super().__init__(
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 674, in __init__
+    with launch_core_engines(
+  File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+    next(self.gen)
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/utils.py", line 1268, in launch_core_engines
+    wait_for_engine_startup(
+  File "/home/ugh/vllm-venv/lib/python3.12/site-packages/vllm/v1/engine/utils.py", line 1348, in wait_for_engine_startup
+    raise RuntimeError(
+RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+[exit 1] 2026-10-22T19:49:19+09:00
+/home/ugh/T2/rag-agent/results/format_dev_20261017/score_formats2.py:1: SyntaxWarning: invalid escape sequence '\*'
+  """형식 비교 채점 v2 — PREREG-2026-10-18-table-cap.md. score_formats.py 와 같되 (1) 마지막 줄 라벨 정규식이 굵은 글씨를 허용한다
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/results/format_dev_20261017/score_formats2.py", line 73, in <module>
+    main()
+  File "/home/ugh/T2/rag-agent/results/format_dev_20261017/score_formats2.py", line 37, in main
+    for arm_dir in sorted(p for p in Path(d).iterdir() if p.is_dir()):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/results/format_dev_20261017/score_formats2.py", line 37, in <genexpr>
+    for arm_dir in sorted(p for p in Path(d).iterdir() if p.is_dir()):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1058, in iterdir
+    for name in os.listdir(self):
+                ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'results/reader_sweep_20261022/run_phi4mini'
+[all done] 2026-10-22T19:49:20+09:00

@@ -1,0 +1,19 @@
+[start tablerag_chen2_s1] 2026-10-23T01:27:49+09:00
+[start tablerag_yu2_s1] 2026-10-23T01:27:49+09:00
+[start langchain] 2026-10-23T01:27:49+09:00
+[start tablerag_yu2_s0] 2026-10-23T01:27:49+09:00
+[start tablerag_chen2_s0] 2026-10-23T01:27:49+09:00
+Terminated
+[end tablerag_yu2_s0 rc=143 229s] 2026-10-23T01:31:38+09:00
+[1]   Done                    run tablerag_yu2_s$k $P scripts/baselines/tablerag_yu.py --out-dir $O/tablerag_yu2_s$k --stage answer --answer-ids $IDS --shard $k/2 --reader "$R" --embed-device cpu --reranker-device cpu --resume
+[end langchain rc=0 2636s] 2026-10-23T02:11:45+09:00
+[start raptor] 2026-10-23T02:11:45+09:00
+[end tablerag_chen2_s1 rc=0 23701s] 2026-10-23T08:02:50+09:00
+[end tablerag_chen2_s0 rc=0 23943s] 2026-10-23T08:06:52+09:00
+[end tablerag_yu2_s1 rc=0 25712s] 2026-10-23T08:36:21+09:00
+[2]   Done                    run tablerag_yu2_s$k $P scripts/baselines/tablerag_yu.py --out-dir $O/tablerag_yu2_s$k --stage answer --answer-ids $IDS --shard $k/2 --reader "$R" --embed-device cpu --reranker-device cpu --resume
+[3]   Done                    run tablerag_chen2_s$k env PYTHONHASHSEED=0 $P scripts/baselines/tablerag_chen.py --out-dir $O/tablerag_chen2_s$k --limit 882 --shard $k/2 --max-tokens 512 --reader "$R" --resume
+[4]-  Done                    run tablerag_chen2_s$k env PYTHONHASHSEED=0 $P scripts/baselines/tablerag_chen.py --out-dir $O/tablerag_chen2_s$k --limit 882 --shard $k/2 --max-tokens 512 --reader "$R" --resume
+[end raptor rc=0 34055s] 2026-10-23T11:39:20+09:00
+[5]+  Done                    { run langchain $P scripts/baselines/langchain_chunk.py --stage answer --out-dir $O/langchain_chunk_vllm --records results/mh_only_20260928/baselines/langchain_chunk/langchain_chunk_records.jsonl --reader "$R" --batch-size 1 --resume; run raptor $P scripts/baselines/raptor.py --out-dir $O/raptor --limit 882 --reader "$R" --batch-size 1 --embed-device cpu --resume; }
+[wave done] 2026-10-23T11:39:20+09:00

@@ -1,0 +1,213 @@
+[start run1 seqs=32] 2026-10-19T03:31:54+09:00
+(MainProcess pid=1117724) INFO 10-19 03:32:01 [api_utils.py:286] non-default args: {'dtype': 'bfloat16', 'seed': 42, 'max_model_len': 8192, 'enable_prefix_caching': True, 'gpu_memory_utilization': 0.89, 'max_num_batched_tokens': 4096, 'max_num_seqs': 32, 'disable_log_stats': True, 'language_model_only': True, 'model': '/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a'}
+(MainProcess pid=1117724) WARNING 10-19 03:32:01 [interface.py:1355] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+(MainProcess pid=1117724) INFO 10-19 03:32:01 [model.py:699] Resolved architecture: Qwen3_5ForConditionalGeneration
+(MainProcess pid=1117724) INFO 10-19 03:32:01 [model.py:2109] Using max model len 8192
+(MainProcess pid=1117724) WARNING 10-19 03:32:01 [model.py:1069] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+(MainProcess pid=1117724) INFO 10-19 03:32:02 [model.py:917] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(MainProcess pid=1117724) INFO 10-19 03:32:02 [model.py:974] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+(MainProcess pid=1117724) INFO 10-19 03:32:02 [scheduler.py:308] Chunked prefill is enabled with max_num_batched_tokens=4096.
+(MainProcess pid=1117724) INFO 10-19 03:32:02 [config.py:643] Mamba cache mode is set to 'align' for Qwen3_5ForConditionalGeneration by default when prefix caching is enabled
+(MainProcess pid=1117724) INFO 10-19 03:32:02 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=1117724) WARNING 10-19 03:32:06 [system_utils.py:152] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized; WSL is detected and NVML is not compatible with fork
+(EngineCore pid=1117991) INFO 10-19 03:32:11 [core.py:129] Initializing a V1 LLM engine (v0.31.0) with config: model='/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', speculative_config=None, tokenizer='/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=42, served_model_name=/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [4096], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 64, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)
+(EngineCore pid=1117991) INFO 10-19 03:32:12 [parallel_state.py:1825] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_348ed92ff23e4928bb0299e3bd9001ee backend=nccl
+(EngineCore pid=1117991) INFO 10-19 03:32:12 [parallel_state.py:2269] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=1117991) INFO 10-19 03:32:12 [gpu_worker.py:479] Using V2 Model Runner
+(EngineCore pid=1117991) WARNING 10-19 03:32:12 [buffer_utils.py:47] Pinned memory is not available on this platform; falling back to device memory for UVA buffers.
+(EngineCore pid=1117991) INFO 10-19 03:32:13 [model_runner.py:375] Loading model from scratch...
+(EngineCore pid=1117991) INFO 10-19 03:32:13 [cuda.py:585] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(EngineCore pid=1117991) INFO 10-19 03:32:13 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+(EngineCore pid=1117991) INFO 10-19 03:32:13 [qwen_gdn_linear_attn.py:177] Using Triton/FLA GDN prefill kernel (requested=auto, head_k_dim=128).
+(EngineCore pid=1117991) INFO 10-19 03:32:13 [qwen_gdn_linear_attn.py:533] GDN decode kernel: cuda
+(EngineCore pid=1117991) INFO 10-19 03:32:14 [cuda.py:526] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=1117991) INFO 10-19 03:32:14 [flash_attn.py:1167] Using FlashAttention version 2
+(EngineCore pid=1117991) INFO 10-19 03:32:15 [weight_utils.py:1063] Filesystem type for checkpoints: EXT4. Checkpoint size: 8.68 GiB. Available RAM: 10.32 GiB.
+(EngineCore pid=1117991) INFO 10-19 03:32:15 [weight_utils.py:1086] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:02<00:02,  2.15s/it]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:03<00:00,  1.77s/it]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:03<00:00,  1.83s/it]
+
+(EngineCore pid=1117991) INFO 10-19 03:32:19 [default_loader.py:484] Loading weights took 3.68 seconds
+(EngineCore pid=1117991) INFO 10-19 03:32:19 [model_runner.py:407] Model loading took 7.99 GiB memory and 6.860089 seconds
+(EngineCore pid=1117991) INFO 10-19 03:32:19 [topk_topp_sampler.py:96] FlashInfer top-p/top-k sampling disabled via VLLM_USE_FLASHINFER_SAMPLER=0.
+(EngineCore pid=1117991) INFO 10-19 03:32:19 [torch_utils.py:286] Reducing Torch threads from 16 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(EngineCore pid=1117991) INFO 10-19 03:32:19 [interface.py:989] Setting attention block size to 528 tokens to ensure that attention page size is >= mamba page size.
+(EngineCore pid=1117991) INFO 10-19 03:32:19 [interface.py:1013] Padding mamba page size by 0.76% to ensure that mamba page size and attention page size are exactly equal.
+(EngineCore pid=1117991) INFO 10-19 03:32:19 [utils.py:343] Using LBNHC KV cache layout.
+(EngineCore pid=1117991) INFO 10-19 03:32:24 [backends.py:1090] Using cache directory: /home/ugh/.cache/vllm/torch_compile_cache/9c0dd4c890/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=1117991) INFO 10-19 03:32:24 [backends.py:1151] Dynamo bytecode transform time: 3.33 s
+[rank0]:W1019 03:32:24.974000 1117991 torch/_inductor/utils.py:1953] Not enough SMs to use max_autotune_gemm mode
+(EngineCore pid=1117991) INFO 10-19 03:32:35 [backends.py:391] Compiling a graph for compile range (1, 4096) takes 10.83 s
+(EngineCore pid=1117991) INFO 10-19 03:32:36 [backends.py:916] collected artifacts: 33 entries, 12 artifacts, 12755931 bytes total
+(EngineCore pid=1117991) INFO 10-19 03:32:36 [decorators.py:717] saved AOT compiled function to /home/ugh/.cache/vllm/torch_compile_cache/torch_aot_compile/02acf981b3ffbc367a7187ca9c835818cc1a59c5bd237dde1133d5b3e5d8c31a/rank_0_0/model
+(EngineCore pid=1117991) INFO 10-19 03:32:36 [monitor.py:53] torch.compile took 15.93 s in total
+/home/ugh/vllm-venv/lib/python3.12/site-packages/triton/language/core.py:2284: UserWarning: tl.make_block_ptr is deprecated. Use TensorDescriptor or tl.make_tensor_descriptor instead.
+  warn("tl.make_block_ptr is deprecated. Use TensorDescriptor or tl.make_tensor_descriptor instead.")
+(EngineCore pid=1117991) INFO 10-19 03:33:33 [monitor.py:81] Initial profiling/warmup run took 56.25 s
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/11 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):   9%|▉         | 1/11 [00:00<00:09,  1.05it/s]Capturing CUDA graphs (PIECEWISE):  18%|█▊        | 2/11 [00:01<00:06,  1.33it/s]Capturing CUDA graphs (PIECEWISE):  27%|██▋       | 3/11 [00:01<00:04,  1.93it/s]Capturing CUDA graphs (PIECEWISE):  36%|███▋      | 4/11 [00:02<00:02,  2.56it/s]Capturing CUDA graphs (PIECEWISE):  45%|████▌     | 5/11 [00:02<00:03,  1.94it/s]Capturing CUDA graphs (PIECEWISE):  55%|█████▍    | 6/11 [00:02<00:02,  2.39it/s]Capturing CUDA graphs (PIECEWISE):  73%|███████▎  | 8/11 [00:03<00:00,  4.08it/s]Capturing CUDA graphs (PIECEWISE):  82%|████████▏ | 9/11 [00:03<00:00,  4.15it/s]Capturing CUDA graphs (PIECEWISE):  91%|█████████ | 10/11 [00:03<00:00,  4.44it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 11/11 [00:04<00:00,  2.77it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 11/11 [00:04<00:00,  2.60it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/2 [00:00<?, ?it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00, 15.55it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00, 15.54it/s]
+(EngineCore pid=1117991) INFO 10-19 03:33:39 [model_runner.py:1087] Graph capturing finished in 5 secs, took 0.11 GiB
+(EngineCore pid=1117991) INFO 10-19 03:33:39 [gpu_worker.py:692] Available KV cache memory: 0.97 GiB
+(EngineCore pid=1117991) INFO 10-19 03:33:39 [gpu_worker.py:707] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8900 is equivalent to --gpu-memory-utilization=0.8802 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8998. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=1117991) INFO 10-19 03:33:39 [kv_cache_utils.py:2464] GPU KV cache size: 21,969 tokens, Maximum concurrency for 8,192 tokens per request: 2.68x
+(EngineCore pid=1117991) INFO 10-19 03:33:39 [kernel_warmup.py:172] JIT kernel warmup starting.
+(EngineCore pid=1117991) INFO 10-19 03:33:39 [kernel_warmup.py:185] JIT kernel warmup finished in 0.00s.
+(EngineCore pid=1117991) INFO 10-19 03:33:39 [qwen_triton_warmup.py:294] Warming up Qwen GDN Triton kernels for model_type=qwen3_5_text.
+(EngineCore pid=1117991) INFO 10-19 03:33:40 [qwen_vl_triton_warmup.py:98] Warmed M-RoPE Triton kernels.
+(EngineCore pid=1117991) INFO 10-19 03:33:40 [mamba_triton_warmup.py:42] Warmed Mamba batch_memcpy_kernel.
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/11 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):   9%|▉         | 1/11 [00:00<00:05,  1.88it/s]Capturing CUDA graphs (PIECEWISE):  18%|█▊        | 2/11 [00:00<00:03,  2.70it/s]Capturing CUDA graphs (PIECEWISE):  27%|██▋       | 3/11 [00:01<00:02,  3.35it/s]Capturing CUDA graphs (PIECEWISE):  36%|███▋      | 4/11 [00:01<00:01,  3.91it/s]Capturing CUDA graphs (PIECEWISE):  55%|█████▍    | 6/11 [00:01<00:00,  6.22it/s]Capturing CUDA graphs (PIECEWISE):  73%|███████▎  | 8/11 [00:01<00:00,  8.19it/s]Capturing CUDA graphs (PIECEWISE):  91%|█████████ | 10/11 [00:01<00:00, 10.32it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 11/11 [00:01<00:00,  6.64it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/7 [00:00<?, ?it/s]Capturing CUDA graphs (FULL):  29%|██▊       | 2/7 [00:00<00:00, 13.11it/s]Capturing CUDA graphs (FULL):  57%|█████▋    | 4/7 [00:00<00:00, 12.80it/s]Capturing CUDA graphs (FULL):  86%|████████▌ | 6/7 [00:00<00:00, 13.31it/s]Capturing CUDA graphs (FULL): 100%|██████████| 7/7 [00:00<00:00, 14.04it/s]
+(EngineCore pid=1117991) INFO 10-19 03:33:58 [model_runner.py:1087] Graph capturing finished in 3 secs, took 0.07 GiB
+(EngineCore pid=1117991) INFO 10-19 03:33:58 [gpu_worker.py:892] CUDA graph pool memory: 0.07 GiB (actual), 0.12 GiB (estimated), difference: 0.05 GiB (76.5%).
+(EngineCore pid=1117991) INFO 10-19 03:33:58 [gpu_worker.py:955] Free memory on device (10.78/11.99 GiB) on startup. Desired GPU memory utilization is (0.89, 10.67 GiB). Actual usage is 8.33 GiB for consumed memory (weights + non-torch), 1.38 GiB for peak activation, and 0.07 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=809026397` (0.75 GiB) to fit into requested memory, or `--kv-cache-memory=917517312` (0.85 GiB) to fully utilize gpu memory. Current kv cache memory in use is 0.97 GiB.
+(EngineCore pid=1117991) INFO 10-19 03:33:58 [jit_monitor.py:84] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(EngineCore pid=1117991) INFO 10-19 03:33:59 [core.py:373] init engine (profile, create kv cache, warmup model) took 99.21 s (compilation: 15.93 s)
+(EngineCore pid=1117991) INFO 10-19 03:33:59 [kv_cache_utils.py:772] kv cache group sizes [528, 528, 528, 528]
+(EngineCore pid=1117991) INFO 10-19 03:33:59 [kv_cache_utils.py:773] kv lcm block sizes 528
+(EngineCore pid=1117991) INFO 10-19 03:33:59 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=1117724) INFO 10-19 03:33:59 [hf.py:646] Detected the chat template content format to be 'openai'. You can set `--chat-template-content-format` to override this.
+[model] Qwen/Qwen3.5-4B engine=vllm gpu_mem=0.89 max_model_len=8192
+[done] R1X1F1B2D1C1E0/A: 새로 395건, 합계 395, 1122s (2.84s/건)
+[done] R1X1F1B2D1C1E0/D: 새로 395건, 합계 395, 1106s (2.80s/건)
+[done] R1X2F1B2D2C1E0/A: 새로 395건, 합계 395, 1169s (2.96s/건)
+[done] R1X2F1B2D2C1E0/D: 새로 395건, 합계 395, 1112s (2.82s/건)
+(MainProcess pid=1117724) INFO 10-19 04:49:08 [utils.py:638] [shutdown] Process manager: send sigterm to process EngineCore
+(EngineCore pid=1117991) INFO 10-19 04:49:08 [core.py:1409] [shutdown] EngineCore: trigger received signal=SIGTERM
+(EngineCore pid=1117991) INFO 10-19 04:49:08 [core.py:1558] [shutdown] EngineCore: start mode=abort timeout=0s
+(EngineCore pid=1117991) INFO 10-19 04:49:08 [core.py:1589] [shutdown] EngineCore: request processing complete; starting resource teardown
+(EngineCore pid=1117991) INFO 10-19 04:49:08 [core.py:1422] [shutdown] EngineCore: exiting busy loop
+[exit 0 run1] 2026-10-19T04:49:11+09:00
+[start run2 seqs=20] 2026-10-19T04:49:11+09:00
+(MainProcess pid=1134061) INFO 10-19 04:49:17 [api_utils.py:286] non-default args: {'dtype': 'bfloat16', 'seed': 42, 'max_model_len': 8192, 'enable_prefix_caching': True, 'gpu_memory_utilization': 0.89, 'max_num_batched_tokens': 4096, 'max_num_seqs': 20, 'disable_log_stats': True, 'language_model_only': True, 'model': '/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a'}
+(MainProcess pid=1134061) WARNING 10-19 04:49:17 [interface.py:1355] Unknown vLLM environment variable detected: VLLM_ATTENTION_BACKEND
+(MainProcess pid=1134061) INFO 10-19 04:49:17 [model.py:699] Resolved architecture: Qwen3_5ForConditionalGeneration
+(MainProcess pid=1134061) INFO 10-19 04:49:17 [model.py:2109] Using max model len 8192
+(MainProcess pid=1134061) WARNING 10-19 04:49:17 [model.py:1069] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+(MainProcess pid=1134061) INFO 10-19 04:49:18 [model.py:917] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(MainProcess pid=1134061) INFO 10-19 04:49:18 [model.py:974] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+(MainProcess pid=1134061) INFO 10-19 04:49:18 [scheduler.py:308] Chunked prefill is enabled with max_num_batched_tokens=4096.
+(MainProcess pid=1134061) INFO 10-19 04:49:18 [config.py:643] Mamba cache mode is set to 'align' for Qwen3_5ForConditionalGeneration by default when prefix caching is enabled
+(MainProcess pid=1134061) INFO 10-19 04:49:18 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=1134061) WARNING 10-19 04:49:20 [system_utils.py:152] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized; WSL is detected and NVML is not compatible with fork
+(EngineCore pid=1134218) INFO 10-19 04:49:24 [core.py:129] Initializing a V1 LLM engine (v0.31.0) with config: model='/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', speculative_config=None, tokenizer='/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=42, served_model_name=/home/ugh/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [4096], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 20, 24, 32, 40], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 40, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)
+(EngineCore pid=1134218) INFO 10-19 04:49:24 [parallel_state.py:1825] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_05f3a41689634908b564d3a49b245a35 backend=nccl
+(EngineCore pid=1134218) INFO 10-19 04:49:24 [parallel_state.py:2269] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=1134218) INFO 10-19 04:49:24 [gpu_worker.py:479] Using V2 Model Runner
+(EngineCore pid=1134218) WARNING 10-19 04:49:25 [buffer_utils.py:47] Pinned memory is not available on this platform; falling back to device memory for UVA buffers.
+(EngineCore pid=1134218) INFO 10-19 04:49:25 [model_runner.py:375] Loading model from scratch...
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [cuda.py:585] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [qwen_gdn_linear_attn.py:177] Using Triton/FLA GDN prefill kernel (requested=auto, head_k_dim=128).
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [qwen_gdn_linear_attn.py:533] GDN decode kernel: cuda
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [cuda.py:526] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [flash_attn.py:1167] Using FlashAttention version 2
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [weight_utils.py:1063] Filesystem type for checkpoints: EXT4. Checkpoint size: 8.68 GiB. Available RAM: 11.36 GiB.
+(EngineCore pid=1134218) INFO 10-19 04:49:26 [weight_utils.py:1086] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:01<00:01,  1.37s/it]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.21it/s]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.10it/s]
+
+(EngineCore pid=1134218) INFO 10-19 04:49:28 [default_loader.py:484] Loading weights took 1.84 seconds
+(EngineCore pid=1134218) INFO 10-19 04:49:29 [model_runner.py:407] Model loading took 7.99 GiB memory and 3.656216 seconds
+(EngineCore pid=1134218) INFO 10-19 04:49:29 [topk_topp_sampler.py:96] FlashInfer top-p/top-k sampling disabled via VLLM_USE_FLASHINFER_SAMPLER=0.
+(EngineCore pid=1134218) INFO 10-19 04:49:29 [torch_utils.py:286] Reducing Torch threads from 16 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(EngineCore pid=1134218) INFO 10-19 04:49:29 [interface.py:989] Setting attention block size to 528 tokens to ensure that attention page size is >= mamba page size.
+(EngineCore pid=1134218) INFO 10-19 04:49:29 [interface.py:1013] Padding mamba page size by 0.76% to ensure that mamba page size and attention page size are exactly equal.
+(EngineCore pid=1134218) INFO 10-19 04:49:29 [utils.py:343] Using LBNHC KV cache layout.
+(EngineCore pid=1134218) INFO 10-19 04:49:31 [backends.py:1090] Using cache directory: /home/ugh/.cache/vllm/torch_compile_cache/7b5f0751a6/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=1134218) INFO 10-19 04:49:31 [backends.py:1151] Dynamo bytecode transform time: 1.99 s
+[rank0]:W1019 04:49:32.097000 1134218 torch/_inductor/utils.py:1953] Not enough SMs to use max_autotune_gemm mode
+(EngineCore pid=1134218) INFO 10-19 04:49:39 [backends.py:391] Compiling a graph for compile range (1, 4096) takes 7.33 s
+(EngineCore pid=1134218) INFO 10-19 04:49:40 [backends.py:916] collected artifacts: 33 entries, 12 artifacts, 12556318 bytes total
+(EngineCore pid=1134218) INFO 10-19 04:49:40 [decorators.py:717] saved AOT compiled function to /home/ugh/.cache/vllm/torch_compile_cache/torch_aot_compile/f4dbf982645cd18d9933633134e527783c9cc98c684ebcd6b915742da1adbe96/rank_0_0/model
+(EngineCore pid=1134218) INFO 10-19 04:49:40 [monitor.py:53] torch.compile took 10.38 s in total
+/home/ugh/vllm-venv/lib/python3.12/site-packages/triton/language/core.py:2284: UserWarning: tl.make_block_ptr is deprecated. Use TensorDescriptor or tl.make_tensor_descriptor instead.
+  warn("tl.make_block_ptr is deprecated. Use TensorDescriptor or tl.make_tensor_descriptor instead.")
+(EngineCore pid=1134218) INFO 10-19 04:50:20 [monitor.py:81] Initial profiling/warmup run took 39.19 s
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/9 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):  11%|█         | 1/9 [00:00<00:05,  1.47it/s]Capturing CUDA graphs (PIECEWISE):  22%|██▏       | 2/9 [00:01<00:03,  2.10it/s]Capturing CUDA graphs (PIECEWISE):  33%|███▎      | 3/9 [00:01<00:01,  3.24it/s]Capturing CUDA graphs (PIECEWISE):  44%|████▍     | 4/9 [00:01<00:01,  2.53it/s]Capturing CUDA graphs (PIECEWISE):  56%|█████▌    | 5/9 [00:01<00:01,  3.29it/s]Capturing CUDA graphs (PIECEWISE):  78%|███████▊  | 7/9 [00:01<00:00,  4.96it/s]Capturing CUDA graphs (PIECEWISE):  89%|████████▉ | 8/9 [00:02<00:00,  5.50it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 9/9 [00:02<00:00,  3.79it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 9/9 [00:02<00:00,  3.46it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/2 [00:00<?, ?it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00, 21.25it/s]
+(EngineCore pid=1134218) INFO 10-19 04:50:24 [model_runner.py:1087] Graph capturing finished in 3 secs, took 0.10 GiB
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [gpu_worker.py:692] Available KV cache memory: 1.2 GiB
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [gpu_worker.py:707] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8900 is equivalent to --gpu-memory-utilization=0.8806 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8994. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [kv_cache_utils.py:2464] GPU KV cache size: 27,554 tokens, Maximum concurrency for 8,192 tokens per request: 3.36x
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [kernel_warmup.py:172] JIT kernel warmup starting.
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [kernel_warmup.py:185] JIT kernel warmup finished in 0.00s.
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [qwen_triton_warmup.py:294] Warming up Qwen GDN Triton kernels for model_type=qwen3_5_text.
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [qwen_vl_triton_warmup.py:98] Warmed M-RoPE Triton kernels.
+(EngineCore pid=1134218) INFO 10-19 04:50:25 [mamba_triton_warmup.py:42] Warmed Mamba batch_memcpy_kernel.
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/9 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):  11%|█         | 1/9 [00:00<00:02,  3.25it/s]Capturing CUDA graphs (PIECEWISE):  22%|██▏       | 2/9 [00:00<00:01,  5.15it/s]Capturing CUDA graphs (PIECEWISE):  44%|████▍     | 4/9 [00:00<00:00,  8.86it/s]Capturing CUDA graphs (PIECEWISE):  78%|███████▊  | 7/9 [00:00<00:00, 14.11it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 9/9 [00:00<00:00, 12.05it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/6 [00:00<?, ?it/s]Capturing CUDA graphs (FULL):  50%|█████     | 3/6 [00:00<00:00, 28.98it/s]Capturing CUDA graphs (FULL): 100%|██████████| 6/6 [00:00<00:00, 28.98it/s]Capturing CUDA graphs (FULL): 100%|██████████| 6/6 [00:00<00:00, 28.97it/s]
+(EngineCore pid=1134218) INFO 10-19 04:50:36 [model_runner.py:1087] Graph capturing finished in 1 secs, took 0.06 GiB
+(EngineCore pid=1134218) INFO 10-19 04:50:36 [gpu_worker.py:892] CUDA graph pool memory: 0.06 GiB (actual), 0.11 GiB (estimated), difference: 0.05 GiB (81.2%).
+(EngineCore pid=1134218) INFO 10-19 04:50:36 [gpu_worker.py:955] Free memory on device (10.78/11.99 GiB) on startup. Desired GPU memory utilization is (0.89, 10.67 GiB). Actual usage is 8.1 GiB for consumed memory (weights + non-torch), 1.38 GiB for peak activation, and 0.06 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=1066038109` (0.99 GiB) to fit into requested memory, or `--kv-cache-memory=1174529024` (1.09 GiB) to fully utilize gpu memory. Current kv cache memory in use is 1.2 GiB.
+(EngineCore pid=1134218) INFO 10-19 04:50:36 [jit_monitor.py:84] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(EngineCore pid=1134218) INFO 10-19 04:50:37 [core.py:373] init engine (profile, create kv cache, warmup model) took 67.97 s (compilation: 10.38 s)
+(EngineCore pid=1134218) INFO 10-19 04:50:37 [kv_cache_utils.py:772] kv cache group sizes [528, 528, 528, 528]
+(EngineCore pid=1134218) INFO 10-19 04:50:37 [kv_cache_utils.py:773] kv lcm block sizes 528
+(EngineCore pid=1134218) INFO 10-19 04:50:37 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=1134061) INFO 10-19 04:50:37 [hf.py:646] Detected the chat template content format to be 'openai'. You can set `--chat-template-content-format` to override this.
+[model] Qwen/Qwen3.5-4B engine=vllm gpu_mem=0.89 max_model_len=8192
+[done] R1X1F1B2D1C1E0/A: 새로 395건, 합계 395, 1044s (2.64s/건)
+[done] R1X1F1B2D1C1E0/D: 새로 395건, 합계 395, 920s (2.33s/건)
+[done] R1X2F1B2D2C1E0/A: 새로 395건, 합계 395, 1026s (2.60s/건)
+[done] R1X2F1B2D2C1E0/D: 새로 395건, 합계 395, 974s (2.47s/건)
+(MainProcess pid=1134061) INFO 10-19 05:56:42 [utils.py:638] [shutdown] Process manager: send sigterm to process EngineCore
+(EngineCore pid=1134218) INFO 10-19 05:56:42 [core.py:1409] [shutdown] EngineCore: trigger received signal=SIGTERM
+(EngineCore pid=1134218) INFO 10-19 05:56:42 [core.py:1558] [shutdown] EngineCore: start mode=abort timeout=0s
+(EngineCore pid=1134218) INFO 10-19 05:56:42 [core.py:1589] [shutdown] EngineCore: request processing complete; starting resource teardown
+(EngineCore pid=1134218) INFO 10-19 05:56:42 [core.py:1422] [shutdown] EngineCore: exiting busy loop
+[exit 0 run2] 2026-10-19T05:56:47+09:00
+=== R1X1F1B2D1C1E0 ===
+/home/ugh/T2/rag-agent/results/format_dev_20261017/score_formats2.py:1: SyntaxWarning: invalid escape sequence '\*'
+  """형식 비교 채점 v2 — PREREG-2026-10-18-table-cap.md. score_formats.py 와 같되 (1) 마지막 줄 라벨 정규식이 굵은 글씨를 허용한다
+
+== devprompt2_run1 ==
+| 팔 | 마지막 줄 맞힘 /395 | % | 조회 | 산술 | 전체 포함 | 공식 EM | 잘림 | 출력 토큰 |
+|---|---|---|---|---|---|---|---|---|
+| A | 258 | 65.3 | 92/131 | 166/264 | 301 | 0.4582 | 17 | 625.4 |
+| D | 270 | 68.4 | 96/131 | 174/264 | 306 | 0.4709 | 17 | 639.0 |
+
+== devprompt2_run2 ==
+| 팔 | 마지막 줄 맞힘 /395 | % | 조회 | 산술 | 전체 포함 | 공식 EM | 잘림 | 출력 토큰 |
+|---|---|---|---|---|---|---|---|---|
+| A | 259 | 65.6 | 93/131 | 166/264 | 303 | 0.4582 | 22 | 718.3 |
+| D | 268 | 67.8 | 95/131 | 173/264 | 309 | 0.4633 | 16 | 641.3 |
+
+== 실행 평균(마지막 줄 맞힘) ==
+  A: [258, 259] 평균 258.5
+  D: [270, 268] 평균 269.0
+
+== 쌍 비교(마지막 줄, 실행별) ==
+  devprompt2_run1 A 대 D: 258 대 270 b:c 22:34 p=0.141
+  devprompt2_run1 D 대 A: 270 대 258 b:c 34:22 p=0.141
+  devprompt2_run2 A 대 D: 259 대 268 b:c 21:30 p=0.262
+  devprompt2_run2 D 대 A: 268 대 259 b:c 30:21 p=0.262
+=== R1X2F1B2D2C1E0 ===
+/home/ugh/T2/rag-agent/results/format_dev_20261017/score_formats2.py:1: SyntaxWarning: invalid escape sequence '\*'
+  """형식 비교 채점 v2 — PREREG-2026-10-18-table-cap.md. score_formats.py 와 같되 (1) 마지막 줄 라벨 정규식이 굵은 글씨를 허용한다
+
+== devprompt2_run1 ==
+| 팔 | 마지막 줄 맞힘 /395 | % | 조회 | 산술 | 전체 포함 | 공식 EM | 잘림 | 출력 토큰 |
+|---|---|---|---|---|---|---|---|---|
+| A | 255 | 64.6 | 96/131 | 159/264 | 301 | 0.443 | 18 | 641.9 |
+| D | 271 | 68.6 | 96/131 | 175/264 | 315 | 0.4734 | 15 | 635.7 |
+
+== devprompt2_run2 ==
+| 팔 | 마지막 줄 맞힘 /395 | % | 조회 | 산술 | 전체 포함 | 공식 EM | 잘림 | 출력 토큰 |
+|---|---|---|---|---|---|---|---|---|
+| A | 256 | 64.8 | 97/131 | 159/264 | 298 | 0.4506 | 23 | 695.5 |
+| D | 269 | 68.1 | 94/131 | 175/264 | 318 | 0.4709 | 20 | 684.6 |
+
+== 실행 평균(마지막 줄 맞힘) ==
+  A: [255, 256] 평균 255.5
+  D: [271, 269] 평균 270.0
+
+== 쌍 비교(마지막 줄, 실행별) ==
+  devprompt2_run1 A 대 D: 255 대 271 b:c 18:34 p=0.036
+  devprompt2_run1 D 대 A: 271 대 255 b:c 34:18 p=0.036
+  devprompt2_run2 A 대 D: 256 대 269 b:c 23:36 p=0.117
+  devprompt2_run2 D 대 A: 269 대 256 b:c 36:23 p=0.117
+[all done] 2026-10-19T05:56:51+09:00

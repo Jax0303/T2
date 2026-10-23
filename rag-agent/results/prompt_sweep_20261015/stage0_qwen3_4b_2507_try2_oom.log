@@ -1,0 +1,304 @@
+[start] 2026-10-15T19:56:02+09:00 Qwen/Qwen3-4B-Instruct-2507
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   0%|          | 1/398 [00:00<00:59,  6.71it/s]Loading weights:  21%|██        | 84/398 [00:00<00:00, 409.18it/s]Loading weights:  42%|████▏     | 168/398 [00:00<00:00, 585.08it/s]Loading weights:  63%|██████▎   | 251/398 [00:00<00:00, 673.45it/s]Loading weights:  84%|████████▍ | 334/398 [00:00<00:00, 724.00it/s]Loading weights: 100%|██████████| 398/398 [00:00<00:00, 622.54it/s]
+[load] 못 찾은 가중치 0, 안 쓴 가중치 0
+[load] 메모리 상한 0.865 × 12.0GB
+[model] Qwen/Qwen3-4B-Instruct-2507 dtype=torch.bfloat16 class=Qwen3ForCausalLM vram=7.49GB
+  [oom] 묶음 10 → 5+5
+  [oom] 묶음 5 → 2+3
+  [oom] 묶음 2 → 1+1
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 109, in generate_safe
+    return generate(tok, model, prompts, max_new, thinking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 86, in generate
+    out = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2982, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 3182, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 4293, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 469, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 405, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 313, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 81, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 312.00 MiB. GPU 0 has a total capacity of 11.99 GiB of which 406.39 MiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 10.38 GiB allowed; Of the allocated memory 9.86 GiB is allocated by PyTorch, and 283.83 MiB is reserved by PyTorch but unallocated.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 109, in generate_safe
+    return generate(tok, model, prompts, max_new, thinking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 86, in generate
+    out = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2982, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 3182, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 4293, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 469, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 405, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 313, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 81, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 144.00 MiB. GPU 0 has a total capacity of 11.99 GiB of which 286.39 MiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 10.38 GiB allowed; Of the allocated memory 10.11 GiB is allocated by PyTorch, and 154.26 MiB is reserved by PyTorch but unallocated.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 109, in generate_safe
+    return generate(tok, model, prompts, max_new, thinking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 86, in generate
+    out = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2982, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 3182, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 4293, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 469, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 405, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 313, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 81, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 56.00 MiB. GPU 0 has a total capacity of 11.99 GiB of which 192.76 MiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 10.38 GiB allowed; Of the allocated memory 10.19 GiB is allocated by PyTorch, and 147.09 MiB is reserved by PyTorch but unallocated.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 261, in <module>
+    main()
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 240, in main
+    batched = [x[0] for x in generate_safe(tok, model, prompts, a.max_new_tokens, a.thinking)]
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 116, in generate_safe
+    return generate_safe(tok, model, prompts[:h], max_new, thinking) + generate_safe(tok, model, prompts[h:], max_new, thinking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 116, in generate_safe
+    return generate_safe(tok, model, prompts[:h], max_new, thinking) + generate_safe(tok, model, prompts[h:], max_new, thinking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 116, in generate_safe
+    return generate_safe(tok, model, prompts[:h], max_new, thinking) + generate_safe(tok, model, prompts[h:], max_new, thinking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 109, in generate_safe
+    return generate(tok, model, prompts, max_new, thinking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 86, in generate
+    out = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2982, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 3182, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 4293, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 469, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 405, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 313, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 81, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 28.00 MiB. GPU 0 has a total capacity of 11.99 GiB of which 162.39 MiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 10.38 GiB allowed; Of the allocated memory 10.28 GiB is allocated by PyTorch, and 103.58 MiB is reserved by PyTorch but unallocated.
+[exit 1] 2026-10-15T19:56:34+09:00

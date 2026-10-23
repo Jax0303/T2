@@ -1,0 +1,102 @@
+{
+  "baseline": "raptor",
+  "raptor_repo": "https://github.com/parthsarthi03/raptor",
+  "raptor_commit": "7da1d48a7e1d7dec61a63c9d9aae84e2dfaa5767",
+  "records_source": "results/mh_only_20260928/retrieval/mh_train_s3c_records.jsonl",
+  "answer_set": "results/mh_arms/cap300_20260924/cell_uniq.jsonl",
+  "limit": 882,
+  "n_queries": 882,
+  "n_scored": 882,
+  "n_excluded": 0,
+  "excluded": {},
+  "n_documents": 579,
+  "chunk_tokens_cl100k": 100,
+  "summary_max_tokens": 100,
+  "budgets_qwen3_tokens": [
+    2000,
+    575
+  ],
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "summarizer": "vllm:Qwen/Qwen3.5-4B",
+  "n_summary_calls_total": 1097,
+  "tree_seconds_total": 20829.7,
+  "cluster_failed_leaves_only": {
+    "n": 1,
+    "doc_keys": [
+      "a003b5a5b20a4de8"
+    ]
+  },
+  "tree_stats_mean": {
+    "n_leaves": 12.77,
+    "n_nodes": 14.7,
+    "n_layers": 0.52,
+    "n_summary_calls": 1.93,
+    "seconds": 35.98,
+    "n_doc_tok_cl100k": 1103.9
+  },
+  "by_layer": {
+    "ALL": {
+      "n": 882,
+      "accuracy_all_2000": 0.7778,
+      "accuracy_all_575": 0.6417,
+      "n_tok_2000_mean": 1430.1,
+      "n_tok_575_mean": 524.7
+    },
+    "arith_m1": {
+      "n": 71,
+      "accuracy_all_2000": 0.4789,
+      "accuracy_all_575": 0.3521,
+      "n_tok_2000_mean": 1368.8,
+      "n_tok_575_mean": 517.7
+    },
+    "arith_m2+": {
+      "n": 300,
+      "accuracy_all_2000": 0.8167,
+      "accuracy_all_575": 0.6467,
+      "n_tok_2000_mean": 1407.5,
+      "n_tok_575_mean": 521.9
+    },
+    "lookup_m1": {
+      "n": 211,
+      "accuracy_all_2000": 0.8104,
+      "accuracy_all_575": 0.7156,
+      "n_tok_2000_mean": 1434.6,
+      "n_tok_575_mean": 529.7
+    },
+    "lookup_m2+": {
+      "n": 300,
+      "accuracy_all_2000": 0.7867,
+      "accuracy_all_575": 0.6533,
+      "n_tok_2000_mean": 1464.0,
+      "n_tok_575_mean": 525.7
+    }
+  },
+  "provenance": {
+    "git_commit": "f5e60f9edf2e6af8f892401cdf0c09224279ad9d",
+    "git_dirty": false,
+    "source_sha256": "f471abecde64011f34df3f716c463d78355012efca20f67154bf3cadbd8a0aef",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "transformers": "5.19.0",
+      "sentence-transformers": "6.1.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.14.1",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "arguments": {
+    "limit": 882,
+    "out_dir": "results/baselines_newregime_20261023/raptor",
+    "tree_dir": "",
+    "reader": "vllm:Qwen/Qwen3.5-4B",
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "batch_size": 1,
+    "seed": 42,
+    "dry_run": false,
+    "resume": true,
+    "embed_device": "cpu"
+  }
+}

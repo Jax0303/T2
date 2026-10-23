@@ -1,0 +1,2150 @@
+
+##### 1. 1175164da5b340e2bca54a11856a7704 | lookup_m2+ | D fin=1 out=744 cells=64 gold_in=1 | A fin=1
+Q: How many elements show negative value in 2009 for AggregateAssets?
+GOLD: 0 |  | ['3-2-1', '3-5-1']
+D final: '2'
+A final: '0'
+--- D tail ---
+values in the "Recorded Investment" and "Outstanding Balance" columns for 2009 are positive.
+    *   *Count of negative values: 0*
+
+5.  **Table 5**:
+    *   All values in the "IncrementalAssets" column are positive.
+    *   *Count of negative values: 0*
+
+6.  **Table 1**:
+    *   All values are positive.
+    *   *Count of negative values: 0*
+
+Summing the counts from all tables:
+Total negative elements = 0 (Table 4) + 0 (Table 6) + 2 (Table 3) + 0 (Table 2) + 0 (Table 5) + 0 (Table 1) = 2.
+
+The elements with negative values in 2009 for AggregateAssets are "Accretion (including cash recoveries)" and "Disposals" found in Table 3.
+
+Final answer: 2
+--- A tail ---
+c "AggregateAssets" column header like the others. The other tables explicitly have a column header "AggregateAssets" or "Aggregate Assets".
+
+Therefore, based on the explicit column headers matching "AggregateAssets" for the year 2009, there are **0** elements with a negative value.
+
+Final answer: 0
+--- D context head ---
+Table 4
+| | AggregateAssets | Aggregate Liabilities |
+| --- | --- | --- |
+| Tax credit investments (a) > December 31, 2009 | $1,933 | $808 |
+| Tax credit investments (a) > December 31, 2008 | $1,690 | $921 |
+| Credit Risk Transfer Transaction > December 31, 2009 | $860 | $860 |
+| Credit Risk Transfer Transaction > December 31, 2008 | $1,070 | $1,070 |
+
+Table 6
+| | Aggregate Assets | Aggregate Liabilities | PNC Riskof Loss | PNC Riskof Loss > (a) |
+| --- | --- | --- | --- | --- |
+| December 31, 2009 > Market Street | $3,698 | $3,718 | $6,155 | (a) |
+| December 31, 2009 > Tax credit investments (b) (c) | 1,786 | 1,156 | 743 |  |
+| December 31, 2009 > Collateralized debt obligations | 23 |  | 2
+
+##### 2. 1e724be0e483467dbda4d376b0f832a5 | lookup_m1 | D fin=1 out=151 cells=150 gold_in=1 | A fin=1
+Q: What's the sum of Consumer in 2010? (in million)
+GOLD: 20854 |  | ['1-8-1']
+D final: '643,450'
+A final: '20,854'
+--- D tail ---
+To find the sum of "Consumer" in 2010, we need to identify the row labeled "Consumer > Total consumer" in the provided tables and extract the value under the column "December 31 > 2010".
+
+Looking at **Table 1**:
+- Row: "Consumer > Total consumer"
+- Column: "December 31 > 2010"
+- Value: $643,450
+
+The question asks for the sum of Consumer in 2010. The table explicitly provides the total for the Consumer category for that year. No calculation is needed as the total is already summed.
+
+Final answer: 643,450
+--- A tail ---
+f the individual consumer categories (Residential mortgage, Home equity, Discontinued real estate, Direct/Indirect consumer, Other consumer), the value 20,854 is the sum.
+
+Calculation:
+The value is directly provided in the table as the total for Consumer in 2010.
+Value = 20,854
+
+Final answer: 20,854
+--- D context head ---
+Table 2
+| | December 31 > 2010 | December 31 > 2009 | December 31 > 2008 | December 31 > 2007 | December 31 > 2006 |
+| --- | --- | --- | --- | --- | --- |
+| Consumer > Residential mortgage | $17,691 | $16,596 | $7,057 | $1,999 | $660 |
+| Consumer > Home equity | 2,694 | 3,804 | 2,637 | 1,340 | 289 |
+| Consumer > Discontinued real estate | 331 | 249 | 77 | n/a | n/a |
+| Consumer > Direct/Indirect consumer | 90 | 86 | 26 | 8 | 4 |
+| Consumer > Other consumer | 48 | 104 | 91 | 95 | 77 |
+| Consumer > Total consumer-2 | 20,854 | 20,839 | 9,888 | 3,442 | 1,030 |
+| Commercial > U.S. commercial-3 | 3,453 | 4,925 | 2,040 | 852 | 494 |
+| Commercial > Non-U.S.commercial | 233 | 177 | 290 | 19 | 13 |
+| 
+
+##### 3. 206a2b0d2fbd489884f23ea2f13b7167 | lookup_m1 | D fin=0 out=3072 cells=102 gold_in=1 | A fin=1
+Q: What's the greatest value of Retained Earnings in 2008? (in thousand)
+GOLD: 2901139 |  | ['2-2-4']
+D final: None
+A final: '2,901,139'
+--- D tail ---
+re:
+2,901,139
+10,455
+-60,942
+-21,541
+-248,501
+2,580,610
+If we just pick the max of these cells: 2,901,139.
+But 2,911,594 is a valid value of Retained Earnings during the year.
+Let's look at the wording "greatest value of Retained Earnings".
+If I ask "What is the greatest temperature in 2008?", and the data shows it started at 70, went to 71, then dropped to 60. The answer is 71.
+So I should calculate the peak.
+
+Calculation:
+Start Balance + Net Income
+2,901,139 + 10,455 = 2,911,594
+
+Final check of the numbers.
+Row 1: 2,901,139
+Row 3: 10,455
+Sum: 2,911,594.
+Subsequent rows reduce it.
+So 2,911,594 is the max.
+
+Final Answer seems to be 2,911,594.
+--- A tail ---
+this one). The highest specific value associated with Retained Earnings for the year 2008 in the text is the ending balance.
+
+The value is found directly in the cell at the intersection of the row "Balance, June 28, 2008" and the column "Retained Earnings".
+
+Value: 2,901,139
+
+Final answer: 2,901,139
+--- D context head ---
+Table 3
+| | Common Stock > Shares | Common Stock > Par Value | Additional Paid-In Capital | Retained Earnings | Accumulated other Comprehensive Loss | Total Stockholders' Equity |
+| --- | --- | --- | --- | --- | --- | --- |
+| Balance, June 28, 2008 | 320,553 | 321 | 251,478 | 2,901,139 | -5,127 | 3,147,811 |
+| Components of comprehensive income: > Net income > row 3 |  |  |  | 10,455 |  | 10,455 |
+| Components of comprehensive income: > Tax effect of the unrealized exchange loss on long-term intercompany receivable |  |  |  |  | 552 | 552 |
+| Components of comprehensive income: > Repurchase of common stock > row 8 | -18,132 | -18 | -174,172 | -60,942 |  | -235,132 |
+| Components of comprehen
+
+##### 4. 2cafe67b7580440bb1327d28e0b1ab63 | lookup_m1 | D fin=0 out=3072 cells=108 gold_in=1 | A fin=1
+Q: what is the highest total amount of Net periodic defined benefit cost? (in million)
+GOLD: 122 |  | ['3-11-1']
+D final: None
+A final: '122'
+--- D tail ---
+cognized in OCI.
+            *   Row 12: Total recognized in NPBC and OCI.
+
+    *   The standard formula for Net Periodic Benefit Cost (NPBC) is:
+        NPBC = Service Cost + Interest Cost - Expected Return + Amortization of PSC + Amortization of Net Gain/Loss.
+    *   In this table:
+        *   Service Cost = Benefits earned (Row 1)
+        *   Interest Cost = Interest cost (Row 2)
+        *   Expected Return = Expected return (Row 3)
+        *   Amortization of PSC = Row 10 (Amortization of prior service cost). Note: Row 10 is under "Changes in plan assets...", but amortization of PSC is part of NPBC.
+        *   Amortization of Net Gain/L
+--- A tail ---
+ied as absolute value, but "highest" typically means the maximum algebraic value).
+Comparing the values: 122, -186, 35, 33, 43, 64, -74, -64, -55.
+The maximum value is 122.
+
+Calculation:
+Identify the maximum value from the set {122, -186, 35, 33, 43, 64, -74, -64, -55}.
+Max = 122.
+
+Final answer: 122
+--- D context head ---
+Table 4
+| | Pension plans > U.S. > 2015 | Pension plans > U.S. > 2014 | Pension plans > U.S. > 2013 | Pension plans > Non-U.S. > 2015 | Pension plans > Non-U.S. > 2014 | Pension plans > Non-U.S. > 2013 | OPEB plans > 2015 | OPEB plans > 2014 | OPEB plans > 2013 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Components of net periodic benefit cost > Benefits earned during the year | $340 | $281 | $314 | $37 | $33 | $34 | $1 | $— | $1 |
+| Components of net periodic benefit cost > Interest cost on benefit obligations | 498 | 534 | 447 | 112 | 137 | 125 | 31 | 38 | 35 |
+| Components of net periodic benefit cost > Expected return on plan assets | -929 | -985 | -956 | -150 | -17
+
+##### 5. 2f07d38f1bdd4281ac24f7b621c8d6a4 | lookup_m1 | D fin=1 out=580 cells=122 gold_in=1 | A fin=1
+Q: Which year is Credit the highest for Not designated as hedges?
+GOLD: 2011 |  | ['1-13-1']
+D final: '2012'
+A final: '2011'
+--- D tail ---
+assets and liabilities > Credit > row 3"):
+        *   Value = 100,310
+    *   For the year **2012** (based on the second section of Table 2, where the row is "Trading assets and liabilities > Credit > row 12"):
+        *   Value = 169,650
+
+3.  **Compare the values:**
+    *   2011 Value: 100,310
+    *   2012 Value: 169,650
+    *   169,650 > 100,310
+
+4.  **Determine the highest year:**
+    *   The highest value is 169,650, which corresponds to the year 2012.
+
+Calculation expression:
+(169,650 - 100,310) > 0 implies 2012 is higher than 2011.
+Max(100,310, 169,650) = 169,650.
+
+The year associated with the highest value is 2012.
+
+Final answer: 2012
+--- A tail ---
+ed "Credit" and the column "Not designated as hedges" under "Gross derivative receivables":
+    Value = 169,650
+
+3.  **Compare the values:**
+    We compare 100,310 (2012) and 169,650 (2011).
+    169,650 > 100,310.
+
+The highest value is 169,650, which corresponds to the year 2011.
+
+Final answer: 2011
+--- D context head ---
+Table 2
+| | Gross derivative receivables > Not designated as hedges | Gross derivative receivables > Designated as hedges | Gross derivative receivables > Total derivative receivables | Net derivative receivables(c) | Gross derivative payables > Not designated as hedges | Gross derivative payables > Designated as hedges | Gross derivative payables > Total derivative payables | Net derivative payables(c) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Trading assets and liabilities > Interest rate > row 2 | $1,323,184 | $6,064 | $1,329,248 | $39,205 | $1,284,494 | $3,120 | $1,287,614 | $24,906 |
+| Trading assets and liabilities > Credit > row 3 | 100,310 | — | 100,310 | 1,735 | 10
+
+##### 6. 31568129a0d7478d94c0b5f13dd59302 | arith_m1 | D fin=1 out=187 cells=110 gold_in=1 | A fin=1
+Q: What's the 18 % of total elements for Level 3 in 2014? (in millions)
+GOLD: 453.96 | multiply(2522,0.18) | ['2-42-3']
+D final: None
+A final: '453.96'
+--- D tail ---
+To find the value representing 18% of the total elements for Level 3 in 2014, we first identify the total amount for Level 3 from the table.
+
+1.  **Identify the Total for Level 3 in 2014**: Looking at the row labeled "Total" and the column "As of December 31, 2014 > Level 3", the value is $2,522 million.
+2.  **Calculate 18% of this total**: The question asks for 18% of this specific value.
+    *   Calculation: $2,522 \times 0.18$
+
+**Arithmetic Expression**:
+$2,522 \times 0.18 = 453.96$
+
+**Final answer**: 453.96
+--- A tail ---
+led "Level 3" under the section "As of December 31, 2014", the value is **$2,522** (in millions).
+
+2.  **Calculate 18% of this value**:
+    The question asks for 18% of this total.
+    Calculation: $2,522 \times 0.18$
+
+    Arithmetic expression:
+    $2,522 \times 0.18 = 453.96$
+
+Final answer: 453.96
+--- D context head ---
+Table 3
+| | As of December 31, 2014 > Level 1 > (in millions) | As of December 31, 2014 > Level 2 | As of December 31, 2014 > Level 3 | As of December 31, 2014 > Total |
+| --- | --- | --- | --- | --- |
+| U.S. Equities: > Pooled separate accounts-1 | $0 | $881 | $0 | $881 |
+| U.S. Equities: > Common/collective trusts-1 | 0 | 87 | 0 | 87 |
+| U.S. Equities: > Subtotal |  |  |  | 968 |
+| International Equities: > Pooled separate accounts-2 | 0 | 323 | 0 | 323 |
+| International Equities: > Common/collective trusts-3 | 0 | 202 | 0 | 202 |
+| International Equities: > United Kingdom insurance pooled funds-4 | 0 | 45 | 0 | 45 |
+| International Equities: > Subtotal |  |  |  | 570 |
+| Fixed Maturities:
+
+##### 7. 3a960ac8706d4e749f6ce89225b0999f | arith_m2+ | D fin=1 out=567 cells=127 gold_in=1 | A fin=1
+Q: What do all Homes Closed sum up without those East smaller than 3000, in 2013? (in million)
+GOLD: 21650.0 | subtract(24155,2505) | ['3-3-1', '3-9-1']
+D final: '18,596'
+A final: '21,650'
+--- D tail ---
+ce 1,449 < 3,000, this region is excluded.
+- **Southeast**: Value is 6,807. Since 6,807 >= 3,000 and it is not "East", include this.
+- **South Central**: Value is 7,609. Since 7,609 >= 3,000 and it is not "East", include this.
+- **Southwest**: Value is 1,605. Since 1,605 < 3,000, this region is excluded.
+- **West**: Value is 4,180. Since 4,180 >= 3,000 and it is not "East", include this.
+
+**Step 3: Calculate the sum.**
+The regions to include are Southeast, South Central, and West.
+Calculation: 6,807 + 7,609 + 4,180
+
+Arithmetic expression: (6,807 + 7,609 + 4,180)
+
+Evaluation:
+6,807 + 7,609 = 14,416
+14,416 + 4,180 = 18,596
+
+Final answer: 18,596
+--- A tail ---
+0$
+
+The question asks for the sum "without those East smaller than 3000". The East value is 2,505, which is indeed smaller than 3,000. Therefore, we exclude it. The remaining sum is the total minus the East value.
+
+Calculation expression: $(24,155 - 2,505)$
+Evaluation: $21,650$
+
+Final answer: 21,650
+--- D context head ---
+Table 4
+| | Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Homes Closed > 2013 | Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Homes Closed > 2012 | Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Homes Closed > %Change | Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Value (In millions) > 2013 | Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Value (In millions) > 2012 | Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Value (In millions) > %Change | Homes Closed and Home Sales Revenue Fiscal Year Ended September 30, > Average Selling Price > 2013 | Homes Cl
+
+##### 8. 477d576b7c434de4be7704ad040180bf | arith_m2+ | D fin=1 out=228 cells=70 gold_in=1 | A fin=1
+Q: What is the difference between the greatest Collateralized loan obligations in AAA and AA? (in million)
+GOLD: 6213.0 | subtract(6231,18) | ['2-5-1', '2-5-2']
+D final: '6,160'
+A final: '6,213'
+--- D tail ---
+ations" under the "AAA" and "AA" columns from the provided context.
+
+1.  **Identify the value for AAA**: Looking at Table 2 (or Table 3, as the values are nearly identical for this row), the row "Collateralized loan obligations" under the column "December 31, 2016 > Lowest Rating Agency Rating > AAA > (in millions)" shows a value of **6,178**.
+2.  **Identify the value for AA**: In the same row, under the column "December 31, 2016 > Lowest Rating Agency Rating > AA > (in millions)", the value is **18**.
+3.  **Calculate the difference**: Subtract the AA value from the AAA value.
+
+Calculation expression:
+$6,178 - 18 = 6,160$
+
+Final answer: 6,160
+--- A tail ---
+The second table is also "December 31, 2016" but labeled "Amortized Cost". Without a specific instruction to use Amortized Cost, the Fair Value table is the primary source.
+
+    Let's proceed with the Fair Value table values: 6,231 and 18.
+
+    Calculation: $6,231 - 18 = 6,213$.
+
+Final answer: 6,213
+--- D context head ---
+Table 2
+| | December 31, 2016 > Lowest Rating Agency Rating > AAA > (in millions) | December 31, 2016 > Lowest Rating Agency Rating > AA > (in millions) | December 31, 2016 > Lowest Rating Agency Rating > A > (in millions) | December 31, 2016 > Lowest Rating Agency Rating > BBB > (in millions) | December 31, 2016 > Lowest Rating Agency Rating > BB andbelow > (in millions) | December 31, 2016 > TotalAmortizedCost > (in millions) | December 31, 2016 > TotalDecember 31,2015 > (in millions) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| (in millions) > Collateralized by sub-prime mortgages-1 | $0 | $0 | $18 | $36 | $352 | $406 | $1,141 |
+| (in millions) > Collateralized loan obligations |
+
+##### 9. 4803d9132b304c95990d900834ad7e06 | lookup_m2+ | D fin=1 out=588 cells=63 gold_in=1 | A fin=1
+Q: What's the sum of the Operating expenses in the year where the amount of Sales and marketing is positive? (in dollars)
+GOLD: 1100030 |  | ['4-5-1', '4-5-3', '4-8-1']
+D final: '1,691,527'
+A final: '1,100,030'
+--- D tail ---
+the most logical interpretation in a financial context asking for a "sum" is to aggregate the values from all qualifying years.
+    
+    Let's re-read carefully: "in the year where..." usually implies a specific year. However, since there are two such years, and the question asks for a "sum", it implies summing the operating expenses for all years that satisfy the condition.
+    
+    Qualifying years: 2017 and 2018.
+    Operating Expenses 2018: $1,100,030
+    Operating Expenses 2017: $591,497
+    
+    Calculation: Sum = 1,100,030 + 591,497
+
+Expression: (1,100,030 + 591,497)
+
+Evaluation:
+1,100,030 + 591,497 = 1,691,527
+
+Final answer: 1,691,527
+--- A tail ---
+the year" in such reports unless "all years" is specified).
+
+    Let's verify the calculation logic requested: "Write out the calculation as an explicit arithmetic expression". Since the value is a direct lookup, the expression is just the value itself.
+
+    Value: 1,100,030
+
+Final answer: 1,100,030
+--- D context head ---
+Table 5
+| | Year Ended December 31, > 2018 > $ | Year Ended December 31, > 2018 > % ofRevenue | Year Ended December 31, > 2017 > $ | Year Ended December 31, > 2017 > % ofRevenue | Change in > $ | Change in > % |
+| --- | --- | --- | --- | --- | --- | --- |
+| Operating expenses: > Research and development | $442,468 | 20.6% | $349,594 | 21.2% | $92,874 | 26.6% |
+| Operating expenses: > Sales and marketing | 187,142 | 8.7 | 155,105 | 9.4 | 32,037 | 20.7 |
+| Operating expenses: > General and administrative | 65,420 | 3.0 | 86,798 | 5.3 | -21,378 | -24.6 |
+| Operating expenses: > Legal settlement | 405,000 | 18.8 | — | — | 405,000 | * |
+| Operating expenses: > Total operating expenses | $1,100,03
+
+##### 10. 496eeaf7a0a04a6992527384c573535f | arith_m2+ | D fin=1 out=338 cells=72 gold_in=1 | A fin=1
+Q: what was the percentage decline in the allowance for doubtful accounts in 2013
+GOLD: -0.15453 | subtract(38.3,45.3), divide(#0,45.3) | ['3-1-1', '3-1-2', '3-1-2', '3-4-2', '3-4-3', '3-4-3']
+D final: '6.62%'
+A final: '-0.1545'
+--- D tail ---
+hich is the end of 2012): $45.3
+- Balance at end of year for 2013: $38.3
+
+The formula for percentage change is: (New Value - Old Value) / Old Value.
+Here, the "New Value" is the end of 2013 balance ($38.3) and the "Old Value" is the beginning of 2013 balance ($45.3).
+
+Calculation expression:
+(38.3 - 45.3) / 45.3
+
+Evaluating the expression:
+-3.0 / 45.3 ≈ -0.066225...
+
+Converting to a percentage:
+-0.066225... * 100 ≈ -6.62%
+
+The question asks for the "percentage decline", which implies a positive number representing the magnitude of the drop.
+Decline = (Old - New) / Old = (45.3 - 38.3) / 45.3 = 3.0 / 45.3 ≈ 0.0662 or 6.62%.
+
+Final answer: 6.62%
+--- A tail ---
+culation: $(38.3 - 45.3) / 45.3$
+
+3.  **Perform the calculation:**
+    *   Numerator: $38.3 - 45.3 = -7.0$
+    *   Division: $-7.0 / 45.3 \approx -0.154525$
+    *   Convert to percentage: $-15.45\%$
+
+Since the value decreased, this represents a decline of approximately 15.45%.
+
+Final answer: -0.1545
+--- D context head ---
+Table 4
+| | 2014 | 2013 | 2012 |
+| --- | --- | --- | --- |
+| Balance at beginning of year | $38.3 | $45.3 | $48.1 |
+| Additions charged to expense | 22.6 | 16.1 | 29.7 |
+| Accounts written-off | -22.0 | -23.1 | -32.5 |
+| Balance at end of year | $38.9 | $38.3 | $45.3 |
+
+Table 2
+| | 2010 | 2009 |
+| --- | --- | --- |
+| Mortgages – commercial | $13,571 | $16,005 |
+| Collateral, guaranteed, and other commercial loans | 3,521 | 4,883 |
+| Allowance for losses(b) | -867 | -838 |
+
+Table 3
+| | Total Payments | Payments due by Period > 2011 | Payments due by Period > 2012 - 2013 | Payments due by Period > 2014 - 2015 | Payments due by Period > Thereafter |
+| --- | --- | --- | --- | --- | --- |
+| Borro
+
+##### 11. 4ae22659202f4480ad004d99dd92a28a | arith_m2+ | D fin=1 out=735 cells=54 gold_in=1 | A fin=1
+Q: What was the sum of elements without those elements smaller than 300 in 2016? (in million)
+GOLD: 1740.0 | add(1096,644) | ['1-2-1', '1-3-1']
+D final: '4,451'
+A final: '1740'
+--- D tail ---
+es: 82 (Discard, < 300)
+    *   Segment profit: 78 (Discard, < 300)
+
+3.  From Table 1:
+    *   Selling, general and administrative expenses: 1,011 (Keep)
+
+**Step 3: Calculate the sum of the kept elements.**
+
+The elements to sum are:
+*   1,096 (Table 2 Revenues)
+*   644 (Table 2 Costs of revenue)
+*   930 (Table 3 Revenues)
+*   770 (Table 3 Costs of revenue, exclusive of depreciation and amortization)
+*   1,011 (Table 1 Selling, general and administrative expenses)
+
+Calculation expression:
+$1,096 + 644 + 930 + 770 + 1,011$
+
+Evaluation:
+$1,096 + 644 = 1,740$
+$1,740 + 930 = 2,670$
+$2,670 + 770 = 3,440$
+$3,440 + 1,011 = 4,451$
+
+Final answer: 4,451
+--- A tail ---
+eep.
+- Selling, general and administrative expenses (216): Smaller than 300. Exclude.
+
+**Step 3: Calculate the sum of the remaining elements.**
+The elements to sum are Revenues and Costs of revenue.
+Sum = 1,096 + 644
+
+**Calculation:**
+Expression: $1,096 + 644$
+Evaluation: $1,740$
+
+Final answer: 1740
+--- D context head ---
+Table 2
+| | 2016 | 2015 | Change > 2016 vs. 2015 > column 4 | Change > 2016 vs. 2015 > column 5 | Change > 2015 vs. 2014 > column 6 |
+| --- | --- | --- | --- | --- | --- |
+| Revenues | $1,096 | $323 | $773 | 239.3% | $93 |
+| Costs of revenue | 644 | 239 | 405 | 169.5 | 65 |
+| as a percentage of revenues > row 3 | 58.8% | 74.0% |  |  |  |
+| Selling, general and administrative expenses | 216 | 65 | 151 | 232.3 | 13 |
+| as a percentage of revenues > row 5 | 19.7% | 20.1% |  |  |  |
+| Segment profit | $236 | $19 | $217 | 1,142.1% | $15 |
+| as a percentage of revenues > row 7 | 21.5% | 5.9% |  |  |  |
+
+Table 3
+| | Year Ended December 31, > 2018 | Year Ended December 31, > 2017 | Year Ended Decemb
+
+##### 12. 4eca2399d0994b3ea0d5c35a52c56f21 | lookup_m2+ | D fin=1 out=259 cells=91 gold_in=1 | A fin=1
+Q: What's the greatest value of Weighted Average Exercise Price in terms of Options Outstanding As of February 28, 2014?
+GOLD: 37.56 |  | ['2-7-5', '2-8-5', '2-9-5', '2-10-5', '2-11-5', '2-12-5']
+D final: '27.02'
+A final: '$37.56'
+--- D tail ---
+"Total" under the column "As of February 28, 2014 > Options Outstanding > Weighted Average Exercise Price" also shows **$27.02**.
+
+The question asks for the "greatest value" among the options outstanding. The table provides a single weighted average figure for the total outstanding options. There are no other distinct "Weighted Average Exercise Price" figures listed for the "Options Outstanding" category (the other figures in Table 3 are for specific price ranges or for "Options Exercisable"). Therefore, the value is simply the total weighted average.
+
+Calculation:
+The value is directly stated in the table.
+Value = $27.02
+
+Final answer: 27.02
+--- A tail ---
+ighted Average Exercise Price" under the section "Options Outstanding". The values listed in this column for each range are:
+1.  $11.43
+2.  $15.66
+3.  $25.19
+4.  $31.62
+5.  $37.56
+
+Comparing these values:
+$11.43 < $15.66 < $25.19 < $31.62 < $37.56
+
+The greatest value is $37.56.
+
+Final answer: $37.56
+--- D context head ---
+Table 3
+| | As of February 28, 2014 > Options Outstanding > Number of > Shares | As of February 28, 2014 > Options Outstanding > Weighted > Average > Remaining | As of February 28, 2014 > Options Outstanding > Weighted > Average > Exercise | As of February 28, 2014 > Options Exercisable > Number of > Shares | As of February 28, 2014 > Options Exercisable > Weighted > Average > Exercise |
+| --- | --- | --- | --- | --- | --- |
+| row 1 |  | Weighted |  |  |  |
+| row 2 |  | Average | Weighted |  | Weighted |
+| row 3 |  | Remaining | Average |  | Average |
+| (Shares in thousands) | Number of | Contractual | Exercise | Number of | Exercise |
+| Range of Exercise Prices | Shares | Life (Years) | Pri
+
+##### 13. 5899701a30724b079948d9f98a8bdd31 | arith_m2+ | D fin=1 out=309 cells=150 gold_in=1 | A fin=1
+Q: What's the average of Residential mortgage of December 31 2008, and Purchase obligations of December 31, 2010 Due after 5 Years ?
+GOLD: 4067.0 | add(7057.0,1077.0), divide(#0,const_2) | ['1-3-3', '2-4-4']
+D final: '124,570'
+A final: '4,067'
+--- D tail ---
+   Looking at **Table 1**, under the column "December 31 > 2008" and the row "Consumer > Residential mortgage-2", the value is **$248,063**.
+
+2.  **Purchase obligations of December 31, 2010 Due after 5 Years**:
+    *   Looking at **Table 3**, under the column "December 31, 2010 > Due after 5 Years" and the row "Purchase obligations", the value is **$1,077**.
+
+3.  **Calculation**:
+    *   The question asks for the average of these two values.
+    *   Formula: (Value 1 + Value 2) / 2
+    *   Expression: (248,063 + 1,077) / 2
+
+4.  **Evaluation**:
+    *   Sum: 248,063 + 1,077 = 249,140
+    *   Average: 249,140 / 2 = 124,570
+
+Final answer: 124,570
+--- A tail ---
+ns"
+    - Column: "Due after 5 Years" (under the header "December 31, 2010")
+    - Value: $1,077
+
+Now, we calculate the average using the formula: Average = (Value 1 + Value 2) / 2.
+
+Calculation expression:
+(7,057 + 1,077) / 2
+
+Evaluation:
+7,057 + 1,077 = 8,134
+8,134 / 2 = 4,067
+
+Final answer: 4,067
+--- D context head ---
+Table 3
+| | December 31, 2010 > Due in   1 Year or Less | December 31, 2010 > Due after   1 Year through   3 Years | December 31, 2010 > Due after   3 Years through   5 Years | December 31, 2010 > Due after   5 Years | December 31, 2010 > Total |
+| --- | --- | --- | --- | --- | --- |
+| Long-term debt and capital leases | $89,251 | $138,603 | $69,539 | $151,038 | $448,431 |
+| Operating lease obligations | 3,016 | 4,716 | 2,894 | 6,624 | 17,250 |
+| Purchase obligations | 5,257 | 2,490 | 1,603 | 1,077 | 10,427 |
+| Time deposits | 181,280 | 17,548 | 4,752 | 4,178 | 207,758 |
+| Other long-term liabilities | 696 | 1,047 | 770 | 1,150 | 3,663 |
+| Total long-term debt and other obligations | $279,50
+
+##### 14. 5e189228321941b29b5f321176d61727 | arith_m2+ | D fin=0 out=3072 cells=159 gold_in=1 | A fin=1
+Q: What was the total amount of Long-term debt for section column heading excluding those Long-term debt for section column heading greater than 10000? (in millions of dollars)
+GOLD: 7654.0 | add(-290,0), subtract(#0,504), subtract(#1,1330), add(#2,9654), add(#3,124) | ['0-22-2', '0-22-4', '0-22-5', '0-22-6', '0-22-7']
+D final: None
+A final: '7,654'
+--- D tail ---
+ore time. "What was the total amount of Long-term debt for section column heading excluding those Long-term debt for section column heading greater than 10000?"
+        *   Maybe the "section column heading" refers to the years? "2007" and "2006".
+        *   Maybe the question is: "What is the total amount of Long-term debt (sum of 2007 and 2006)?"
+        *   And the "excluding those... greater than 10000" is a filter on the *years*? No, years aren't amounts.
+        *   Maybe the filter is on the *values*? If the value > 10,000, exclude it.
+        *   If the unit is "thousands", then 1,279,965 > 10,000. Exclude.
+        *   If the unit is
+--- A tail ---
+be 11 trillion, which is impossible. So the values are in millions.
+
+    The calculation expression:
+    (-290 + 0 + -504 + -1,330 + 9,654 + 124)
+
+    Evaluation:
+    -290 - 504 = -794
+    -794 - 1330 = -2124
+    -2124 + 9654 = 7530
+    7530 + 124 = 7654
+
+    Final Answer: 7,654
+
+Final answer: 7,654
+--- D context head ---
+Table 4
+| | 2007 | 2006 |
+| --- | --- | --- |
+| In thousands of dollars > Current liabilities | $1,618,770 | $1,453,538 |
+| In thousands of dollars > Long-term debt | 1,279,965 | 1,248,128 |
+| In thousands of dollars > Other long-term liabilities | 544,016 | 486,473 |
+| In thousands of dollars > Deferred income taxes | 180,842 | 286,003 |
+| In thousands of dollars > Total liabilities | $3,623,593 | $3,474,142 |
+
+Table 3
+| | As of December 31, > 2012 > (In $ millions) | As of December 31, > 2011 |
+| --- | --- | --- |
+| Short-Term Borrowings and Current Installments of Long-Term Debt - Third Party and Affiliates > Current installments of long-term debt | 60 | 38 |
+| Short-Term Borrowings and C
+
+##### 15. 6144d84a07744eb18ab10cd1ca5c97b2 | arith_m2+ | D fin=0 out=3072 cells=77 gold_in=1 | A fin=1
+Q: What will East of Homes in Backlog be like in 2015 if it develops with the same increasing rate as 2014? (in million)
+GOLD: 2692.32864 | subtract(1451,782), divide(#0,782), add(const_1,#1), multiply(1451,#2) | ['2-3-1', '2-3-2']
+D final: '2,698.86'
+A final: '2,693'
+--- D tail ---
+k if the unit "million" needs to be appended or if the number is sufficient. The question asks "(in million)". The table values are "Value (In millions)". So the number 2,698.86 represents millions. The final answer should just be the number.
+
+One more check. Is it possible the question implies the *average* rate? No, "same increasing rate as 2014" implies the specific rate observed in that year.
+
+Let's formulate the arithmetic expression clearly.
+(1,451 * (1 + 0.86))
+
+Or maybe:
+1,451 + (1,451 * 0.86)
+
+Both are equivalent. I will use the multiplication form.
+
+Final Answer: 2,698.86
+
+Wait, could the answer be an integer? The table has integers
+--- A tail ---
+lumn style in the report (e.g., 1,451 is an integer but others like 416.7 have decimals) suggests checking if the integer is sufficient. The backlog column shows integers (1,451, 782). Therefore, the result should likely be an integer.
+
+Calculation: $2,692.52 \rightarrow 2,693$.
+
+Final answer: 2,693
+--- D context head ---
+Table 3
+| | Sales Order Backlog As of September 30, > Homes in Backlog > 2014 | Sales Order Backlog As of September 30, > Homes in Backlog > 2013 | Sales Order Backlog As of September 30, > Homes in Backlog > %Change | Sales Order Backlog As of September 30, > Value (In millions) > 2014 | Sales Order Backlog As of September 30, > Value (In millions) > 2013 | Sales Order Backlog As of September 30, > Value (In millions) > %Change | Sales Order Backlog As of September 30, > Average Selling Price > 2014 | Sales Order Backlog As of September 30, > Average Selling Price > 2013 | Sales Order Backlog As of September 30, > Average Selling Price > %Change |
+| --- | --- | --- | --- | --- | --- | --- |
+
+##### 16. 62b8d513ba734ee3a8ffb16478e6b714 | lookup_m1 | D fin=1 out=419 cells=129 gold_in=1 | A fin=1
+Q: Which liability has the second largest number in Beginning Balance Jan. 1, 2007 ?
+GOLD: Gas transmission and distribution |  | ['3-8-1']
+D final: 'Electric Utility Plant: Nuclear production decommissioning'
+A final: 'Gas transmission and distribution'
+--- D tail ---
+ar production decommissioning)
+-   $44,405 (Gas Utility Plant: Gas transmission and distribution)
+-   $35,515 (Electric Utility Plant: Steam production asbestos)
+-   $21,416 (Electric Utility Plant: Steam production ash containment)
+-   $1,994 (Electric Utility Plant: Electric transmission and distribution)
+-   $1,858 (Common Utility and Other Property: Common general plant asbestos)
+
+The largest value is $1,361,951.
+The second largest value is $1,256,763.
+
+The row corresponding to the second largest value is "Electric Utility Plant: Nuclear production decommissioning".
+
+Final answer: Electric Utility Plant: Nuclear production decommissioning
+--- A tail ---
+ear production decommissioning)
+2.  Second Largest: $44,405 (Gas transmission and distribution)
+3.  Third Largest: $35,515 (Steam production asbestos)
+... and so on.
+
+The liability with the second largest number is "Gas transmission and distribution".
+
+Final answer: Gas transmission and distribution
+--- D context head ---
+Table 4
+| | Beginning Balance Jan. 1, 2007 > (Thousands of Dollars) | Liabilities Recognized | Liabilities Settled | Accretion | Revisions to Prior Estimates | Ending Balance Dec. 31, 2007 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Electric Utility Plant: > Steam production asbestos | $35,515 | $— | $— | $2,049 | $-1,757 | $35,807 |
+| Electric Utility Plant: > Steam production ash containment | 21,416 | — | — | 1,212 | -89 | 22,539 |
+| Electric Utility Plant: > Nuclear production decommissioning | 1,256,763 | — | — | 73,914 | -120,931 | 1,209,746 |
+| Electric Utility Plant: > Electric transmission and distribution | 1,994 | — | — | 43 | -1,767 | 270 |
+| Gas Utility Plant: > Gas transmis
+
+##### 17. 65e9154bdb154c12a07f56352454b845 | arith_m2+ | D fin=1 out=544 cells=112 gold_in=1 | A fin=1
+Q: What is the growing rate of Total liabilities in the year with the most Loans and leases?
+GOLD: 0.01767 | subtract(132066,129773), divide(#0,129773) | ['5-10-1', '5-10-2']
+D final: '0.0946'
+A final: '0.0177'
+--- D tail ---
+alue for 2017 (the "new" or current year for the growth rate calculation relative to the previous year) and 2016 (the "old" year).
+    *   Total liabilities in 2017: **129,773**
+    *   Total liabilities in 2016: **118,562**
+
+3.  **Calculate the growing rate**:
+    *   Formula: (New Value - Old Value) / Old Value
+    *   New Value (2017): 129,773
+    *   Old Value (2016): 118,562
+    *   Expression: $(129,773 - 118,562) / 118,562$
+
+4.  **Evaluate the expression**:
+    *   $129,773 - 118,562 = 11,211$
+    *   $11,211 / 118,562 \approx 0.094556...$
+    *   Converting to percentage: $9.46\%$ (rounded to two decimal places).
+
+Final answer: 0.0946
+--- A tail ---
+ies): **132,066**
+- "Old" value (2016 Total liabilities): **129,773**
+
+Calculation expression:
+(132,066 - 129,773) / 129,773
+
+Evaluation:
+1.  Difference: 132,066 - 129,773 = 2,293
+2.  Division: 2,293 / 129,773 ≈ 0.017669...
+
+Converting to a percentage:
+0.017669... * 100 ≈ 1.77%
+
+Final answer: 0.0177
+--- D context head ---
+Table 6
+| | As of December 31, > 2017 | As of December 31, > 2016 | As of December 31, > 2015 | As of December 31, > 2014 | As of December 31, > 2013-1 |
+| --- | --- | --- | --- | --- | --- |
+| BALANCE SHEET DATA: > Total assets | $152,336 | $149,520 | $138,208 | $132,857 | $122,154 |
+| BALANCE SHEET DATA: > Loans held for sale, at fair value | 497 | 583 | 325 | 256 | 176 |
+| BALANCE SHEET DATA: > Other loans held for sale | 221 | 42 | 40 | 25 | 1,078 |
+| BALANCE SHEET DATA: > Loans and leases | 110,617 | 107,669 | 99,042 | 93,410 | 85,859 |
+| BALANCE SHEET DATA: > Allowance for loan and lease losses | -1,236 | -1,236 | -1,216 | -1,195 | -1,221 |
+| BALANCE SHEET DATA: > Total securities | 25
+
+##### 18. 6bd7b4899e44465db05af7c4afcc9f0c | lookup_m1 | D fin=1 out=577 cells=134 gold_in=1 | A fin=1
+Q: Which section is Fixed maturities the highest for amount ?
+GOLD: Financial Services Businesses |  | ['4-4-2']
+D final: 'Combined'
+A final: 'Financial Services Businesses'
+--- D tail ---
+losed Block Business: $2,709
+        *   Combined: $6,684
+
+3.  **Compare the values:**
+    *   $4,717 (2005 Financial Services)
+    *   $2,840 (2005 Closed Block)
+    *   $7,556 (2005 Combined)
+    *   $3,975 (2004 Financial Services)
+    *   $2,709 (2004 Closed Block)
+    *   $6,684 (2004 Combined)
+
+    The highest value is $7,556.
+
+4.  **Identify the corresponding section header:**
+    The value $7,556 corresponds to the column header: "Year ended December 31, 2005 > Combined > Amount". The section name is "Combined".
+
+Calculation expression to verify the maximum:
+max(4,717, 2,840, 7,556, 3,975, 2,709, 6,684) = 7,556
+
+Final answer: Combined
+--- A tail ---
+gments listed in the column headers. The "Combined" column represents the sum of the segments. Therefore, the comparison is between the segments.
+Segment 1: Financial Services Businesses ($4,717)
+Segment 2: Closed Block Business ($2,840)
+
+$4,717 > $2,840.
+
+Final answer: Financial Services Businesses
+--- D context head ---
+Table 4
+| | Year ended December 31, 2005 > Financial Services Businesses > Yield-1 > ($ in millions) | Year ended December 31, 2005 > Financial Services Businesses > Amount | Year ended December 31, 2005 > Closed Block Business > Yield-1 | Year ended December 31, 2005 > Closed Block Business > Amount | Year ended December 31, 2005 > Combined > Yield-1 | Year ended December 31, 2005 > Combined > Amount |
+| --- | --- | --- | --- | --- | --- | --- |
+| Fixed maturities | 4.68% | $4,717 | 6.64% | $2,840 | 5.26% | $7,556 |
+| Trading account assets supporting insurance liabilities | 4.33 | 576 | — | — | 4.33 | 582 |
+| Equity securities | 3.43 | 53 | 2.31 | 52 | 2.77 | 105 |
+| Commercial loans | 6.6
+
+##### 19. 6d9cc621e1b247c2ba014a317bf7cc82 | lookup_m1 | D fin=1 out=279 cells=140 gold_in=1 | A fin=1
+Q: In which section is Total U.S. Retirement Solutions and Investment Management division greater than 20000??
+GOLD: Revenues |  | ['4-6-1']
+D final: 'Total U.S. Retirement Solutions and Investment Management division'
+A final: 'Revenues'
+--- D tail ---
+f **20,503**.
+2.  **Verify the condition**: The question asks in which section this division is greater than 20,000. The value 20,503 is indeed greater than 20,000.
+3.  **Identify the section**: The row header for this value is "Total U.S. Retirement Solutions and Investment Management division". The question asks "In which section...", which implies identifying the row label itself as the section name.
+
+The value is 20,503.
+Calculation check: 20,503 > 20,000. This is true.
+The section name is "Total U.S. Retirement Solutions and Investment Management division".
+
+Final answer: Total U.S. Retirement Solutions and Investment Management division
+--- A tail ---
+= 0 (No)
+Interest Expense = 105 (No)
+Amortization = 532 (No)
+
+So the only section in the income statement table where the value exceeds 20,000 is "Revenues".
+
+Final Answer formulation: The question asks for the "section". Based on the table headers, the section is "Revenues".
+
+Final answer: Revenues
+--- D context head ---
+Table 5
+| | Year Ended December 31, 2016 > Revenues > (in millions) | Year Ended December 31, 2016 > NetInvestmentIncome | Year Ended December 31, 2016 > Policyholders’Benefits | Year Ended December 31, 2016 > InterestCredited toPolicyholders’AccountBalances | Year Ended December 31, 2016 > Dividends toPolicyholders | Year Ended December 31, 2016 > InterestExpense | Year Ended December 31, 2016 > Amortizationof DAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Individual Annuities | $4,666 | $698 | $306 | $362 | $0 | $71 | $484 |
+| Retirement | 12,876 | 4,263 | 9,328 | 1,473 | 0 | 19 | 33 |
+| Asset Management | 2,961 | 80 | 0 | 0 | 0 | 15 | 15 |
+| Total U.S. Retirement Solutions and 
+
+##### 20. 6f1ba9a2664249469a9a4a0a84658299 | lookup_m1 | D fin=1 out=120 cells=119 gold_in=1 | A fin=1
+Q: What is the sum of Total operating revenues in 2008? (in million)
+GOLD: 25179 |  | ['2-8-1']
+D final: '4,764'
+A final: '25,179'
+--- D tail ---
+To find the sum of Total operating revenues in 2008, we look at the row labeled "Operating Revenues > Total operating revenues" and the column "Years Ended December 31, > 2008 > (In millions)".
+
+The value found in the context is 4,764.
+
+Since the question asks for the sum of Total operating revenues in 2008, and the table already provides the total for that specific year, no calculation is needed. The value is directly stated.
+
+Final answer: 4,764
+--- A tail ---
+lumn is 25,179.
+4.  The unit specified in the table header is "(In millions)".
+
+The question asks for the sum of Total operating revenues in 2008. Since there is only one value for this specific metric in the year 2008, the sum is simply that value.
+
+Calculation:
+Value = 25,179
+
+Final answer: 25,179
+--- D context head ---
+Table 4
+| | Years Ended December 31, > 2008 > (In millions) | Years Ended December 31, > 2007 | Change | % Change |
+| --- | --- | --- | --- | --- |
+| Operating Revenues > Premiums | $361 | $339 | $22 | 6.5% |
+| Operating Revenues > Universal life and investment-type product policy fees | 1,870 | 2,005 | -135 | -6.7% |
+| Operating Revenues > Net investment income | 2,365 | 2,740 | -375 | -13.7% |
+| Operating Revenues > Other revenues | 168 | 181 | -13 | -7.2% |
+| Operating Revenues > Total operating revenues | 4,764 | 5,265 | -501 | -9.5% |
+| Operating Expenses > Policyholder benefits and claims and policyholder dividends | 692 | 605 | 87 | 14.4% |
+| Operating Expenses > Interest credited to 
+
+##### 21. 733486ae517d44f48b86287186319b93 | arith_m2+ | D fin=0 out=3072 cells=177 gold_in=1 | A fin=1
+Q: What do all Sales sum up, excluding those negative ones in 20007?
+GOLD: 4688.0 | add(2110,1198), add(#0,1380) | ['1-2-2', '1-2-3', '1-2-4']
+D final: None
+A final: '4,688'
+--- D tail ---
++ 0 (for Other Int'l)
+= 4,688.
+
+Is there any negative value? No.
+So the sum is 4,688.
+
+Let's double check if "Sales" could refer to something else.
+In Table 3, "Segment revenues" is 65,669.
+"Total revenues" is 64,552.
+Neither is labeled "Sales".
+In Table 2, "Sales(a)" is clearly labeled.
+The only mismatch is the year 2007.
+Given the instruction "The context contains what is needed to answer", and the fact that 2007 Sales data is missing, but 2006 Sales data is present, the most helpful and logical answer is to provide the 2006 Sales sum, assuming a typo in the question's year.
+
+However, what if the question is asking for the sum of the "Sales
+--- A tail ---
++ $0
+    *   Alternatively, the table provides a "Total" column which is the sum of these regions.
+    *   Calculation expression: (2,110 + 1,198 + 1,380) = 4,688
+
+5.  **Verify against the context:**
+    *   The "Total" column for Sales(a) in 2007 is explicitly listed as $4,688.
+
+Final answer: 4,688
+--- D context head ---
+Table 2
+| | United States | Europe | Africa | Other Int’l | Total |
+| --- | --- | --- | --- | --- | --- |
+| Sales(a) | $2,110 | $1,198 | $1,380 | $– | $4,688 |
+| Transfers | 299 | 60 | 1,031 | – | 1,390 |
+| Other income(b) | 3 | – | 2 | 7 | 12 |
+| Total revenues | 2,412 | 1,258 | 2,413 | 7 | 6,090 |
+| Administrative expenses | -56 | -11 | -6 | -34 | -107 |
+| Total expenses | -1,488 | -585 | -446 | -71 | -2,590 |
+| Other production-related income(d) | – | 103 | 6 | – | 109 |
+| Results before income taxes | 924 | 776 | 1,973 | -64 | 3,609 |
+| Results of continuing operations | $581 | $399 | $605 | $-40 | $1,545 |
+| Results of discontinued operations | $– | $– | $– | $8 | $8 |
+| 2006 > Sales(a)
+
+##### 22. 74bc4e75be0e4ae7b067c249f2765ebb | arith_m1 | D fin=0 out=3072 cells=100 gold_in=1 | A fin=1
+Q: What's the 50 % of the Fair Value in terms of Total for Unrestricted:Equity security at December 31, 2010?
+GOLD: 1806.0 | multiply(0.5,3612) | ['0-6-5']
+D final: None
+A final: '1,806'
+--- D tail ---
+icted" row, as "Unrestricted" is the first word and a major category. The "Equity security" might be a misclassification of "U.S. government obligations" in the question, or the question is testing if I can find the "Unrestricted" row.
+    *   Alternatively, maybe the question is asking for the "Equity security" row, and "Unrestricted" is the error.
+    *   Let's look at the magnitude. $340k vs $3k.
+    *   Let's assume the question is asking for the "Unrestricted" row.
+    *   Value: 340,444.
+    *   50%: 170,222.
+
+    *   Wait, is it possible the "Unrestricted" row includes equity securities? No, it says "U.S. government obligations".
+    *
+--- A tail ---
+ for the period "At December 31, 2010", the value is **3,612**.
+
+2.  **Calculate 50% of this value:**
+    *   The question asks for "50 % of the Fair Value".
+    *   Calculation: $3,612 \times 0.50$
+
+3.  **Perform the arithmetic:**
+    *   Expression: $3,612 \times 0.50 = 1,806$
+
+Final answer: 1,806
+--- D context head ---
+Table 1
+| | Less than 12 Months > Fair Value | Less than 12 Months > Unrealized Loss | 12 Months or Greater > Fair Value | 12 Months or Greater > Unrealized Loss | Total > Fair Value | Total > Unrealized Loss |
+| --- | --- | --- | --- | --- | --- | --- |
+| Unrestricted > U.S. government obligations | $340,444 | $-1,731 |  |  | $340,444 | $-1,731 |
+| U.S. government guaranteed > corporate bonds | 19,005 | -45 |  |  | 19,005 | -45 |
+| U.S. government guaranteed > Equity security | 3,612 | -433 |  |  | 3,612 | -433 |
+| U.S. government guaranteed > Mortgage-backed securities |  |  | $1,128 | $-141 | 1,128 | -141 |
+| U.S. government guaranteed | 363,061 | -2,209 | 1,128 | -141 | 364,189 | -2,350 
+
+##### 23. 76ce37e68c464a919aa947c66c4197e8 | arith_m2+ | D fin=1 out=387 cells=74 gold_in=1 | A fin=1
+Q: What is the growing rate of the Total costs and expenses in the year with the least Sales and other operating revenues?
+GOLD: -0.16636 | subtract(451,541), divide(#0,541) | ['3-2-1', '3-2-2', '3-2-3', '3-9-2', '3-9-3']
+D final: '0.6851'
+A final: '-0.1664'
+--- D tail ---
+to the year **2012**.
+
+3.  **Identify the "Total costs and expenses" for the identified year (2012) and the subsequent year (2013)**:
+    From Table 4, the row "Total costs and expenses":
+    *   2012 (old value): $451 million
+    *   2013 (new value): $760 million
+
+4.  **Calculate the growth rate**:
+    The formula for growth rate is: $(New Value - Old Value) / Old Value$.
+    Here, New Value = 2013 Total costs ($760) and Old Value = 2012 Total costs ($451).
+
+    Calculation expression: $(760 - 451) / 451$
+
+    Evaluation:
+    $760 - 451 = 309$
+    $309 / 451 \approx 0.685144...$
+
+    Converting to percentage: $68.51\%$
+
+Final answer: 0.6851
+--- A tail ---
+h rate.**
+Formula: (New Value - Old Value) / Old Value
+New Value (2012) = 451
+Old Value (2011) = 541
+
+Calculation expression: $(451 - 541) / 541$
+
+Evaluation:
+$451 - 541 = -90$
+$-90 / 541 \approx -0.166358...$
+
+Rounding to four decimal places, the rate is -0.1664 (or -16.64%).
+
+Final answer: -0.1664
+--- D context head ---
+Table 4
+| | 2013 > (In millions) | 2012 | 2011 |
+| --- | --- | --- | --- |
+| Sales and other operating revenues | $860 | $518 | $996 |
+| Costs and expenses > Operating costs and expenses | 376 | 297 | 271 |
+| Costs and expenses > Production and severance taxes | 6 | 5 | 19 |
+| Costs and expenses > Exploration expenses, including dry holes and lease impairment | 6 | — | 10 |
+| Costs and expenses > General, administrative and other expenses | 8 | 10 | 9 |
+| Costs and expenses > Depreciation, depletion and amortization | 364 | 139 | 232 |
+| Costs and expenses > Total costs and expenses | 760 | 451 | 541 |
+| Results of operations before income taxes | 100 | 67 | 455 |
+| Provision(benefit) for in
+
+##### 24. 77c78691c0e64cc794007a6c602533e5 | lookup_m1 | D fin=1 out=430 cells=102 gold_in=1 | A fin=1
+Q: How many kinds of Revenues are greater than 1000 in 2018?
+GOLD: 1 |  | ['2-6-5']
+D final: '2'
+A final: '1'
+--- D tail ---
+ and transportation: 1,951
+5. Interruptible sales (c): 40
+6. NYPA: 2
+7. Generation plants: 26
+8. Other: 31
+9. Other operating revenues (d): 28
+10. Total: $2,078
+
+We compare each value to 1000:
+- 966 is not greater than 1000.
+- 390 is not greater than 1000.
+- 595 is not greater than 1000.
+- 1,951 is greater than 1000. (Count = 1)
+- 40 is not greater than 1000.
+- 2 is not greater than 1000.
+- 26 is not greater than 1000.
+- 31 is not greater than 1000.
+- 28 is not greater than 1000.
+- 2,078 is greater than 1000. (Count = 2)
+
+The kinds of revenues greater than 1000 are "Total firm sales and transportation" and "Total".
+
+Count = 2
+
+Final answer: 2
+--- A tail ---
+s (d)**: $28 million
+
+We compare each value to 1000:
+-   966 < 1000
+-   390 < 1000
+-   595 < 1000
+-   1,951 > 1000 (Count = 1)
+-   40 < 1000
+-   2 < 1000
+-   26 < 1000
+-   31 < 1000
+-   28 < 1000
+
+Only one kind of revenue ("Total firm sales and transportation") is greater than 1000.
+
+Final answer: 1
+--- D context head ---
+Table 3
+| | Thousands of Dt Delivered > For the Years Ended > December 31, 2018 | Thousands of Dt Delivered > For the Years Ended > December 31, 2017 | Thousands of Dt Delivered > Variation | Thousands of Dt Delivered > Percent Variation | Revenues in Millions (a) > For the Years Ended > December 31, 2018 | Revenues in Millions (a) > For the Years Ended > December 31, 2017 | Revenues in Millions (a) > Variation | Revenues in Millions (a) > Percent Variation |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Residential | 57,815 | 52,244 | 5,571 | 10.7% | $966 | $802 | $164 | 20.4% |
+| General | 34,490 | 30,761 | 3,729 | 12.1 | 390 | 334 | 56 | 16.8 |
+| Firm transportation | 82,472 |
+
+##### 25. 83fec2d9b21b467fb435234671deacc6 | arith_m2+ | D fin=1 out=194 cells=84 gold_in=1 | A fin=1
+Q: what is the percentage change in the balance of indemnified securities financing from 2005 to 2006?
+GOLD: 0.35715 | subtract(506032,372863), divide(#0,372863) | ['3-1-1', '3-1-2', '3-1-2']
+D final: '11.49%'
+A final: '35.72%'
+--- D tail ---
+To find the percentage change in the balance of indemnified securities financing from 2005 to 2006, we use the values from Table 4:
+- Value for 2006 (new): $506,032
+- Value for 2005 (old): $372,863
+
+The formula for percentage change is:
+( (new value - old value) / old value ) * 100
+
+Calculation:
+( (506,032 - 372,863) / 372,863 ) = 0.114944...
+
+Converting to percentage:
+0.114944... * 100 = 11.49% (rounded to two decimal places)
+
+Final answer: 11.49%
+--- A tail ---
+06,032 - 372,863}{372,863} $$
+
+Calculating the numerator:
+$$ 506,032 - 372,863 = 133,169 $$
+
+Dividing by the old value:
+$$ \frac{133,169}{372,863} \approx 0.35716 $$
+
+Converting to a percentage:
+$$ 0.35716 \times 100 = 35.716\% $$
+
+Rounding to two decimal places, we get 35.72%.
+
+Final answer: 35.72%
+--- D context head ---
+Table 4
+| | 2006 | 2005 |
+| --- | --- | --- |
+| Indemnified securities financing | $506,032 | $372,863 |
+| Liquidity asset purchase agreements | 30,251 | 24,412 |
+| Unfunded commitments to extend credit | 16,354 | 14,403 |
+
+Table 2
+| | Year Ended December 31, > 2008 > (In thousands, except percentage changes) | Year Ended December 31, > 2010 | Change from 2008 to 2009 > in Dollars | Change from 2008 to 2009 > in % | Change from 2009 to 2010 > in Dollars | Change from 2009 to 2010 > in % |
+| --- | --- | --- | --- | --- | --- | --- |
+| Sales and marketing | $1,881,551 | $1,946,815 | $4,126 | —% | $61,138 | 3% |
+| Product development | 725,600 | 908,434 | 77,470 | 11% | 105,364 | 13% |
+| Genera
+
+##### 26. 887238f82ea2417387a5484c53ea4902 | arith_m2+ | D fin=1 out=315 cells=100 gold_in=1 | A fin=1
+Q: from the increase in net revenue , what percentage is attributed to the change in retail electric price?
+GOLD: 0.87079 | subtract(1252.3,1216.7), divide(31.0,#0) | ['2-1-1', '2-2-1', '2-9-1']
+D final: '100.5'
+A final: '87.08%'
+--- D tail ---
+l increase in net revenue.**
+From Table 4:
+*   2010 net revenue = $933.6 million
+*   2011 net revenue = $933.4 million
+
+Total Increase = 2011 Net Revenue - 2010 Net Revenue
+Total Increase = 933.4 - 933.6 = -0.2
+
+**Step 2: Identify the contribution of Retail Electric Price.**
+From Table 4, the row labeled "Retail electric price" shows a value of -20.1. This represents the dollar amount attributed to the change in retail electric price.
+
+**Step 3: Calculate the percentage.**
+Percentage = (Contribution of Retail Electric Price) / (Total Increase in Net Revenue)
+Percentage = -20.1 / -0.2
+
+Calculation:
+(-20.1) / (-0.2) = 100.5
+
+Final answer: 100.5
+--- A tail ---
+la: (Contribution from Retail electric price / Total Increase in net revenue)
+Calculation: 31.0 / 35.6
+
+**Step 4: Perform the arithmetic.**
+Expression: 31.0 / 35.6
+Evaluation: 0.8707865...
+
+Rounding to two decimal places (standard for percentages), this is approximately 87.08%.
+
+Final answer: 87.08%
+--- D context head ---
+Table 4
+| | Amount (In Millions) |
+| --- | --- |
+| 2010 net revenue | $933.6 |
+| Retail electric price | -20.1 |
+| Volume/weather | -5.2 |
+| Fuel recovery | 14.8 |
+| Transmission revenue | 12.4 |
+| Other | -2.1 |
+| 2011 net revenue | $933.4 |
+
+Table 3
+| | Amount (In Millions) |
+| --- | --- |
+| 2010 net revenue | $1,216.7 |
+| Retail electric price | 31.0 |
+| Transmission revenue | 13.1 |
+| Volume/weather | -15.9 |
+| Net wholesale revenue | -11.9 |
+| Capacity acquisition recovery | -10.3 |
+| 2011 net revenue | $1,252.3 |
+
+Table 2
+| | Natural Gas > 2011 | Natural Gas > 2012 | Nuclear > 2011 | Nuclear > 2012 | Coal > 2011 | Coal > 2012 | PurchasedPower > 2011 | PurchasedPower > 2012 |
+| --- | --
+
+##### 27. 89ae87bca8d144879cf6234d54115c60 | lookup_m2+ | D fin=1 out=1348 cells=171 gold_in=1 | A fin=1
+Q: Does Net revenues keeps increasing each year between 2014 and 2013?
+GOLD: Yes |  | ['0-2-1', '0-2-2']
+D final: 'No'
+A final: 'Yes'
+--- D tail ---
+statement "Net revenues keeps increasing each year" is false for the period leading up to 2014.
+
+Let's assume the question asks about the trend from the earliest available year up to 2014, or specifically if the pattern of continuous growth holds. Since 2012 to 2013 was a decrease, the condition "increasing each year" is not met.
+
+Calculation of the change from 2013 to 2014:
+(24,522 - 24,466) / 24,466 = 0.0022 (approx 0.22% increase).
+
+Calculation of the change from 2012 to 2013:
+(24,466 - 24,618) / 24,618 = -0.0062 (approx -0.62% decrease).
+
+Since there was a decrease in 2013, the revenues did not keep increasing each year.
+
+Final answer: No
+--- A tail ---
+6
+- 2014: $24,522
+
+The value increased from 2013 to 2014. Therefore, Net revenues did increase during this period.
+
+Calculation of the growth rate (optional but confirms the increase):
+(24,522 - 24,466) / 24,466 = 56 / 24,466 ≈ 0.002289
+
+Since the value went up, the answer is Yes.
+
+Final answer: Yes
+--- D context head ---
+Table 1
+| | 2014 | 2013 | 2012 | 2011 | 2010 |
+| --- | --- | --- | --- | --- | --- |
+| Summary of Operations: > Net revenues | $24,522 | $24,466 | $24,618 | $23,800 | $24,363 |
+| Summary of Operations: > Cost of sales | 7,785 | 7,206 | 7,937 | 7,680 | 7,704 |
+| Summary of Operations: > Excise taxes on products | 6,577 | 6,803 | 7,118 | 7,181 | 7,471 |
+| Summary of Operations: > Operating income | 7,620 | 8,084 | 7,253 | 6,068 | 6,228 |
+| Summary of Operations: > Interest and other debt expense, net | 808 | 1,049 | 1,126 | 1,216 | 1,133 |
+| Summary of Operations: > Earnings from equity investment in SABMiller | 1,006 | 991 | 1,224 | 730 | 628 |
+| Summary of Operations: > Earnings before incom
+
+##### 28. 97f916a6dd09487daa6eb8f02318a985 | lookup_m1 | D fin=1 out=331 cells=33 gold_in=1 | A fin=1
+Q: What's the increasing rate of Operating profit in 2011 Ended December 31?
+GOLD: 0.06 |  | ['2-5-4']
+D final: '0.0627'
+A final: '6%'
+--- D tail ---
+ng profit for Year Ended December 31, 2010 = $510 million
+
+The formula for the percentage change (increasing rate) is:
+$$ \text{Rate} = \frac{\text{New Value} - \text{Old Value}}{\text{Old Value}} $$
+
+Substituting the values:
+$$ \text{Rate} = \frac{542 - 510}{510} $$
+
+Calculating the numerator:
+$$ 542 - 510 = 32 $$
+
+Now, dividing by the old value:
+$$ \frac{32}{510} \approx 0.062745 $$
+
+Converting to a percentage:
+$$ 0.062745 \times 100\% \approx 6.27\% $$
+
+(Note: The table explicitly lists a "+6%" change in the "Change" column for Operating profit between 2010 and 2011, which is a rounded figure of the calculated value.)
+
+Final answer: 0.0627
+--- A tail ---
+Change in Operating profit from 2010 to 2011: +6%
+
+The question asks for the "increasing rate," which corresponds directly to the percentage change listed in the "Change" column for 2011.
+
+Calculation:
+The value is explicitly given as +6%.
+Arithmetic expression: 6%
+Evaluation: 0.06
+
+Final answer: 6%
+--- D context head ---
+Table 3
+| | Year Ended December 31, > 2012 > ($ in millions) | Year Ended December 31, > Change | Year Ended December 31, > 2011 | Year Ended December 31, > Change > +21% > +26% > +6% | Year Ended December 31, > 2010 |
+| --- | --- | --- | --- | --- | --- |
+| Revenues | $1,656 | -27% | $2,258 | +21% | $1,867 |
+| Operating costs and expenses | 1,246 | -27% | 1,716 | +26% | 1,357 |
+| Operating profit | $410 | -24% | $542 | +6% | $510 |
+
+Table 2
+| | U.S. | Canada | Total |
+| --- | --- | --- | --- |
+| Proved undeveloped reserves as of December 31, 2011 | 403 | 379 | 782 |
+| Revisions due to prices | -47 | 9 | -38 |
+| Revisions other than price | -10 | -6 | -16 |
+| Proved undeveloped reserves as o
+
+##### 29. 9b5a04d24f014377a80af20245907b97 | lookup_m1 | D fin=1 out=396 cells=59 gold_in=1 | A fin=1
+Q: What is the highest Fair Value for Derivatives designated as hedging instruments:Interest-rate contracts as As the chart 3 shows? (in million)
+GOLD: 284 |  | ['3-8-4']
+D final: '162'
+A final: '284'
+--- D tail ---
+e 4 (December 31, 2012):
+        *   Row: "Interest-rate contracts > Derivatives designated as hedging instruments: > Other assets"
+        *   Column: "FairValue"
+        *   Value: $162
+    *   In Table 5 (December 31, 2011):
+        *   Row: "Interest-rate contracts > Derivatives designated as hedging instruments: > Other assets"
+        *   Column: "FairValue"
+        *   Value: $123
+
+3.  **Compare the values**:
+    *   2012 Value: $162 million
+    *   2011 Value: $123 million
+
+4.  **Determine the highest**: The highest value is $162 million.
+
+The question asks for the value in million.
+
+Calculation:
+Max(162, 123) = 162
+
+Final answer: 162
+--- A tail ---
+     *   Liability Derivatives (Interest-rate contracts): $284 million
+
+3.  **Compare the values:**
+    *   $162 vs $284
+    *   $284 is greater than $162.
+
+4.  **Determine the highest value:**
+    *   The highest value is $284 million.
+
+Calculation expression: max(162, 284) = 284
+
+Final answer: 284
+--- D context head ---
+Table 4
+| | FairValue | Liability Derivatives December 31, 2012 > Balance SheetLocation | Liability Derivatives December 31, 2012 > FairValue |
+| --- | --- | --- | --- |
+| Foreign exchange contracts > Derivatives not designated as hedging instruments: > Other assets | $9,243 | Other liabilities | $9,067 |
+| Interest-rate contracts > Derivatives not designated as hedging instruments: > Other assets | 61 | Other liabilities | 61 |
+| Other derivative contracts > Other assets | — | Other liabilities | 9 |
+| Derivatives not designated as hedging instruments: > Total | $9,304 |  | $9,137 |
+| Interest-rate contracts > Derivatives designated as hedging instruments: > Other assets | $162 | Other liab
+
+##### 30. a53af3f0af064af19ef607727b8233ed | lookup_m1 | D fin=1 out=574 cells=126 gold_in=1 | A fin=1
+Q: In which section the sum of Long-term debt, net has the highest value?
+GOLD: 2003 |  | ['0-28-5']
+D final: 'CONDENSED BALANCE SHEET DATA'
+A final: '2003'
+--- D tail ---
+er section, the sum (or any value) of "Long-term debt, net" exists only within the **CONDENSED BALANCE SHEET DATA** section. Therefore, this is the section with the highest value (as it is the only one).
+
+4.  **Verification of values**:
+    *   The values in the "Long-term debt, net" row are:
+        *   2007: 4,303
+        *   2006: 4,405
+        *   2005: 4,784
+        *   2004: 5,104
+        *   2003: 6,072
+    *   The maximum value is 6,072 (in 2003), which is located in the **CONDENSED BALANCE SHEET DATA** section.
+
+Since the item is exclusively found in one section, that section is the answer.
+
+Final answer: CONDENSED BALANCE SHEET DATA
+--- A tail ---
+". The answer should be the column header.
+Column Header for the highest value: 2003.
+
+Calculation to confirm the max:
+Max(4,303, 4,405, 4,784, 5,104, 6,072) = 6,072.
+Location: Column "2003".
+
+Final Answer formulation: The highest value is 6,072, found in the column labeled 2003.
+
+Final answer: 2003
+--- D context head ---
+Table 1
+| | 2007 (b) | 2006 (c) | 2005 (d) | 2004 (e) | 2003(f) |
+| --- | --- | --- | --- | --- | --- |
+| OPERATING RESULTS(a) > Net sales | $41,862 | $39,620 | $37,213 | $35,526 | $31,824 |
+| OPERATING RESULTS(a) > Other income (expense), net | 293 | 336 | 316 | 171 | 114 |
+| OPERATING RESULTS(a) > Interest expense | 352 | 361 | 370 | 425 | 487 |
+| OPERATING RESULTS(a) > Other non-operating income (expense), net | 193 | 183 | 133 | -50 | -71 |
+| OPERATING RESULTS(a) > Net earnings | $3,033 | $2,529 | $1,825 | $1,266 | $1,053 |
+| CONDENSED BALANCE SHEET DATA > Cash and cash equivalents | $2,648 | $1,912 | $2,244 | $1,060 | $1,010 |
+| CONDENSED BALANCE SHEET DATA > Short-term investments | 33
+
+##### 31. a6240937a19e42f1a5b1f1c968976f2d | lookup_m1 | D fin=1 out=2847 cells=108 gold_in=1 | A fin=1
+Q: In terms of U.S. Plans,what do all Net periodic benefit cost sum up without the Net periodic benefit cost that is smaller than 20000 THOUSAND? (in thousand)
+GOLD: 23286 |  | ['3-9-1']
+D final: '20,165'
+A final: '23,286'
+--- D tail ---
+
+24,314 + (-24,329) + 20,180 = 20,165.
+
+Let's verify the "smaller than 20000" condition again.
+3,121 < 20,000. (True)
+24,314 < 20,000. (False)
+-24,329 < 20,000. (True mathematically, but contextually likely not the target).
+20,180 < 20,000. (False)
+0 < 20,000. (True, but 0 doesn't change the sum).
+
+If the question meant to exclude the negative component, it would likely say "excluding the expected return" or similar. The generic "the ... cost that is smaller than 20000" points to the Service cost.
+
+**Final Calculation Expression:**
+(24,314 + (-24,329) + 20,180)
+
+**Evaluation:**
+24,314 - 24,329 = -15
+-15 + 20,180 = 20,165
+
+Final answer: 20,165
+--- A tail ---
+than or equal to 20,000. (Include)
+    *   15,237 is smaller than 20,000. (Exclude)
+    *   11,267 is smaller than 20,000. (Exclude)
+
+3.  **Calculate the sum:**
+    We only sum the included value(s).
+    Sum = 23,286
+
+**Calculation Expression:**
+(23,286)
+
+**Evaluation:**
+23,286
+
+Final answer: 23,286
+--- D context head ---
+Table 4
+| | U.S. Plans > 2012 | U.S. Plans > 2011 | U.S. Plans > 2010 | Non-U.S. Plans > 2012 | Non-U.S. Plans > 2011 | Non-U.S. Plans > 2010 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Components of net periodic benefit cost > Service cost for benefits earned | $3,121 | $3,602 | $3,781 | $12,585 | $10,560 | $9,804 |
+| Components of net periodic benefit cost > Interest cost on projected benefit obligation | 24,314 | 24,373 | 24,191 | 30,944 | 34,033 | 32,954 |
+| Components of net periodic benefit cost > Expected return on plan assets | -24,329 | -25,070 | -24,146 | -43,728 | -45,386 | -41,569 |
+| Components of net periodic benefit cost > Net amortization and deferrals | 20,180 | 11,888 |
+
+##### 32. ab92bc43a0cd44a5a768cbf5161aae8e | arith_m2+ | D fin=1 out=237 cells=68 gold_in=1 | A fin=1
+Q: What's the sum of Due after one year through two years of Amortized Cost, and Annual power of Year Ended December 31, 2010 ?
+GOLD: 186734.0 | add(169967.0,16767.0) | ['1-2-1', '2-5-2']
+D final: '170,424'
+A final: '186,734'
+--- D tail ---
+values from the provided tables and sum them up.
+
+1.  **Due after one year through two years of Amortized Cost**:
+    *   Looking at **Table 2**, locate the row "Due after one year through two years" and the column "Amortized Cost".
+    *   The value is **169,967**.
+
+2.  **Annual power of Year Ended December 31, 2010**:
+    *   Looking at **Table 3**, locate the row "Steam Sold ($ in millions) > Annual power" and the column "Year Ended December 31, > 2010".
+    *   The value is **457**.
+
+The question asks for the **sum** of these two values.
+
+Calculation expression:
+$169,967 + 457$
+
+Evaluation:
+$169,967 + 457 = 170,424$
+
+Final answer: 170,424
+--- A tail ---
+d December 31," we find the row labeled "Annual power" under the section "Steam Sold (MMlbs)". The value in the column for the year **2010** is **16,767**.
+
+Now, we calculate the sum of these two values:
+Expression: $169,967 + 16,767$
+
+Calculation:
+$169,967 + 16,767 = 186,734$
+
+Final answer: 186,734
+--- D context head ---
+Table 2
+| | Amortized Cost | Fair Value |
+| --- | --- | --- |
+| Due in one year or less | $412,677 | $410,504 |
+| Due after one year through two years | 169,967 | 167,740 |
+| Due after two years through three years | — | — |
+| Due in three years or more | 17,156 | 16,557 |
+|  | 599,800 | 594,801 |
+| Asset-backed securities | 72,005 | 71,499 |
+| Total investments in debt securities | $671,805 | $666,300 |
+
+Table 3
+| | Year Ended December 31, > 2009 | Year Ended December 31, > 2010 | Year Ended December 31, > 2011 | Year Ended December 31, > 2012 | Year Ended December 31, > 2013 |
+| --- | --- | --- | --- | --- | --- |
+| Steam Sold (MMlbs) > General | 544 | 515 | 519 | 425 | 547 |
+| Steam Sold 
+
+##### 33. af0d0e6ef37a4d5fb4b5e1d7927910b7 | lookup_m2+ | D fin=0 out=3072 cells=125 gold_in=1 | A fin=1
+Q: In which year is Operating earnings smaller than 500 million?
+GOLD: 2008 |  | ['4-18-1', '4-18-2']
+D final: '...".'
+A final: '2007, 2008'
+--- D tail ---
+le check if "Operating earnings" in Table 3 or 2 could be relevant.
+    Table 3: "Total" is 968, -1287, 9. Not labeled "Operating earnings".
+    Table 2: Fund groupings. Not earnings.
+    So only Table 4 and 5.
+    
+    Is it possible the question refers to Table 5 only? It is the first table.
+    In Table 5, only 2008 is < 500.
+    Is it possible the question refers to Table 4 only?
+    In Table 4, 2007 and 2008 are < 500.
+    
+    Let's assume the standard behavior for such questions: if multiple tables are provided, the question usually pertains to the most prominent one or the user is expected to find the intersection.
+    Intersection of
+--- A tail ---
+ 2008, is **$363 million**.
+    *   Is $363 < 500? Yes.
+3.  **2009**: The table shows Operating earnings for the year ended December 31, 2009, is **$968 million**.
+    *   Is $968 < 500? No.
+
+The years where Operating earnings are smaller than 500 million are 2007 and 2008.
+
+Final answer: 2007, 2008
+--- D context head ---
+Table 5
+| | Years Ended December 31, > 2008 > (In millions) | Years Ended December 31, > 2007 | Change | % Change |
+| --- | --- | --- | --- | --- |
+| Operating Revenues > Premiums | $3,470 | $3,096 | $374 | 12.1% |
+| Operating Revenues > Universal life and investment-type product policy fees | 1,095 | 995 | 100 | 10.1% |
+| Operating Revenues > Net investment income | 1,180 | 1,249 | -69 | -5.5% |
+| Operating Revenues > Other revenues | 18 | 24 | -6 | -25.0% |
+| Operating Revenues > Total operating revenues | 5,763 | 5,364 | 399 | 7.4% |
+| Operating Expenses > Policyholder benefits and claims and policyholder dividends | 3,185 | 2,521 | 664 | 26.3% |
+| Operating Expenses > Interest credited t
+
+##### 34. b039ee22c62141049d12bc34df080753 | lookup_m1 | D fin=1 out=793 cells=117 gold_in=1 | A fin=1
+Q: What do all Gain sum up in 2006 , excluding Common stock and Non-redeemable preferred stock? (in million)
+GOLD: 7443 |  | ['3-16-1']
+D final: '6,853'
+A final: '7,443'
+--- D tail ---
+Gain - Non-redeemable Preferred Stock Gain
+    = $7,443 - $487 - $103
+
+    Let's verify by summing the individual fixed maturity securities:
+    2,047 + 385 + 1,687 + 984 + 193 + 1,835 + 75 + 230 + 7
+    = 2,432 + 1,687 = 4,119
+    4,119 + 984 = 5,103
+    5,103 + 193 = 5,296
+    5,296 + 1,835 = 7,131
+    7,131 + 75 = 7,206
+    7,206 + 230 = 7,436
+    7,436 + 7 = 7,443.
+    This matches the "Total fixed maturity securities" row.
+
+    Now, subtract the excluded equity securities:
+    7,443 - 487 - 103
+
+    Calculation:
+    7,443 - 487 = 6,956
+    6,956 - 103 = 6,853
+
+    Expression: (7,443 - 487 - 103)
+    Evaluation: 6,853
+
+Final answer: 6,853
+--- A tail ---
+n (All) = $7,443 + $590 = $8,033.
+Less Common Stock Gain = $487.
+Less Non-redeemable Preferred Stock Gain = $103.
+Result = $8,033 - 487 - 103 = 7,443$.
+
+The calculation is:
+$(7,443 + 590 - 487 - 103)$
+
+Evaluating:
+$7,443 + 590 = 8,033$
+$8,033 - 487 = 7,546$
+$7,546 - 103 = 7,443$
+
+Final answer: 7,443
+--- D context head ---
+Table 4
+| | December 31, 2006 > Cost or > Amortized > Cost | December 31, 2006 > Gross Unrealized > Gain > (In millions) | December 31, 2006 > Gross Unrealized > Loss > (In millions) | December 31, 2006 > Estimated > Fair Value > (In millions) | December 31, 2006 > % of > Total |
+| --- | --- | --- | --- | --- | --- |
+| Cost or > row 2 | Amortized | Gross Unrealized |  | Estimated | % of |
+| Cost or > row 3 | Cost | Gain | Loss | Fair Value | Total |
+| (In millions) | (In millions) |  |  |  |  |
+| (In millions) > U.S. corporate securities | $74,010 | $2,047 | $983 | $75,074 | 31.0% |
+| (In millions) > Residential mortgage-backed securities | 51,602 | 385 | 321 | 51,666 | 21.4 |
+| (In millions
+
+##### 35. b5183e753c97424caab3b8b3f8c46b3e | arith_m2+ | D fin=1 out=422 cells=123 gold_in=1 | A fin=1
+Q: what portion of total long-term borrowings is due in the next 36 months?
+GOLD: 0.29293 | add(750,700), divide(#0,4950) | ['0-1-1', '0-1-3', '0-2-1', '0-7-1']
+D final: '0.1515'
+A final: '0.2929'
+--- D tail ---
+ 2015": This is within the next 36 months (assuming a 2013/2014 baseline). Maturity Amount = **$750**.
+    *   "6.25% Notes due 2017": This is more than 36 months away.
+    *   All subsequent notes (due 2019, 2021, 2022, 2024) are also more than 36 months away.
+    *   Therefore, only the $750 is due in the next 36 months.
+3.  **Calculate the Portion:**
+    *   Numerator (Amount due in next 36 months): 750
+    *   Denominator (Total Long-term Borrowings): 4,950
+    *   Calculation: $750 / 4,950$
+
+Arithmetic Expression:
+$750 / 4,950 = 0.151515...$
+
+Rounding to four decimal places, this is approximately 0.1515 (or 15.15%).
+
+Final answer: 0.1515
+--- A tail ---
+
+
+3.  **Calculate the Portion**:
+    The portion is calculated as (Sum of borrowings due in next 36 months) / (Total Long-term Borrowings).
+    
+    Expression: $(750 + 700) / 4,950$
+    Calculation: $1,450 / 4,950 \approx 0.292929...$
+
+    Converting to a percentage: $29.29\%$
+
+Final answer: 0.2929
+--- D context head ---
+Table 1
+| | Maturity Amount | Unamortized Discount | Carrying Value | Fair Value |
+| --- | --- | --- | --- | --- |
+| 1.375% Notes due 2015 | $750 | $— | $750 | $753 |
+| 6.25% Notes due 2017 | 700 | -1 | 699 | 785 |
+| 5.00% Notes due 2019 | 1,000 | -2 | 998 | 1,134 |
+| 4.25% Notes due 2021 | 750 | -3 | 747 | 825 |
+| 3.375% Notes due 2022 | 750 | -3 | 747 | 783 |
+| 3.50% Notes due 2024 | 1,000 | -3 | 997 | 1,029 |
+| Total Long-term Borrowings | $4,950 | $-12 | $4,938 | $5,309 |
+
+Table 2
+| | December 31, 2013 | Net Inflows (Outflows) | Market Change | FX Impact | December 31, 2014 |
+| --- | --- | --- | --- | --- | --- |
+| Equity: > Active | $317,262 | $-24,882 | $9,867 | $-9,445 | $292,802 |
+| 
+
+##### 36. b695872ed7a148428249689146465a44 | lookup_m2+ | D fin=0 out=3072 cells=67 gold_in=1 | A fin=1
+Q: What is the sum of the Total assets in the years where Income tax (benefit) is positive? (in million)
+GOLD: 40,202 |  | ['2-9-1', '2-9-2', '2-13-2']
+D final: None
+A final: '40,202'
+--- D tail ---
+ts? "Sum of the Total assets in the years where Income tax (benefit) is positive".
+    *   If "Income tax (benefit)" is the subject, and it is positive...
+    *   If the line is "Income tax (benefit) expense", then a positive value is an expense.
+    *   If the question meant "When was the benefit positive", it would be weird to say "Income tax (benefit) is positive" if the line is "Income tax (benefit) expense". It would say "Income tax benefit is positive".
+    *   The inclusion of "expense" in the header suggests the line represents the net tax provision.
+    *   Therefore, "Income tax (benefit) expense" > 0 means an expense.
+    *   So, 2
+--- A tail ---
+ax (benefit)" row.
+    Row label: "Income tax (benefit) expense"
+    Value 2015: -17
+    Value 2014: 12
+    Positive values are > 0. So 12 is positive. -17 is negative.
+
+    Therefore, we only include the Total assets for 2014.
+    Total assets 2014 = 40,202.
+
+    Sum = 40,202.
+
+Final answer: 40,202
+--- D context head ---
+Table 3
+| | As of and for the Year Ended December 31, > 2015 | As of and for the Year Ended December 31, > 2014 | Change | Percent |
+| --- | --- | --- | --- | --- |
+| Net interest income | $42 | $77 | -$35 | -45% |
+| Noninterest income | 97 | 350 | -253 | -72 |
+| Total revenue | 139 | 427 | -288 | -67 |
+| Noninterest expense | 94 | 227 | -133 | -59 |
+| Profit before provision for credit losses | 45 | 200 | -155 | -78 |
+| Provision for credit losses | 63 | 66 | -3 | -5 |
+| (Loss) income before income tax (benefit) expense | -18 | 134 | -152 | -113 |
+| Income tax (benefit) expense | -17 | 12 | -29 | -242 |
+| Net (loss) income | -$1 | $122 | -$123 | -101 |
+| Loans and leases and loans held for 
+
+##### 37. bc1a8212b8b04c5c91c0555348298b5a | arith_m2+ | D fin=1 out=254 cells=107 gold_in=1 | A fin=1
+Q: by how much did revenues applicable to discontinued operations decrease from 2007 to 2009?
+GOLD: -0.58772 | subtract(188,456), divide(#0,456) | ['0-1-1', '0-1-3', '0-1-3']
+D final: '268'
+A final: '58.77%'
+--- D tail ---
+
+    *   Revenues applicable to discontinued operations for 2009 (new value) = $188
+
+2.  **Calculate the decrease:**
+    The question asks "by how much did... decrease", which implies finding the absolute difference or the magnitude of the drop. However, the rule for percentage change is given as `(new - old) / old`. Since the question asks for the amount of decrease (a scalar value representing the drop), we calculate the difference: `Old Value - New Value`.
+    
+    Decrease = $456 - $188
+
+3.  **Perform the calculation:**
+    Expression: (456 - 188)
+    Calculation: 456 - 188 = 268
+
+The revenues decreased by $268 million.
+
+Final answer: 268
+--- A tail ---
+a positive magnitude representing the drop.
+    Decrease = $58.77\%$.
+
+    Let's write out the explicit arithmetic expression as requested.
+    Expression: $(188 - 456) / 456$
+    Evaluation: $-0.5877$
+
+    The question asks for the decrease. A decrease of 58.77% is the answer.
+
+Final answer: 58.77%
+--- D context head ---
+Table 1
+| | 2009 | 2008 | 2007 |
+| --- | --- | --- | --- |
+| Revenues applicable to discontinued operations | $188 | $439 | $456 |
+| Pretax income from discontinued operations | $80 | $221 | $281 |
+
+Table 2
+| | Year Ended December 31, > 2006 > (in millions, except per share and ratio information) | Year Ended December 31, > 2005 | Year Ended December 31, > 2004 | Year Ended December 31, > 2003 | Year Ended December 31, > 2002 |
+| --- | --- | --- | --- | --- | --- |
+| Income Statement Data: > Revenues: > Premiums | $13,908 | $13,756 | $12,521 | $13,163 | $12,914 |
+| Income Statement Data: > Revenues: > Policy charges and fee income | 2,653 | 2,520 | 2,342 | 1,978 | 1,815 |
+| Income Statement 
+
+##### 38. bd75a36e02fa4f398ed229dd8451477a | arith_m2+ | D fin=1 out=116 cells=115 gold_in=1 | A fin=1
+Q: What is the sum of Citicorp in 2009 ? (in million)
+GOLD: 9936.0 | add(4968,2925), add(#0,2043) | ['3-1-1', '3-10-1', '3-19-1']
+D final: '4,968'
+A final: '9,936'
+--- D tail ---
+To find the sum of Citicorp in 2009, we look at Table 4. The row labeled "Citicorp" under the column "2009" contains the value $4,968.
+
+The question asks for the sum of Citicorp in 2009. Since there is only one value provided for Citicorp in that year in the context, the sum is simply that value.
+
+Calculation:
+Value = 4,968
+
+Final answer: 4,968
+--- A tail ---
+   Column 2009 Value: $2,043
+
+The question asks for the "sum of Citicorp in 2009". This implies adding the values from all rows labeled "Citicorp" for that year.
+
+Calculation:
+Expression: 4,968 + 2,925 + 2,043
+
+Step-by-step evaluation:
+4,968 + 2,925 = 7,893
+7,893 + 2,043 = 9,936
+
+Final answer: 9,936
+--- D context head ---
+Table 4
+| | 2009 | 2008 | 2007 | 2006 | 2005 |
+| --- | --- | --- | --- | --- | --- |
+| Citicorp | $4,968 | $3,193 | $2,027 | $1,141 | $1,136 |
+| Citi Holdings | 27,216 | 19,104 | 6,941 | 3,906 | 3,888 |
+| Total non-accrual loans (NAL) | $32,184 | $22,297 | $8,968 | $5,047 | $5,024 |
+| Corporate non-accrual loans-1 > North America | $5,621 | $2,660 | $291 | $68 | $91 |
+| Corporate non-accrual loans-1 > EMEA | 6,308 | 6,330 | 1,152 | 128 | 297 |
+| Corporate non-accrual loans-1 > Latin America | 569 | 229 | 119 | 152 | 246 |
+| Corporate non-accrual loans-1 > Asia | 1,047 | 513 | 103 | 88 | 272 |
+| Corporate non-accrual loans-1 > row 9 | $13,545 | $9,732 | $1,665 | $436 | $906 |
+| Corporate non-
+
+##### 39. bf6da4744681476e9cb4872d969059c5 | lookup_m2+ | D fin=1 out=606 cells=144 gold_in=1 | A fin=1
+Q: How many expenses exceed the average of Total revenues ? (in million)
+GOLD: 2 |  | ['2-8-1', '2-8-2']
+D final: '0'
+A final: '2'
+--- D tail ---
+orporate Benefit Funding: $6,864 (Less than 73,316)
+    *   Latin America: $5,162 (Less than 73,316)
+    *   Asia: $10,866 (Less than 73,316)
+    *   EMEA: $3,780 (Less than 73,316)
+    *   Corporate & Other: $2,264 (Less than 73,316)
+    *   Total: $64,512 (Less than 73,316)
+
+None of the expense values exceed the average total revenue of $73,316.
+
+Calculation expression:
+Count of items where (Total Expenses > 73,316)
+= Count({17,945 > 73,316, 17,631 > 73,316, 6,864 > 73,316, 5,162 > 73,316, 10,866 > 73,316, 3,780 > 73,316, 2,264 > 73,316, 64,512 > 73,316})
+= Count({False, False, False, False, False, False, False, False})
+= 0
+
+Final answer: 0
+--- A tail ---
+nue = (20,765 + 19,420 + 9,501 + 5,055 + 11,986 + 2,930 + 294) / 7 = 9,993
+Count of Expenses > 9,993:
+18,094 > 9,993 (True)
+18,037 > 9,993 (True)
+7,134 > 9,993 (False)
+4,600 > 9,993 (False)
+9,701 > 9,993 (False)
+2,599 > 9,993 (False)
+2,316 > 9,993 (False)
+Count = 2.
+
+Final answer: 2
+
+Final answer: 2
+--- D context head ---
+Table 4
+| | Retail > (In millions) | Group,Voluntary& WorksiteBenefits | CorporateBenefitFunding | LatinAmerica | Asia | EMEA | Corporate & Other | Total |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Total revenues | $21,777 | $19,295 | $8,901 | $5,554 | $12,613 | $4,227 | $949 | $73,316 |
+| Less: Other adjustments to revenues -1 | -79 | -167 | 17 | 42 | 371 | 857 | 55 | 1,096 |
+| Total operating revenues | $21,300 | $18,976 | $8,964 | $5,542 | $12,251 | $3,263 | $784 | $71,080 |
+| Total expenses | $17,945 | $17,631 | $6,864 | $5,162 | $10,866 | $3,780 | $2,264 | $64,512 |
+| Less: Other adjustments to expenses -1 | 565 | — | 129 | 284 | 507 | 819 | 153 | 2,457 |
+| Total operati
+
+##### 40. c965eace4b6647ad97b1a1c950e46582 | lookup_m1 | D fin=1 out=251 cells=189 gold_in=1 | A fin=1
+Q: What's the growth rate of JW Marriott for RevPAR in 2016?
+GOLD: 0.04 |  | ['2-2-2']
+D final: '3.5%'
+A final: '4.0%'
+--- D tail ---
+ rule for percentage change is:
+(RevPAR 2016 - RevPAR 2015) / RevPAR 2015
+
+From Table 3 (which appears to be the primary data table for 2016 metrics based on the higher RevPAR values compared to Table 4, though the specific 2015 values are not explicitly listed as a separate column, the "Change vs. 2015" column represents the calculated growth rate):
+The value in the cell for JW Marriott under "RevPAR > Change vs. 2015" is 3.5%.
+
+Since the table directly provides the growth rate (Change vs. 2015), no further arithmetic calculation using raw 2015 and 2016 numbers is necessary as the result is already computed and presented.
+
+Final answer: 3.5%
+--- A tail ---
+:
+RevPAR 2016 = $187.02
+RevPAR 2015 (implied by the 4.0% change) = $187.02 / 1.04 ≈ $179.83
+The table already performs this calculation and reports the result as 4.0%.
+
+Since the question asks for the growth rate and the table explicitly lists it, the value is directly available.
+
+Final answer: 4.0%
+--- D context head ---
+Table 4
+| | RevPAR > 2016 | RevPAR > Change vs. 2015 | Occupancy > 2016 | Occupancy > Change vs. 2015 | Occupancy > Change vs. 2015 > pts. | Average Daily Rate > 2016 | Average Daily Rate > Change vs. 2015 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| JW Marriott | $178.91 | 3.5% | 76.0% | 1.3% | pts. | $235.47 | 1.8% |
+| The Ritz-Carlton | $252.40 | 3.6% | 71.9% | 1.0% | pts. | $350.99 | 2.2% |
+| W Hotels | $239.94 | -2.2% | 81.7% | 0.2% | pts. | $293.82 | -2.5% |
+| Composite North American Luxury-1 | $231.99 | 2.8% | 76.0% | 1.2% | pts. | $305.36 | 1.2% |
+| Marriott Hotels | $124.39 | 2.0% | 72.4% | 0.3% | pts. | $171.92 | 1.5% |
+| Sheraton | $115.58 | 2.4% | 73.3% | 0.3% | pts. | 
+
+##### 41. d3f5dfe45ce849c697c69e64e2c1eeae | arith_m1 | D fin=1 out=311 cells=113 gold_in=1 | A fin=1
+Q: what was the 5 year return of jpmorgan chase's stock?
+GOLD: 1.9831 | subtract(298.31,const_100), divide(#0,const_100) | ['2-1-6']
+D final: '121.68%'
+A final: '198.31%'
+--- D tail ---
+011) to the end of the period (2015). The 5-year return is calculated as the percentage change in the stock price over this period.
+
+From Table 3:
+- JPMorgan Chase stock price in 2011 (old value) = $100.00
+- JPMorgan Chase stock price in 2015 (new value) = $221.68
+
+The formula for percentage change is:
+$$ \text{Return} = \frac{\text{New Value} - \text{Old Value}}{\text{Old Value}} $$
+
+Substituting the values:
+$$ \text{Return} = \frac{221.68 - 100.00}{100.00} $$
+
+Evaluating the expression:
+$$ 221.68 - 100.00 = 121.68 $$
+$$ \frac{121.68}{100.00} = 1.2168 $$
+
+Converting to a percentage:
+$$ 1.2168 \times 100\% = 121.68\% $$
+
+Final answer: 121.68%
+--- A tail ---
+text{New Value} - \text{Old Value}}{\text{Old Value}} $$
+
+Substituting the values:
+$$ \text{Return} = \frac{298.31 - 100.00}{100.00} $$
+
+Calculation:
+$$ 298.31 - 100.00 = 198.31 $$
+$$ 198.31 / 100.00 = 1.9831 $$
+
+Converting to a percentage:
+$$ 1.9831 \times 100\% = 198.31\% $$
+
+Final answer: 198.31%
+--- D context head ---
+Table 3
+| | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 |
+| --- | --- | --- | --- | --- | --- | --- |
+| JPMorgan Chase | $100.00 | $136.18 | $186.17 | $204.57 | $221.68 | $298.31 |
+| KBW Bank Index | 100.00 | 133.03 | 183.26 | 200.42 | 201.40 | 258.82 |
+| S&P Financial Index | 100.00 | 128.75 | 174.57 | 201.06 | 197.92 | 242.94 |
+| S&P 500 Index | 100.00 | 115.99 | 153.55 | 174.55 | 176.95 | 198.10 |
+
+Table 2
+| | 2016 | 2015 | 2014 |
+| --- | --- | --- | --- |
+| Realized gains | $401 | $351 | $314 |
+| Realized losses | -232 | -127 | -233 |
+| OTTI losses | -28 | -22 | -4 |
+| Net securities gains | 141 | 202 | 77 |
+| OTTI losses > Credit losses recognized in income | -1 | -1 | -2 |
+| OTTI losses > 
+
+##### 42. d82fbd3ad2524059a7c9c4fea9d0642f | arith_m1 | D fin=1 out=494 cells=94 gold_in=1 | A fin=1
+Q: what is the roi of nasdaq composite from 2008 to 2012?
+GOLD: 0.1078 | subtract(110.78,const_100), divide(#0,const_100) | ['0-2-6']
+D final: '0.8767'
+A final: '0.1078'
+--- D tail ---
+ing the question implies the growth from the first available data point (Jan 3, 2009) to the last available data point (Dec 29, 2012):
+- Old Value (2009): 59.03
+- New Value (2012): 110.78
+
+Calculation:
+Formula: (New Value - Old Value) / Old Value
+Expression: (110.78 - 59.03) / 59.03
+
+Evaluation:
+110.78 - 59.03 = 51.75
+51.75 / 59.03 ≈ 0.876672878
+
+Converting to percentage: 87.67%
+
+*Note: If the question strictly requires a 2008 value and none exists in the table, the calculation must be performed using the closest available data point (2009) as the baseline, which is the only solvable interpretation of the provided text.*
+
+Final answer: 0.8767
+--- A tail ---
+100.00
+ROI = 10.78 / 100.00
+ROI = 0.1078
+
+*Note: If the question strictly requires 2008 data which is not present, the calculation cannot be performed. However, based on the available rows and columns, the growth from the first to the last column is the only computable metric.*
+
+Final answer: 0.1078
+--- D context head ---
+Table 1
+| | 12/29/2007 | 1/3/2009 | 1/2/2010 | 1/1/2011 | 12/31/2011 | 12/29/2012 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Cadence Design Systems, Inc. | 100.00 | 22.55 | 35.17 | 48.50 | 61.07 | 78.92 |
+| NASDAQ Composite | 100.00 | 59.03 | 82.25 | 97.32 | 98.63 | 110.78 |
+| S&P 400 Information Technology | 100.00 | 54.60 | 82.76 | 108.11 | 95.48 | 109.88 |
+
+Table 4
+| | 2016 > FirstQuarter | 2016 > SecondQuarter | 2016 > ThirdQuarter | 2016 > FourthQuarter | 2017 > FirstQuarter | 2017 > SecondQuarter | 2017 > ThirdQuarter | 2017 > FourthQuarter |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Storage Rental Revenue | 2.2% | 2.1% | 2.1% | 2.9% | 3.0% | 4.8% | 3.5% | 4.2% |
+|
+
+##### 43. df6ff2b4b76e40ab998e90e5327a1e73 | lookup_m1 | D fin=0 out=3072 cells=62 gold_in=1 | A fin=1
+Q: What's the average of Annual power in 2005? (in MMlbs)
+GOLD: 18474 |  | ['0-5-1']
+D final: None
+A final: '18,474'
+--- D tail ---
+ column: 15,961.
+...
+Question: "What's the average of Annual power in 2005?"
+Interpretation A: Average of the "Annual power" metric for the year 2005. (Result: 18,474)
+Interpretation B: Average of the "Annual power" metric for the years 2005-2009 (assuming "in 2005" is a distractor or error).
+Given the strict rules of these types of prompts, usually, the time qualifier is precise. "In 2005" means only 2005.
+Therefore, the calculation is trivial.
+Expression: 18,474 / 1
+Evaluation: 18,474
+
+Let's try to find a reason why it might be the 5-year average.
+If the question was "What is the average Annual power?", I would calculate the 5-year average.
+--- A tail ---
+here is only one data point for 2005 in that row, the average of that single point is the point itself.
+
+Value for Annual power in 2005 = 18,474.
+
+Calculation:
+Since there is only one data point for the year 2005, the average is simply that value.
+Average = 18,474 / 1 = 18,474.
+
+Final answer: 18,474
+--- D context head ---
+Table 1
+| | Year Ended December 31, > 2005 | Year Ended December 31, > 2006 | Year Ended December 31, > 2007 | Year Ended December 31, > 2008 | Year Ended December 31, > 2009 |
+| --- | --- | --- | --- | --- | --- |
+| Steam Sold (MMlbs) > General | 655 | 515 | 589 | 785 | 786 |
+| Steam Sold (MMlbs) > Apartment house | 7,748 | 6,774 | 7,519 | 6,614 | 5,962 |
+| Steam Sold (MMlbs) > Annual power | 18,474 | 15,961 | 17,696 | 16,577 | 16,269 |
+| Steam Sold (MMlbs) > Total Steam Delivered to CECONY Customers | 26,877 | 23,250 | 25,804 | 23,976 | 23,017 |
+| Steam Sold ($ in millions) > General | $22 | $21 | $23 | $23 | $28 |
+| Steam Sold ($ in millions) > Apartment house | 173 | 174 | 188 | 186 | 16
+
+##### 44. e9801bc7a5714012bbcc7e31c4130f28 | arith_m2+ | D fin=1 out=1990 cells=104 gold_in=1 | A fin=1
+Q: What was the total amount of Pension Benefits-1 greater than 100 in 2012 for CHANGE IN PLAN ASSETS?
+GOLD: 8906.0 | add(7962,459), add(#0,485) | ['2-3-1', '2-4-1', '2-5-1']
+D final: '7,974'
+A final: '8,906'
+--- D tail ---
+s the ending balance.
+
+The question phrasing "Pension Benefits-1 greater than 100" is confusing. It likely refers to the column header "Pension Benefits-1 > 2012" where the user misread or mistyped "2012" as "100" or is asking about the values greater than 100. But given the context of "total amount ... for CHANGE IN PLAN ASSETS", the standard answer is the ending balance.
+
+Let's assume the question is simply asking for the value in the cell corresponding to the total for that category.
+Row: CHANGE IN PLAN ASSETS > FAIR VALUE OF PLAN ASSETS AT END OF YEAR
+Column: Pension Benefits-1 > 2012
+Value: 7,974
+
+Final Answer: 7,974
+
+Final answer: 7,974
+--- A tail ---
+ Employer contributions: 485
+
+Values not greater than 100:
+- Participants' contributions: 22
+- Currency translation and other: -395
+- ESOP debt impacts-4: 0
+- Benefit payments: -559
+
+Summing the values greater than 100:
+7,962 + 459 + 485
+
+Calculation:
+(7,962 + 459 + 485) = 8,906
+
+Final answer: 8,906
+--- D context head ---
+Table 3
+| | Pension Benefits-1 > 2012 | Pension Benefits-1 > 2011 | Other Retiree Benefits-2 > 2012 | Other Retiree Benefits-2 > 2011 |
+| --- | --- | --- | --- | --- |
+| CHANGE IN PLAN ASSETS > Fair value of plan assets at beginning of year | $7,962 | $6,562 | $2,975 | $2,843 |
+| CHANGE IN PLAN ASSETS > Actual return on plan assets | 459 | 685 | -126 | 253 |
+| CHANGE IN PLAN ASSETS > Employer contributions | 485 | 555 | 24 | 29 |
+| CHANGE IN PLAN ASSETS > Participants' contributions | 22 | 21 | 68 | 67 |
+| CHANGE IN PLAN ASSETS > Currency translation and other | -395 | 631 | — | 2 |
+| CHANGE IN PLAN ASSETS > ESOP debt impacts-4 | — | — | 27 | 20 |
+| CHANGE IN PLAN ASSETS > Benefit payments |
+
+##### 45. ef9cecc500c447f79f46130cc417db36 | arith_m2+ | D fin=0 out=3072 cells=100 gold_in=1 | A fin=1
+Q: What is the growing rate of Currency translation and other for Pension Benefits-1 in the year with the most Actual return on plan assets for Pension Benefits-1?
+GOLD: -1.62599 | subtract(-395,631), divide(#0,631) | ['2-7-1', '2-7-2']
+D final: None
+A final: '-162.6%'
+--- D tail ---
+s Prior Year" is 2011 vs 2010.
+        *   If Column 2 is 2012, then "Change vs Prior Year" is 2012 vs 2011.
+        *   Given the headers "Pension Benefits-1 > 2012" and "Pension Benefits-1 > 2011", and the fact that 2012 is typically the current year, Column 2 is likely 2011 and Column 1 is 2012?
+        *   Let's check the header alignment.
+            *   Row 1: | | Pension Benefits-1 > 2012 | Pension Benefits-1 > 2011 | ...
+            *   Col 1: Header
+            *   Col 2: 2012
+            *   Col 3: 2011
+        *   So Column 2 is 2012. Column 3 is 2011.
+        *   Table 1 says "Change vs Prior Year > column 2". Column 2 is 2012. So
+--- A tail ---
+
+4.  **Perform the calculation:**
+    *   Numerator: $-395 - 631 = -1026$
+    *   Denominator: $631$
+    *   Division: $-1026 / 631 \approx -1.62599$
+
+5.  **Format the answer:**
+    *   The result is approximately -162.6%.
+
+Calculation expression: $(-395 - 631) / 631 = -1.626$
+
+Final answer: -162.6%
+--- D context head ---
+Table 3
+| | Pension Benefits-1 > 2012 | Pension Benefits-1 > 2011 | Other Retiree Benefits-2 > 2012 | Other Retiree Benefits-2 > 2011 |
+| --- | --- | --- | --- | --- |
+| CHANGE IN PLAN ASSETS > Fair value of plan assets at beginning of year | $7,962 | $6,562 | $2,975 | $2,843 |
+| CHANGE IN PLAN ASSETS > Actual return on plan assets | 459 | 685 | -126 | 253 |
+| CHANGE IN PLAN ASSETS > Employer contributions | 485 | 555 | 24 | 29 |
+| CHANGE IN PLAN ASSETS > Participants' contributions | 22 | 21 | 68 | 67 |
+| CHANGE IN PLAN ASSETS > Currency translation and other | -395 | 631 | — | 2 |
+| CHANGE IN PLAN ASSETS > ESOP debt impacts-4 | — | — | 27 | 20 |
+| CHANGE IN PLAN ASSETS > Benefit payments |
+
+##### 46. f844025fec8d4a1e87093d2d70313a25 | arith_m1 | D fin=1 out=191 cells=113 gold_in=1 | A fin=1
+Q: What's the 50 % of the value of the Notional for Total NAIC Designation in terms of First to Default Basket at December 31, 2009? (in million)
+GOLD: 312.5 | multiply(0.5,625) | ['4-12-3']
+D final: '-3'
+A final: '312.5'
+--- D tail ---
+To find the value, we first need to identify the "Notional" for "Total NAIC Designation" in terms of "First to Default Basket" at "December 31, 2009".
+
+Looking at **Table 5**:
+- The column header is: `December 31, 2009 > First to Default Basket-1 > Notional`.
+- The row header is: `Total-2`.
+- The value at the intersection of this row and column is `$-6` (which represents -6 million).
+
+The question asks for **50% of this value**.
+
+Calculation:
+1. Identify the value: -6
+2. Calculate 50%: $-6 \times 0.50$
+
+Arithmetic expression:
+$(-6) \times 0.5 = -3$
+
+Final answer: -3
+--- A tail ---
+which represents the Total NAIC Designation)
+    *   The value at the intersection is **$625** (in millions).
+
+2.  **Perform the calculation:**
+    The question asks for "50 % of the value".
+    Calculation: $625 \times 0.50$
+
+    Arithmetic expression: $625 \times 0.50 = 312.5$
+
+Final answer: 312.5
+--- D context head ---
+Table 5
+| | December 31, 2009 > Single Name > Notional > (in millions) | December 31, 2009 > Single Name > Fair Value | December 31, 2009 > First to Default Basket-1 > Notional | December 31, 2009 > First to Default Basket-1 > Fair Value | December 31, 2009 > Total > Notional | December 31, 2009 > Total > Fair Value |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | $295 | $3 | $140 | $— | $435 | $3 |
+| 2 | 28 | — | 303 | -3 | 331 | -3 |
+| Subtotal > row 3 | 323 | 3 | 443 | -3 | 766 | -0 |
+| 3 | — | — | 132 | -2 | 132 | -2 |
+| 4 | — | — | — | — | — | — |
+| 5 | — | — | 50 | -1 | 50 | -1 |
+| 6 | — | — | — | — | — | — |
+| Subtotal > row 8 | — | — | 182 | -3 | 182 | -3 |
+| Total-2 | $323 | $3 |
+
+##### 47. fb857779711a4fe7affeaa945df99eb5 | lookup_m2+ | D fin=0 out=3072 cells=84 gold_in=1 | A fin=1
+Q: Between 2011 and 2010, which year has the fastest decreasing rate for Reported Basis?
+GOLD: 2010 |  | ['0-3-1', '0-3-2']
+D final: None
+A final: '2010'
+--- D tail ---
+ choose between 2010 and 2011, and the change is from 2010 to 2011, the "year" of the change is 2011.
+But the rate is positive for the main category.
+Let's assume the question is flawed and refers to the "Nonperforming loans" or "Vintage" as the "Reported Basis" of concern.
+The fastest decrease is the Vintage (15.6%). The year this decrease happened is 2011.
+The second fastest is Nonperforming (9.7%). The year is 2011.
+So the answer is 2011.
+
+Let's try to interpret "fastest decreasing rate" as the magnitude of the negative percentage.
+If the question is strictly about "Reported Basis" (Outstandings), the answer is "None" or "No decrease". But
+--- A tail ---
+nce there is only one period provided (2011 to 2010), this is the only decreasing rate available. Therefore, 2010 represents the year with the fastest (and only) decreasing rate relative to the prior year in the dataset.
+
+Calculation:
+(257,973 - 262,290) / 262,290 = -0.0164586...
+
+Final answer: 2010
+--- D context head ---
+Table 1
+| | Residential Mortgage – Key Credit Statistics December 31 > Reported Basis-1 > 2011 | Residential Mortgage – Key Credit Statistics December 31 > Reported Basis-1 > 2010 | Residential Mortgage – Key Credit Statistics December 31 > Excluding CountrywidePurchased Credit-impairedand Fully-insured Loans > 2011 | Residential Mortgage – Key Credit Statistics December 31 > Excluding CountrywidePurchased Credit-impairedand Fully-insured Loans > 2010 |
+| --- | --- | --- | --- | --- |
+| Outstandings | $262,290 | $257,973 | $158,470 | $180,136 |
+| Accruing past due 30 days or more | 28,688 | 24,267 | 3,950 | 5,117 |
+| Accruing past due 90 days or more | 21,164 | 16,768 | n/a | n/a |
+| Nonperf
+
+##### 48. ffbf5d1d02ee4233bf0f5db797bd69ff | arith_m2+ | D fin=1 out=1083 cells=143 gold_in=1 | A fin=1
+Q: What is the average increasing rate of Policy loans for amountbetween 2015 and 2016?
+GOLD: 0.04275 | subtract(95,84), divide(#0,84), subtract(84,88), divide(#2,88), add(#1,#3), divide(#4,const_2) | ['5-8-2', '5-8-4', '5-8-6']
+D final: '0.008'
+A final: '0.0427'
+--- D tail ---
+ = 0.008
+
+    Final Answer formulation:
+    The rate is 0.008 or 0.8%.
+
+    Let's re-read the prompt constraints. "Use values exactly as shown".
+    Values: 252, 250.
+    Expression: (252 - 250) / 250
+    Result: 0.008
+
+    Is it possible the question refers to the yield? "increasing rate of Policy loans". Yields are rates. Amounts are amounts. If the yield increased, it would be an increasing rate. But the yield decreased (5.52% to 5.49%). So "increasing rate" must refer to the growth in the amount.
+
+    Therefore, the calculation is the percentage growth of the amount.
+
+    Expression: (252 - 250) / 250
+    Value: 0.008
+
+Final answer: 0.008
+--- A tail ---
+2015): (84 - 88) / 88
+Rate 2 (2015-2016): (95 - 84) / 84
+
+Average = [((84 - 88) / 88) + ((95 - 84) / 84)] / 2
+
+Calculation:
+(84 - 88) / 88 = -4 / 88 = -0.0454545455
+(95 - 84) / 84 = 11 / 84 = 0.130952381
+Sum = 0.0854978355
+Average = 0.0427489177
+
+Final Answer: 0.0427 (or 4.27%)
+
+Final answer: 0.0427
+--- D context head ---
+Table 6
+| | Year Ended December 31, > 2016 > Yield-1 > ($ in millions) | Year Ended December 31, > 2016 > Amount | Year Ended December 31, > 2015 > Yield-1 | Year Ended December 31, > 2015 > Amount | Year Ended December 31, > 2014 > Yield-1 | Year Ended December 31, > 2014 > Amount |
+| --- | --- | --- | --- | --- | --- | --- |
+| Fixed maturities | 3.14% | $3,472 | 3.23% | $3,190 | 3.06% | $3,301 |
+| Trading account assets supporting insurance liabilities | 1.75 | 37 | 1.66 | 32 | 1.80 | 35 |
+| Equity securities | 4.80 | 75 | 4.77 | 69 | 5.06 | 84 |
+| Commercial mortgage and other loans | 4.23 | 445 | 4.45 | 390 | 4.20 | 294 |
+| Policy loans | 4.05 | 95 | 3.93 | 84 | 3.93 | 88 |
+| Short-term 

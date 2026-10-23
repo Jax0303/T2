@@ -1,0 +1,217 @@
+{
+ "rule": [
+  "PPT 표의 유형 분류 코드는 저장소에 없다(집 PC 세션에서 만듦). 여기 규칙은 그것을 가장 가깝게 되살린 것이다:",
+  "  예/아니오 = 공식 정답이 yes/no → 54(PPT 54)",
+  "  개수 세기 = 질문에 \"how many\" → 41(PPT 40)",
+  "  값을 답함 = 공식 정답이 문서 table_description 의 어느 셀 값과 같음(숫자는 $,% 공백 제거 뒤 상대 1e-6) → 167(PPT 166)",
+  "  머리글(항목 이름)을 답함 = 나머지 → 249(PPT 251)",
+  "  산술은 정답 셀 수(m) 1 / 2개 이상 → 71 / 300(PPT 와 같음)"
+ ],
+ "type_counts": {
+  "조회: 머리글(항목 이름)을 답함": 249,
+  "조회: 값을 답함": 167,
+  "조회: 개수 세기": 41,
+  "조회: 예/아니오": 54,
+  "산술: 정답 셀 2개 이상": 300,
+  "산술: 정답 셀 1개": 71,
+  "전체": 882
+ },
+ "rows": {
+  "조회: 머리글(항목 이름)을 답함": {
+   "n": 249,
+   "pct": {
+    "closed": 0.8,
+    "fulldoc": 73.9,
+    "ours": 74.7,
+    "langchain": 74.3,
+    "qwen8b4_ours": 73.9,
+    "qwen8b4_langchain": 63.9
+   },
+   "mcnemar": {
+    "ours_vs_langchain": {
+     "b": 14,
+     "c": 13,
+     "p": 1.0
+    },
+    "ours_vs_fulldoc": {
+     "b": 15,
+     "c": 13,
+     "p": 0.8505540192127228
+    },
+    "qwen_ours_vs_langchain": {
+     "b": 40,
+     "c": 15,
+     "p": 0.0010158471941252854
+    }
+   }
+  },
+  "조회: 값을 답함": {
+   "n": 167,
+   "pct": {
+    "closed": 0.0,
+    "fulldoc": 75.4,
+    "ours": 77.2,
+    "langchain": 76.0,
+    "qwen8b4_ours": 71.9,
+    "qwen8b4_langchain": 64.7
+   },
+   "mcnemar": {
+    "ours_vs_langchain": {
+     "b": 14,
+     "c": 12,
+     "p": 0.8450189828872681
+    },
+    "ours_vs_fulldoc": {
+     "b": 15,
+     "c": 12,
+     "p": 0.7011080384254456
+    },
+    "qwen_ours_vs_langchain": {
+     "b": 25,
+     "c": 13,
+     "p": 0.07295138851623051
+    }
+   }
+  },
+  "조회: 개수 세기": {
+   "n": 41,
+   "pct": {
+    "closed": 0.0,
+    "fulldoc": 7.3,
+    "ours": 9.8,
+    "langchain": 12.2,
+    "qwen8b4_ours": 14.6,
+    "qwen8b4_langchain": 17.1
+   },
+   "mcnemar": {
+    "ours_vs_langchain": {
+     "b": 1,
+     "c": 2,
+     "p": 1.0
+    },
+    "ours_vs_fulldoc": {
+     "b": 1,
+     "c": 0,
+     "p": 1.0
+    },
+    "qwen_ours_vs_langchain": {
+     "b": 4,
+     "c": 5,
+     "p": 1.0
+    }
+   }
+  },
+  "조회: 예/아니오": {
+   "n": 54,
+   "pct": {
+    "closed": 0.0,
+    "fulldoc": 57.4,
+    "ours": 83.3,
+    "langchain": 68.5,
+    "qwen8b4_ours": 7.4,
+    "qwen8b4_langchain": 1.9
+   },
+   "mcnemar": {
+    "ours_vs_langchain": {
+     "b": 12,
+     "c": 4,
+     "p": 0.076812744140625
+    },
+    "ours_vs_fulldoc": {
+     "b": 16,
+     "c": 2,
+     "p": 0.001312255859375
+    },
+    "qwen_ours_vs_langchain": {
+     "b": 4,
+     "c": 1,
+     "p": 0.375
+    }
+   }
+  },
+  "산술: 정답 셀 2개 이상": {
+   "n": 300,
+   "pct": {
+    "closed": 0.3,
+    "fulldoc": 42.0,
+    "ours": 45.7,
+    "langchain": 43.7,
+    "qwen8b4_ours": 24.3,
+    "qwen8b4_langchain": 21.7
+   },
+   "mcnemar": {
+    "ours_vs_langchain": {
+     "b": 29,
+     "c": 23,
+     "p": 0.48845566937989204
+    },
+    "ours_vs_fulldoc": {
+     "b": 30,
+     "c": 19,
+     "p": 0.15240777196147803
+    },
+    "qwen_ours_vs_langchain": {
+     "b": 29,
+     "c": 21,
+     "p": 0.3222363203575469
+    }
+   }
+  },
+  "산술: 정답 셀 1개": {
+   "n": 71,
+   "pct": {
+    "closed": 0.0,
+    "fulldoc": 67.6,
+    "ours": 66.2,
+    "langchain": 71.8,
+    "qwen8b4_ours": 53.5,
+    "qwen8b4_langchain": 63.4
+   },
+   "mcnemar": {
+    "ours_vs_langchain": {
+     "b": 5,
+     "c": 9,
+     "p": 0.4239501953125
+    },
+    "ours_vs_fulldoc": {
+     "b": 6,
+     "c": 7,
+     "p": 1.0
+    },
+    "qwen_ours_vs_langchain": {
+     "b": 8,
+     "c": 15,
+     "p": 0.21003961563110352
+    }
+   }
+  },
+  "전체": {
+   "n": 882,
+   "pct": {
+    "closed": 0.3,
+    "fulldoc": 58.7,
+    "ours": 62.1,
+    "langchain": 60.8,
+    "qwen8b4_ours": 48.2,
+    "qwen8b4_langchain": 43.7
+   },
+   "mcnemar": {
+    "ours_vs_langchain": {
+     "b": 75,
+     "c": 63,
+     "p": 0.34911516637678125
+    },
+    "ours_vs_fulldoc": {
+     "b": 83,
+     "c": 53,
+     "p": 0.012604512869782345
+    },
+    "qwen_ours_vs_langchain": {
+     "b": 110,
+     "c": 70,
+     "p": 0.0035332037055875874
+    }
+   }
+  }
+ }
+}

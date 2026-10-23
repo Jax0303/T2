@@ -1,0 +1,26 @@
+{
+ "model": "Qwen/Qwen3-4B-Instruct-2507",
+ "engine": "vllm",
+ "vllm": "0.31.0",
+ "dtype": "bfloat16",
+ "arm": "D,O1",
+ "records": "results/format_dev_20261017/D882_records.jsonl,results/ceiling_20261019/O1_records.jsonl",
+ "n_records": {
+  "D": 882,
+  "O1": 882
+ },
+ "max_new_tokens": 4096,
+ "gpu_memory_utilization": 0.89,
+ "max_model_len": 8192,
+ "max_num_batched_tokens": 4096,
+ "max_num_seqs": 24,
+ "thinking": false,
+ "decoding": "greedy (temperature 0)",
+ "seed": 42,
+ "system_message": null,
+ "chat_template_sha256": "64f85b198065d0fba2a81f37e10ed68161ce2c19a754c7100e67e0ca2ee9c326",
+ "variants": [
+  "R1X1F1B2D1C1E0"
+ ],
+ "started": "2026-10-22T19:32:03"
+}

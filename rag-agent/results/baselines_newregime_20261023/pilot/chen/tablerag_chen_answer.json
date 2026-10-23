@@ -1,0 +1,83 @@
+{
+  "arm": "tablerag_chen",
+  "split": "train",
+  "header_rule": "v3.3u",
+  "label_rule": "none",
+  "official_code": [
+    "08a8d6736475776f42ffac23b2c13111a28e5795"
+  ],
+  "task_prompts": "wtq",
+  "top_k": 5,
+  "max_encode_cell": 10000,
+  "max_depth": 5,
+  "max_tokens_per_call": 512,
+  "retrieve_mode": "embed (IndexFlatL2, sentence-transformers, 질의 접두어 없음)",
+  "encoder": "BAAI/bge-base-en-v1.5",
+  "reader": "local:Qwen/Qwen3.5-4B?quantization=none",
+  "seed": 42,
+  "temperature": 0.0,
+  "limit": 3,
+  "resumed": 0,
+  "provenance": {
+    "git_commit": "9fa1244db8b5af7c2900861a2f20a5246418eb03",
+    "git_dirty": false,
+    "source_sha256": "14bbcc4c38c44d46d82f9b15afccd43790375366ea8f9bc44ce667f3b1c741f0",
+    "python": "3.12.3",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "transformers": "5.19.0",
+      "sentence-transformers": "6.1.0",
+      "langchain-text-splitters": "1.1.2",
+      "torch": "2.14.1",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "n": 3,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 1.0,
+    "n": 3,
+    "fail_examples": [],
+    "n_fail": 0
+  },
+  "pred_rule": "원본 solver_loop 의 answer (마지막 'Answer:' 뒤 첫 줄) 그대로, 추가 추출 없음",
+  "generation_seconds": 190.9,
+  "by_layer": {
+    "ALL": {
+      "n": 3,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 9973.7,
+      "llm_calls_mean": 6.67,
+      "code_errors_mean": 3.0,
+      "terminal_rate": 0.3333,
+      "seconds_mean": 63.6
+    },
+    "arith_m2+": {
+      "n": 1,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 13160.0,
+      "llm_calls_mean": 7.0,
+      "code_errors_mean": 5.0,
+      "terminal_rate": 0.0,
+      "seconds_mean": 100.5
+    },
+    "lookup_m2+": {
+      "n": 2,
+      "retrieval_accuracy_here": 0.0,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "input_tokens_mean": 8380.5,
+      "llm_calls_mean": 6.5,
+      "code_errors_mean": 2.0,
+      "terminal_rate": 0.5,
+      "seconds_mean": 45.2
+    }
+  },
+  "records_sha256": "a3fc031ce23e0dfbb08b61cb3302571c9af133455e25666ffb99b38bfc3645af"
+}

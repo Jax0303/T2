@@ -1,0 +1,76 @@
+[start] 2026-10-15T19:54:33+09:00 Qwen/Qwen3-4B-Instruct-2507
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   4%|▍         | 15/398 [00:00<00:02, 147.71it/s]Loading weights:  23%|██▎       | 91/398 [00:00<00:00, 499.22it/s]Loading weights:  40%|███▉      | 159/398 [00:00<00:00, 580.37it/s]Loading weights:  59%|█████▉    | 234/398 [00:00<00:00, 639.71it/s]Loading weights:  76%|███████▌  | 303/398 [00:00<00:00, 657.50it/s]Loading weights:  95%|█████████▍| 377/398 [00:00<00:00, 671.07it/s]Loading weights: 100%|██████████| 398/398 [00:00<00:00, 593.08it/s]
+[load] 못 찾은 가중치 0, 안 쓴 가중치 0
+[load] 메모리 상한 0.866 × 12.0GB
+[model] Qwen/Qwen3-4B-Instruct-2507 dtype=torch.bfloat16 class=Qwen3ForCausalLM vram=7.49GB
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 246, in <module>
+    main()
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 225, in main
+    batched = [x[0] for x in generate(tok, model, prompts, a.max_new_tokens, a.thinking)]
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/prompt_sweep.py", line 86, in generate
+    out = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 2982, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 3182, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/generation/utils.py", line 4293, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 469, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 405, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 313, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 81, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 312.00 MiB. GPU 0 has a total capacity of 11.99 GiB of which 406.39 MiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 10.38 GiB allowed; Of the allocated memory 9.48 GiB is allocated by PyTorch, and 673.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+[exit 1] 2026-10-15T19:55:07+09:00

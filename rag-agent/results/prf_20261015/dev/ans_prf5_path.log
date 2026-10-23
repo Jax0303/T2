@@ -1,0 +1,78 @@
+[scorer] gold 를 예측으로 넣었을 때 EM=0.8945783132530121 (n=332)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:00<02:08,  3.11it/s]Loading weights:   1%|          | 2/399 [00:00<01:49,  3.63it/s]Loading weights:   2%|▏         | 6/399 [00:00<00:33, 11.86it/s]Loading weights:   7%|▋         | 26/399 [00:00<00:06, 56.49it/s]Loading weights:  10%|▉         | 39/399 [00:00<00:05, 71.97it/s]Loading weights:  15%|█▍        | 59/399 [00:01<00:03, 102.31it/s]Loading weights:  18%|█▊        | 72/399 [00:01<00:03, 101.15it/s]Loading weights:  23%|██▎       | 90/399 [00:01<00:02, 121.31it/s]Loading weights:  26%|██▌       | 104/399 [00:01<00:02, 124.07it/s]Loading weights:  30%|██▉       | 118/399 [00:01<00:02, 127.10it/s]Loading weights:  34%|███▍      | 136/399 [00:01<00:01, 135.07it/s]Loading weights:  38%|███▊      | 150/399 [00:01<00:02, 123.05it/s]Loading weights:  42%|████▏     | 169/399 [00:01<00:01, 134.22it/s]Loading weights:  46%|████▌     | 183/399 [00:01<00:01, 128.67it/s]Loading weights:  50%|█████     | 200/399 [00:02<00:01, 139.09it/s]Loading weights:  54%|█████▍    | 215/399 [00:02<00:01, 129.18it/s]Loading weights:  59%|█████▉    | 235/399 [00:02<00:01, 141.86it/s]Loading weights:  63%|██████▎   | 250/399 [00:02<00:01, 119.25it/s]Loading weights:  67%|██████▋   | 268/399 [00:02<00:00, 131.80it/s]Loading weights:  71%|███████   | 284/399 [00:02<00:00, 138.58it/s]Loading weights:  75%|███████▌  | 301/399 [00:02<00:00, 145.04it/s]Loading weights:  79%|███████▉  | 317/399 [00:02<00:00, 145.59it/s]Loading weights:  84%|████████▎ | 334/399 [00:03<00:00, 150.99it/s]Loading weights:  88%|████████▊ | 350/399 [00:03<00:00, 151.55it/s]Loading weights:  92%|█████████▏| 367/399 [00:03<00:00, 155.61it/s]Loading weights:  96%|█████████▌| 383/399 [00:03<00:00, 153.84it/s]Loading weights: 100%|██████████| 399/399 [00:03<00:00, 151.08it/s]Loading weights: 100%|██████████| 399/399 [00:03<00:00, 116.16it/s]
+[transformers] block_size is deprecated: please use page_size instead. For backwards compatibility, block_size will be used as the full attention page size.
+  128/332  188s
+[transformers] block_size is deprecated: please use page_size instead. For backwards compatibility, block_size will be used as the full attention page size.
+  256/332  376s
+[transformers] block_size is deprecated: please use page_size instead. For backwards compatibility, block_size will be used as the full attention page size.
+  332/332  501s
+{
+  "arm": "langchain_chunk",
+  "reader": "local:Qwen/Qwen3-8B?quantization=4bit",
+  "prompt": "original",
+  "system_message": null,
+  "prompt_text": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\nQuestion: {question} \nContext: {context} \nAnswer:",
+  "prompt_sha256": "6e855cc04e7b966ede6cb6ba05eda503e8b4eaa54cee1b14f134dfa245277732",
+  "max_new_tokens": 384,
+  "seed": 42,
+  "batch_size": 128,
+  "temperature": 0.0,
+  "scorer": "multihiertt_em.mh_exact_match + multihiertt_f1.mh_f1 (공식 포팅)",
+  "answer_source": "yilunzhao/MultiHiertt@f18473da528dede3d9ce2274366d9ee8102ea0fd",
+  "scorer_self_check": {
+    "em": 0.8945783132530121,
+    "n": 332,
+    "fail_examples": [
+      -0.0888,
+      -39.5,
+      -0.01639,
+      -0.44118,
+      -28872.0
+    ],
+    "n_fail": 35
+  },
+  "limit": 0,
+  "n": 332,
+  "marker_missing": 332,
+  "n_over_context_limit": 0,
+  "generation_seconds": 501.2,
+  "by_layer": {
+    "ALL": {
+      "n": 332,
+      "retrieval_accuracy_here": 0.9127,
+      "answer_em": 0.0,
+      "answer_f1": 0.022,
+      "input_tokens_mean": 1388.8
+    },
+    "arith_m1": {
+      "n": 10,
+      "retrieval_accuracy_here": 0.9,
+      "answer_em": 0.0,
+      "answer_f1": 0.018,
+      "input_tokens_mean": 1286.5
+    },
+    "arith_m2+": {
+      "n": 254,
+      "retrieval_accuracy_here": 0.9134,
+      "answer_em": 0.0,
+      "answer_f1": 0.007,
+      "input_tokens_mean": 1383.6
+    },
+    "lookup_m1": {
+      "n": 20,
+      "retrieval_accuracy_here": 0.9,
+      "answer_em": 0.0,
+      "answer_f1": 0.071,
+      "input_tokens_mean": 1317.5
+    },
+    "lookup_m2+": {
+      "n": 48,
+      "retrieval_accuracy_here": 0.9167,
+      "answer_em": 0.0,
+      "answer_f1": 0.0817,
+      "input_tokens_mean": 1467.3
+    }
+  },
+  "records_sha256": "007623bb38d711744ff35faf2906e1782fcf5eb8f91d807a7fd9aeb43619f0b7"
+}

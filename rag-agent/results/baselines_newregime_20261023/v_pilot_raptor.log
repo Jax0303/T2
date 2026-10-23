@@ -1,0 +1,111 @@
+2026-10-23 01:11:11,382 - Loading faiss with AVX2 support.
+2026-10-23 01:11:11,382 - Could not load library with AVX2 support due to:
+ModuleNotFoundError("No module named 'faiss.swigfaiss_avx2'")
+2026-10-23 01:11:11,382 - Loading faiss.
+2026-10-23 01:11:11,416 - Successfully loaded faiss.
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+2026-10-23 01:11:11,669 - Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+2026-10-23 01:11:11,669 - Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+[docs] 3 queries, 3 distinct documents, excluded 0
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 4369.71it/s]
+  [tree] bc002b36bf4313f9 {'doc_key': 'bc002b36bf4313f9', 'n_chars': 1804, 'n_doc_tok_cl100k': 812, 'n_leaves': 10, 'n_nodes': 10, 'n_layers': 0, 'nodes_per_layer': {'0': 10}, 'n_summary_calls': 0, 'cluster_failed_leaves_only': None, 'n_cells': 100, 'n_cells_deliverable_by_a_leaf': 100, 'seconds': 0.4}
+  [tree] d0d73e9c2c87bfa0 {'doc_key': 'd0d73e9c2c87bfa0', 'n_chars': 3011, 'n_doc_tok_cl100k': 1163, 'n_leaves': 13, 'n_nodes': 16, 'n_layers': 1, 'nodes_per_layer': {'0': 13, '1': 3}, 'n_summary_calls': 3, 'cluster_failed_leaves_only': None, 'n_cells': 156, 'n_cells_deliverable_by_a_leaf': 90, 'seconds': 19.7}
+  [tree] b6c86679d5084905 {'doc_key': 'b6c86679d5084905', 'n_chars': 4246, 'n_doc_tok_cl100k': 1687, 'n_leaves': 20, 'n_nodes': 24, 'n_layers': 1, 'nodes_per_layer': {'0': 20, '1': 4}, 'n_summary_calls': 4, 'cluster_failed_leaves_only': None, 'n_cells': 253, 'n_cells_deliverable_by_a_leaf': 229, 'seconds': 53.0}
+{
+ "n_scored": 3,
+ "n_documents": 3,
+ "tree_stats_mean": {
+  "n_leaves": 14.33,
+  "n_nodes": 16.67,
+  "n_layers": 0.67,
+  "n_summary_calls": 2.33,
+  "seconds": 24.37,
+  "n_doc_tok_cl100k": 1220.67
+ },
+ "cluster_failed_leaves_only": {
+  "n": 0,
+  "doc_keys": []
+ },
+ "by_layer": {
+  "ALL": {
+   "n": 3,
+   "accuracy_all_2000": 1.0,
+   "accuracy_all_575": 0.6667,
+   "n_tok_2000_mean": 1545.0,
+   "n_tok_575_mean": 542.3
+  },
+  "arith_m2+": {
+   "n": 1,
+   "accuracy_all_2000": 1.0,
+   "accuracy_all_575": 1.0,
+   "n_tok_2000_mean": 1894.0,
+   "n_tok_575_mean": 525.0
+  },
+  "lookup_m2+": {
+   "n": 2,
+   "accuracy_all_2000": 1.0,
+   "accuracy_all_575": 0.5,
+   "n_tok_2000_mean": 1370.5,
+   "n_tok_575_mean": 551.0
+  }
+ }
+}
+{
+ "budget_qwen3_tokens": 2000,
+ "n": 3,
+ "marker_missing": 2,
+ "generation_seconds": 22.5,
+ "by_layer": {
+  "ALL": {
+   "n": 3,
+   "answer_em": 0.3333,
+   "f1": 0.3567,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 1641.0
+  },
+  "arith_m2+": {
+   "n": 1,
+   "answer_em": 0.0,
+   "f1": 0.0,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 2001.0
+  },
+  "lookup_m2+": {
+   "n": 2,
+   "answer_em": 0.5,
+   "f1": 0.535,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 1461.0
+  }
+ }
+}
+{
+ "budget_qwen3_tokens": 575,
+ "n": 3,
+ "marker_missing": 2,
+ "generation_seconds": 20.7,
+ "by_layer": {
+  "ALL": {
+   "n": 3,
+   "answer_em": 0.3333,
+   "f1": 0.3667,
+   "retrieval_accuracy_here": 0.6667,
+   "input_tokens_mean": 628.3
+  },
+  "arith_m2+": {
+   "n": 1,
+   "answer_em": 0.0,
+   "f1": 0.0,
+   "retrieval_accuracy_here": 1.0,
+   "input_tokens_mean": 619.0
+  },
+  "lookup_m2+": {
+   "n": 2,
+   "answer_em": 0.5,
+   "f1": 0.55,
+   "retrieval_accuracy_here": 0.5,
+   "input_tokens_mean": 633.0
+  }
+ }
+}

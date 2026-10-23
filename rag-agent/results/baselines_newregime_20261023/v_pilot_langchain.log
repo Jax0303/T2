@@ -1,0 +1,74 @@
+[scorer] gold 를 예측으로 넣었을 때 EM=1.0 (n=3)
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 537, in cached_files
+    hf_hub_download(
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 85, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 139, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'vllm:Qwen/Qwen3.5-4B'.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 807, in from_pretrained
+    config = AutoConfig.from_pretrained(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/auto/configuration_auto.py", line 397, in from_pretrained
+    config_dict, unused_kwargs = PreTrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 792, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 844, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 370, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 595, in cached_files
+    raise OSError(f"{e}") from e
+OSError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'vllm:Qwen/Qwen3.5-4B'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 537, in cached_files
+    hf_hub_download(
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 85, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 139, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'vllm:Qwen/Qwen3.5-4B'.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/baselines/langchain_chunk.py", line 307, in <module>
+    main()
+  File "/home/ugh/T2/rag-agent/scripts/baselines/langchain_chunk.py", line 303, in main
+    (retrieve if a.stage == "retrieve" else answer)(a)
+  File "/home/ugh/T2/rag-agent/scripts/baselines/langchain_chunk.py", line 211, in answer
+    llm = (LocalQwenLLM if cot else UserOnly)(model_name=name, **{"quantization": "4bit", **kw})
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/rag_agent/llm/local_qwen.py", line 60, in __init__
+    self.tokenizer = AutoTokenizer.from_pretrained(model_name, revision=revision)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 811, in from_pretrained
+    config = PreTrainedConfig.from_pretrained(pretrained_model_name_or_path, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 742, in from_pretrained
+    config_dict, kwargs = cls.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 792, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/configuration_utils.py", line 844, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 370, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/utils/hub.py", line 595, in cached_files
+    raise OSError(f"{e}") from e
+OSError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'vllm:Qwen/Qwen3.5-4B'.

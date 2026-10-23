@@ -1,0 +1,2686 @@
+
+########## 1. 0784493f496347a9a4f613bbd5335a0c | lookup_m1 | 조회: 머리글(항목 이름)을 답함
+Q: Which year is Foreign exchange contracts the most for FairValue?
+GOLD: Liability Derivatives December 31, 2011 | program:  | evidence: ['4-3-4'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=436 ref=0 ops=(0, 0) cells=25 gold_pos=[5]/25 fa='2011' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=759 ref=0 ops=(0, 0) cells=66 fa='2011' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+g instruments: Other assets > FairValue = **135**
+        *   Derivatives not designated as hedging instruments: Other assets > FairValue = **$9,243**
+    *   For **December 31, 2011** (Table 5):
+        *   Derivatives designated as hedging instruments: Other assets > FairValue = **3**
+        *   Derivatives not designated as hedging instruments: Other assets > FairValue = **$12,210**
+
+2.  **Calculate the total FairValue for each year:**
+    *   **2012 Total:** $135 + 9,243 = 9,378$
+    *   **2011 Total:** $3 + 12,210 = 12,213$
+
+3.  **Compare the totals:**
+    *   2011 Total ($12,213$) > 2012 Total ($9,378$)
+
+The question asks "Which year", so the answer is the year with the higher value.
+
+Calculation expression:
+(135 + 9,243) vs (3 + 12,210)
+9,378 vs 12,213
+
+Since 12,213 is greater than 9,378, the year with the most Foreign exchange contracts for FairValue is 2011.
+
+Final answer: 2011
+--- LC raw (tail 500) ---
+ember 31, 2012": Foreign exchange contracts (designated) = $17 million.
+    *   Total Liability FairValue for 2012 = $9,067 + $17 = $9,084 million.
+    *   **Total FairValue for 2012** = $9,378 + $9,084 = **$18,462 million**.
+
+3.  **Compare the totals:**
+    *   2011 Total: $24,565 million
+    *   2012 Total: $18,462 million
+
+The value for 2011 is higher than the value for 2012.
+
+Calculation expression:
+(12,210 + 3 + 12,315 + 37) vs (9,243 + 135 + 9,067 + 17)
+24,565 vs 18,462
+
+Final answer: 2011
+
+########## 2. 0aa5765bfa3244599903ed2e0b888773 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: For 2013 Impairment Test,what is the total value of the Goodwill of A, the Goodwill of B, the Goodwill of C and the Goodwill of D?
+GOLD: 1314.4 | program: add(583.4,496.1), add(#0,209.1), add(#1,25.8) | evidence: ['3-2-4', '3-3-4', '3-4-4', '3-5-4'] | doc tables 6
+OURS: inc=0 gold_in=1 fin=1 out=931 ref=0 ops=(4, 4) cells=33 gold_pos=[2, 0, 3, 12]/33 fa='1760.6' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=264 ref=0 ops=(4, 4) cells=91 fa='1314.4' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+d C. However, the question asks for "the Goodwill of D". If we look at the structure, A, B, and C have single values. D has multiple. It is highly probable that the sum of the rows for D constitutes the total Goodwill for D in this context, or the question implies summing the specific values found.
+    
+    Let's check the values again.
+    A: 583.4
+    B: 496.1
+    C: 209.1
+    D: The rows are 182.1, 197.3, 66.8, 25.8.
+    Sum = 182.1 + 197.3 + 66.8 + 25.8 = 472.0.
+
+    Let's calculate the total sum:
+    Total = 583.4 + 496.1 + 209.1 + 472.0
+
+    Calculation expression:
+    (583.4 + 496.1 + 209.1 + (182.1 + 197.3 + 66.8 + 25.8))
+
+    Step 1: Sum D's rows
+    182.1 + 197.3 = 379.4
+    379.4 + 66.8 = 446.2
+    446.2 + 25.8 = 472.0
+
+    Step 2: Sum all entities
+    583.4 + 496.1 = 1079.5
+    1079.5 + 209.1 = 1288.6
+    1288.6 + 472.0 = 1760.6
+
+    Final Answer: 1760.6
+
+Final answer: 1760.6
+--- LC raw (tail 500) ---
+t Test, we need to sum the Goodwill values listed in the "2013 Impairment Test" section of the table.
+
+From the context provided:
+- Goodwill for Unit A (2013): $583.4
+- Goodwill for Unit B (2013): $496.1
+- Goodwill for Unit C (2013): $209.1
+- Goodwill for Unit D (2013): $25.8
+
+The calculation for the total value is the sum of these four amounts:
+$583.4 + $496.1 + $209.1 + $25.8
+
+Evaluating the expression:
+583.4 + 496.1 = 1079.5
+1079.5 + 209.1 = 1288.6
+1288.6 + 25.8 = 1314.4
+
+Final answer: 1314.4
+
+########## 3. 171a2b3ef7894c41a214d6f90a80850c | arith_m1 | 산술: 정답 셀 1개
+Q: What was the average value of the Other in the years for Commercial loans where Software/internet of Commercial loans is positive for Less thanFive Million for total? (in thousand)
+GOLD: 379431.0 | program: divide(379431,const_1) | evidence: ['3-8-6'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=301 ref=0 ops=(1, 1) cells=54 gold_pos=[43]/54 fa='197,918' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=470 ref=0 ops=(1, 1) cells=151 fa='** 363,089' fa_rel=text
+--- OURS raw (tail 900) ---
+To answer the question, we need to identify the values for "Other" in the "Less than Five Million" category for the years 2017 and 2018, as these are the only two years of data provided in the context for this specific category. The question asks for the **average** value.
+
+1.  **Identify the values:**
+    *   For "Commercial loans > Other > December 31, 2018 > Less thanFive Million": The context states **246,011**.
+    *   For "Commercial loans > Other > December 31, 2017 > Less thanFive Million": The context states **149,825**.
+
+2.  **Determine the calculation:**
+    The question asks for the "average value".
+    Formula: Average = (Value_2018 + Value_2017) / 2
+
+3.  **Perform the calculation:**
+    Expression: (246,011 + 149,825) / 2
+    Sum: 246,011 + 149,825 = 395,836
+    Average: 395,836 / 2 = 197,918
+
+Final answer: 197,918
+--- LC raw (tail 500) ---
+of the Other... for total". This refers to the "Total" column for the "Other" row within the "Commercial loans" section.
+    *   **2018 Value:** $346,747
+    *   **2017 Value:** $379,431
+
+**2. Formulate the calculation:**
+The question asks for the **average** value of these two years.
+Formula: Average = (Value in 2018 + Value in 2017) / 2
+
+**3. Perform the calculation:**
+Expression: (346,747 + 379,431) / 2
+Sum: 346,747 + 379,431 = 726,178
+Average: 726,178 / 2 = 363,089
+
+**Final answer:** 363,089
+
+########## 4. 1bcc7982282c4c1d8f59bceab2044de4 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What do all Net Generation (MWh) sum up in 2014 , excluding Gulf Coast and East? (in thousand)
+GOLD: 16640.0 | program: add(4241,4026), add(#0,8373) | evidence: ['2-7-2', '2-8-2', '2-9-2'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=277 ref=0 ops=(3, 3) cells=19 gold_pos=[4, 9, 12]/19 fa='8,267' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=201 ref=0 ops=(3, 3) cells=96 fa='16,640' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To answer the question, we need to identify the Net Generation (MWh) values for the year 2014 for the regions "excluding Gulf Coast and East". Based on the context provided, the available regions for 2014 are Gulf Coast, East, and West. Therefore, the regions to include are "West" and "NRG Renew".
+
+1.  **Identify the values for 2014:**
+    *   Gulf Coast (2014): 59,871 (Exclude)
+    *   East (2014): 51,192 (Exclude)
+    *   West (2014): 4,241 (Include)
+    *   NRG Renew (2014): 4,026 (Include)
+
+2.  **Calculate the sum:**
+    The question asks for the sum of Net Generation for 2014 excluding Gulf Coast and East. This means summing the values for West and NRG Renew.
+
+    Expression: $4,241 + 4,026$
+
+    Calculation:
+    $4,241 + 4,026 = 8,267$
+
+Final answer: 8,267
+--- LC raw (tail 500) ---
+To find the sum of all Net Generation (MWh) in 2014 excluding Gulf Coast and East, we identify the relevant values from the first table under the column "Net Generation (MWh)" for the year 2014.
+
+The values for the regions other than Gulf Coast and East are:
+1.  **West**: 4,241
+2.  **NRG Renew**: 4,026
+3.  **NRG Yield(a)**: 8,373
+
+The calculation is the sum of these three values:
+Expression: 4,241 + 4,026 + 8,373
+
+Evaluation:
+4,241 + 4,026 = 8,267
+8,267 + 8,373 = 16,640
+
+Final answer: 16,640
+
+########## 5. 2014ead90dbd40d5848738cc2abe9edf | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What's the current increasing rate of Value of the total Cancelled Sales Orders?
+GOLD: 0.14209 | program: subtract(4192.6,3671.0), divide(#0,3671.0) | evidence: ['2-9-4', '2-9-5'] | doc tables 3
+OURS: inc=0 gold_in=0 fin=0 out=1536 ref=0 ops=(0, 3) cells=23 gold_pos=[None, None]/23 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=376 ref=0 ops=(3, 3) cells=85 fa='14.21%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+tal" row. The context snippet might be truncated.
+    However, the instruction says "Use the following pieces of retrieved context".
+    If I cannot find a "Total" value for Value, I cannot calculate the total.
+    
+    Is it possible the question implies the values *are* the totals?
+    Or is there a row I missed?
+    Let's check the text again for "Total" or "Grand Total" under Value.
+    No "Total" row under Value is present in the snippet.
+    
+    Let's check if the question meant "Cancelled Sales Orders" (the count) but said "Value"?
+    "Value of the total Cancelled Sales Orders" -> This clearly points to the dollar amount column.
+    
+    Let's assume the provided context is the universe of data.
+    Maybe the "Total" is the sum of the regions?
+    Regions with Value data: East (2018), South Central (2017).
+    We don't have East 2017 or South Central 2018.
+    We can't sum them.
+--- LC raw (tail 500) ---
+ **$3,671.0**.
+
+2.  **Apply the formula for percentage change:**
+    *   Formula: `(New Value - Old Value) / Old Value`
+    *   New Value (2018): 4,192.6
+    *   Old Value (2017): 3,671.0
+
+3.  **Construct the arithmetic expression:**
+    *   `(4,192.6 - 3,671.0) / 3,671.0`
+
+4.  **Evaluate the expression:**
+    *   Numerator: $4,192.6 - 3,671.0 = 521.6$
+    *   Division: $521.6 / 3,671.0 \approx 0.1420866$
+    *   Convert to percentage: $0.1420866 \times 100 \approx 14.21\%$
+
+Final answer: 14.21%
+
+########## 6. 248fceb451f946678616914f36ec44bc | lookup_m1 | 조회: 값을 답함
+Q: How much of public is there in total in 2013 without education and healthcare? (in million)
+GOLD: 1250.6 | program:  | evidence: ['0-7-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=204 ref=0 ops=(0, 0) cells=26 gold_pos=[7]/26 fa='2,715.5' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=197 ref=0 ops=(0, 0) cells=48 fa='1,250.6' fa_rel=gold
+--- OURS raw (tail 900) ---
+To find the total public amount in 2013 without education and healthcare, we need to subtract the Education value from the Total Public value for the year 2013.
+
+1.  **Identify Total Public for 2013**: From the context, "Public: > Total Public > Years Ended December 31, > 2013" is $4,164.5.
+2.  **Identify Education for 2013**: From the context, "Public: > Education > Years Ended December 31, > 2013" is 1,449.0.
+3.  **Calculation**: Subtract the Education value from the Total Public value.
+    Expression: $4,164.5 - 1,449.0$
+    Evaluation: $2,715.5$
+
+Final answer: 2,715.5
+--- LC raw (tail 500) ---
+the total public value in 2013 without education and healthcare, we need to:
+1. Identify the total public value in 2013.
+2. Identify the education value in 2013.
+3. Identify the healthcare value in 2013.
+4. Subtract the education and healthcare values from the total public value.
+
+From the context table:
+- Total Public (2013) = $4,164.5 million
+- Education (2013) = $1,449.0 million
+- Healthcare (2013) = $1,464.9 million
+
+Calculation:
+(4,164.5 - 1,449.0 - 1,464.9) = 1,250.6
+
+Final answer: 1,250.6
+
+########## 7. 2cafe67b7580440bb1327d28e0b1ab63 | lookup_m1 | 조회: 값을 답함
+Q: what is the highest total amount of Net periodic defined benefit cost? (in million)
+GOLD: 122 | program:  | evidence: ['3-11-1'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=1297 ref=0 ops=(0, 0) cells=51 gold_pos=[3]/51 fa='81' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=450 ref=0 ops=(0, 0) cells=192 fa='122' fa_rel=gold
+--- OURS raw (tail 900) ---
++ 43 + 33 = 41$
+    *   **2013:**
+        *   Interest cost: 125
+        *   Expected return: -142
+        *   Amortization: 64
+        *   Benefits earned: 34
+        *   Total = $125 + (-142) + 64 + 34 = 81$
+
+**Comparison of Totals:**
+*   OPEB 2015: -148
+*   OPEB 2014: -127
+*   OPEB 2013: -111
+*   Pension U.S. 2015: 45
+*   Pension U.S. 2014: -142
+*   Pension U.S. 2013: -160
+*   Pension Non-U.S. 2015: 32
+*   Pension Non-U.S. 2014: 41
+*   Pension Non-U.S. 2013: 81
+
+The highest value among these calculated totals is 81, corresponding to Pension plans > Non-U.S. > 2013.
+
+Calculation expression:
+(447 + (-956) + 35 + 314) = -160 (U.S. 2013)
+(498 + (-929) + 136 + 340) = 45 (U.S. 2015)
+(112 + (-150) + 33 + 37) = 32 (Non-U.S. 2015)
+(137 + (-172) + 43 + 33) = 41 (Non-U.S. 2014)
+(125 + (-142) + 64 + 34) = 81 (Non-U.S. 2013)
+
+Max(81, 45, 41, 32, -160, -142, -111, -127, -148) = 81
+
+Final answer: 81
+--- LC raw (tail 500) ---
+
+- (Note: There is a column with -55, likely another OPEB or similar category, but the highest positive values are clearly in the other columns).
+
+Let's list the positive values found:
+1. 122 (U.S. 2015)
+2. 35 (U.S. 2013)
+3. 33 (Non-U.S. 2015)
+4. 43 (Non-U.S. 2014)
+5. 49 (Non-U.S. 2013)
+6. 64 (OPEB 2015)
+
+Comparing these values:
+- 122
+- 35
+- 33
+- 43
+- 49
+- 64
+
+The highest value is 122.
+
+Calculation to confirm the maximum:
+Max(122, -186, 35, 33, 43, 49, 64, -74, -64, -55) = 122
+
+Final answer: 122
+
+########## 8. 30b1fa7f5d454aa5a4a55798568dc6c5 | lookup_m2+ | 조회: 개수 세기
+Q: How many kinds of elements are greater than 300 in 2016?
+GOLD: 3 | program:  | evidence: ['1-4-3', '1-5-3', '1-6-3'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=132 ref=0 ops=(0, 0) cells=24 gold_pos=[9, 4, 23]/24 fa='Data not available in context' fa_rel=text []
+LC  : inc=1 gold_in=1 fin=1 out=628 ref=0 ops=(0, 0) cells=80 fa='8' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+Based on the provided context, there is no data regarding "kinds of elements" or any list of elements with numerical values for the year 2016. The context contains financial data such as revenue, net income, assets, equity, and percentage changes for regions (Europe, Asia Pacific ex-Japan, Americas, Japan) and consolidated figures.
+
+Since the specific data required to answer the question ("How many kinds of elements are greater than 300 in 2016?") is not present in the retrieved context, it is impossible to perform the requested calculation or count.
+
+Final answer: Data not available in context
+--- LC raw (tail 500) ---
+re: 1.97 < 300 (No)
+10. Diluted net income per share: 1.95 < 300 (No)
+11. Basic weighted average shares: 170 < 300 (No)
+12. Diluted weighted average shares: 172 < 300 (No)
+
+**Step 4: Count the number of elements that meet the condition.**
+The elements greater than 300 are:
+1. Cash and cash equivalents and short-term investments
+2. Working capital
+3. Total assets
+4. Long-term debt
+5. Stockholders' equity
+6. Net revenue
+7. Income (loss) before taxes
+8. Net income
+
+Total count = 8.
+
+Final answer: 8
+
+########## 9. 31568129a0d7478d94c0b5f13dd59302 | arith_m1 | 산술: 정답 셀 1개
+Q: What's the 18 % of total elements for Level 3 in 2014? (in millions)
+GOLD: 453.96 | program: multiply(2522,0.18) | evidence: ['2-42-3'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=228 ref=0 ops=(1, 2) cells=42 gold_pos=[0]/42 fa='102.6' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=198 ref=0 ops=(1, 2) cells=146 fa='453.96' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To find the value representing 18% of the total elements for Level 3 in 2014, we first need to identify the total amount for Level 3 from the provided context.
+
+1.  **Identify the Total Level 3 value:**
+    Scanning the context for "Total" and "Level 3" under the date "As of December 31, 2014":
+    - Found entry: `International Equities: > Subtotal > As of December 31, 2014 > Total: 570`
+    - This indicates the total value for Level 3 is 570 (in millions).
+
+2.  **Calculate 18% of this total:**
+    - The question asks for 18% of 570.
+    - Calculation expression: $570 \times 0.18$
+    - Evaluation: $570 \times 0.18 = 102.6$
+
+Final answer: 102.6
+--- LC raw (tail 500) ---
+ in 2014, we first identify the total amount for Level 3 from the provided table context.
+
+1.  **Identify the Total Level 3 value for 2014**:
+    Looking at the row labeled "Total" and the column labeled "Level 3" under the section "As of December 31, 2014", the value is **$2,522** (in millions).
+
+2.  **Calculate 18% of this value**:
+    The question asks for 18% of this total.
+    Calculation: $2,522 \times 0.18$
+
+    Arithmetic expression:
+    $2,522 \times 0.18 = 453.96$
+
+Final answer: 453.96
+
+########## 10. 31efe9930eed4cfeb333caa691934349 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: by what percentage did the average henry hub natural gas benchmark decrease from 2007 to 2009?
+GOLD: -0.41837 | program: subtract(3.99,6.86), divide(#0,6.86) | evidence: ['2-3-1', '2-3-3', '2-3-3'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=236 ref=0 ops=(3, 3) cells=22 gold_pos=[1, 0, 0]/22 fa='56.41%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=378 ref=0 ops=(3, 3) cells=72 fa='41.84%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To determine the percentage decrease in the Henry Hub natural gas benchmark from 2007 to 2009, we use the values provided in the context:
+- 2007 value: $6.86
+- 2009 value: $3.99
+
+The formula for percentage change is: (New Value - Old Value) / Old Value.
+Here, the "New Value" is the 2009 price and the "Old Value" is the 2007 price.
+
+Calculation expression:
+($3.99 - $6.86) / $6.86
+
+Evaluating the expression:
+-3.87 / 6.86 ≈ -0.56414
+
+To express this as a percentage decrease, we take the absolute value of the result (since the question asks for the decrease) or simply interpret the negative sign as a decrease.
+Percentage decrease = 0.5641 * 100 = 56.41%
+
+Final answer: 56.41%
+--- LC raw (tail 500) ---
+}{6.86} $$
+
+Calculating the numerator:
+$$ 3.99 - 6.86 = -2.87 $$
+
+Dividing by the denominator:
+$$ \frac{-2.87}{6.86} \approx -0.418367... $$
+
+Converting to a percentage:
+$$ -0.418367... \times 100 \approx -41.84\% $$
+
+The negative sign indicates a decrease. The question asks "by what percentage did... decrease", so we typically express this as a positive magnitude representing the drop.
+
+Calculation expression: $(3.99 - 6.86) / 6.86 = -0.4184$
+Percentage decrease: $41.84\%$
+
+Final answer: 41.84%
+
+########## 11. 3833a34290904232a7d98be250460327 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What's the total amount of Trading account assets and Debt securities, Loans and leases and Allowance for loan and lease losses in 2011? (in million)
+GOLD: 1373152.0 | program: add(169319,311416), add(#0,926200), subtract(#1,33783) | evidence: ['0-5-2', '0-6-2', '0-7-2', '0-8-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=359 ref=0 ops=(4, 4) cells=50 gold_pos=[8, 21, 7, 1]/50 fa='1,424,933' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=315 ref=0 ops=(4, 4) cells=100 fa='1,373,152' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To find the total amount of Trading account assets, Debt securities, Loans and leases, and Allowance for loan and lease losses in 2011, we need to sum the values for each of these items for the year 2011. Based on the context provided, the relevant values are:
+
+1.  **Trading account assets (Average Balance, 2011):** 187,340
+2.  **Debt securities (Average Balance, 2011):** 337,120
+3.  **Loans and leases (Average Balance, 2011):** 938,096
+4.  **Allowance for loan and lease losses (Average Balance, 2011):** -37,623
+
+The calculation is the sum of these four values:
+Expression: $187,340 + 337,120 + 938,096 + (-37,623)$
+
+Step-by-step evaluation:
+1.  $187,340 + 337,120 = 524,460$
+2.  $524,460 + 938,096 = 1,462,556$
+3.  $1,462,556 + (-37,623) = 1,462,556 - 37,623 = 1,424,933$
+
+Final answer: 1,424,933
+--- LC raw (tail 500) ---
+
+The values for 2011 are:
+- Trading account assets: $169,319
+- Debt securities: $311,416
+- Loans and leases: $926,200
+- Allowance for loan and lease losses: -$33,783 (Note: The table shows this as a negative value in parentheses or with a minus sign, indicating it is a contra-asset).
+
+Calculation:
+Total = (169,319 + 311,416 + 926,200 + (-33,783))
+
+Step-by-step evaluation:
+1. 169,319 + 311,416 = 480,735
+2. 480,735 + 926,200 = 1,406,935
+3. 1,406,935 + (-33,783) = 1,373,152
+
+Final answer: 1,373,152
+
+########## 12. 3daa3352f4af425ebd3ae08c44925d70 | lookup_m1 | 조회: 값을 답함
+Q: What was the sum of Net income (loss) without Loews common stock in 2005 under the item of "Income (loss) attributable to: "? (in million)
+GOLD: 251.3 | program:  | evidence: ['1-19-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(0, 0) cells=53 gold_pos=[27]/53 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=0 out=1536 ref=0 ops=(0, 0) cells=139 fa=None fa_rel=no_final
+--- OURS raw (tail 900) ---
+or "Net income (loss) without Loews common stock", it implies there is a total Net Income (loss) and we subtract the Loews portion.
+Is it possible the "Income (loss) attributable to: Net income (loss)" is the sum of the Loews components?
+If the table only lists Loews, then the "Net income (loss) without Loews" would be Total - Loews.
+But we don't have Total.
+
+Let's reconsider the wording. "What was the sum of Net income (loss) without Loews common stock in 2005 under the item of 'Income (loss) attributable to:'?"
+Perhaps the "item of 'Income (loss) attributable to:'" refers to the specific line items listed under that header, but excluding the Loews ones?
+The context lists:
+1. Income (loss) attributable to: Loews common stock: Income (loss) from continuing operations: 941.6
+2. Income (loss) attributable to: Loews common stock: Income (loss) from continuing Discontinued operations, net: 1
+--- LC raw (tail 500) ---
+*   Value = 251.3.
+
+Let's double check the specific wording "under the item of 'Income (loss) attributable to:'".
+In the second table, the section starts with "Income (loss) attributable to:".
+The rows following are:
+- Loews common stock:
+  - Income (loss) from continuing operations: $941.6
+The table snippet for the second table does not show the Carolina Group line in the "attributable to" section, but the first table shows "Carolina Group stock" as a major component of the Net Income.
+Usually,
+
+########## 13. 3f499f9c4a154840902139f548fb4590 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: Which liability exceeds 30 % of total in Ending Balance Dec. 31, 2007 ?
+GOLD: 394543.2 | program: multiply(1315144,0.3) | evidence: ['3-11-6', '3-5-6', '3-8-6'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(1, 2) cells=36 gold_pos=[0, 9, 6]/36 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=654 ref=0 ops=(1, 2) cells=132 fa='Nuclear production decommissioning' fa_rel=text
+--- OURS raw (tail 900) ---
+operty: > Total liability > Ending Balance Dec. 31, 2007: $1,315,144".
+And "Table 4 > Common Utility and Other Property: > Common general plant asbestos > Ending Balance Dec. 31, 2007: 1,277".
+The sum of components for Common Utility is not fully provided in the text, but the single item "Common general plant asbestos" is tiny.
+
+Let's look at the **Electric Utility Plant** again.
+Components:
+- Nuclear production decommissioning: 1,209,746
+- Steam production ash containment: 22,539
+- Steam production asbestos: 35,807
+- Electric transmission: 270
+Total Sum = 1,268,362.
+Nuclear production decommissioning is 1,209,746.
+Ratio = 1,209,746 / 1,268,362 = 0.9538 (95.4%).
+This clearly exceeds 30%.
+
+Is there any other interpretation?
+Maybe the question refers to the "Total liability" of the entire company?
+Total = Common Utility (1,315,144) + Electric Utility (1,268,362) + Gas Utility (45,505) = 2,
+--- LC raw (tail 500) ---
+n: 270 / 1,315,144 ≈ 0.0002 (0.02%) -> Does not exceed 30%.
+5.  **Gas transmission and distribution**: $45,505
+    Calculation: 45,505 / 1,315,144 ≈ 0.0346 (3.46%) -> Does not exceed 30%.
+6.  **Common general plant asbestos**: $1,277
+    Calculation: 1,277 / 1,315,144 ≈ 0.00097 (0.097%) -> Does not exceed 30%.
+
+**Conclusion**
+Only "Nuclear production decommissioning" has a balance ($1,209,746) that exceeds 30% of the total liability ($1,315,144).
+
+Final answer: Nuclear production decommissioning
+
+########## 14. 409ab886071a472290a28efa3bed16a0 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: what percent of debt obligations are long term?
+GOLD: 0.88973 | program: subtract(20404,2250), divide(#0,20404) | evidence: ['0-1-1', '0-1-1', '0-1-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=315 ref=0 ops=(3, 3) cells=76 gold_pos=[13, 13, 11]/76 fa='52.54%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=362 ref=0 ops=(3, 3) cells=206 fa='88.97%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ of those obligations that are classified as "long-term" (specifically, more than 5 years, as this is the standard definition for long-term debt in this context, distinct from the 1-3, 3-5, and less than 1 year categories).
+
+1.  **Identify Total Debt Obligations**:
+    From the context, under the section "Debt Obligations-1", the row labeled "Total" shows a value of **$20,404**.
+
+2.  **Identify Long-Term Debt Obligations**:
+    Looking at the "Debt Obligations-1" section, the row labeled "More than 5 years" shows a value of **$10,720**. This represents the long-term portion of the debt.
+
+3.  **Calculate the Percentage**:
+    The formula for percentage is: (Long-Term Debt / Total Debt Obligations) * 100.
+    Using the values from the context:
+    Expression: (10,720 / 20,404)
+
+4.  **Evaluate**:
+    10,720 / 20,404 ≈ 0.525375...
+    Converted to a percentage: ≈ 52.54%
+
+Final answer: 52.54%
+--- LC raw (tail 500) ---
+ columns "1-3 years", "3-5 years", and "More than 5 years" for the row "Debt Obligations-1".
+    *   1-3 years: $2,431
+    *   3-5 years: $5,003
+    *   More than 5 years: $10,720
+
+First, calculate the sum of long-term debt obligations:
+Sum = 2,431 + 5,003 + 10,720 = 18,154
+
+Next, calculate the percentage:
+Percentage = (Long-term Debt / Total Debt)
+Percentage = (18,154 / 20,404)
+
+Calculation:
+18,154 / 20,404 ≈ 0.889715...
+
+Converting to a percentage:
+0.889715 * 100 ≈ 88.97%
+
+Final answer: 88.97%
+
+########## 15. 414dbfc738f643dbaba790ce0a80904d | lookup_m1 | 조회: 값을 답함
+Q: What's the growth rate of Securities Processing Solutions in 2009?
+GOLD: 4% | program:  | evidence: ['0-5-5'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=233 ref=0 ops=(0, 0) cells=21 gold_pos=[1]/21 fa='3.71%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=378 ref=0 ops=(0, 0) cells=78 fa='3.71%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To calculate the growth rate of Securities Processing Solutions in 2009, we need the dollar amount change and the base year (2008) dollar amount.
+
+From the context:
+- Change in 2009 vs. 2008 ($): 5.1
+- Years Ended June 30, 2009: 142.6
+- Years Ended June 30, 2008: 137.5
+
+The growth rate formula is: (New Value - Old Value) / Old Value.
+New Value (2009) = 142.6
+Old Value (2008) = 137.5
+
+Calculation expression: (142.6 - 137.5) / 137.5
+Evaluation: 5.1 / 137.5 = 0.037089...
+
+Rounding to two decimal places as a percentage: 3.71%
+
+Final answer: 3.71%
+--- LC raw (tail 500) ---
+ 5.1
+    *   Division: 5.1 / 137.5 = 0.0370909...
+
+    Rounding to two decimal places as a percentage (consistent with the table's "% Change" column which shows "4"):
+    0.0371 * 100 = 3.71%
+
+    The table explicitly lists the % change as 4, but based on the precise values provided in the context (142.6 and 137.5), the calculated rate is approximately 3.71%. The question asks for the growth rate based on the context values.
+
+    Calculation: (142.6 - 137.5) / 137.5 = 0.0371
+
+Final answer: 3.71%
+
+########## 16. 41e65de28a85415482b42d6fed51459f | arith_m1 | 산술: 정답 셀 1개
+Q: what was the percentage total cumulative return on investment for united parcel service inc . for the five years ended 12/31/2012?
+GOLD: 0.2146 | program: subtract(121.46,const_100), divide(#0,const_100) | evidence: ['0-1-6'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=436 ref=0 ops=(1, 1) cells=45 gold_pos=[0]/45 fa='51.45%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=261 ref=0 ops=(1, 1) cells=115 fa='21.46%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+2 implies the period from 12/31/2007 to 12/31/2012. However, cumulative return is typically calculated from the start of the holding period. If the question asks for the return "for the five years ended 12/31/2012", it usually implies comparing the value at the end of that period (2012) to the value at the start of that specific five-year window (2008). Let's verify the dates:
+- End of period: 12/31/2012 ($121.46)
+- Start of the five-year period: 12/31/2008 ($80.20)
+
+The formula for percentage return is: (Ending Value - Beginning Value) / Beginning Value.
+
+Using the values from the context:
+- Ending Value (2012): $121.46
+- Beginning Value (2008): $80.20
+
+Calculation expression:
+(121.46 - 80.20) / 80.20
+
+Evaluating the expression:
+121.46 - 80.20 = 41.26
+41.26 / 80.20 ≈ 0.5144638...
+
+Converting to percentage:
+0.5144638... * 100 = 51.45% (rounded to two decimal places)
+
+Final answer: 51.45%
+--- LC raw (tail 500) ---
+cumulative return" values provided in the first table.
+
+The formula for percentage change is:
+$$ \text{Percentage Change} = \frac{\text{Value}_{\text{new}} - \text{Value}_{\text{old}}}{\text{Value}_{\text{old}}} $$
+
+From the context table:
+- Value for 12/31/2012 (new): $121.46
+- Value for 12/31/2007 (old, start of the 5-year period): $100.00
+
+Calculation expression:
+$$ (121.46 - 100.00) / 100.00 $$
+
+Evaluation:
+$$ 21.46 / 100.00 = 0.2146 $$
+$$ 0.2146 \times 100 = 21.46\% $$
+
+Final answer: 21.46%
+
+########## 17. 41f8f4056a83474c9c1f41e23e0e4e50 | lookup_m1 | 조회: 값을 답함
+Q: What was the total amount of Residential/Religious (b) greater than 9000 in 2017? (in million)
+GOLD: 9924 | program:  | evidence: ['4-3-1'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=331 ref=0 ops=(0, 0) cells=49 gold_pos=[3]/49 fa='0' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=254 ref=0 ops=(0, 0) cells=162 fa='9,924' fa_rel=gold
+--- OURS raw (tail 900) ---
+it is greater than 9,000.
+
+1.  **Identify the relevant data point**:
+    Looking at the context, the line item "Residential/Religious (b) > Revenues in Millions (a) > For the Years Ended > December 31, 2017" provides the value.
+    The context states: `Residential/Religious (b) > Revenues in Millions (a) > For the Years Ended > December 31, 2017: $2,515`.
+
+2.  **Verify the condition**:
+    The question asks for the total amount *greater than 9000*.
+    The value found is $2,515 million.
+    $2,515 is not greater than $9,000.
+
+3.  **Formulate the answer**:
+    Since the value ($2,515) does not meet the condition (> 9000), the total amount meeting the criteria is 0.
+
+Calculation expression:
+If we interpret the question as asking for the value itself if it were greater, or the count of such items:
+The value is 2,515.
+Condition: 2,515 > 9,000? No.
+Therefore, the amount is 0.
+
+Final answer: 0
+--- LC raw (tail 500) ---
+ions of kWh Delivered".
+3.  **Extract the value**: The value in the cell at the intersection of the "Residential/Religious (b)" row and the "December 31, 2017" column is 9,924.
+4.  **Check the condition**: The question asks for the amount greater than 9000.
+    *   $9,924 > 9,000$. The condition is met.
+5.  **Calculate the total**: Since there is only one category listed for "Residential/Religious (b)" in 2017, the total is simply that value.
+
+Calculation expression:
+$9,924$
+
+Final answer: 9,924
+
+########## 18. 432268fc9b6f444892e9444d01abb7c2 | arith_m1 | 산술: 정답 셀 1개
+Q: What's the average of Bank of America Corporation in 2016? (in million)
+GOLD: 6710.0 | program: divide(26840,const_4) | evidence: ['1-6-3'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=248 ref=0 ops=(1, 1) cells=58 gold_pos=[0]/58 fa='26,840' fa_rel=gold ['1-6-3']
+LC  : inc=1 gold_in=1 fin=0 out=1536 ref=0 ops=(1, 1) cells=139 fa=None fa_rel=no_final
+--- OURS raw (tail 900) ---
+ion in 2016, we first identify the relevant data points from the context. The question asks for the "average of Bank of America Corporation in 2016". Looking at the context, there is only one value explicitly listed for "Bank of America Corporation" for the year "2016" under the "Total" row: **26,840**.
+
+There are no other distinct line items for "Bank of America Corporation" with a 2016 value provided in the context (other rows are for "Bank of America, N.A." or different note types like "Senior notes", "Subordinated notes", etc., which are components of the total but the question implies the aggregate figure for the corporation for that year, or simply that there is only one data point to average).
+
+Since there is only one value (26,840), the average is simply that value.
+
+Calculation:
+Average = Sum of values / Count of values
+Average = 26,840 / 1
+Average = 26,840
+
+Final answer: 26,840
+--- LC raw (tail 500) ---
+ind if there is any other interpretation. Could it be the average of the *rows*?
+Rows: Senior notes, Senior structured notes, Subordinated notes, Junior subordinated notes.
+Values: 18,164, 3,429, 5,247, 0.
+Sum = 26,840.
+Count = 4.
+Average = 6,710.
+
+Let's double check if "Junior subordinated notes" should be excluded because it's zero or dash. Usually, in such tables, a dash or zero is a valid value.
+Let's assume the question implies the components.
+Calculation: (18,164 + 3,429 + 5,247 + 0) / 4 =
+
+########## 19. 4803d9132b304c95990d900834ad7e06 | lookup_m2+ | 조회: 값을 답함
+Q: What's the sum of the Operating expenses in the year where the amount of Sales and marketing is positive? (in dollars)
+GOLD: 1100030 | program:  | evidence: ['4-5-1', '4-5-3', '4-8-1'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=257 ref=0 ops=(0, 0) cells=32 gold_pos=[3, 5, 7]/32 fa='342,242' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=627 ref=0 ops=(0, 0) cells=70 fa='1,100,030' fa_rel=gold
+--- OURS raw (tail 900) ---
+To answer the question, we need to identify the "Sales and marketing" expenses for the years where the amount is positive, and then sum them up.
+
+1.  **Identify Sales and marketing expenses:**
+    *   From the context: "Operating expenses: > Sales and marketing > Year Ended December 31, > 2017 > $: 155,105"
+    *   From the context: "Operating expenses: > Sales and marketing > Year Ended December 31, > 2018 > $: 187,142"
+
+2.  **Check for positive amounts:**
+    *   2017: $155,105 (Positive)
+    *   2018: $187,142 (Positive)
+
+3.  **Calculate the sum:**
+    *   Sum = 155,105 + 187,142
+
+Calculation expression:
+(155,105 + 187,142) = 342,247
+
+Final answer: 342,242
+--- LC raw (tail 500) ---
+first table shows revenue. The second table starts with 2017.
+    
+    Since both 2017 and 2018 have positive Sales and marketing, and the question uses the singular "the year", it most likely refers to the most recent year presented, which is 2018.
+
+    Calculation:
+    The value for Total operating expenses in 2018 is found directly in the table row "Total operating expenses" and column "2018".
+    Value = $1,100,030
+
+    Expression: 1,100,030
+    Evaluation: 1,100,030
+
+Final answer: 1,100,030
+
+########## 20. 496eeaf7a0a04a6992527384c573535f | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: what was the percentage decline in the allowance for doubtful accounts in 2013
+GOLD: -0.15453 | program: subtract(38.3,45.3), divide(#0,45.3) | evidence: ['3-1-1', '3-1-2', '3-1-2', '3-4-2', '3-4-3', '3-4-3'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=322 ref=0 ops=(3, 3) cells=33 gold_pos=[4, 6, 6, 4, 6, 6]/33 fa='6.62%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=314 ref=0 ops=(3, 3) cells=80 fa='-0.1545' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To calculate the percentage decline in the allowance for doubtful accounts in 2013, we need the balance at the beginning of 2013 and the balance at the end of 2013.
+
+From the context:
+- Balance at beginning of year > 2013: $45.3
+- Balance at end of year > 2013: $38.3
+
+The formula for percentage change is: (New Value - Old Value) / Old Value.
+Here, the "New Value" is the end of year balance ($38.3) and the "Old Value" is the beginning of year balance ($45.3).
+
+Calculation expression:
+(38.3 - 45.3) / 45.3
+
+Evaluating the expression:
+-3.0 / 45.3 ≈ -0.066225...
+
+Converting to a percentage:
+-0.066225... * 100 ≈ -6.62%
+
+The question asks for the "percentage decline," which implies a positive number representing the magnitude of the drop.
+Decline = (Old Value - New Value) / Old Value
+Decline = (45.3 - 38.3) / 45.3 = 3.0 / 45.3 ≈ 0.0662 or 6.62%
+
+Final answer: 6.62%
+--- LC raw (tail 500) ---
+ion asks for the "percentage decline". A decline implies a decrease. The formula for percentage change is $(New - Old) / Old$.
+    *   New value (2013): 38.3
+    *   Old value (2012): 45.3
+    *   Calculation: $(38.3 - 45.3) / 45.3$
+
+3.  **Perform the calculation:**
+    *   Numerator: $38.3 - 45.3 = -7.0$
+    *   Division: $-7.0 / 45.3 \approx -0.154525$
+    *   Convert to percentage: $-15.45\%$
+
+Since the value decreased, this represents a decline of approximately 15.45%.
+
+Final answer: -0.1545
+
+########## 21. 4ab73f78a40d4140a821cb4c511aafdf | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: In the year with least amount of Gold Ounces Produced by Yanacocha, what's the increasing rate of Gold Ounces Produced in terms of Total / Weighted Average?
+GOLD: 0.00095 | program: subtract(1049,1048), divide(#0,1048) | evidence: ['1-3-1', '1-3-2', '1-3-3', '1-5-1', '1-5-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=616 ref=0 ops=(3, 3) cells=36 gold_pos=[4, 1, 5, 8, 6]/36 fa='0.3808' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=368 ref=0 ops=(3, 3) cells=90 fa='0.000954' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+verage for the year identified (2016) compared to the next year (2017).**
+    *   The question asks for the "increasing rate". This implies calculating the growth rate from the base year (2016) to the subsequent year (2017).
+    *   Old value (2016): 759
+    *   New value (2017): 1,048
+    *   Formula: (New - Old) / Old
+    *   Expression: (1,048 - 759) / 759
+
+4.  **Perform the calculation.**
+    *   Numerator: 1,048 - 759 = 289
+    *   Division: 289 / 759 ≈ 0.380764...
+
+5.  **Format the final answer.**
+    *   The calculated rate is approximately 0.3808 (or 38.08%). The prompt asks for the value, usually expressed as a decimal or percentage depending on context, but the arithmetic expression rule suggests the decimal form derived directly from the formula. Let's provide the decimal value rounded to four places.
+
+Calculation:
+(1,048 - 759) / 759 = 289 / 759 ≈ 0.3808
+
+Final answer: 0.3808
+--- LC raw (tail 500) ---
+ntify the Gold Ounces Produced for "Total / Weighted Average" for the relevant years:**
+    We need the values for 2017 (old) and 2018 (new) from the "Total / Weighted Average-4" row under "Gold Ounces Produced".
+    *   2017 (Old): 1,048
+    *   2018 (New): 1,049
+
+3.  **Calculate the increasing rate:**
+    Using the formula: (new - old) / old
+    Expression: (1,049 - 1,048) / 1,048
+
+4.  **Evaluate the expression:**
+    (1,049 - 1,048) / 1,048 = 1 / 1,048 ≈ 0.000954198...
+
+Final answer: 0.000954
+
+########## 22. 4ae22659202f4480ad004d99dd92a28a | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the sum of elements without those elements smaller than 300 in 2016? (in million)
+GOLD: 1740.0 | program: add(1096,644) | evidence: ['1-2-1', '1-3-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(2, 2) cells=24 gold_pos=[0, 12]/24 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=833 ref=0 ops=(2, 2) cells=71 fa='1,740' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ts of revenue, exclusive of depreciation and amortization: 770
+    3.  Costs of revenue: 644
+    4.  Selling, general and administrative expenses: 1,011 (from Table 1)
+    5.  Selling, general and administrative expenses: 82 (from Table 3) - This might be a specific segment's SG&A.
+    6.  Segment profit: 236
+
+    If we assume the question refers to the specific table "Table 3" which seems to contain the breakdown:
+    Items in Table 3 for 2016:
+    - Revenues: 930
+    - Costs of revenue, exclusive of depreciation and amortization: 770
+    - Costs of revenue: 644
+    - Selling, general and administrative expenses: 82
+    - Segment profit: 236
+
+    Let's check the values against the threshold of 300:
+    - 930 > 300 (Keep)
+    - 770 > 300 (Keep)
+    - 644 > 300 (Keep)
+    - 82 < 300 (Exclude)
+    - 236 < 300 (Exclude)
+
+    Sum of elements > 300: 930 + 770 + 644.
+    Calculation: 930 + 770
+--- LC raw (tail 500) ---
+96 (Greater than 300) -> Keep
+2.  Costs of revenue: 644 (Greater than 300) -> Keep
+3.  Selling, general and administrative expenses: 216 (Smaller than 300) -> Exclude
+4.  Segment profit: 236 (Smaller than 300) -> Exclude
+
+**Step 3: Calculate the sum of the remaining elements.**
+The elements to sum are Revenues and Costs of revenue.
+Sum = Revenues + Costs of revenue
+Sum = 1,096 + 644
+
+**Calculation:**
+Expression: (1,096 + 644)
+Evaluation: 1,096 + 644 = 1,740
+
+**Final Answer:**
+Final answer: 1,740
+
+########## 23. 55fdbfc02094461d88b87f693131b620 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the total amount of the Subtotal Other Securities in the years where Subtotal High or Highest Quality Securities for Amortized Cost is greater than 2000? (in million)
+GOLD: 8308.0 | program: add(4028,4280) | evidence: ['3-10-1', '3-10-5'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=651 ref=0 ops=(2, 2) cells=46 gold_pos=[5, 19]/46 fa='13,459' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=0 out=1536 ref=0 ops=(2, 2) cells=193 fa=None fa_rel=no_final
+--- OURS raw (tail 900) ---
+3**
+
+The question asks for the "total amount of the Subtotal Other Securities". In financial reporting contexts like this, if multiple subtotals exist for the same category across different tables (often representing different classifications or views within the same section), the "total amount" usually implies the sum of these components unless specified otherwise. Given the structure where Table 4 and Table 5 both list "Subtotal Other Securities" for the same dates, we sum the values from both tables for the qualifying years.
+
+**Step 3: Calculate the total.**
+We need to sum the values for 2010 and 2009 from both Table 4 and Table 5.
+
+Values:
+- 2010 Table 4: 4,028
+- 2010 Table 5: 2,448
+- 2009 Table 4: 4,280
+- 2009 Table 5: 2,703
+
+Calculation expression:
+(4,028 + 2,448 + 4,280 + 2,703)
+
+Evaluation:
+4,028 + 2,448 = 6,476
+6,476 + 4,280 = 10,756
+10,756 + 2,703 = 13,459
+
+Final answer: 13,459
+--- LC raw (tail 500) ---
+r Securities".
+However, in financial reporting tables, the "-2" or "-4" usually denotes a footnote reference or a specific subset identifier, while the main text is the subtotal.
+Let's reconsider the possibility that the question refers to a single table and I need to pick the one that makes sense.
+Perhaps the question is from a specific dataset (like FinQA) where the context is usually one table. Here, the user provided 4 tables.
+Let's look at the values again.
+Table 1: 2010 High Quality = 11,0
+
+########## 24. 560312fe306b4b11bcd8d04838a582b3 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the total amount of Foreign exchange contracts and Interest-rate contracts in the range of 1 and 13000 in 2011 for FairValue? (in million)
+GOLD: 13892.0 | program: add(12210,1682) | evidence: ['4-3-2', '4-4-2'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=1386 ref=0 ops=(2, 2) cells=25 gold_pos=[0, 3]/25 fa='28,351' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=606 ref=0 ops=(2, 2) cells=66 fa='27,895' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+5 > Foreign exchange contracts > Derivatives designated as hedging instruments: > Other assets > Liability Derivatives December 31, 2011 > FairValue: 37
+-   Table 5 > Interest-rate contracts > Derivatives not designated as hedging instruments: > Other assets > FairValue: 1,682
+-   Table 5 > Interest-rate contracts > Derivatives designated as hedging instruments: > Other assets > FairValue: $123
+-   Table 5 > Interest-rate contracts > Derivatives not designated as hedging instruments: > Other assets > Liability Derivatives December 31, 2011 > FairValue: 1,688
+-   Table 5 > Interest-rate contracts > Derivatives designated as hedging instruments: > Other assets > Liability Derivatives December 31, 2011 > FairValue: $293
+
+All these values are for 2011 (December 31, 2011). All are >= 1 and <= 13,000.
+Sum = 12,210 + 3 + 12,315 + 37 + 1,682 + 123 + 1,688 + 293
+Sum = 28,351
+
+Final answer: 28,351
+--- LC raw (tail 500) ---
+8 is between 1 and 13,000.
+    All identified values fall within the specified range.
+
+3.  **Calculate the total:**
+    Sum = (Foreign exchange contracts Asset) + (Interest-rate contracts Asset) + (Foreign exchange contracts Liability) + (Interest-rate contracts Liability)
+    Sum = 12,210 + 1,682 + 12,315 + 1,688
+
+    Calculation:
+    12,210 + 1,682 = 13,892
+    13,892 + 12,315 = 26,207
+    26,207 + 1,688 = 27,895
+
+    Expression: (12,210 + 1,682 + 12,315 + 1,688) = 27,895
+
+Final answer: 27,895
+
+########## 25. 5637ef91bb244d74a4fa85d883d4393f | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: what was the change in the total commitments to extend credit from 2016 top 2017
+GOLD: 0.0504 | program: subtract(159641,151981), divide(#0,151981) | evidence: ['1-6-1', '1-6-2', '1-6-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=276 ref=0 ops=(3, 3) cells=31 gold_pos=[0, 1, 1]/31 fa='7,660' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=255 ref=0 ops=(3, 3) cells=68 fa='5.04%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To find the change in total commitments to extend credit from 2016 to 2017, we need to identify the values for "Total commitments to extend credit" for both years from the provided context.
+
+1.  **Identify the value for 2017**: The context states, "Commitments to extend credit > Total commitments to extend credit > December 31 2017: 159,641".
+2.  **Identify the value for 2016**: The context states, "Commitments to extend credit > Total commitments to extend credit > December 31 2016: 151,981".
+3.  **Calculate the change**: The question asks for the "change", which implies the difference between the new value (2017) and the old value (2016).
+    *   Formula: (Value in 2017 - Value in 2016)
+    *   Expression: (159,641 - 151,981)
+
+Calculation:
+159,641 - 151,981 = 7,660
+
+Final answer: 7,660
+--- LC raw (tail 500) ---
+values from the first table:
+
+- Total commitments to extend credit for December 31, 2017: $159,641 million
+- Total commitments to extend credit for December 31, 2016: $151,981 million
+
+The formula for percentage change is:
+(2017 value - 2016 value) / 2016 value
+
+Substituting the values:
+(159,641 - 151,981) / 151,981
+
+Calculating the numerator:
+159,641 - 151,981 = 7,660
+
+Now dividing by the 2016 value:
+7,660 / 151,981 ≈ 0.0504
+
+Converting to a percentage:
+0.0504 * 100 = 5.04%
+
+Final answer: 5.04%
+
+########## 26. 58e0935053504230ad2e5f19c2faaab3 | arith_m1 | 산술: 정답 셀 1개
+Q: what was the percentage total return for delphi automotive plc for the five years ended december 31 2014?\\n
+GOLD: 2.5082 | program: subtract(350.82,const_100), divide(#0,const_100) | evidence: ['0-1-5'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=316 ref=0 ops=(1, 1) cells=22 gold_pos=[0]/22 fa='247.41%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=291 ref=0 ops=(1, 1) cells=69 fa='250.82%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To calculate the percentage total return for Delphi Automotive PLC for the five years ended December 31, 2014, we need to compare the stock price at the end of the period (December 31, 2014) with the stock price at the beginning of the period (December 31, 2011).
+
+1.  **Identify the values from the context:**
+    *   Stock price on December 31, 2014 (New value): $350.82
+    *   Stock price on December 31, 2011 (Old value): $100.98
+
+2.  **Apply the percentage change formula:**
+    Formula: `(New Value - Old Value) / Old Value`
+    Expression: `(350.82 - 100.98) / 100.98`
+
+3.  **Evaluate the expression:**
+    *   Numerator: $350.82 - 100.98 = 249.84$
+    *   Division: $249.84 / 100.98 \approx 2.47408$
+    *   Convert to percentage: $2.47408 \times 100 = 247.41\%$
+
+Final answer: 247.41%
+--- LC raw (tail 500) ---
+on December 31, 2014.
+
+The formula for percentage return is:
+$$ \text{Percentage Return} = \frac{\text{Ending Value} - \text{Beginning Value}}{\text{Beginning Value}} $$
+
+Using the values from the table:
+- Beginning Value (November 17, 2011): $100.00
+- Ending Value (December 31, 2014): $350.82
+
+Calculation expression:
+$$ (350.82 - 100.00) / 100.00 $$
+
+Evaluating the expression:
+$$ 250.82 / 100.00 = 2.5082 $$
+
+Converting to a percentage:
+$$ 2.5082 \times 100\% = 250.82\% $$
+
+Final answer: 250.82%
+
+########## 27. 5e189228321941b29b5f321176d61727 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the total amount of Long-term debt for section column heading excluding those Long-term debt for section column heading greater than 10000? (in millions of dollars)
+GOLD: 7654.0 | program: add(-290,0), subtract(#0,504), subtract(#1,1330), add(#2,9654), add(#3,124) | evidence: ['0-22-2', '0-22-4', '0-22-5', '0-22-6', '0-22-7'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(5, 6) cells=55 gold_pos=[12, 8, 6, 10, 19]/55 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=1509 ref=0 ops=(5, 6) cells=173 fa='7654' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+um = 1,279,965 + 1,248,128 = 2,528,093.
+    Exclude items > 10,000:
+    1,279,965 > 10,000 -> Remove.
+    1,248,128 > 10,000 -> Remove.
+    Result = 0.
+
+    Is it possible the question meant "less than 10000"? No, it says "greater than".
+    Is it possible the threshold is different? "10000".
+    Given the values are in thousands, 1,279,965 is 1.2 billion. 10,000 is 10 million. Both are definitely greater.
+    
+    Perhaps the question is a trick or tests the logic of exclusion.
+    Calculation: (1,279,965 + 1,248,128) - (1,279,965 if > 10000) - (1,248,128 if > 10000)
+    Expression: (1,279,965 + 1,248,128) - 1,279,965 - 1,248,128
+    Evaluation: 2,528,093 - 1,279,965 - 1,248,128 = 0.
+
+    Let's consider if "section column heading" refers to something else. The context has headers like "In thousands of dollars > Long-term debt > 2007". The "section" might be the year.
+    If the question
+--- LC raw (tail 500) ---
+0,404 - 1,330 = 9,074$
+        *   $9,074 + 9,654 = 18,728$
+        *   $18,728 + 124 = 18,852$
+        *   Subtract excluded (11,198): $18,852 - 11,198 = 7,654$.
+
+4.  **Final Verification:**
+    *   Values: -290, -504, -1330, 9654, 124.
+    *   Sum: $-290 - 504 - 1330 + 9654 + 124$
+    *   Negatives: $-290 - 504 - 1330 = -2124$
+    *   Positives: $9654 + 124 = 9778$
+    *   Total: $9778 - 2124 = 7654$.
+
+The calculation is robust. The unit is millions of dollars as requested.
+
+Final answer: 7654
+
+########## 28. 6144d84a07744eb18ab10cd1ca5c97b2 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What will East of Homes in Backlog be like in 2015 if it develops with the same increasing rate as 2014? (in million)
+GOLD: 2692.32864 | program: subtract(1451,782), divide(#0,782), add(const_1,#1), multiply(1451,#2) | evidence: ['2-3-1', '2-3-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=328 ref=0 ops=(4, 4) cells=29 gold_pos=[0, 2]/29 fa='2698.86' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=516 ref=0 ops=(4, 4) cells=90 fa='2,692.5' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To determine the projected backlog for East of Homes in 2015, we first identify the relevant data points from the context:
+1.  **East Homes in Backlog for 2014**: 1,451 (found in the row "East > Sales Order Backlog As of September 30, > Homes in Backlog > 2014").
+2.  **East Homes in Backlog % Change**: 86% (found in the row "East > Sales Order Backlog As of September 30, > Homes in Backlog > %Change").
+
+The question asks for the value in 2015 assuming the same increasing rate as 2014. The growth rate from 2014 to 2015 is the %Change provided (86%).
+
+**Calculation:**
+Formula: `New Value = Old Value * (1 + Growth Rate)`
+Expression: `1,451 * (1 + 0.86)`
+
+Step-by-step evaluation:
+1.  Convert percentage to decimal: 86% = 0.86
+2.  Add 1 to the rate: 1 + 0.86 = 1.86
+3.  Multiply by the 2014 value: 1,451 * 1.86
+
+Calculation:
+1451 * 1.86 = 2698.86
+
+Final answer: 2698.86
+--- LC raw (tail 500) ---
+ Rate)$
+    *   Alternatively: $2014\ Backlog + (2014\ Backlog \times Growth\ Rate)$
+    *   Using the calculated rate: $1,451 \times (1 + (1,451 - 782) / 782)$
+    *   Or simply applying the ratio: $1,451 \times (1,451 / 782)$
+
+Let's compute the value:
+$1,451 \times (1,451 / 782) = 1,451 \times 1.8554987 \approx 2,692.53$
+
+Rounding to one decimal place (consistent with other financial figures in the table like 1,451 which is an integer but others have decimals):
+$2,692.5$
+
+Final answer: 2,692.5
+
+########## 29. 62701611c99a43f18fc417a1300caec3 | lookup_m2+ | 조회: 개수 세기
+Q: How many element exceed the average of Capital expenditures and Proceeds from sales of property and equipment in 2010 ?
+GOLD: 5 | program:  | evidence: ['0-3-1', '0-4-1', '0-9-1', '0-10-1', '0-11-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=1381 ref=1 ops=(0, 0) cells=24 gold_pos=[16, 5, 18, 20, 19]/24 fa='2' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=495 ref=0 ops=(0, 0) cells=73 fa='2' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+m operating activities (1433.7)
+    *   Count = 2.
+
+    *   Wait, is "Cash flows from operating activities" considered an "element" in this context? The section header is "Other Operating Data". The items listed under it are the elements.
+    *   Let's double check if there are any other 2010 items.
+        *   "Depreciation and amortization..." entries are for 2011, 2012, 2013. Not 2010.
+        *   "Balance Sheet Data" is a different section.
+    *   So the set of 2010 "Other Operating Data" items is {Proceeds from sales..., Capital expenditures, Cash flows from operating activities}.
+    *   Average of {Capital expenditures, Proceeds from sales} = (794.7 + 37.4) / 2 = 416.05.
+    *   Which of the 2010 items exceed 416.05?
+        *   Proceeds (37.4) -> No.
+        *   Capital expenditures (794.7) -> Yes.
+        *   Cash flows (1433.7) -> Yes.
+    *   Total count = 2.
+
+Final answer: 2
+--- LC raw (tail 500) ---
+ Cash flows from operating activities: 1,433.7. Is 1,433.7 > 416.05? Yes.
+    *   Capital expenditures: 794.7. Is 794.7 > 416.05? Yes.
+    *   Proceeds from sales of property and equipment: 37.4. Is 37.4 > 416.05? No.
+
+6.  **Count the elements that exceed the average:**
+    *   Two elements (Cash flows from operating activities and Capital expenditures) exceed the average.
+
+Calculation expression:
+((794.7 + 37.4) / 2) = 416.05
+Count of items > 416.05 in {1433.7, 794.7, 37.4} = 2
+
+Final answer: 2
+
+########## 30. 668dcb0247ac41b6b2d88e12cc9f758d | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What is the growing rate of Refreshed combined LTV greater than 100 in the years with the least Reported Basis?
+GOLD: 0.05556 | program: subtract(36,34), divide(#0,36) | evidence: ['1-8-1', '1-8-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=881 ref=1 ops=(3, 3) cells=19 gold_pos=[3, 2]/19 fa='0.0588' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=710 ref=0 ops=(3, 3) cells=77 fa='-0.0556' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+question implies the growth *during* the period defined by these years (i.e., 2010 to 2011), then the calculation holds. If it strictly asks for the rate *in* 2010, a rate cannot be calculated without a previous year's data (which is not provided in the context). Given the constraints to provide an answer, the intended logic is almost certainly the growth from the minimum year to the next available year.
+
+Expression: (36 - 34) / 34
+Evaluation: 2 / 34 = 0.0588235...
+
+Rounding to four decimal places: 0.0588 or 5.88%. The prompt asks for the value, usually as a decimal or percentage. The context uses percentages (e.g., 11%, 34). The input values 34 and 36 are presented without the % sign in the text lines "2010: 34" and "2011: 36", though the header says "Percent of portfolio". Let's assume the values 34 and 36 are the percentages.
+
+Calculation:
+(36 - 34) / 34 = 0.0588
+
+Final answer: 0.0588
+--- LC raw (tail 500) ---
+n 2011) / Value in 2011
+Expression: (34 - 36) / 36
+
+Calculation:
+(34 - 36) / 36 = -2 / 36 = -0.0555...
+
+Let's double check if the question implies the growth rate *from* the least basis year *to* the other. "Growth rate ... in the years" typically means the rate experienced during that year compared to the prior period. Since 2010 is the year with the least basis, we calculate the change from 2011 to 2010.
+
+Expression: (34 - 36) / 36
+Evaluation: -2 / 36 ≈ -0.0556 or -5.56%
+
+Final answer: -0.0556
+
+########## 31. 6845872279aa4a24a5b2c060c7d2e624 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What's the total amount of commercial utilized reservable criticized exposure excluding those commercial utilized reservable criticized exposure greater than 15000 in 2010? (in million)
+GOLD: 37713.0 | program: add(17195,20518) | evidence: ['0-3-1', '0-4-1', '0-5-1', '0-6-1', '0-8-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=585 ref=0 ops=(2, 2) cells=25 gold_pos=[5, 9, 11, 8, 4]/25 fa='42,621' fa_rel=same_col ['0-9-1']
+LC  : inc=1 gold_in=1 fin=0 out=1536 ref=0 ops=(2, 2) cells=49 fa=None fa_rel=no_final
+--- OURS raw (tail 900) ---
+ line item named "Total" provides the aggregate figure directly. The phrase "excluding those... greater than 15000" in the question seems to be a distractor or a condition that cannot be verified with the provided text (as the text does not list individual exposure amounts per client, only aggregated totals by category). However, since the question asks for the "total amount" and provides a specific line item for the "Total commercial utilized reservable criticized exposure", the most direct answer based on the available data is the value of that total line item. The context does not provide a way to filter out exposures > 15000, so we must rely on the explicit "Total" value provided.
+
+The value for `Total commercial utilized reservable criticized exposure > December 31 > 2010 > Amount` is $42,621.
+
+Calculation:
+The question asks for the total amount.
+Value = 42,621
+
+Final answer: 42,621
+--- LC raw (tail 500) ---
+er than 15,000**.
+    Items > 15,000:
+    - U.S. commercial: 17,195
+    - Commercial real estate: 20,518
+    
+    Items <= 15,000:
+    - Commercial lease financing: 1,188
+    - Non-U.S. commercial: 2,043
+    - U.S. small business commercial: 1,677
+
+    The question asks for the "total amount... excluding those... greater than 15000".
+    This means we sum the amounts of the items that are NOT greater than 15,000.
+    
+    Items to include:
+    1. Commercial lease financing: 1,188
+    2. Non-U.S.
+
+########## 32. 793f4b6ccf9b402e8a99577d6ef9277a | lookup_m1 | 조회: 값을 답함
+Q: What's the total amount of the Carrying value in table 2 in the years where Carrying value is greater than 21000? (in millions)
+GOLD: 21462 | program:  | evidence: ['5-3-1'] | doc tables 6
+OURS: inc=0 gold_in=0 fin=1 out=918 ref=0 ops=(0, 0) cells=41 gold_pos=[None]/41 fa='2,885,722' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=0 out=1536 ref=0 ops=(0, 0) cells=146 fa=None fa_rel=no_final
+--- OURS raw (tail 900) ---
+00.
+
+2.  **Filter values greater than 21,000:**
+    *   917,396 (Total) -> Greater than 21,000.
+    *   398,084 (HomeLoans) -> Greater than 21,000.
+    *   310,202 (Commercial) -> Greater than 21,000.
+    *   209,110 (Credit Cardand OtherConsumer) -> Greater than 21,000.
+    *   848,920 (Collectively evaluated Total) -> Greater than 21,000.
+    *   202,010 (Collectively evaluated Credit Cardand OtherConsumer) -> Greater than 21,000.
+
+    All identified carrying values are greater than 21,000.
+
+3.  **Calculate the total amount:**
+    Sum = 917,396 + 398,084 + 310,202 + 209,110 + 848,920 + 202,010
+
+    Calculation:
+    917,396 + 398,084 = 1,315,480
+    1,315,480 + 310,202 = 1,625,682
+    1,625,682 + 209,110 = 1,834,792
+    1,834,792 + 848,920 = 2,683,712
+    2,683,712 + 202,010 = 2,885,722
+
+    Expression: (917,396 + 398,084 + 310,202 + 209,110 + 848,920 + 202,010)
+
+Final answer: 2,885,722
+--- LC raw (tail 500) ---
+ + 310,202 + 917,396.
+    *   But the values in the second table (21,462, 7,100, 8,113) are much closer to the threshold 21,000, suggesting this is the intended table. The first table values are in the hundreds of thousands. The question specifies "greater than 21000". If the first table was the target, the condition would be met by all columns, making the "years where..." part trivial. The specificity of "21000" strongly points to the second table where 21,462 is just above the line.
+    *   So
+
+########## 33. 79a3b036754648e4944dca90a5382840 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What's the sum of Small asbestos accounts Other policyholders with active accounts, and Net written premiums of 2006 ?
+GOLD: 4436.0 | program: add(1005.0,3431.0) | evidence: ['2-6-1', '0-2-3'] | doc tables 4
+OURS: inc=0 gold_in=0 fin=1 out=343 ref=1 ops=(1, 2) cells=37 gold_pos=[2, None]/37 fa='Data not available for 2006' fa_rel=text []
+LC  : inc=1 gold_in=1 fin=1 out=1032 ref=0 ops=(2, 2) cells=120 fa='4,436' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ these are associated with the 2008 date header.
+- The context contains values for "Net written premiums" (e.g., $1,322, $1,202, $147) but these are also associated with the 2008 date header or general totals without a 2006 column.
+
+Since the question asks for the sum of specific line items for **2006** and the provided text only contains data for **2008**, it is impossible to calculate the requested sum using the given context. However, adhering to the rule "always give your best answer" and "do not say that you don't know," I must state that the data for 2006 is missing from the provided text.
+
+**Calculation:**
+The requested calculation is: (Value for Small asbestos accounts 2006 + Value for Net written premiums 2006).
+Since the values for 2006 are not present in the context:
+Expression: (Unknown + Unknown)
+Result: Data not available for 2006.
+
+Final answer: Data not available for 2006
+--- LC raw (tail 500) ---
+2007 based on the Net Written Premiums row below it matching the 2007 column in the third table).
+    Table 3 Header: Year Ended December 31, 2008 | 2007 | 2006.
+    The rows above the Net Written Premiums in Table 3 must correspond to the 2006 column data.
+    Row "Small asbestos accounts" in Table 3:
+    Column "2006" value for "Number of Policyholders" is 1,005.
+    Row "Net written premiums" in Table 3:
+    Column "2006" value is $3,431.
+
+    Sum = 1,005 + 3,431 = 4,436.
+
+Final answer: 4,436
+
+########## 34. 7ce67d97711b457da47ff7b45e65e0d2 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What is the growing rate of Interest expense in the year with the most Operating income?
+GOLD: 0.04181 | program: subtract(922,885), divide(#0,885) | evidence: ['1-12-1', '1-12-3', '1-11-1', '1-11-3', '1-11-5'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(3, 3) cells=57 gold_pos=[20, 13, 9, 12, 17]/57 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=341 ref=0 ops=(3, 3) cells=147 fa='0.0418' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ncome > 2016 Increase/ (decrease): 3%".
+  - "Net income > 2017 Increase/ (decrease): 11%".
+  - "Net income > Reported amount > 2016: 4,686".
+  - "Net income > Reported amount > 2015: 4,529".
+  - Change = 4,686 - 4,529 = 157. Percentage = 157/4529 = 3.46%. The context says 3%.
+  - "Net income > 2017 > column 4: 2".
+  - "Net income > 2017 > column 1": Not explicitly given as a dollar amount, but "Revenues > 2017 > column 1" is given.
+  - Let's reconsider the Interest Expense amounts.
+  - "Interest expense > Amount > column 1: 922".
+  - "Interest expense > Amount > column 3: 885".
+  - "Interest expense > 2016 Increase/ (decrease): 39".
+  - "Interest expense > 2017 Increase/ (decrease): 4".
+  - If Column 1 is 2017 and Column 3 is 2016:
+    - 2016 = 885.
+    - 2017 = 922.
+    - Increase = 922 - 885 = 37.
+    - Context says 39. There is a discrepancy of 2.
+  - Maybe Column 1 is 2016 and Column
+--- LC raw (tail 500) ---
+previous year (2016).**
+Looking at the table rows labeled "Interest expense":
+- 2017 Amount: 922
+- 2016 Amount: 885
+
+**Step 3: Calculate the growing rate.**
+The formula for the growing rate is: $(New Value - Old Value) / Old Value$.
+Here, New Value = 2017 Interest expense (922) and Old Value = 2016 Interest expense (885).
+
+Calculation expression:
+$(922 - 885) / 885$
+
+Evaluation:
+$37 / 885 \approx 0.0418079...$
+
+Rounding to four decimal places, the rate is 0.0418 (or 4.18%).
+
+Final answer: 0.0418
+
+########## 35. 81bf1d19c48e4777b7ebeba6e004cdeb | lookup_m1 | 조회: 값을 답함
+Q: What's the greatest value of consumer in non-performing loans and leases in 2015 ?
+GOLD: 2958 | program:  | evidence: ['2-8-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=395 ref=0 ops=(0, 0) cells=30 gold_pos=[12]/30 fa='9,377' fa_rel=same_col ['2-23-1']
+LC  : inc=1 gold_in=1 fin=1 out=251 ref=0 ops=(0, 0) cells=103 fa='2,958' fa_rel=gold
+--- OURS raw (tail 900) ---
+onperforming Loans and Leases > 2015: **$9,377**
+2.  Consumer real estate > Credit card and other consumer > Other consumer > December 31 > Nonperforming Loans and Leases > 2015: **1**
+3.  Consumer real estate > Credit card and other consumer > Total consumer > December 31 > Nonperforming Loans and Leases > 2015: **8,165**
+4.  Consumer real estate > Credit card and other consumer > Direct/Indirect consumer > December 31 > Nonperforming Loans and Leases > 2015: **24**
+5.  Consumer real estate > Credit card and other consumer > Non-U.S. credit card > December 31 > Nonperforming Loans and Leases > 2015: n/a
+6.  Consumer real estate > Credit card and other consumer > U.S. credit card > December 31 > Nonperforming Loans and Leases > 2015: n/a
+
+Comparing the numerical values ($9,377, 1, 8,165, 24), the greatest value is 9,377.
+
+Calculation:
+Max(9,377, 1, 8,165, 24) = 9,377
+
+Final answer: 9,377
+--- LC raw (tail 500) ---
+- Residential mortgage (Core portfolio): $1,845 million
+- Home equity (Core portfolio): $1,354 million
+- Residential mortgage (Legacy Assets & Servicing portfolio): $2,958 million
+- Home equity (Legacy Assets & Servicing portfolio): $1,983 million
+- U.S. credit card: n/a
+- Non-U.S. credit card: n/a
+- Direct/Indirect consumer: $24 million
+- Other consumer: $1 million
+
+Comparing these values:
+- $1,845
+- $1,354
+- $2,958
+- $1,983
+- $24
+- $1
+
+The greatest value is $2,958 million.
+
+Final answer: 2,958
+
+########## 36. 881d9c5d6fb0418688f78f0542e77512 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: In the year with the greatest proportion of Net interest revenue, what is the proportion of Net credit losses to the total?
+GOLD: 0.30614 | program: add(24660,14070), add(#0,7230), divide(14070,#1) | evidence: ['0-5-1', '0-5-2', '0-5-3'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=407 ref=0 ops=(4, 4) cells=45 gold_pos=[8, 11, 14]/45 fa='52.62%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=555 ref=0 ops=(4, 4) cells=122 fa='0.3705' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ not explicitly defined as a ratio in the text, but given the context of comparing years, it implies the absolute value or the relative magnitude within the reported period. Comparing the values:
+- 2007: 21,797
+- 2008: 22,459
+- 2009: 17,314
+
+The greatest value is $22,459, which corresponds to the year **2008**.
+
+Next, we need to find the proportion of **Net credit losses to the total** for the year 2008. The context provides the following data for Provisions for credit losses and for benefits and claims in 2008:
+- Net credit losses > 2008: $14,070
+- Total provisions for credit losses and for benefits and claims > 2008: $26,738
+
+The proportion is calculated as: (Net credit losses / Total provisions).
+
+Calculation expression:
+$14,070 / 26,738$
+
+Evaluating the expression:
+$14,070 \div 26,738 \approx 0.526216$
+
+Converting to a percentage:
+$0.526216 \times 100 = 52.62\%$
+
+Final answer: 52.62%
+--- LC raw (tail 500) ---
+~0.565
+*   2008: ~-3.353
+*   2007: ~1.117
+
+The greatest proportion is in **2007** (approximately 111.7%).
+
+Next, we need to find the proportion of **Net credit losses** to the **total** (Total revenues, net of interest expense) for the year 2007.
+
+*   Net credit losses (2007) = $7,230
+*   Total revenues, net of interest expense (2007) = $19,513
+
+The calculation for the proportion is:
+$$ \frac{7,230}{19,513} $$
+
+Evaluating the expression:
+$$ 7,230 / 19,513 \approx 0.37052 $$
+
+Final answer: 0.3705
+
+########## 37. 896222c1866b4eeabc14c782aaa5b7eb | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the average of Net income of Basic earnings per share in 2003, 2002 and 2001 ?
+GOLD: 0.97333 | program: add(1.44,0.65), add(#0,0.83), divide(#1,const_3) | evidence: ['0-11-1', '0-11-3', '0-11-4'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=425 ref=0 ops=(3, 3) cells=45 gold_pos=[2, 0, 3]/45 fa='-0.30' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=237 ref=0 ops=(3, 3) cells=116 fa='0.97' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ext states "Per share data: > Basic earnings per share: > Net income > 2003 > column 1: $1.44". So, the value is **1.44**.
+    *   For **2002**: The context states "Per share data: > Basic earnings per share: > Net income > 2002: $0.65". So, the value is **0.65**.
+    *   For **2001**: The context states "Per share data: > Basic earnings per share: > Net income > 2001 > column 5: -3". So, the value is **-3**.
+
+2.  **Calculate the average:**
+    The formula for the average is: $\frac{\text{Sum of values}}{\text{Count of values}}$
+    Sum = $1.44 + 0.65 + (-3)$
+    Count = 3
+
+    Expression: $(1.44 + 0.65 + (-3)) / 3$
+
+3.  **Evaluate the expression:**
+    *   Sum: $1.44 + 0.65 = 2.09$
+    *   $2.09 + (-3) = 2.09 - 3 = -0.91$
+    *   Average: $-0.91 / 3 \approx -0.30333...$
+
+Rounding to two decimal places (consistent with the input data precision), the average is -0.30.
+
+Final answer: -0.30
+--- LC raw (tail 500) ---
+001, we first identify the values from the "Per share data" section under "Basic earnings per share" for the row "Net income":
+
+- 2003: $1.44
+- 2002: $0.65
+- 2001: $0.83
+
+The calculation for the average is the sum of these three values divided by the count of years (3).
+
+Arithmetic expression:
+(1.44 + 0.65 + 0.83) / 3
+
+Evaluation:
+1.44 + 0.65 = 2.09
+2.09 + 0.83 = 2.92
+2.92 / 3 = 0.97333...
+
+Rounding to two decimal places (consistent with the source data), the average is 0.97.
+
+Final answer: 0.97
+
+########## 38. 89ae87bca8d144879cf6234d54115c60 | lookup_m2+ | 조회: 예/아니오
+Q: Does Net revenues keeps increasing each year between 2014 and 2013?
+GOLD: Yes | program:  | evidence: ['0-2-1', '0-2-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=441 ref=0 ops=(0, 0) cells=77 gold_pos=[1, 0]/77 fa='Yes' fa_rel=text []
+LC  : inc=1 gold_in=1 fin=1 out=482 ref=0 ops=(0, 0) cells=198 fa='Yes' fa_rel=text
+--- OURS raw (tail 900) ---
+ value.
+
+Calculation of the change:
+Change = Net revenues (2014) - Net revenues (2013)
+Change = 24,522 - 24,466 = 56
+
+Since 56 is a positive number, the Net revenues increased from 2013 to 2014.
+
+However, the phrasing "between 2014 and 2013" is slightly ambiguous regarding the direction of time, but typically implies the period from the earlier year (2013) to the later year (2014). If the question meant to check if it increased *from* 2014 *to* 2013, the answer would be no. But standard financial analysis interprets "between 2014 and 2013" as the trend over that interval, usually 2013 -> 2014.
+
+Let's calculate the percentage change to be precise:
+Percentage Change = (24,522 - 24,466) / 24,466
+Percentage Change = 56 / 24,466 ≈ 0.002289 or 0.23%
+
+Since the value increased from 2013 to 2014, the statement "Net revenues keeps increasing" is true for this specific interval.
+
+Final answer: Yes
+--- LC raw (tail 500) ---
+ions, it usually asks if the trend was consistently upward during that interval. Since there are only two data points provided in the interval (2013 and 2014), we check the single transition.
+
+Transition: 2013 -> 2014
+Value 2013: 24,466
+Value 2014: 24,522
+Is 24,522 > 24,466? Yes.
+
+Therefore, Net revenues did increase from 2013 to 2014.
+
+Calculation expression:
+(24,522 - 24,466) > 0
+
+Evaluation:
+24,522 - 24,466 = 56
+56 > 0 is True.
+
+The Net revenues increased from 2013 to 2014.
+
+Final answer: Yes
+
+########## 39. 89f7a7b99c7a4e42b55dc83629f4c37d | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: what is the growth rate in the net rent expense in 2014?
+GOLD: -0.05333 | program: subtract(109737,115919), divide(#0,115919) | evidence: ['0-3-1', '0-3-2', '0-3-2'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=228 ref=0 ops=(3, 3) cells=61 gold_pos=[0, 2, 2]/61 fa='-0.1396' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=241 ref=0 ops=(3, 3) cells=145 fa='-0.0533' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To calculate the growth rate in net rent expense for 2014, we need the values for 2014 and 2013.
+
+From the context:
+- Net rent expense in 2014: $109,737
+- Net rent expense in 2013: $115,919
+
+The formula for growth rate is: (New Value - Old Value) / Old Value.
+Here, New Value = 2014 value and Old Value = 2013 value.
+
+Calculation expression:
+(109,737 - 115,919) / 115,919
+
+Evaluating the expression:
+-16,182 / 115,919 ≈ -0.139595...
+
+Rounding to four decimal places, the growth rate is -0.1396 (or -13.96%).
+
+Final answer: -0.1396
+--- LC raw (tail 500) ---
+need the net rent expense values for 2014 (the new value) and 2013 (the old value) from the first table provided.
+
+From the context:
+- Net rent expense in 2014: $109,737
+- Net rent expense in 2013: $115,919
+
+The formula for growth rate is: (New Value - Old Value) / Old Value
+
+Calculation expression:
+(109,737 - 115,919) / 115,919
+
+Evaluation:
+109,737 - 115,919 = -6,182
+-6,182 / 115,919 ≈ -0.0533309...
+
+Rounding to four decimal places, the growth rate is -0.0533 (or -5.33%).
+
+Final answer: -0.0533
+
+########## 40. 8d301d607f8a47aeb4707caf4d69399c | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What is the average amount of Employee stock purchase plan of Shares Outstanding, and Vested during the year of 2012 ?
+GOLD: 1543321.0 | program: add(2677842.0,408800.0), divide(#0,const_2) | evidence: ['4-6-3', '1-5-2'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=276 ref=0 ops=(2, 2) cells=65 gold_pos=[3, 1]/65 fa='1,436,444' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=330 ref=0 ops=(2, 2) cells=133 fa='1,543,321' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To find the average amount of Employee stock purchase plan of Shares Outstanding and Vested during the year of 2012, we first identify the relevant values from the context:
+
+1.  **Shares Outstanding** for the Employee stock purchase plan: The context states "Employee stock purchase plan > row 11 > Shares Outstanding: 2,464,088".
+2.  **Vested during the year** for 2012: The context states "Vested during the year > 2012: 408,800".
+
+The question asks for the **average** of these two amounts.
+Formula: Average = (Value 1 + Value 2) / 2
+
+Calculation expression:
+(2,464,088 + 408,800) / 2
+
+Step-by-step evaluation:
+1.  Sum the values: 2,464,088 + 408,800 = 2,872,888
+2.  Divide by the count (2): 2,872,888 / 2 = 1,436,444
+
+Final answer: 1,436,444
+--- LC raw (tail 500) ---
+   Find the row labeled "Employee stock purchase plan" under the column "2012". The value is **2,677,842**.
+    *   Find the row labeled "Vested during the year" under the column "2012". The value is **408,800**.
+3.  **Calculate the average**:
+    *   Sum the two values: $2,677,842 + 408,800$
+    *   Divide by the count of items (2): $(2,677,842 + 408,800) / 2$
+
+**Calculation:**
+Expression: $(2,677,842 + 408,800) / 2$
+Sum: $3,086,642$
+Average: $3,086,642 / 2 = 1,543,321$
+
+Final answer: 1,543,321
+
+########## 41. 90f8f3182a09448eba0fb317766af27e | arith_m1 | 산술: 정답 셀 1개
+Q: what was the growth rate of the ventas stock as of 12/31/2003
+GOLD: 1.06 | program: subtract(206,const_100), divide(#0,const_100) | evidence: ['1-1-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=206 ref=0 ops=(1, 1) cells=33 gold_pos=[0]/33 fa='0.66' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=231 ref=0 ops=(1, 1) cells=94 fa='1.06' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To calculate the growth rate of Ventas stock as of 12/31/2003, we need the stock value for that date and the preceding year (12/31/2002) to determine the change.
+
+From the context:
+- Ventas > 12/31/2003: $206
+- Ventas > 12/31/2002: $100
+
+The formula for growth rate is: (New Value - Old Value) / Old Value.
+Here, the "New Value" is the 2003 value ($206) and the "Old Value" is the 2002 value ($100).
+
+Calculation expression:
+(206 - 100) / 100
+
+Evaluation:
+66 / 100 = 0.66
+
+Final answer: 0.66
+--- LC raw (tail 500) ---
+2/31/2003, we need the values for the previous period (12/31/2002) and the current period (12/31/2003) from the first table.
+
+From the context:
+- Ventas value on 12/31/2002 (old) = $100
+- Ventas value on 12/31/2003 (new) = $206
+
+The formula for growth rate is:
+$$ \text{Growth Rate} = \frac{\text{New Value} - \text{Old Value}}{\text{Old Value}} $$
+
+Substituting the values:
+$$ \text{Growth Rate} = \frac{206 - 100}{100} $$
+
+Evaluating the expression:
+$$ \frac{106}{100} = 1.06 $$
+
+Final answer: 1.06
+
+########## 42. 94e4e51e3ca0437ebceead3adefd75c5 | lookup_m1 | 조회: 머리글(항목 이름)을 답함
+Q: When does Net Earnings from Continuing Operations reach the largest value?
+GOLD: 2006 | program:  | evidence: ['2-4-3'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=210 ref=0 ops=(0, 0) cells=29 gold_pos=[1]/29 fa='20063' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=218 ref=0 ops=(0, 0) cells=103 fa='2006' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To determine when Net Earnings from Continuing Operations reach the largest value, we first extract the values for each year from the provided context:
+
+- 20053: 216
+- 20063: 236
+- 2007 2, 3: 59
+- 2008 1: 123
+- 20043: 235
+
+Next, we compare these values to find the maximum:
+- 216 (20053)
+- 236 (20063)
+- 59 (2007 2, 3)
+- 123 (2008 1)
+- 235 (20043)
+
+The largest value is 236, which corresponds to the year 20063.
+
+Final answer: 20063
+--- LC raw (tail 500) ---
+e, we examine the row labeled "Net Earnings from Continuing Operations" in the first table. The values for each year are:
+
+- 2008: $123 million
+- 2007: $59 million
+- 2006: $236 million
+- 2005: $216 million
+- 2004: $235 million
+
+We compare these values to find the maximum:
+- 123 (2008)
+- 59 (2007)
+- 236 (2006)
+- 216 (2005)
+- 235 (2004)
+
+The largest value is 236, which corresponds to the year 2006.
+
+No calculation is needed to identify the maximum value directly from the table.
+
+Final answer: 2006
+
+########## 43. 96564ca5fb504793ac63f381b1cced67 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What is the average value of Net income in 2004,2005 and 2006? (in million)
+GOLD: 664.33333 | program: add(737,719), add(#0,537), divide(#1,const_3) | evidence: ['2-9-1', '2-9-2', '2-9-3'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=462 ref=0 ops=(3, 3) cells=53 gold_pos=[2, 5, 0]/53 fa='667.67' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=241 ref=0 ops=(3, 3) cells=171 fa='664.33' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ontext states "Net income > For the Year Ended December 31, > 2005: 719".
+3.  **2006 Net income**: The context states "Net income > For the Year Ended December 31, > 2006: 737".
+
+Next, we calculate the average using the formula: Average = (Sum of values) / (Count of values).
+
+Calculation expression:
+(537 + 719 + 737) / 3
+
+Step-by-step evaluation:
+1.  Sum: 537 + 719 + 737 = 2,003
+2.  Divide by count (3): 2,003 / 3 = 667.666...
+
+Rounding to two decimal places (standard for currency/financial figures unless specified otherwise), the value is 667.67. However, keeping the precision of the division: 667.67.
+
+Let's re-verify the numbers from the text to ensure no "for common stock" confusion.
+- "Net income > ... 2004: 537" (Matches)
+- "Net income > ... 2005: 719" (Matches)
+- "Net income > ... 2006: 737" (Matches)
+
+Calculation:
+(537 + 719 + 737) / 3 = 2003 / 3 = 667.6666...
+
+Final answer: 667.67
+--- LC raw (tail 500) ---
+ovided context table.
+
+From the table row "Net income":
+- Net income for 2006: $737 million
+- Net income for 2005: $719 million
+- Net income for 2004: $537 million
+
+The calculation for the average is the sum of these values divided by the count of the years (3).
+
+Arithmetic expression:
+(737 + 719 + 537) / 3
+
+Step-by-step evaluation:
+1. Sum the values: 737 + 719 + 537 = 1993
+2. Divide by the count: 1993 / 3 = 664.333...
+
+Rounding to two decimal places, the average is 664.33.
+
+Final answer: 664.33
+
+########## 44. 97f916a6dd09487daa6eb8f02318a985 | lookup_m1 | 조회: 머리글(항목 이름)을 답함
+Q: What's the increasing rate of Operating profit in 2011 Ended December 31?
+GOLD: 0.06 | program:  | evidence: ['2-5-4'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=228 ref=0 ops=(0, 0) cells=17 gold_pos=[4]/17 fa='6.27%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=150 ref=0 ops=(0, 0) cells=43 fa='6%' fa_rel=other_table
+--- OURS raw (tail 900) ---
+To calculate the increasing rate (growth rate) of Operating profit in 2011, we need the Operating profit values for the year ended December 31, 2011, and the year ended December 31, 2010.
+
+From the context:
+- Operating profit for 2011: $542
+- Operating profit for 2010: $510
+
+The formula for the growth rate is: (New Value - Old Value) / Old Value.
+Here, the "New Value" is the 2011 profit and the "Old Value" is the 2010 profit.
+
+Calculation expression:
+(542 - 510) / 510
+
+Evaluating the expression:
+32 / 510 ≈ 0.062745...
+
+Converting to a percentage:
+0.062745... * 100 ≈ 6.27%
+
+Final answer: 6.27%
+--- LC raw (tail 500) ---
+To find the increasing rate of Operating profit in 2011, we need to look at the "Change" column for the year 2011 in the first table provided.
+
+The table shows:
+- Operating profit for 2011: $542 million
+- Change in Operating profit from 2010 to 2011: +6%
+
+The question asks for the "increasing rate," which corresponds directly to the percentage change listed in the "Change" column for 2011.
+
+Calculation:
+The value is explicitly given as +6%.
+Arithmetic expression: 6% = 0.06
+
+Final answer: 6%
+
+########## 45. 9b5a04d24f014377a80af20245907b97 | lookup_m1 | 조회: 값을 답함
+Q: What is the highest Fair Value for Derivatives designated as hedging instruments:Interest-rate contracts as As the chart 3 shows? (in million)
+GOLD: 284 | program:  | evidence: ['3-8-4'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=208 ref=0 ops=(0, 0) cells=23 gold_pos=[4]/23 fa='162' fa_rel=same_row ['3-8-2']
+LC  : inc=1 gold_in=1 fin=1 out=317 ref=0 ops=(0, 0) cells=66 fa='284' fa_rel=gold
+--- OURS raw (tail 900) ---
+To find the highest Fair Value for Derivatives designated as hedging instruments: Interest-rate contracts, we need to examine the relevant entries in the context provided.
+
+1.  **Identify relevant entries:**
+    *   From "Table 4 > Interest-rate contracts > Derivatives designated as hedging instruments: > Other assets > FairValue": $162
+    *   From "Table 5 > Interest-rate contracts > Derivatives designated as hedging instruments: > Other assets > FairValue": $123
+
+2.  **Compare the values:**
+    *   Value 1: 162
+    *   Value 2: 123
+    *   The highest value is 162.
+
+3.  **Calculation (as requested for comparison logic, though direct selection is sufficient):**
+    Expression: max(162, 123)
+    Evaluation: 162
+
+Final answer: 162
+--- LC raw (tail 500) ---
+Fair Value (December 31, 2012)
+
+2.  **Extract the values from the context:**
+    *   From the first table (December 31, 2012):
+        *   Asset Derivatives (Interest-rate contracts): $162 million
+        *   Liability Derivatives (Interest-rate contracts): $284 million
+
+3.  **Compare the values:**
+    *   $162 vs $284
+    *   $284 is greater than $162.
+
+4.  **Determine the highest value:**
+    *   The highest value is $284 million.
+
+Calculation expression: max(162, 284) = 284
+
+Final answer: 284
+
+########## 46. a44aa93481d742cb90c179ecfdd510dc | lookup_m1 | 조회: 값을 답함
+Q: Which element has the second largest number in 2011 for Outstandings
+GOLD: Consumer loans excluding loans accounted for under the fair value option | program:  | evidence: ['1-11-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=288 ref=0 ops=(0, 0) cells=43 gold_pos=[12]/43 fa='U.S. credit card' fa_rel=text []
+LC  : inc=1 gold_in=1 fin=1 out=987 ref=0 ops=(0, 0) cells=136 fa='Consumer loans excluding loans accounted for under the fair value option' fa_rel=text
+--- OURS raw (tail 900) ---
+To determine which element has the second largest number in 2011 for Outstandings, we first extract the relevant values from the context for the year 2011 under the "Outstandings" column:
+
+1.  **Home equity**: 124,699
+2.  **U.S. credit card**: 102,291
+3.  **Discontinued real estate-2**: 11,095
+4.  **Non-U.S. credit card**: 14,418
+5.  **Direct/Indirect consumer-3**: 89,713
+6.  **Other consumer-4**: 2,688
+7.  **Loans accounted for under the fair value option-5**: 2,190
+
+Next, we list these values in descending order to identify the largest and second largest:
+1.  Largest: Home equity (124,699)
+2.  Second largest: U.S. credit card (102,291)
+3.  Third largest: Direct/Indirect consumer-3 (89,713)
+... and so on.
+
+The element with the second largest number is "U.S. credit card".
+
+Final answer: U.S. credit card
+--- LC raw (tail 500) ---
+-5)
+
+4.  **Identify the second largest**:
+    The largest is 609,384.
+    The second largest is 607,194.
+    The corresponding element header is "Consumer loans excluding loans accounted for under the fair value option".
+
+Calculation expression to verify the ranking logic (comparing the top two):
+(609,384 - 607,194) > 0 implies 609,384 is larger.
+The value directly identified as the second largest is 607,194.
+
+Final answer: Consumer loans excluding loans accounted for under the fair value option
+
+########## 47. a581a650a06f4b449e5d9ff4aeda9c5e | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What's the average of Foreign sovereign debt of December 31 2007, and Swaps Equity contracts of December 31, 2008 Contract/ Notional ?
+GOLD: 25923.0 | program: add(17161.0,34685.0), divide(#0,const_2) | evidence: ['0-6-2', '1-13-1'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=1066 ref=0 ops=(2, 2) cells=49 gold_pos=[12, 3]/49 fa='21,988.5' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=323 ref=0 ops=(2, 2) cells=132 fa='25,923' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ould be the asset side. Therefore, the value **9,292** is the most semantically correct match for "Foreign sovereign debt".
+
+4.  **Calculation:**
+    We need the average of these two values.
+    Value 1 (Foreign sovereign debt, 2007): 9,292
+    Value 2 (Equity swaps, 2008): 34,685
+
+    Formula: (Value 1 + Value 2) / 2
+    Expression: (9,292 + 34,685) / 2
+
+    Calculation:
+    9,292 + 34,685 = 43,977
+    43,977 / 2 = 21,988.5
+
+    Let's double check if I missed a specific line.
+    "Trading account liabilities > Foreign sovereign debt > December 31 > 2007: 9,292"
+    "Trading account assets > Foreign sovereign debt > December 31 > 2007: 17,161"
+    Given the term "debt", it implies liability. If it were an asset, it would likely be phrased "Foreign sovereign assets". Thus, 9,292 is the correct value to use.
+
+    Expression: (9,292 + 34,685) / 2
+    Result: 21,988.5
+
+Final answer: 21,988.5
+--- LC raw (tail 500) ---
+er Trading account assets)
+    - Value: **17,161**
+
+2.  **Swaps Equity contracts of December 31, 2008 Contract/ Notional**:
+    Looking at the first table, under the section "Equity contracts", row "Swaps", and column "December 31, 2008" -> "Contract/ Notional-1":
+    - Value: **34,685**
+
+Now, we calculate the average using the formula: Average = (Value 1 + Value 2) / 2.
+
+Calculation expression:
+(17,161 + 34,685) / 2
+
+Evaluation:
+17,161 + 34,685 = 51,846
+51,846 / 2 = 25,923
+
+Final answer: 25,923
+
+########## 48. a8cb75b57bda46efbed1f8cd0296f7d0 | lookup_m2+ | 조회: 예/아니오
+Q: Does the value of Operating income in 2008 greater than that in 2007?
+GOLD: no | program:  | evidence: ['3-6-1', '3-6-3'] | doc tables 6
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(0, 0) cells=54 gold_pos=[1, 0]/54 fa='\' followed by only the final value". If the question is a Yes/No question, the "final value" is likely "Yes".' fa_rel=text []
+LC  : inc=1 gold_in=1 fin=1 out=285 ref=0 ops=(0, 0) cells=163 fa='No' fa_rel=text
+--- OURS raw (tail 900) ---
+, state the value directly."
+    The question is "Does the value... greater...?"
+    This is a Yes/No question.
+    Let's verify the numbers again.
+    Table 3 2007: 1,394
+    Table 3 2008: 1,407
+    1,407 > 1,394.
+    So the answer is Yes.
+
+    Let's double check if there's any other interpretation. Maybe the question implies calculating the difference? No, it asks "Does...".
+    Is it possible the question refers to Table 4? If the report is about "Con Edison of New York" specifically, Table 4 might be the relevant one.
+    Context clues:
+    "Balance at the beginning of the year > Con Edison > 2007" (Table 4 context?)
+    "Balance at the beginning of the year > Con Edison of New York > 2007" (Table 3 context?)
+    Actually, the context lines are mixed.
+    "Table 4 > Operating income ... 2007: 1,278"
+    "Table 3 > Operating income ... 2007: 1,394"
+    "Balance at the beginning of the
+--- LC raw (tail 500) ---
+2007: $1,278 million
+
+2.  **Calculate the difference:**
+    *   Difference = Value in 2008 - Value in 2007
+    *   Difference = 1,271 - 1,278 = -7
+
+3.  **Evaluate the comparison:**
+    *   Since -7 is less than 0, the value in 2008 is less than the value in 2007.
+    *   Alternatively, calculating the percentage change: (1,271 - 1,278) / 1,278 = -7 / 1,278 ≈ -0.0055 (a decrease of 0.55%).
+
+The value of Operating income in 2008 ($1,271) is not greater than that in 2007 ($1,278).
+
+Final answer: No
+
+########## 49. ab92bc43a0cd44a5a768cbf5161aae8e | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What's the sum of Due after one year through two years of Amortized Cost, and Annual power of Year Ended December 31, 2010 ?
+GOLD: 186734.0 | program: add(169967.0,16767.0) | evidence: ['1-2-1', '2-5-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=179 ref=0 ops=(2, 2) cells=30 gold_pos=[0, 9]/30 fa='170,424' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=264 ref=0 ops=(2, 2) cells=76 fa='186,734' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To answer the question, we need to identify the specific values from the context for:
+1.  **Due after one year through two years of Amortized Cost**: The context states this value is **169,967**.
+2.  **Annual power of Year Ended December 31, 2010**: The context lists "Steam Sold ($ in millions) > Annual power > Year Ended December 31, > 2010" as **457**.
+
+The question asks for the **sum** of these two values.
+
+Calculation expression:
+$169,967 + 457$
+
+Evaluation:
+$169,967 + 457 = 170,424$
+
+Final answer: 170,424
+--- LC raw (tail 500) ---
+s". The value under the "Amortized Cost" column is **169,967**.
+
+2.  **Annual power of Year Ended December 31, 2010**:
+    Looking at the third table titled "Year Ended December 31," with columns for years 2009 through 2013, we find the row labeled "Annual power" under the section "Steam Sold (MMlbs)". The value in the column for **2010** is **16,767**.
+
+Now, we calculate the sum of these two values:
+Expression: $169,967 + 16,767$
+
+Calculation:
+$169,967 + 16,767 = 186,734$
+
+Final answer: 186,734
+
+########## 50. af9dad62af10413f8c9dd97e4a89b21f | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the total amount of the Average Balances in the years where Net interest income is greater than 1450? (in million)
+GOLD: 185982.0 | program: add(52362,51344), add(#0,30704), add(#1,51572) | evidence: ['0-2-1', '0-13-1', '0-14-1', '0-15-1', '0-16-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=1027 ref=0 ops=(4, 4) cells=39 gold_pos=[14, 5, 11, 6, 1]/39 fa='51,572' fa_rel=gold ['0-16-1']
+LC  : inc=1 gold_in=1 fin=1 out=509 ref=0 ops=(4, 4) cells=119 fa='185,982' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+hem would be double counting.
+Therefore, the question must refer to a single specific line item. The most standard interpretation for "Average Balances" in this context is the "Interest-earning assets" line.
+
+Let's verify the calculation logic requested: "Write out the calculation as an explicit arithmetic expression".
+Since only one year (2018) qualifies, the "total amount" is just the value for that year.
+Calculation: Value(2018)
+
+Value for Average Balances (Interest-earning assets) in 2018 = 51,572.
+
+Let's double check if there are other years.
+2017 Net Interest Income = 1,411. (1411 < 1450).
+2018 Net Interest Income = 1,497. (1497 > 1450).
+Only 2018 qualifies.
+
+The value for "Average Balances: > Interest-earning assets" in 2018 is 51,572.
+
+Final Answer formulation:
+The calculation is simply the value for the qualifying year.
+Expression: 51,572
+Evaluation: 51,572
+
+Final answer: 51,572
+--- LC raw (tail 500) ---
+of the Average Balances". This implies summing all the line items under the "Average Balances" header for the qualifying year.
+
+3.  **Calculate the sum:**
+    *   Sum = Total assets (2018) + Total loans and leases (2018) + Deposits (2018) + Interest-earning assets (2018)
+    *   Sum = 52,362 + 51,344 + 30,704 + 51,572
+
+**Calculation:**
+Expression: (52,362 + 51,344 + 30,704 + 51,572)
+Evaluation:
+52,362 + 51,344 = 103,706
+103,706 + 30,704 = 134,410
+134,410 + 51,572 = 185,982
+
+Final answer: 185,982
+
+########## 51. b5183e753c97424caab3b8b3f8c46b3e | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: what portion of total long-term borrowings is due in the next 36 months?
+GOLD: 0.29293 | program: add(750,700), divide(#0,4950) | evidence: ['0-1-1', '0-1-3', '0-2-1', '0-7-1'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(3, 3) cells=60 gold_pos=[8, 8, 19, 1]/60 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=418 ref=0 ops=(3, 3) cells=123 fa='0.2929' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+4, the "next 36 months" covers the fiscal year 2015 and the first half of 2016.
+    *   The only note maturing in 2015 is the `1.375% Notes due 2015` with a Maturity Amount of $750.
+    *   Is there any other interpretation? Sometimes "next 36 months" in these datasets refers to a specific line item if one exists. Since no such line item exists in the text, we must calculate based on the dates.
+    *   Let's assume the question implies the notes maturing within the next 3 years from the report date. If the report is for 2014, the next 36 months is 2015-2016. Only the 2015 note falls in this range.
+    *   Calculation:
+        *   Numerator (Amount due in next 36 months): $750 (from 1.375% Notes due 2015).
+        *   Denominator (Total Long-term Borrowings): $4,950.
+        *   Expression: (750 - 0) / 4,950.
+        *   Wait, the formula is (new - old) / old? No, for a portion, it's Part
+--- LC raw (tail 500) ---
+  *   **2016**: There are no notes listed specifically due in 2016.
+    *   **2017**: "6.25% Notes due 2017" = **$700**
+    
+    Sum of borrowings due in the next 36 months = $750 + $700 = **$1,450**.
+
+3.  **Calculate the Portion**:
+    The portion is calculated as (Sum of borrowings due in next 36 months) / (Total Long-term Borrowings).
+    
+    Expression: $(750 + 700) / 4,950$
+    Calculation: $1,450 / 4,950 \approx 0.292929...$
+
+    Converting to a percentage: $29.29\%$
+
+Final answer: 0.2929
+
+########## 52. bc1a8212b8b04c5c91c0555348298b5a | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: by how much did revenues applicable to discontinued operations decrease from 2007 to 2009?
+GOLD: -0.58772 | program: subtract(188,456), divide(#0,456) | evidence: ['0-1-1', '0-1-3', '0-1-3'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=196 ref=0 ops=(3, 3) cells=38 gold_pos=[0, 1, 1]/38 fa='268' fa_rel=other_table ['1-20-5']
+LC  : inc=1 gold_in=1 fin=1 out=783 ref=0 ops=(3, 3) cells=141 fa='58.77%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To determine by how much revenues applicable to discontinued operations decreased from 2007 to 2009, we use the values provided in the context:
+- Revenues applicable to discontinued operations for 2009: $188
+- Revenues applicable to discontinued operations for 2007: $456
+
+The decrease is calculated as the difference between the 2007 value and the 2009 value. The question asks "by how much did... decrease", which implies finding the absolute amount of the drop.
+
+Calculation expression:
+$456 - 188 = 268$
+
+Since the question asks for the amount of decrease (a positive magnitude of reduction), we do not divide by the old value (which would be for a percentage change). We simply subtract the later year's value from the earlier year's value.
+
+Final answer: 268
+--- LC raw (tail 500) ---
+xpression: $(188 - 456) / 456$
+    $-268 / 456 = -0.587719...$
+
+    Rounding to two decimal places in percentage terms: 58.77%.
+
+    Let's double check the values.
+    Row: "Revenues applicable to discontinued operations"
+    Col 2009: 188
+    Col 2007: 456
+
+    Expression: $(188 - 456) / 456$
+    Result: $-0.5877$
+
+    The question asks "by how much... decrease".
+    Answer: 58.77%
+
+    Final Answer formulation:
+    $(188 - 456) / 456 = -0.5877$
+    The decrease is 58.77%.
+
+Final answer: 58.77%
+
+########## 53. c2e536543bcb4549a05ed232bdc480cc | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What is the ratio of all Revenue that are smaller than 4000 to the sum of Revenue for Fourth Quarter 2012?
+GOLD: 0.62977 | program: add(3150,3924), subtract(#0,37), add(3150,3924), subtract(#2,37), add(#3,4137), divide(#1,#4) | evidence: ['4-3-1', '4-4-1', '4-5-1', '4-6-1', '4-7-1', '4-8-1', '4-9-1', '4-10-1', '4-11-1', '4-12-1'] | doc tables 6
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(7, 7) cells=42 gold_pos=[15, 4, 7, 6, 9, 0, 0, 0, 0, 9]/42 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=640 ref=0 ops=(7, 7) cells=133 fa='0.6297' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+xplicit total provided in the table for that quarter is 11,174. The individual line items might be subsets or there might be exclusions not fully detailed in the snippet, but the "Total" is clearly stated as 11,174 in the "row 7" and "row 12" lines.
+
+Let's re-evaluate the "smaller than 4000" condition based on the explicit line items provided in the text.
+Items < 4000:
+- North America: 3,409
+- Eliminations & other: -37
+- Production: 3,924
+- Europe/CIS/Africa: 2,958
+- Middle East & Asia: 2,577
+- Latin America: 2,071
+
+Sum = 3,409 + (-37) + 3,924 + 2,958 + 2,577 + 2,071 = 14,902.
+
+Denominator = Total Revenue for Fourth Quarter 2012 = 11,174.
+
+Ratio = 14,902 / 11,174.
+
+Wait, is it possible the "row 7" and "row 12" are not the total?
+Let's look at the structure.
+Table 6 > Oilfield Services > row 7 > Fourth Quarter 2012 > Revenue: 11,174
+Table 6 > Oilfield Services > row 12 > Fourth Quarter 20
+--- LC raw (tail 500) ---
+n:**
+    Numerator: 3,150 + 3,924 - 37 = 7,037
+    Denominator: 11,174
+    Ratio: 7,037 / 11,174 ≈ 0.62974
+
+    Let's re-verify the "smaller than 4000" condition.
+    - 3,150 < 4000 (Yes)
+    - 4,137 < 4000 (No)
+    - 3,924 < 4000 (Yes)
+    - -37 < 4000 (Yes)
+
+    Sum = 3,150 + 3,924 - 37 = 7,037.
+    Total Revenue = 11,174.
+    Ratio = 7,037 / 11,174.
+
+    Calculation:
+    7037 / 11174 = 0.6297406...
+
+    Rounding to a reasonable number of decimal places (e.g., 4): 0.6297.
+
+Final answer: 0.6297
+
+########## 54. c4aa11b6f9e049eebffd458a4aa65c54 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What is the sum of the 4.50% senior notes in the years where 4.50% senior notes is positive?
+GOLD: 3529.0 | program: add(1751,1778) | evidence: ['3-4-3', '3-4-4'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=355 ref=0 ops=(2, 2) cells=43 gold_pos=[2, 3]/43 fa='5,279' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=264 ref=0 ops=(2, 2) cells=115 fa='3,529' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+the context that correspond to "4.50% senior notes" and check if the value is positive. Then, we sum those positive values.
+
+1.  **Identify rows for "4.50% senior notes":**
+    *   Row: `Fixed-rate senior notes: > 4.50% senior notes > Principal Amount > $—: 1,750`
+    *   Row: `Fixed-rate senior notes: > 4.50% senior notes > Carrying Value > 2012 > $—: 1,751`
+    *   Row: `Fixed-rate senior notes: > 4.50% senior notes > Carrying Value > 2011 > $—: 1,778`
+
+2.  **Check for positive values:**
+    *   Principal Amount: 1,750 (Positive)
+    *   Carrying Value 2012: 1,751 (Positive)
+    *   Carrying Value 2011: 1,778 (Positive)
+
+3.  **Calculate the sum:**
+    The question asks for the sum of the values in the years where the notes are positive. All three identified values are positive.
+    Sum = 1,750 + 1,751 + 1,778
+
+Calculation expression:
+(1,750 + 1,751 + 1,778) = 5,279
+
+Final answer: 5,279
+--- LC raw (tail 500) ---
+ senior notes" in the "Fixed-rate senior notes" section of the first table.
+2.  **Identify the columns**: The table provides data for years 2012 and 2011 under the "Carrying Value" section.
+    *   For 2012, the Carrying Value is 1,751.
+    *   For 2011, the Carrying Value is 1,778.
+3.  **Check for positive values**:
+    *   2012: 1,751 (Positive)
+    *   2011: 1,778 (Positive)
+4.  **Sum the positive values**:
+    *   Sum = 1,751 + 1,778
+
+Calculation:
+(1,751 + 1,778) = 3,529
+
+Final answer: 3,529
+
+########## 55. cc49068851894dd6b6cda28bbd8c4f21 | arith_m1 | 산술: 정답 셀 1개
+Q: What's the average of Balance at January 1, 2015? (in Dollars in millions, except per share data)
+GOLD: 1465.0 | program: divide(8790,const_6) | evidence: ['3-2-7'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=328 ref=0 ops=(1, 1) cells=54 gold_pos=[0]/54 fa='2,668.57' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=606 ref=0 ops=(1, 1) cells=109 fa='1,465' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To find the average of "Balance at January 1, 2015", we first identify all the values associated with this date in the provided context.
+
+The relevant values are:
+1.  Total: $8,790
+2.  Boeing shareholders > CommonStock: $5,061
+3.  Non- controlling Interest: $125
+4.  Boeing shareholders > Treasury Stock: -$23,298
+5.  Boeing shareholders > Retained Earnings: $36,180
+6.  Boeing shareholders > Additional Paid-In Capital: $4,625
+7.  Boeing shareholders > Accumulated Other Comprehensive Loss: -$13,903
+
+There are 7 items in total.
+
+Calculation:
+Sum = 8,790 + 5,061 + 125 + (-23,298) + 36,180 + 4,625 + (-13,903)
+Sum = 8,790 + 5,061 + 125 - 23,298 + 36,180 + 4,625 - 13,903
+Sum = 18,680
+
+Average = Sum / Count
+Average = 18,680 / 7
+Average ≈ 2,668.57
+
+Final answer: 2,668.57
+--- LC raw (tail 500) ---
+125
+Sum = 8,790
+
+(Note: This matches the "Total" column for the "Balance at January 1, 2015" row, which is $8,790).
+
+**Step 3: Count the items**
+There are 6 items (Common Stock, Additional Paid-In Capital, Treasury Stock, Retained Earnings, Accumulated Other Comprehensive Loss, Non-controlling Interest).
+
+**Step 4: Calculate the average**
+Average = Sum / Count
+Average = 8,790 / 6
+
+**Calculation:**
+(5,061 + 4,625 + (-23,298) + 36,180 + (-13,903) + 125) / 6
+= 8,790 / 6
+= 1,465
+
+Final answer: 1,465
+
+########## 56. d1fd35004d064318a3f07257277a5100 | lookup_m1 | 조회: 머리글(항목 이름)을 답함
+Q: Which year is Sales the least in United States ?
+GOLD: 2007 | program:  | evidence: ['1-2-2'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=807 ref=0 ops=(0, 0) cells=95 gold_pos=[2]/95 fa='2004' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=299 ref=0 ops=(0, 0) cells=197 fa='2007' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+in such snippets, or simply the only other data point available).
+    *   Are there any other years? Scanning the text... No other years (2004, 2003, etc.) are explicitly attached to a Sales(a) > United States line. The line `Sales(a) > United States: $2,110` is the only candidate for a third year.
+
+2.  **Compare the values:**
+    *   2006: $2,329
+    *   2005: $2,227
+    *   2004 (inferred): $2,110
+
+3.  **Determine the minimum:**
+    *   $2,110 < $2,227 < $2,329
+    *   The least sales figure is $2,110.
+
+4.  **Identify the corresponding year:**
+    *   The value $2,110 corresponds to the row `Sales(a) > United States: $2,110`. Since the rows above are 2006 and 2005, and this row lacks a year header, it represents the year prior to 2005, which is **2004**.
+
+Calculation to confirm the minimum value:
+min(2329, 2227, 2110) = 2110
+
+The year associated with $2,110 is 2004.
+
+Final answer: 2004
+--- LC raw (tail 500) ---
+tes in 2006**:
+    Looking at the second table (which starts with "2006 Revenues and other income"):
+    Row: "Sales(a)"
+    Column: "United States"
+    Value: $2,329 million
+
+3.  **Compare the values**:
+    - 2007 Sales: $2,110
+    - 2006 Sales: $2,329
+
+    $2,110 < $2,329
+
+    Therefore, the Sales in the United States were the least in 2007.
+
+Calculation expression to verify the comparison (finding the difference):
+(2,110 - 2,329) = -219 (indicating 2007 is lower than 2006)
+
+Final answer: 2007
+
+########## 57. d3f5dfe45ce849c697c69e64e2c1eeae | arith_m1 | 산술: 정답 셀 1개
+Q: what was the 5 year return of jpmorgan chase's stock?
+GOLD: 1.9831 | program: subtract(298.31,const_100), divide(#0,const_100) | evidence: ['2-1-6'] | doc tables 3
+OURS: inc=0 gold_in=1 fin=1 out=304 ref=0 ops=(1, 1) cells=52 gold_pos=[5]/52 fa='121.68%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=313 ref=0 ops=(1, 1) cells=113 fa='198.31%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To calculate the 5-year return of JPMorgan Chase's stock, we need to compare the stock price at the end of the 5-year period (2015) with the stock price at the beginning of the period (2011).
+
+Based on the context provided:
+- JPMorgan Chase stock price in 2015: $221.68
+- JPMorgan Chase stock price in 2011: $100.00
+
+The formula for the return is:
+$$ \text{Return} = \frac{\text{Price}_{2015} - \text{Price}_{2011}}{\text{Price}_{2011}} $$
+
+Substituting the values:
+$$ \text{Return} = \frac{221.68 - 100.00}{100.00} $$
+
+Evaluating the expression:
+$$ 221.68 - 100.00 = 121.68 $$
+$$ \frac{121.68}{100.00} = 1.2168 $$
+
+Converting to a percentage:
+$$ 1.2168 \times 100\% = 121.68\% $$
+
+Final answer: 121.68%
+--- LC raw (tail 500) ---
+ titled "December 31,(in dollars)":
+- JPMorgan Chase stock price in 2011: $100.00
+- JPMorgan Chase stock price in 2016: $298.31
+
+The formula for the return (percentage change) is:
+$$ \text{Return} = \frac{\text{New Value} - \text{Old Value}}{\text{Old Value}} $$
+
+Substituting the values:
+$$ \text{Return} = \frac{298.31 - 100.00}{100.00} $$
+
+Calculation:
+1.  $298.31 - 100.00 = 198.31$
+2.  $198.31 / 100.00 = 1.9831$
+3.  Convert to percentage: $1.9831 \times 100\% = 198.31\%$
+
+Final answer: 198.31%
+
+########## 58. d40bfab320d6440d85ab17027f1d83ac | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What's the current increasing rate of total merger and restructuring charges?
+GOLD: 1.91016 | program: subtract(2721,935), divide(#0,935) | evidence: ['1-4-1', '1-4-2'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=263 ref=0 ops=(3, 3) cells=47 gold_pos=[2, 0]/47 fa='563.66%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=293 ref=0 ops=(3, 3) cells=118 fa='191.02%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To find the current increasing rate of total merger and restructuring charges, we need to calculate the percentage change from the previous year (2008) to the current year (2009).
+
+1.  **Identify the values from the context:**
+    *   Total merger and restructuring charges for 2008: $410
+    *   Total merger and restructuring charges for 2009: $2,721
+
+2.  **Apply the percentage change formula:**
+    Formula: `(New Value - Old Value) / Old Value`
+    Expression: `(2,721 - 410) / 410`
+
+3.  **Evaluate the expression:**
+    *   Numerator: $2,721 - 410 = 2,311$
+    *   Division: $2,311 / 410 \approx 5.636585...$
+    *   Convert to percentage: $5.636585... \times 100 = 563.66\%$ (rounded to two decimal places)
+
+Final answer: 563.66%
+--- LC raw (tail 500) ---
+21 million
+    *   Total merger and restructuring charges for 2008 (old value): $935 million
+
+2.  **Apply the formula for percentage change:**
+    Formula: `(new - old) / old`
+    Expression: `(2,721 - 935) / 935`
+
+3.  **Perform the calculation:**
+    *   Numerator: $2,721 - 935 = 1,786$
+    *   Division: $1,786 / 935 \approx 1.91016$
+
+4.  **Convert to percentage:**
+    *   $1.91016 \times 100 = 191.016\%$
+
+Rounding to two decimal places, the rate is approximately 191.02%.
+
+Final answer: 191.02%
+
+########## 59. d4514086de664bc1b53d09ca1880a1ef | lookup_m1 | 조회: 값을 답함
+Q: what is the highest total amount of retail loans? (in million)
+GOLD: 723 | program:  | evidence: ['2-18-5'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=572 ref=0 ops=(0, 0) cells=32 gold_pos=[1]/32 fa='50,184' fa_rel=other_table ['1-15-1']
+LC  : inc=1 gold_in=1 fin=1 out=153 ref=0 ops=(0, 0) cells=152 fa='723' fa_rel=gold
+--- OURS raw (tail 900) ---
+ context to ensure we are comparing the correct metric.
+    *   "Total retail > December 31, > 2013: 46,464"
+    *   "Total retail > December 31, > 2014: 50,184"
+    *   There are no entries for "Total retail" for 2015, 2016, or 2017 in the same format (balance). The entries for 2015-2017 under "Total retail loans" (620, 573, 551) appear to be the "Total Allowance for Loan and Lease Losses" based on the header "Total Allowance for Loan and Lease Losses—Ending: > Total retail loans". The question asks for the "total amount of retail loans" (the principal balance), not the allowance.
+
+    Therefore, the available data points for the total amount of retail loans are:
+    *   2013: 46,464
+    *   2014: 50,184
+
+2.  **Compare the values:**
+    *   46,464 (2013)
+    *   50,184 (2014)
+
+    50,184 is greater than 46,464.
+
+3.  **Calculation:**
+    The highest value is 50,184.
+
+Final answer: 50,184
+--- LC raw (tail 500) ---
+To find the highest total amount of retail loans, we need to examine the "Total retail loans" row in the first table provided in the context.
+
+The values for "Total retail loans" across the years are:
+- 2013: 551
+- 2014: 573
+- 2015: 620
+- 2016: 651
+- 2017: 723
+
+Comparing these values:
+551 < 573 < 620 < 651 < 723
+
+The highest value is 723.
+
+Final answer: 723
+
+########## 60. d78d7a26a4c747aa889695a451cba2b9 | lookup_m1 | 조회: 값을 답함
+Q: What's the total amount of the Ameren (a) in the years where Total electric revenue change is greater than 100?
+GOLD: 154 | program:  | evidence: ['2-10-1'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=0 out=1536 ref=0 ops=(0, 0) cells=63 gold_pos=[1]/63 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=0 out=1536 ref=0 ops=(0, 0) cells=242 fa=None fa_rel=no_final
+--- OURS raw (tail 900) ---
+electric revenue change > 2006 versus 2005 > IP: $37`
+etc.
+
+Let's reconsider the data structure. The table likely has columns: "Total electric revenue change", "UE", "CILCORP", "IP", "CIPS", "CILCO", "Genco". And rows are the drivers.
+The question asks for the "total amount of the Ameren (a)". This phrasing is slightly ambiguous. Does it mean the sum of the "Ameren (a)" column? But the "Ameren (a)" column usually lists the specific impact of Ameren on various drivers.
+If the question asks for the total amount of "Ameren (a)" in the years where "Total electric revenue change" > 100, it might be interpreting the "Total electric revenue change" rows as the values for Ameren (a) for those specific entities/years.
+Let's assume the question is asking for the sum of the "Total electric revenue change" values for the entities/years where that total is > 100, assuming these represent the Ameren (
+--- LC raw (tail 500) ---
+m misinterpreting the table.
+Let's look at the "2006 versus 2005" table.
+Components:
+-82 (weather)
+-9 (storm)
+46 (Noranda)
+-38 (UE transfer)
+-76 (Wholesale)
+236 (Interchange)
+-32 (Transmission)
+72 (Growth)
+Sum: -82 -9 + 46 -38 -76 + 236 -32 + 72
+Positives: 46+236+72 = 354
+Negatives: -82-9-38-76-32 = -237
+Net: 354 - 237 = 117.
+The table says Total is 154.
+117 != 154.
+Difference is 37.
+Is there a missing row?
+Looking at the provided text for 2006 vs 2005:
+"Total electric revenue change | $154"
+The
+
+########## 61. dadf5507591447c29add0f61fbdca547 | arith_m1 | 산술: 정답 셀 1개
+Q: what was the percentage cumulative 5-year total stockholder return for cadence design systems inc . for the five years ended 12/29/2012?
+GOLD: -0.2108 | program: subtract(78.92,const_100), divide(#0,const_100) | evidence: ['0-1-6'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=327 ref=0 ops=(1, 1) cells=56 gold_pos=[0]/56 fa='-71.08%' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=333 ref=0 ops=(1, 1) cells=106 fa='-21.08%' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To calculate the percentage cumulative 5-year total stockholder return for Cadence Design Systems, Inc. for the five years ended 12/29/2012, we need to identify the starting value (5 years prior to 12/29/2012, which is 12/29/2007) and the ending value (12/29/2012) from the provided context.
+
+1.  **Identify the Ending Value:** The context states "Cadence Design Systems, Inc. > 12/29/2012: 78.92".
+2.  **Identify the Starting Value:** The context states "Cadence Design Systems, Inc. > 12/29/2007: 100.00".
+3.  **Apply the Formula:** Percentage Change = (New Value - Old Value) / Old Value.
+    *   New Value = 78.92
+    *   Old Value = 100.00
+
+**Calculation Expression:**
+(78.92 - 100.00) / 100.00
+
+**Evaluation:**
+-71.08 / 100.00 = -0.7108
+
+Converting to a percentage: -0.7108 * 100 = -71.08%
+
+Final answer: -71.08%
+--- LC raw (tail 500) ---
+text{TSR}_{\text{end}} - \text{TSR}_{\text{start}}}{\text{TSR}_{\text{start}}} \times 100 $$
+
+From the context table:
+- The TSR for the period ending 12/29/2007 (start of the 5-year period) is **100.00**.
+- The TSR for the period ending 12/29/2012 (end of the 5-year period) is **78.92**.
+
+The calculation expression is:
+$$ (78.92 - 100.00) / 100.00 $$
+
+Evaluating the expression:
+$$ -21.08 / 100.00 = -0.2108 $$
+
+Converting to a percentage:
+$$ -0.2108 \times 100 = -21.08\% $$
+
+Final answer: -21.08%
+
+########## 62. e9801bc7a5714012bbcc7e31c4130f28 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the total amount of Pension Benefits-1 greater than 100 in 2012 for CHANGE IN PLAN ASSETS?
+GOLD: 8906.0 | program: add(7962,459), add(#0,485) | evidence: ['2-3-1', '2-4-1', '2-5-1'] | doc tables 4
+OURS: inc=0 gold_in=1 fin=1 out=162 ref=0 ops=(3, 3) cells=36 gold_pos=[3, 7, 2]/36 fa='0' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=571 ref=0 ops=(3, 3) cells=124 fa='8,906' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+Based on the context provided, there is only one entry for "Pension Benefits-1" under the category "CHANGE IN PLAN ASSETS" for the year 2012, which is "Benefit payments" with a value of -559.
+
+The question asks for the "total amount of Pension Benefits-1 greater than 100".
+1.  Identify the value: -559.
+2.  Check the condition: Is -559 greater than 100? No.
+3.  Count the items meeting the condition: 0.
+
+Since the only available value (-559) does not meet the criteria of being greater than 100, the total count is zero.
+
+Final answer: 0
+--- LC raw (tail 500) ---
+
+This could mean:
+1. Sum of all items in the "CHANGE IN PLAN ASSETS" section that are greater than 100.
+2. Sum of all items in the "CHANGE IN PLAN ASSETS" section that are positive and greater than 100.
+
+Given the context, I think the first interpretation is more likely. Let's proceed with that.
+
+Items greater than 100:
+- Fair value of plan assets at beginning of year: $7,962
+- Actual return on plan assets: 459
+- Employer contributions: 485
+
+Total = 7,962 + 459 + 485 = 8,906
+
+Final answer: 8,906
+
+########## 63. f2a3b68bb929487d888ea8ad8d1c0b05 | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What will Policy loans for amount be like in 2017 if it develops with the same increasing rate as current? (in million)
+GOLD: 107.44048 | program: subtract(95,84), divide(#0,84), add(#1,const_1), multiply(#2,95) | evidence: ['5-8-2', '5-8-4'] | doc tables 6
+OURS: inc=0 gold_in=1 fin=1 out=538 ref=0 ops=(4, 4) cells=48 gold_pos=[5, 6]/48 fa='254.016' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=630 ref=0 ops=(4, 4) cells=163 fa='107.44' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ext: "Table 5 > Policy loans > Year Ended December 31, > 2016 > Amount: 252"
+    Value (New) = 252
+
+3.  **Calculate the growth rate:**
+    The growth rate is calculated as (New Value - Old Value) / Old Value.
+    Expression: (252 - 250) / 250
+
+4.  **Calculate the projected amount for 2017:**
+    The projected amount is the 2016 amount multiplied by (1 + growth rate), which is equivalent to the 2016 amount multiplied by the ratio of 2016 to 2015.
+    Expression: 252 * ((252 - 250) / 250)
+    Alternatively, simply: 252 * (252 / 250)
+
+    Calculation steps:
+    Growth rate = (252 - 250) / 250 = 2 / 250 = 0.008
+    Projected 2017 Amount = 252 * (1 + 0.008) = 252 * 1.008
+    252 * 1.008 = 254.016
+
+    Let's re-verify the arithmetic expression format requested:
+    (252 - 250) / 250 = 0.008
+    252 * (1 + 0.008) = 254.016
+
+    Or directly:
+    252 * (252 / 250) = 254.016
+
+Final answer: 254.016
+--- LC raw (tail 500) ---
+nt:
+95 * (1 + 0.130952) = 95 * 1.130952 ≈ 107.4404
+
+Let's do the exact fraction calculation:
+95 * (95 / 84) = 9025 / 84 ≈ 107.44
+
+The question asks for the value "in million". The table values are already in millions.
+
+Final Answer Calculation:
+(95 - 84) / 84 = 0.13095238
+95 * (1 + 0.13095238) = 107.44044
+
+Rounding to two decimal places is standard for currency unless specified otherwise, but keeping precision is safer. Let's provide the value rounded to two decimal places.
+
+Final answer: 107.44
+
+########## 64. fb38a41410fc4edfbd79c72b436e82cb | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What was the total amount of Total investments excluding policy loansSeparate account assetsTotal assetsFuture policy benefits and policyholders’ account balances in 2006? (in million)
+GOLD: 1045862.0 | program: add(226530,177463), add(#0,454266), add(#1,187603) | evidence: ['2-4-1', '2-5-1', '2-6-1', '2-7-1'] | doc tables 5
+OURS: inc=0 gold_in=1 fin=1 out=325 ref=0 ops=(4, 4) cells=42 gold_pos=[1, 11, 19, 0]/42 fa='414,133' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=283 ref=0 ops=(4, 4) cells=152 fa='1,045,862' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+ policyholders' account balances" in 2006, we need to sum the values provided in the context for that specific year.
+
+1.  **Identify the value for "Total investments excluding policy loans" in 2006**:
+    From the context: "Balance Sheet Data: > Total investments excluding policy loans > As of December 31, > 2006 > (in millions): $226,530"
+    Value = 226,530
+
+2.  **Identify the value for "Future policy benefits and policyholders' account balances" in 2006**:
+    From the context: "Balance Sheet Data: > Future policy benefits and policyholders' account balances > As of December 31, > 2006 > (in millions): 187,603"
+    Value = 187,603
+
+3.  **Calculate the total**:
+    Total = (Total investments excluding policy loans in 2006) + (Future policy benefits and policyholders' account balances in 2006)
+    Total = 226,530 + 187,603
+
+Calculation:
+226,530 + 187,603 = 414,133
+
+Final answer: 414,133
+--- LC raw (tail 500) ---
+Data" table for the year 2006.
+
+The items are:
+1.  **Total investments excluding policy loans**: $226,530 million
+2.  **Separate account assets**: $177,463 million
+3.  **Total assets**: $454,266 million
+4.  **Future policy benefits and policyholders' account balances**: $187,603 million
+
+Calculation:
+Expression: 226,530 + 177,463 + 454,266 + 187,603
+
+Step-by-step evaluation:
+1.  226,530 + 177,463 = 403,993
+2.  403,993 + 454,266 = 858,259
+3.  858,259 + 187,603 = 1,045,862
+
+Final answer: 1,045,862
+
+########## 65. fbb8fe64715449bbb0bbcd936be4af3d | lookup_m2+ | 조회: 예/아니오
+Q: Does the proportion ofOil and Gas Cash Flow Hedges in total larger than that of Minimum Pension Liability and Other in 2004?
+GOLD: yes | program:  | evidence: ['5-3-1', '5-3-3'] | doc tables 6
+OURS: inc=0 gold_in=1 fin=1 out=863 ref=0 ops=(0, 0) cells=41 gold_pos=[9, 35]/41 fa=None fa_rel=no_final []
+LC  : inc=1 gold_in=1 fin=1 out=374 ref=0 ops=(0, 0) cells=112 fa='Yes' fa_rel=text
+--- OURS raw (tail 900) ---
+)$
+
+Calculating the values:
+$-6,939 / -10,210 \approx 0.6796$
+$-3,271 / -10,210 \approx 0.3204$
+
+$0.6796 > 0.3204$
+
+Alternatively, comparing the numerators directly since the denominator is constant and negative:
+$-6,939$ is a larger number (less negative) than $-3,271$? No, wait.
+$-6,939 < -3,271$.
+However, we are dividing by a negative number ($-10,210$).
+When you divide a more negative number by a negative number, you get a larger positive result.
+Example: $-10 / -5 = 2$, $-2 / -5 = 0.4$. $2 > 0.4$.
+So, the item with the more negative value (larger absolute value) yields the larger proportion.
+$|-6,939| > |-3,271|$, so the proportion for Oil and Gas is larger.
+
+Calculation verification:
+$(-6,939 / -10,210) - (-3,271 / -10,210) = (-6,939 - (-3,271)) / -10,210 = (-3,668) / -10,210 = 0.3592$
+Since the difference is positive, the Oil and Gas proportion is indeed larger.
+
+Final Answer: Yes
+--- LC raw (tail 500) ---
+sh Flow Hedges) / Total
+Calculation expression: $(-6,939) / (-14,787)$
+Evaluation: $0.46929...$ (approximately 46.93%)
+
+**Step 3: Calculate the proportion of Minimum Pension Liability and Other.**
+Proportion = (Minimum Pension Liability and Other) / Total
+Calculation expression: $(-3,271) / (-14,787)$
+Evaluation: $0.22120...$ (approximately 22.12%)
+
+**Step 4: Compare the proportions.**
+Is $0.46929... > 0.22120...$?
+Yes, the proportion of Oil and Gas Cash Flow Hedges is larger.
+
+Final answer: Yes
+
+########## 66. ffbf5d1d02ee4233bf0f5db797bd69ff | arith_m2+ | 산술: 정답 셀 2개 이상
+Q: What is the average increasing rate of Policy loans for amountbetween 2015 and 2016?
+GOLD: 0.04275 | program: subtract(95,84), divide(#0,84), subtract(84,88), divide(#2,88), add(#1,#3), divide(#4,const_2) | evidence: ['5-8-2', '5-8-4', '5-8-6'] | doc tables 6
+OURS: inc=0 gold_in=1 fin=1 out=319 ref=0 ops=(6, 6) cells=49 gold_pos=[2, 0, 8]/49 fa='0.008' fa_rel=not_a_cell []
+LC  : inc=1 gold_in=1 fin=1 out=674 ref=0 ops=(6, 6) cells=163 fa='0.0427' fa_rel=not_a_cell
+--- OURS raw (tail 900) ---
+To find the average increasing rate of Policy loans for the amount between 2015 and 2016, we first identify the relevant values from the context:
+
+1.  **Policy loans Amount for 2015**: Found in "Table 5 > Policy loans > Year Ended December 31, > 2015 > Amount: 250".
+2.  **Policy loans Amount for 2016**: Found in "Table 5 > Policy loans > Year Ended December 31, > 2016 > Amount: 252".
+
+The question asks for the "average increasing rate... between 2015 and 2016". Since there is only one period of growth (from 2015 to 2016), the "average" of the growth rates over this single interval is simply the growth rate for that interval.
+
+**Calculation:**
+Formula: (New Value - Old Value) / Old Value
+New Value (2016) = 252
+Old Value (2015) = 250
+
+Expression: $(252 - 250) / 250$
+
+Evaluation:
+$2 / 250 = 0.008$
+
+To express this as a percentage: $0.008 \times 100\% = 0.8\%$
+
+Final answer: 0.008
+--- LC raw (tail 500) ---
+_{2014-2015} + Rate_{2015-2016}) / 2$
+
+**Arithmetic Expression:**
+$$ \frac{\left( \frac{84 - 88}{88} \right) + \left( \frac{95 - 84}{84} \right)}{2} $$
+
+**Evaluation:**
+1.  $2014 \to 2015$ rate: $(84 - 88) / 88 = -4 / 88 \approx -0.0454545$
+2.  $2015 \to 2016$ rate: $(95 - 84) / 84 = 11 / 84 \approx 0.1309524$
+3.  Sum of rates: $-0.0454545 + 0.1309524 = 0.0854979$
+4.  Average: $0.0854979 / 2 \approx 0.0427489$
+
+Converting to percentage: $0.0427489 \times 100 \approx 4.27\%$
+
+Final answer: 0.0427

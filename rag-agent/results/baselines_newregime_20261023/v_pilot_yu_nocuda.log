@@ -1,0 +1,37 @@
+[plan] stage=answer 1 문항, 남은 1
+Using the latest cached version of the dataset since bevaya/MultiHiertt couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /home/ugh/.cache/huggingface/datasets/bevaya___multi_hiertt/default/0.0.0/ae21d2d80c97fdfbcde43aa4c51bdd90b169522d (last modified on Mon Oct 12 20:49:13 2026).
+[corpus] 1 docs / 4 chunks
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  26%|██▌       | 51/199 [00:00<00:00, 463.08it/s]Loading weights:  54%|█████▍    | 108/199 [00:00<00:00, 505.13it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 682.11it/s]
+Traceback (most recent call last):
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 493, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 438, in main
+    ret = Retriever(a.embed_model, a.reranker, a.reranker_device, cache)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/scripts/baselines/tablerag_yu.py", line 205, in __init__
+    self.embedder = Embedder(embed_model, device_id=0)          # CLS, 정규화 없음 (tool_utils.Embedder)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/vendor/tablerag_yu/online_inference/utils/tool_utils.py", line 18, in __init__
+    self.model = self.model.to(self.device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/transformers/modeling_utils.py", line 3711, in to
+    return super().to(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1388, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 966, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1374, in convert
+    return t.to(
+           ^^^^^
+  File "/home/ugh/T2/rag-agent/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py", line 591, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
