@@ -42,7 +42,8 @@ def make_table(template, rows, col_widths=None, header_rows=1, row_height=None):
     if col_widths is None:
         col_widths = [total_w // n_cols] * n_cols
         col_widths[-1] += total_w - sum(col_widths)
-    assert sum(col_widths) == total_w, f"열 너비 합 {sum(col_widths)} ≠ 표 너비 {total_w}"
+    if sum(col_widths) != total_w:                                  # 상대 너비로 받아 표 너비에 맞춰 비례 조정
+        s = sum(col_widths); col_widths = [int(w * total_w / s) for w in col_widths]; col_widths[-1] += total_w - sum(col_widths)
     rh = row_height or int(re.search(r'<hp:cellSz width="\d+" height="(\d+)"', t_body).group(1))
     out_rows = []
     for r, row in enumerate(rows):
