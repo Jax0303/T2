@@ -1,4 +1,4 @@
-> **2026-09-11 평가 무결성 정정:** 새 실행과 비교군 해석은 [EVALUATION-INTEGRITY-2026-09-11.md](EVALUATION-INTEGRITY-2026-09-11.md)를 먼저 읽는다. Gold 문맥은 수학적 상한이 아니며, 기존 청킹 행은 전체 TableRAG 시스템 재현이 아니다.
+> **2026-09-11 평가 무결성 정정:** 새 실행과 비교군 해석은 [notes/2026-09/EVALUATION-INTEGRITY-2026-09-11.md](notes/2026-09/EVALUATION-INTEGRITY-2026-09-11.md)를 먼저 읽는다. Gold 문맥은 수학적 상한이 아니며, 기존 청킹 행은 전체 TableRAG 시스템 재현이 아니다.
 
 # rag-agent — RAG over hierarchical-header tables
 
@@ -6,8 +6,8 @@ Start at [`CLAUDE.md`](CLAUDE.md) §0 and the status documents it lists. Current
 
 - HiTab, five representations under one retriever/reader: `results/five_representations_20260912/`
   (manifest `analysis/comparison_manifest.five.v2.json`, source runs `results/evaluation_v2/`)
-- MultiHiertt: `REPORT-2026-09-13.md`, `VERIFICATION-2026-09-13.md`, `DATA-USE-2026-09-14.md`,
-  header rules `PREREG-2026-09-14-header-v3.md`
+- MultiHiertt: `notes/2026-09/REPORT-2026-09-13.md`, `notes/2026-09/VERIFICATION-2026-09-13.md`, `notes/2026-09/DATA-USE-2026-09-14.md`,
+  header rules `notes/2026-09/PREREG-2026-09-14-header-v3.md`
 - Strict Recall (budget-free set scoring): `results/STRICT_RECALL_TABLES-2026-09-15.md`
 
 **Rule:** every number carries the results file it came from.
@@ -44,6 +44,7 @@ analysis/
   validated_tables.py, five_representation_audit.py, compose_oracle.py, unit_defect.py
   verify_upstream.py, upstream_parity.py, upstream_audit/
   mh_final_report.py, audit_2026_09_13.py, header_*.py
+notes/YYYY-MM/   PREREG·LITERATURE·DATA-USE·REPORT 등 날짜 문서, 달별 (색인 notes/README.md)
 tests/
 ```
 

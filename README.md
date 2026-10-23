@@ -44,8 +44,8 @@ RowCol의 정보 손실을 숨기지 않는다. 같은 검색 셀에 전체 헤�
 1. [다섯 표현 간극 감사](rag-agent/results/five_representations_20260912/GAP_REPORT.md): 방법별 검색−EM, 공통 hit, 정보·길이 차이, 해석 범위.
 2. [원본 슬라이드 감사](rag-agent/results/slide_audit_20260912/REPORT.md): 서로 다른 Row/RowCol 실행을 한 행으로 섞은 출처 오류와 채점 점검.
 3. [MultiHiertt test 사전 확인](rag-agent/results/five_representations_20260912/MULTIHIERTT_TEST_PREFLIGHT.md): test 정답 비공개·공식 제출 방식, 현재 어댑터의 제한. 현 캐시의 train/validation을 test 대신 쓰지 않는다.
-4. [이번 실행 조건](rag-agent/PREREG-2026-09-12-five-representations.md), [기존 세 표현 매니페스트](rag-agent/analysis/comparison_manifest.v2.json).
-5. MultiHiertt: [`REPORT-2026-09-13.md`](rag-agent/REPORT-2026-09-13.md), [`DATA-USE-2026-09-14.md`](rag-agent/DATA-USE-2026-09-14.md), 헤더 규칙 [`PREREG-2026-09-14-header-v3.md`](rag-agent/PREREG-2026-09-14-header-v3.md).
+4. [이번 실행 조건](rag-agent/notes/2026-09/PREREG-2026-09-12-five-representations.md), [기존 세 표현 매니페스트](rag-agent/analysis/comparison_manifest.v2.json).
+5. MultiHiertt: [`notes/2026-09/REPORT-2026-09-13.md`](rag-agent/notes/2026-09/REPORT-2026-09-13.md), [`notes/2026-09/DATA-USE-2026-09-14.md`](rag-agent/notes/2026-09/DATA-USE-2026-09-14.md), 헤더 규칙 [`notes/2026-09/PREREG-2026-09-14-header-v3.md`](rag-agent/notes/2026-09/PREREG-2026-09-14-header-v3.md).
 6. 예산 없는 집합 채점: [Strict Recall 표](rag-agent/results/STRICT_RECALL_TABLES-2026-09-15.md).
 
 2026-09-15 폐기 노선의 결과·코드·문서 794개를 지웠다(`RESULTS.md` 포함). 복원은 `git show f4e6865:rag-agent/<경로>`.

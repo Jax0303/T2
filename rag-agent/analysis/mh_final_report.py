@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""2026-09-13 작업 기록 — 레코드에서 표를 다시 세어 `REPORT-2026-09-13.md` 를 쓴다.
+"""2026-09-13 작업 기록 — 레코드에서 표를 다시 세어 `notes/2026-09/REPORT-2026-09-13.md` 를 쓴다.
 
 요약 JSON 이 아니라 레코드에서 센다. 파일이 없으면 그 칸은 '—' 로 두고 실행 로그에 남긴다.
 검정은 짝지음 McNemar(정확 이항), 한 표 안의 비교 묶음마다 Holm 보정.
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 MH = ROOT / "results/mh_arms"
-OUT = ROOT / "REPORT-2026-09-13.md"
+OUT = ROOT / "notes/2026-09/REPORT-2026-09-13.md"
 LAYERS = ["lookup_m1", "lookup_m2+", "arith_m1", "arith_m2+", "ALL"]
 LNAME = {"lookup_m1": "단일 조회", "lookup_m2+": "다중 조회", "arith_m1": "단일 산술",
          "arith_m2+": "다중 산술", "ALL": "전체"}
@@ -240,21 +240,21 @@ HEADER = """# 2026-09-13 작업 기록 — 비교군 실사, 검색-EM 간극, M
 
 ## 0. 오늘 한 일과 결정 (요약)
 
-**비교군 구현 실사** (원본 저장소를 받아 함수를 실행해 대조, `VERIFICATION-2026-09-13.md`)
+**비교군 구현 실사** (원본 저장소를 받아 함수를 실행해 대조, `notes/2026-09/VERIFICATION-2026-09-13.md`)
 - HiTab 공식 채점기 포팅: 원본과 일치, gold 를 예측으로 넣으면 EM 1.0.
 - 채점한 셀 = 배달한 단위 = 리더가 본 문자열: 모든 레코드에서 강제됨.
 - **고친 것 ①** 비교군을 자기 논문의 검색 범위 밖(538표 전역)에서만 재고 있었다 → 표 1개 범위 추가.
 - **고친 것 ②** TableRAG 숫자 열 처리가 원본(pandas dtype + 중복 열 이름) 동작과 달랐다 → 유리한 읽기 추가.
 - **고친 것 ③** MultiHiertt 스크립트의 gold 해석이 arm 에 의존해 TableRAG 만 188건이 제외됐다 → arm 무관으로.
 - **고친 것 ④** MultiHiertt 헤더 행 추정이 괄호 없는 단위 표기·연도 행을 놓쳤다(경로 충돌 21.9%)
-  → 규칙 v2 (`PREREG-2026-09-13-header-units-note.md`, 검증 지표 통과 후 채택).
+  → 규칙 v2 (`notes/2026-09/PREREG-2026-09-13-header-units-note.md`, 검증 지표 통과 후 채택).
 
 **검색-EM 간극** (교수님 지적): 코드 결함이 아니다. HiTab 조회 질의에 gold 셀만 주면 EM .95.
 간극 = 함께 배달된 distractor 셀 + 리더의 산술 한계 (§1 표 1-1).
 
 **방법 정의** (사용자 확정, `CLAUDE.md` §1): 셀을 구별되게 만드는 데이터(고유 라벨 + 행/열 경로 + 값)로
 문장을 생성해 임베딩한다. MultiHiertt 라벨은 표 직전 문단(L1), validation 분할의 구별력으로 선택
-(`PREREG-2026-09-13-table-label.md`).
+(`notes/2026-09/PREREG-2026-09-13-table-label.md`).
 
 **표 라벨(L1) 결과와 사전등록 이탈**: 표 직전 문단을 라벨로 붙이자 본 방법 검색이 **유의하게 떨어졌다**
 (doc .8495 → .8304, p=.0014; corpus .2654 → .2264, p=7.9e-8). 같은 라벨의 Huawei 도 .696 → .647.
